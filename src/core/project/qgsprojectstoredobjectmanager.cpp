@@ -28,7 +28,10 @@ QgsProjectStoredObjectManagerBase::QgsProjectStoredObjectManagerBase( QgsProject
   , mProject( project )
 {}
 
-void QgsProjectStoredObjectManagerBase::markProjectDirty() { mProject->setDirty( true ); }
+void QgsProjectStoredObjectManagerBase::markProjectDirty()
+{
+  mProject->setDirty( true );
+}
 
 //
 // QgsAbstractProjectStoredObjectManager
@@ -44,7 +47,10 @@ template<class T> QgsAbstractProjectStoredObjectManager<T>::~QgsAbstractProjectS
   clearObjects();
 }
 
-template<class T> QList<T *> QgsAbstractProjectStoredObjectManager<T>::objects() const { return mObjects; }
+template<class T> QList<T *> QgsAbstractProjectStoredObjectManager<T>::objects() const
+{
+  return mObjects;
+}
 
 template<class T> T *QgsAbstractProjectStoredObjectManager<T>::objectByName( const QString &name ) const
 {
@@ -107,7 +113,8 @@ template<class T> bool QgsAbstractProjectStoredObjectManager<T>::removeObject( T
   return true;
 }
 
-template<class T> void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * ) {}
+template<class T> void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * )
+{}
 
 #include "qgsmasterlayoutinterface.h"
 

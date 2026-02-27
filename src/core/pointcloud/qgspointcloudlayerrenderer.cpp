@@ -781,7 +781,10 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
   return mRenderer ? mRenderer->type() != "extent"_L1 : false;
 }
 
-void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time ) { mRenderTimeHint = time; }
+void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time )
+{
+  mRenderTimeHint = time;
+}
 
 QVector<QgsPointCloudNodeId> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex &pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels )
 {

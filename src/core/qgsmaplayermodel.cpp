@@ -66,11 +66,20 @@ void QgsMapLayerModel::setProject( QgsProject *project )
 }
 
 
-void QgsMapLayerModel::setItemsCheckable( bool checkable ) { mItemCheckable = checkable; }
+void QgsMapLayerModel::setItemsCheckable( bool checkable )
+{
+  mItemCheckable = checkable;
+}
 
-void QgsMapLayerModel::setItemsCanBeReordered( bool allow ) { mCanReorder = allow; }
+void QgsMapLayerModel::setItemsCanBeReordered( bool allow )
+{
+  mCanReorder = allow;
+}
 
-bool QgsMapLayerModel::itemsCanBeReordered() const { return mCanReorder; }
+bool QgsMapLayerModel::itemsCanBeReordered() const
+{
+  return mCanReorder;
+}
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
@@ -148,7 +157,10 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const { return mProject->mapLayer( index.data( static_cast< int >( CustomRole::LayerId ) ).toString() ); }
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
+{
+  return mProject->mapLayer( index.data( static_cast< int >( CustomRole::LayerId ) ).toString() );
+}
 
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
@@ -201,7 +213,10 @@ void QgsMapLayerModel::setAdditionalLayers( const QList<QgsMapLayer *> &layers )
   mAdditionalLayers = _qgis_listRawToQPointer( layers );
 }
 
-QList<QgsMapLayer *> QgsMapLayerModel::additionalLayers() const { return _qgis_listQPointerToRaw( mAdditionalLayers ); }
+QList<QgsMapLayer *> QgsMapLayerModel::additionalLayers() const
+{
+  return _qgis_listQPointerToRaw( mAdditionalLayers );
+}
 
 void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 {
@@ -561,9 +576,15 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   return true;
 }
 
-Qt::DropActions QgsMapLayerModel::supportedDropActions() const { return Qt::MoveAction; }
+Qt::DropActions QgsMapLayerModel::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
 
-QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer ) { return QgsIconUtils::iconForLayer( layer ); }
+QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
+{
+  return QgsIconUtils::iconForLayer( layer );
+}
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {

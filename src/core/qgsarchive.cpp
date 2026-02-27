@@ -54,7 +54,10 @@ QgsArchive &QgsArchive::operator=( const QgsArchive &other )
   return *this;
 }
 
-QString QgsArchive::dir() const { return mDir->path(); }
+QString QgsArchive::dir() const
+{
+  return mDir->path();
+}
 
 void QgsArchive::clear()
 {
@@ -117,7 +120,10 @@ bool QgsArchive::unzip( const QString &filename )
   return QgsZipUtils::unzip( filename, mDir->path(), mFiles );
 }
 
-void QgsArchive::addFile( const QString &file ) { mFiles.append( file ); }
+void QgsArchive::addFile( const QString &file )
+{
+  mFiles.append( file );
+}
 
 bool QgsArchive::removeFile( const QString &file )
 {
@@ -131,9 +137,15 @@ bool QgsArchive::removeFile( const QString &file )
   return rc;
 }
 
-QStringList QgsArchive::files() const { return mFiles; }
+QStringList QgsArchive::files() const
+{
+  return mFiles;
+}
 
-bool QgsArchive::exists() const { return QFileInfo::exists( mDir->path() ); }
+bool QgsArchive::exists() const
+{
+  return QFileInfo::exists( mDir->path() );
+}
 
 QString QgsProjectArchive::projectFile() const
 {
@@ -156,7 +168,10 @@ bool QgsProjectArchive::unzip( const QString &filename )
     return false;
 }
 
-bool QgsProjectArchive::clearProjectFile() { return removeFile( projectFile() ); }
+bool QgsProjectArchive::clearProjectFile()
+{
+  return removeFile( projectFile() );
+}
 
 QString QgsProjectArchive::auxiliaryStorageFile() const
 {

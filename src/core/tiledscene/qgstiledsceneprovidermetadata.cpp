@@ -35,22 +35,40 @@ QgsTiledSceneProviderMetadata::QgsTiledSceneProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsTiledSceneProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconTiledSceneLayer.svg"_s ); }
+QIcon QgsTiledSceneProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconTiledSceneLayer.svg"_s );
+}
 
-QList<QgsDataItemProvider *> QgsTiledSceneProviderMetadata::dataItemProviders() const { return { new QgsTiledSceneDataItemProvider() }; }
+QList<QgsDataItemProvider *> QgsTiledSceneProviderMetadata::dataItemProviders() const
+{
+  return { new QgsTiledSceneDataItemProvider() };
+}
 
 QMap<QString, QgsAbstractProviderConnection *> QgsTiledSceneProviderMetadata::connections( bool cached )
 {
   return connectionsProtected<QgsTiledSceneProviderConnection, QgsTiledSceneProviderConnection>( cached );
 }
 
-QgsAbstractProviderConnection *QgsTiledSceneProviderMetadata::createConnection( const QString &name ) { return new QgsTiledSceneProviderConnection( name ); }
+QgsAbstractProviderConnection *QgsTiledSceneProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsTiledSceneProviderConnection( name );
+}
 
-void QgsTiledSceneProviderMetadata::deleteConnection( const QString &name ) { deleteConnectionProtected<QgsTiledSceneProviderConnection>( name ); }
+void QgsTiledSceneProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsTiledSceneProviderConnection>( name );
+}
 
-void QgsTiledSceneProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) { saveConnectionProtected( connection, name ); }
+void QgsTiledSceneProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
+{
+  saveConnectionProtected( connection, name );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsTiledSceneProviderMetadata::providerCapabilities() const { return QgsProviderMetadata::ProviderCapabilities(); }
+QgsProviderMetadata::ProviderCapabilities QgsTiledSceneProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapabilities();
+}
 
 
 ///@endcond

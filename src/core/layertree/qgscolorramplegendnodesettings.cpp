@@ -93,21 +93,45 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( QgsCo
 
 QgsColorRampLegendNodeSettings::~QgsColorRampLegendNodeSettings() = default;
 
-QgsColorRampLegendNodeSettings::Direction QgsColorRampLegendNodeSettings::direction() const { return mDirection; }
+QgsColorRampLegendNodeSettings::Direction QgsColorRampLegendNodeSettings::direction() const
+{
+  return mDirection;
+}
 
-void QgsColorRampLegendNodeSettings::setDirection( QgsColorRampLegendNodeSettings::Direction direction ) { mDirection = direction; }
+void QgsColorRampLegendNodeSettings::setDirection( QgsColorRampLegendNodeSettings::Direction direction )
+{
+  mDirection = direction;
+}
 
-QString QgsColorRampLegendNodeSettings::minimumLabel() const { return mMinimumLabel; }
+QString QgsColorRampLegendNodeSettings::minimumLabel() const
+{
+  return mMinimumLabel;
+}
 
-void QgsColorRampLegendNodeSettings::setMinimumLabel( const QString &label ) { mMinimumLabel = label; }
+void QgsColorRampLegendNodeSettings::setMinimumLabel( const QString &label )
+{
+  mMinimumLabel = label;
+}
 
-QString QgsColorRampLegendNodeSettings::maximumLabel() const { return mMaximumLabel; }
+QString QgsColorRampLegendNodeSettings::maximumLabel() const
+{
+  return mMaximumLabel;
+}
 
-void QgsColorRampLegendNodeSettings::setMaximumLabel( const QString &label ) { mMaximumLabel = label; }
+void QgsColorRampLegendNodeSettings::setMaximumLabel( const QString &label )
+{
+  mMaximumLabel = label;
+}
 
-const QgsNumericFormat *QgsColorRampLegendNodeSettings::numericFormat() const { return mNumericFormat.get(); }
+const QgsNumericFormat *QgsColorRampLegendNodeSettings::numericFormat() const
+{
+  return mNumericFormat.get();
+}
 
-void QgsColorRampLegendNodeSettings::setNumericFormat( QgsNumericFormat *format ) { mNumericFormat.reset( format ); }
+void QgsColorRampLegendNodeSettings::setNumericFormat( QgsNumericFormat *format )
+{
+  mNumericFormat.reset( format );
+}
 
 void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
 {
@@ -164,22 +188,52 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
   }
 }
 
-QString QgsColorRampLegendNodeSettings::prefix() const { return mPrefix; }
+QString QgsColorRampLegendNodeSettings::prefix() const
+{
+  return mPrefix;
+}
 
-void QgsColorRampLegendNodeSettings::setPrefix( const QString &prefix ) { mPrefix = prefix; }
+void QgsColorRampLegendNodeSettings::setPrefix( const QString &prefix )
+{
+  mPrefix = prefix;
+}
 
-QString QgsColorRampLegendNodeSettings::suffix() const { return mSuffix; }
+QString QgsColorRampLegendNodeSettings::suffix() const
+{
+  return mSuffix;
+}
 
-void QgsColorRampLegendNodeSettings::setSuffix( const QString &suffix ) { mSuffix = suffix; }
+void QgsColorRampLegendNodeSettings::setSuffix( const QString &suffix )
+{
+  mSuffix = suffix;
+}
 
-QgsTextFormat QgsColorRampLegendNodeSettings::textFormat() const { return mTextFormat; }
+QgsTextFormat QgsColorRampLegendNodeSettings::textFormat() const
+{
+  return mTextFormat;
+}
 
-void QgsColorRampLegendNodeSettings::setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+void QgsColorRampLegendNodeSettings::setTextFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
+}
 
-Qt::Orientation QgsColorRampLegendNodeSettings::orientation() const { return mOrientation; }
+Qt::Orientation QgsColorRampLegendNodeSettings::orientation() const
+{
+  return mOrientation;
+}
 
-void QgsColorRampLegendNodeSettings::setOrientation( Qt::Orientation orientation ) { mOrientation = orientation; }
+void QgsColorRampLegendNodeSettings::setOrientation( Qt::Orientation orientation )
+{
+  mOrientation = orientation;
+}
 
-bool QgsColorRampLegendNodeSettings::useContinuousLegend() const { return mUseContinuousLegend; }
+bool QgsColorRampLegendNodeSettings::useContinuousLegend() const
+{
+  return mUseContinuousLegend;
+}
 
-void QgsColorRampLegendNodeSettings::setUseContinuousLegend( bool useContinuousLegend ) { mUseContinuousLegend = useContinuousLegend; }
+void QgsColorRampLegendNodeSettings::setUseContinuousLegend( bool useContinuousLegend )
+{
+  mUseContinuousLegend = useContinuousLegend;
+}

@@ -501,7 +501,10 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
   return intersections;
 }
 
-int QgsGeometryUtils::leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 ) { return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() ); }
+int QgsGeometryUtils::leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 )
+{
+  return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() );
+}
 
 QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance )
 {
@@ -555,8 +558,29 @@ QgsPoint QgsGeometryUtils::interpolatePointOnCubicBezier( const QgsPoint &p0, co
 }
 
 void QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-  double p0x, double p0y, double p0z, double p0m, double p1x, double p1y, double p1z, double p1m, double p2x, double p2y, double p2z, double p2m, double p3x, double p3y, double p3z, double p3m,
-  double t, bool hasZ, bool hasM, double &outX, double &outY, double &outZ, double &outM
+  double p0x,
+  double p0y,
+  double p0z,
+  double p0m,
+  double p1x,
+  double p1y,
+  double p1z,
+  double p1m,
+  double p2x,
+  double p2y,
+  double p2z,
+  double p2m,
+  double p3x,
+  double p3y,
+  double p3z,
+  double p3m,
+  double t,
+  bool hasZ,
+  bool hasM,
+  double &outX,
+  double &outY,
+  double &outZ,
+  double &outM
 )
 {
   // Cubic Bézier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
@@ -1176,7 +1200,10 @@ QgsPoint QgsGeometryUtils::interpolatePointOnLine( const QgsPoint &p1, const Qgs
 {
   const double _fraction = 1 - fraction;
   return QgsPoint(
-    p1.wkbType(), p1.x() * _fraction + p2.x() * fraction, p1.y() * _fraction + p2.y() * fraction, p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
+    p1.wkbType(),
+    p1.x() * _fraction + p2.x() * fraction,
+    p1.y() * _fraction + p2.y() * fraction,
+    p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
     p1.isMeasure() ? p1.m() * _fraction + p2.m() * fraction : std::numeric_limits<double>::quiet_NaN()
   );
 }
@@ -1346,16 +1373,36 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y, const 
 }
 
 bool QgsGeometryUtils::createChamfer(
-  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2, QgsPoint &chamferStart,
-  QgsPoint &chamferEnd, double epsilon
+  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2, QgsPoint &chamferStart, QgsPoint &chamferEnd, double epsilon
 )
 {
   // Create chamfer points using the utility function
   double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
 
   QgsGeometryUtilsBase::createChamfer(
-    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), distance1, distance2, chamferStartX, chamferStartY,
-    chamferEndX, chamferEndY, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, epsilon
+    segment1Start.x(),
+    segment1Start.y(),
+    segment1End.x(),
+    segment1End.y(),
+    segment2Start.x(),
+    segment2Start.y(),
+    segment2End.x(),
+    segment2End.y(),
+    distance1,
+    distance2,
+    chamferStartX,
+    chamferStartY,
+    chamferEndX,
+    chamferEndY,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    epsilon
   );
 
   chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, segment1Start, segment1End );
@@ -1365,16 +1412,41 @@ bool QgsGeometryUtils::createChamfer(
 }
 
 bool QgsGeometryUtils::createFillet(
-  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, QgsPoint &filletPoint1, QgsPoint &filletMidPoint,
-  QgsPoint &filletPoint2, double epsilon
+  const QgsPoint &segment1Start,
+  const QgsPoint &segment1End,
+  const QgsPoint &segment2Start,
+  const QgsPoint &segment2End,
+  double radius,
+  QgsPoint &filletPoint1,
+  QgsPoint &filletMidPoint,
+  QgsPoint &filletPoint2,
+  double epsilon
 )
 {
   // Create fillet arc using the utility function
   double filletPointsX[3], filletPointsY[3];
 
   QgsGeometryUtilsBase::createFillet(
-    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), radius, filletPointsX, filletPointsY, nullptr,
-    nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, epsilon
+    segment1Start.x(),
+    segment1Start.y(),
+    segment1End.x(),
+    segment1End.y(),
+    segment2Start.x(),
+    segment2Start.y(),
+    segment2End.x(),
+    segment2End.y(),
+    radius,
+    filletPointsX,
+    filletPointsY,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    epsilon
   );
 
   filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], segment1Start, segment1End );

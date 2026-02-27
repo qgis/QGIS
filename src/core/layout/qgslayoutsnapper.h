@@ -112,8 +112,7 @@ class CORE_EXPORT QgsLayoutSnapper : public QgsLayoutSerializableObject
      * \see snapRect()
      */
     QPointF snapPoint(
-      QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr,
-      const QList< QgsLayoutItem * > *ignoreItems = nullptr
+      QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr, const QList< QgsLayoutItem * > *ignoreItems = nullptr
     ) const;
 
     /**
@@ -136,7 +135,11 @@ class CORE_EXPORT QgsLayoutSnapper : public QgsLayoutSerializableObject
      * \see snapPoint()
      */
     QRectF snapRect(
-      const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr,
+      const QRectF &rect,
+      double scaleFactor,
+      bool &snapped SIP_OUT,
+      QGraphicsLineItem *horizontalSnapLine = nullptr,
+      QGraphicsLineItem *verticalSnapLine = nullptr,
       const QList< QgsLayoutItem * > *ignoreItems = nullptr
     ) const;
 

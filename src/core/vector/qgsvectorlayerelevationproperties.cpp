@@ -356,7 +356,10 @@ void QgsVectorLayerElevationProperties::setRespectLayerSymbology( bool enabled )
   emit profileRenderingPropertyChanged();
 }
 
-QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
+QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
 
 void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -365,7 +368,10 @@ void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
+QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const
+{
+  return mProfileFillSymbol.get();
+}
 
 void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -374,7 +380,10 @@ void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const { return mProfileMarkerSymbol.get(); }
+QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
+{
+  return mProfileMarkerSymbol.get();
+}
 
 void QgsVectorLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol *symbol )
 {
@@ -393,7 +402,10 @@ void QgsVectorLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
   emit profileRenderingPropertyChanged();
 }
 
-double QgsVectorLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
+double QgsVectorLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
 
 void QgsVectorLayerElevationProperties::setElevationLimit( double limit )
 {

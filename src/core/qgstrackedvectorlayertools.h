@@ -47,7 +47,13 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;
     bool copyMoveFeatures(
-      QgsVectorLayer *layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr,
+      QgsVectorLayer *layer,
+      QgsFeatureRequest &request,
+      double dx = 0,
+      double dy = 0,
+      QString *errorMsg = nullptr,
+      const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = nullptr,
       QString *childrenInfoMsg = nullptr
     ) const override;
 

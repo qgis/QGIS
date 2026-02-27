@@ -44,8 +44,15 @@ class CORE_EXPORT QgsCachedPointCloudBlockRequest : public QgsPointCloudBlockReq
      * Note: Ownership of \a block is transferred
      */
     QgsCachedPointCloudBlockRequest(
-      QgsPointCloudBlock *block, const QgsPointCloudNodeId &node, const QString &uri, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-      const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect
+      QgsPointCloudBlock *block,
+      const QgsPointCloudNodeId &node,
+      const QString &uri,
+      const QgsPointCloudAttributeCollection &attributes,
+      const QgsPointCloudAttributeCollection &requestedAttributes,
+      const QgsVector3D &scale,
+      const QgsVector3D &offset,
+      const QgsPointCloudExpression &filterExpression,
+      const QgsRectangle &filterRect
     );
 
     ~QgsCachedPointCloudBlockRequest() override = default;

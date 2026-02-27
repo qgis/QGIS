@@ -308,9 +308,15 @@ QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
   return nam->blockingGet( req, mAuthCfg );
 }
 
-QString QgsStacController::authCfg() const { return mAuthCfg; }
+QString QgsStacController::authCfg() const
+{
+  return mAuthCfg;
+}
 
-void QgsStacController::setAuthCfg( const QString &authCfg ) { mAuthCfg = authCfg; }
+void QgsStacController::setAuthCfg( const QString &authCfg )
+{
+  mAuthCfg = authCfg;
+}
 
 std::unique_ptr<QgsStacCatalog> QgsStacController::openLocalCatalog( const QString &fileName ) const
 {

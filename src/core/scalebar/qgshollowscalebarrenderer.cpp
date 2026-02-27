@@ -29,9 +29,15 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsHollowScaleBarRenderer::id() const { return u"hollow"_s; }
+QString QgsHollowScaleBarRenderer::id() const
+{
+  return u"hollow"_s;
+}
 
-QString QgsHollowScaleBarRenderer::visibleName() const { return QObject::tr( "Hollow" ); }
+QString QgsHollowScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Hollow" );
+}
 
 QgsScaleBarRenderer::Flags QgsHollowScaleBarRenderer::flags() const
 {
@@ -39,9 +45,15 @@ QgsScaleBarRenderer::Flags QgsHollowScaleBarRenderer::flags() const
          | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
-int QgsHollowScaleBarRenderer::sortKey() const { return 8; }
+int QgsHollowScaleBarRenderer::sortKey() const
+{
+  return 8;
+}
 
-QgsHollowScaleBarRenderer *QgsHollowScaleBarRenderer::clone() const { return new QgsHollowScaleBarRenderer( *this ); }
+QgsHollowScaleBarRenderer *QgsHollowScaleBarRenderer::clone() const
+{
+  return new QgsHollowScaleBarRenderer( *this );
+}
 
 void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
@@ -136,7 +148,9 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
     lineSymbol->renderPolyline(
       QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight )
                   << QPointF( minX, barTopPosition ),
-      nullptr, context, layer
+      nullptr,
+      context,
+      layer
     );
   }
 

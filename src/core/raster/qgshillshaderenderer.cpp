@@ -57,7 +57,10 @@ QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
   return r;
 }
 
-Qgis::RasterRendererFlags QgsHillshadeRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsHillshadeRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
 QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -536,9 +539,15 @@ QList<int> QgsHillshadeRenderer::usesBands() const
   return bandList;
 }
 
-int QgsHillshadeRenderer::inputBand() const { return mBand; }
+int QgsHillshadeRenderer::inputBand() const
+{
+  return mBand;
+}
 
-void QgsHillshadeRenderer::setBand( int bandNo ) { setInputBand( bandNo ); }
+void QgsHillshadeRenderer::setBand( int bandNo )
+{
+  setInputBand( bandNo );
+}
 
 bool QgsHillshadeRenderer::setInputBand( int band )
 {

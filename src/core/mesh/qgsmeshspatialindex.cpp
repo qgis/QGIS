@@ -299,7 +299,10 @@ class QgsMeshSpatialIndexData : public QSharedData
 
 ///@endcond
 
-QgsMeshSpatialIndex::QgsMeshSpatialIndex() { d = new QgsMeshSpatialIndexData; }
+QgsMeshSpatialIndex::QgsMeshSpatialIndex()
+{
+  d = new QgsMeshSpatialIndexData;
+}
 
 QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feedback, QgsMesh::ElementType elementType )
   : mElementType( elementType )
@@ -366,7 +369,10 @@ QList<int> QgsMeshSpatialIndex::nearestNeighbor( const QgsPointXY &point, int ne
   return list;
 }
 
-QgsMesh::ElementType QgsMeshSpatialIndex::elementType() const { return mElementType; }
+QgsMesh::ElementType QgsMeshSpatialIndex::elementType() const
+{
+  return mElementType;
+}
 
 void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
 {

@@ -92,4 +92,7 @@ QVariantList QgsFieldFormatter::availableValues( const QVariantMap &config, int 
   return QVariantList();
 }
 
-void QgsFieldFormatter::setFlags( const Flags &flags ) { mFlags = flags; }
+void QgsFieldFormatter::setFlags( const Flags &flags )
+{
+  mFlags = flags;
+}

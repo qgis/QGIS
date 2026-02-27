@@ -95,11 +95,20 @@ void QgsMeshDataProviderTemporalCapabilities::addDatasetTime( int group, double 
   addDatasetTimeInMilliseconds( group, time * unitTimeFactor );
 }
 
-bool QgsMeshDataProviderTemporalCapabilities::hasReferenceTime() const { return mGlobalReferenceDateTime.isValid(); }
+bool QgsMeshDataProviderTemporalCapabilities::hasReferenceTime() const
+{
+  return mGlobalReferenceDateTime.isValid();
+}
 
-QDateTime QgsMeshDataProviderTemporalCapabilities::referenceTime() const { return mGlobalReferenceDateTime; }
+QDateTime QgsMeshDataProviderTemporalCapabilities::referenceTime() const
+{
+  return mGlobalReferenceDateTime;
+}
 
-QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent() const { return timeExtent( mGlobalReferenceDateTime ); }
+QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent() const
+{
+  return timeExtent( mGlobalReferenceDateTime );
+}
 
 QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDateTime &reference ) const
 {
@@ -133,9 +142,15 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
   return QgsDateTimeRange( begin, end );
 }
 
-void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( Qgis::TemporalUnit timeUnit ) { mTemporalUnit = timeUnit; }
+void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( Qgis::TemporalUnit timeUnit )
+{
+  mTemporalUnit = timeUnit;
+}
 
-Qgis::TemporalUnit QgsMeshDataProviderTemporalCapabilities::temporalUnit() const { return mTemporalUnit; }
+Qgis::TemporalUnit QgsMeshDataProviderTemporalCapabilities::temporalUnit() const
+{
+  return mTemporalUnit;
+}
 
 qint64 QgsMeshDataProviderTemporalCapabilities::datasetTime( const QgsMeshDatasetIndex &index ) const
 {

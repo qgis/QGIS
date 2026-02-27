@@ -26,7 +26,9 @@ QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
   connect(
-    QgsProject::instance(), &QgsProject::readProject, this,
+    QgsProject::instance(),
+    &QgsProject::readProject,
+    this,
     [this] // skip-keyword-check
     {
       beginResetModel();
@@ -67,7 +69,10 @@ QModelIndex QgsLayerTreeFilterProxyModel::index( int row, int column, const QMod
   return createIndex( row, column, newIndex.internalId() );
 }
 
-QModelIndex QgsLayerTreeFilterProxyModel::parent( const QModelIndex &child ) const { return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) ); }
+QModelIndex QgsLayerTreeFilterProxyModel::parent( const QModelIndex &child ) const
+{
+  return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) );
+}
 
 QModelIndex QgsLayerTreeFilterProxyModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
@@ -98,7 +103,10 @@ void QgsLayerTreeFilterProxyModel::setFilterText( const QString &filterText )
   invalidateFilter();
 }
 
-QgsLayerTreeModel *QgsLayerTreeFilterProxyModel::layerTreeModel() const { return mLayerTreeModel; }
+QgsLayerTreeModel *QgsLayerTreeFilterProxyModel::layerTreeModel() const
+{
+  return mLayerTreeModel;
+}
 
 void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
 {
@@ -106,7 +114,10 @@ void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTr
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
-bool QgsLayerTreeFilterProxyModel::showPrivateLayers() const { return mShowPrivateLayers; }
+bool QgsLayerTreeFilterProxyModel::showPrivateLayers() const
+{
+  return mShowPrivateLayers;
+}
 
 void QgsLayerTreeFilterProxyModel::setShowPrivateLayers( bool showPrivate )
 {
@@ -129,7 +140,10 @@ bool QgsLayerTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModel
   return nodeShown( node );
 }
 
-bool QgsLayerTreeFilterProxyModel::isLayerChecked( QgsMapLayer *layer ) const { return mCheckedLayers.contains( layer ); }
+bool QgsLayerTreeFilterProxyModel::isLayerChecked( QgsMapLayer *layer ) const
+{
+  return mCheckedLayers.contains( layer );
+}
 
 void QgsLayerTreeFilterProxyModel::setLayerChecked( QgsMapLayer *layer, bool checked )
 {

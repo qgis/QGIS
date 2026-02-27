@@ -133,10 +133,10 @@ class CORE_EXPORT QgsLayoutObject : public QObject, public QgsExpressionContextG
     }
     else
       sipType = NULL;
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:

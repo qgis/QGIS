@@ -300,7 +300,10 @@ QString QgsGdalProvider::expandAuthConfig( const QString &dsName )
   return uri;
 }
 
-QgsGdalProvider *QgsGdalProvider::clone() const { return new QgsGdalProvider( *this ); }
+QgsGdalProvider *QgsGdalProvider::clone() const
+{
+  return new QgsGdalProvider( *this );
+}
 
 bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset )
 {
@@ -1067,9 +1070,19 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
       sExtraArg.dfXSize = tgtWidth * reqXRes / srcXRes;
       sExtraArg.dfYSize = tgtHeight * reqYRes / -srcYRes;
       return GDALRasterIOEx(
-               gdalBand, GF_Read, static_cast<int>( std::floor( sExtraArg.dfXOff ) ), static_cast<int>( std::floor( sExtraArg.dfYOff ) ),
-               std::max( 1, static_cast<int>( std::floor( sExtraArg.dfXSize ) ) ), std::max( 1, static_cast<int>( std::floor( sExtraArg.dfYSize ) ) ),
-               static_cast<char *>( data ) + ( tgtTop * bufferWidthPix + tgtLeft ) * dataSize, tgtWidth, tgtHeight, type, dataSize, dataSize * bufferWidthPix, &sExtraArg
+               gdalBand,
+               GF_Read,
+               static_cast<int>( std::floor( sExtraArg.dfXOff ) ),
+               static_cast<int>( std::floor( sExtraArg.dfYOff ) ),
+               std::max( 1, static_cast<int>( std::floor( sExtraArg.dfXSize ) ) ),
+               std::max( 1, static_cast<int>( std::floor( sExtraArg.dfYSize ) ) ),
+               static_cast<char *>( data ) + ( tgtTop * bufferWidthPix + tgtLeft ) * dataSize,
+               tgtWidth,
+               tgtHeight,
+               type,
+               dataSize,
+               dataSize * bufferWidthPix,
+               &sExtraArg
              )
              == CE_None;
     }
@@ -1274,7 +1287,10 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNu
   return QgsGdalProviderBase::colorTable( mGdalDataset, bandNumber );
 }
 
-QgsCoordinateReferenceSystem QgsGdalProvider::crs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsGdalProvider::crs() const
+{
+  return mCrs;
+}
 
 QgsRectangle QgsGdalProvider::extent() const
 {
@@ -1285,11 +1301,23 @@ QgsRectangle QgsGdalProvider::extent() const
 
 // this is only called once when statistics are calculated
 // TODO
-int QgsGdalProvider::xBlockSize() const { return mXBlockSize; }
-int QgsGdalProvider::yBlockSize() const { return mYBlockSize; }
+int QgsGdalProvider::xBlockSize() const
+{
+  return mXBlockSize;
+}
+int QgsGdalProvider::yBlockSize() const
+{
+  return mYBlockSize;
+}
 
-int QgsGdalProvider::xSize() const { return mWidth; }
-int QgsGdalProvider::ySize() const { return mHeight; }
+int QgsGdalProvider::xSize() const
+{
+  return mWidth;
+}
+int QgsGdalProvider::ySize() const
+{
+  return mHeight;
+}
 
 QString QgsGdalProvider::generateBandName( int bandNumber ) const
 {
@@ -1373,7 +1401,10 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return generatedBandName;
 }
 
-QgsLayerMetadata QgsGdalProvider::layerMetadata() const { return mLayerMetadata; }
+QgsLayerMetadata QgsGdalProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
@@ -1770,7 +1801,10 @@ double QgsGdalProvider::bandOffset( int bandNo ) const
     return 0.0;
 }
 
-int QgsGdalProvider::bandCount() const { return mBandCount; }
+int QgsGdalProvider::bandCount() const
+{
+  return mBandCount;
+}
 
 Qgis::RasterColorInterpretation QgsGdalProvider::colorInterpretation( int bandNo ) const
 {
@@ -1793,17 +1827,35 @@ bool QgsGdalProvider::isValid() const
   return mValid;
 }
 
-QString QgsGdalProvider::lastErrorTitle() { return u"Not implemented"_s; }
+QString QgsGdalProvider::lastErrorTitle()
+{
+  return u"Not implemented"_s;
+}
 
-QString QgsGdalProvider::lastError() { return u"Not implemented"_s; }
+QString QgsGdalProvider::lastError()
+{
+  return u"Not implemented"_s;
+}
 
-QString QgsGdalProvider::name() const { return PROVIDER_KEY; }
+QString QgsGdalProvider::name() const
+{
+  return PROVIDER_KEY;
+}
 
-QString QgsGdalProvider::providerKey() { return PROVIDER_KEY; };
+QString QgsGdalProvider::providerKey()
+{
+  return PROVIDER_KEY;
+};
 
-QString QgsGdalProvider::description() const { return PROVIDER_DESCRIPTION; }
+QString QgsGdalProvider::description() const
+{
+  return PROVIDER_DESCRIPTION;
+}
 
-Qgis::DataProviderFlags QgsGdalProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsGdalProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
@@ -2121,7 +2173,14 @@ QgsRasterHistogram QgsGdalProvider::histogram(
 
   GUIntBig *myHistogramArray = new GUIntBig[myHistogram.binCount];
   CPLErr myError = GDALGetRasterHistogramEx(
-    myGdalBand, myMinVal, myMaxVal, myHistogram.binCount, myHistogramArray, includeOutOfRange, bApproxOK, progressCallback,
+    myGdalBand,
+    myMinVal,
+    myMaxVal,
+    myHistogram.binCount,
+    myHistogramArray,
+    includeOutOfRange,
+    bApproxOK,
+    progressCallback,
     &myProg
   ); //this is the arg for our custom gdal progress callback
 
@@ -2277,7 +2336,7 @@ QString QgsGdalProvider::buildPyramids(
 #endif
     if ( myRasterPyramidIterator->getBuild() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "adding overview at level %1 to list" ).arg( myRasterPyramidIterator->getLevel() ), 2 );
+      QgsDebugMsgLevel( u"adding overview at level %1 to list"_s.arg( myRasterPyramidIterator->getLevel() ), 2 );
       myOverviewLevelsVector.append( myRasterPyramidIterator->getLevel() );
     }
   }
@@ -2298,7 +2357,7 @@ QString QgsGdalProvider::buildPyramids(
   const char *method = ba.data();
 
   //build the pyramid and show progress to console
-  QgsDebugMsgLevel( QStringLiteral( "Building overviews at %1 levels using resampling method %2" ).arg( myOverviewLevelsVector.size() ).arg( method ), 2 );
+  QgsDebugMsgLevel( u"Building overviews at %1 levels using resampling method %2"_s.arg( myOverviewLevelsVector.size() ).arg( method ), 2 );
   try
   {
     //build the pyramid and show progress to console
@@ -2552,9 +2611,15 @@ QStringList QgsGdalProvider::subLayers() const
   return res;
 }
 
-QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const { return QgsGdalProviderBase::decodeGdalUri( uri ); }
+QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const
+{
+  return QgsGdalProviderBase::decodeGdalUri( uri );
+}
 
-QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const { return QgsGdalProviderBase::encodeGdalUri( parts ); }
+QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  return QgsGdalProviderBase::encodeGdalUri( parts );
+}
 
 
 static bool _parseGpkgColons( const QString &src, QString &filename, QString &tablename )
@@ -4267,7 +4332,10 @@ QgsPoint QgsGdalProvider::transformCoordinates( const QgsPoint &point, QgsRaster
   return QgsPoint( x, y, z );
 }
 
-bool QgsGdalProvider::isEditable() const { return mUpdate; }
+bool QgsGdalProvider::isEditable() const
+{
+  return mUpdate;
+}
 
 bool QgsGdalProvider::setEditable( bool enabled )
 {
@@ -4384,9 +4452,15 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   return methods;
 }
 
-QgsProviderMetadata::ProviderMetadataCapabilities QgsGdalProviderMetadata::capabilities() const { return QuerySublayers; }
+QgsProviderMetadata::ProviderMetadataCapabilities QgsGdalProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const { return FileBasedUris | ParallelCreateProvider; }
+QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris | ParallelCreateProvider;
+}
 
 QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
@@ -4652,9 +4726,15 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   return res;
 }
 
-QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Raster }; }
+QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Raster };
+}
 
-QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const { return { new QgsGdalCloudDataItemProvider() }; }
+QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
+{
+  return { new QgsGdalCloudDataItemProvider() };
+}
 
 int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause )
 {
@@ -4766,6 +4846,9 @@ QgsGdalProviderMetadata::QgsGdalProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsGdalProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s ); }
+QIcon QgsGdalProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s );
+}
 
 ///@endcond

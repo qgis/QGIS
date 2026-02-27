@@ -36,7 +36,10 @@ QgsLayoutGridSettings::QgsLayoutGridSettings( QgsLayout *layout )
   loadFromSettings();
 }
 
-QgsLayout *QgsLayoutGridSettings::layout() { return mLayout; }
+QgsLayout *QgsLayoutGridSettings::layout()
+{
+  return mLayout;
+}
 
 void QgsLayoutGridSettings::setResolution( QgsLayoutMeasurement resolution )
 {

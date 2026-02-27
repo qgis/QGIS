@@ -906,7 +906,10 @@ QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers(
   return layers;
 }
 
-QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeatures( QgsVectorLayer *layer ) const { return mDuplicatedFeatures[layer]; }
+QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeatures( QgsVectorLayer *layer ) const
+{
+  return mDuplicatedFeatures[layer];
+}
 
 void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
@@ -927,9 +930,15 @@ QgsVectorLayerUtils::QgsFeatureData::QgsFeatureData( const QgsGeometry &geometry
   , mAttributes( attributes )
 {}
 
-QgsGeometry QgsVectorLayerUtils::QgsFeatureData::geometry() const { return mGeometry; }
+QgsGeometry QgsVectorLayerUtils::QgsFeatureData::geometry() const
+{
+  return mGeometry;
+}
 
-QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const { return mAttributes; }
+QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
+{
+  return mAttributes;
+}
 
 bool fieldIsEditablePrivate( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() )
 {
@@ -1380,10 +1389,19 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
   static QStringList sCandidates {
-    u"name"_s, u"title"_s, u"heibt"_s, u"desc"_s, u"nom"_s, u"street"_s, u"road"_s, u"label"_s,
+    u"name"_s,
+    u"title"_s,
+    u"heibt"_s,
+    u"desc"_s,
+    u"nom"_s,
+    u"street"_s,
+    u"road"_s,
+    u"label"_s,
     // German candidates
     u"titel"_s, //#spellok
-    u"beschreibung"_s, u"strasse"_s, u"beschriftung"_s
+    u"beschreibung"_s,
+    u"strasse"_s,
+    u"beschriftung"_s
   };
 
   // anti-names
@@ -1392,9 +1410,13 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   // find one called "typename" or "typeid", then that's most likely a classification of the feature and not the
   // best choice to default to
   static QStringList sAntiCandidates {
-    u"type"_s, u"class"_s, u"cat"_s,
+    u"type"_s,
+    u"class"_s,
+    u"cat"_s,
     // German anti-candidates
-    u"typ"_s, u"klasse"_s, u"kategorie"_s
+    u"typ"_s,
+    u"klasse"_s,
+    u"kategorie"_s
   };
 
   QString bestCandidateName;

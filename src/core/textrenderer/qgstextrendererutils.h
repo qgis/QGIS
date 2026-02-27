@@ -155,8 +155,13 @@ class CORE_EXPORT QgsTextRendererUtils
      * \since QGIS 3.20
      */
     static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement(
-      const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1,
-      double maxConvexAngle = -1, Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags()
+      const QgsPrecalculatedTextMetrics &metrics,
+      const QPolygonF &line,
+      double offsetAlongLine,
+      LabelLineDirection direction = RespectPainterOrientation,
+      double maxConcaveAngle = -1,
+      double maxConvexAngle = -1,
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags()
     ) SIP_SKIP;
 
     /**
@@ -179,22 +184,53 @@ class CORE_EXPORT QgsTextRendererUtils
      * \since QGIS 3.20
      */
     static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement(
-      const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine,
-      LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags(),
-      double additionalCharacterSpacing = 0.0, double additionalWordSpacing = 0.0
+      const QgsPrecalculatedTextMetrics &metrics,
+      const double *x,
+      const double *y,
+      int numPoints,
+      const std::vector< double> &pathDistances,
+      double offsetAlongLine,
+      LabelLineDirection direction = RespectPainterOrientation,
+      double maxConcaveAngle = -1,
+      double maxConvexAngle = -1,
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags(),
+      double additionalCharacterSpacing = 0.0,
+      double additionalWordSpacing = 0.0
     ) SIP_SKIP;
 #endif
 
   private:
     static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacementPrivate(
-      const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction,
-      Qgis::CurvedTextFlags flags, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool isSecondAttempt = false, double additionalCharacterSpacing = 0, double additionalWordSpacing = 0
+      const QgsPrecalculatedTextMetrics &metrics,
+      const double *x,
+      const double *y,
+      int numPoints,
+      const std::vector< double> &pathDistances,
+      double offsetAlongLine,
+      LabelLineDirection direction,
+      Qgis::CurvedTextFlags flags,
+      double maxConcaveAngle = -1,
+      double maxConvexAngle = -1,
+      bool isSecondAttempt = false,
+      double additionalCharacterSpacing = 0,
+      double additionalWordSpacing = 0
     ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition(
-      double charWidth, const std::vector< double > &pathDistances, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX,
-      double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags, double additionalSpacing
+      double charWidth,
+      const std::vector< double > &pathDistances,
+      const double *x,
+      const double *y,
+      int numPoints,
+      int &index,
+      double &currentDistanceAlongSegment,
+      double &characterStartX,
+      double &characterStartY,
+      double &characterEndX,
+      double &characterEndY,
+      Qgis::CurvedTextFlags flags,
+      double additionalSpacing
     );
 
     static void findLineCircleIntersection( double cx, double cy, double radius, double x1, double y1, double x2, double y2, double &xRes, double &yRes );

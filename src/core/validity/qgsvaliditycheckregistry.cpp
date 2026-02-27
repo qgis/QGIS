@@ -17,9 +17,13 @@
 
 #include "qgsfeedback.h"
 
-QgsValidityCheckRegistry::QgsValidityCheckRegistry() {}
+QgsValidityCheckRegistry::QgsValidityCheckRegistry()
+{}
 
-QgsValidityCheckRegistry::~QgsValidityCheckRegistry() { qDeleteAll( mChecks ); }
+QgsValidityCheckRegistry::~QgsValidityCheckRegistry()
+{
+  qDeleteAll( mChecks );
+}
 
 QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks() const
 {
@@ -43,7 +47,10 @@ QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks( int ty
   return results;
 }
 
-void QgsValidityCheckRegistry::addCheck( QgsAbstractValidityCheck *check ) { mChecks.append( check ); }
+void QgsValidityCheckRegistry::addCheck( QgsAbstractValidityCheck *check )
+{
+  mChecks.append( check );
+}
 
 void QgsValidityCheckRegistry::removeCheck( QgsAbstractValidityCheck *check )
 {

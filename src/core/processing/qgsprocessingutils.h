@@ -274,7 +274,10 @@ class CORE_EXPORT QgsProcessingUtils
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
     static QgsMapLayer *mapLayerFromString(
-      const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType,
+      const QString &string,
+      QgsProcessingContext &context,
+      bool allowLoadingNewLayers = true,
+      QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType,
       QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
     );
 

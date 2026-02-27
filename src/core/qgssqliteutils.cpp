@@ -34,19 +34,40 @@ using namespace Qt::StringLiterals;
 #include <algorithm>
 // end temporary
 
-void QgsSqlite3Closer::operator()( sqlite3 *database ) const { sqlite3_close_v2( database ); }
+void QgsSqlite3Closer::operator()( sqlite3 *database ) const
+{
+  sqlite3_close_v2( database );
+}
 
-void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement ) const { sqlite3_finalize( statement ); }
+void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement ) const
+{
+  sqlite3_finalize( statement );
+}
 
-int sqlite3_statement_unique_ptr::step() { return sqlite3_step( get() ); }
+int sqlite3_statement_unique_ptr::step()
+{
+  return sqlite3_step( get() );
+}
 
-QString sqlite3_statement_unique_ptr::columnName( int column ) const { return QString::fromUtf8( static_cast<const char *>( sqlite3_column_name( get(), column ) ) ); }
+QString sqlite3_statement_unique_ptr::columnName( int column ) const
+{
+  return QString::fromUtf8( static_cast<const char *>( sqlite3_column_name( get(), column ) ) );
+}
 
-double sqlite3_statement_unique_ptr::columnAsDouble( int column ) const { return sqlite3_column_double( get(), column ); }
+double sqlite3_statement_unique_ptr::columnAsDouble( int column ) const
+{
+  return sqlite3_column_double( get(), column );
+}
 
-int sqlite3_statement_unique_ptr::columnCount() const { return sqlite3_column_count( get() ); }
+int sqlite3_statement_unique_ptr::columnCount() const
+{
+  return sqlite3_column_count( get() );
+}
 
-QString sqlite3_statement_unique_ptr::columnAsText( int column ) const { return QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( get(), column ) ) ); }
+QString sqlite3_statement_unique_ptr::columnAsText( int column ) const
+{
+  return QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( get(), column ) ) );
+}
 
 QByteArray sqlite3_statement_unique_ptr::columnAsBlob( int column ) const
 {
@@ -55,7 +76,10 @@ QByteArray sqlite3_statement_unique_ptr::columnAsBlob( int column ) const
   return QByteArray( reinterpret_cast<const char *>( blob ), size );
 }
 
-qlonglong sqlite3_statement_unique_ptr::columnAsInt64( int column ) const { return sqlite3_column_int64( get(), column ); }
+qlonglong sqlite3_statement_unique_ptr::columnAsInt64( int column ) const
+{
+  return sqlite3_column_int64( get(), column );
+}
 
 int sqlite3_database_unique_ptr::open( const QString &path )
 {
@@ -73,7 +97,10 @@ int sqlite3_database_unique_ptr::open_v2( const QString &path, int flags, const 
   return result;
 }
 
-QString sqlite3_database_unique_ptr::errorMessage() const { return QString( sqlite3_errmsg( get() ) ); }
+QString sqlite3_database_unique_ptr::errorMessage() const
+{
+  return QString( sqlite3_errmsg( get() ) );
+}
 
 sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString &sql, int &resultCode ) const
 {

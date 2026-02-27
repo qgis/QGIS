@@ -17,9 +17,15 @@
 
 #include "qgsprojectstorage.h"
 
-QgsProjectStorageRegistry::~QgsProjectStorageRegistry() { qDeleteAll( mBackends ); }
+QgsProjectStorageRegistry::~QgsProjectStorageRegistry()
+{
+  qDeleteAll( mBackends );
+}
 
-QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromType( const QString &type ) { return mBackends.value( type, nullptr ); }
+QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromType( const QString &type )
+{
+  return mBackends.value( type, nullptr );
+}
 
 QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QString &uri )
 {
@@ -40,8 +46,17 @@ QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QStri
   return nullptr;
 }
 
-QList<QgsProjectStorage *> QgsProjectStorageRegistry::projectStorages() const { return mBackends.values(); }
+QList<QgsProjectStorage *> QgsProjectStorageRegistry::projectStorages() const
+{
+  return mBackends.values();
+}
 
-void QgsProjectStorageRegistry::registerProjectStorage( QgsProjectStorage *storage ) { mBackends.insert( storage->type(), storage ); }
+void QgsProjectStorageRegistry::registerProjectStorage( QgsProjectStorage *storage )
+{
+  mBackends.insert( storage->type(), storage );
+}
 
-void QgsProjectStorageRegistry::unregisterProjectStorage( QgsProjectStorage *storage ) { delete mBackends.take( storage->type() ); }
+void QgsProjectStorageRegistry::unregisterProjectStorage( QgsProjectStorage *storage )
+{
+  delete mBackends.take( storage->type() );
+}

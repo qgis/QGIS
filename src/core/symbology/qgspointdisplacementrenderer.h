@@ -172,8 +172,16 @@ class CORE_EXPORT QgsPointDisplacementRenderer : public QgsPointDistanceRenderer
 
     //helper functions
     void calculateSymbolAndLabelPositions(
-      QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
-      double &gridRadius, int &gridSize, QVector<double> &diagonals
+      QgsSymbolRenderContext &symbolContext,
+      QPointF centerPoint,
+      int nPosition,
+      double symbolDiagonal,
+      QList<QPointF> &symbolPositions,
+      QList<QPointF> &labelShifts,
+      double &circleRadius,
+      double &gridRadius,
+      int &gridSize,
+      QVector<double> &diagonals
     ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols ) const;
     void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions ) const;

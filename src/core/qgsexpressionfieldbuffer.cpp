@@ -23,13 +23,25 @@
 
 using namespace Qt::StringLiterals;
 
-void QgsExpressionFieldBuffer::addExpression( const QString &exp, const QgsField &fld ) { mExpressions << ExpressionField( exp, fld ); }
+void QgsExpressionFieldBuffer::addExpression( const QString &exp, const QgsField &fld )
+{
+  mExpressions << ExpressionField( exp, fld );
+}
 
-void QgsExpressionFieldBuffer::removeExpression( int index ) { mExpressions.removeAt( index ); }
+void QgsExpressionFieldBuffer::removeExpression( int index )
+{
+  mExpressions.removeAt( index );
+}
 
-void QgsExpressionFieldBuffer::renameExpression( int index, const QString &name ) { mExpressions[index].field.setName( name ); }
+void QgsExpressionFieldBuffer::renameExpression( int index, const QString &name )
+{
+  mExpressions[index].field.setName( name );
+}
 
-void QgsExpressionFieldBuffer::updateExpression( int index, const QString &exp ) { mExpressions[index].cachedExpression = QgsExpression( exp ); }
+void QgsExpressionFieldBuffer::updateExpression( int index, const QString &exp )
+{
+  mExpressions[index].cachedExpression = QgsExpression( exp );
+}
 
 void QgsExpressionFieldBuffer::writeXml( QDomNode &layerNode, QDomDocument &document ) const
 {

@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()
-{
-}
+{}
 
 QString QgsClassificationJenks::name() const
 {

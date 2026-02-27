@@ -24,8 +24,7 @@ const QString QgsClassificationCustom::METHOD_ID = u"Custom"_s;
 
 QgsClassificationCustom::QgsClassificationCustom()
   : QgsClassificationMethod( NoFlag, 0 /*codeComplexity*/ )
-{
-}
+{}
 
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationCustom::clone() const

@@ -28,7 +28,8 @@ using namespace Qt::StringLiterals;
 
 // QgsLazInfo
 
-QgsLazInfo::QgsLazInfo() {}
+QgsLazInfo::QgsLazInfo()
+{}
 
 uint32_t QgsLazInfo::firstVariableLengthRecord() const
 {

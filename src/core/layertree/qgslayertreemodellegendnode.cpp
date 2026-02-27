@@ -55,9 +55,15 @@ QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nod
   , mLayerNode( nodeL )
 {}
 
-QgsLayerTreeModel *QgsLayerTreeModelLegendNode::model() const { return qobject_cast<QgsLayerTreeModel *>( parent() ); }
+QgsLayerTreeModel *QgsLayerTreeModelLegendNode::model() const
+{
+  return qobject_cast<QgsLayerTreeModel *>( parent() );
+}
 
-Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const { return Qt::ItemIsEnabled; }
+Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const
+{
+  return Qt::ItemIsEnabled;
+}
 
 bool QgsLayerTreeModelLegendNode::setData( const QVariant &value, int role )
 {
@@ -266,17 +272,30 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
 
     QgsTextRenderer::drawDocument(
-      QRectF( labelXMin * dotsPerMM, std::round( labelYMM * dotsPerMM ), ( labelXMax - labelXMin ) * dotsPerMM, std::max( symbolSizeMM.height(), labelSizeMM.height() ) * dotsPerMM ), format,
-      *document, *metrics, *context, halign, Qgis::TextVerticalAlignment::Top, 0, Qgis::TextLayoutMode::RectangleCapHeightBased
+      QRectF( labelXMin * dotsPerMM, std::round( labelYMM * dotsPerMM ), ( labelXMax - labelXMin ) * dotsPerMM, std::max( symbolSizeMM.height(), labelSizeMM.height() ) * dotsPerMM ),
+      format,
+      *document,
+      *metrics,
+      *context,
+      halign,
+      Qgis::TextVerticalAlignment::Top,
+      0,
+      Qgis::TextLayoutMode::RectangleCapHeightBased
     );
   }
 
   return labelSizeMM;
 }
 
-void QgsLayerTreeModelLegendNode::checkAllItems() { checkAll( true ); }
+void QgsLayerTreeModelLegendNode::checkAllItems()
+{
+  checkAll( true );
+}
 
-void QgsLayerTreeModelLegendNode::uncheckAllItems() { checkAll( false ); }
+void QgsLayerTreeModelLegendNode::uncheckAllItems()
+{
+  checkAll( false );
+}
 
 void QgsLayerTreeModelLegendNode::toggleAllItems()
 {
@@ -408,7 +427,10 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   return minSz;
 }
 
-const QgsSymbol *QgsSymbolLegendNode::symbol() const { return mItem.symbol(); }
+const QgsSymbol *QgsSymbolLegendNode::symbol() const
+{
+  return mItem.symbol();
+}
 
 QString QgsSymbolLegendNode::symbolLabel() const
 {
@@ -436,11 +458,20 @@ QgsLegendPatchShape QgsSymbolLegendNode::patchShape() const
   }
 }
 
-void QgsSymbolLegendNode::setPatchShape( const QgsLegendPatchShape &shape ) { mPatchShape = shape; }
+void QgsSymbolLegendNode::setPatchShape( const QgsLegendPatchShape &shape )
+{
+  mPatchShape = shape;
+}
 
-QgsSymbol *QgsSymbolLegendNode::customSymbol() const { return mCustomSymbol.get(); }
+QgsSymbol *QgsSymbolLegendNode::customSymbol() const
+{
+  return mCustomSymbol.get();
+}
 
-void QgsSymbolLegendNode::setCustomSymbol( QgsSymbol *symbol ) { mCustomSymbol.reset( symbol ); }
+void QgsSymbolLegendNode::setCustomSymbol( QgsSymbol *symbol )
+{
+  mCustomSymbol.reset( symbol );
+}
 
 void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
 {
@@ -1441,7 +1472,10 @@ void QgsWmsLegendNode::invalidateMapBasedData()
   emit dataChanged();
 }
 
-QImage QgsWmsLegendNode::getLegendGraphicBlocking() const { return getLegendGraphic( true ); }
+QImage QgsWmsLegendNode::getLegendGraphicBlocking() const
+{
+  return getLegendGraphic( true );
+}
 
 // -------------------------------------------------------------------------
 
@@ -1450,7 +1484,8 @@ QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *n
   , mSettings( std::make_unique<QgsDataDefinedSizeLegend>( settings ) )
 {}
 
-QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode() {}
+QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode()
+{}
 
 QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
 {
@@ -1546,7 +1581,8 @@ QgsVectorLabelLegendNode::QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer
   , mLabelSettings( labelSettings )
 {}
 
-QgsVectorLabelLegendNode::~QgsVectorLabelLegendNode() {}
+QgsVectorLabelLegendNode::~QgsVectorLabelLegendNode()
+{}
 
 QVariant QgsVectorLabelLegendNode::data( int role ) const
 {

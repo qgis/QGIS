@@ -46,9 +46,15 @@ QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( const QString &type, QgsFeat
   }
 }
 
-void QgsMergedFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { mSubRenderer.reset( subRenderer ); }
+void QgsMergedFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
+{
+  mSubRenderer.reset( subRenderer );
+}
 
-const QgsFeatureRenderer *QgsMergedFeatureRenderer::embeddedRenderer() const { return mSubRenderer.get(); }
+const QgsFeatureRenderer *QgsMergedFeatureRenderer::embeddedRenderer() const
+{
+  return mSubRenderer.get();
+}
 
 void QgsMergedFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
@@ -550,7 +556,10 @@ QSet<QString> QgsMergedFeatureRenderer::usedAttributes( const QgsRenderContext &
   return mSubRenderer->usedAttributes( context );
 }
 
-bool QgsMergedFeatureRenderer::filterNeedsGeometry() const { return mSubRenderer ? mSubRenderer->filterNeedsGeometry() : false; }
+bool QgsMergedFeatureRenderer::filterNeedsGeometry() const
+{
+  return mSubRenderer ? mSubRenderer->filterNeedsGeometry() : false;
+}
 
 QgsLegendSymbolList QgsMergedFeatureRenderer::legendSymbolItems() const
 {

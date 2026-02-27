@@ -92,7 +92,10 @@ __pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
 #endif
 #endif
 
-inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other ) { return other == value.defaultValueClause(); }
+inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other )
+{
+  return other == value.defaultValueClause();
+}
 
 #ifndef SIP_RUN
 #if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
@@ -102,12 +105,21 @@ __pragma( warning( pop ) )
 #endif
 #endif
 
-inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other ) { return other != value.defaultValueClause(); }
+inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other )
+{
+  return other != value.defaultValueClause();
+}
 
 #ifndef SIP_RUN
-inline bool operator==( const QString &other, const QgsUnsetAttributeValue &value ) { return other == value.defaultValueClause(); }
+inline bool operator==( const QString &other, const QgsUnsetAttributeValue &value )
+{
+  return other == value.defaultValueClause();
+}
 
-inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &value ) { return other != value.defaultValueClause(); }
+inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &value )
+{
+  return other != value.defaultValueClause();
+}
 #endif
 
 #endif // QGSUNSETATTRIBUTEVALUE_H

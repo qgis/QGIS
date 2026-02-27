@@ -357,7 +357,8 @@ void Layer::joinConnectedFeatures()
   // Expunge feature parts that are smaller than the minimum size required
   mFeatureParts.erase(
     std::remove_if(
-      mFeatureParts.begin(), mFeatureParts.end(),
+      mFeatureParts.begin(),
+      mFeatureParts.end(),
       []( const std::unique_ptr< FeaturePart > &part ) {
         if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
         {
@@ -370,7 +371,10 @@ void Layer::joinConnectedFeatures()
   );
 }
 
-int Layer::connectedFeatureId( QgsFeatureId featureId ) const { return mConnectedFeaturesIds.value( featureId, -1 ); }
+int Layer::connectedFeatureId( QgsFeatureId featureId ) const
+{
+  return mConnectedFeaturesIds.value( featureId, -1 );
+}
 
 void Layer::chopFeaturesAtRepeatDistance()
 {

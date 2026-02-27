@@ -199,8 +199,11 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      * Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
      */
     QgsSensorThingsExpansionDefinition(
-      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid, const QString &orderBy = QString(), Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT, const QString &filter = QString()
+      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+      const QString &orderBy = QString(),
+      Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+      const QString &filter = QString()
     );
 
     /**

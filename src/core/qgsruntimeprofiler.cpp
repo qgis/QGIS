@@ -118,7 +118,10 @@ QgsRuntimeProfilerNode *QgsRuntimeProfilerNode::childAt( int index )
   return mChildren[index].get();
 }
 
-void QgsRuntimeProfilerNode::clear() { mChildren.clear(); }
+void QgsRuntimeProfilerNode::clear()
+{
+  mChildren.clear();
+}
 
 void QgsRuntimeProfilerNode::removeChildAt( int index )
 {
@@ -126,13 +129,25 @@ void QgsRuntimeProfilerNode::removeChildAt( int index )
   mChildren.erase( mChildren.begin() + index );
 }
 
-void QgsRuntimeProfilerNode::start() { mProfileTime.restart(); }
+void QgsRuntimeProfilerNode::start()
+{
+  mProfileTime.restart();
+}
 
-void QgsRuntimeProfilerNode::stop() { mElapsed = mProfileTime.elapsed() / 1000.0; }
+void QgsRuntimeProfilerNode::stop()
+{
+  mElapsed = mProfileTime.elapsed() / 1000.0;
+}
 
-void QgsRuntimeProfilerNode::setElapsed( double time ) { mElapsed = time; }
+void QgsRuntimeProfilerNode::setElapsed( double time )
+{
+  mElapsed = time;
+}
 
-double QgsRuntimeProfilerNode::elapsed() const { return mElapsed; }
+double QgsRuntimeProfilerNode::elapsed() const
+{
+  return mElapsed;
+}
 
 double QgsRuntimeProfilerNode::totalElapsedTimeForChildren( const QString &group ) const
 {
@@ -169,9 +184,15 @@ QgsRuntimeProfiler *QgsRuntimeProfiler::threadLocalInstance()
   return profiler;
 }
 
-void QgsRuntimeProfiler::beginGroup( const QString &name ) { start( name ); }
+void QgsRuntimeProfiler::beginGroup( const QString &name )
+{
+  start( name );
+}
 
-void QgsRuntimeProfiler::endGroup() { end(); }
+void QgsRuntimeProfiler::endGroup()
+{
+  end();
+}
 
 QStringList QgsRuntimeProfiler::childGroups( const QString &parent, const QString &group ) const
 {
@@ -246,8 +267,11 @@ void QgsRuntimeProfiler::end( const QString &group )
   }
 
   emit ended(
-    group, node->fullParentPath(), node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(),
-    node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(), node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble()
+    group,
+    node->fullParentPath(),
+    node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(),
+    node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(),
+    node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble()
   );
 }
 
@@ -275,8 +299,11 @@ void QgsRuntimeProfiler::record( const QString &name, double time, const QString
   emit started( group, child->fullParentPath(), name, id );
   child->setElapsed( time );
   emit ended(
-    group, child->fullParentPath(), child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(),
-    child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(), child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble()
+    group,
+    child->fullParentPath(),
+    child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(),
+    child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(),
+    child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble()
   );
 
   if ( !mGroups.contains( group ) )
@@ -316,7 +343,10 @@ double QgsRuntimeProfiler::totalTime( const QString &group )
   return 0;
 }
 
-bool QgsRuntimeProfiler::groupIsActive( const QString &group ) const { return !mCurrentStack.value( group ).empty(); }
+bool QgsRuntimeProfiler::groupIsActive( const QString &group ) const
+{
+  return !mCurrentStack.value( group ).empty();
+}
 
 QString QgsRuntimeProfiler::translateGroupName( const QString &group )
 {
@@ -661,7 +691,10 @@ QgsScopedRuntimeProfile::QgsScopedRuntimeProfile( const QString &name, const QSt
   QgsApplication::profiler()->start( name, mGroup, id );
 }
 
-QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile() { QgsApplication::profiler()->end( mGroup ); }
+QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile()
+{
+  QgsApplication::profiler()->end( mGroup );
+}
 
 void QgsScopedRuntimeProfile::switchTask( const QString &name )
 {

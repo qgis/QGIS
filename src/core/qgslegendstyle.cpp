@@ -31,7 +31,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLegendStyle::QgsLegendStyle() {}
+QgsLegendStyle::QgsLegendStyle()
+{}
 
 void QgsLegendStyle::setFont( const QFont &font )
 {

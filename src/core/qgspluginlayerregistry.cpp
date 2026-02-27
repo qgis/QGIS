@@ -30,9 +30,15 @@ QgsPluginLayerType::QgsPluginLayerType( const QString &name )
   : mName( name )
 {}
 
-QString QgsPluginLayerType::name() const { return mName; }
+QString QgsPluginLayerType::name() const
+{
+  return mName;
+}
 
-QgsPluginLayer *QgsPluginLayerType::createLayer() { return nullptr; }
+QgsPluginLayer *QgsPluginLayerType::createLayer()
+{
+  return nullptr;
+}
 
 QgsPluginLayer *QgsPluginLayerType::createLayer( const QString &uri )
 {
@@ -63,7 +69,10 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
   }
 }
 
-QStringList QgsPluginLayerRegistry::pluginLayerTypes() { return mPluginLayerTypes.keys(); }
+QStringList QgsPluginLayerRegistry::pluginLayerTypes()
+{
+  return mPluginLayerTypes.keys();
+}
 
 bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType *type )
 {
@@ -103,7 +112,10 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
   return true;
 }
 
-QgsPluginLayerType *QgsPluginLayerRegistry::pluginLayerType( const QString &typeName ) { return mPluginLayerTypes.value( typeName, nullptr ); }
+QgsPluginLayerType *QgsPluginLayerRegistry::pluginLayerType( const QString &typeName )
+{
+  return mPluginLayerTypes.value( typeName, nullptr );
+}
 
 
 QgsPluginLayer *QgsPluginLayerRegistry::createLayer( const QString &typeName, const QString &uri )

@@ -305,7 +305,10 @@ QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ
   return turl;
 }
 
-bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url ) { return url.contains( u"{x}"_s ) && ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) && url.contains( u"{z}"_s ); }
+bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
+{
+  return url.contains( u"{x}"_s ) && ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) && url.contains( u"{z}"_s );
+}
 
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest

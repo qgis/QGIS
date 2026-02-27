@@ -314,8 +314,14 @@ Returns an icon preview for a color ramp.
 %End
 
     static QPixmap symbolPreviewPixmap(
-      const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
-      const QgsLegendPatchShape *shape = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+      const QgsSymbol *symbol,
+      QSize size,
+      int padding = 0,
+      QgsRenderContext *customContext = 0,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = 0,
+      const QgsLegendPatchShape *shape = 0,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 %Docstring
 Returns a pixmap preview for a color ramp.
@@ -358,8 +364,13 @@ Draws a symbol layer preview to a QPicture
 %End
 
     static QIcon symbolLayerPreviewIcon(
-      const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
-      QgsMapLayer *mapLayer = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+      const QgsSymbolLayer *layer,
+      Qgis::RenderUnit u,
+      QSize size,
+      const QgsMapUnitScale &scale = QgsMapUnitScale(),
+      Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
+      QgsMapLayer *mapLayer = 0,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 %Docstring
 Draws a symbol layer preview to an icon.
@@ -566,8 +577,14 @@ Exports fill details to an SLD element.
     static bool fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color );
 
     static bool lineFromSld(
-      QDomElement &element, Qt::PenStyle &penStyle, QColor &color, double &width, Qt::PenJoinStyle *penJoinStyle = 0, Qt::PenCapStyle *penCapStyle = 0,
-      QVector<qreal> *customDashPattern = 0, double *dashOffset = 0
+      QDomElement &element,
+      Qt::PenStyle &penStyle,
+      QColor &color,
+      double &width,
+      Qt::PenJoinStyle *penJoinStyle = 0,
+      Qt::PenCapStyle *penCapStyle = 0,
+      QVector<qreal> *customDashPattern = 0,
+      double *dashOffset = 0
     );
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element, const QString &path, const QString &mime, const QColor &color, double size = -1 );
@@ -585,7 +602,14 @@ Exports a marker to SLD
 %End
 
     static void wellKnownMarkerToSld(
-      QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, QgsSldExportContext &context, double strokeWidth = -1,
+      QDomDocument &doc,
+      QDomElement &element,
+      const QString &name,
+      const QColor &color,
+      const QColor &strokeColor,
+      Qt::PenStyle strokeStyle,
+      QgsSldExportContext &context,
+      double strokeWidth = -1,
       double size = -1
     );
 %Docstring
@@ -638,7 +662,13 @@ Exports label text to SLD
 %End
 
     static QString ogrFeatureStylePen(
-      double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor &c, Qt::PenJoinStyle joinStyle = Qt::MiterJoin, Qt::PenCapStyle capStyle = Qt::FlatCap, double offset = 0.0,
+      double width,
+      double mmScaleFactor,
+      double mapUnitsScaleFactor,
+      const QColor &c,
+      Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+      Qt::PenCapStyle capStyle = Qt::FlatCap,
+      double offset = 0.0,
       const QVector<qreal> *dashPattern = 0
     );
 %Docstring

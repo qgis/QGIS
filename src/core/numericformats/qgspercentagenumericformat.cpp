@@ -22,13 +22,23 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPercentageNumericFormat::QgsPercentageNumericFormat() {}
+QgsPercentageNumericFormat::QgsPercentageNumericFormat()
+{}
 
-QString QgsPercentageNumericFormat::id() const { return u"percentage"_s; }
+QString QgsPercentageNumericFormat::id() const
+{
+  return u"percentage"_s;
+}
 
-QString QgsPercentageNumericFormat::visibleName() const { return QObject::tr( "Percentage" ); }
+QString QgsPercentageNumericFormat::visibleName() const
+{
+  return QObject::tr( "Percentage" );
+}
 
-int QgsPercentageNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
+int QgsPercentageNumericFormat::sortKey()
+{
+  return DEFAULT_SORT_KEY;
+}
 
 double QgsPercentageNumericFormat::suggestSampleValue() const
 {
@@ -58,7 +68,10 @@ QString QgsPercentageNumericFormat::formatDouble( double value, const QgsNumeric
   return QgsBasicNumericFormat::formatDouble( value, context ) + context.percent();
 }
 
-QgsNumericFormat *QgsPercentageNumericFormat::clone() const { return new QgsPercentageNumericFormat( *this ); }
+QgsNumericFormat *QgsPercentageNumericFormat::clone() const
+{
+  return new QgsPercentageNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -76,6 +89,12 @@ QVariantMap QgsPercentageNumericFormat::configuration( const QgsReadWriteContext
   return res;
 }
 
-QgsPercentageNumericFormat::InputValues QgsPercentageNumericFormat::inputValues() const { return mInputValues; }
+QgsPercentageNumericFormat::InputValues QgsPercentageNumericFormat::inputValues() const
+{
+  return mInputValues;
+}
 
-void QgsPercentageNumericFormat::setInputValues( InputValues inputValues ) { mInputValues = inputValues; }
+void QgsPercentageNumericFormat::setInputValues( InputValues inputValues )
+{
+  mInputValues = inputValues;
+}

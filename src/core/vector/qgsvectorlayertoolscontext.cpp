@@ -65,7 +65,10 @@ void QgsVectorLayerToolsContext::setExpressionContext( const QgsExpressionContex
     mExpressionContext.reset();
 }
 
-QgsExpressionContext *QgsVectorLayerToolsContext::expressionContext() const { return mExpressionContext.get(); }
+QgsExpressionContext *QgsVectorLayerToolsContext::expressionContext() const
+{
+  return mExpressionContext.get();
+}
 
 void QgsVectorLayerToolsContext::setAdditionalExpressionContextScope( const QgsExpressionContextScope *scope )
 {
@@ -75,4 +78,7 @@ void QgsVectorLayerToolsContext::setAdditionalExpressionContextScope( const QgsE
     mAdditionalExpressionContextScope.reset();
 }
 
-const QgsExpressionContextScope *QgsVectorLayerToolsContext::additionalExpressionContextScope() const { return mAdditionalExpressionContextScope.get(); }
+const QgsExpressionContextScope *QgsVectorLayerToolsContext::additionalExpressionContextScope() const
+{
+  return mAdditionalExpressionContextScope.get();
+}

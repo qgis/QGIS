@@ -483,7 +483,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          * parameter \a source, and \a description.
          */
         VariableDefinition(
-          const QVariant &value = QVariant(), const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ),
+          const QVariant &value = QVariant(),
+          const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ),
           const QString &description = QString()
         )
           : value( value )
@@ -640,7 +641,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;
 
     QVariantMap parametersForChildAlgorithm(
-      const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error,
+      const QgsProcessingModelChildAlgorithm &child,
+      const QVariantMap &modelParameters,
+      const QVariantMap &results,
+      const QgsExpressionContext &expressionContext,
+      QString &error,
       const QgsProcessingContext *context = nullptr
     ) const;
 

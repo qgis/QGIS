@@ -27,7 +27,10 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsRangeFieldFormatter::id() const { return u"Range"_s; }
+QString QgsRangeFieldFormatter::id() const
+{
+  return u"Range"_s;
+}
 
 QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {

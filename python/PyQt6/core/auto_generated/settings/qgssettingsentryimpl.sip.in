@@ -121,8 +121,13 @@ typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStrin
 %End
   public:
     QgsSettingsEntryString(
-      const QString &name, QgsSettingsTreeNode *parent, const QString &defaultValue = QString(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      int minLength = 0, int maxLength = -1
+      const QString &name,
+      QgsSettingsTreeNode *parent,
+      const QString &defaultValue = QString(),
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minLength = 0,
+      int maxLength = -1
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryString.
@@ -140,8 +145,13 @@ Constructor for QgsSettingsEntryString.
 
   private:
     QgsSettingsEntryString(
-      const QString &key, const QString &section, const QString &defaultValue = QString(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      int minLength = 0, int maxLength = -1
+      const QString &key,
+      const QString &section,
+      const QString &defaultValue = QString(),
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minLength = 0,
+      int maxLength = -1
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryString.
@@ -365,8 +375,13 @@ typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
 %End
   public:
     QgsSettingsEntryInteger(
-      const QString &name, QgsSettingsTreeNode *parent, int defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      int minValue = INT_MIN, int maxValue = INT_MAX
+      const QString &name,
+      QgsSettingsTreeNode *parent,
+      int defaultValue = 0,
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minValue = INT_MIN,
+      int maxValue = INT_MAX
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
@@ -382,8 +397,13 @@ Constructor for QgsSettingsEntryInteger.
 
   private:
     QgsSettingsEntryInteger(
-      const QString &key, const QString &section, int defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      int minValue = INT_MIN, int maxValue = INT_MAX
+      const QString &key,
+      const QString &section,
+      int defaultValue = 0,
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minValue = INT_MIN,
+      int maxValue = INT_MAX
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
@@ -461,8 +481,14 @@ typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleB
 %End
   public:
     QgsSettingsEntryDouble(
-      const QString &name, QgsSettingsTreeNode *parent, double defaultValue = 0.0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      double minValue = -DBL_MAX, double maxValue = DBL_MAX, int displayDecimals = 1
+      const QString &name,
+      QgsSettingsTreeNode *parent,
+      double defaultValue = 0.0,
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      double minValue = -DBL_MAX,
+      double maxValue = DBL_MAX,
+      int displayDecimals = 1
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryDouble.
@@ -481,8 +507,14 @@ Constructor for QgsSettingsEntryDouble.
 
   private:
     QgsSettingsEntryDouble(
-      const QString &key, const QString &section, double defaultValue = 0.0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      double minValue = -DBL_MAX, double maxValue = DBL_MAX, int displayDecimals = 1
+      const QString &key,
+      const QString &section,
+      double defaultValue = 0.0,
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      double minValue = -DBL_MAX,
+      double maxValue = DBL_MAX,
+      int displayDecimals = 1
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryDouble.
@@ -580,7 +612,11 @@ typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorB
 %End
   public:
     QgsSettingsEntryColor(
-      const QString &name, QgsSettingsTreeNode *parent, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      const QString &name,
+      QgsSettingsTreeNode *parent,
+      const QColor &defaultValue = QColor(),
+      const QString &description = QString(),
+      Qgis::SettingsOptions options = Qgis::SettingsOptions(),
       bool allowAlpha = true
     )  /Transfer/;
 %Docstring
@@ -596,8 +632,7 @@ Constructor for QgsSettingsEntryColor.
 
   private:
     QgsSettingsEntryColor(
-      const QString &key, const QString &section, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-      bool allowAlpha = true
+      const QString &key, const QString &section, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(), bool allowAlpha = true
     )  /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryColor.

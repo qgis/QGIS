@@ -24,7 +24,10 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsOgrLayerMetadataProvider::id() const { return u"ogr"_s; }
+QString QgsOgrLayerMetadataProvider::id() const
+{
+  return u"ogr"_s;
+}
 
 QgsLayerMetadataSearchResults QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {

@@ -26,7 +26,8 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 
-void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * ) {}
+void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * )
+{}
 
 QgsAbstractTerrainProvider::QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other )
   : mScale( other.mScale )
@@ -49,7 +50,10 @@ void QgsAbstractTerrainProvider::readCommonProperties( const QDomElement &elemen
 // QgsFlatTerrainProvider
 //
 
-QString QgsFlatTerrainProvider::type() const { return u"flat"_s; }
+QString QgsFlatTerrainProvider::type() const
+{
+  return u"flat"_s;
+}
 
 bool QgsFlatTerrainProvider::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -68,11 +72,20 @@ QDomElement QgsFlatTerrainProvider::writeXml( QDomDocument &document, const QgsR
   return element;
 }
 
-QgsCoordinateReferenceSystem QgsFlatTerrainProvider::crs() const { return QgsCoordinateReferenceSystem(); }
+QgsCoordinateReferenceSystem QgsFlatTerrainProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
 
-double QgsFlatTerrainProvider::heightAt( double, double ) const { return mOffset; }
+double QgsFlatTerrainProvider::heightAt( double, double ) const
+{
+  return mOffset;
+}
 
-QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const { return new QgsFlatTerrainProvider( *this ); }
+QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
+{
+  return new QgsFlatTerrainProvider( *this );
+}
 
 void QgsFlatTerrainProvider::prepare()
 {
@@ -94,7 +107,10 @@ bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
 //  QgsRasterDemTerrainProvider
 //
 
-QString QgsRasterDemTerrainProvider::type() const { return u"raster"_s; }
+QString QgsRasterDemTerrainProvider::type() const
+{
+  return u"raster"_s;
+}
 
 void QgsRasterDemTerrainProvider::resolveReferences( const QgsProject *project )
 {
@@ -135,7 +151,10 @@ QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const
   return element;
 }
 
-QgsCoordinateReferenceSystem QgsRasterDemTerrainProvider::crs() const { return mRasterProvider ? mRasterProvider->crs() : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() ); }
+QgsCoordinateReferenceSystem QgsRasterDemTerrainProvider::crs() const
+{
+  return mRasterProvider ? mRasterProvider->crs() : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
+}
 
 double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
 {
@@ -158,7 +177,10 @@ double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const { return new QgsRasterDemTerrainProvider( *this ); }
+QgsRasterDemTerrainProvider *QgsRasterDemTerrainProvider::clone() const
+{
+  return new QgsRasterDemTerrainProvider( *this );
+}
 
 bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
 {
@@ -180,9 +202,15 @@ void QgsRasterDemTerrainProvider::prepare()
     mRasterProvider.reset( mRasterLayer->dataProvider()->clone() );
 }
 
-void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer ) { mRasterLayer.setLayer( layer ); }
+void QgsRasterDemTerrainProvider::setLayer( QgsRasterLayer *layer )
+{
+  mRasterLayer.setLayer( layer );
+}
 
-QgsRasterLayer *QgsRasterDemTerrainProvider::layer() const { return mRasterLayer.get(); }
+QgsRasterLayer *QgsRasterDemTerrainProvider::layer() const
+{
+  return mRasterLayer.get();
+}
 
 QgsRasterDemTerrainProvider::QgsRasterDemTerrainProvider( const QgsRasterDemTerrainProvider &other )
   : QgsAbstractTerrainProvider( other )
@@ -195,7 +223,10 @@ QgsRasterDemTerrainProvider::QgsRasterDemTerrainProvider( const QgsRasterDemTerr
 // QgsMeshTerrainProvider
 //
 
-QString QgsMeshTerrainProvider::type() const { return u"mesh"_s; }
+QString QgsMeshTerrainProvider::type() const
+{
+  return u"mesh"_s;
+}
 
 void QgsMeshTerrainProvider::resolveReferences( const QgsProject *project )
 {
@@ -236,7 +267,10 @@ QDomElement QgsMeshTerrainProvider::writeXml( QDomDocument &document, const QgsR
   return element;
 }
 
-QgsCoordinateReferenceSystem QgsMeshTerrainProvider::crs() const { return mMeshLayer ? mMeshLayer->crs() : QgsCoordinateReferenceSystem(); }
+QgsCoordinateReferenceSystem QgsMeshTerrainProvider::crs() const
+{
+  return mMeshLayer ? mMeshLayer->crs() : QgsCoordinateReferenceSystem();
+}
 
 double QgsMeshTerrainProvider::heightAt( double x, double y ) const
 {
@@ -246,7 +280,10 @@ double QgsMeshTerrainProvider::heightAt( double x, double y ) const
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
 }
 
-QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const { return new QgsMeshTerrainProvider( *this ); }
+QgsMeshTerrainProvider *QgsMeshTerrainProvider::clone() const
+{
+  return new QgsMeshTerrainProvider( *this );
+}
 
 bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
 {
@@ -270,9 +307,15 @@ void QgsMeshTerrainProvider::prepare()
   }
 }
 
-void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer ) { mMeshLayer.setLayer( layer ); }
+void QgsMeshTerrainProvider::setLayer( QgsMeshLayer *layer )
+{
+  mMeshLayer.setLayer( layer );
+}
 
-QgsMeshLayer *QgsMeshTerrainProvider::layer() const { return mMeshLayer.get(); }
+QgsMeshLayer *QgsMeshTerrainProvider::layer() const
+{
+  return mMeshLayer.get();
+}
 
 QgsMeshTerrainProvider::QgsMeshTerrainProvider( const QgsMeshTerrainProvider &other )
   : QgsAbstractTerrainProvider( other )

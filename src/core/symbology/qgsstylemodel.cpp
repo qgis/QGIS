@@ -46,13 +46,25 @@ QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObjec
   : QObject( parent )
 {}
 
-void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes ) { mIconSizes = sizes; }
+void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
+{
+  mIconSizes = sizes;
+}
 
-QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const { return mIconSizes; }
+QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
+{
+  return mIconSizes;
+}
 
-void QgsAbstractStyleEntityIconGenerator::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties ) { mTargetScreenProperties = properties; }
+void QgsAbstractStyleEntityIconGenerator::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties )
+{
+  mTargetScreenProperties = properties;
+}
 
-QSet<QgsScreenProperties> QgsAbstractStyleEntityIconGenerator::targetScreenProperties() const { return mTargetScreenProperties; }
+QSet<QgsScreenProperties> QgsAbstractStyleEntityIconGenerator::targetScreenProperties() const
+{
+  return mTargetScreenProperties;
+}
 
 
 //
@@ -562,7 +574,10 @@ Qt::ItemFlags QgsStyleModel::flags( const QModelIndex &index ) const
   }
 }
 
-QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const { return headerDataStatic( section, orientation, role ); }
+QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  return headerDataStatic( section, orientation, role );
+}
 
 QVariant QgsStyleModel::headerDataStatic( int section, Qt::Orientation orientation, int role )
 {
@@ -624,7 +639,10 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
   return 0;
 }
 
-int QgsStyleModel::columnCount( const QModelIndex & ) const { return 2; }
+int QgsStyleModel::columnCount( const QModelIndex & ) const
+{
+  return 2;
+}
 
 void QgsStyleModel::addDesiredIconSize( QSize size )
 {
@@ -989,7 +1007,10 @@ void QgsStyleProxyModel::setFilterString( const QString &filter )
 }
 
 
-bool QgsStyleProxyModel::favoritesOnly() const { return mFavoritesOnly; }
+bool QgsStyleProxyModel::favoritesOnly() const
+{
+  return mFavoritesOnly;
+}
 
 void QgsStyleProxyModel::setFavoritesOnly( bool favoritesOnly )
 {
@@ -1013,7 +1034,10 @@ void QgsStyleProxyModel::addTargetScreenProperties( const QgsScreenProperties &p
     mCombinedModel->addTargetScreenProperties( properties );
 }
 
-bool QgsStyleProxyModel::symbolTypeFilterEnabled() const { return mSymbolTypeFilterEnabled; }
+bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
+{
+  return mSymbolTypeFilterEnabled;
+}
 
 void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
 {
@@ -1021,7 +1045,10 @@ void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
   invalidateFilter();
 }
 
-Qgis::GeometryType QgsStyleProxyModel::layerType() const { return mLayerType; }
+Qgis::GeometryType QgsStyleProxyModel::layerType() const
+{
+  return mLayerType;
+}
 
 void QgsStyleProxyModel::setLayerType( Qgis::GeometryType type )
 {
@@ -1045,7 +1072,10 @@ void QgsStyleProxyModel::setTagId( int id )
   invalidateFilter();
 }
 
-int QgsStyleProxyModel::tagId() const { return mTagId; }
+int QgsStyleProxyModel::tagId() const
+{
+  return mTagId;
+}
 
 void QgsStyleProxyModel::setTagString( const QString &tag )
 {
@@ -1054,7 +1084,10 @@ void QgsStyleProxyModel::setTagString( const QString &tag )
   invalidateFilter();
 }
 
-QString QgsStyleProxyModel::tagString() const { return mTagFilter; }
+QString QgsStyleProxyModel::tagString() const
+{
+  return mTagFilter;
+}
 
 void QgsStyleProxyModel::setSmartGroupId( int id )
 {
@@ -1073,9 +1106,15 @@ void QgsStyleProxyModel::setSmartGroupId( int id )
   invalidateFilter();
 }
 
-int QgsStyleProxyModel::smartGroupId() const { return mSmartGroupId; }
+int QgsStyleProxyModel::smartGroupId() const
+{
+  return mSmartGroupId;
+}
 
-Qgis::SymbolType QgsStyleProxyModel::symbolType() const { return mSymbolType; }
+Qgis::SymbolType QgsStyleProxyModel::symbolType() const
+{
+  return mSymbolType;
+}
 
 void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
 {
@@ -1083,7 +1122,10 @@ void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
   invalidateFilter();
 }
 
-bool QgsStyleProxyModel::entityFilterEnabled() const { return mEntityFilterEnabled; }
+bool QgsStyleProxyModel::entityFilterEnabled() const
+{
+  return mEntityFilterEnabled;
+}
 
 void QgsStyleProxyModel::setEntityFilterEnabled( bool entityFilterEnabled )
 {
@@ -1091,7 +1133,10 @@ void QgsStyleProxyModel::setEntityFilterEnabled( bool entityFilterEnabled )
   invalidateFilter();
 }
 
-QgsStyle::StyleEntity QgsStyleProxyModel::entityFilter() const { return mEntityFilters.empty() ? QgsStyle::SymbolEntity : mEntityFilters.at( 0 ); }
+QgsStyle::StyleEntity QgsStyleProxyModel::entityFilter() const
+{
+  return mEntityFilters.empty() ? QgsStyle::SymbolEntity : mEntityFilters.at( 0 );
+}
 
 void QgsStyleProxyModel::setEntityFilter( const QgsStyle::StyleEntity entityFilter )
 {

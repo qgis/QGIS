@@ -26,7 +26,10 @@ QgsStacCollection::QgsStacCollection( const QString &id, const QString &version,
   , mExtent( extent )
 {}
 
-Qgis::StacObjectType QgsStacCollection::type() const { return Qgis::StacObjectType::Collection; }
+Qgis::StacObjectType QgsStacCollection::type() const
+{
+  return Qgis::StacObjectType::Collection;
+}
 
 QString QgsStacCollection::toHtml() const
 {
@@ -172,26 +175,62 @@ QString QgsStacCollection::toHtml() const
   return html;
 }
 
-QStringList QgsStacCollection::keywords() const { return mKeywords; }
+QStringList QgsStacCollection::keywords() const
+{
+  return mKeywords;
+}
 
-void QgsStacCollection::setKeywords( const QStringList &keywords ) { mKeywords = keywords; }
+void QgsStacCollection::setKeywords( const QStringList &keywords )
+{
+  mKeywords = keywords;
+}
 
-QString QgsStacCollection::license() const { return mLicense; }
+QString QgsStacCollection::license() const
+{
+  return mLicense;
+}
 
-void QgsStacCollection::setLicense( const QString &license ) { mLicense = license; }
+void QgsStacCollection::setLicense( const QString &license )
+{
+  mLicense = license;
+}
 
-QVector<QgsStacProvider> QgsStacCollection::providers() const { return mProviders; }
+QVector<QgsStacProvider> QgsStacCollection::providers() const
+{
+  return mProviders;
+}
 
-void QgsStacCollection::setProviders( const QVector<QgsStacProvider> &providers ) { mProviders = providers; }
+void QgsStacCollection::setProviders( const QVector<QgsStacProvider> &providers )
+{
+  mProviders = providers;
+}
 
-QgsStacExtent QgsStacCollection::extent() const { return mExtent; }
+QgsStacExtent QgsStacCollection::extent() const
+{
+  return mExtent;
+}
 
-void QgsStacCollection::setExtent( const QgsStacExtent &extent ) { mExtent = extent; }
+void QgsStacCollection::setExtent( const QgsStacExtent &extent )
+{
+  mExtent = extent;
+}
 
-QVariantMap QgsStacCollection::summaries() const { return mSummaries; }
+QVariantMap QgsStacCollection::summaries() const
+{
+  return mSummaries;
+}
 
-void QgsStacCollection::setSummaries( const QVariantMap &summaries ) { mSummaries = summaries; }
+void QgsStacCollection::setSummaries( const QVariantMap &summaries )
+{
+  mSummaries = summaries;
+}
 
-QMap<QString, QgsStacAsset> QgsStacCollection::assets() const { return mAssets; }
+QMap<QString, QgsStacAsset> QgsStacCollection::assets() const
+{
+  return mAssets;
+}
 
-void QgsStacCollection::setAssets( const QMap<QString, QgsStacAsset> &assets ) { mAssets = assets; }
+void QgsStacCollection::setAssets( const QMap<QString, QgsStacAsset> &assets )
+{
+  mAssets = assets;
+}

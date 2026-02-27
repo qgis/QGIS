@@ -91,8 +91,17 @@ void QgsNetworkContentFetcherTask::cancel()
   QgsTask::cancel();
 }
 
-QNetworkReply *QgsNetworkContentFetcherTask::reply() { return mFetcher ? mFetcher->reply() : nullptr; }
+QNetworkReply *QgsNetworkContentFetcherTask::reply()
+{
+  return mFetcher ? mFetcher->reply() : nullptr;
+}
 
-QString QgsNetworkContentFetcherTask::contentDispositionFilename() const { return mFetcher ? mFetcher->contentDispositionFilename() : QString(); }
+QString QgsNetworkContentFetcherTask::contentDispositionFilename() const
+{
+  return mFetcher ? mFetcher->contentDispositionFilename() : QString();
+}
 
-QString QgsNetworkContentFetcherTask::contentAsString() const { return mFetcher ? mFetcher->contentAsString() : QString(); }
+QString QgsNetworkContentFetcherTask::contentAsString() const
+{
+  return mFetcher ? mFetcher->contentAsString() : QString();
+}

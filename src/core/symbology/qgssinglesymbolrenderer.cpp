@@ -57,7 +57,10 @@ Qgis::FeatureRendererFlags QgsSingleSymbolRenderer::flags() const
 
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer() = default;
 
-QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const { return mSymbol.get(); }
+QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
+{
+  return mSymbol.get();
+}
 
 QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
@@ -104,7 +107,10 @@ bool QgsSingleSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) 
   return true;
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::symbol() const { return mSymbol.get(); }
+QgsSymbol *QgsSingleSymbolRenderer::symbol() const
+{
+  return mSymbol.get();
+}
 
 void QgsSingleSymbolRenderer::setSymbol( QgsSymbol *s )
 {
@@ -112,7 +118,10 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol *s )
   mSymbol.reset( s );
 }
 
-QString QgsSingleSymbolRenderer::dump() const { return mSymbol ? u"SINGLE: %1"_s.arg( mSymbol->dump() ) : QString(); }
+QString QgsSingleSymbolRenderer::dump() const
+{
+  return mSymbol ? u"SINGLE: %1"_s.arg( mSymbol->dump() ) : QString();
+}
 
 QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
@@ -398,6 +407,12 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
   return r;
 }
 
-void QgsSingleSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings ) { mDataDefinedSizeLegend.reset( settings ); }
+void QgsSingleSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegend.reset( settings );
+}
 
-QgsDataDefinedSizeLegend *QgsSingleSymbolRenderer::dataDefinedSizeLegend() const { return mDataDefinedSizeLegend.get(); }
+QgsDataDefinedSizeLegend *QgsSingleSymbolRenderer::dataDefinedSizeLegend() const
+{
+  return mDataDefinedSizeLegend.get();
+}

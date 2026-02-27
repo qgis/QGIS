@@ -195,8 +195,14 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
 
     //! Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
-      const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth, const QColor &lineStrokeColor, double lineStrokeWidth, const QColor &pointFillColor,
-      const QColor &pointStrokeColor, double pointSize
+      const QColor &polygonFillColor,
+      const QColor &polygonStrokeColor,
+      double polygonStrokeWidth,
+      const QColor &lineStrokeColor,
+      double lineStrokeWidth,
+      const QColor &pointFillColor,
+      const QColor &pointStrokeColor,
+      double pointSize
     );
 
     //! Returns a list of styles to render all layers, using random colors

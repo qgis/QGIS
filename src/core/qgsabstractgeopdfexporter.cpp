@@ -153,7 +153,10 @@ bool QgsAbstractGeospatialPdfExporter::finalize( const QList<ComponentLayerDetai
   return res;
 }
 
-QString QgsAbstractGeospatialPdfExporter::generateTemporaryFilepath( const QString &filename ) const { return mTemporaryDir.filePath( QgsFileUtils::stringToSafeFilename( filename ) ); }
+QString QgsAbstractGeospatialPdfExporter::generateTemporaryFilepath( const QString &filename ) const
+{
+  return mTemporaryDir.filePath( QgsFileUtils::stringToSafeFilename( filename ) );
+}
 
 bool QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
 {

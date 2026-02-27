@@ -45,7 +45,10 @@ using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 
-QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point ) { return QgsSymbol::_getPoint( context, point ); }
+QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
+{
+  return QgsSymbol::_getPoint( context, point );
+}
 
 void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) const
 {
@@ -70,7 +73,8 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   mPaintEffect->setEnabled( false );
 }
 
-QgsFeatureRenderer::~QgsFeatureRenderer() {}
+QgsFeatureRenderer::~QgsFeatureRenderer()
+{}
 
 const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
 {
@@ -78,9 +82,15 @@ const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType ) { return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) ); }
+QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType )
+{
+  return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
+}
 
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return symbolForFeature( feature, context ); }
+QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return symbolForFeature( feature, context );
+}
 
 QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
@@ -105,7 +115,10 @@ void QgsFeatureRenderer::startRender( QgsRenderContext &context, const QgsFields
   mDataDefinedProperties.prepare( context.expressionContext() );
 }
 
-bool QgsFeatureRenderer::canSkipRender() { return false; }
+bool QgsFeatureRenderer::canSkipRender()
+{
+  return false;
+}
 
 void QgsFeatureRenderer::stopRender( QgsRenderContext & )
 {
@@ -114,9 +127,15 @@ void QgsFeatureRenderer::stopRender( QgsRenderContext & )
 #endif
 }
 
-bool QgsFeatureRenderer::usesEmbeddedSymbols() const { return false; }
+bool QgsFeatureRenderer::usesEmbeddedSymbols() const
+{
+  return false;
+}
 
-bool QgsFeatureRenderer::filterNeedsGeometry() const { return false; }
+bool QgsFeatureRenderer::filterNeedsGeometry() const
+{
+  return false;
+}
 
 bool QgsFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
@@ -137,9 +156,15 @@ void QgsFeatureRenderer::renderFeatureWithSymbol( const QgsFeature &feature, Qgs
   symbol->renderFeature( feature, context, layer, selected, drawVertexMarker, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
 }
 
-QString QgsFeatureRenderer::dump() const { return u"UNKNOWN RENDERER\n"_s; }
+QString QgsFeatureRenderer::dump() const
+{
+  return u"UNKNOWN RENDERER\n"_s;
+}
 
-Qgis::FeatureRendererFlags QgsFeatureRenderer::flags() const { return Qgis::FeatureRendererFlags(); }
+Qgis::FeatureRendererFlags QgsFeatureRenderer::flags() const
+{
+  return Qgis::FeatureRendererFlags();
+}
 
 QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
 {
@@ -373,7 +398,10 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styl
   return userStyleElem;
 }
 
-bool QgsFeatureRenderer::legendSymbolItemsCheckable() const { return false; }
+bool QgsFeatureRenderer::legendSymbolItemsCheckable() const
+{
+  return false;
+}
 
 bool QgsFeatureRenderer::legendSymbolItemChecked( const QString &key )
 {
@@ -399,7 +427,10 @@ QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLay
   return QString();
 }
 
-QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const { return QgsLegendSymbolList(); }
+QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
+{
+  return QgsLegendSymbolList();
+}
 
 double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) const
 {
@@ -473,7 +504,10 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( Qgis::VertexMarkerType type,
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return nullptr != symbolForFeature( feature, context ); }
+bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return nullptr != symbolForFeature( feature, context );
+}
 
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
 {
@@ -531,25 +565,55 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &f
   return lst;
 }
 
-QgsPaintEffect *QgsFeatureRenderer::paintEffect() const { return mPaintEffect.get(); }
+QgsPaintEffect *QgsFeatureRenderer::paintEffect() const
+{
+  return mPaintEffect.get();
+}
 
-void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect ) { mPaintEffect.reset( effect ); }
+void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect )
+{
+  mPaintEffect.reset( effect );
+}
 
-void QgsFeatureRenderer::setDataDefinedProperty( Property key, const QgsProperty &property ) { mDataDefinedProperties.setProperty( key, property ); }
+void QgsFeatureRenderer::setDataDefinedProperty( Property key, const QgsProperty &property )
+{
+  mDataDefinedProperties.setProperty( key, property );
+}
 
-QgsFeatureRequest::OrderBy QgsFeatureRenderer::orderBy() const { return mOrderBy; }
+QgsFeatureRequest::OrderBy QgsFeatureRenderer::orderBy() const
+{
+  return mOrderBy;
+}
 
-void QgsFeatureRenderer::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy ) { mOrderBy = orderBy; }
+void QgsFeatureRenderer::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
+{
+  mOrderBy = orderBy;
+}
 
-bool QgsFeatureRenderer::orderByEnabled() const { return mOrderByEnabled; }
+bool QgsFeatureRenderer::orderByEnabled() const
+{
+  return mOrderByEnabled;
+}
 
-void QgsFeatureRenderer::setOrderByEnabled( bool enabled ) { mOrderByEnabled = enabled; }
+void QgsFeatureRenderer::setOrderByEnabled( bool enabled )
+{
+  mOrderByEnabled = enabled;
+}
 
-void QgsFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
+void QgsFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
+{
+  delete subRenderer;
+}
 
-const QgsFeatureRenderer *QgsFeatureRenderer::embeddedRenderer() const { return nullptr; }
+const QgsFeatureRenderer *QgsFeatureRenderer::embeddedRenderer() const
+{
+  return nullptr;
+}
 
-bool QgsFeatureRenderer::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
+bool QgsFeatureRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
 
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field )
 {
@@ -596,6 +660,12 @@ void QgsFeatureRenderer::initPropertyDefinitions()
   };
 }
 
-QgsSymbol *QgsSymbolLevelItem::symbol() const { return mSymbol; }
+QgsSymbol *QgsSymbolLevelItem::symbol() const
+{
+  return mSymbol;
+}
 
-int QgsSymbolLevelItem::layer() const { return mLayer; }
+int QgsSymbolLevelItem::layer() const
+{
+  return mLayer;
+}

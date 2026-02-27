@@ -25,9 +25,15 @@ QgsProcessingParameterVectorTileWriterLayers::QgsProcessingParameterVectorTileWr
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileWriterLayers::clone() const { return new QgsProcessingParameterVectorTileWriterLayers( *this ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileWriterLayers::clone() const
+{
+  return new QgsProcessingParameterVectorTileWriterLayers( *this );
+}
 
-QString QgsProcessingParameterVectorTileWriterLayers::type() const { return typeName(); }
+QString QgsProcessingParameterVectorTileWriterLayers::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterVectorTileWriterLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {

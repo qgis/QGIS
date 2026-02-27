@@ -96,7 +96,8 @@ process to stdout.
 
     sipCpp->setStdOutHandler( [a0]( const QByteArray &arg )
     {
-      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 
@@ -114,7 +115,8 @@ process to stderr.
 
     sipCpp->setStdErrHandler( [a0]( const QByteArray &arg )
     {
-      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 

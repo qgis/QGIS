@@ -44,8 +44,15 @@ class QgsOgrProvider final : public QgsVectorDataProvider
   public:
     //! Convert a vector layer to a vector file
     static Qgis::VectorExportResult createEmptyLayer(
-      const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri,
-      QString *errorMessage = nullptr, const QMap<QString, QVariant> *options = nullptr
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString &createdLayerUri,
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**

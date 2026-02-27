@@ -50,7 +50,10 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
   qDeleteAll( mProviders );
 }
 
-QList<QgsDataItemProvider *> QgsDataItemProviderRegistry::providers() const { return mProviders; }
+QList<QgsDataItemProvider *> QgsDataItemProviderRegistry::providers() const
+{
+  return mProviders;
+}
 
 QgsDataItemProvider *QgsDataItemProviderRegistry::provider( const QString &providerName ) const
 {

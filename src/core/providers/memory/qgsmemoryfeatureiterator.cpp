@@ -101,7 +101,10 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   rewind();
 }
 
-QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator() { close(); }
+QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
+{
+  close();
+}
 
 bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature &feature )
 {
@@ -286,7 +289,10 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   , mCrs( p->mCrs )
 {}
 
-QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request ) { return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) ); }
+QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request )
+{
+  return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) );
+}
 
 QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
 {

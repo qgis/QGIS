@@ -150,21 +150,45 @@ void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )
   tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
 }
 
-QgsMapLayer *QgsProcessingContext::getMapLayer( const QString &identifier ) { return QgsProcessingUtils::mapLayerFromString( identifier, *this, false ); }
+QgsMapLayer *QgsProcessingContext::getMapLayer( const QString &identifier )
+{
+  return QgsProcessingUtils::mapLayerFromString( identifier, *this, false );
+}
 
-QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id ) { return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) ); }
+QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
+{
+  return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
+}
 
-Qgis::ProcessingLogLevel QgsProcessingContext::logLevel() const { return mLogLevel; }
+Qgis::ProcessingLogLevel QgsProcessingContext::logLevel() const
+{
+  return mLogLevel;
+}
 
-void QgsProcessingContext::setLogLevel( Qgis::ProcessingLogLevel level ) { mLogLevel = level; }
+void QgsProcessingContext::setLogLevel( Qgis::ProcessingLogLevel level )
+{
+  mLogLevel = level;
+}
 
-QString QgsProcessingContext::temporaryFolder() const { return mTemporaryFolderOverride; }
+QString QgsProcessingContext::temporaryFolder() const
+{
+  return mTemporaryFolderOverride;
+}
 
-void QgsProcessingContext::setTemporaryFolder( const QString &folder ) { mTemporaryFolderOverride = folder; }
+void QgsProcessingContext::setTemporaryFolder( const QString &folder )
+{
+  mTemporaryFolderOverride = folder;
+}
 
-int QgsProcessingContext::maximumThreads() const { return mMaximumThreads; }
+int QgsProcessingContext::maximumThreads() const
+{
+  return mMaximumThreads;
+}
 
-void QgsProcessingContext::setMaximumThreads( int threads ) { mMaximumThreads = threads; }
+void QgsProcessingContext::setMaximumThreads( int threads )
+{
+  mMaximumThreads = threads;
+}
 
 QVariantMap QgsProcessingContext::exportToMap() const
 {
@@ -214,23 +238,50 @@ QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::
   return res;
 }
 
-QgsDateTimeRange QgsProcessingContext::currentTimeRange() const { return mCurrentTimeRange; }
+QgsDateTimeRange QgsProcessingContext::currentTimeRange() const
+{
+  return mCurrentTimeRange;
+}
 
-void QgsProcessingContext::setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange ) { mCurrentTimeRange = currentTimeRange; }
+void QgsProcessingContext::setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange )
+{
+  mCurrentTimeRange = currentTimeRange;
+}
 
-QString QgsProcessingContext::ellipsoid() const { return mEllipsoid; }
+QString QgsProcessingContext::ellipsoid() const
+{
+  return mEllipsoid;
+}
 
-void QgsProcessingContext::setEllipsoid( const QString &ellipsoid ) { mEllipsoid = ellipsoid; }
+void QgsProcessingContext::setEllipsoid( const QString &ellipsoid )
+{
+  mEllipsoid = ellipsoid;
+}
 
-Qgis::DistanceUnit QgsProcessingContext::distanceUnit() const { return mDistanceUnit; }
+Qgis::DistanceUnit QgsProcessingContext::distanceUnit() const
+{
+  return mDistanceUnit;
+}
 
-void QgsProcessingContext::setDistanceUnit( Qgis::DistanceUnit unit ) { mDistanceUnit = unit; }
+void QgsProcessingContext::setDistanceUnit( Qgis::DistanceUnit unit )
+{
+  mDistanceUnit = unit;
+}
 
-Qgis::AreaUnit QgsProcessingContext::areaUnit() const { return mAreaUnit; }
+Qgis::AreaUnit QgsProcessingContext::areaUnit() const
+{
+  return mAreaUnit;
+}
 
-void QgsProcessingContext::setAreaUnit( Qgis::AreaUnit areaUnit ) { mAreaUnit = areaUnit; }
+void QgsProcessingContext::setAreaUnit( Qgis::AreaUnit areaUnit )
+{
+  mAreaUnit = areaUnit;
+}
 
-QgsProcessingLayerPostProcessorInterface *QgsProcessingContext::LayerDetails::postProcessor() const { return mPostProcessor; }
+QgsProcessingLayerPostProcessorInterface *QgsProcessingContext::LayerDetails::postProcessor() const
+{
+  return mPostProcessor;
+}
 
 void QgsProcessingContext::LayerDetails::setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor )
 {
@@ -277,10 +328,22 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
 }
 
 
-QgsProcessingModelInitialRunConfig *QgsProcessingContext::modelInitialRunConfig() { return mModelConfig.get(); }
+QgsProcessingModelInitialRunConfig *QgsProcessingContext::modelInitialRunConfig()
+{
+  return mModelConfig.get();
+}
 
-void QgsProcessingContext::setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config ) { mModelConfig = std::move( config ); }
+void QgsProcessingContext::setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config )
+{
+  mModelConfig = std::move( config );
+}
 
-std::unique_ptr< QgsProcessingModelInitialRunConfig > QgsProcessingContext::takeModelInitialRunConfig() { return std::move( mModelConfig ); }
+std::unique_ptr< QgsProcessingModelInitialRunConfig > QgsProcessingContext::takeModelInitialRunConfig()
+{
+  return std::move( mModelConfig );
+}
 
-void QgsProcessingContext::clearModelResult() { mModelResult.clear(); }
+void QgsProcessingContext::clearModelResult()
+{
+  mModelResult.clear();
+}

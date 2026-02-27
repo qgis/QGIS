@@ -46,7 +46,12 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     //! Constructor to initialize the provider from any map layer (e.g. vector tile layer)
     explicit QgsVectorLayerLabelProvider(
-      Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer,
+      Qgis::GeometryType geometryType,
+      const QgsFields &fields,
+      const QgsCoordinateReferenceSystem &crs,
+      const QString &providerId,
+      const QgsPalLayerSettings *settings,
+      QgsMapLayer *layer,
       const QString &layerName = QString()
     );
 

@@ -55,9 +55,15 @@ QgsVectorLayerCache::~QgsVectorLayerCache()
   mCacheIndices.clear();
 }
 
-void QgsVectorLayerCache::setCacheSize( int cacheSize ) { mCache.setMaxCost( cacheSize ); }
+void QgsVectorLayerCache::setCacheSize( int cacheSize )
+{
+  mCache.setMaxCost( cacheSize );
+}
 
-int QgsVectorLayerCache::cacheSize() { return mCache.maxCost(); }
+int QgsVectorLayerCache::cacheSize()
+{
+  return mCache.maxCost();
+}
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
@@ -85,7 +91,10 @@ void QgsVectorLayerCache::setCacheSubsetOfAttributes( const QgsAttributeList &at
   mCachedAttributes = attributes;
 }
 
-QgsAttributeList QgsVectorLayerCache::cacheSubsetOfAttributes() const { return mCachedAttributes; }
+QgsAttributeList QgsVectorLayerCache::cacheSubsetOfAttributes() const
+{
+  return mCachedAttributes;
+}
 
 void QgsVectorLayerCache::setFullCache( bool fullCache )
 {
@@ -128,7 +137,10 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
   }
 }
 
-void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex *cacheIndex ) { mCacheIndices.append( cacheIndex ); }
+void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex *cacheIndex )
+{
+  mCacheIndices.append( cacheIndex );
+}
 
 void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
@@ -246,15 +258,30 @@ bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
   return removed;
 }
 
-QgsVectorLayer *QgsVectorLayerCache::layer() { return mLayer; }
+QgsVectorLayer *QgsVectorLayerCache::layer()
+{
+  return mLayer;
+}
 
-QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const { return mLayer->crs(); }
+QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const
+{
+  return mLayer->crs();
+}
 
-Qgis::WkbType QgsVectorLayerCache::wkbType() const { return mLayer->wkbType(); }
+Qgis::WkbType QgsVectorLayerCache::wkbType() const
+{
+  return mLayer->wkbType();
+}
 
-QgsFields QgsVectorLayerCache::fields() const { return mLayer->fields(); }
+QgsFields QgsVectorLayerCache::fields() const
+{
+  return mLayer->fields();
+}
 
-long long QgsVectorLayerCache::featureCount() const { return mLayer->featureCount(); }
+long long QgsVectorLayerCache::featureCount() const
+{
+  return mLayer->featureCount();
+}
 
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
@@ -500,7 +527,10 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   return it;
 }
 
-bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid ) const { return mCache.contains( fid ); }
+bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid ) const
+{
+  return mCache.contains( fid );
+}
 
 QgsFeatureIds QgsVectorLayerCache::cachedFeatureIds() const
 {
@@ -546,6 +576,12 @@ void QgsVectorLayerCache::connectJoinedLayers() const
   }
 }
 
-bool QgsVectorLayerCache::QgsCachedFeature::allAttributesFetched() const { return mAllAttributesFetched; }
+bool QgsVectorLayerCache::QgsCachedFeature::allAttributesFetched() const
+{
+  return mAllAttributesFetched;
+}
 
-bool QgsVectorLayerCache::QgsCachedFeature::geometryFetched() const { return mGeometryFetched; }
+bool QgsVectorLayerCache::QgsCachedFeature::geometryFetched() const
+{
+  return mGeometryFetched;
+}

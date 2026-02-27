@@ -41,15 +41,30 @@ QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsLayoutManager::layoutAboutToBeRemoved );
 }
 
-QgsLayoutManager::~QgsLayoutManager() { clearObjects(); }
+QgsLayoutManager::~QgsLayoutManager()
+{
+  clearObjects();
+}
 
-bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout ) { return addObject( layout ); }
+bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
+{
+  return addObject( layout );
+}
 
-bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout ) { return removeObject( layout ); }
+bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
+{
+  return removeObject( layout );
+}
 
-void QgsLayoutManager::clear() { clearObjects(); }
+void QgsLayoutManager::clear()
+{
+  clearObjects();
+}
 
-QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const { return mObjects; }
+QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
+{
+  return mObjects;
+}
 
 QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 {
@@ -65,7 +80,10 @@ QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
   return result;
 }
 
-QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const { return objectByName( name ); }
+QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const
+{
+  return objectByName( name );
+}
 
 bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {

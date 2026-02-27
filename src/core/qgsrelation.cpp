@@ -206,7 +206,10 @@ void QgsRelation::addFieldPair( const FieldPair &fieldPair )
   updateRelationStatus();
 }
 
-QgsFeatureIterator QgsRelation::getRelatedFeatures( const QgsFeature &feature ) const { return referencingLayer()->getFeatures( getRelatedFeaturesRequest( feature ) ); }
+QgsFeatureIterator QgsRelation::getRelatedFeatures( const QgsFeature &feature ) const
+{
+  return referencingLayer()->getFeatures( getRelatedFeaturesRequest( feature ) );
+}
 
 QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature &feature ) const
 {
@@ -282,7 +285,10 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
   return myRequest;
 }
 
-QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature &feature ) const { return getReferencedFeatureRequest( feature.attributes() ); }
+QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature &feature ) const
+{
+  return getReferencedFeatureRequest( feature.attributes() );
+}
 
 QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
 {
@@ -293,11 +299,20 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
   return f;
 }
 
-QString QgsRelation::name() const { return d->mRelationName; }
+QString QgsRelation::name() const
+{
+  return d->mRelationName;
+}
 
-Qgis::RelationshipStrength QgsRelation::strength() const { return d->mRelationStrength; }
+Qgis::RelationshipStrength QgsRelation::strength() const
+{
+  return d->mRelationStrength;
+}
 
-QString QgsRelation::id() const { return d->mRelationId; }
+QString QgsRelation::id() const
+{
+  return d->mRelationId;
+}
 
 void QgsRelation::generateId()
 {
@@ -309,15 +324,30 @@ void QgsRelation::generateId()
   updateRelationStatus();
 }
 
-QString QgsRelation::referencingLayerId() const { return d->mReferencingLayerId; }
+QString QgsRelation::referencingLayerId() const
+{
+  return d->mReferencingLayerId;
+}
 
-QgsVectorLayer *QgsRelation::referencingLayer() const { return d->mReferencingLayer; }
+QgsVectorLayer *QgsRelation::referencingLayer() const
+{
+  return d->mReferencingLayer;
+}
 
-QString QgsRelation::referencedLayerId() const { return d->mReferencedLayerId; }
+QString QgsRelation::referencedLayerId() const
+{
+  return d->mReferencedLayerId;
+}
 
-QgsVectorLayer *QgsRelation::referencedLayer() const { return d->mReferencedLayer; }
+QgsVectorLayer *QgsRelation::referencedLayer() const
+{
+  return d->mReferencedLayer;
+}
 
-QList<QgsRelation::FieldPair> QgsRelation::fieldPairs() const { return d->mFieldPairs; }
+QList<QgsRelation::FieldPair> QgsRelation::fieldPairs() const
+{
+  return d->mFieldPairs;
+}
 
 QgsAttributeList QgsRelation::referencedFields() const
 {
@@ -351,7 +381,8 @@ bool QgsRelation::referencingFieldsAllowNull() const
   const auto fields = referencingFields();
 
   return std::find_if(
-           fields.constBegin(), fields.constEnd(),
+           fields.constBegin(),
+           fields.constEnd(),
            [&]( const auto &fieldIdx ) {
              if ( !referencingLayer()->fields().exists( fieldIdx ) )
              {
@@ -486,7 +517,10 @@ void QgsRelation::setPolymorphicRelationId( const QString &polymorphicRelationId
   d->mPolymorphicRelationId = polymorphicRelationId;
 }
 
-QString QgsRelation::polymorphicRelationId() const { return d->mPolymorphicRelationId; }
+QString QgsRelation::polymorphicRelationId() const
+{
+  return d->mPolymorphicRelationId;
+}
 
 QgsPolymorphicRelation QgsRelation::polymorphicRelation() const
 {

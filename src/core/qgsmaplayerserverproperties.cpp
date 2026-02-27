@@ -34,9 +34,15 @@ bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMet
   return url == other.url && type == other.type && format == other.format;
 }
 
-bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const { return mMetadataUrls == other.mMetadataUrls; }
+bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const
+{
+  return mMetadataUrls == other.mMetadataUrls;
+}
 
-bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const { return !( *this == other ); }
+bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const
+{
+  return !( *this == other );
+}
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDimensionInfo &other ) const
 {
@@ -44,11 +50,20 @@ bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDim
          && defaultDisplayType == other.defaultDisplayType && referenceValue == other.referenceValue;
 }
 
-bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const { return !( *this == other ); }
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
+{
+  return !( *this == other );
+}
 
-void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const { properties->setMetadataUrls( metadataUrls() ); }
+void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
+{
+  properties->setMetadataUrls( metadataUrls() );
+}
 
-void QgsServerMetadataUrlProperties::reset() { mMetadataUrls.clear(); }
+void QgsServerMetadataUrlProperties::reset()
+{
+  mMetadataUrls.clear();
+}
 
 void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 {
@@ -85,15 +100,30 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
 
 // QgsServerWmsDimensionProperties
 
-bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const { return mWmsDimensions == other.mWmsDimensions; }
+bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const
+{
+  return mWmsDimensions == other.mWmsDimensions;
+}
 
-bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const { return !( *this == other ); }
+bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const
+{
+  return !( *this == other );
+}
 
-void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const { properties->setWmsDimensions( wmsDimensions() ); }
+void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const
+{
+  properties->setWmsDimensions( wmsDimensions() );
+}
 
-void QgsServerWmsDimensionProperties::reset() { mWmsDimensions.clear(); }
+void QgsServerWmsDimensionProperties::reset()
+{
+  mWmsDimensions.clear();
+}
 
-void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions ) { mWmsDimensions = dimensions; }
+void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions )
+{
+  mWmsDimensions = dimensions;
+}
 
 QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLabels()
 {
@@ -131,7 +161,10 @@ bool QgsServerWmsDimensionProperties::removeWmsDimension( const QString &wmsDimN
   return false;
 }
 
-const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDimensionProperties::wmsDimensions() const { return mWmsDimensions; }
+const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDimensionProperties::wmsDimensions() const
+{
+  return mWmsDimensions;
+}
 
 void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 {
@@ -238,7 +271,10 @@ bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties 
          && mAttributionUrl == other.mAttributionUrl && mLegendUrl == other.mLegendUrl && mLegendUrlFormat == other.mLegendUrlFormat;
 }
 
-bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const { return !( *this == other ); }
+bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const
+{
+  return !( *this == other );
+}
 
 void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {

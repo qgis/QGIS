@@ -40,11 +40,20 @@ using namespace Qt::StringLiterals;
 #include "qgsrelationshipsitem.h"
 #include "qgsogrproviderutils.h"
 
-QString QgsGeoPackageDataItemProvider::name() { return u"GPKG"_s; }
+QString QgsGeoPackageDataItemProvider::name()
+{
+  return u"GPKG"_s;
+}
 
-QString QgsGeoPackageDataItemProvider::dataProviderKey() const { return u"ogr"_s; }
+QString QgsGeoPackageDataItemProvider::dataProviderKey() const
+{
+  return u"ogr"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsGeoPackageDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::Databases; }
+Qgis::DataItemProviderCapabilities QgsGeoPackageDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::Databases;
+}
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -78,7 +87,10 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   return connections;
 }
 
-void QgsGeoPackageRootItem::onConnectionsChanged() { refresh(); }
+void QgsGeoPackageRootItem::onConnectionsChanged()
+{
+  refresh();
+}
 
 void QgsGeoPackageRootItem::newConnection()
 {
@@ -289,7 +301,10 @@ bool QgsGeoPackageCollectionItem::deleteVectorLayer( const QString &layerName, Q
   return true;
 }
 
-QWidget *QgsGeoPackageRootItem::paramWidget() { return nullptr; }
+QWidget *QgsGeoPackageRootItem::paramWidget()
+{
+  return nullptr;
+}
 
 void QgsGeoPackageCollectionItem::addConnection()
 {
@@ -386,7 +401,10 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   return layersList;
 }
 
-QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const { return mCollection; }
+QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
+{
+  return mCollection;
+}
 
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, u"ogr"_s )
@@ -459,9 +477,15 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 }
 
 
-bool QgsGeoPackageCollectionItem::layerCollection() const { return true; }
+bool QgsGeoPackageCollectionItem::layerCollection() const
+{
+  return true;
+}
 
-bool QgsGeoPackageCollectionItem::hasDragEnabled() const { return true; }
+bool QgsGeoPackageCollectionItem::hasDragEnabled() const
+{
+  return true;
+}
 
 QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {

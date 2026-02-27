@@ -73,23 +73,50 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
   BUILTIN_UNREACHABLE
 }
 
-bool QgsSensorThingsExpansionDefinition::isValid() const { return mChildEntity != Qgis::SensorThingsEntity::Invalid; }
+bool QgsSensorThingsExpansionDefinition::isValid() const
+{
+  return mChildEntity != Qgis::SensorThingsEntity::Invalid;
+}
 
-Qgis::SensorThingsEntity QgsSensorThingsExpansionDefinition::childEntity() const { return mChildEntity; }
+Qgis::SensorThingsEntity QgsSensorThingsExpansionDefinition::childEntity() const
+{
+  return mChildEntity;
+}
 
-void QgsSensorThingsExpansionDefinition::setChildEntity( Qgis::SensorThingsEntity entity ) { mChildEntity = entity; }
+void QgsSensorThingsExpansionDefinition::setChildEntity( Qgis::SensorThingsEntity entity )
+{
+  mChildEntity = entity;
+}
 
-Qt::SortOrder QgsSensorThingsExpansionDefinition::sortOrder() const { return mSortOrder; }
+Qt::SortOrder QgsSensorThingsExpansionDefinition::sortOrder() const
+{
+  return mSortOrder;
+}
 
-void QgsSensorThingsExpansionDefinition::setSortOrder( Qt::SortOrder order ) { mSortOrder = order; }
+void QgsSensorThingsExpansionDefinition::setSortOrder( Qt::SortOrder order )
+{
+  mSortOrder = order;
+}
 
-int QgsSensorThingsExpansionDefinition::limit() const { return mLimit; }
+int QgsSensorThingsExpansionDefinition::limit() const
+{
+  return mLimit;
+}
 
-void QgsSensorThingsExpansionDefinition::setLimit( int limit ) { mLimit = limit; }
+void QgsSensorThingsExpansionDefinition::setLimit( int limit )
+{
+  mLimit = limit;
+}
 
-QString QgsSensorThingsExpansionDefinition::filter() const { return mFilter; }
+QString QgsSensorThingsExpansionDefinition::filter() const
+{
+  return mFilter;
+}
 
-void QgsSensorThingsExpansionDefinition::setFilter( const QString &filter ) { mFilter = filter; }
+void QgsSensorThingsExpansionDefinition::setFilter( const QString &filter )
+{
+  mFilter = filter;
+}
 
 QString QgsSensorThingsExpansionDefinition::toString() const
 {
@@ -213,11 +240,20 @@ bool QgsSensorThingsExpansionDefinition::operator==( const QgsSensorThingsExpans
   return mChildEntity == other.mChildEntity && mSortOrder == other.mSortOrder && mLimit == other.mLimit && mOrderBy == other.mOrderBy && mFilter == other.mFilter;
 }
 
-bool QgsSensorThingsExpansionDefinition::operator!=( const QgsSensorThingsExpansionDefinition &other ) const { return !( *this == other ); }
+bool QgsSensorThingsExpansionDefinition::operator!=( const QgsSensorThingsExpansionDefinition &other ) const
+{
+  return !( *this == other );
+}
 
-QString QgsSensorThingsExpansionDefinition::orderBy() const { return mOrderBy; }
+QString QgsSensorThingsExpansionDefinition::orderBy() const
+{
+  return mOrderBy;
+}
 
-void QgsSensorThingsExpansionDefinition::setOrderBy( const QString &field ) { mOrderBy = field; }
+void QgsSensorThingsExpansionDefinition::setOrderBy( const QString &field )
+{
+  mOrderBy = field;
+}
 
 //
 // QgsSensorThingsUtils
@@ -339,13 +375,21 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
     case Qgis::SensorThingsEntity::Thing:
       // https://docs.ogc.org/is/18-088/18-088.html#thing
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"properties"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
       };
 
     case Qgis::SensorThingsEntity::Location:
       // https://docs.ogc.org/is/18-088/18-088.html#location
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"properties"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
       };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
@@ -359,37 +403,75 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
     case Qgis::SensorThingsEntity::Datastream:
       // https://docs.ogc.org/is/18-088/18-088.html#datastream
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"unitOfMeasurement"_s, u"observationType"_s, u"properties"_s, u"phenomenonTime"_s, u"resultTime"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"unitOfMeasurement"_s,
+        u"observationType"_s,
+        u"properties"_s,
+        u"phenomenonTime"_s,
+        u"resultTime"_s,
       };
 
     case Qgis::SensorThingsEntity::Sensor:
       // https://docs.ogc.org/is/18-088/18-088.html#sensor
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"metadata"_s, u"properties"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"metadata"_s,
+        u"properties"_s,
       };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       // https://docs.ogc.org/is/18-088/18-088.html#observedproperty
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"definition"_s, u"description"_s, u"properties"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
       };
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
       return {
-        u"id"_s, u"selfLink"_s, u"phenomenonTime"_s, u"result"_s, u"resultTime"_s, u"resultQuality"_s, u"validTime"_s, u"parameters"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"phenomenonTime"_s,
+        u"result"_s,
+        u"resultTime"_s,
+        u"resultQuality"_s,
+        u"validTime"_s,
+        u"parameters"_s,
       };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // https://docs.ogc.org/is/18-088/18-088.html#featureofinterest
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"properties"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
       };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
       return {
-        u"id"_s, u"selfLink"_s, u"name"_s, u"description"_s, u"unitOfMeasurements"_s, u"observationType"_s, u"multiObservationDataTypes"_s, u"properties"_s, u"phenomenonTime"_s, u"resultTime"_s,
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"unitOfMeasurements"_s,
+        u"observationType"_s,
+        u"multiObservationDataTypes"_s,
+        u"properties"_s,
+        u"phenomenonTime"_s,
+        u"resultTime"_s,
       };
   }
 

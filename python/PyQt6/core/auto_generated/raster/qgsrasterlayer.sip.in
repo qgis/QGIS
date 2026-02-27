@@ -349,8 +349,11 @@ In a world file, this is normally the first row (without the sign).
     double opacity() const final;
 
     void setContrastEnhancement(
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum, const QgsRectangle &extent = QgsRectangle(),
-      int sampleSize = QgsRasterLayer::SAMPLE_SIZE, bool generateLookupTableFlag = true
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+      Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
+      const QgsRectangle &extent = QgsRectangle(),
+      int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
+      bool generateLookupTableFlag = true
     );
 %Docstring
 Set contrast enhancement algorithm

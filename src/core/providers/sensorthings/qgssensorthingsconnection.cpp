@@ -50,11 +50,20 @@ void QgsSensorThingsProviderConnection::store( const QString &name ) const
   addConnection( name, connectionData );
 }
 
-void QgsSensorThingsProviderConnection::remove( const QString &name ) const { sTreeSensorThingsConnections->deleteItem( name ); }
+void QgsSensorThingsProviderConnection::remove( const QString &name ) const
+{
+  sTreeSensorThingsConnections->deleteItem( name );
+}
 
-QString QgsSensorThingsProviderConnection::selectedConnection() { return sTreeSensorThingsConnections->selectedItem(); }
+QString QgsSensorThingsProviderConnection::selectedConnection()
+{
+  return sTreeSensorThingsConnections->selectedItem();
+}
 
-void QgsSensorThingsProviderConnection::setSelectedConnection( const QString &name ) { sTreeSensorThingsConnections->setSelectedItem( name ); }
+void QgsSensorThingsProviderConnection::setSelectedConnection( const QString &name )
+{
+  sTreeSensorThingsConnections->setSelectedItem( name );
+}
 
 void QgsSensorThingsProviderConnection::addConnection( const QString &name, const Data &conn )
 {
@@ -82,7 +91,10 @@ QgsSensorThingsProviderConnection::Data QgsSensorThingsProviderConnection::conne
   return conn;
 }
 
-QStringList QgsSensorThingsProviderConnection::connectionList() { return QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items(); }
+QStringList QgsSensorThingsProviderConnection::connectionList()
+{
+  return QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
+}
 
 QString QgsSensorThingsProviderConnection::encodedUri( const QgsSensorThingsProviderConnection::Data &data )
 {

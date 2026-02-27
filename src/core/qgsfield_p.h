@@ -50,8 +50,14 @@ class QgsFieldPrivate : public QSharedData
 {
   public:
     QgsFieldPrivate(
-      const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, QMetaType::Type subType = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0,
-      int prec = 0, const QString &comment = QString(), const QMap< int, QVariant > &metadata = QMap< int, QVariant >()
+      const QString &name = QString(),
+      QMetaType::Type type = QMetaType::Type::UnknownType,
+      QMetaType::Type subType = QMetaType::Type::UnknownType,
+      const QString &typeName = QString(),
+      int len = 0,
+      int prec = 0,
+      const QString &comment = QString(),
+      const QMap< int, QVariant > &metadata = QMap< int, QVariant >()
     )
       : name( name )
       , type( type )

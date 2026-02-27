@@ -35,7 +35,7 @@ A base class for objects which belong to a layout.
 #include "qgslayoutitemchart.h"
 %End
 %ConvertToSubClassCode
-if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
+    if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
     {
       // the conversions have to be static, because they're using multiple inheritance
       // (seen in PyQt4 .sip files for some QGraphicsItem classes)

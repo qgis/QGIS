@@ -25,9 +25,15 @@ QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAx
   : mXAxisType( xAxisType )
 {}
 
-void QgsVectorLayerXyPlotDataGatherer::setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails ) { mSeriesDetails = seriesDetails; }
+void QgsVectorLayerXyPlotDataGatherer::setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails )
+{
+  mSeriesDetails = seriesDetails;
+}
 
-void QgsVectorLayerXyPlotDataGatherer::setPredefinedCategories( const QStringList &predefinedCategories ) { mPredefinedCategories = predefinedCategories; }
+void QgsVectorLayerXyPlotDataGatherer::setPredefinedCategories( const QStringList &predefinedCategories )
+{
+  mPredefinedCategories = predefinedCategories;
+}
 
 bool QgsVectorLayerXyPlotDataGatherer::run()
 {
@@ -197,4 +203,7 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
   return true;
 }
 
-QgsPlotData QgsVectorLayerXyPlotDataGatherer::data() const { return mData; }
+QgsPlotData QgsVectorLayerXyPlotDataGatherer::data() const
+{
+  return mData;
+}

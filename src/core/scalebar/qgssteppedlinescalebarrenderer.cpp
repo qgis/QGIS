@@ -27,11 +27,20 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsSteppedLineScaleBarRenderer::id() const { return u"stepped"_s; }
+QString QgsSteppedLineScaleBarRenderer::id() const
+{
+  return u"stepped"_s;
+}
 
-QString QgsSteppedLineScaleBarRenderer::visibleName() const { return QObject::tr( "Stepped Line" ); }
+QString QgsSteppedLineScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Stepped Line" );
+}
 
-int QgsSteppedLineScaleBarRenderer::sortKey() const { return 7; }
+int QgsSteppedLineScaleBarRenderer::sortKey() const
+{
+  return 7;
+}
 
 QgsScaleBarRenderer::Flags QgsSteppedLineScaleBarRenderer::flags() const
 {
@@ -39,7 +48,10 @@ QgsScaleBarRenderer::Flags QgsSteppedLineScaleBarRenderer::flags() const
          | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
-QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const { return new QgsSteppedLineScaleBarRenderer( *this ); }
+QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const
+{
+  return new QgsSteppedLineScaleBarRenderer( *this );
+}
 
 void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {

@@ -77,7 +77,7 @@ An abstract class for implementations of classification methods.
 #include "qgsclassificationmethod.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsClassificationEqualInterval *>( sipCpp ) )
+    if ( dynamic_cast<QgsClassificationEqualInterval *>( sipCpp ) )
       sipType = sipType_QgsClassificationEqualInterval;
     else if ( dynamic_cast<QgsClassificationJenks *>( sipCpp ) )
       sipType = sipType_QgsClassificationJenks;

@@ -40,13 +40,25 @@ QString QgsAbstractBabelFormat::featureTypeToArgument( Qgis::GpsFeatureType type
   return QString();
 }
 
-QString QgsAbstractBabelFormat::name() const { return mName; }
+QString QgsAbstractBabelFormat::name() const
+{
+  return mName;
+}
 
-QStringList QgsAbstractBabelFormat::importCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const { return QStringList(); }
+QStringList QgsAbstractBabelFormat::importCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const
+{
+  return QStringList();
+}
 
-QStringList QgsAbstractBabelFormat::exportCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const { return QStringList(); }
+QStringList QgsAbstractBabelFormat::exportCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const
+{
+  return QStringList();
+}
 
-Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const { return mCapabilities; }
+Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
+{
+  return mCapabilities;
+}
 
 
 //

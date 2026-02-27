@@ -191,46 +191,70 @@ inline bool operator==( const QgsMargins &lhs, const QgsMargins &rhs )
 /**
  * Returns \c TRUE if \a lhs and \a rhs are different; otherwise returns \c FALSE.
  */
-inline bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs ) { return !operator==( lhs, rhs ); }
+inline bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs )
+{
+  return !operator==( lhs, rhs );
+}
 
 /**
  * Returns a QgsMargins object that is the sum of the given margins, \a m1
  * and \a m2; each component is added separately.
  */
-inline QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 ) { return QgsMargins( m1.left() + m2.left(), m1.top() + m2.top(), m1.right() + m2.right(), m1.bottom() + m2.bottom() ); }
+inline QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 )
+{
+  return QgsMargins( m1.left() + m2.left(), m1.top() + m2.top(), m1.right() + m2.right(), m1.bottom() + m2.bottom() );
+}
 
 /**
  * Returns a QgsMargins object that is formed by subtracting \a m2 from
  * \a m1; each component is subtracted separately.
  */
-inline QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 ) { return QgsMargins( m1.left() - m2.left(), m1.top() - m2.top(), m1.right() - m2.right(), m1.bottom() - m2.bottom() ); }
+inline QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 )
+{
+  return QgsMargins( m1.left() - m2.left(), m1.top() - m2.top(), m1.right() - m2.right(), m1.bottom() - m2.bottom() );
+}
 
 /**
  * Returns a QgsMargins object that is formed by adding \a rhs to \a lhs.
  */
-inline QgsMargins operator+( const QgsMargins &lhs, double rhs ) { return QgsMargins( lhs.left() + rhs, lhs.top() + rhs, lhs.right() + rhs, lhs.bottom() + rhs ); }
+inline QgsMargins operator+( const QgsMargins &lhs, double rhs )
+{
+  return QgsMargins( lhs.left() + rhs, lhs.top() + rhs, lhs.right() + rhs, lhs.bottom() + rhs );
+}
 
 /**
  * Returns a QgsMargins object that is formed by adding \a lhs to \a rhs.
  */
-inline QgsMargins operator+( double lhs, const QgsMargins &rhs ) { return QgsMargins( rhs.left() + lhs, rhs.top() + lhs, rhs.right() + lhs, rhs.bottom() + lhs ); }
+inline QgsMargins operator+( double lhs, const QgsMargins &rhs )
+{
+  return QgsMargins( rhs.left() + lhs, rhs.top() + lhs, rhs.right() + lhs, rhs.bottom() + lhs );
+}
 
 /**
  * Returns a QgsMargins object that is formed by subtracting \a rhs from \a lhs.
  */
-inline QgsMargins operator-( const QgsMargins &lhs, double rhs ) { return QgsMargins( lhs.left() - rhs, lhs.top() - rhs, lhs.right() - rhs, lhs.bottom() - rhs ); }
+inline QgsMargins operator-( const QgsMargins &lhs, double rhs )
+{
+  return QgsMargins( lhs.left() - rhs, lhs.top() - rhs, lhs.right() - rhs, lhs.bottom() - rhs );
+}
 
 /**
  * Returns a QgsMargins object that is formed by multiplying each component
  * of the given \a margins by \a factor.
  */
-inline QgsMargins operator*( const QgsMargins &margins, double factor ) { return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor ); }
+inline QgsMargins operator*( const QgsMargins &margins, double factor )
+{
+  return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor );
+}
 
 /**
  * Returns a QgsMargins object that is formed by multiplying each component
  * of the given \a margins by \a factor.
  */
-inline QgsMargins operator*( double factor, const QgsMargins &margins ) { return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor ); }
+inline QgsMargins operator*( double factor, const QgsMargins &margins )
+{
+  return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor );
+}
 
 /**
  * Returns a QgsMargins object that is formed by dividing the components of
@@ -241,9 +265,15 @@ inline QgsMargins operator/( const QgsMargins &margins, double divisor )
   return QgsMargins( margins.left() / divisor, margins.top() / divisor, margins.right() / divisor, margins.bottom() / divisor );
 }
 
-inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins ) SIP_SKIP { return *this = *this + margins; }
+inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins ) SIP_SKIP
+{
+  return *this = *this + margins;
+}
 
-inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins ) SIP_SKIP { return *this = *this - margins; }
+inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins ) SIP_SKIP
+{
+  return *this = *this - margins;
+}
 
 inline QgsMargins &QgsMargins::operator+=( double addend ) SIP_SKIP
 {
@@ -263,19 +293,31 @@ inline QgsMargins &QgsMargins::operator-=( double subtrahend ) SIP_SKIP
   return *this;
 }
 
-inline QgsMargins &QgsMargins::operator*=( double factor ) SIP_SKIP { return *this = *this * factor; }
+inline QgsMargins &QgsMargins::operator*=( double factor ) SIP_SKIP
+{
+  return *this = *this * factor;
+}
 
-inline QgsMargins &QgsMargins::operator/=( double divisor ) SIP_SKIP { return *this = *this / divisor; }
+inline QgsMargins &QgsMargins::operator/=( double divisor ) SIP_SKIP
+{
+  return *this = *this / divisor;
+}
 
 /**
  * Returns a QgsMargins object that is formed from all components of \a margins.
  */
-inline QgsMargins operator+( const QgsMargins &margins ) { return margins; }
+inline QgsMargins operator+( const QgsMargins &margins )
+{
+  return margins;
+}
 
 /**
  * Returns a QgsMargins object that is formed by negating all components of \a margins.
  */
-inline QgsMargins operator-( const QgsMargins &margins ) { return QgsMargins( -margins.left(), -margins.top(), -margins.right(), -margins.bottom() ); }
+inline QgsMargins operator-( const QgsMargins &margins )
+{
+  return QgsMargins( -margins.left(), -margins.top(), -margins.right(), -margins.bottom() );
+}
 
 Q_DECLARE_TYPEINFO( QgsMargins, Q_MOVABLE_TYPE );
 

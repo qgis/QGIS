@@ -28,7 +28,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "moc_qgsabstractgeometry.cpp"
 
-QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom ) { mWkbType = geom.mWkbType; }
+QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom )
+{
+  mWkbType = geom.mWkbType;
+}
 
 QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &geom )
 {
@@ -113,9 +116,15 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 }
 
-QgsRectangle QgsAbstractGeometry::boundingBox() const { return boundingBox3D().toRectangle(); }
+QgsRectangle QgsAbstractGeometry::boundingBox() const
+{
+  return boundingBox3D().toRectangle();
+}
 
-QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const { return calculateBoundingBox3D().toRectangle(); }
+QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
+{
+  return calculateBoundingBox3D().toRectangle();
+}
 
 QgsBox3D QgsAbstractGeometry::calculateBoundingBox3D() const
 {
@@ -166,7 +175,8 @@ QgsBox3D QgsAbstractGeometry::calculateBoundingBox3D() const
   return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 }
 
-void QgsAbstractGeometry::clearCache() const {}
+void QgsAbstractGeometry::clearCache() const
+{}
 
 int QgsAbstractGeometry::nCoordinates() const
 {
@@ -184,13 +194,25 @@ int QgsAbstractGeometry::nCoordinates() const
   return nCoords;
 }
 
-double QgsAbstractGeometry::length() const { return 0.0; }
+double QgsAbstractGeometry::length() const
+{
+  return 0.0;
+}
 
-double QgsAbstractGeometry::perimeter() const { return 0.0; }
+double QgsAbstractGeometry::perimeter() const
+{
+  return 0.0;
+}
 
-double QgsAbstractGeometry::area() const { return 0.0; }
+double QgsAbstractGeometry::area() const
+{
+  return 0.0;
+}
 
-double QgsAbstractGeometry::area3D() const { return 0.0; }
+double QgsAbstractGeometry::area3D() const
+{
+  return 0.0;
+}
 
 QString QgsAbstractGeometry::wktTypeStr() const
 {
@@ -207,7 +229,10 @@ QString QgsAbstractGeometry::wktTypeStr() const
   return wkt;
 }
 
-QString QgsAbstractGeometry::asJson( int precision ) { return QString::fromStdString( asJsonObject( precision ).dump() ); }
+QString QgsAbstractGeometry::asJson( int precision )
+{
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
 
 json QgsAbstractGeometry::asJsonObject( int precision ) const
 {
@@ -301,7 +326,10 @@ bool QgsAbstractGeometry::convertTo( Qgis::WkbType type )
   return true;
 }
 
-const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const { return this; }
+const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
+{
+  return this;
+}
 
 void QgsAbstractGeometry::filterVertices( const std::function<bool( const QgsPoint & )> & )
 {
@@ -319,9 +347,15 @@ QgsAbstractGeometry::part_iterator QgsAbstractGeometry::parts_end()
   return part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
-QgsGeometryPartIterator QgsAbstractGeometry::parts() { return QgsGeometryPartIterator( this ); }
+QgsGeometryPartIterator QgsAbstractGeometry::parts()
+{
+  return QgsGeometryPartIterator( this );
+}
 
-QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const { return QgsGeometryConstPartIterator( this ); }
+QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const
+{
+  return QgsGeometryConstPartIterator( this );
+}
 
 QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() const
 {
@@ -329,7 +363,10 @@ QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() 
   return const_part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
-QgsVertexIterator QgsAbstractGeometry::vertices() const { return QgsVertexIterator( this ); }
+QgsVertexIterator QgsAbstractGeometry::vertices() const
+{
+  return QgsVertexIterator( this );
+}
 
 int QgsAbstractGeometry::sortIndex() const
 {
@@ -369,7 +406,10 @@ int QgsAbstractGeometry::sortIndex() const
   return 13;
 }
 
-bool QgsAbstractGeometry::hasChildGeometries() const { return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2; }
+bool QgsAbstractGeometry::hasChildGeometries() const
+{
+  return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2;
+}
 
 QgsPoint QgsAbstractGeometry::childPoint( int index ) const
 {
@@ -384,11 +424,20 @@ bool QgsAbstractGeometry::isEmpty() const
   return !nextVertex( vId, vertex );
 }
 
-bool QgsAbstractGeometry::hasCurvedSegments() const { return false; }
+bool QgsAbstractGeometry::hasCurvedSegments() const
+{
+  return false;
+}
 
-bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const { return boundingBox().intersects( rectangle ); }
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return boundingBox().intersects( rectangle );
+}
 
-bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const { return boundingBox3D().intersects( box3d ); }
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return boundingBox3D().intersects( box3d );
+}
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
@@ -545,9 +594,15 @@ QgsAbstractGeometry *QgsAbstractGeometry::part_iterator::operator*() const
   return collection->geometryN( mIndex );
 }
 
-int QgsAbstractGeometry::part_iterator::partNumber() const { return mIndex; }
+int QgsAbstractGeometry::part_iterator::partNumber() const
+{
+  return mIndex;
+}
 
-bool QgsAbstractGeometry::part_iterator::operator==( QgsAbstractGeometry::part_iterator other ) const { return mGeometry == other.mGeometry && mIndex == other.mIndex; }
+bool QgsAbstractGeometry::part_iterator::operator==( QgsAbstractGeometry::part_iterator other ) const
+{
+  return mGeometry == other.mGeometry && mIndex == other.mIndex;
+}
 
 QgsAbstractGeometry *QgsGeometryPartIterator::next()
 {
@@ -595,9 +650,15 @@ const QgsAbstractGeometry *QgsAbstractGeometry::const_part_iterator::operator*()
   return collection->geometryN( mIndex );
 }
 
-int QgsAbstractGeometry::const_part_iterator::partNumber() const { return mIndex; }
+int QgsAbstractGeometry::const_part_iterator::partNumber() const
+{
+  return mIndex;
+}
 
-bool QgsAbstractGeometry::const_part_iterator::operator==( QgsAbstractGeometry::const_part_iterator other ) const { return mGeometry == other.mGeometry && mIndex == other.mIndex; }
+bool QgsAbstractGeometry::const_part_iterator::operator==( QgsAbstractGeometry::const_part_iterator other ) const
+{
+  return mGeometry == other.mGeometry && mIndex == other.mIndex;
+}
 
 const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
 {
@@ -605,4 +666,7 @@ const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
   return *n;
 }
 
-bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const { return g == other.g && index == other.index; }
+bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const
+{
+  return g == other.g && index == other.index;
+}

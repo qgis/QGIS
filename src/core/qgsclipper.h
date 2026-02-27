@@ -170,8 +170,7 @@ class CORE_EXPORT QgsClipper
     static inline void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
     static inline void trimPolygonToBoundary(
-      const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ, QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect,
-      Boundary boundary, double boundaryValue
+      const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ, QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect, Boundary boundary, double boundaryValue
     );
 
     // Determines if a point is inside or outside the given boundary
@@ -415,8 +414,7 @@ inline void QgsClipper::trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF
 }
 
 inline void QgsClipper::trimPolygonToBoundary(
-  const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ, QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect, Boundary boundary,
-  double boundaryValue
+  const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ, QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect, Boundary boundary, double boundaryValue
 )
 {
   const double len = inX.length();

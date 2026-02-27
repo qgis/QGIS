@@ -72,13 +72,25 @@ void QgsStacParser::setData( const QByteArray &data )
   }
 }
 
-void QgsStacParser::setBaseUrl( const QUrl &url ) { mBaseUrl = url; }
+void QgsStacParser::setBaseUrl( const QUrl &url )
+{
+  mBaseUrl = url;
+}
 
-Qgis::StacObjectType QgsStacParser::type() const { return mType; }
+Qgis::StacObjectType QgsStacParser::type() const
+{
+  return mType;
+}
 
-QString QgsStacParser::error() const { return mError; }
+QString QgsStacParser::error() const
+{
+  return mError;
+}
 
-std::unique_ptr<QgsStacCatalog> QgsStacParser::catalog() { return parseCatalog( mData ); }
+std::unique_ptr<QgsStacCatalog> QgsStacParser::catalog()
+{
+  return parseCatalog( mData );
+}
 
 std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::json &data )
 {
@@ -131,7 +143,10 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
   }
 }
 
-std::unique_ptr<QgsStacCollection> QgsStacParser::collection() { return parseCollection( mData ); }
+std::unique_ptr<QgsStacCollection> QgsStacParser::collection()
+{
+  return parseCollection( mData );
+}
 
 std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohmann::json &data )
 {
@@ -271,7 +286,10 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
   }
 }
 
-std::unique_ptr<QgsStacItem> QgsStacParser::item() { return parseItem( mData ); }
+std::unique_ptr<QgsStacItem> QgsStacParser::item()
+{
+  return parseItem( mData );
+}
 
 std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &data )
 {
@@ -369,7 +387,9 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
       linkUrl = mBaseUrl.resolved( linkUrl );
 
     const QgsStacLink
-      l( linkUrl.toString(), QString::fromStdString( link.at( "rel" ) ), link.contains( "type" ) ? getString( link["type"] ) : QString(),
+      l( linkUrl.toString(),
+         QString::fromStdString( link.at( "rel" ) ),
+         link.contains( "type" ) ? getString( link["type"] ) : QString(),
          link.contains( "title" ) ? getString( link["title"] ) : QString() );
     links.append( l );
   }
@@ -387,8 +407,11 @@ QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
       assetUrl = mBaseUrl.resolved( assetUrl );
 
     const QgsStacAsset
-      a( assetUrl.toString(), value.contains( "title" ) ? getString( value["title"] ) : QString(), value.contains( "description" ) ? getString( value["description"] ) : QString(),
-         value.contains( "type" ) ? getString( value["type"] ) : QString(), value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
+      a( assetUrl.toString(),
+         value.contains( "title" ) ? getString( value["title"] ) : QString(),
+         value.contains( "description" ) ? getString( value["description"] ) : QString(),
+         value.contains( "type" ) ? getString( value["type"] ) : QString(),
+         value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
     assets.insert( QString::fromStdString( asset.key() ), a );
   }
   return assets;
@@ -422,7 +445,10 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   return true;
 }
 
-QString QgsStacParser::getString( const nlohmann::json &data ) { return data.is_null() ? QString() : QString::fromStdString( data ); }
+QString QgsStacParser::getString( const nlohmann::json &data )
+{
+  return data.is_null() ? QString() : QString::fromStdString( data );
+}
 
 std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
 {

@@ -117,7 +117,10 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
   return element;
 }
 
-QgsAbstractTerrainProvider *QgsProjectElevationProperties::terrainProvider() { return mTerrainProvider.get(); }
+QgsAbstractTerrainProvider *QgsProjectElevationProperties::terrainProvider()
+{
+  return mTerrainProvider.get();
+}
 
 void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvider *provider )
 {

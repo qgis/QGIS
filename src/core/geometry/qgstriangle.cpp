@@ -27,7 +27,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTriangle::QgsTriangle() { mWkbType = Qgis::WkbType::Triangle; }
+QgsTriangle::QgsTriangle()
+{
+  mWkbType = Qgis::WkbType::Triangle;
+}
 
 QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
@@ -86,9 +89,15 @@ bool QgsTriangle::operator==( const QgsAbstractGeometry &other ) const
   return ( ( vertexAt( 0 ) == otherTriangle->vertexAt( 0 ) ) && ( vertexAt( 1 ) == otherTriangle->vertexAt( 1 ) ) && ( vertexAt( 2 ) == otherTriangle->vertexAt( 2 ) ) );
 }
 
-bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const { return !operator==( other ); }
+bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
+{
+  return !operator==( other );
+}
 
-QString QgsTriangle::geometryType() const { return u"Triangle"_s; }
+QString QgsTriangle::geometryType() const
+{
+  return u"Triangle"_s;
+}
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 {
@@ -103,7 +112,10 @@ void QgsTriangle::clear()
   mWkbType = Qgis::WkbType::Triangle;
 }
 
-QgsTriangle *QgsTriangle::clone() const { return new QgsTriangle( *this ); }
+QgsTriangle *QgsTriangle::clone() const
+{
+  return new QgsTriangle( *this );
+}
 
 bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
@@ -226,7 +238,10 @@ QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString
   return elemTriangle;
 }
 
-QgsPolygon *QgsTriangle::surfaceToPolygon() const { return toPolygon(); }
+QgsPolygon *QgsTriangle::surfaceToPolygon() const
+{
+  return toPolygon();
+}
 
 QgsCurvePolygon *QgsTriangle::toCurveType() const
 {
@@ -236,7 +251,10 @@ QgsCurvePolygon *QgsTriangle::toCurveType() const
   return curvePolygon.release();
 }
 
-void QgsTriangle::addInteriorRing( QgsCurve *ring ) { delete ring; }
+void QgsTriangle::addInteriorRing( QgsCurve *ring )
+{
+  delete ring;
+}
 
 bool QgsTriangle::deleteVertex( QgsVertexId position )
 {
@@ -337,7 +355,10 @@ QgsCurve *QgsTriangle::boundary() const
   return mExteriorRing->clone();
 }
 
-QgsPoint QgsTriangle::vertexAt( QgsVertexId id ) const { return QgsPolygon::vertexAt( id ); }
+QgsPoint QgsTriangle::vertexAt( QgsVertexId id ) const
+{
+  return QgsPolygon::vertexAt( id );
+}
 
 QgsPoint QgsTriangle::vertexAt( int atVertex ) const
 {

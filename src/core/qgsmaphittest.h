@@ -164,8 +164,15 @@ class CORE_EXPORT QgsMapHitTest
      * \note not available in Python bindings
      */
     void runHitTestFeatureSource(
-      QgsAbstractFeatureSource *source, const QString &layerId, const QgsFields &fields, const QgsFeatureRenderer *renderer, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey,
-      QgsRenderContext &context, QgsFeedback *feedback, const QgsGeometry &visibleExtent
+      QgsAbstractFeatureSource *source,
+      const QString &layerId,
+      const QgsFields &fields,
+      const QgsFeatureRenderer *renderer,
+      SymbolSet &usedSymbols,
+      SymbolSet &usedSymbolsRuleKey,
+      QgsRenderContext &context,
+      QgsFeedback *feedback,
+      const QgsGeometry &visibleExtent
     );
 
     /**
@@ -181,8 +188,14 @@ class CORE_EXPORT QgsMapHitTest
      * \note not available in Python bindings
      */
     void runHitTestRasterSource(
-      QgsRasterDataProvider *provider, const QString &layerId, const int band, const QgsRasterMinMaxOrigin minMaxOrigin, const Qgis::RasterRangeLimit rangeLimit, const QgsRenderContext &context,
-      QgsFeedback *feedback, const QgsGeometry &visibleExtent
+      QgsRasterDataProvider *provider,
+      const QString &layerId,
+      const int band,
+      const QgsRasterMinMaxOrigin minMaxOrigin,
+      const Qgis::RasterRangeLimit rangeLimit,
+      const QgsRenderContext &context,
+      QgsFeedback *feedback,
+      const QgsGeometry &visibleExtent
     );
 
     /**

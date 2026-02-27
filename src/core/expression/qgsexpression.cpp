@@ -47,7 +47,10 @@ QRecursiveMutex QgsExpression::sFunctionsMutex;
 QMap< QString, int> QgsExpression::sFunctionIndexMap;
 
 ///@cond PRIVATE
-HelpTextHash &QgsExpression::functionHelpTexts() { return sFunctionHelpTexts; }
+HelpTextHash &QgsExpression::functionHelpTexts()
+{
+  return sFunctionHelpTexts;
+}
 ///@endcond
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
@@ -75,7 +78,10 @@ QString QgsExpression::expression() const
     return dump();
 }
 
-QString QgsExpression::quotedColumnRef( QString name ) { return u"\"%1\""_s.arg( name.replace( '\"', "\"\""_L1 ) ); }
+QString QgsExpression::quotedColumnRef( QString name )
+{
+  return u"\"%1\""_s.arg( name.replace( '\"', "\"\""_L1 ) );
+}
 
 QString QgsExpression::quotedString( QString text )
 {
@@ -86,7 +92,10 @@ QString QgsExpression::quotedString( QString text )
   return u"'%1'"_s.arg( text );
 }
 
-QString QgsExpression::quotedValue( const QVariant &value ) { return quotedValue( value, static_cast<QMetaType::Type>( value.userType() ) ); }
+QString QgsExpression::quotedValue( const QVariant &value )
+{
+  return quotedValue( value, static_cast<QMetaType::Type>( value.userType() ) );
+}
 
 QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type )
 {
@@ -122,9 +131,15 @@ QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type 
   }
 }
 
-QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type ) { return quotedValue( value, QgsVariantUtils::variantTypeToMetaType( type ) ); }
+QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
+{
+  return quotedValue( value, QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
-bool QgsExpression::isFunctionName( const QString &name ) { return functionIndex( name ) != -1; }
+bool QgsExpression::isFunctionName( const QString &name )
+{
+  return functionIndex( name ) != -1;
+}
 
 int QgsExpression::functionIndex( const QString &name )
 {
@@ -157,7 +172,10 @@ int QgsExpression::functionIndex( const QString &name )
   return -1;
 }
 
-int QgsExpression::functionCount() { return Functions().size(); }
+int QgsExpression::functionCount()
+{
+  return Functions().size();
+}
 
 
 QgsExpression::QgsExpression( const QString &expr )
@@ -189,7 +207,10 @@ QgsExpression &QgsExpression::operator=( const QgsExpression &other )
   return *this;
 }
 
-QgsExpression::operator QString() const { return d->mExp; }
+QgsExpression::operator QString() const
+{
+  return d->mExp;
+}
 
 QgsExpression::QgsExpression()
   : d( new QgsExpressionPrivate )
@@ -202,18 +223,30 @@ QgsExpression::~QgsExpression()
     delete d;
 }
 
-bool QgsExpression::operator==( const QgsExpression &other ) const { return ( d == other.d || d->mExp == other.d->mExp ); }
+bool QgsExpression::operator==( const QgsExpression &other ) const
+{
+  return ( d == other.d || d->mExp == other.d->mExp );
+}
 
-bool QgsExpression::isValid() const { return d->mRootNode.get(); }
+bool QgsExpression::isValid() const
+{
+  return d->mRootNode.get();
+}
 
-bool QgsExpression::hasParserError() const { return d->mParserErrors.count() > 0; }
+bool QgsExpression::hasParserError() const
+{
+  return d->mParserErrors.count() > 0;
+}
 
 QString QgsExpression::parserErrorString() const
 {
   return d->mParserErrorString.replace( "syntax error, unexpected end of file", tr( "Incomplete expression. You might not have finished the full expression." ) );
 }
 
-QList<QgsExpression::ParserError> QgsExpression::parserErrors() const { return d->mParserErrors; }
+QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
+{
+  return d->mParserErrors;
+}
 
 QSet<QString> QgsExpression::referencedColumns() const
 {
@@ -379,11 +412,20 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
   return d->mRootNode->eval( this, context );
 }
 
-bool QgsExpression::hasEvalError() const { return !d->mEvalErrorString.isNull(); }
+bool QgsExpression::hasEvalError() const
+{
+  return !d->mEvalErrorString.isNull();
+}
 
-QString QgsExpression::evalErrorString() const { return d->mEvalErrorString; }
+QString QgsExpression::evalErrorString() const
+{
+  return d->mEvalErrorString;
+}
 
-void QgsExpression::setEvalErrorString( const QString &str ) { d->mEvalErrorString = str; }
+void QgsExpression::setEvalErrorString( const QString &str )
+{
+  d->mEvalErrorString = str;
+}
 
 QString QgsExpression::dump() const
 {
@@ -406,13 +448,25 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   return d->mCalc.get();
 }
 
-Qgis::DistanceUnit QgsExpression::distanceUnits() const { return d->mDistanceUnit; }
+Qgis::DistanceUnit QgsExpression::distanceUnits() const
+{
+  return d->mDistanceUnit;
+}
 
-void QgsExpression::setDistanceUnits( Qgis::DistanceUnit unit ) { d->mDistanceUnit = unit; }
+void QgsExpression::setDistanceUnits( Qgis::DistanceUnit unit )
+{
+  d->mDistanceUnit = unit;
+}
 
-Qgis::AreaUnit QgsExpression::areaUnits() const { return d->mAreaUnit; }
+Qgis::AreaUnit QgsExpression::areaUnits() const
+{
+  return d->mAreaUnit;
+}
 
-void QgsExpression::setAreaUnits( Qgis::AreaUnit unit ) { d->mAreaUnit = unit; }
+void QgsExpression::setAreaUnits( Qgis::AreaUnit unit )
+{
+  d->mAreaUnit = unit;
+}
 
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea )
 {
@@ -838,17 +892,19 @@ void QgsExpression::buildVariableHelp()
 
   // map tool capture variables
   sVariableHelpTexts()->insert(
-    u"snapping_results"_s, QCoreApplication::translate(
-                             "variable_help", "<p>An array with an item for each snapped point.</p>"
-                                              "<p>Each item is a map with the following keys:</p>"
-                                              "<dl>"
-                                              "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
-                                              "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
-                                              "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
-                                              "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
-                                              "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
-                                              "</dl>"
-                           )
+    u"snapping_results"_s,
+    QCoreApplication::translate(
+      "variable_help",
+      "<p>An array with an item for each snapped point.</p>"
+      "<p>Each item is a map with the following keys:</p>"
+      "<dl>"
+      "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
+      "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
+      "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
+      "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
+      "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
+      "</dl>"
+    )
   );
 
 
@@ -901,24 +957,28 @@ void QgsExpression::buildVariableHelp()
 
   //parent form context variable
   sVariableHelpTexts()->insert(
-    u"current_parent_geometry"_s, QCoreApplication::translate(
-                                    "current_parent_geometry", "Only usable in an embedded form context, "
-                                                               "represents the geometry of the feature currently being edited in the parent form.\n"
-                                                               "Can be used in a form/row context to filter the related features using a value "
-                                                               "from the feature currently edited in the parent form, to make sure that the filter "
-                                                               "still works with standalone forms it is recommended to wrap this variable in a "
-                                                               "'coalesce()'."
-                                  )
+    u"current_parent_geometry"_s,
+    QCoreApplication::translate(
+      "current_parent_geometry",
+      "Only usable in an embedded form context, "
+      "represents the geometry of the feature currently being edited in the parent form.\n"
+      "Can be used in a form/row context to filter the related features using a value "
+      "from the feature currently edited in the parent form, to make sure that the filter "
+      "still works with standalone forms it is recommended to wrap this variable in a "
+      "'coalesce()'."
+    )
   );
   sVariableHelpTexts()->insert(
-    u"current_parent_feature"_s, QCoreApplication::translate(
-                                   "current_parent_feature", "Only usable in an embedded form context, "
-                                                             "represents the feature currently being edited in the parent form.\n"
-                                                             "Can be used in a form/row context to filter the related features using a value "
-                                                             "from the feature currently edited in the parent form, to make sure that the filter "
-                                                             "still works with standalone forms it is recommended to wrap this variable in a "
-                                                             "'coalesce()'."
-                                 )
+    u"current_parent_feature"_s,
+    QCoreApplication::translate(
+      "current_parent_feature",
+      "Only usable in an embedded form context, "
+      "represents the feature currently being edited in the parent form.\n"
+      "Can be used in a form/row context to filter the related features using a value "
+      "from the feature currently edited in the parent form, to make sure that the filter "
+      "still works with standalone forms it is recommended to wrap this variable in a "
+      "'coalesce()'."
+    )
   );
 
   //form variable
@@ -1422,9 +1482,15 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
   return true;
 }
 
-const QgsExpressionNode *QgsExpression::rootNode() const { return d->mRootNode.get(); }
+const QgsExpressionNode *QgsExpression::rootNode() const
+{
+  return d->mRootNode.get();
+}
 
-bool QgsExpression::isField() const { return d->mRootNode && d->mRootNode.get()->nodeType() == QgsExpressionNode::ntColumnRef; }
+bool QgsExpression::isField() const
+{
+  return d->mRootNode && d->mRootNode.get()->nodeType() == QgsExpressionNode::ntColumnRef;
+}
 
 int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer )
 {

@@ -118,8 +118,13 @@ Manages QGIS Server properties for WMS dimensions.
         };
 
         explicit WmsDimensionInfo(
-          const QString &dimName, const QString &dimFieldName, const QString &dimEndFieldName = QString(), const QString &dimUnits = QString(), const QString &dimUnitSymbol = QString(),
-          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues, const QVariant &dimReferenceValue = QVariant()
+          const QString &dimName,
+          const QString &dimFieldName,
+          const QString &dimEndFieldName = QString(),
+          const QString &dimUnits = QString(),
+          const QString &dimUnitSymbol = QString(),
+          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          const QVariant &dimReferenceValue = QVariant()
         );
 %Docstring
 Constructor for WmsDimensionInfo.

@@ -38,9 +38,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCurvePolygon::QgsCurvePolygon() { mWkbType = Qgis::WkbType::CurvePolygon; }
+QgsCurvePolygon::QgsCurvePolygon()
+{
+  mWkbType = Qgis::WkbType::CurvePolygon;
+}
 
-QgsCurvePolygon::~QgsCurvePolygon() { clear(); }
+QgsCurvePolygon::~QgsCurvePolygon()
+{
+  clear();
+}
 
 QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 {
@@ -49,9 +55,15 @@ QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
   return result.release();
 }
 
-QString QgsCurvePolygon::geometryType() const { return u"CurvePolygon"_s; }
+QString QgsCurvePolygon::geometryType() const
+{
+  return u"CurvePolygon"_s;
+}
 
-int QgsCurvePolygon::dimension() const { return 2; }
+int QgsCurvePolygon::dimension() const
+{
+  return 2;
+}
 
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   : QgsSurface( p )
@@ -92,7 +104,10 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
   return *this;
 }
 
-QgsCurvePolygon *QgsCurvePolygon::clone() const { return new QgsCurvePolygon( *this ); }
+QgsCurvePolygon *QgsCurvePolygon::clone() const
+{
+  return new QgsCurvePolygon( *this );
+}
 
 void QgsCurvePolygon::clear()
 {
@@ -867,7 +882,10 @@ void QgsCurvePolygon::removeInvalidRings()
   mInteriorRings = validRings;
 }
 
-void QgsCurvePolygon::forceRHR() { forceClockwise(); }
+void QgsCurvePolygon::forceRHR()
+{
+  forceClockwise();
+}
 
 void QgsCurvePolygon::forceClockwise()
 {
@@ -1285,7 +1303,10 @@ bool QgsCurvePolygon::hasCurvedSegments() const
   return false;
 }
 
-QgsAbstractGeometry *QgsCurvePolygon::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const { return toPolygon( tolerance, toleranceType ); }
+QgsAbstractGeometry *QgsCurvePolygon::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  return toPolygon( tolerance, toleranceType );
+}
 
 double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 {
@@ -1299,13 +1320,25 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
   return ring->vertexAngle( vertex );
 }
 
-int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const { return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount(); }
+int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
+{
+  return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
+}
 
-int QgsCurvePolygon::ringCount( int ) const { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
+int QgsCurvePolygon::ringCount( int ) const
+{
+  return ( nullptr != mExteriorRing ) + mInteriorRings.size();
+}
 
-int QgsCurvePolygon::partCount() const { return ringCount() > 0 ? 1 : 0; }
+int QgsCurvePolygon::partCount() const
+{
+  return ringCount() > 0 ? 1 : 0;
+}
 
-QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const { return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id ); }
+QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
+{
+  return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
+}
 
 double QgsCurvePolygon::segmentLength( QgsVertexId startVertex ) const
 {
@@ -1395,7 +1428,10 @@ void QgsCurvePolygon::swapXy()
   clearCache();
 }
 
-QgsCurvePolygon *QgsCurvePolygon::toCurveType() const { return clone(); }
+QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
+{
+  return clone();
+}
 
 bool QgsCurvePolygon::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
@@ -1450,7 +1486,10 @@ void QgsCurvePolygon::transformVertices( const std::function<QgsPoint( const Qgs
   clearCache();
 }
 
-int QgsCurvePolygon::childCount() const { return 1 + mInteriorRings.count(); }
+int QgsCurvePolygon::childCount() const
+{
+  return 1 + mInteriorRings.count();
+}
 
 QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
 {

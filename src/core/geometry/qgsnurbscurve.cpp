@@ -44,7 +44,10 @@ using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 
-QgsNurbsCurve::QgsNurbsCurve() { mWkbType = Qgis::WkbType::NurbsCurve; }
+QgsNurbsCurve::QgsNurbsCurve()
+{
+  mWkbType = Qgis::WkbType::NurbsCurve;
+}
 
 QgsNurbsCurve::QgsNurbsCurve( const QVector<QgsPoint> &controlPoints, int degree, const QVector<double> &knots, const QVector<double> &weights )
   : mControlPoints( controlPoints )
@@ -65,7 +68,10 @@ QgsNurbsCurve::QgsNurbsCurve( const QVector<QgsPoint> &controlPoints, int degree
   }
 }
 
-QgsNurbsCurve *QgsNurbsCurve::clone() const { return new QgsNurbsCurve( *this ); }
+QgsNurbsCurve *QgsNurbsCurve::clone() const
+{
+  return new QgsNurbsCurve( *this );
+}
 
 bool QgsNurbsCurve::isBezier() const
 {
@@ -106,7 +112,10 @@ bool QgsNurbsCurve::isBSpline() const
   return true;
 }
 
-bool QgsNurbsCurve::isRational() const { return !isBSpline(); }
+bool QgsNurbsCurve::isRational() const
+{
+  return !isBSpline();
+}
 
 bool QgsNurbsCurve::isPolyBezier() const
 {
@@ -380,7 +389,10 @@ QPolygonF QgsNurbsCurve::asQPolygonF() const
   return line ? line->asQPolygonF() : QPolygonF();
 }
 
-QgsPoint QgsNurbsCurve::endPoint() const { return mControlPoints.isEmpty() ? QgsPoint() : mControlPoints.last(); }
+QgsPoint QgsNurbsCurve::endPoint() const
+{
+  return mControlPoints.isEmpty() ? QgsPoint() : mControlPoints.last();
+}
 
 bool QgsNurbsCurve::equals( const QgsCurve &other ) const
 {
@@ -432,7 +444,10 @@ QgsPoint *QgsNurbsCurve::interpolatePoint( double distance ) const
   return line->interpolatePoint( distance );
 }
 
-int QgsNurbsCurve::numPoints() const { return mControlPoints.size(); }
+int QgsNurbsCurve::numPoints() const
+{
+  return mControlPoints.size();
+}
 
 bool QgsNurbsCurve::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
@@ -512,7 +527,10 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>> QgsNurbsCurve::
   return line->splitCurveAtVertex( index );
 }
 
-QgsPoint QgsNurbsCurve::startPoint() const { return mControlPoints.isEmpty() ? QgsPoint() : mControlPoints.first(); }
+QgsPoint QgsNurbsCurve::startPoint() const
+{
+  return mControlPoints.isEmpty() ? QgsPoint() : mControlPoints.first();
+}
 
 void QgsNurbsCurve::sumUpArea( double &sum ) const
 {
@@ -711,7 +729,10 @@ QVector<double> QgsNurbsCurve::generateKnotsForBezierConversion( int nAnchors, i
   return knots;
 }
 
-void QgsNurbsCurve::generateUniformKnots() { mKnots = generateUniformKnots( mControlPoints.size(), mDegree ); }
+void QgsNurbsCurve::generateUniformKnots()
+{
+  mKnots = generateUniformKnots( mControlPoints.size(), mDegree );
+}
 
 bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
 {
@@ -1110,15 +1131,30 @@ bool QgsNurbsCurve::fuzzyEqual( const QgsAbstractGeometry &other, double epsilon
   return true;
 }
 
-bool QgsNurbsCurve::fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon ) const { return fuzzyEqual( other, epsilon ); }
+bool QgsNurbsCurve::fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon ) const
+{
+  return fuzzyEqual( other, epsilon );
+}
 
-QString QgsNurbsCurve::geometryType() const { return u"NurbsCurve"_s; }
+QString QgsNurbsCurve::geometryType() const
+{
+  return u"NurbsCurve"_s;
+}
 
-bool QgsNurbsCurve::hasCurvedSegments() const { return true; }
+bool QgsNurbsCurve::hasCurvedSegments() const
+{
+  return true;
+}
 
-int QgsNurbsCurve::partCount() const { return 1; }
+int QgsNurbsCurve::partCount() const
+{
+  return 1;
+}
 
-QgsCurve *QgsNurbsCurve::toCurveType() const { return new QgsNurbsCurve( *this ); }
+QgsCurve *QgsNurbsCurve::toCurveType() const
+{
+  return new QgsNurbsCurve( *this );
+}
 
 QgsPoint QgsNurbsCurve::vertexAt( QgsVertexId id ) const
 {
@@ -1134,7 +1170,10 @@ QgsPoint QgsNurbsCurve::vertexAt( QgsVertexId id ) const
   return mControlPoints[idx];
 }
 
-int QgsNurbsCurve::vertexCount( int part, int ring ) const { return ( part == 0 && ring == 0 ) ? mControlPoints.size() : 0; }
+int QgsNurbsCurve::vertexCount( int part, int ring ) const
+{
+  return ( part == 0 && ring == 0 ) ? mControlPoints.size() : 0;
+}
 
 int QgsNurbsCurve::vertexNumberFromVertexId( QgsVertexId id ) const
 {
@@ -1347,7 +1386,10 @@ bool QgsNurbsCurve::transform( QgsAbstractGeometryTransformer *transformer, QgsF
   return true;
 }
 
-QgsAbstractGeometry *QgsNurbsCurve::createEmptyWithSameType() const { return new QgsNurbsCurve(); }
+QgsAbstractGeometry *QgsNurbsCurve::createEmptyWithSameType() const
+{
+  return new QgsNurbsCurve();
+}
 
 double QgsNurbsCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
@@ -1395,7 +1437,10 @@ void QgsNurbsCurve::transform( const QTransform &t, double zTranslate, double zS
   clearCache();
 }
 
-QgsRectangle QgsNurbsCurve::boundingBox() const { return boundingBox3D().toRectangle(); }
+QgsRectangle QgsNurbsCurve::boundingBox() const
+{
+  return boundingBox3D().toRectangle();
+}
 
 QgsBox3D QgsNurbsCurve::boundingBox3D() const
 {
@@ -1683,9 +1728,15 @@ QString QgsNurbsCurve::asKml( int precision ) const
   return line->asKml( precision );
 }
 
-int QgsNurbsCurve::dimension() const { return 1; }
+int QgsNurbsCurve::dimension() const
+{
+  return 1;
+}
 
-bool QgsNurbsCurve::isEmpty() const { return mControlPoints.isEmpty(); }
+bool QgsNurbsCurve::isEmpty() const
+{
+  return mControlPoints.isEmpty();
+}
 
 void QgsNurbsCurve::clear()
 {
@@ -1696,9 +1747,15 @@ void QgsNurbsCurve::clear()
   clearCache();
 }
 
-bool QgsNurbsCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) const { return boundingBox().intersects( rectangle ); }
+bool QgsNurbsCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return boundingBox().intersects( rectangle );
+}
 
-bool QgsNurbsCurve::boundingBoxIntersects( const QgsBox3D &box3d ) const { return boundingBox3D().intersects( box3d ); }
+bool QgsNurbsCurve::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return boundingBox3D().intersects( box3d );
+}
 
 QgsPoint QgsNurbsCurve::centroid() const
 {

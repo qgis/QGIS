@@ -46,7 +46,10 @@ bool QgsMbTiles::open()
   return true;
 }
 
-bool QgsMbTiles::isOpen() const { return bool( mDatabase ); }
+bool QgsMbTiles::isOpen() const
+{
+  return bool( mDatabase );
+}
 
 bool QgsMbTiles::create()
 {

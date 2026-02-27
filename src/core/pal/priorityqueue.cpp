@@ -36,9 +36,15 @@
 
 using namespace pal;
 
-bool smaller( double l, double r ) { return l > r; }
+bool smaller( double l, double r )
+{
+  return l > r;
+}
 
-bool bigger( double l, double r ) { return l < r; }
+bool bigger( double l, double r )
+{
+  return l < r;
+}
 
 // O (size log size)
 PriorityQueue::PriorityQueue( int n, int maxId, bool min )
@@ -61,9 +67,13 @@ PriorityQueue::PriorityQueue( int n, int maxId, bool min )
     greater = bigger;
 }
 
-PriorityQueue::~PriorityQueue() {}
+PriorityQueue::~PriorityQueue()
+{}
 
-int PriorityQueue::getSize() const { return size; }
+int PriorityQueue::getSize() const
+{
+  return size;
+}
 
 // O(log size)
 int PriorityQueue::getBest()
@@ -90,9 +100,15 @@ int PriorityQueue::getBest()
 }
 
 
-bool PriorityQueue::isIn( int key ) const { return key <= maxId && pos[key] >= 0; }
+bool PriorityQueue::isIn( int key ) const
+{
+  return key <= maxId && pos[key] >= 0;
+}
 
-int PriorityQueue::getId( int key ) const { return key <= maxId ? pos[key] : -1; }
+int PriorityQueue::getId( int key ) const
+{
+  return key <= maxId ? pos[key] : -1;
+}
 
 void PriorityQueue::insert( int key, double p )
 {

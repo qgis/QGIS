@@ -125,7 +125,10 @@ int QgsNewsFeedModel::rowCount( const QModelIndex &parent ) const
   return 0;
 }
 
-int QgsNewsFeedModel::columnCount( const QModelIndex & ) const { return 1; }
+int QgsNewsFeedModel::columnCount( const QModelIndex & ) const
+{
+  return 1;
+}
 
 void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {

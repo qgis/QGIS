@@ -25,7 +25,10 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsCheckBoxFieldFormatter::id() const { return u"CheckBox"_s; }
+QString QgsCheckBoxFieldFormatter::id() const
+{
+  return u"CheckBox"_s;
+}
 
 QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {

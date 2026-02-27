@@ -239,17 +239,35 @@ void QgsNetworkAccessManager::setAuthHandler( std::unique_ptr<QgsNetworkAuthenti
   mAuthHandler = std::move( handler );
 }
 
-void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory ) { mProxyFactories.insert( 0, factory ); }
+void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
+{
+  mProxyFactories.insert( 0, factory );
+}
 
-void QgsNetworkAccessManager::removeProxyFactory( QNetworkProxyFactory *factory ) { mProxyFactories.removeAll( factory ); }
+void QgsNetworkAccessManager::removeProxyFactory( QNetworkProxyFactory *factory )
+{
+  mProxyFactories.removeAll( factory );
+}
 
-const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() const { return mProxyFactories; }
+const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() const
+{
+  return mProxyFactories;
+}
 
-QStringList QgsNetworkAccessManager::excludeList() const { return mExcludedURLs; }
+QStringList QgsNetworkAccessManager::excludeList() const
+{
+  return mExcludedURLs;
+}
 
-QStringList QgsNetworkAccessManager::noProxyList() const { return mNoProxyURLs; }
+QStringList QgsNetworkAccessManager::noProxyList() const
+{
+  return mNoProxyURLs;
+}
 
-const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const { return mFallbackProxy; }
+const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
+{
+  return mFallbackProxy;
+}
 
 void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs )
 {
@@ -275,7 +293,8 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
   // remove empty records from excludes list -- these would otherwise match ANY url, so the proxy would always be skipped!
   mExcludedURLs.erase(
     std::remove_if(
-      mExcludedURLs.begin(), mExcludedURLs.end(), // clazy:exclude=detaching-member
+      mExcludedURLs.begin(),
+      mExcludedURLs.end(), // clazy:exclude=detaching-member
       []( const QString &url ) { return url.trimmed().isEmpty(); }
     ),
     mExcludedURLs.end()
@@ -284,7 +303,8 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
   mNoProxyURLs = noProxyURLs;
   mNoProxyURLs.erase(
     std::remove_if(
-      mNoProxyURLs.begin(), mNoProxyURLs.end(), // clazy:exclude=detaching-member
+      mNoProxyURLs.begin(),
+      mNoProxyURLs.end(), // clazy:exclude=detaching-member
       []( const QString &url ) { return url.trimmed().isEmpty(); }
     ),
     mNoProxyURLs.end()
@@ -411,7 +431,10 @@ void QgsNetworkAccessManager::abortRequest()
   emit requestTimedOut( reply );
 }
 
-void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply ) { emit finished( QgsNetworkReplyContent( reply ) ); }
+void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
+{
+  emit finished( QgsNetworkReplyContent( reply ) );
+}
 
 void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
@@ -421,7 +444,10 @@ void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qin
   }
 }
 
-int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply ) { return reply->property( "requestId" ).toInt(); }
+int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply )
+{
+  return reply->property( "requestId" ).toInt();
+}
 
 void QgsNetworkAccessManager::pauseTimeout( QNetworkReply *reply )
 {
@@ -767,9 +793,15 @@ void QgsNetworkAccessManager::syncCookies( const QList<QNetworkCookie> &cookies 
   }
 }
 
-int QgsNetworkAccessManager::timeout() { return settingsNetworkTimeout->value(); }
+int QgsNetworkAccessManager::timeout()
+{
+  return settingsNetworkTimeout->value();
+}
 
-void QgsNetworkAccessManager::setTimeout( const int time ) { settingsNetworkTimeout->setValue( time ); }
+void QgsNetworkAccessManager::setTimeout( const int time )
+{
+  settingsNetworkTimeout->setValue( time );
+}
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback, Qgis::NetworkRequestFlags flags )
 {
@@ -811,7 +843,8 @@ bool QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( const QString &
   const size_t prevCount = sCustomAdvancedPreprocessors.size();
   sCustomAdvancedPreprocessors.erase(
     std::remove_if(
-      sCustomAdvancedPreprocessors.begin(), sCustomAdvancedPreprocessors.end(),
+      sCustomAdvancedPreprocessors.begin(),
+      sCustomAdvancedPreprocessors.end(),
       [id]( std::pair< QString, std::function< void( QNetworkRequest *, int &, QByteArray * ) > > &a ) { return a.first == id; }
     ),
     sCustomAdvancedPreprocessors.end()
@@ -895,7 +928,10 @@ void QgsNetworkAuthenticationHandler::handleAuthRequestOpenBrowser( const QUrl &
   QgsDebugError( u"Network authentication required external browser to open URL %1, but no handler was in place"_s.arg( url.toString() ) );
 }
 
-void QgsNetworkAuthenticationHandler::handleAuthRequestCloseBrowser() { QgsDebugError( u"Network authentication required external browser closed, but no handler was in place"_s ); }
+void QgsNetworkAuthenticationHandler::handleAuthRequestCloseBrowser()
+{
+  QgsDebugError( u"Network authentication required external browser closed, but no handler was in place"_s );
+}
 
 // For QgsNetworkCookieJar
 #include "qgsnetworkaccessmanager.moc"

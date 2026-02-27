@@ -62,13 +62,25 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
   refreshAttributes();
 }
 
-int QgsLayoutItemAttributeTable::type() const { return QgsLayoutItemRegistry::LayoutAttributeTable; }
+int QgsLayoutItemAttributeTable::type() const
+{
+  return QgsLayoutItemRegistry::LayoutAttributeTable;
+}
 
-QIcon QgsLayoutItemAttributeTable::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s ); }
+QIcon QgsLayoutItemAttributeTable::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s );
+}
 
-QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout ) { return new QgsLayoutItemAttributeTable( layout ); }
+QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemAttributeTable( layout );
+}
 
-QString QgsLayoutItemAttributeTable::displayName() const { return tr( "<Attribute table frame>" ); }
+QString QgsLayoutItemAttributeTable::displayName() const
+{
+  return tr( "<Attribute table frame>" );
+}
 
 void QgsLayoutItemAttributeTable::setVectorLayer( QgsVectorLayer *layer )
 {
@@ -202,7 +214,10 @@ void QgsLayoutItemAttributeTable::disconnectCurrentMap()
   mMap = nullptr;
 }
 
-bool QgsLayoutItemAttributeTable::useConditionalStyling() const { return mUseConditionalStyling; }
+bool QgsLayoutItemAttributeTable::useConditionalStyling() const
+{
+  return mUseConditionalStyling;
+}
 
 void QgsLayoutItemAttributeTable::setUseConditionalStyling( bool useConditionalStyling )
 {
@@ -818,7 +833,8 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
       allowedColumns.erase(
         std::remove_if(
-          allowedColumns.begin(), allowedColumns.end(),
+          allowedColumns.begin(),
+          allowedColumns.end(),
           [&columnAttributesMap, &forbidden]( QgsLayoutTableColumn &c ) -> bool {
             for ( const auto &f : std::as_const( forbidden ) )
             {

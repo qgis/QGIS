@@ -30,8 +30,13 @@ Provides utility functions for working with mesh data.
 %End
   public:
     static QgsRasterBlock *exportRasterBlock(
-      const QgsMeshLayer &layer, const QgsMeshDatasetIndex &datasetIndex, const QgsCoordinateReferenceSystem &destinationCrs, const QgsCoordinateTransformContext &transformContext,
-      double mapUnitsPerPixel, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = 0
+      const QgsMeshLayer &layer,
+      const QgsMeshDatasetIndex &datasetIndex,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QgsCoordinateTransformContext &transformContext,
+      double mapUnitsPerPixel,
+      const QgsRectangle &extent,
+      QgsRasterBlockFeedback *feedback = 0
     ) /Factory/;
 %Docstring
 Exports mesh layer's dataset values as raster block

@@ -134,7 +134,10 @@ QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem,
   return r;
 }
 
-QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol() { return mClusterSymbol.get(); }
+QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol()
+{
+  return mClusterSymbol.get();
+}
 
 QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
@@ -183,7 +186,10 @@ bool QgsPointClusterRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) 
   return true;
 }
 
-void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol *symbol ) { mClusterSymbol.reset( symbol ); }
+void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol *symbol )
+{
+  mClusterSymbol.reset( symbol );
+}
 
 QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {

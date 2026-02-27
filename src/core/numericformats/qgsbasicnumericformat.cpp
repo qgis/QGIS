@@ -46,13 +46,23 @@ namespace QgsBasicNumericFormat_ns
   };
 } //namespace QgsBasicNumericFormat_ns
 
-QgsBasicNumericFormat::QgsBasicNumericFormat() {}
+QgsBasicNumericFormat::QgsBasicNumericFormat()
+{}
 
-QString QgsBasicNumericFormat::id() const { return u"basic"_s; }
+QString QgsBasicNumericFormat::id() const
+{
+  return u"basic"_s;
+}
 
-QString QgsBasicNumericFormat::visibleName() const { return QObject::tr( "Number" ); }
+QString QgsBasicNumericFormat::visibleName() const
+{
+  return QObject::tr( "Number" );
+}
 
-int QgsBasicNumericFormat::sortKey() { return 1; }
+int QgsBasicNumericFormat::sortKey()
+{
+  return 1;
+}
 
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -131,7 +141,10 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   return res;
 }
 
-QgsNumericFormat *QgsBasicNumericFormat::clone() const { return new QgsBasicNumericFormat( *this ); }
+QgsNumericFormat *QgsBasicNumericFormat::clone() const
+{
+  return new QgsBasicNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsBasicNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -164,30 +177,72 @@ void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration, 
   mDecimalSeparator = configuration.value( u"decimal_separator"_s, QChar() ).toChar();
 }
 
-int QgsBasicNumericFormat::numberDecimalPlaces() const { return mNumberDecimalPlaces; }
+int QgsBasicNumericFormat::numberDecimalPlaces() const
+{
+  return mNumberDecimalPlaces;
+}
 
-void QgsBasicNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces ) { mNumberDecimalPlaces = numberDecimalPlaces; }
+void QgsBasicNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces )
+{
+  mNumberDecimalPlaces = numberDecimalPlaces;
+}
 
-bool QgsBasicNumericFormat::showThousandsSeparator() const { return mShowThousandsSeparator; }
+bool QgsBasicNumericFormat::showThousandsSeparator() const
+{
+  return mShowThousandsSeparator;
+}
 
-void QgsBasicNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator ) { mShowThousandsSeparator = showThousandsSeparator; }
+void QgsBasicNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator )
+{
+  mShowThousandsSeparator = showThousandsSeparator;
+}
 
-bool QgsBasicNumericFormat::showPlusSign() const { return mShowPlusSign; }
+bool QgsBasicNumericFormat::showPlusSign() const
+{
+  return mShowPlusSign;
+}
 
-void QgsBasicNumericFormat::setShowPlusSign( bool showPlusSign ) { mShowPlusSign = showPlusSign; }
+void QgsBasicNumericFormat::setShowPlusSign( bool showPlusSign )
+{
+  mShowPlusSign = showPlusSign;
+}
 
-bool QgsBasicNumericFormat::showTrailingZeros() const { return mShowTrailingZeros; }
+bool QgsBasicNumericFormat::showTrailingZeros() const
+{
+  return mShowTrailingZeros;
+}
 
-void QgsBasicNumericFormat::setShowTrailingZeros( bool showTrailingZeros ) { mShowTrailingZeros = showTrailingZeros; }
+void QgsBasicNumericFormat::setShowTrailingZeros( bool showTrailingZeros )
+{
+  mShowTrailingZeros = showTrailingZeros;
+}
 
-QgsBasicNumericFormat::RoundingType QgsBasicNumericFormat::roundingType() const { return mRoundingType; }
+QgsBasicNumericFormat::RoundingType QgsBasicNumericFormat::roundingType() const
+{
+  return mRoundingType;
+}
 
-void QgsBasicNumericFormat::setRoundingType( QgsBasicNumericFormat::RoundingType type ) { mRoundingType = type; }
+void QgsBasicNumericFormat::setRoundingType( QgsBasicNumericFormat::RoundingType type )
+{
+  mRoundingType = type;
+}
 
-QChar QgsBasicNumericFormat::thousandsSeparator() const { return mThousandsSeparator; }
+QChar QgsBasicNumericFormat::thousandsSeparator() const
+{
+  return mThousandsSeparator;
+}
 
-void QgsBasicNumericFormat::setThousandsSeparator( QChar character ) { mThousandsSeparator = character; }
+void QgsBasicNumericFormat::setThousandsSeparator( QChar character )
+{
+  mThousandsSeparator = character;
+}
 
-QChar QgsBasicNumericFormat::decimalSeparator() const { return mDecimalSeparator; }
+QChar QgsBasicNumericFormat::decimalSeparator() const
+{
+  return mDecimalSeparator;
+}
 
-void QgsBasicNumericFormat::setDecimalSeparator( QChar character ) { mDecimalSeparator = character; }
+void QgsBasicNumericFormat::setDecimalSeparator( QChar character )
+{
+  mDecimalSeparator = character;
+}

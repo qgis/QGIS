@@ -842,8 +842,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns status message, which may indicate success or contain an error message
      */
     virtual QString loadNamedStyle(
-      const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
-      Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
+      const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
     );
 
 #ifndef SIP_RUN
@@ -2458,7 +2457,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString baseURI( PropertyType type ) const;
     QString saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories = AllStyleCategories );
     QString loadNamedProperty(
-      const QString &uri, QgsMapLayer::PropertyType type, bool &namedPropertyExists, bool &propertySuccessfullyLoaded, StyleCategories categories = AllStyleCategories,
+      const QString &uri,
+      QgsMapLayer::PropertyType type,
+      bool &namedPropertyExists,
+      bool &propertySuccessfullyLoaded,
+      StyleCategories categories = AllStyleCategories,
       Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
     );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );

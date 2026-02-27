@@ -43,7 +43,10 @@ QgsRasterLayerElevationProperties::QgsRasterLayerElevationProperties( QObject *p
 
 QgsRasterLayerElevationProperties::~QgsRasterLayerElevationProperties() = default;
 
-bool QgsRasterLayerElevationProperties::hasElevation() const { return mEnabled; }
+bool QgsRasterLayerElevationProperties::hasElevation() const
+{
+  return mEnabled;
+}
 
 QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -432,7 +435,10 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
   BUILTIN_UNREACHABLE
 }
 
-bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return mEnabled; }
+bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return mEnabled;
+}
 
 QgsMapLayerElevationProperties::Flags QgsRasterLayerElevationProperties::flags() const
 {
@@ -462,7 +468,10 @@ void QgsRasterLayerElevationProperties::setEnabled( bool enabled )
   emit profileGenerationPropertyChanged();
 }
 
-Qgis::RasterElevationMode QgsRasterLayerElevationProperties::mode() const { return mMode; }
+Qgis::RasterElevationMode QgsRasterLayerElevationProperties::mode() const
+{
+  return mMode;
+}
 
 void QgsRasterLayerElevationProperties::setMode( Qgis::RasterElevationMode mode )
 {
@@ -622,7 +631,10 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
   BUILTIN_UNREACHABLE
 }
 
-QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
+QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
 
 void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -631,7 +643,10 @@ void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
+QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const
+{
+  return mProfileFillSymbol.get();
+}
 
 void QgsRasterLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -650,7 +665,10 @@ void QgsRasterLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
   emit profileRenderingPropertyChanged();
 }
 
-double QgsRasterLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
+double QgsRasterLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
 
 void QgsRasterLayerElevationProperties::setElevationLimit( double limit )
 {
@@ -702,11 +720,25 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
   static const QStringList sPartialCandidates {
-    u"dem"_s, u"dtm"_s, u"dsm"_s, u"height"_s, u"elev"_s, u"srtm"_s, u"dted"_s,
+    u"dem"_s,
+    u"dtm"_s,
+    u"dsm"_s,
+    u"height"_s,
+    u"elev"_s,
+    u"srtm"_s,
+    u"dted"_s,
     // French hints
-    u"mne"_s, u"mnt"_s, u"mns"_s, u"rge"_s, u"alti"_s,
+    u"mne"_s,
+    u"mnt"_s,
+    u"mns"_s,
+    u"rge"_s,
+    u"alti"_s,
     // German hints
-    u"dhm"_s, u"dgm"_s, u"dom"_s, u"Höhe"_s, u"Hoehe"_s
+    u"dhm"_s,
+    u"dgm"_s,
+    u"dom"_s,
+    u"Höhe"_s,
+    u"Hoehe"_s
   };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
@@ -740,7 +772,10 @@ void QgsRasterLayerElevationProperties::setDefaultProfileFillSymbol( const QColo
   mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
 }
 
-QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const { return mRangePerBand; }
+QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const
+{
+  return mRangePerBand;
+}
 
 void QgsRasterLayerElevationProperties::setFixedRangePerBand( const QMap<int, QgsDoubleRange> &ranges )
 {
@@ -751,7 +786,10 @@ void QgsRasterLayerElevationProperties::setFixedRangePerBand( const QMap<int, Qg
   emit changed();
 }
 
-QgsDoubleRange QgsRasterLayerElevationProperties::fixedRange() const { return mFixedRange; }
+QgsDoubleRange QgsRasterLayerElevationProperties::fixedRange() const
+{
+  return mFixedRange;
+}
 
 void QgsRasterLayerElevationProperties::setFixedRange( const QgsDoubleRange &range )
 {

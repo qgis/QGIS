@@ -150,7 +150,10 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
   return uri.encodedUri();
 }
 
-QStringList QgsVectorTileProviderConnection::connectionList() { return QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items(); }
+QStringList QgsVectorTileProviderConnection::connectionList()
+{
+  return QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+}
 
 QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connection( const QString &name )
 {
@@ -175,7 +178,10 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   return conn;
 }
 
-void QgsVectorTileProviderConnection::deleteConnection( const QString &name ) { sTreeConnectionVectorTile->deleteItem( name ); }
+void QgsVectorTileProviderConnection::deleteConnection( const QString &name )
+{
+  sTreeConnectionVectorTile->deleteItem( name );
+}
 
 void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVectorTileProviderConnection::Data conn )
 {
@@ -200,9 +206,15 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   }
 }
 
-QString QgsVectorTileProviderConnection::selectedConnection() { return sTreeConnectionVectorTile->selectedItem(); }
+QString QgsVectorTileProviderConnection::selectedConnection()
+{
+  return sTreeConnectionVectorTile->selectedItem();
+}
 
-void QgsVectorTileProviderConnection::setSelectedConnection( const QString &name ) { sTreeConnectionVectorTile->setSelectedItem( name ); }
+void QgsVectorTileProviderConnection::setSelectedConnection( const QString &name )
+{
+  sTreeConnectionVectorTile->setSelectedItem( name );
+}
 
 
 QgsVectorTileProviderConnection::QgsVectorTileProviderConnection( const QString &name )
@@ -215,8 +227,14 @@ QgsVectorTileProviderConnection::QgsVectorTileProviderConnection( const QString 
   : QgsAbstractProviderConnection( uri, configuration )
 {}
 
-void QgsVectorTileProviderConnection::store( const QString &name ) const { addConnection( name, decodedUri( uri() ) ); }
+void QgsVectorTileProviderConnection::store( const QString &name ) const
+{
+  addConnection( name, decodedUri( uri() ) );
+}
 
-void QgsVectorTileProviderConnection::remove( const QString &name ) const { deleteConnection( name ); }
+void QgsVectorTileProviderConnection::remove( const QString &name ) const
+{
+  deleteConnection( name );
+}
 
 ///@endcond

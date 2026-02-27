@@ -28,7 +28,8 @@ using namespace Qt::StringLiterals;
 //constants
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = u"#!allattributes!#"_s;
 
-QgsFeatureRequest::QgsFeatureRequest() {}
+QgsFeatureRequest::QgsFeatureRequest()
+{}
 
 QgsFeatureRequest::~QgsFeatureRequest() = default;
 
@@ -215,7 +216,10 @@ QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
   return *this;
 }
 
-QgsRectangle QgsFeatureRequest::filterRect() const { return mFilterRect; }
+QgsRectangle QgsFeatureRequest::filterRect() const
+{
+  return mFilterRect;
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setDistanceWithin( const QgsGeometry &geometry, double distance )
 {
@@ -300,7 +304,10 @@ QgsFeatureRequest &QgsFeatureRequest::addOrderBy( const QString &expression, boo
   return *this;
 }
 
-QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const { return mOrderBy; }
+QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const
+{
+  return mOrderBy;
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
 {
@@ -327,7 +334,10 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setNoAttributes() { return setSubsetOfAttributes( QgsAttributeList() ); }
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
+{
+  return setSubsetOfAttributes( QgsAttributeList() );
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
@@ -379,11 +389,20 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
   return *this;
 }
 
-QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const { return mTransform; }
+QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const
+{
+  return mTransform;
+}
 
-QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
+{
+  return mCrs;
+}
 
-QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const { return mTransformContext; }
+QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
+{
+  return mTransformContext;
+}
 
 QgsCoordinateTransform QgsFeatureRequest::calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const
 {
@@ -469,7 +488,10 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   return true;
 }
 
-int QgsFeatureRequest::connectionTimeout() const { return mTimeout; }
+int QgsFeatureRequest::connectionTimeout() const
+{
+  return mTimeout;
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
@@ -477,7 +499,10 @@ QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeou
   return *this;
 }
 
-int QgsFeatureRequest::timeout() const { return mTimeout; }
+int QgsFeatureRequest::timeout() const
+{
+  return mTimeout;
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
 {
@@ -485,7 +510,10 @@ QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
   return *this;
 }
 
-bool QgsFeatureRequest::requestMayBeNested() const { return mRequestMayBeNested; }
+bool QgsFeatureRequest::requestMayBeNested() const
+{
+  return mRequestMayBeNested;
+}
 
 QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
 {
@@ -493,9 +521,15 @@ QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNe
   return *this;
 }
 
-void QgsFeatureRequest::setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
+void QgsFeatureRequest::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
 
-QgsFeedback *QgsFeatureRequest::feedback() const { return mFeedback; }
+QgsFeedback *QgsFeatureRequest::feedback() const
+{
+  return mFeedback;
+}
 
 
 #include "qgsfeatureiterator.h"
@@ -511,9 +545,15 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   }
 }
 
-void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator *it ) { mActiveIterators.insert( it ); }
+void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator *it )
+{
+  mActiveIterators.insert( it );
+}
 
-void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it ) { mActiveIterators.remove( it ); }
+void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it )
+{
+  mActiveIterators.remove( it );
+}
 
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending )
@@ -544,19 +584,40 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression
   , mNullsFirst( nullsfirst )
 {}
 
-bool QgsFeatureRequest::OrderByClause::ascending() const { return mAscending; }
+bool QgsFeatureRequest::OrderByClause::ascending() const
+{
+  return mAscending;
+}
 
-void QgsFeatureRequest::OrderByClause::setAscending( bool ascending ) { mAscending = ascending; }
+void QgsFeatureRequest::OrderByClause::setAscending( bool ascending )
+{
+  mAscending = ascending;
+}
 
-bool QgsFeatureRequest::OrderByClause::nullsFirst() const { return mNullsFirst; }
+bool QgsFeatureRequest::OrderByClause::nullsFirst() const
+{
+  return mNullsFirst;
+}
 
-void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst ) { mNullsFirst = nullsFirst; }
+void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
+{
+  mNullsFirst = nullsFirst;
+}
 
-QString QgsFeatureRequest::OrderByClause::dump() const { return u"%1 %2 %3"_s.arg( mExpression.expression(), mAscending ? "ASC" : "DESC", mNullsFirst ? "NULLS FIRST" : "NULLS LAST" ); }
+QString QgsFeatureRequest::OrderByClause::dump() const
+{
+  return u"%1 %2 %3"_s.arg( mExpression.expression(), mAscending ? "ASC" : "DESC", mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
+}
 
-QgsExpression QgsFeatureRequest::OrderByClause::expression() const { return mExpression; }
+QgsExpression QgsFeatureRequest::OrderByClause::expression() const
+{
+  return mExpression;
+}
 
-bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context ) { return mExpression.prepare( context ); }
+bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
+{
+  return mExpression.prepare( context );
+}
 
 QgsFeatureRequest::OrderBy::OrderBy() = default;
 
@@ -583,9 +644,15 @@ bool QgsFeatureRequest::OrderBy::operator==( const QgsFeatureRequest::OrderBy &o
   return true;
 }
 
-bool QgsFeatureRequest::OrderBy::operator!=( const QgsFeatureRequest::OrderBy &other ) const { return !operator==( other ); }
+bool QgsFeatureRequest::OrderBy::operator!=( const QgsFeatureRequest::OrderBy &other ) const
+{
+  return !operator==( other );
+}
 
-QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const { return *this; }
+QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const
+{
+  return *this;
+}
 
 void QgsFeatureRequest::OrderBy::save( QDomElement &elem ) const
 {

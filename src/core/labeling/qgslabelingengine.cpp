@@ -41,7 +41,10 @@
 using namespace Qt::StringLiterals;
 
 // helper function for checking for job cancellation within PAL
-static bool _palIsCanceled( void *ctx ) { return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped(); }
+static bool _palIsCanceled( void *ctx )
+{
+  return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
+}
 
 ///@cond PRIVATE
 
@@ -212,7 +215,10 @@ QString QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
   return id;
 }
 
-QgsAbstractLabelProvider *QgsLabelingEngine::providerById( const QString &id ) { return mProvidersById.value( id ); }
+QgsAbstractLabelProvider *QgsLabelingEngine::providerById( const QString &id )
+{
+  return mProvidersById.value( id );
+}
 
 void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
 {
@@ -659,7 +665,10 @@ void QgsLabelingEngine::cleanup()
   mPal.reset();
 }
 
-QgsLabelingResults *QgsLabelingEngine::takeResults() { return mResults.release(); }
+QgsLabelingResults *QgsLabelingEngine::takeResults()
+{
+  return mResults.release();
+}
 
 void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
 {
@@ -846,14 +855,23 @@ void QgsStagedRenderLabelingEngine::run( QgsRenderContext &context )
 }
 
 
-void QgsStagedRenderLabelingEngine::renderLabelsForLayer( QgsRenderContext &context, const QString &layerId ) { drawLabels( context, layerId ); }
+void QgsStagedRenderLabelingEngine::renderLabelsForLayer( QgsRenderContext &context, const QString &layerId )
+{
+  drawLabels( context, layerId );
+}
 
-void QgsStagedRenderLabelingEngine::finalize() { cleanup(); }
+void QgsStagedRenderLabelingEngine::finalize()
+{
+  cleanup();
+}
 
 
 ////
 
-QgsAbstractLabelProvider *QgsLabelFeature::provider() const { return mLayer ? mLayer->provider() : nullptr; }
+QgsAbstractLabelProvider *QgsLabelFeature::provider() const
+{
+  return mLayer ? mLayer->provider() : nullptr;
+}
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId )
   : mLayerId( layer ? layer->id() : QString() )
@@ -868,9 +886,11 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   }
 }
 
-void QgsAbstractLabelProvider::drawUnplacedLabel( QgsRenderContext &, pal::LabelPosition * ) const {}
+void QgsAbstractLabelProvider::drawUnplacedLabel( QgsRenderContext &, pal::LabelPosition * ) const
+{}
 
-void QgsAbstractLabelProvider::drawLabelBackground( QgsRenderContext &, pal::LabelPosition * ) const {}
+void QgsAbstractLabelProvider::drawLabelBackground( QgsRenderContext &, pal::LabelPosition * ) const
+{}
 
 void QgsAbstractLabelProvider::startRender( QgsRenderContext &context )
 {
@@ -890,7 +910,10 @@ void QgsAbstractLabelProvider::stopRender( QgsRenderContext &context )
   }
 }
 
-QgsExpressionContextScope *QgsAbstractLabelProvider::layerExpressionContextScope() const { return mLayerExpressionContextScope.get(); }
+QgsExpressionContextScope *QgsAbstractLabelProvider::layerExpressionContextScope() const
+{
+  return mLayerExpressionContextScope.get();
+}
 
 //
 // QgsLabelingUtils

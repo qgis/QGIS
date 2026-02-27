@@ -52,18 +52,25 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   }
 }
 
-int QgsPointCloudAttributeStatistics::singleClassCount( int cls ) const { return classCount.value( cls, -1 ); }
+int QgsPointCloudAttributeStatistics::singleClassCount( int cls ) const
+{
+  return classCount.value( cls, -1 );
+}
 
 // QgsPointCloudStatistics
 
-QgsPointCloudStatistics::QgsPointCloudStatistics() {}
+QgsPointCloudStatistics::QgsPointCloudStatistics()
+{}
 
 QgsPointCloudStatistics::QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, QgsPointCloudAttributeStatistics> &stats )
   : mSampledPointsCount( sampledPointsCount )
   , mStatisticsMap( stats )
 {}
 
-void QgsPointCloudStatistics::clear() { mStatisticsMap.clear(); }
+void QgsPointCloudStatistics::clear()
+{
+  mStatisticsMap.clear();
+}
 
 void QgsPointCloudStatistics::clear( const QVector<QgsPointCloudAttribute> &attributes )
 {

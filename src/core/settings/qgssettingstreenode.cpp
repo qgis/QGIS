@@ -124,7 +124,10 @@ void QgsSettingsTreeNode::registerChildSetting( const QgsSettingsEntryBase *sett
 }
 
 
-void QgsSettingsTreeNode::registerChildNode( QgsSettingsTreeNode *node ) { mChildrenNodes.append( node ); }
+void QgsSettingsTreeNode::registerChildNode( QgsSettingsTreeNode *node )
+{
+  mChildrenNodes.append( node );
+}
 
 void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
 {
@@ -134,7 +137,10 @@ void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *se
   mChildrenSettings.removeAll( setting );
 }
 
-void QgsSettingsTreeNode::unregisterChildNode( QgsSettingsTreeNode *node ) { mChildrenNodes.removeAll( node ); }
+void QgsSettingsTreeNode::unregisterChildNode( QgsSettingsTreeNode *node )
+{
+  mChildrenNodes.removeAll( node );
+}
 
 void QgsSettingsTreeNode::init( QgsSettingsTreeNode *parent, const QString &key )
 {
@@ -159,10 +165,14 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
   mCompleteKey.append( u"items/%%1/"_s.arg( mNamedNodesCount ) );
 }
 
-QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode() {}
+QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
+{}
 
 
-QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamedItems ) const { return items( Qgis::SettingsOrigin::Any, parentsNamedItems ); }
+QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamedItems ) const
+{
+  return items( Qgis::SettingsOrigin::Any, parentsNamedItems );
+}
 
 QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {

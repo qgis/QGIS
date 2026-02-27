@@ -47,7 +47,10 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
   insertChildrenPrivate( -1, clonedChildren );
 }
 
-QgsLayerTreeNode::~QgsLayerTreeNode() { qDeleteAll( mChildren ); }
+QgsLayerTreeNode::~QgsLayerTreeNode()
+{
+  qDeleteAll( mChildren );
+}
 
 QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
 {
@@ -103,7 +106,10 @@ void QgsLayerTreeNode::setItemVisibilityChecked( bool checked )
   emit visibilityChanged( this );
 }
 
-void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked ) { setItemVisibilityChecked( checked ); }
+void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked )
+{
+  setItemVisibilityChecked( checked );
+}
 
 void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
 {
@@ -112,10 +118,16 @@ void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
     mParent->setItemVisibilityCheckedParentRecursive( checked );
 }
 
-bool QgsLayerTreeNode::isVisible() const { return mChecked && ( !mParent || mParent->isVisible() ); }
+bool QgsLayerTreeNode::isVisible() const
+{
+  return mChecked && ( !mParent || mParent->isVisible() );
+}
 
 
-bool QgsLayerTreeNode::isExpanded() const { return mExpanded; }
+bool QgsLayerTreeNode::isExpanded() const
+{
+  return mExpanded;
+}
 
 bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
 {
@@ -208,7 +220,10 @@ void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &va
   }
 }
 
-QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const { return mProperties.value( key, defaultValue ); }
+QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const
+{
+  return mProperties.value( key, defaultValue );
+}
 
 void QgsLayerTreeNode::removeCustomProperty( const QString &key )
 {
@@ -219,9 +234,15 @@ void QgsLayerTreeNode::removeCustomProperty( const QString &key )
   }
 }
 
-QStringList QgsLayerTreeNode::customProperties() const { return mProperties.keys(); }
+QStringList QgsLayerTreeNode::customProperties() const
+{
+  return mProperties.keys();
+}
 
-void QgsLayerTreeNode::readCommonXml( const QDomElement &element ) { mProperties.readXml( element ); }
+void QgsLayerTreeNode::readCommonXml( const QDomElement &element )
+{
+  mProperties.readXml( element );
+}
 
 void QgsLayerTreeNode::writeCommonXml( QDomElement &element )
 {

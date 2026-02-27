@@ -54,9 +54,15 @@ void QgsLayoutRenderContext::setFlag( const Qgis::LayoutRenderFlag flag, const b
   emit flagsChanged( mFlags );
 }
 
-Qgis::LayoutRenderFlags QgsLayoutRenderContext::flags() const { return mFlags; }
+Qgis::LayoutRenderFlags QgsLayoutRenderContext::flags() const
+{
+  return mFlags;
+}
 
-bool QgsLayoutRenderContext::testFlag( const Qgis::LayoutRenderFlag flag ) const { return mFlags.testFlag( flag ); }
+bool QgsLayoutRenderContext::testFlag( const Qgis::LayoutRenderFlag flag ) const
+{
+  return mFlags.testFlag( flag );
+}
 
 Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
 {
@@ -76,7 +82,10 @@ Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
   return flags;
 }
 
-Qgis::RasterizedRenderingPolicy QgsLayoutRenderContext::rasterizedRenderingPolicy() const { return mRasterizedRenderingPolicy; }
+Qgis::RasterizedRenderingPolicy QgsLayoutRenderContext::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
 
 void QgsLayoutRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
 {
@@ -104,23 +113,50 @@ void QgsLayoutRenderContext::setDpi( double dpi )
   emit dpiChanged();
 }
 
-double QgsLayoutRenderContext::dpi() const { return mMeasurementConverter.dpi(); }
+double QgsLayoutRenderContext::dpi() const
+{
+  return mMeasurementConverter.dpi();
+}
 
-bool QgsLayoutRenderContext::gridVisible() const { return mGridVisible; }
+bool QgsLayoutRenderContext::gridVisible() const
+{
+  return mGridVisible;
+}
 
-void QgsLayoutRenderContext::setGridVisible( bool visible ) { mGridVisible = visible; }
+void QgsLayoutRenderContext::setGridVisible( bool visible )
+{
+  mGridVisible = visible;
+}
 
-bool QgsLayoutRenderContext::boundingBoxesVisible() const { return mBoundingBoxesVisible; }
+bool QgsLayoutRenderContext::boundingBoxesVisible() const
+{
+  return mBoundingBoxesVisible;
+}
 
-void QgsLayoutRenderContext::setBoundingBoxesVisible( bool visible ) { mBoundingBoxesVisible = visible; }
+void QgsLayoutRenderContext::setBoundingBoxesVisible( bool visible )
+{
+  mBoundingBoxesVisible = visible;
+}
 
-void QgsLayoutRenderContext::setPagesVisible( bool visible ) { mPagesVisible = visible; }
+void QgsLayoutRenderContext::setPagesVisible( bool visible )
+{
+  mPagesVisible = visible;
+}
 
-void QgsLayoutRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings ) { mMaskRenderSettings = settings; }
+void QgsLayoutRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings )
+{
+  mMaskRenderSettings = settings;
+}
 
-QStringList QgsLayoutRenderContext::exportThemes() const { return mExportThemes; }
+QStringList QgsLayoutRenderContext::exportThemes() const
+{
+  return mExportThemes;
+}
 
-void QgsLayoutRenderContext::setExportThemes( const QStringList &exportThemes ) { mExportThemes = exportThemes; }
+void QgsLayoutRenderContext::setExportThemes( const QStringList &exportThemes )
+{
+  mExportThemes = exportThemes;
+}
 
 void QgsLayoutRenderContext::setPredefinedScales( const QVector<qreal> &scales )
 {
@@ -133,9 +169,15 @@ void QgsLayoutRenderContext::setPredefinedScales( const QVector<qreal> &scales )
   emit predefinedScalesChanged();
 }
 
-QgsFeatureFilterProvider *QgsLayoutRenderContext::featureFilterProvider() const { return mFeatureFilterProvider; }
+QgsFeatureFilterProvider *QgsLayoutRenderContext::featureFilterProvider() const
+{
+  return mFeatureFilterProvider;
+}
 
-void QgsLayoutRenderContext::setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider ) { mFeatureFilterProvider = featureFilterProvider; }
+void QgsLayoutRenderContext::setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider )
+{
+  mFeatureFilterProvider = featureFilterProvider;
+}
 
 void QgsLayoutRenderContext::matchRasterizedRenderingPolicyToFlags()
 {

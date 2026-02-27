@@ -40,9 +40,15 @@ QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, Q
   }
 }
 
-int QgsBookmarkManagerModel::rowCount( const QModelIndex & ) const { return mManager->bookmarks().count() + mProjectManager->bookmarks().count(); }
+int QgsBookmarkManagerModel::rowCount( const QModelIndex & ) const
+{
+  return mManager->bookmarks().count() + mProjectManager->bookmarks().count();
+}
 
-int QgsBookmarkManagerModel::columnCount( const QModelIndex & ) const { return ColumnStore + 1; }
+int QgsBookmarkManagerModel::columnCount( const QModelIndex & ) const
+{
+  return ColumnStore + 1;
+}
 
 QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) const
 {

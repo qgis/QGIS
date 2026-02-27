@@ -85,11 +85,20 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
   mIsValid = true;
 }
 
-QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const { return mTimeExtent; }
+QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
+{
+  return mTimeExtent;
+}
 
-QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const { return mTimeExtent; }
+QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const
+{
+  return mTimeExtent;
+}
 
-QDateTime QgsMeshLayerTemporalProperties::referenceTime() const { return mReferenceTime; }
+QDateTime QgsMeshLayerTemporalProperties::referenceTime() const
+{
+  return mReferenceTime;
+}
 
 void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities )
 {
@@ -103,14 +112,32 @@ void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenc
     mTimeExtent = QgsDateTimeRange( referenceTime, referenceTime );
 }
 
-QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const { return mMatchingMethod; }
+QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const
+{
+  return mMatchingMethod;
+}
 
-void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod ) { mMatchingMethod = matchingMethod; }
+void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
+{
+  mMatchingMethod = matchingMethod;
+}
 
-bool QgsMeshLayerTemporalProperties::isValid() const { return mIsValid; }
+bool QgsMeshLayerTemporalProperties::isValid() const
+{
+  return mIsValid;
+}
 
-void QgsMeshLayerTemporalProperties::setIsValid( bool isValid ) { mIsValid = isValid; }
+void QgsMeshLayerTemporalProperties::setIsValid( bool isValid )
+{
+  mIsValid = isValid;
+}
 
-bool QgsMeshLayerTemporalProperties::alwaysLoadReferenceTimeFromSource() const { return mAlwaysLoadReferenceTimeFromSource; }
+bool QgsMeshLayerTemporalProperties::alwaysLoadReferenceTimeFromSource() const
+{
+  return mAlwaysLoadReferenceTimeFromSource;
+}
 
-void QgsMeshLayerTemporalProperties::setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider ) { mAlwaysLoadReferenceTimeFromSource = autoReloadFromProvider; }
+void QgsMeshLayerTemporalProperties::setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider )
+{
+  mAlwaysLoadReferenceTimeFromSource = autoReloadFromProvider;
+}

@@ -27,7 +27,10 @@ QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
   , mLoc( loc )
 {}
 
-bool QgsPointLocatorInitTask::isBuildOK() const { return mBuildOK; }
+bool QgsPointLocatorInitTask::isBuildOK() const
+{
+  return mBuildOK;
+}
 
 bool QgsPointLocatorInitTask::run()
 {

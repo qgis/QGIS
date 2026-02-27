@@ -190,9 +190,15 @@ QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
   return QgsPointCloudStatistics();
 }
 
-bool QgsPointCloudDataProvider::supportsSubsetString() const { return true; }
+bool QgsPointCloudDataProvider::supportsSubsetString() const
+{
+  return true;
+}
 
-QString QgsPointCloudDataProvider::subsetStringDialect() const { return tr( "QGIS expression" ); }
+QString QgsPointCloudDataProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
 
 QString QgsPointCloudDataProvider::subsetStringHelpUrl() const
 {
@@ -205,8 +211,7 @@ struct MapIndexedPointCloudNode
     typedef QVector<QMap<QString, QVariant>> result_type;
 
     MapIndexedPointCloudNode(
-      QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex index,
-      int pointsLimit
+      QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex index, int pointsLimit
     )
       : mRequest( request )
       , mIndexScale( indexScale )
@@ -329,8 +334,10 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify( QgsPointCloudIndex &in
   request.setAttributes( attributeCollection );
 
   acceptedPoints = QtConcurrent::blockingMappedReduced(
-    nodes, MapIndexedPointCloudNode( request, index.scale(), index.offset(), extentGeometry, extentZRange, index, pointsLimit ),
-    qOverload<const QVector<QMap<QString, QVariant>> &>( &QVector<QMap<QString, QVariant>>::append ), QtConcurrent::UnorderedReduce
+    nodes,
+    MapIndexedPointCloudNode( request, index.scale(), index.offset(), extentGeometry, extentZRange, index, pointsLimit ),
+    qOverload<const QVector<QMap<QString, QVariant>> &>( &QVector<QMap<QString, QVariant>>::append ),
+    QtConcurrent::UnorderedReduce
   );
 
   return acceptedPoints;

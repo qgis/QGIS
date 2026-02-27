@@ -77,9 +77,15 @@ void QgsQueryResultModel::cancel()
   }
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsQueryResultModel::queryResult() const { return mQueryResult; }
+QgsAbstractDatabaseProviderConnection::QueryResult QgsQueryResultModel::queryResult() const
+{
+  return mQueryResult;
+}
 
-QStringList QgsQueryResultModel::columns() const { return mColumns; }
+QStringList QgsQueryResultModel::columns() const
+{
+  return mColumns;
+}
 
 QgsQueryResultModel::~QgsQueryResultModel()
 {
@@ -240,7 +246,10 @@ void QgsQueryResultFetcher::fetchRows( long long maxRows )
   emit fetchingComplete();
 }
 
-void QgsQueryResultFetcher::stopFetching() { mStopFetching = 1; }
+void QgsQueryResultFetcher::stopFetching()
+{
+  mStopFetching = 1;
+}
 
 
 ///@endcond private

@@ -22,8 +22,13 @@ A legend node which renders a color ramp.
 %End
   public:
     QgsColorRampLegendNode(
-      QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/, const QString &minimumLabel, const QString &maximumLabel, QObject *parent /TransferThis/ = 0,
-      const QString &key = QString(), const QString &parentKey = QString()
+      QgsLayerTreeLayer *nodeLayer,
+      QgsColorRamp *ramp /Transfer/,
+      const QString &minimumLabel,
+      const QString &maximumLabel,
+      QObject *parent /TransferThis/ = 0,
+      const QString &key = QString(),
+      const QString &parentKey = QString()
     );
 %Docstring
 Constructor for QgsColorRampLegendNode.
@@ -42,8 +47,14 @@ Constructor for QgsColorRampLegendNode.
 %End
 
     QgsColorRampLegendNode(
-      QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/, const QgsColorRampLegendNodeSettings &settings, double minimumValue, double maximumValue,
-      QObject *parent /TransferThis/ = 0, const QString &key = QString(), const QString &parentKey = QString()
+      QgsLayerTreeLayer *nodeLayer,
+      QgsColorRamp *ramp /Transfer/,
+      const QgsColorRampLegendNodeSettings &settings,
+      double minimumValue,
+      double maximumValue,
+      QObject *parent /TransferThis/ = 0,
+      const QString &key = QString(),
+      const QString &parentKey = QString()
     );
 %Docstring
 Constructor for QgsColorRampLegendNode.

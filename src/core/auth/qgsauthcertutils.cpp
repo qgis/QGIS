@@ -190,12 +190,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath, const QString &ke
 
   const QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
 
-  const std::vector<QSsl::KeyAlgorithm> algs {
-    QSsl::KeyAlgorithm::Rsa,
-    QSsl::KeyAlgorithm::Dsa,
-    QSsl::KeyAlgorithm::Ec,
-    QSsl::KeyAlgorithm::Opaque
-  };
+  const std::vector<QSsl::KeyAlgorithm> algs { QSsl::KeyAlgorithm::Rsa, QSsl::KeyAlgorithm::Dsa, QSsl::KeyAlgorithm::Ec, QSsl::KeyAlgorithm::Opaque };
 
   for ( const auto &alg : algs )
   {
@@ -605,24 +600,19 @@ QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool is
   QString name( issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CommonName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::CommonName ) );
 
   if ( name.isEmpty() )
-    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::OrganizationalUnitName )
-                  : SSL_SUBJECT_INFO( cert, QSslCertificate::OrganizationalUnitName );
+    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::OrganizationalUnitName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::OrganizationalUnitName );
 
   if ( name.isEmpty() )
-    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::Organization )
-                  : SSL_SUBJECT_INFO( cert, QSslCertificate::Organization );
+    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::Organization ) : SSL_SUBJECT_INFO( cert, QSslCertificate::Organization );
 
   if ( name.isEmpty() )
-    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::LocalityName )
-                  : SSL_SUBJECT_INFO( cert, QSslCertificate::LocalityName );
+    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::LocalityName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::LocalityName );
 
   if ( name.isEmpty() )
-    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::StateOrProvinceName )
-                  : SSL_SUBJECT_INFO( cert, QSslCertificate::StateOrProvinceName );
+    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::StateOrProvinceName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::StateOrProvinceName );
 
   if ( name.isEmpty() )
-    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CountryName )
-                  : SSL_SUBJECT_INFO( cert, QSslCertificate::CountryName );
+    name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CountryName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::CountryName );
 
   return name;
 }
@@ -664,27 +654,13 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
   //  ST=Washington\, DC,
   //  C=US
   QStringList dirname;
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"E"_s, issuer ? acert.issuerInfo().value( QCA::Email ) : acert.subjectInfo().value( QCA::Email )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"CN"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CommonName )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"OU"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::OrganizationalUnitName )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"O"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::Organization )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"L"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::LocalityName )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"ST"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::StateOrProvinceName )
-  );
-  QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"C"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName )
-  );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"E"_s, issuer ? acert.issuerInfo().value( QCA::Email ) : acert.subjectInfo().value( QCA::Email ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"CN"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CommonName ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"OU"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::OrganizationalUnitName ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"O"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::Organization ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"L"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::LocalityName ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"ST"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::StateOrProvinceName ) );
+  QgsAuthCertUtils::appendDirSegment_( dirname, u"C"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
 
   return dirname.join( ','_L1 );
 }
@@ -947,12 +923,8 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   }
 
   // ask QCA what it thinks about potential usages
-  const QCA::CertificateCollection trustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() )
-  );
-  const QCA::CertificateCollection untrustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() )
-  );
+  const QCA::CertificateCollection trustedCAs( qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() ) );
+  const QCA::CertificateCollection untrustedCAs( qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() ) );
 
   QCA::Validity v_any;
   v_any = qcacert.validate( trustedCAs, untrustedCAs, QCA::UsageAny, QCA::ValidateAll );

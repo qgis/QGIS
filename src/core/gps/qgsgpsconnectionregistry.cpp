@@ -19,10 +19,22 @@
 
 #include "qgsgpsconnection.h"
 
-QgsGpsConnectionRegistry::~QgsGpsConnectionRegistry() { qDeleteAll( mConnections ); }
+QgsGpsConnectionRegistry::~QgsGpsConnectionRegistry()
+{
+  qDeleteAll( mConnections );
+}
 
-void QgsGpsConnectionRegistry::registerConnection( QgsGpsConnection *c ) { mConnections.insert( c ); }
+void QgsGpsConnectionRegistry::registerConnection( QgsGpsConnection *c )
+{
+  mConnections.insert( c );
+}
 
-void QgsGpsConnectionRegistry::unregisterConnection( QgsGpsConnection *c ) { mConnections.remove( c ); }
+void QgsGpsConnectionRegistry::unregisterConnection( QgsGpsConnection *c )
+{
+  mConnections.remove( c );
+}
 
-QList< QgsGpsConnection * > QgsGpsConnectionRegistry::connectionList() const { return QList< QgsGpsConnection * >( mConnections.begin(), mConnections.end() ); }
+QList< QgsGpsConnection * > QgsGpsConnectionRegistry::connectionList() const
+{
+  return QList< QgsGpsConnection * >( mConnections.begin(), mConnections.end() );
+}

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsCallout
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -707,7 +707,9 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      *
      * \since QGIS 3.20
      */
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const SIP_FACTORY;
+    virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN
@@ -759,7 +761,9 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout *clone() const override;
 
   protected:
-    QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const override SIP_FACTORY;
+    QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const override SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN
@@ -839,7 +843,9 @@ class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
     void setOrientation( Orientation orientation );
 
   protected:
-    QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const override SIP_FACTORY;
+    QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext
+    ) const override SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

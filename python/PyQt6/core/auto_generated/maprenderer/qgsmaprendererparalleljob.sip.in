@@ -42,6 +42,9 @@ see preview of the map.
     virtual QImage renderedImage();
 
 
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

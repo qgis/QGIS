@@ -38,7 +38,10 @@ QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
   addRenderer( new QgsPointCloudRendererMetadata( u"classified"_s, QObject::tr( "Classification" ), QgsPointCloudClassifiedRenderer::create ) );
 }
 
-QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry() { qDeleteAll( mRenderers ); }
+QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry()
+{
+  qDeleteAll( mRenderers );
+}
 
 bool QgsPointCloudRendererRegistry::addRenderer( QgsPointCloudRendererAbstractMetadata *metadata )
 {
@@ -61,7 +64,10 @@ bool QgsPointCloudRendererRegistry::removeRenderer( const QString &rendererName 
   return true;
 }
 
-QgsPointCloudRendererAbstractMetadata *QgsPointCloudRendererRegistry::rendererMetadata( const QString &rendererName ) { return mRenderers.value( rendererName ); }
+QgsPointCloudRendererAbstractMetadata *QgsPointCloudRendererRegistry::rendererMetadata( const QString &rendererName )
+{
+  return mRenderers.value( rendererName );
+}
 
 QStringList QgsPointCloudRendererRegistry::renderersList() const
 {

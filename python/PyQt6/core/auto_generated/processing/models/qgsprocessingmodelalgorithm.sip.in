@@ -560,7 +560,8 @@ execution.
 
       public:
         VariableDefinition(
-          const QVariant &value = QVariant(), const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ),
+          const QVariant &value = QVariant(),
+          const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ),
           const QString &description = QString()
         );
 %Docstring

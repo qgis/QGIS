@@ -52,11 +52,20 @@ void QgsProjectViewSettings::reset()
   }
 }
 
-QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const { return mDefaultViewExtent; }
+QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const
+{
+  return mDefaultViewExtent;
+}
 
-void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent ) { mDefaultViewExtent = extent; }
+void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent )
+{
+  mDefaultViewExtent = extent;
+}
 
-QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const { return mPresetFullExtent; }
+QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const
+{
+  return mPresetFullExtent;
+}
 
 void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &extent )
 {
@@ -67,9 +76,15 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
   emit presetFullExtentChanged();
 }
 
-void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState ) { mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState; }
+void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState )
+{
+  mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
+}
 
-bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad() { return mRestoreProjectExtentOnProjectLoad; }
+bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad()
+{
+  return mRestoreProjectExtentOnProjectLoad;
+}
 
 
 QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
@@ -122,7 +137,10 @@ void QgsProjectViewSettings::setMapScales( const QVector<double> &scales )
   emit mapScalesChanged();
 }
 
-QVector<double> QgsProjectViewSettings::mapScales() const { return mMapScales; }
+QVector<double> QgsProjectViewSettings::mapScales() const
+{
+  return mMapScales;
+}
 
 void QgsProjectViewSettings::setUseProjectScales( bool enabled )
 {
@@ -133,11 +151,20 @@ void QgsProjectViewSettings::setUseProjectScales( bool enabled )
   emit mapScalesChanged();
 }
 
-bool QgsProjectViewSettings::useProjectScales() const { return mUseProjectScales; }
+bool QgsProjectViewSettings::useProjectScales() const
+{
+  return mUseProjectScales;
+}
 
-double QgsProjectViewSettings::defaultRotation() const { return mDefaultRotation; }
+double QgsProjectViewSettings::defaultRotation() const
+{
+  return mDefaultRotation;
+}
 
-void QgsProjectViewSettings::setDefaultRotation( double rotation ) { mDefaultRotation = rotation; }
+void QgsProjectViewSettings::setDefaultRotation( double rotation )
+{
+  mDefaultRotation = rotation;
+}
 
 bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {

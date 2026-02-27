@@ -15,4 +15,7 @@
 
 #include "qgsfeaturerenderergenerator.h"
 
-double QgsFeatureRendererGenerator::level() const { return 1.0; }
+double QgsFeatureRendererGenerator::level() const
+{
+  return 1.0;
+}

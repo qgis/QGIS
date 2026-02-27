@@ -53,8 +53,7 @@ HTTP headers to the request.
 %End
 
     QgsNetworkContentFetcherTask(
-      const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel, const QString &description = QString(),
-      const QgsHttpHeaders &headers = QgsHttpHeaders()
+      const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel, const QString &description = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders()
     );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches the

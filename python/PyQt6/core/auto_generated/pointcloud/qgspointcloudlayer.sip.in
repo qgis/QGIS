@@ -57,8 +57,7 @@ Constructor for LayerOptions with optional ``transformContext``.
     };
 
     explicit QgsPointCloudLayer(
-      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "pointcloud" ),
-      const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "pointcloud" ), const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
     );
 %Docstring
 Constructor - creates a point cloud layer

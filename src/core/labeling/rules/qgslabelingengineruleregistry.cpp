@@ -82,4 +82,7 @@ bool QgsLabelingEngineRuleRegistry::addRule( QgsAbstractLabelingEngineRule *rule
   return true;
 }
 
-void QgsLabelingEngineRuleRegistry::removeRule( const QString &id ) { mRules.erase( id ); }
+void QgsLabelingEngineRuleRegistry::removeRule( const QString &id )
+{
+  mRules.erase( id );
+}

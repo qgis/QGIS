@@ -32,11 +32,20 @@ QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject
   connect( manager, &QgsLayoutManager::layoutRenamed, this, &QgsLayoutManagerModel::objectRenamedInternal );
 }
 
-QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const { return objectFromIndex( index ); }
+QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const
+{
+  return objectFromIndex( index );
+}
 
-QModelIndex QgsLayoutManagerModel::indexFromLayout( QgsMasterLayoutInterface *layout ) const { return indexFromObject( layout ); }
+QModelIndex QgsLayoutManagerModel::indexFromLayout( QgsMasterLayoutInterface *layout ) const
+{
+  return indexFromObject( layout );
+}
 
-void QgsLayoutManagerModel::setAllowEmptyLayout( bool allowEmpty ) { setAllowEmptyObject( allowEmpty ); }
+void QgsLayoutManagerModel::setAllowEmptyLayout( bool allowEmpty )
+{
+  setAllowEmptyObject( allowEmpty );
+}
 
 
 //
@@ -70,7 +79,10 @@ bool QgsLayoutManagerProxyModel::filterAcceptsRowInternal( int sourceRow, const 
   return false;
 }
 
-QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const { return mFilters; }
+QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const
+{
+  return mFilters;
+}
 
 void QgsLayoutManagerProxyModel::setFilters( Filters filters )
 {

@@ -27,7 +27,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsRangeRequestCache::QgsRangeRequestCache() {}
+QgsRangeRequestCache::QgsRangeRequestCache()
+{}
 
 QByteArray QgsRangeRequestCache::entry( const QNetworkRequest &request )
 {

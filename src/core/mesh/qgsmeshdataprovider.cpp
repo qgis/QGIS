@@ -120,9 +120,15 @@ QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface()
   : mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() )
 {}
 
-int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const { return datasetCount( index.group() ); }
+int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
+{
+  return datasetCount( index.group() );
+}
 
-QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata( QgsMeshDatasetIndex index ) const { return datasetGroupMetadata( index.group() ); }
+QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata( QgsMeshDatasetIndex index ) const
+{
+  return datasetGroupMetadata( index.group() );
+}
 
 bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
   const QString &path, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
@@ -204,11 +210,20 @@ bool QgsMesh::contains( const QgsMesh::ElementType &type ) const
   return false;
 }
 
-int QgsMesh::vertexCount() const { return vertices.size(); }
+int QgsMesh::vertexCount() const
+{
+  return vertices.size();
+}
 
-int QgsMesh::faceCount() const { return faces.size(); }
+int QgsMesh::faceCount() const
+{
+  return faces.size();
+}
 
-int QgsMesh::edgeCount() const { return edges.size(); }
+int QgsMesh::edgeCount() const
+{
+  return edges.size();
+}
 
 bool QgsMeshDataSourceInterface::contains( const QgsMesh::ElementType &type ) const
 {

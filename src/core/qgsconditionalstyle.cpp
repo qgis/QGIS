@@ -58,7 +58,10 @@ QgsConditionalStyle QgsConditionalLayerStyles::constraintFailureStyles( QgsField
   return QgsConditionalStyle();
 }
 
-QgsConditionalStyles QgsConditionalLayerStyles::rowStyles() const { return mRowStyles; }
+QgsConditionalStyles QgsConditionalLayerStyles::rowStyles() const
+{
+  return mRowStyles;
+}
 
 void QgsConditionalLayerStyles::setRowStyles( const QgsConditionalStyles &styles )
 {
@@ -78,7 +81,10 @@ void QgsConditionalLayerStyles::setFieldStyles( const QString &fieldName, const 
   emit changed();
 }
 
-QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString &fieldName ) const { return mFieldStyles.value( fieldName ); }
+QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString &fieldName ) const
+{
+  return mFieldStyles.value( fieldName );
+}
 
 bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -164,9 +170,13 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWrit
   return true;
 }
 
-QgsConditionalStyle::QgsConditionalStyle() {}
+QgsConditionalStyle::QgsConditionalStyle()
+{}
 
-QgsConditionalStyle::QgsConditionalStyle( const QString &rule ) { setRule( rule ); }
+QgsConditionalStyle::QgsConditionalStyle( const QString &rule )
+{
+  setRule( rule );
+}
 
 QgsConditionalStyle::~QgsConditionalStyle() = default;
 
@@ -298,9 +308,15 @@ QPixmap QgsConditionalStyle::renderPreview( const QSize &size ) const
   return pixmap;
 }
 
-bool QgsConditionalStyle::validBackgroundColor() const { return ( backgroundColor().isValid() && backgroundColor().alpha() != 0 ); }
+bool QgsConditionalStyle::validBackgroundColor() const
+{
+  return ( backgroundColor().isValid() && backgroundColor().alpha() != 0 );
+}
 
-bool QgsConditionalStyle::validTextColor() const { return ( textColor().isValid() && textColor().alpha() != 0 ); }
+bool QgsConditionalStyle::validTextColor() const
+{
+  return ( textColor().isValid() && textColor().alpha() != 0 );
+}
 
 QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context )
 {
@@ -377,7 +393,10 @@ bool QgsConditionalStyle::operator==( const QgsConditionalStyle &other ) const
          && ( !mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
 }
 
-bool QgsConditionalStyle::operator!=( const QgsConditionalStyle &other ) const { return !( *this == other ); }
+bool QgsConditionalStyle::operator!=( const QgsConditionalStyle &other ) const
+{
+  return !( *this == other );
+}
 
 bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {

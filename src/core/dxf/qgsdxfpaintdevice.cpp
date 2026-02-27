@@ -26,8 +26,7 @@ QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 }
 
 QgsDxfPaintDevice::~QgsDxfPaintDevice()
-{
-}
+{}
 
 QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {

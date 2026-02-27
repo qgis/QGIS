@@ -139,11 +139,20 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   return true;
 }
 
-void QgsElevationProfile::resolveReferences( const QgsProject *project ) { mLayerTree->resolveReferences( project ); }
+void QgsElevationProfile::resolveReferences( const QgsProject *project )
+{
+  mLayerTree->resolveReferences( project );
+}
 
-QIcon QgsElevationProfile::icon() const { return QIcon(); }
+QIcon QgsElevationProfile::icon() const
+{
+  return QIcon();
+}
 
-QgsLayerTree *QgsElevationProfile::layerTree() { return !mUseProjectLayerTree ? mLayerTree.get() : nullptr; }
+QgsLayerTree *QgsElevationProfile::layerTree()
+{
+  return !mUseProjectLayerTree ? mLayerTree.get() : nullptr;
+}
 
 void QgsElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -154,7 +163,10 @@ void QgsElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
   dirtyProject();
 }
 
-QgsCoordinateReferenceSystem QgsElevationProfile::crs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsElevationProfile::crs() const
+{
+  return mCrs;
+}
 
 void QgsElevationProfile::setProfileCurve( QgsCurve *curve )
 {
@@ -164,7 +176,10 @@ void QgsElevationProfile::setProfileCurve( QgsCurve *curve )
   dirtyProject();
 }
 
-QgsCurve *QgsElevationProfile::profileCurve() const { return mProfileCurve.get(); }
+QgsCurve *QgsElevationProfile::profileCurve() const
+{
+  return mProfileCurve.get();
+}
 
 void QgsElevationProfile::setTolerance( double tolerance )
 {
@@ -175,11 +190,20 @@ void QgsElevationProfile::setTolerance( double tolerance )
   dirtyProject();
 }
 
-double QgsElevationProfile::tolerance() const { return mTolerance; }
+double QgsElevationProfile::tolerance() const
+{
+  return mTolerance;
+}
 
-bool QgsElevationProfile::lockAxisScales() const { return mLockAxisScales; }
+bool QgsElevationProfile::lockAxisScales() const
+{
+  return mLockAxisScales;
+}
 
-Qgis::DistanceUnit QgsElevationProfile::distanceUnit() const { return mDistanceUnit; }
+Qgis::DistanceUnit QgsElevationProfile::distanceUnit() const
+{
+  return mDistanceUnit;
+}
 
 void QgsElevationProfile::setLockAxisScales( bool lock )
 {
@@ -222,7 +246,10 @@ void QgsElevationProfile::setupLayerTreeConnections()
   connect( mLayerTree.get(), &QgsLayerTree::nameChanged, this, &QgsElevationProfile::dirtyProject );
 }
 
-QgsLineSymbol *QgsElevationProfile::subsectionsSymbol() { return mSubsectionsSymbol.get(); }
+QgsLineSymbol *QgsElevationProfile::subsectionsSymbol()
+{
+  return mSubsectionsSymbol.get();
+}
 
 void QgsElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
 {

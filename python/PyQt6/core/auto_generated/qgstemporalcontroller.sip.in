@@ -27,7 +27,7 @@ notifying updates of the objects temporal range.
 #include "qgstemporalcontroller.h"
 %End
 %ConvertToSubClassCode
-if ( qobject_cast<QgsTemporalNavigationObject *>( sipCpp ) )
+    if ( qobject_cast<QgsTemporalNavigationObject *>( sipCpp ) )
     {
       sipType = sipType_QgsTemporalNavigationObject;
     }

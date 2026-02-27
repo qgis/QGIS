@@ -132,7 +132,7 @@ etc.
 #include "qgsrastercontourrenderer.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
+    if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
       sipType = sipType_QgsBrightnessContrastFilter;
     else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
       sipType = sipType_QgsHueSaturationFilter;

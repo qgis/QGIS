@@ -156,7 +156,8 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
 
-QgsSettingsRegistryCore::~QgsSettingsRegistryCore() {}
+QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
+{}
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {

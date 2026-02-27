@@ -141,7 +141,10 @@ QgsTileMatrixSet::QgsTileMatrixSet()
   };
 }
 
-bool QgsTileMatrixSet::isEmpty() const { return mTileMatrices.isEmpty(); }
+bool QgsTileMatrixSet::isEmpty() const
+{
+  return mTileMatrices.isEmpty();
+}
 
 void QgsTileMatrixSet::addGoogleCrs84QuadTiles( int minimumZoom, int maximumZoom )
 {
@@ -156,13 +159,25 @@ void QgsTileMatrixSet::addGoogleCrs84QuadTiles( int minimumZoom, int maximumZoom
   mRootMatrix = QgsTileMatrix::fromWebMercator( 0 );
 }
 
-QgsTileMatrix QgsTileMatrixSet::tileMatrix( int zoom ) const { return mTileMatrices.value( zoom ); }
+QgsTileMatrix QgsTileMatrixSet::tileMatrix( int zoom ) const
+{
+  return mTileMatrices.value( zoom );
+}
 
-QgsTileMatrix QgsTileMatrixSet::rootMatrix() const { return mRootMatrix; }
+QgsTileMatrix QgsTileMatrixSet::rootMatrix() const
+{
+  return mRootMatrix;
+}
 
-void QgsTileMatrixSet::setRootMatrix( const QgsTileMatrix &matrix ) { mRootMatrix = matrix; }
+void QgsTileMatrixSet::setRootMatrix( const QgsTileMatrix &matrix )
+{
+  mRootMatrix = matrix;
+}
 
-void QgsTileMatrixSet::addMatrix( const QgsTileMatrix &matrix ) { mTileMatrices.insert( matrix.zoomLevel(), matrix ); }
+void QgsTileMatrixSet::addMatrix( const QgsTileMatrix &matrix )
+{
+  mTileMatrices.insert( matrix.zoomLevel(), matrix );
+}
 
 int QgsTileMatrixSet::minimumZoom() const
 {
@@ -201,7 +216,10 @@ void QgsTileMatrixSet::dropMatricesOutsideZoomRange( int minimumZoom, int maximu
   }
 }
 
-Qgis::TileAvailability QgsTileMatrixSet::tileAvailability( QgsTileXYZ id ) const { return mTileAvailabilityFunction( id ); }
+Qgis::TileAvailability QgsTileMatrixSet::tileAvailability( QgsTileXYZ id ) const
+{
+  return mTileAvailabilityFunction( id );
+}
 
 QgsCoordinateReferenceSystem QgsTileMatrixSet::crs() const
 {

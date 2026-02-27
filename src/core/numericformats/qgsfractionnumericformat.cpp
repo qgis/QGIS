@@ -47,13 +47,23 @@ struct formatter : std::numpunct<wchar_t>
 };
 ///@endcond
 
-QgsFractionNumericFormat::QgsFractionNumericFormat() {}
+QgsFractionNumericFormat::QgsFractionNumericFormat()
+{}
 
-QString QgsFractionNumericFormat::id() const { return u"fraction"_s; }
+QString QgsFractionNumericFormat::id() const
+{
+  return u"fraction"_s;
+}
 
-QString QgsFractionNumericFormat::visibleName() const { return QObject::tr( "Fraction" ); }
+QString QgsFractionNumericFormat::visibleName() const
+{
+  return QObject::tr( "Fraction" );
+}
 
-int QgsFractionNumericFormat::sortKey() { return 100; }
+int QgsFractionNumericFormat::sortKey()
+{
+  return 100;
+}
 
 QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -143,7 +153,10 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
   return res;
 }
 
-QgsNumericFormat *QgsFractionNumericFormat::clone() const { return new QgsFractionNumericFormat( *this ); }
+QgsNumericFormat *QgsFractionNumericFormat::clone() const
+{
+  return new QgsFractionNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsFractionNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -163,15 +176,30 @@ QVariantMap QgsFractionNumericFormat::configuration( const QgsReadWriteContext &
   return res;
 }
 
-double QgsFractionNumericFormat::suggestSampleValue() const { return 1234.75; }
+double QgsFractionNumericFormat::suggestSampleValue() const
+{
+  return 1234.75;
+}
 
-bool QgsFractionNumericFormat::useDedicatedUnicodeCharacters() const { return mUseDedicatedUnicode; }
+bool QgsFractionNumericFormat::useDedicatedUnicodeCharacters() const
+{
+  return mUseDedicatedUnicode;
+}
 
-void QgsFractionNumericFormat::setUseDedicatedUnicodeCharacters( bool enabled ) { mUseDedicatedUnicode = enabled; }
+void QgsFractionNumericFormat::setUseDedicatedUnicodeCharacters( bool enabled )
+{
+  mUseDedicatedUnicode = enabled;
+}
 
-bool QgsFractionNumericFormat::useUnicodeSuperSubscript() const { return mUseUnicodeSuperSubscript; }
+bool QgsFractionNumericFormat::useUnicodeSuperSubscript() const
+{
+  return mUseUnicodeSuperSubscript;
+}
 
-void QgsFractionNumericFormat::setUseUnicodeSuperSubscript( bool enabled ) { mUseUnicodeSuperSubscript = enabled; }
+void QgsFractionNumericFormat::setUseUnicodeSuperSubscript( bool enabled )
+{
+  mUseUnicodeSuperSubscript = enabled;
+}
 
 void QgsFractionNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext & )
 {
@@ -182,17 +210,35 @@ void QgsFractionNumericFormat::setConfiguration( const QVariantMap &configuratio
   mUseUnicodeSuperSubscript = configuration.value( u"use_unicode_supersubscript"_s, true ).toBool();
 }
 
-bool QgsFractionNumericFormat::showThousandsSeparator() const { return mShowThousandsSeparator; }
+bool QgsFractionNumericFormat::showThousandsSeparator() const
+{
+  return mShowThousandsSeparator;
+}
 
-void QgsFractionNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator ) { mShowThousandsSeparator = showThousandsSeparator; }
+void QgsFractionNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator )
+{
+  mShowThousandsSeparator = showThousandsSeparator;
+}
 
-bool QgsFractionNumericFormat::showPlusSign() const { return mShowPlusSign; }
+bool QgsFractionNumericFormat::showPlusSign() const
+{
+  return mShowPlusSign;
+}
 
-void QgsFractionNumericFormat::setShowPlusSign( bool showPlusSign ) { mShowPlusSign = showPlusSign; }
+void QgsFractionNumericFormat::setShowPlusSign( bool showPlusSign )
+{
+  mShowPlusSign = showPlusSign;
+}
 
-QChar QgsFractionNumericFormat::thousandsSeparator() const { return mThousandsSeparator; }
+QChar QgsFractionNumericFormat::thousandsSeparator() const
+{
+  return mThousandsSeparator;
+}
 
-void QgsFractionNumericFormat::setThousandsSeparator( QChar character ) { mThousandsSeparator = character; }
+void QgsFractionNumericFormat::setThousandsSeparator( QChar character )
+{
+  mThousandsSeparator = character;
+}
 
 QString QgsFractionNumericFormat::toUnicodeSuperscript( const QString &input )
 {

@@ -33,7 +33,10 @@ QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 
 QgsTiledSceneWireframeRenderer::~QgsTiledSceneWireframeRenderer() = default;
 
-QString QgsTiledSceneWireframeRenderer::type() const { return u"wireframe"_s; }
+QString QgsTiledSceneWireframeRenderer::type() const
+{
+  return u"wireframe"_s;
+}
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 {
@@ -91,9 +94,15 @@ std::unique_ptr< QgsFillSymbol > QgsTiledSceneWireframeRenderer::createDefaultFi
   return QgsFillSymbol::createSimple( properties );
 }
 
-QgsFillSymbol *QgsTiledSceneWireframeRenderer::fillSymbol() const { return mFillSymbol.get(); }
+QgsFillSymbol *QgsTiledSceneWireframeRenderer::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
 
-void QgsTiledSceneWireframeRenderer::setFillSymbol( QgsFillSymbol *symbol ) { mFillSymbol.reset( symbol ); }
+void QgsTiledSceneWireframeRenderer::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
 
 std::unique_ptr<QgsLineSymbol> QgsTiledSceneWireframeRenderer::createDefaultLineSymbol()
 {
@@ -103,13 +112,25 @@ std::unique_ptr<QgsLineSymbol> QgsTiledSceneWireframeRenderer::createDefaultLine
   return QgsLineSymbol::createSimple( properties );
 }
 
-QgsLineSymbol *QgsTiledSceneWireframeRenderer::lineSymbol() const { return mLineSymbol.get(); }
+QgsLineSymbol *QgsTiledSceneWireframeRenderer::lineSymbol() const
+{
+  return mLineSymbol.get();
+}
 
-void QgsTiledSceneWireframeRenderer::setLineSymbol( QgsLineSymbol *symbol ) { mLineSymbol.reset( symbol ); }
+void QgsTiledSceneWireframeRenderer::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mLineSymbol.reset( symbol );
+}
 
-bool QgsTiledSceneWireframeRenderer::useTextureColors() const { return mUseTextureColors; }
+bool QgsTiledSceneWireframeRenderer::useTextureColors() const
+{
+  return mUseTextureColors;
+}
 
-void QgsTiledSceneWireframeRenderer::setUseTextureColors( bool newUseTextureColors ) { mUseTextureColors = newUseTextureColors; }
+void QgsTiledSceneWireframeRenderer::setUseTextureColors( bool newUseTextureColors )
+{
+  mUseTextureColors = newUseTextureColors;
+}
 
 QDomElement QgsTiledSceneWireframeRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -167,7 +188,10 @@ void QgsTiledSceneWireframeRenderer::renderTriangle( QgsTiledSceneRenderContext 
   }
 }
 
-void QgsTiledSceneWireframeRenderer::renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) { mLineSymbol->renderPolyline( line, nullptr, context.renderContext() ); }
+void QgsTiledSceneWireframeRenderer::renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line )
+{
+  mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
+}
 
 void QgsTiledSceneWireframeRenderer::startRender( QgsTiledSceneRenderContext &context )
 {

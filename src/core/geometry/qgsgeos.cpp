@@ -39,8 +39,11 @@ using namespace Qt::StringLiterals;
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
-#define CATCH_GEOS( r ) \
-  catch ( QgsGeosException & ) { return r; }
+#define CATCH_GEOS( r )        \
+  catch ( QgsGeosException & ) \
+  {                            \
+    return r;                  \
+  }
 
 #define CATCH_GEOS_WITH_ERRMSG( r ) \
   catch ( QgsGeosException & e )    \
@@ -118,7 +121,10 @@ QgsGeosContext::QgsGeosContext()
   GEOSContext_setErrorHandler_r( mContext, throwQgsGeosException );
 }
 
-QgsGeosContext::~QgsGeosContext() { GEOS_finish_r( mContext ); }
+QgsGeosContext::~QgsGeosContext()
+{
+  GEOS_finish_r( mContext );
+}
 
 GEOSContextHandle_t QgsGeosContext::get()
 {
@@ -143,13 +149,25 @@ GEOSContextHandle_t QgsGeosContext::get()
 // geos
 //
 
-void geos::GeosDeleter::operator()( GEOSGeometry *geom ) const { GEOSGeom_destroy_r( QgsGeosContext::get(), geom ); }
+void geos::GeosDeleter::operator()( GEOSGeometry *geom ) const
+{
+  GEOSGeom_destroy_r( QgsGeosContext::get(), geom );
+}
 
-void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom ) const { GEOSPreparedGeom_destroy_r( QgsGeosContext::get(), geom ); }
+void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom ) const
+{
+  GEOSPreparedGeom_destroy_r( QgsGeosContext::get(), geom );
+}
 
-void geos::GeosDeleter::operator()( GEOSBufferParams *params ) const { GEOSBufferParams_destroy_r( QgsGeosContext::get(), params ); }
+void geos::GeosDeleter::operator()( GEOSBufferParams *params ) const
+{
+  GEOSBufferParams_destroy_r( QgsGeosContext::get(), params );
+}
 
-void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const { GEOSCoordSeq_destroy_r( QgsGeosContext::get(), sequence ); }
+void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
+{
+  GEOSCoordSeq_destroy_r( QgsGeosContext::get(), sequence );
+}
 
 
 ///@endcond
@@ -862,13 +880,25 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return relation( geom, RelationIntersects, errorMsg );
 }
 
-bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg ) const { return relation( geom, RelationTouches, errorMsg ); }
+bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  return relation( geom, RelationTouches, errorMsg );
+}
 
-bool QgsGeos::crosses( const QgsAbstractGeometry *geom, QString *errorMsg ) const { return relation( geom, RelationCrosses, errorMsg ); }
+bool QgsGeos::crosses( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  return relation( geom, RelationCrosses, errorMsg );
+}
 
-bool QgsGeos::within( const QgsAbstractGeometry *geom, QString *errorMsg ) const { return relation( geom, RelationWithin, errorMsg ); }
+bool QgsGeos::within( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  return relation( geom, RelationWithin, errorMsg );
+}
 
-bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg ) const { return relation( geom, RelationOverlaps, errorMsg ); }
+bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  return relation( geom, RelationOverlaps, errorMsg );
+}
 
 bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
@@ -903,7 +933,10 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) con
   return relation( geom, RelationContains, errorMsg );
 }
 
-bool QgsGeos::disjoint( const QgsAbstractGeometry *geom, QString *errorMsg ) const { return relation( geom, RelationDisjoint, errorMsg ); }
+bool QgsGeos::disjoint( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  return relation( geom, RelationDisjoint, errorMsg );
+}
 
 QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {

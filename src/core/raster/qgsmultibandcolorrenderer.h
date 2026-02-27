@@ -43,8 +43,13 @@ class CORE_EXPORT QgsMultiBandColorRenderer : public QgsRasterRenderer
      * \param blueEnhancement optional contrast enhancement for blue channel. Ownership is transferred to the renderer.
      */
     QgsMultiBandColorRenderer(
-      QgsRasterInterface *input, int redBand, int greenBand, int blueBand, QgsContrastEnhancement *redEnhancement SIP_TRANSFER = nullptr,
-      QgsContrastEnhancement *greenEnhancement SIP_TRANSFER = nullptr, QgsContrastEnhancement *blueEnhancement SIP_TRANSFER = nullptr
+      QgsRasterInterface *input,
+      int redBand,
+      int greenBand,
+      int blueBand,
+      QgsContrastEnhancement *redEnhancement SIP_TRANSFER = nullptr,
+      QgsContrastEnhancement *greenEnhancement SIP_TRANSFER = nullptr,
+      QgsContrastEnhancement *blueEnhancement SIP_TRANSFER = nullptr
     );
     ~QgsMultiBandColorRenderer() override;
 

@@ -42,9 +42,15 @@ QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &contex
   , mFeedback( feedback )
 {}
 
-long QgsPointCloudRenderContext::pointsRendered() const { return mPointsRendered; }
+long QgsPointCloudRenderContext::pointsRendered() const
+{
+  return mPointsRendered;
+}
 
-void QgsPointCloudRenderContext::incrementPointsRendered( long count ) { mPointsRendered += count; }
+void QgsPointCloudRenderContext::incrementPointsRendered( long count )
+{
+  mPointsRendered += count;
+}
 
 void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
 {
@@ -83,9 +89,15 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
   return r.release();
 }
 
-QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const { return QSet< QString >(); }
+QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+{
+  return QSet< QString >();
+}
 
-std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare() { return nullptr; }
+std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare()
+{
+  return nullptr;
+}
 
 void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 {
@@ -121,25 +133,53 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 #endif
 }
 
-bool QgsPointCloudRenderer::legendItemChecked( const QString & ) { return false; }
+bool QgsPointCloudRenderer::legendItemChecked( const QString & )
+{
+  return false;
+}
 
-void QgsPointCloudRenderer::checkLegendItem( const QString &, bool ) {}
+void QgsPointCloudRenderer::checkLegendItem( const QString &, bool )
+{}
 
-double QgsPointCloudRenderer::maximumScreenError() const { return mMaximumScreenError; }
+double QgsPointCloudRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
 
-void QgsPointCloudRenderer::setMaximumScreenError( double error ) { mMaximumScreenError = error; }
+void QgsPointCloudRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
+}
 
-void QgsPointCloudRenderer::setOverviewSwitchingScale( double scale ) { mOverviewSwitchingScale = scale; }
+void QgsPointCloudRenderer::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale = scale;
+}
 
-Qgis::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const { return mMaximumScreenErrorUnit; }
+Qgis::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
+{
+  return mMaximumScreenErrorUnit;
+}
 
-void QgsPointCloudRenderer::setMaximumScreenErrorUnit( Qgis::RenderUnit unit ) { mMaximumScreenErrorUnit = unit; }
+void QgsPointCloudRenderer::setMaximumScreenErrorUnit( Qgis::RenderUnit unit )
+{
+  mMaximumScreenErrorUnit = unit;
+}
 
-QList<QgsLayerTreeModelLegendNode *> QgsPointCloudRenderer::createLegendNodes( QgsLayerTreeLayer * ) { return QList<QgsLayerTreeModelLegendNode *>(); }
+QList<QgsLayerTreeModelLegendNode *> QgsPointCloudRenderer::createLegendNodes( QgsLayerTreeLayer * )
+{
+  return QList<QgsLayerTreeModelLegendNode *>();
+}
 
-QStringList QgsPointCloudRenderer::legendRuleKeys() const { return QStringList(); }
+QStringList QgsPointCloudRenderer::legendRuleKeys() const
+{
+  return QStringList();
+}
 
-void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const { drawPointToElevationMap( x, y, z, mDefaultPainterPenWidth, context ); }
+void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
+{
+  drawPointToElevationMap( x, y, z, mDefaultPainterPenWidth, context );
+}
 
 void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, int width, QgsPointCloudRenderContext &context ) const
 {
@@ -242,13 +282,25 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   }
 }
 
-Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const { return mPointSymbol; }
+Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
+{
+  return mPointSymbol;
+}
 
-void QgsPointCloudRenderer::setPointSymbol( Qgis::PointCloudSymbol symbol ) { mPointSymbol = symbol; }
+void QgsPointCloudRenderer::setPointSymbol( Qgis::PointCloudSymbol symbol )
+{
+  mPointSymbol = symbol;
+}
 
-Qgis::PointCloudDrawOrder QgsPointCloudRenderer::drawOrder2d() const { return mDrawOrder2d; }
+Qgis::PointCloudDrawOrder QgsPointCloudRenderer::drawOrder2d() const
+{
+  return mDrawOrder2d;
+}
 
-void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order ) { mDrawOrder2d = order; }
+void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order )
+{
+  mDrawOrder2d = order;
+}
 
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
 {

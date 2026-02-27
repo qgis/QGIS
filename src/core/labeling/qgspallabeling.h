@@ -648,7 +648,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * \deprecated QGIS 3.40. Will be removed from public API in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void calculateLabelSize(
-      const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr,
+      const QFontMetricsF *fm,
+      const QString &text,
+      double &labelX,
+      double &labelY,
+      const QgsFeature *f = nullptr,
+      QgsRenderContext *context = nullptr,
+      double *rotatedLabelX SIP_OUT = nullptr,
       double *rotatedLabelY SIP_OUT = nullptr
     ) SIP_DEPRECATED;
 
@@ -969,8 +975,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * vertically oriented text will be written to \a rotatedSize.
      */
     void calculateLabelMetrics(
-      const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize,
-      QRectF &outerBounds
+      const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds
     ) const;
 
 
@@ -1041,9 +1046,20 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsGeometry evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const;
 
     std::unique_ptr< QgsTextLabelFeature> generateLabelFeature(
-      QgsRenderContext &context, const QgsFeature &feature, int subPartId, QgsGeometry geom, const QgsGeometry &obstacleGeometry, QgsTextDocument doc, const QString &labelText,
-      const QgsTextFormat &evaluatedFormat, const QgsSymbol *symbol, const QgsLabelLineSettings &lineSettings, const QgsLabelPointSettings &pointSettings,
-      const QgsLabelPlacementSettings &placementSettings, bool isObstacle, bool doClip
+      QgsRenderContext &context,
+      const QgsFeature &feature,
+      int subPartId,
+      QgsGeometry geom,
+      const QgsGeometry &obstacleGeometry,
+      QgsTextDocument doc,
+      const QString &labelText,
+      const QgsTextFormat &evaluatedFormat,
+      const QgsSymbol *symbol,
+      const QgsLabelLineSettings &lineSettings,
+      const QgsLabelPointSettings &pointSettings,
+      const QgsLabelPlacementSettings &placementSettings,
+      bool isObstacle,
+      bool doClip
     ) const;
 
     /**

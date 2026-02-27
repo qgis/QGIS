@@ -152,7 +152,10 @@ QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( Qgs
   return {};
 }
 
-Qgis::RasterTemporalMode QgsRasterLayerTemporalProperties::mode() const { return mMode; }
+Qgis::RasterTemporalMode QgsRasterLayerTemporalProperties::mode() const
+{
+  return mMode;
+}
 
 void QgsRasterLayerTemporalProperties::setMode( Qgis::RasterTemporalMode mode )
 {
@@ -178,7 +181,10 @@ QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
   BUILTIN_UNREACHABLE
 }
 
-Qgis::TemporalIntervalMatchMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const { return mIntervalHandlingMethod; }
+Qgis::TemporalIntervalMatchMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const
+{
+  return mIntervalHandlingMethod;
+}
 
 void QgsRasterLayerTemporalProperties::setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod method )
 {
@@ -187,11 +193,20 @@ void QgsRasterLayerTemporalProperties::setIntervalHandlingMethod( Qgis::Temporal
   mIntervalHandlingMethod = method;
 }
 
-void QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range ) { mFixedRange = range; }
+void QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
+{
+  mFixedRange = range;
+}
 
-const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() const { return mFixedRange; }
+const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() const
+{
+  return mFixedRange;
+}
 
-QMap<int, QgsDateTimeRange> QgsRasterLayerTemporalProperties::fixedRangePerBand() const { return mRangePerBand; }
+QMap<int, QgsDateTimeRange> QgsRasterLayerTemporalProperties::fixedRangePerBand() const
+{
+  return mRangePerBand;
+}
 
 void QgsRasterLayerTemporalProperties::setFixedRangePerBand( const QMap<int, QgsDateTimeRange> &ranges )
 {
@@ -277,7 +292,10 @@ QList<int> QgsRasterLayerTemporalProperties::filteredBandsForTemporalRange( QgsR
   BUILTIN_UNREACHABLE
 }
 
-int QgsRasterLayerTemporalProperties::bandNumber() const { return mBandNumber; }
+int QgsRasterLayerTemporalProperties::bandNumber() const
+{
+  return mBandNumber;
+}
 
 void QgsRasterLayerTemporalProperties::setBandNumber( int number )
 {
@@ -287,7 +305,10 @@ void QgsRasterLayerTemporalProperties::setBandNumber( int number )
   mBandNumber = number;
 }
 
-QDateTime QgsRasterLayerTemporalProperties::temporalRepresentationOffset() const { return mTemporalRepresentationOffset; }
+QDateTime QgsRasterLayerTemporalProperties::temporalRepresentationOffset() const
+{
+  return mTemporalRepresentationOffset;
+}
 
 void QgsRasterLayerTemporalProperties::setTemporalRepresentationOffset( const QDateTime &offset )
 {
@@ -297,11 +318,20 @@ void QgsRasterLayerTemporalProperties::setTemporalRepresentationOffset( const QD
   mTemporalRepresentationOffset = offset;
 }
 
-bool QgsRasterLayerTemporalProperties::accumulatePixels() const { return mAccumulatePixels; }
+bool QgsRasterLayerTemporalProperties::accumulatePixels() const
+{
+  return mAccumulatePixels;
+}
 
-void QgsRasterLayerTemporalProperties::setAccumulatePixels( bool accumulate ) { mAccumulatePixels = accumulate; }
+void QgsRasterLayerTemporalProperties::setAccumulatePixels( bool accumulate )
+{
+  mAccumulatePixels = accumulate;
+}
 
-const QgsInterval &QgsRasterLayerTemporalProperties::temporalRepresentationScale() const { return mTemporalRepresentationScale; }
+const QgsInterval &QgsRasterLayerTemporalProperties::temporalRepresentationScale() const
+{
+  return mTemporalRepresentationScale;
+}
 
 void QgsRasterLayerTemporalProperties::setTemporalRepresentationScale( const QgsInterval &scale )
 {

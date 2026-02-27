@@ -163,9 +163,15 @@ QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
 {}
 
-QgsLayoutExporter::~QgsLayoutExporter() { qDeleteAll( mLabelingResults ); }
+QgsLayoutExporter::~QgsLayoutExporter()
+{
+  qDeleteAll( mLabelingResults );
+}
 
-QgsLayout *QgsLayoutExporter::layout() const { return mLayout; }
+QgsLayout *QgsLayoutExporter::layout() const
+{
+  return mLayout;
+}
 
 void QgsLayoutExporter::renderPage( QPainter *painter, int page ) const
 {
@@ -603,8 +609,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
     QSet<QString> mutuallyExclusiveGroups;
 
-    auto exportFunc = [this, &subSettings, &pdfComponents, &geospatialPdfExporter, &settings, &baseDir, &baseFileName,
-                       &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
+    auto exportFunc =
+      [this, &subSettings, &pdfComponents, &geospatialPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail )
+      -> QgsLayoutExporter::ExportResult {
       ExportResult layerExportResult = Success;
       QgsLayoutGeospatialPdfExporter::ComponentLayerDetail component;
       component.name = layerDetail.name;
@@ -1124,8 +1131,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       QDomNode svgDocRoot;
       const QList<QGraphicsItem *> items = mLayout->items( paperRect, Qt::IntersectsItemBoundingRect, Qt::AscendingOrder );
 
-      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg,
-                         &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
+      auto exportFunc =
+        [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
         return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
       };
       auto getExportGroupNameFunc = []( QgsLayoutItem * ) -> QString { return QString(); };
@@ -1261,7 +1268,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg(
   return Success;
 }
 
-QMap<QString, QgsLabelingResults *> QgsLayoutExporter::labelingResults() { return mLabelingResults; }
+QMap<QString, QgsLabelingResults *> QgsLayoutExporter::labelingResults()
+{
+  return mLabelingResults;
+}
 
 QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
 {
@@ -1459,8 +1469,17 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPagedPaintDev
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg(
-  const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg,
-  QDomNode &svgDocRoot, bool includeMetadata
+  const SvgExportSettings &settings,
+  double width,
+  double height,
+  int page,
+  const QRectF &bounds,
+  const QString &filename,
+  unsigned int svgLayerId,
+  const QString &layerName,
+  QDomDocument &svg,
+  QDomNode &svgDocRoot,
+  bool includeMetadata
 ) const
 {
   QBuffer svgBuffer;
@@ -1826,7 +1845,8 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport(
-  const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
+  const QList<QGraphicsItem *> &items,
+  const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
   const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc
 )
 {
@@ -2243,7 +2263,10 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   return w.write( image );
 }
 
-QString QgsLayoutExporter::getCreator() { return u"QGIS %1"_s.arg( Qgis::version() ); }
+QString QgsLayoutExporter::getCreator()
+{
+  return u"QGIS %1"_s.arg( Qgis::version() );
+}
 
 void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout )
 {

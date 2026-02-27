@@ -22,7 +22,8 @@
 
 #include "qgsmeshmemorydataprovider.h"
 
-QgsMeshCalcNode::QgsMeshCalcNode() {}
+QgsMeshCalcNode::QgsMeshCalcNode()
+{}
 
 QgsMeshCalcNode::QgsMeshCalcNode( double number )
   : mType( tNumber )
@@ -55,11 +56,20 @@ QgsMeshCalcNode::QgsMeshCalcNode( const QString &datasetGroupName )
 
 QgsMeshCalcNode::~QgsMeshCalcNode() = default;
 
-QgsMeshCalcNode::Type QgsMeshCalcNode::type() const { return mType; }
+QgsMeshCalcNode::Type QgsMeshCalcNode::type() const
+{
+  return mType;
+}
 
-void QgsMeshCalcNode::setLeft( QgsMeshCalcNode *left ) { mLeft.reset( left ); }
+void QgsMeshCalcNode::setLeft( QgsMeshCalcNode *left )
+{
+  mLeft.reset( left );
+}
 
-void QgsMeshCalcNode::setRight( QgsMeshCalcNode *right ) { mRight.reset( right ); }
+void QgsMeshCalcNode::setRight( QgsMeshCalcNode *right )
+{
+  mRight.reset( right );
+}
 
 QStringList QgsMeshCalcNode::usedDatasetGroupNames() const
 {

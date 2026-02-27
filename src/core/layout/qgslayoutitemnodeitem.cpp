@@ -38,9 +38,15 @@ void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
   emit clipPathChanged();
 }
 
-QRectF QgsLayoutNodesItem::boundingRect() const { return mCurrentRectangle; }
+QRectF QgsLayoutNodesItem::boundingRect() const
+{
+  return mCurrentRectangle;
+}
 
-double QgsLayoutNodesItem::estimatedFrameBleed() const { return mMaxSymbolBleed; }
+double QgsLayoutNodesItem::estimatedFrameBleed() const
+{
+  return mMaxSymbolBleed;
+}
 
 QgsLayoutNodesItem::QgsLayoutNodesItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -87,9 +93,15 @@ void QgsLayoutNodesItem::draw( QgsLayoutItemRenderContext &context )
     drawNodes( context );
 }
 
-QgsLayoutItem::Flags QgsLayoutNodesItem::itemFlags() const { return QgsLayoutItem::FlagDisableSceneCaching; }
+QgsLayoutItem::Flags QgsLayoutNodesItem::itemFlags() const
+{
+  return QgsLayoutItem::FlagDisableSceneCaching;
+}
 
-double QgsLayoutNodesItem::computeDistance( QPointF pt1, QPointF pt2 ) const { return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) ); }
+double QgsLayoutNodesItem::computeDistance( QPointF pt1, QPointF pt2 ) const
+{
+  return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
+}
 
 bool QgsLayoutNodesItem::addNode( QPointF pt, const bool checkArea, const double radius )
 {

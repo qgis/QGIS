@@ -64,9 +64,13 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   connect( mAcquisitionTimer.get(), &QTimer::timeout, this, &QgsGpsLogger::switchAcquisition );
 }
 
-QgsGpsLogger::~QgsGpsLogger() {}
+QgsGpsLogger::~QgsGpsLogger()
+{}
 
-QgsGpsConnection *QgsGpsLogger::connection() { return mConnection; }
+QgsGpsConnection *QgsGpsLogger::connection()
+{
+  return mConnection;
+}
 
 void QgsGpsLogger::setConnection( QgsGpsConnection *connection )
 {
@@ -96,11 +100,20 @@ void QgsGpsLogger::setTransformContext( const QgsCoordinateTransformContext &con
   emit distanceAreaChanged();
 }
 
-QgsCoordinateTransformContext QgsGpsLogger::transformContext() const { return mTransformContext; }
+QgsCoordinateTransformContext QgsGpsLogger::transformContext() const
+{
+  return mTransformContext;
+}
 
-const QgsDistanceArea &QgsGpsLogger::distanceArea() const { return mDistanceCalculator; }
+const QgsDistanceArea &QgsGpsLogger::distanceArea() const
+{
+  return mDistanceCalculator;
+}
 
-QVector<QgsPoint> QgsGpsLogger::currentTrack() const { return mCaptureListWgs84; }
+QVector<QgsPoint> QgsGpsLogger::currentTrack() const
+{
+  return mCaptureListWgs84;
+}
 
 QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) const
 {
@@ -178,11 +191,20 @@ QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) 
   return QgsGeometry();
 }
 
-QgsPointXY QgsGpsLogger::lastPosition() const { return mLastGpsPositionWgs84; }
+QgsPointXY QgsGpsLogger::lastPosition() const
+{
+  return mLastGpsPositionWgs84;
+}
 
-double QgsGpsLogger::lastElevation() const { return mLastElevation; }
+double QgsGpsLogger::lastElevation() const
+{
+  return mLastElevation;
+}
 
-double QgsGpsLogger::lastMValue() const { return mLastMValue; }
+double QgsGpsLogger::lastMValue() const
+{
+  return mLastMValue;
+}
 
 void QgsGpsLogger::resetTrack()
 {
@@ -459,9 +481,15 @@ void QgsGpsLogger::addTrackVertex()
   }
 }
 
-bool QgsGpsLogger::automaticallyAddTrackVertices() const { return mAutomaticallyAddTrackVertices; }
+bool QgsGpsLogger::automaticallyAddTrackVertices() const
+{
+  return mAutomaticallyAddTrackVertices;
+}
 
-void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled ) { mAutomaticallyAddTrackVertices = enabled; }
+void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled )
+{
+  mAutomaticallyAddTrackVertices = enabled;
+}
 
 QDateTime QgsGpsLogger::lastTimestamp() const
 {
@@ -510,4 +538,7 @@ QDateTime QgsGpsLogger::lastTimestamp() const
   return time;
 }
 
-QDateTime QgsGpsLogger::trackStartTime() const { return mTrackStartTime; }
+QDateTime QgsGpsLogger::trackStartTime() const
+{
+  return mTrackStartTime;
+}

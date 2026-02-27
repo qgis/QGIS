@@ -225,8 +225,15 @@ namespace pal
        * \returns calculated label position
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset(
-        PointSet *mapShape, const std::vector<double> &pathDistances, QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft,
-        bool applyAngleConstraints, Qgis::CurvedTextFlags flags, double additionalCharacterSpacing, double additionalWordSpacing
+        PointSet *mapShape,
+        const std::vector<double> &pathDistances,
+        QgsTextRendererUtils::LabelLineDirection direction,
+        double distance,
+        bool &labeledLineSegmentIsRightToLeft,
+        bool applyAngleConstraints,
+        Qgis::CurvedTextFlags flags,
+        double additionalCharacterSpacing,
+        double additionalWordSpacing
       );
 
       /**

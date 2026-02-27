@@ -88,8 +88,16 @@ class CORE_EXPORT QgsTextRenderer
      * \see drawDocument(), which is more efficient if the text document and metrics have already been calculated.
      */
     static void drawText(
-      const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines = true,
-      Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
+      const QRectF &rect,
+      double rotation,
+      Qgis::TextHorizontalAlignment alignment,
+      const QStringList &textLines,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      bool drawAsOutlines = true,
+      Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top,
+      Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(),
+      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
     );
 
     /**
@@ -115,9 +123,16 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.30
      */
     static void drawDocument(
-      const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
-      Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left, Qgis::TextVerticalAlignment verticalAlignment = Qgis::TextVerticalAlignment::Top, double rotation = 0,
-      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags()
+      const QRectF &rect,
+      const QgsTextFormat &format,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      QgsRenderContext &context,
+      Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left,
+      Qgis::TextVerticalAlignment verticalAlignment = Qgis::TextVerticalAlignment::Top,
+      double rotation = 0,
+      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle,
+      Qgis::TextRendererFlags flags = Qgis::TextRendererFlags()
     );
 
     /**
@@ -158,8 +173,14 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.40
      */
     static void drawDocument(
-      QPointF point, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment,
-      double rotation, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point
+      QPointF point,
+      const QgsTextFormat &format,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      QgsRenderContext &context,
+      Qgis::TextHorizontalAlignment alignment,
+      double rotation,
+      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point
     );
 
     /**
@@ -176,7 +197,12 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.32
      */
     static void drawTextOnLine(
-      const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, double offsetAlongLine = 0, double offsetFromLine = 0,
+      const QPolygonF &line,
+      const QString &text,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      double offsetAlongLine = 0,
+      double offsetFromLine = 0,
       Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
     );
 
@@ -194,7 +220,12 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.32
      */
     static void drawDocumentOnLine(
-      const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine = 0, double offsetFromLine = 0,
+      const QPolygonF &line,
+      const QgsTextFormat &format,
+      const QgsTextDocument &document,
+      QgsRenderContext &context,
+      double offsetAlongLine = 0,
+      double offsetFromLine = 0,
       Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
     );
 
@@ -217,7 +248,13 @@ class CORE_EXPORT QgsTextRenderer
      * \deprecated QGIS 3.40. Private API only, will be removed in 4.0.
      */
     Q_DECL_DEPRECATED static void drawPart(
-      const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part,
+      const QRectF &rect,
+      double rotation,
+      Qgis::TextHorizontalAlignment alignment,
+      const QStringList &textLines,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponent part,
       bool drawAsOutlines = true
     ) SIP_DEPRECATED;
 
@@ -240,7 +277,13 @@ class CORE_EXPORT QgsTextRenderer
      * \deprecated QGIS 3.40. Private API only, will be removed in 4.0.
      */
     Q_DECL_DEPRECATED static void drawPart(
-      QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part,
+      QPointF origin,
+      double rotation,
+      Qgis::TextHorizontalAlignment alignment,
+      const QStringList &textLines,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponent part,
       bool drawAsOutlines = true
     ) SIP_DEPRECATED;
 
@@ -278,8 +321,13 @@ class CORE_EXPORT QgsTextRenderer
      * \param maxLineWidth maximum line width, in painter units. Used when the Qgis::TextRendererFlag::WrapLines flag is used (since QGIS 3.24)
      */
     static double textHeight(
-      const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point, QFontMetricsF *fontMetrics = nullptr,
-      Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), double maxLineWidth = 0
+      const QgsRenderContext &context,
+      const QgsTextFormat &format,
+      const QStringList &textLines,
+      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point,
+      QFontMetricsF *fontMetrics = nullptr,
+      Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(),
+      double maxLineWidth = 0
     );
 
     /**
@@ -408,8 +456,16 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.14
      */
     static void drawParts(
-      const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents parts, Qgis::TextLayoutMode mode
+      const QRectF &rect,
+      double rotation,
+      Qgis::TextHorizontalAlignment alignment,
+      Qgis::TextVerticalAlignment vAlignment,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponents parts,
+      Qgis::TextLayoutMode mode
     );
 
     /**
@@ -429,8 +485,15 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.14
      */
     static void drawParts(
-      QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
-      const QgsTextFormat &format, Qgis::TextComponents parts, Qgis::TextLayoutMode mode
+      QPointF origin,
+      double rotation,
+      Qgis::TextHorizontalAlignment alignment,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponents parts,
+      Qgis::TextLayoutMode mode
     );
 
     static double drawBuffer( QgsRenderContext &context, const Component &component, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode );
@@ -446,8 +509,15 @@ class CORE_EXPORT QgsTextRenderer
     static void drawText( QgsRenderContext &context, const Component &component, const QgsTextFormat &format );
 
     static void drawTextInternal(
-      Qgis::TextComponents components, QgsRenderContext &context, const QgsTextFormat &format, const Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
-      Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
+      Qgis::TextComponents components,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      const Component &component,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      Qgis::TextHorizontalAlignment alignment,
+      Qgis::TextVerticalAlignment vAlignment,
+      Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
     );
 
     static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
@@ -456,13 +526,31 @@ class CORE_EXPORT QgsTextRenderer
     static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );
 
     static void drawTextInternalHorizontal(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document,
-      const QgsTextDocumentMetrics &metrics, double fontScale, Qgis::TextHorizontalAlignment hAlignment, Qgis::TextVerticalAlignment vAlignment, double rotation
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponents components,
+      Qgis::TextLayoutMode mode,
+      const Component &component,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      double fontScale,
+      Qgis::TextHorizontalAlignment hAlignment,
+      Qgis::TextVerticalAlignment vAlignment,
+      double rotation
     );
 
     static void drawTextInternalVertical(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document,
-      const QgsTextDocumentMetrics &metrics, double fontScale, Qgis::TextHorizontalAlignment hAlignment, Qgis::TextVerticalAlignment vAlignment, double rotation
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponents components,
+      Qgis::TextLayoutMode mode,
+      const Component &component,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      double fontScale,
+      Qgis::TextHorizontalAlignment hAlignment,
+      Qgis::TextVerticalAlignment vAlignment,
+      double rotation
     );
 
     struct DeferredRenderFragment
@@ -501,20 +589,41 @@ class CORE_EXPORT QgsTextRenderer
     static QBrush createBrushForPath( QgsRenderContext &context, const QString &path );
 
     static void renderBlockHorizontal(
-      const QgsTextBlock &block, int blockIndex, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, QPainter *painter, bool forceRenderAsPaths,
-      double fontScale, double extraWordSpace, double extraLetterSpace, Qgis::TextLayoutMode mode, DeferredRenderBlock *deferredRenderBlock
+      const QgsTextBlock &block,
+      int blockIndex,
+      const QgsTextDocumentMetrics &metrics,
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      QPainter *painter,
+      bool forceRenderAsPaths,
+      double fontScale,
+      double extraWordSpace,
+      double extraLetterSpace,
+      Qgis::TextLayoutMode mode,
+      DeferredRenderBlock *deferredRenderBlock
     );
     static void renderDocumentBackgrounds(
-      QgsRenderContext &context, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, const Component &component, const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics,
-      Qgis::TextLayoutMode mode, double verticalAlignOffset, double rotation
+      QgsRenderContext &context,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics,
+      const Component &component,
+      const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics,
+      Qgis::TextLayoutMode mode,
+      double verticalAlignOffset,
+      double rotation
     );
     static void renderDeferredBlocks(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale,
-      const Component &component, double rotation
+      QgsRenderContext &context,
+      const QgsTextFormat &format,
+      Qgis::TextComponents components,
+      const std::vector<DeferredRenderBlock> &deferredBlocks,
+      bool usePathsForText,
+      double fontScale,
+      const Component &component,
+      double rotation
     );
     static void renderDeferredBuffer(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component,
-      double rotation
+      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation
     );
     static void renderDeferredShadowForText(
       QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation

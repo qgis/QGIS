@@ -24,13 +24,25 @@ QgsLayerMetadataProviderRegistry::QgsLayerMetadataProviderRegistry( QObject *par
   : QObject( parent )
 {}
 
-void QgsLayerMetadataProviderRegistry::registerLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider ) { mMetadataProviders.insert( metadataProvider->id(), metadataProvider ); }
+void QgsLayerMetadataProviderRegistry::registerLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider )
+{
+  mMetadataProviders.insert( metadataProvider->id(), metadataProvider );
+}
 
-void QgsLayerMetadataProviderRegistry::unregisterLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider ) { delete mMetadataProviders.take( metadataProvider->id() ); }
+void QgsLayerMetadataProviderRegistry::unregisterLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider )
+{
+  delete mMetadataProviders.take( metadataProvider->id() );
+}
 
-QList<QgsAbstractLayerMetadataProvider *> QgsLayerMetadataProviderRegistry::layerMetadataProviders() const { return mMetadataProviders.values(); }
+QList<QgsAbstractLayerMetadataProvider *> QgsLayerMetadataProviderRegistry::layerMetadataProviders() const
+{
+  return mMetadataProviders.values();
+}
 
-QgsAbstractLayerMetadataProvider *QgsLayerMetadataProviderRegistry::layerMetadataProviderFromId( const QString &type ) { return mMetadataProviders.value( type, nullptr ); }
+QgsAbstractLayerMetadataProvider *QgsLayerMetadataProviderRegistry::layerMetadataProviderFromId( const QString &type )
+{
+  return mMetadataProviders.value( type, nullptr );
+}
 
 const QgsLayerMetadataSearchResults QgsLayerMetadataProviderRegistry::search(
   const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback

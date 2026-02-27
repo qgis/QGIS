@@ -432,8 +432,14 @@ inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, 
   *theY = mDestExtent.yMaximum() - row * mDestExtent.height() / ( mCPRows - 1 );
 }
 
-inline int ProjectorData::matrixRow( int destRow ) const { return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) ); }
-inline int ProjectorData::matrixCol( int destCol ) const { return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) ); }
+inline int ProjectorData::matrixRow( int destRow ) const
+{
+  return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
+}
+inline int ProjectorData::matrixCol( int destCol ) const
+{
+  return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
+}
 
 void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
 {

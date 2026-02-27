@@ -57,7 +57,10 @@ static void triangulateFaces( const QgsMeshFace &face, int nativeIndex, QVector<
   }
 }
 
-void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex ) { triangulateFaces( face, nativeIndex, mTriangularMesh.faces, mTrianglesToNativeFaces, mTriangularMesh ); }
+void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
+{
+  triangulateFaces( face, nativeIndex, mTriangularMesh.faces, mTrianglesToNativeFaces, mTriangularMesh );
+}
 
 QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const
 {
@@ -80,9 +83,15 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
   return transformedVertex;
 }
 
-QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace ) const { return QgsMeshUtils::centroid( nativeFace, mTriangularMesh.vertices ); }
+QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace ) const
+{
+  return QgsMeshUtils::centroid( nativeFace, mTriangularMesh.vertices );
+}
 
-double QgsTriangularMesh::averageTriangleSize() const { return mAverageTriangleSize; }
+double QgsTriangularMesh::averageTriangleSize() const
+{
+  return mAverageTriangleSize;
+}
 
 QgsTriangularMesh::~QgsTriangularMesh() = default;
 QgsTriangularMesh::QgsTriangularMesh() = default;
@@ -184,7 +193,10 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   return true;
 }
 
-bool QgsTriangularMesh::update( QgsMesh *nativeMesh ) { return update( nativeMesh, mCoordinateTransform ); }
+bool QgsTriangularMesh::update( QgsMesh *nativeMesh )
+{
+  return update( nativeMesh, mCoordinateTransform );
+}
 
 void QgsTriangularMesh::finalizeTriangles()
 {
@@ -206,9 +218,15 @@ void QgsTriangularMesh::finalizeTriangles()
   mAverageTriangleSize /= mTriangularMesh.faceCount();
 }
 
-QgsMeshVertex QgsTriangularMesh::nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const { return transformVertex( vertex, Qgis::TransformDirection::Forward ); }
+QgsMeshVertex QgsTriangularMesh::nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const
+{
+  return transformVertex( vertex, Qgis::TransformDirection::Forward );
+}
 
-QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const { return transformVertex( vertex, Qgis::TransformDirection::Reverse ); }
+QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const
+{
+  return transformVertex( vertex, Qgis::TransformDirection::Reverse );
+}
 
 QgsRectangle QgsTriangularMesh::nativeExtent()
 {
@@ -247,7 +265,10 @@ QgsRectangle QgsTriangularMesh::extent() const
   return mExtent;
 }
 
-int QgsTriangularMesh::levelOfDetail() const { return mLod; }
+int QgsTriangularMesh::levelOfDetail() const
+{
+  return mLod;
+}
 
 bool QgsTriangularMesh::contains( const QgsMesh::ElementType &type ) const
 {
@@ -272,21 +293,45 @@ void QgsTriangularMesh::addVertex( const QgsMeshVertex &vertex )
     mExtent.include( vertexInTriangularCoordinates );
 }
 
-const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const { return mTriangularMesh.vertices; }
+const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
+{
+  return mTriangularMesh.vertices;
+}
 
-const QVector<QgsMeshFace> &QgsTriangularMesh::triangles() const { return mTriangularMesh.faces; }
+const QVector<QgsMeshFace> &QgsTriangularMesh::triangles() const
+{
+  return mTriangularMesh.faces;
+}
 
-const QVector<QgsMeshEdge> &QgsTriangularMesh::edges() const { return mTriangularMesh.edges; }
+const QVector<QgsMeshEdge> &QgsTriangularMesh::edges() const
+{
+  return mTriangularMesh.edges;
+}
 
-const QVector<QgsMeshVertex> &QgsTriangularMesh::centroids() const { return faceCentroids(); }
+const QVector<QgsMeshVertex> &QgsTriangularMesh::centroids() const
+{
+  return faceCentroids();
+}
 
-const QVector<QgsMeshVertex> &QgsTriangularMesh::faceCentroids() const { return mNativeMeshFaceCentroids; }
+const QVector<QgsMeshVertex> &QgsTriangularMesh::faceCentroids() const
+{
+  return mNativeMeshFaceCentroids;
+}
 
-const QVector<QgsMeshVertex> &QgsTriangularMesh::edgeCentroids() const { return mNativeMeshEdgeCentroids; }
+const QVector<QgsMeshVertex> &QgsTriangularMesh::edgeCentroids() const
+{
+  return mNativeMeshEdgeCentroids;
+}
 
-const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const { return mTrianglesToNativeFaces; }
+const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
+{
+  return mTrianglesToNativeFaces;
+}
 
-const QVector<int> &QgsTriangularMesh::edgesToNativeEdges() const { return mEdgesToNativeEdges; }
+const QVector<int> &QgsTriangularMesh::edgesToNativeEdges() const
+{
+  return mEdgesToNativeEdges;
+}
 
 QgsPointXY QgsTriangularMesh::transformFromLayerToTrianglesCoordinates( const QgsPointXY &point ) const
 {
@@ -354,9 +399,15 @@ int QgsTriangularMesh::faceIndexForPoint_v2( const QgsPointXY &point ) const
   return -1;
 }
 
-QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const { return mSpatialFaceIndex.intersects( rectangle ); }
+QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
+{
+  return mSpatialFaceIndex.intersects( rectangle );
+}
 
-QList<int> QgsTriangularMesh::edgeIndexesForRectangle( const QgsRectangle &rectangle ) const { return mSpatialEdgeIndex.intersects( rectangle ); }
+QList<int> QgsTriangularMesh::edgeIndexesForRectangle( const QgsRectangle &rectangle ) const
+{
+  return mSpatialEdgeIndex.intersects( rectangle );
+}
 
 QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
 {
@@ -432,10 +483,17 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     QVector<unsigned int> returnIndexes( indexes.size() );
     //returned size could be different than goal size but not than the input indexes count
     size_t size = meshopt_simplifySloppy(
-      returnIndexes.data(), indexes.data(), indexes.size(), vertices.data(), verticesCount, sizeof( float ) * 3, maxNumberOfIndexes
+      returnIndexes.data(),
+      indexes.data(),
+      indexes.size(),
+      vertices.data(),
+      verticesCount,
+      sizeof( float ) * 3,
+      maxNumberOfIndexes
 #if MESHOPTIMIZER_VERSION > 150
       ,
-      0, nullptr
+      0,
+      nullptr
 #endif
     );
 

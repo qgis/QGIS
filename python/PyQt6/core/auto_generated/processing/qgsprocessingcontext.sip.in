@@ -378,7 +378,8 @@ with invalid geometry as a parameter.
 
     sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
     {
-      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 
@@ -400,7 +401,8 @@ encountered the transform error as a parameter.
 
     sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
     {
-      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 

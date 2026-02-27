@@ -35,17 +35,32 @@ using namespace Qt::StringLiterals;
 
 thread_local sfcgal::ErrorHandler sSfcgalErrorHandler;
 
-sfcgal::ErrorHandler *sfcgal::errorHandler() { return &sSfcgalErrorHandler; }
+sfcgal::ErrorHandler *sfcgal::errorHandler()
+{
+  return &sSfcgalErrorHandler;
+}
 
-void sfcgal::GeometryDeleter::operator()( sfcgal::geometry *geom ) const { sfcgal_geometry_delete( geom ); }
+void sfcgal::GeometryDeleter::operator()( sfcgal::geometry *geom ) const
+{
+  sfcgal_geometry_delete( geom );
+}
 
-sfcgal::shared_geom sfcgal::make_shared_geom( sfcgal::geometry *geom ) { return sfcgal::shared_geom( geom, sfcgal::GeometryDeleter() ); }
+sfcgal::shared_geom sfcgal::make_shared_geom( sfcgal::geometry *geom )
+{
+  return sfcgal::shared_geom( geom, sfcgal::GeometryDeleter() );
+}
 
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-void sfcgal::PrimitiveDeleter::operator()( sfcgal::primitive *prim ) const { sfcgal_primitive_delete( prim ); }
+void sfcgal::PrimitiveDeleter::operator()( sfcgal::primitive *prim ) const
+{
+  sfcgal_primitive_delete( prim );
+}
 
-sfcgal::shared_prim sfcgal::make_shared_prim( sfcgal::primitive *prim ) { return sfcgal::shared_prim( prim, sfcgal::PrimitiveDeleter() ); }
+sfcgal::shared_prim sfcgal::make_shared_prim( sfcgal::primitive *prim )
+{
+  return sfcgal::shared_prim( prim, sfcgal::PrimitiveDeleter() );
+}
 #endif
 
 bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const std::source_location &location )
@@ -106,11 +121,20 @@ void sfcgal::ErrorHandler::clearText( QString *errorMsg )
   }
 }
 
-QString sfcgal::ErrorHandler::getMainText() const { return errorMessages.isEmpty() ? QString() : QString( "Error occurred: " ) + errorMessages.last(); }
+QString sfcgal::ErrorHandler::getMainText() const
+{
+  return errorMessages.isEmpty() ? QString() : QString( "Error occurred: " ) + errorMessages.last();
+}
 
-QString sfcgal::ErrorHandler::getFullText() const { return errorMessages.isEmpty() ? QString() : getMainText() + "\n\t\t" + errorMessages.join( "\n\t\t" ); }
+QString sfcgal::ErrorHandler::getFullText() const
+{
+  return errorMessages.isEmpty() ? QString() : getMainText() + "\n\t\t" + errorMessages.join( "\n\t\t" );
+}
 
-bool sfcgal::ErrorHandler::isTextEmpty() const { return errorMessages.isEmpty(); }
+bool sfcgal::ErrorHandler::isTextEmpty() const
+{
+  return errorMessages.isEmpty();
+}
 
 void sfcgal::ErrorHandler::addText( const QString &msg, const std::source_location &location )
 {
@@ -161,8 +185,11 @@ template<typename T> static T geom_to_primtype( T ( *func_2d )( const sfcgal_geo
  * \param errorMsg if defined, will receive errors
  */
 template<typename T> static T geomgeom_to_primtype(
-  T ( *func_2d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ), T ( *func_3d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ), const sfcgal::geometry *geomA,
-  const sfcgal::geometry *geomB, QString *errorMsg
+  T ( *func_2d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
+  T ( *func_3d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
+  const sfcgal::geometry *geomA,
+  const sfcgal::geometry *geomB,
+  QString *errorMsg
 )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
@@ -1103,7 +1130,8 @@ void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
       std::vector<double> vect;
       vect = value.get<std::vector<double>>();
       QgsPoint point(
-        vect[0], vect[1],                                                         //
+        vect[0],
+        vect[1],                                                                  //
         ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
         ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() )
       );
@@ -1114,7 +1142,8 @@ void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
       std::vector<double> vect;
       vect = value.get<std::vector<double>>();
       QgsPoint point(
-        vect[0], vect[1],                                                         //
+        vect[0],
+        vect[1],                                                                  //
         ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
         ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() )
       );

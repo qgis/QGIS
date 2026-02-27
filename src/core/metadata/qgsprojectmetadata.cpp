@@ -83,14 +83,32 @@ void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )
   }
 }
 
-bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther ) const { return equals( metadataOther ) && mAuthor == metadataOther.mAuthor; }
+bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther ) const
+{
+  return equals( metadataOther ) && mAuthor == metadataOther.mAuthor;
+}
 
-QgsProjectMetadata *QgsProjectMetadata::clone() const { return new QgsProjectMetadata( *this ); }
+QgsProjectMetadata *QgsProjectMetadata::clone() const
+{
+  return new QgsProjectMetadata( *this );
+}
 
-QString QgsProjectMetadata::author() const { return mAuthor; }
+QString QgsProjectMetadata::author() const
+{
+  return mAuthor;
+}
 
-void QgsProjectMetadata::setAuthor( const QString &author ) { mAuthor = author; }
+void QgsProjectMetadata::setAuthor( const QString &author )
+{
+  mAuthor = author;
+}
 
-QDateTime QgsProjectMetadata::creationDateTime() const { return mDates.value( Qgis::MetadataDateType::Created ); }
+QDateTime QgsProjectMetadata::creationDateTime() const
+{
+  return mDates.value( Qgis::MetadataDateType::Created );
+}
 
-void QgsProjectMetadata::setCreationDateTime( const QDateTime &creationDateTime ) { mDates[Qgis::MetadataDateType::Created] = creationDateTime; }
+void QgsProjectMetadata::setCreationDateTime( const QDateTime &creationDateTime )
+{
+  mDates[Qgis::MetadataDateType::Created] = creationDateTime;
+}

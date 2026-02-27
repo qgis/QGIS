@@ -33,7 +33,10 @@ QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsF
   CPLHTTPPushFetchCallback( QgsCPLHTTPFetchOverrider::callback, this );
 }
 
-QgsCPLHTTPFetchOverrider::~QgsCPLHTTPFetchOverrider() { CPLHTTPPopFetchCallback(); }
+QgsCPLHTTPFetchOverrider::~QgsCPLHTTPFetchOverrider()
+{
+  CPLHTTPPopFetchCallback();
+}
 
 
 CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback(
@@ -180,8 +183,17 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback(
   return psResult;
 }
 
-void QgsCPLHTTPFetchOverrider::setAttribute( QNetworkRequest::Attribute code, const QVariant &value ) { mAttributes[code] = value; }
+void QgsCPLHTTPFetchOverrider::setAttribute( QNetworkRequest::Attribute code, const QVariant &value )
+{
+  mAttributes[code] = value;
+}
 
-void QgsCPLHTTPFetchOverrider::setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
+void QgsCPLHTTPFetchOverrider::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
 
-QThread *QgsCPLHTTPFetchOverrider::thread() const { return mThread; }
+QThread *QgsCPLHTTPFetchOverrider::thread() const
+{
+  return mThread;
+}

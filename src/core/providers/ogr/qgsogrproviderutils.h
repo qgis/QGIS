@@ -130,8 +130,7 @@ class CORE_EXPORT QgsOgrProviderUtils
      * \return TRUE in case of success
      */
     static bool createEmptyDataSource(
-      const QString &uri, const QString &format, const QString &encoding, Qgis::WkbType vectortype, const QList< QPair<QString, QString> > &attributes, const QgsCoordinateReferenceSystem &srs,
-      QString &errorMessage
+      const QString &uri, const QString &format, const QString &encoding, Qgis::WkbType vectortype, const QList< QPair<QString, QString> > &attributes, const QgsCoordinateReferenceSystem &srs, QString &errorMessage
     );
 
     static bool deleteLayer( const QString &uri, QString &errCause );

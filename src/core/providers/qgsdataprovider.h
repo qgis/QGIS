@@ -64,10 +64,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       sipType = 0;
     }
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:

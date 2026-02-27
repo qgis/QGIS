@@ -24,7 +24,7 @@ typically used to render grayscale images as false color.
 #include "qgscolorrampshader.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsColorRampShader *>( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsColorRampShader *>( sipCpp ) != NULL )
       sipType = sipType_QgsColorRampShader;
     else
       sipType = 0;

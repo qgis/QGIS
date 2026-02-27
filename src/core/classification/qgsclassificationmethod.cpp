@@ -46,8 +46,7 @@ QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, i
   : mFlags( properties )
   , mCodeComplexity( codeComplexity )
   , mLabelFormat( u"%1 - %2"_s )
-{
-}
+{}
 
 QgsClassificationMethod::~QgsClassificationMethod()
 {

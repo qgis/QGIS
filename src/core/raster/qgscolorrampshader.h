@@ -53,7 +53,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param colorRamp vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
      */
     QgsColorRampShader(
-      double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
+      double minimumValue = 0.0,
+      double maximumValue = 255.0,
+      QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
+      Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous
     );
 

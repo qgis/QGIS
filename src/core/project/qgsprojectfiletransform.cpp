@@ -49,7 +49,10 @@ typedef QgsProjectVersion PFV;
 // Transformer functions below. Declare functions here,
 // define them in qgsprojectfiletransform.cpp and add them
 // to the transformArray with proper version number
-void transformNull( QgsProjectFileTransform *pft ) { Q_UNUSED( pft ) } // Do absolutely nothing
+void transformNull( QgsProjectFileTransform *pft )
+{
+  Q_UNUSED( pft )
+} // Do absolutely nothing
 void transform2200to2300( QgsProjectFileTransform *pft );
 void transform3000( QgsProjectFileTransform *pft );
 
@@ -591,9 +594,15 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
   }
 }
 
-QDomDocument &QgsProjectFileTransform::dom() { return mDom; }
+QDomDocument &QgsProjectFileTransform::dom()
+{
+  return mDom;
+}
 
-QgsProjectVersion QgsProjectFileTransform::currentVersion() const { return mCurrentVersion; }
+QgsProjectVersion QgsProjectFileTransform::currentVersion() const
+{
+  return mCurrentVersion;
+}
 
 int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer )
 {

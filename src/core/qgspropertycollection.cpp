@@ -149,9 +149,15 @@ QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollec
   return *this;
 }
 
-bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const { return mProperties == other.mProperties; }
+bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const
+{
+  return mProperties == other.mProperties;
+}
 
-bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const { return !( *this == other ); }
+bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const
+{
+  return !( *this == other );
+}
 
 int QgsPropertyCollection::count() const
 {
@@ -380,7 +386,10 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
 // QgsPropertyCollectionStack
 //
 
-QgsPropertyCollectionStack::~QgsPropertyCollectionStack() { clear(); }
+QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
+{
+  clear();
+}
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
   : QgsAbstractPropertyCollection( other )
@@ -410,7 +419,10 @@ QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsProp
   return *this;
 }
 
-int QgsPropertyCollectionStack::count() const { return mStack.size(); }
+int QgsPropertyCollectionStack::count() const
+{
+  return mStack.size();
+}
 
 void QgsPropertyCollectionStack::clear()
 {
@@ -418,11 +430,20 @@ void QgsPropertyCollectionStack::clear()
   mStack.clear();
 }
 
-void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection ) { mStack.append( collection ); }
+void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection )
+{
+  mStack.append( collection );
+}
 
-QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) { return mStack.value( index ); }
+QgsPropertyCollection *QgsPropertyCollectionStack::at( int index )
+{
+  return mStack.value( index );
+}
 
-const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const { return mStack.value( index ); }
+const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const
+{
+  return mStack.value( index );
+}
 
 QgsPropertyCollection *QgsPropertyCollectionStack::collection( const QString &name )
 {
@@ -457,7 +478,10 @@ bool QgsPropertyCollectionStack::hasDynamicProperties() const
   return false;
 }
 
-bool QgsPropertyCollectionStack::isActive( int key ) const { return static_cast< bool >( property( key ) ); }
+bool QgsPropertyCollectionStack::isActive( int key ) const
+{
+  return static_cast< bool >( property( key ) );
+}
 
 QgsProperty QgsPropertyCollectionStack::property( int key ) const
 {

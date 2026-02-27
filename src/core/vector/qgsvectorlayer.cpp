@@ -5223,8 +5223,14 @@ void QgsVectorLayer::clearEditBuffer()
 }
 
 QVariant QgsVectorLayer::aggregate(
-  Qgis::Aggregate aggregate, const QString &fieldOrExpression, const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool *ok, QgsFeatureIds *fids,
-  QgsFeedback *feedback, QString *error
+  Qgis::Aggregate aggregate,
+  const QString &fieldOrExpression,
+  const QgsAggregateCalculator::AggregateParameters &parameters,
+  QgsExpressionContext *context,
+  bool *ok,
+  QgsFeatureIds *fids,
+  QgsFeedback *feedback,
+  QString *error
 ) const
 {
   // non fatal for now -- the aggregate expression functions are not thread safe and call this
@@ -6584,4 +6590,7 @@ QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers( bool inclu
   return layers;
 }
 
-QgsFeatureIds QgsVectorLayer::DeleteContext::handledFeatures( QgsVectorLayer *layer ) const { return mHandledFeatures[layer]; }
+QgsFeatureIds QgsVectorLayer::DeleteContext::handledFeatures( QgsVectorLayer *layer ) const
+{
+  return mHandledFeatures[layer];
+}

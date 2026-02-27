@@ -81,7 +81,9 @@ Converts an ESRI REST field ``type`` to a QVariant type.
 Converts an ESRI REST geometry ``type`` to a WKB type.
 %End
 
-    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs /Out/ = 0 );
+    static std::unique_ptr< QgsAbstractGeometry > convertGeometry(
+      const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs /Out/ = 0
+    );
 %Docstring
 Converts an ESRI REST ``geometry`` JSON definition to a
 :py:class:`QgsAbstractGeometry`.
@@ -189,10 +191,13 @@ Returns a null rectangle if the value cannot be converted.
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
 
 
-    static QVariantMap featureToJson( const QgsFeature &feature,
-                                      const QgsArcGisRestContext &context,
-                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
+    static QVariantMap featureToJson(
+      const QgsFeature &feature,
+      const QgsArcGisRestContext &context,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
+        static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
+      );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 

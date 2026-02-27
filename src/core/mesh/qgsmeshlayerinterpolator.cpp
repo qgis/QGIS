@@ -34,7 +34,11 @@
 #include "qgsrendercontext.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
-  const QgsTriangularMesh &m, const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues, QgsMeshDatasetGroupMetadata::DataType dataType, const QgsRenderContext &context,
+  const QgsTriangularMesh &m,
+  const QVector<double> &datasetValues,
+  const QgsMeshDataBlock &activeFaceFlagValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRenderContext &context,
   const QSize &size
 )
   : mTriangularMesh( m )
@@ -53,9 +57,15 @@ QgsRasterInterface *QgsMeshLayerInterpolator::clone() const
   return nullptr;
 }
 
-Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const { return Qgis::DataType::Float64; }
+Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const
+{
+  return Qgis::DataType::Float64;
+}
 
-int QgsMeshLayerInterpolator::bandCount() const { return 1; }
+int QgsMeshLayerInterpolator::bandCount() const
+{
+  return 1;
+}
 
 QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
@@ -170,7 +180,10 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   return outputBlock.release();
 }
 
-void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) { mSpatialIndexActive = active; }
+void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active )
+{
+  mSpatialIndexActive = active;
+}
 
 void QgsMeshLayerInterpolator::setElevationMapSettings( bool renderElevationMap, double elevationScale, double elevationOffset )
 {

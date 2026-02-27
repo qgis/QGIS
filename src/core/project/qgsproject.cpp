@@ -471,7 +471,10 @@ QgsProject::~QgsProject()
   }
 }
 
-void QgsProject::setInstance( QgsProject *project ) { sProject = project; }
+void QgsProject::setInstance( QgsProject *project )
+{
+  sProject = project;
+}
 
 
 QgsProject *QgsProject::instance() // skip-keyword-check
@@ -1673,7 +1676,10 @@ void QgsProject::preloadProviders(
   }
 }
 
-void QgsProject::releaseHandlesToProjectArchive() { mStyleSettings->removeProjectStyle(); }
+void QgsProject::releaseHandlesToProjectArchive()
+{
+  mStyleSettings->removeProjectStyle();
+}
 
 bool QgsProject::rebuildCrs3D( QString *error )
 {
@@ -5435,7 +5441,10 @@ bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObje
   return true;
 }
 
-QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const { return mElevationShadingRenderer; }
+QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const
+{
+  return mElevationShadingRenderer;
+}
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )
 {
@@ -5548,7 +5557,10 @@ QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpres
     return QVariant();
 }
 
-QgsScopedExpressionFunction *GetNamedProjectColor::clone() const { return new GetNamedProjectColor( mColors ); }
+QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
+{
+  return new GetNamedProjectColor( mColors );
+}
 
 GetNamedProjectColorObject::GetNamedProjectColorObject( const QgsProject *project )
   : QgsScopedExpressionFunction( u"project_color_object"_s, 1, u"Color"_s )
@@ -5575,7 +5587,10 @@ QVariant GetNamedProjectColorObject::func( const QVariantList &values, const Qgs
     return QVariant();
 }
 
-QgsScopedExpressionFunction *GetNamedProjectColorObject::clone() const { return new GetNamedProjectColorObject( mColors ); }
+QgsScopedExpressionFunction *GetNamedProjectColorObject::clone() const
+{
+  return new GetNamedProjectColorObject( mColors );
+}
 
 // ----------------
 
@@ -5600,5 +5615,8 @@ QVariant GetSensorData::func( const QVariantList &values, const QgsExpressionCon
   return QVariant();
 }
 
-QgsScopedExpressionFunction *GetSensorData::clone() const { return new GetSensorData( mSensorData ); }
+QgsScopedExpressionFunction *GetSensorData::clone() const
+{
+  return new GetSensorData( mSensorData );
+}
 ///@endcond

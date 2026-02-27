@@ -87,8 +87,11 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
      */
 #ifndef SIP_RUN
     QgsPoint(
-      double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(),
-      double m = std::numeric_limits<double>::quiet_NaN(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
+      double m = std::numeric_limits<double>::quiet_NaN(),
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown
     );
 #else
     // clang-format off
@@ -156,7 +159,10 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
      * \note Not available in Python bindings
      */
     explicit QgsPoint(
-      Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(),
+      Qgis::WkbType wkbType,
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
       double m = std::numeric_limits<double>::quiet_NaN()
     ) SIP_SKIP;
 
@@ -192,9 +198,13 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper(
-      double epsilon, const QgsAbstractGeometry &other, bool is3DFlag, bool isMeasureFlag,
+      double epsilon,
+      const QgsAbstractGeometry &other,
+      bool is3DFlag,
+      bool isMeasureFlag,
       std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
-      std::function<bool( double, double, double, double, double, double, double )> comparator3D, std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
+      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
+      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
       std::function<bool( double, double, double, double, double )> comparator2D
     ) const
     {

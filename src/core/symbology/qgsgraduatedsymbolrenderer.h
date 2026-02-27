@@ -290,9 +290,17 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED static QgsGraduatedSymbolRenderer *createRenderer(
-      QgsVectorLayer *vlayer, const QString &attrName, int classes, Mode mode, QgsSymbol *symbol SIP_TRANSFER, QgsColorRamp *ramp SIP_TRANSFER,
-      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(), bool useSymmetricMode = false, double symmetryPoint = 0.0,
-      const QStringList &listForCboPrettyBreaks = QStringList(), bool astride = false
+      QgsVectorLayer *vlayer,
+      const QString &attrName,
+      int classes,
+      Mode mode,
+      QgsSymbol *symbol SIP_TRANSFER,
+      QgsColorRamp *ramp SIP_TRANSFER,
+      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
+      bool useSymmetricMode = false,
+      double symmetryPoint = 0.0,
+      const QStringList &listForCboPrettyBreaks = QStringList(),
+      bool astride = false
     ) SIP_DEPRECATED;
     Q_NOWARN_DEPRECATED_POP;
 

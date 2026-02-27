@@ -85,7 +85,10 @@ QgsOrientedBox3D QgsOrientedBox3D::fromBox3D( const QgsBox3D &box )
   return QgsOrientedBox3D( box.center(), QList< QgsVector3D > { QgsVector3D( box.width() * 0.5, 0, 0 ), QgsVector3D( 0, box.height() * 0.5, 0 ), QgsVector3D( 0, 0, box.depth() * 0.5 ) } );
 }
 
-bool QgsOrientedBox3D::isNull() const { return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] ); }
+bool QgsOrientedBox3D::isNull() const
+{
+  return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] );
+}
 
 QList< double > QgsOrientedBox3D::halfAxesList() const
 {

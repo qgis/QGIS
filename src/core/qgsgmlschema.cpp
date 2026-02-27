@@ -268,7 +268,10 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
   return xsdComplexTypeGmlBaseType( element, stripNS( extrestName ) );
 }
 
-QString QgsGmlSchema::stripNS( const QString &name ) { return name.contains( ':' ) ? name.section( ':', 1 ) : name; }
+QString QgsGmlSchema::stripNS( const QString &name )
+{
+  return name.contains( ':' ) ? name.section( ':', 1 ) : name;
+}
 
 QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const QString &path )
 {
@@ -305,7 +308,10 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
   return list;
 }
 
-QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString &path ) { return domElements( element, path ).value( 0 ); }
+QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString &path )
+{
+  return domElements( element, path ).value( 0 );
+}
 
 QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, const QString &attr, const QString &attrVal )
 {
@@ -552,7 +558,10 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   }
 }
 
-QStringList QgsGmlSchema::typeNames() const { return mFeatureClassMap.keys(); }
+QStringList QgsGmlSchema::typeNames() const
+{
+  return mFeatureClassMap.keys();
+}
 
 QList<QgsField> QgsGmlSchema::fields( const QString &typeName )
 {

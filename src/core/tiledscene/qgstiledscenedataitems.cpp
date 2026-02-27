@@ -71,11 +71,20 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 
 // ---------------------------------------------------------------------------
 
-QString QgsTiledSceneDataItemProvider::name() { return u"Scenes"_s; }
+QString QgsTiledSceneDataItemProvider::name()
+{
+  return u"Scenes"_s;
+}
 
-QString QgsTiledSceneDataItemProvider::dataProviderKey() const { return u"tiled-scene"_s; }
+QString QgsTiledSceneDataItemProvider::dataProviderKey() const
+{
+  return u"tiled-scene"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsTiledSceneDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
+Qgis::DataItemProviderCapabilities QgsTiledSceneDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::NetworkSources;
+}
 
 QgsDataItem *QgsTiledSceneDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

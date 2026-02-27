@@ -88,7 +88,10 @@ QList<double> QgsElevationUtils::significantZValuesForLayers( const QList<QgsMap
   return res;
 }
 
-bool QgsElevationUtils::canEnableElevationForLayer( QgsMapLayer *layer ) { return static_cast< bool >( layer->elevationProperties() ); }
+bool QgsElevationUtils::canEnableElevationForLayer( QgsMapLayer *layer )
+{
+  return static_cast< bool >( layer->elevationProperties() );
+}
 
 bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
 {

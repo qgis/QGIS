@@ -31,7 +31,10 @@ QgsSensorRegistry::QgsSensorRegistry( QObject *parent )
   : QObject( parent )
 {}
 
-QgsSensorRegistry::~QgsSensorRegistry() { qDeleteAll( mMetadata ); }
+QgsSensorRegistry::~QgsSensorRegistry()
+{
+  qDeleteAll( mMetadata );
+}
 
 bool QgsSensorRegistry::populate()
 {
@@ -47,7 +50,10 @@ bool QgsSensorRegistry::populate()
   return true;
 }
 
-QgsSensorAbstractMetadata *QgsSensorRegistry::sensorMetadata( const QString &type ) const { return mMetadata.value( type ); }
+QgsSensorAbstractMetadata *QgsSensorRegistry::sensorMetadata( const QString &type ) const
+{
+  return mMetadata.value( type );
+}
 
 bool QgsSensorRegistry::addSensorType( QgsSensorAbstractMetadata *metadata )
 {

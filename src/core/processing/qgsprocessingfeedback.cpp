@@ -199,9 +199,15 @@ void QgsProcessingFeedback::pushFormattedResults( const QgsProcessingAlgorithm *
   }
 }
 
-QString QgsProcessingFeedback::htmlLog() const { return mHtmlLog; }
+QString QgsProcessingFeedback::htmlLog() const
+{
+  return mHtmlLog;
+}
 
-QString QgsProcessingFeedback::textLog() const { return mTextLog; }
+QString QgsProcessingFeedback::textLog() const
+{
+  return mTextLog;
+}
 
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )

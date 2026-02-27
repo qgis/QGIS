@@ -32,9 +32,13 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &labe
   , mParentKey( parentRuleKey )
 {}
 
-QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other ) { *this = other; }
+QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
+{
+  *this = other;
+}
 
-QgsLegendSymbolItem::~QgsLegendSymbolItem() {}
+QgsLegendSymbolItem::~QgsLegendSymbolItem()
+{}
 
 QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
 {
@@ -75,10 +79,22 @@ void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
   mOriginalSymbolPointer = s;
 }
 
-void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings ) { mDataDefinedSizeLegendSettings.reset( settings ); }
+void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegendSettings.reset( settings );
+}
 
-QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() const { return mDataDefinedSizeLegendSettings.get(); }
+QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() const
+{
+  return mDataDefinedSizeLegendSettings.get();
+}
 
-void QgsLegendSymbolItem::setUserData( int key, QVariant &value ) { mUserData.insert( key, value ); }
+void QgsLegendSymbolItem::setUserData( int key, QVariant &value )
+{
+  mUserData.insert( key, value );
+}
 
-QVariant QgsLegendSymbolItem::userData( int key ) const { return mUserData.value( key, QVariant() ); }
+QVariant QgsLegendSymbolItem::userData( int key ) const
+{
+  return mUserData.value( key, QVariant() );
+}

@@ -43,7 +43,10 @@ QLineF segment( int index, QRectF rect, double radius )
   }
 }
 
-QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth ) { return createBalloon( origin, rect, wedgeWidth, 0 ).toFillPolygon(); }
+QPolygonF QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth )
+{
+  return createBalloon( origin, rect, wedgeWidth, 0 ).toFillPolygon();
+}
 
 QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const QRectF &rect, double wedgeWidth, double cornerRadius )
 {

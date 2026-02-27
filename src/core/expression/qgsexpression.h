@@ -86,8 +86,13 @@ struct HelpExample
 struct HelpVariant
 {
     HelpVariant(
-      const QString &name, const QString &description, const QList<HelpArg> &arguments = QList<HelpArg>(), bool variableLenArguments = false, const QList<HelpExample> &examples = QList<HelpExample>(),
-      const QString &notes = QString(), const QStringList &tags = QStringList()
+      const QString &name,
+      const QString &description,
+      const QList<HelpArg> &arguments = QList<HelpArg>(),
+      bool variableLenArguments = false,
+      const QList<HelpExample> &examples = QList<HelpExample>(),
+      const QString &notes = QString(),
+      const QStringList &tags = QStringList()
     )
       : mName( name )
       , mDescription( description )

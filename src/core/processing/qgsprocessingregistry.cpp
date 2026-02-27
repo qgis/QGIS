@@ -258,7 +258,10 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
   return creation.release();
 }
 
-void QgsProcessingRegistry::addAlgorithmAlias( const QString &aliasId, const QString &actualId ) { mAlgorithmAliases.insert( aliasId, actualId ); }
+void QgsProcessingRegistry::addAlgorithmAlias( const QString &aliasId, const QString &actualId )
+{
+  mAlgorithmAliases.insert( aliasId, actualId );
+}
 
 bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
 {
@@ -286,6 +289,12 @@ void QgsProcessingRegistry::removeParameterType( QgsProcessingParameterType *typ
   delete type;
 }
 
-QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString &id ) const { return mParameterTypes.value( id ); }
+QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString &id ) const
+{
+  return mParameterTypes.value( id );
+}
 
-QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const { return mParameterTypes.values(); }
+QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
+{
+  return mParameterTypes.values();
+}

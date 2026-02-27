@@ -210,7 +210,10 @@ void QgsMapThemeCollection::applyTheme( const QString &name, QgsLayerTreeGroup *
   update( name, createThemeFromCurrentState( root, model ) );
 }
 
-QgsProject *QgsMapThemeCollection::project() { return mProject; }
+QgsProject *QgsMapThemeCollection::project()
+{
+  return mProject;
+}
 
 void QgsMapThemeCollection::setProject( QgsProject *project )
 {
@@ -254,7 +257,10 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
 }
 
 
-bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const { return mMapThemes.contains( name ); }
+bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const
+{
+  return mMapThemes.contains( name );
+}
 
 void QgsMapThemeCollection::insert( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state )
 {
@@ -309,7 +315,10 @@ void QgsMapThemeCollection::clear()
   emit mapThemesChanged();
 }
 
-QStringList QgsMapThemeCollection::mapThemes() const { return mMapThemes.keys(); }
+QStringList QgsMapThemeCollection::mapThemes() const
+{
+  return mMapThemes.keys();
+}
 
 QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name ) const
 {
@@ -538,7 +547,10 @@ void QgsMapThemeCollection::MapThemeRecord::removeLayerRecord( QgsMapLayer *laye
   }
 }
 
-void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record ) { mLayerRecords.append( record ); }
+void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record )
+{
+  mLayerRecords.append( record );
+}
 
 QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
@@ -742,4 +754,7 @@ void QgsMapThemeCollection::MapThemeRecord::writeXml( QDomElement element, QDomD
   }
 }
 
-void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer *layer ) { mLayer = layer; }
+void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer *layer )
+{
+  mLayer = layer;
+}

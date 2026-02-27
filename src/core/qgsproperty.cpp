@@ -235,7 +235,10 @@ QMap<QString, QgsProperty> QgsProperty::variantMapToPropertyMap( const QVariantM
   return propertyMap;
 }
 
-QgsProperty::QgsProperty() { d = new QgsPropertyPrivate(); }
+QgsProperty::QgsProperty()
+{
+  d = new QgsPropertyPrivate();
+}
 
 QgsProperty::~QgsProperty() = default;
 
@@ -283,11 +286,20 @@ bool QgsProperty::operator==( const QgsProperty &other ) const
          && ( ( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
 }
 
-bool QgsProperty::operator!=( const QgsProperty &other ) const { return ( !( ( *this ) == other ) ); }
+bool QgsProperty::operator!=( const QgsProperty &other ) const
+{
+  return ( !( ( *this ) == other ) );
+}
 
-Qgis::PropertyType QgsProperty::propertyType() const { return d->type; }
+Qgis::PropertyType QgsProperty::propertyType() const
+{
+  return d->type;
+}
 
-bool QgsProperty::isActive() const { return d->type != Qgis::PropertyType::Invalid && d->active; }
+bool QgsProperty::isActive() const
+{
+  return d->type != Qgis::PropertyType::Invalid && d->active;
+}
 
 bool QgsProperty::isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue ) const
 {
@@ -358,7 +370,10 @@ QString QgsProperty::field() const
   return d->fieldName;
 }
 
-QgsProperty::operator bool() const { return d->type != Qgis::PropertyType::Invalid; }
+QgsProperty::operator bool() const
+{
+  return d->type != Qgis::PropertyType::Invalid;
+}
 
 void QgsProperty::setExpressionString( const QString &expression )
 {
@@ -856,7 +871,10 @@ void QgsProperty::setTransformer( QgsPropertyTransformer *transformer )
   d->transformer = transformer;
 }
 
-const QgsPropertyTransformer *QgsProperty::transformer() const { return d->transformer; }
+const QgsPropertyTransformer *QgsProperty::transformer() const
+{
+  return d->transformer;
+}
 
 bool QgsProperty::convertToTransformer()
 {

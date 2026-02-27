@@ -50,15 +50,28 @@ namespace QgsGeographicCoordinateNumericFormat_ns
 } //namespace QgsGeographicCoordinateNumericFormat_ns
 ///@endcond
 
-QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat() {}
+QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
+{}
 
-QString QgsGeographicCoordinateNumericFormat::id() const { return u"geographiccoordinate"_s; }
+QString QgsGeographicCoordinateNumericFormat::id() const
+{
+  return u"geographiccoordinate"_s;
+}
 
-QString QgsGeographicCoordinateNumericFormat::visibleName() const { return QObject::tr( "Geographic Coordinate" ); }
+QString QgsGeographicCoordinateNumericFormat::visibleName() const
+{
+  return QObject::tr( "Geographic Coordinate" );
+}
 
-int QgsGeographicCoordinateNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
+int QgsGeographicCoordinateNumericFormat::sortKey()
+{
+  return DEFAULT_SORT_KEY;
+}
 
-double QgsGeographicCoordinateNumericFormat::suggestSampleValue() const { return 3.7555; }
+double QgsGeographicCoordinateNumericFormat::suggestSampleValue() const
+{
+  return 3.7555;
+}
 
 QString QgsGeographicCoordinateNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -78,7 +91,10 @@ QString QgsGeographicCoordinateNumericFormat::formatDouble( double value, const 
   BUILTIN_UNREACHABLE
 }
 
-QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormat::clone() const { return new QgsGeographicCoordinateNumericFormat( *this ); }
+QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormat::clone() const
+{
+  return new QgsGeographicCoordinateNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsGeographicCoordinateNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -101,9 +117,15 @@ QVariantMap QgsGeographicCoordinateNumericFormat::configuration( const QgsReadWr
   return res;
 }
 
-QgsGeographicCoordinateNumericFormat::AngleFormat QgsGeographicCoordinateNumericFormat::angleFormat() const { return mAngleFormat; }
+QgsGeographicCoordinateNumericFormat::AngleFormat QgsGeographicCoordinateNumericFormat::angleFormat() const
+{
+  return mAngleFormat;
+}
 
-void QgsGeographicCoordinateNumericFormat::setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat format ) { mAngleFormat = format; }
+void QgsGeographicCoordinateNumericFormat::setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat format )
+{
+  mAngleFormat = format;
+}
 
 void QgsGeographicCoordinateNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
 {
@@ -114,17 +136,35 @@ void QgsGeographicCoordinateNumericFormat::setConfiguration( const QVariantMap &
   mUseSuffix = configuration.value( u"show_suffix"_s, false ).toBool();
 }
 
-bool QgsGeographicCoordinateNumericFormat::showLeadingZeros() const { return mShowLeadingZeros; }
+bool QgsGeographicCoordinateNumericFormat::showLeadingZeros() const
+{
+  return mShowLeadingZeros;
+}
 
-void QgsGeographicCoordinateNumericFormat::setShowLeadingZeros( bool newShowLeadingZeros ) { mShowLeadingZeros = newShowLeadingZeros; }
+void QgsGeographicCoordinateNumericFormat::setShowLeadingZeros( bool newShowLeadingZeros )
+{
+  mShowLeadingZeros = newShowLeadingZeros;
+}
 
-bool QgsGeographicCoordinateNumericFormat::showDegreeLeadingZeros() const { return mShowLeadingDegreeZeros; }
+bool QgsGeographicCoordinateNumericFormat::showDegreeLeadingZeros() const
+{
+  return mShowLeadingDegreeZeros;
+}
 
-void QgsGeographicCoordinateNumericFormat::setShowDegreeLeadingZeros( bool show ) { mShowLeadingDegreeZeros = show; }
+void QgsGeographicCoordinateNumericFormat::setShowDegreeLeadingZeros( bool show )
+{
+  mShowLeadingDegreeZeros = show;
+}
 
-bool QgsGeographicCoordinateNumericFormat::showDirectionalSuffix() const { return mUseSuffix; }
+bool QgsGeographicCoordinateNumericFormat::showDirectionalSuffix() const
+{
+  return mUseSuffix;
+}
 
-void QgsGeographicCoordinateNumericFormat::setShowDirectionalSuffix( bool show ) { mUseSuffix = show; }
+void QgsGeographicCoordinateNumericFormat::setShowDirectionalSuffix( bool show )
+{
+  mUseSuffix = show;
+}
 
 QString QgsGeographicCoordinateNumericFormat::formatLongitude( double value, std::basic_stringstream<wchar_t> &ss, const QgsNumericFormatContext &context ) const
 {

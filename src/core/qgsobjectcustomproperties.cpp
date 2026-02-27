@@ -26,15 +26,30 @@
 
 using namespace Qt::StringLiterals;
 
-QStringList QgsObjectCustomProperties::keys() const { return mMap.keys(); }
+QStringList QgsObjectCustomProperties::keys() const
+{
+  return mMap.keys();
+}
 
-void QgsObjectCustomProperties::setValue( const QString &key, const QVariant &value ) { mMap[key] = value; }
+void QgsObjectCustomProperties::setValue( const QString &key, const QVariant &value )
+{
+  mMap[key] = value;
+}
 
-QVariant QgsObjectCustomProperties::value( const QString &key, const QVariant &defaultValue ) const { return mMap.value( key, defaultValue ); }
+QVariant QgsObjectCustomProperties::value( const QString &key, const QVariant &defaultValue ) const
+{
+  return mMap.value( key, defaultValue );
+}
 
-void QgsObjectCustomProperties::remove( const QString &key ) { mMap.remove( key ); }
+void QgsObjectCustomProperties::remove( const QString &key )
+{
+  mMap.remove( key );
+}
 
-bool QgsObjectCustomProperties::contains( const QString &key ) const { return mMap.contains( key ); }
+bool QgsObjectCustomProperties::contains( const QString &key ) const
+{
+  return mMap.contains( key );
+}
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {

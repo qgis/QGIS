@@ -50,7 +50,10 @@ using namespace Qt::StringLiterals;
 // QgsVectorLayerProfileResults
 //
 
-QString QgsVectorLayerProfileResults::type() const { return u"vector"_s; }
+QString QgsVectorLayerProfileResults::type() const
+{
+  return u"vector"_s;
+}
 
 QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
 {
@@ -173,8 +176,12 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
 }
 
 void QgsVectorLayerProfileResults::visitFeaturesAtPoint(
-  const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,
-  const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin
+  const QgsProfilePoint &point,
+  double maximumPointDistanceDelta,
+  double maximumPointElevationDelta,
+  double maximumSurfaceElevationDelta,
+  const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor,
+  bool visitWithin
 ) const
 {
   // TODO -- add spatial index if performance is an issue
@@ -533,7 +540,8 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
       for ( const Feature &profileFeature : profileFeatures )
       {
         renderResult(
-          profileFeature, rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : marker.get(),
+          profileFeature,
+          rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : marker.get(),
           rendererSymbol->type() == Qgis::SymbolType::Line ? qgis::down_cast< QgsLineSymbol * >( rendererSymbol ) : line.get(),
           rendererSymbol->type() == Qgis::SymbolType::Fill ? qgis::down_cast< QgsFillSymbol * >( rendererSymbol ) : fill.get()
         );
@@ -704,9 +712,15 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   mFillSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
-QString QgsVectorLayerProfileGenerator::sourceId() const { return mId; }
+QString QgsVectorLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
-QString QgsVectorLayerProfileGenerator::type() const { return u"vector"_s; }
+QString QgsVectorLayerProfileGenerator::type() const
+{
+  return u"vector"_s;
+}
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 
@@ -848,9 +862,15 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   return true;
 }
 
-QgsAbstractProfileResults *QgsVectorLayerProfileGenerator::takeResults() { return mResults.release(); }
+QgsAbstractProfileResults *QgsVectorLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
+}
 
-QgsFeedback *QgsVectorLayerProfileGenerator::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsVectorLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}
 
 bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
 {
@@ -1360,7 +1380,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   };
 
   auto processPolygon =
-    [this, &processTriangleLineIntersect,
+    [this,
+     &processTriangleLineIntersect,
      &triangleIsCollinearInXYPlane]( const QgsCurvePolygon *polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset, bool &wasCollinear ) {
       std::unique_ptr< QgsPolygon > clampedPolygon;
       if ( const QgsPolygon *p = qgsgeometry_cast< const QgsPolygon * >( polygon ) )
@@ -1600,7 +1621,10 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   return true;
 }
 
-double QgsVectorLayerProfileGenerator::tolerance() const { return mCustomToleranceEnabled ? mCustomTolerance : mTolerance; }
+double QgsVectorLayerProfileGenerator::tolerance() const
+{
+  return mCustomToleranceEnabled ? mCustomTolerance : mTolerance;
+}
 
 double QgsVectorLayerProfileGenerator::terrainHeight( double x, double y ) const
 {

@@ -67,7 +67,10 @@ QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString 
   , mExpression( new QgsExpression( expression ) )
 {}
 
-QString QgsGeometryGeneratorSymbolLayer::layerType() const { return u"GeometryGenerator"_s; }
+QString QgsGeometryGeneratorSymbolLayer::layerType() const
+{
+  return u"GeometryGenerator"_s;
+}
 
 void QgsGeometryGeneratorSymbolLayer::setSymbolType( Qgis::SymbolType symbolType )
 {
@@ -119,7 +122,10 @@ void QgsGeometryGeneratorSymbolLayer::startFeatureRender( const QgsFeature &, Qg
   mHasRenderedFeature = false;
 }
 
-void QgsGeometryGeneratorSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & ) { mRenderingFeature = false; }
+void QgsGeometryGeneratorSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = false;
+}
 
 bool QgsGeometryGeneratorSymbolLayer::usesMapUnits() const
 {
@@ -273,9 +279,15 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
   }
 }
 
-void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp ) { mExpression = std::make_unique<QgsExpression>( exp ); }
+void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
+{
+  mExpression = std::make_unique<QgsExpression>( exp );
+}
 
-QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const { return mExpression->expression(); }
+QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const
+{
+  return mExpression->expression();
+}
 
 bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
@@ -522,4 +534,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     mHasRenderedFeature = true;
 }
 
-void QgsGeometryGeneratorSymbolLayer::setColor( const QColor &color ) { mSymbol->setColor( color ); }
+void QgsGeometryGeneratorSymbolLayer::setColor( const QColor &color )
+{
+  mSymbol->setColor( color );
+}

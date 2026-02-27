@@ -48,7 +48,10 @@ Q_GLOBAL_STATIC( QString, sDefaultArchiveName )
 Q_GLOBAL_STATIC( ArchiveRegistry, sArchiveRegistry )
 Q_GLOBAL_STATIC( CopyingInfoMap, sCopyingInfoMap )
 
-QMap< QString, QgsCptCityArchive * > QgsCptCityArchive::archiveRegistry() { return *sArchiveRegistry(); }
+QMap< QString, QgsCptCityArchive * > QgsCptCityArchive::archiveRegistry()
+{
+  return *sArchiveRegistry();
+}
 
 QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString &baseDir )
   : mArchiveName( archiveName )
@@ -163,9 +166,15 @@ QString QgsCptCityArchive::findFileName( const QString &target, const QString &s
 }
 
 
-QString QgsCptCityArchive::copyingFileName( const QString &path ) const { return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, baseDir() + '/' + path, baseDir() ); }
+QString QgsCptCityArchive::copyingFileName( const QString &path ) const
+{
+  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, baseDir() + '/' + path, baseDir() );
+}
 
-QString QgsCptCityArchive::descFileName( const QString &path ) const { return QgsCptCityArchive::findFileName( u"DESC.xml"_s, baseDir() + '/' + path, baseDir() ); }
+QString QgsCptCityArchive::descFileName( const QString &path ) const
+{
+  return QgsCptCityArchive::findFileName( u"DESC.xml"_s, baseDir() + '/' + path, baseDir() );
+}
 
 QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
 {
@@ -414,7 +423,10 @@ QMap< double, QPair<QColor, QColor> > QgsCptCityArchive::gradientColorMap( const
   return colorMap;
 }
 
-bool QgsCptCityArchive::isEmpty() const { return ( mRootItems.isEmpty() ); }
+bool QgsCptCityArchive::isEmpty() const
+{
+  return ( mRootItems.isEmpty() );
+}
 
 
 QgsCptCityArchive *QgsCptCityArchive::defaultArchive()
@@ -554,7 +566,10 @@ int QgsCptCityDataItem::leafCount() const
 }
 
 
-bool QgsCptCityDataItem::hasChildren() { return ( mPopulated ? !mChildren.isEmpty() : true ); }
+bool QgsCptCityDataItem::hasChildren()
+{
+  return ( mPopulated ? !mChildren.isEmpty() : true );
+}
 
 void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem *child, bool refresh )
 {
@@ -669,7 +684,10 @@ void QgsCptCityDataItem::refresh()
   QApplication::restoreOverrideCursor();
 }
 
-bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other ) { return ( metaObject()->className() == other->metaObject()->className() && mPath == other->path() ); }
+bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
+{
+  return ( metaObject()->className() == other->metaObject()->className() && mPath == other->path() );
+}
 
 // ---------------------------------------------------------------------
 
@@ -762,7 +780,10 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
   return o && mPath == o->mPath && mName == o->mName && ramp().variantName() == o->ramp().variantName();
 }
 
-QIcon QgsCptCityColorRampItem::icon() { return icon( QSize( 100, 15 ) ); }
+QIcon QgsCptCityColorRampItem::icon()
+{
+  return icon( QSize( 100, 15 ) );
+}
 
 QIcon QgsCptCityColorRampItem::icon( QSize size )
 {
@@ -798,7 +819,10 @@ QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem *parent, 
   : QgsCptCityDataItem( Collection, parent, name, path )
 {}
 
-QgsCptCityCollectionItem::~QgsCptCityCollectionItem() { qDeleteAll( mChildren ); }
+QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
+{
+  qDeleteAll( mChildren );
+}
 
 QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool recursive )
 {
@@ -1035,7 +1059,10 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   return mRampsMap;
 }
 
-QStringList QgsCptCityDirectoryItem::dirEntries() const { return QDir( QgsCptCityArchive::defaultBaseDir() + '/' + mPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ); }
+QStringList QgsCptCityDirectoryItem::dirEntries() const
+{
+  return QDir( QgsCptCityArchive::defaultBaseDir() + '/' + mPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
+}
 
 bool QgsCptCityDirectoryItem::equal( const QgsCptCityDataItem *other )
 {
@@ -1275,7 +1302,10 @@ QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent, QgsCptCityArchi
   addRootItems();
 }
 
-QgsCptCityBrowserModel::~QgsCptCityBrowserModel() { removeRootItems(); }
+QgsCptCityBrowserModel::~QgsCptCityBrowserModel()
+{
+  removeRootItems();
+}
 
 void QgsCptCityBrowserModel::addRootItems()
 {
@@ -1290,7 +1320,10 @@ void QgsCptCityBrowserModel::addRootItems()
   QgsDebugMsgLevel( u"added %1 root items"_s.arg( mRootItems.size() ), 2 );
 }
 
-void QgsCptCityBrowserModel::removeRootItems() { mRootItems.clear(); }
+void QgsCptCityBrowserModel::removeRootItems()
+{
+  mRootItems.clear();
+}
 
 Qt::ItemFlags QgsCptCityBrowserModel::flags( const QModelIndex &index ) const
 {
@@ -1570,7 +1603,10 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
   beginInsertRows( idx, first, last );
   QgsDebugMsgLevel( u"end"_s, 2 );
 }
-void QgsCptCityBrowserModel::endInsertItems() { endInsertRows(); }
+void QgsCptCityBrowserModel::endInsertItems()
+{
+  endInsertRows();
+}
 void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int first, int last )
 {
   QgsDebugMsgLevel( "parent mPath = " + parent->path(), 2 );
@@ -1579,7 +1615,10 @@ void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int f
     return;
   beginRemoveRows( idx, first, last );
 }
-void QgsCptCityBrowserModel::endRemoveItems() { endRemoveRows(); }
+void QgsCptCityBrowserModel::endRemoveItems()
+{
+  endRemoveRows();
+}
 void QgsCptCityBrowserModel::connectItem( QgsCptCityDataItem *item )
 {
   connect( item, &QgsCptCityDataItem::beginInsertItems, this, &QgsCptCityBrowserModel::beginInsertItems );

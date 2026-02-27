@@ -83,7 +83,15 @@ namespace pal
        * \param quadrant relative position of label to feature
        */
       LabelPosition(
-        int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
+        int id,
+        double x1,
+        double y1,
+        double w,
+        double h,
+        double alpha,
+        double cost,
+        FeaturePart *feature,
+        LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
         Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::Over
       );
 

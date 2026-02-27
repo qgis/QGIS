@@ -48,7 +48,12 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
   private:
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork(
-      const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback = nullptr,
+      const QgsTileXYZ &id,
+      const QgsTileMatrix &tileMatrix,
+      const QString &requestUrl,
+      const QString &authid,
+      const QgsHttpHeaders &headers,
+      QgsFeedback *feedback = nullptr,
       Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown
     );
 };

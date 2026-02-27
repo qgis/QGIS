@@ -163,7 +163,10 @@ void QgsProfilePlotRenderer::waitForFinished()
   onGeneratingFinished();
 }
 
-bool QgsProfilePlotRenderer::isActive() const { return mStatus != Idle; }
+bool QgsProfilePlotRenderer::isActive() const
+{
+  return mStatus != Idle;
+}
 
 void QgsProfilePlotRenderer::setContext( const QgsProfileGenerationContext &context )
 {
@@ -215,9 +218,15 @@ void QgsProfilePlotRenderer::invalidateAllRefinableSources()
   }
 }
 
-void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source ) { replaceSourceInternal( source, false ); }
+void QgsProfilePlotRenderer::replaceSource( QgsAbstractProfileSource *source )
+{
+  replaceSourceInternal( source, false );
+}
 
-bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source ) { return replaceSourceInternal( source, true ); }
+bool QgsProfilePlotRenderer::invalidateResults( QgsAbstractProfileSource *source )
+{
+  return replaceSourceInternal( source, true );
+}
 
 bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *source, bool clearPreviousResults )
 {
@@ -362,9 +371,15 @@ std::unique_ptr<QgsLineSymbol> QgsProfilePlotRenderer::defaultSubSectionsSymbol(
   return std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << subSections.release() );
 }
 
-void QgsProfilePlotRenderer::setSubsectionsSymbol( QgsLineSymbol *symbol ) { mSubsectionsSymbol.reset( symbol ); }
+void QgsProfilePlotRenderer::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+}
 
-QgsLineSymbol *QgsProfilePlotRenderer::subsectionsSymbol() { return mSubsectionsSymbol.get(); }
+QgsLineSymbol *QgsProfilePlotRenderer::subsectionsSymbol()
+{
+  return mSubsectionsSymbol.get();
+}
 
 void QgsProfilePlotRenderer::renderSubsectionsIndicator( QgsRenderContext &context, const QRectF &plotArea, double distanceMin, double distanceMax, double zMin, double zMax )
 {

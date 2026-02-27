@@ -55,7 +55,8 @@ struct WkbEntry
 typedef QMap<Qgis::WkbType, WkbEntry> WkbEntries;
 
 Q_GLOBAL_STATIC_WITH_ARGS(
-  WkbEntries, sWkbEntries,
+  WkbEntries,
+  sWkbEntries,
   ( {
     //register the known wkb types
     { Qgis::WkbType::Unknown, WkbEntry( "Unknown"_L1, false, Qgis::WkbType::Unknown, Qgis::WkbType::Unknown, Qgis::WkbType::Unknown, Qgis::GeometryType::Unknown, false, false ) },

@@ -228,9 +228,15 @@ QgsBabelFormatRegistry::~QgsBabelFormatRegistry()
   qDeleteAll( mDevices );
 }
 
-QStringList QgsBabelFormatRegistry::importFormatNames() const { return mImporters.keys(); }
+QStringList QgsBabelFormatRegistry::importFormatNames() const
+{
+  return mImporters.keys();
+}
 
-QgsBabelSimpleImportFormat *QgsBabelFormatRegistry::importFormat( const QString &name ) { return mImporters.value( name ); }
+QgsBabelSimpleImportFormat *QgsBabelFormatRegistry::importFormat( const QString &name )
+{
+  return mImporters.value( name );
+}
 
 QgsBabelSimpleImportFormat *QgsBabelFormatRegistry::importFormatByDescription( const QString &description )
 {
@@ -280,11 +286,20 @@ QString QgsBabelFormatRegistry::importFileFilter() const
   return res.join( ";;"_L1 );
 }
 
-QStringList QgsBabelFormatRegistry::deviceNames() const { return mDevices.keys(); }
+QStringList QgsBabelFormatRegistry::deviceNames() const
+{
+  return mDevices.keys();
+}
 
-QgsBabelGpsDeviceFormat *QgsBabelFormatRegistry::deviceFormat( const QString &name ) { return mDevices.value( name ); }
+QgsBabelGpsDeviceFormat *QgsBabelFormatRegistry::deviceFormat( const QString &name )
+{
+  return mDevices.value( name );
+}
 
-QMap<QString, QgsBabelGpsDeviceFormat *> QgsBabelFormatRegistry::devices() const { return mDevices; }
+QMap<QString, QgsBabelGpsDeviceFormat *> QgsBabelFormatRegistry::devices() const
+{
+  return mDevices;
+}
 
 void QgsBabelFormatRegistry::reloadFromSettings()
 {
@@ -302,8 +317,12 @@ void QgsBabelFormatRegistry::reloadFromSettings()
       delete mDevices.value( device );
 
       mDevices[device] = new QgsBabelGpsDeviceFormat(
-        settingsBabelWptDownload->value( device ), settingsBabelWptUpload->value( device ), settingsBabelRteDownload->value( device ), settingsBabelRteUpload->value( device ),
-        settingsBabelTrkDownload->value( device ), settingsBabelTrkUpload->value( device )
+        settingsBabelWptDownload->value( device ),
+        settingsBabelWptUpload->value( device ),
+        settingsBabelRteDownload->value( device ),
+        settingsBabelRteUpload->value( device ),
+        settingsBabelTrkDownload->value( device ),
+        settingsBabelTrkUpload->value( device )
       );
     }
   }

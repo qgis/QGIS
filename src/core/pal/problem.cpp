@@ -48,7 +48,10 @@ Problem::Problem( const QgsRectangle &extent )
   , mActiveCandidatesIndex( extent )
 {}
 
-void Problem::addCandidatePosition( std::unique_ptr<LabelPosition> position ) { mLabelPositions.emplace_back( std::move( position ) ); }
+void Problem::addCandidatePosition( std::unique_ptr<LabelPosition> position )
+{
+  mLabelPositions.emplace_back( std::move( position ) );
+}
 
 Problem::~Problem() = default;
 
@@ -253,7 +256,10 @@ void Problem::init_sol_falp()
   }
 }
 
-bool Problem::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const { return pal->candidatesAreConflicting( lp1, lp2 ); }
+bool Problem::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
+{
+  return pal->candidatesAreConflicting( lp1, lp2 );
+}
 
 inline std::unique_ptr<Chain> Problem::chain( int seed )
 {

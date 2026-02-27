@@ -31,9 +31,15 @@ QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > &it
   }
 }
 
-QgsStacItemCollection::~QgsStacItemCollection() { qDeleteAll( mItems ); }
+QgsStacItemCollection::~QgsStacItemCollection()
+{
+  qDeleteAll( mItems );
+}
 
-QVector< QgsStacItem * > QgsStacItemCollection::items() const { return mItems; }
+QVector< QgsStacItem * > QgsStacItemCollection::items() const
+{
+  return mItems;
+}
 
 QVector< QgsStacItem * > QgsStacItemCollection::takeItems()
 {
@@ -42,16 +48,37 @@ QVector< QgsStacItem * > QgsStacItemCollection::takeItems()
   return items;
 }
 
-QUrl QgsStacItemCollection::url() const { return QUrl( mUrls.value( u"self"_s, QString() ) ); }
+QUrl QgsStacItemCollection::url() const
+{
+  return QUrl( mUrls.value( u"self"_s, QString() ) );
+}
 
-QUrl QgsStacItemCollection::rootUrl() const { return QUrl( mUrls.value( u"root"_s, QString() ) ); }
+QUrl QgsStacItemCollection::rootUrl() const
+{
+  return QUrl( mUrls.value( u"root"_s, QString() ) );
+}
 
-QUrl QgsStacItemCollection::parentUrl() const { return QUrl( mUrls.value( u"parent"_s, QString() ) ); }
+QUrl QgsStacItemCollection::parentUrl() const
+{
+  return QUrl( mUrls.value( u"parent"_s, QString() ) );
+}
 
-QUrl QgsStacItemCollection::collectionUrl() const { return QUrl( mUrls.value( u"collection"_s, QString() ) ); }
+QUrl QgsStacItemCollection::collectionUrl() const
+{
+  return QUrl( mUrls.value( u"collection"_s, QString() ) );
+}
 
-QUrl QgsStacItemCollection::nextUrl() const { return QUrl( mUrls.value( u"next"_s, QString() ) ); }
+QUrl QgsStacItemCollection::nextUrl() const
+{
+  return QUrl( mUrls.value( u"next"_s, QString() ) );
+}
 
-int QgsStacItemCollection::numberReturned() const { return mItems.size(); }
+int QgsStacItemCollection::numberReturned() const
+{
+  return mItems.size();
+}
 
-int QgsStacItemCollection::numberMatched() const { return mNumberMatched; }
+int QgsStacItemCollection::numberMatched() const
+{
+  return mNumberMatched;
+}

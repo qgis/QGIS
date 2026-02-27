@@ -83,7 +83,10 @@ int QgsImageCacheEntry::dataSize() const
   return size;
 }
 
-void QgsImageCacheEntry::dump() const { QgsDebugMsgLevel( u"path: %1, size %2x%3"_s.arg( path ).arg( size.width() ).arg( size.height() ), 3 ); }
+void QgsImageCacheEntry::dump() const
+{
+  QgsDebugMsgLevel( u"path: %1, size %2x%3"_s.arg( path ).arg( size.width() ).arg( size.height() ), 3 );
+}
 
 ///@endcond
 
@@ -141,8 +144,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
 }
 
 QImage QgsImageCache::pathAsImagePrivate(
-  const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount,
-  int &nextFrameDelayMs
+  const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs
 )
 {
   QString file = f.trimmed();
@@ -214,7 +216,10 @@ QImage QgsImageCache::pathAsImagePrivate(
   return result;
 }
 
-QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const { return mImageSizeCache.originalSize( path, blocking ); }
+QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
+{
+  return mImageSizeCache.originalSize( path, blocking );
+}
 
 QSize QgsImageCache::originalSizePrivate( const QString &path, bool blocking ) const
 {
@@ -539,9 +544,15 @@ QgsImageSizeCacheEntry::QgsImageSizeCacheEntry( const QString &path )
   : QgsAbstractContentCacheEntry( path )
 {}
 
-int QgsImageSizeCacheEntry::dataSize() const { return sizeof( QSize ); }
+int QgsImageSizeCacheEntry::dataSize() const
+{
+  return sizeof( QSize );
+}
 
-void QgsImageSizeCacheEntry::dump() const { QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 ); }
+void QgsImageSizeCacheEntry::dump() const
+{
+  QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 );
+}
 
 bool QgsImageSizeCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {

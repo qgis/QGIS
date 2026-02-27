@@ -72,7 +72,12 @@ bool QgsLayerDefinition::loadLayerDefinition(
 }
 
 bool QgsLayerDefinition::loadLayerDefinition(
-  QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod,
+  QDomDocument doc,
+  QgsProject *project,
+  QgsLayerTreeGroup *rootGroup,
+  QString &errorMessage,
+  QgsReadWriteContext &context,
+  Qgis::LayerTreeInsertionMethod insertMethod,
   const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint
 )
 {
@@ -557,4 +562,7 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
   init( doc );
 }
 
-bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &layerId ) const { return mDependentLayerIds.contains( layerId ); }
+bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &layerId ) const
+{
+  return mDependentLayerIds.contains( layerId );
+}

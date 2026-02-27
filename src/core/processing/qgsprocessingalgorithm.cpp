@@ -65,23 +65,50 @@ QString QgsProcessingAlgorithm::id() const
     return name();
 }
 
-QString QgsProcessingAlgorithm::shortDescription() const { return QString(); }
+QString QgsProcessingAlgorithm::shortDescription() const
+{
+  return QString();
+}
 
-QString QgsProcessingAlgorithm::shortHelpString() const { return QString(); }
+QString QgsProcessingAlgorithm::shortHelpString() const
+{
+  return QString();
+}
 
-QString QgsProcessingAlgorithm::helpString() const { return QString(); }
+QString QgsProcessingAlgorithm::helpString() const
+{
+  return QString();
+}
 
-QString QgsProcessingAlgorithm::helpUrl() const { return QString(); }
+QString QgsProcessingAlgorithm::helpUrl() const
+{
+  return QString();
+}
 
-Qgis::ProcessingAlgorithmDocumentationFlags QgsProcessingAlgorithm::documentationFlags() const { return Qgis::ProcessingAlgorithmDocumentationFlags(); }
+Qgis::ProcessingAlgorithmDocumentationFlags QgsProcessingAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlags();
+}
 
-QIcon QgsProcessingAlgorithm::icon() const { return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" ); }
+QIcon QgsProcessingAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
+}
 
-QString QgsProcessingAlgorithm::svgIconPath() const { return QgsApplication::iconPath( u"processingAlgorithm.svg"_s ); }
+QString QgsProcessingAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( u"processingAlgorithm.svg"_s );
+}
 
-Qgis::ProcessingAlgorithmFlags QgsProcessingAlgorithm::flags() const { return Qgis::ProcessingAlgorithmFlag::SupportsBatch | Qgis::ProcessingAlgorithmFlag::CanCancel; }
+Qgis::ProcessingAlgorithmFlags QgsProcessingAlgorithm::flags() const
+{
+  return Qgis::ProcessingAlgorithmFlag::SupportsBatch | Qgis::ProcessingAlgorithmFlag::CanCancel;
+}
 
-bool QgsProcessingAlgorithm::canExecute( QString * ) const { return true; }
+bool QgsProcessingAlgorithm::canExecute( QString * ) const
+{
+  return true;
+}
 
 bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
@@ -110,11 +137,20 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
   return true;
 }
 
-QVariantMap QgsProcessingAlgorithm::preprocessParameters( const QVariantMap &parameters ) { return parameters; }
+QVariantMap QgsProcessingAlgorithm::preprocessParameters( const QVariantMap &parameters )
+{
+  return parameters;
+}
 
-QVariantMap QgsProcessingAlgorithm::autogenerateParameterValues( const QVariantMap &, const QString &, Qgis::ProcessingMode ) const { return {}; }
+QVariantMap QgsProcessingAlgorithm::autogenerateParameterValues( const QVariantMap &, const QString &, Qgis::ProcessingMode ) const
+{
+  return {};
+}
 
-QgsProcessingProvider *QgsProcessingAlgorithm::provider() const { return mProvider; }
+QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
+{
+  return mProvider;
+}
 
 void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
@@ -134,7 +170,10 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   }
 }
 
-QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const { return nullptr; }
+QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
+{
+  return nullptr;
+}
 
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {
@@ -413,7 +452,10 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
   }
 }
 
-bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition ) { return addOutput( std::unique_ptr<QgsProcessingOutputDefinition>( definition ) ); }
+bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
+{
+  return addOutput( std::unique_ptr<QgsProcessingOutputDefinition>( definition ) );
+}
 
 bool QgsProcessingAlgorithm::addOutput( std::unique_ptr<QgsProcessingOutputDefinition> definition )
 {
@@ -431,9 +473,15 @@ bool QgsProcessingAlgorithm::addOutput( std::unique_ptr<QgsProcessingOutputDefin
   return true;
 }
 
-bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) { return true; }
+bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return true;
+}
 
-QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) { return QVariantMap(); }
+QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return QVariantMap();
+}
 
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
@@ -723,8 +771,17 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
 }
 
 QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink(
-  const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, Qgis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions
+  const QVariantMap &parameters,
+  const QString &name,
+  QgsProcessingContext &context,
+  QString &destinationIdentifier,
+  const QgsFields &fields,
+  Qgis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem &crs,
+  QgsFeatureSink::SinkFlags sinkFlags,
+  const QVariantMap &createOptions,
+  const QStringList &datasourceOptions,
+  const QStringList &layerOptions
 ) const
 {
   if ( !parameterDefinition( name ) )
@@ -746,8 +803,7 @@ QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPath(
 }
 
 QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPathAndLayerName(
-  const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback,
-  QString *layerName
+  const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback, QString *layerName
 ) const
 {
   return QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback, layerName );
@@ -1106,25 +1162,53 @@ void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &confi
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, outputName(), outputLayerType(), QVariant(), false, true, true ) );
 }
 
-QString QgsProcessingFeatureBasedAlgorithm::inputParameterName() const { return u"INPUT"_s; }
+QString QgsProcessingFeatureBasedAlgorithm::inputParameterName() const
+{
+  return u"INPUT"_s;
+}
 
-QString QgsProcessingFeatureBasedAlgorithm::inputParameterDescription() const { return QObject::tr( "Input layer" ); }
+QString QgsProcessingFeatureBasedAlgorithm::inputParameterDescription() const
+{
+  return QObject::tr( "Input layer" );
+}
 
-QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const { return QList<int>(); }
+QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const
+{
+  return QList<int>();
+}
 
-Qgis::ProcessingSourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const { return Qgis::ProcessingSourceType::VectorAnyGeometry; }
+Qgis::ProcessingSourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const
+{
+  return Qgis::ProcessingSourceType::VectorAnyGeometry;
+}
 
-Qgis::ProcessingFeatureSourceFlags QgsProcessingFeatureBasedAlgorithm::sourceFlags() const { return Qgis::ProcessingFeatureSourceFlags(); }
+Qgis::ProcessingFeatureSourceFlags QgsProcessingFeatureBasedAlgorithm::sourceFlags() const
+{
+  return Qgis::ProcessingFeatureSourceFlags();
+}
 
-QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const { return QgsFeatureSink::SinkFlags(); }
+QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::SinkFlags();
+}
 
-Qgis::WkbType QgsProcessingFeatureBasedAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const { return inputWkbType; }
+Qgis::WkbType QgsProcessingFeatureBasedAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
+{
+  return inputWkbType;
+}
 
-QgsFields QgsProcessingFeatureBasedAlgorithm::outputFields( const QgsFields &inputFields ) const { return inputFields; }
+QgsFields QgsProcessingFeatureBasedAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  return inputFields;
+}
 
-QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const { return inputCrs; }
+QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
+{
+  return inputCrs;
+}
 
-void QgsProcessingFeatureBasedAlgorithm::initParameters( const QVariantMap & ) {}
+void QgsProcessingFeatureBasedAlgorithm::initParameters( const QVariantMap & )
+{}
 
 QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() const
 {
@@ -1191,7 +1275,10 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   return outputs;
 }
 
-QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const { return QgsFeatureRequest(); }
+QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
+{
+  return QgsFeatureRequest();
+}
 
 bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {

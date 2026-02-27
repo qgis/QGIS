@@ -886,7 +886,9 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.setExtent( mMapSettings.extent() );
 
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
-  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 ) );
+  mRenderContext.setMapToPixel(
+    QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 )
+  );
 
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
@@ -1087,7 +1089,9 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   writePoint( layer, color, pt ); // write default point symbol
 }
 
-void QgsDxfExport::writePointBlockReference( const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize )
+void QgsDxfExport::writePointBlockReference(
+  const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
+)
 {
   const double scale = symbolLayer->dxfSize( *this, ctx ) / blockSize;
 
@@ -2546,8 +2550,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
       txt.prepend( "\\K" ).append( "\\k" );
     }
 
-    txt.prepend( u"\\f%1|i%2|b%3;\\H%4;"_s
-                   .arg( tmpLyr.format().font().family() )
+    txt.prepend( u"\\f%1|i%2|b%3;\\H%4;"_s.arg( tmpLyr.format().font().family() )
                    .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                    .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                    .arg( label->getHeight() / ( 1 + txt.count( u"\\P"_s ) ) * 0.75 ) );
@@ -2637,7 +2640,8 @@ void QgsDxfExport::createDDBlockInfo()
         //iterate layer, evaluate value and get symbology hash groups
         QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
         const QgsCoordinateTransform ct( job->crs, mMapSettings.destinationCrs(), mMapSettings.transformContext() );
-        QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
+        QgsFeatureRequest request
+          = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
         QgsCoordinateTransform extentTransform = ct;
         extentTransform.setBallparkTransformsAreAppropriate( true );
         try

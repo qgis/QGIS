@@ -62,7 +62,10 @@ QgsCoordinateReferenceSystem QgsCopcProvider::crs() const
   return mIndex.crs();
 }
 
-Qgis::DataProviderFlags QgsCopcProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsCopcProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 QgsRectangle QgsCopcProvider::extent() const
 {
@@ -153,7 +156,10 @@ QgsCopcProviderMetadata::QgsCopcProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsCopcProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s ); }
+QIcon QgsCopcProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s );
+}
 
 QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -245,9 +251,15 @@ QString QgsCopcProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::PointCloud }; }
+QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::PointCloud };
+}
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsCopcProviderMetadata::capabilities() const
 {

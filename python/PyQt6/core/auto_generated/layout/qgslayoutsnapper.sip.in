@@ -87,8 +87,7 @@ Sets whether snapping to items is ``enabled``.
 %End
 
     QPointF snapPoint(
-      QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0,
-      const QList< QgsLayoutItem * > *ignoreItems = 0
+      QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0, const QList< QgsLayoutItem * > *ignoreItems = 0
     ) const;
 %Docstring
 Snaps a layout coordinate ``point``. If ``point`` was snapped,
@@ -111,7 +110,11 @@ A list of items to ignore during the snapping can be specified via the
 %End
 
     QRectF snapRect(
-      const QRectF &rect, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0,
+      const QRectF &rect,
+      double scaleFactor,
+      bool &snapped /Out/,
+      QGraphicsLineItem *horizontalSnapLine = 0,
+      QGraphicsLineItem *verticalSnapLine = 0,
       const QList< QgsLayoutItem * > *ignoreItems = 0
     ) const;
 %Docstring

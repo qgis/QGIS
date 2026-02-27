@@ -21,7 +21,7 @@ Abstract base class for all nodes that can appear in an expression.
 #include "qgsexpressionnode.h"
 %End
 %ConvertToSubClassCode
-switch ( sipCpp->nodeType() )
+    switch ( sipCpp->nodeType() )
     {
       case QgsExpressionNode::ntUnaryOperator:
         sipType = sipType_QgsExpressionNodeUnaryOperator;

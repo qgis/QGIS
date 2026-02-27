@@ -66,7 +66,12 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      * Since QGIS 3.26 the optional \a flags argument can be used to control the task flags.
      */
     QgsMapRendererTask(
-      const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat = QString( "PNG" ), bool forceRaster = false, QgsTask::Flags flags = QgsTask::CanCancel, bool geospatialPdf = false,
+      const QgsMapSettings &ms,
+      const QString &fileName,
+      const QString &fileFormat = QString( "PNG" ),
+      bool forceRaster = false,
+      QgsTask::Flags flags = QgsTask::CanCancel,
+      bool geospatialPdf = false,
       const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails = QgsAbstractGeospatialPdfExporter::ExportDetails()
     );
 #else

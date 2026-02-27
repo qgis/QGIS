@@ -163,9 +163,15 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   painter->restore();
 }
 
-QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const { return QgsScaleBarRenderer::Flags(); }
+QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const
+{
+  return QgsScaleBarRenderer::Flags();
+}
 
-int QgsScaleBarRenderer::sortKey() const { return 100; }
+int QgsScaleBarRenderer::sortKey() const
+{
+  return 100;
+}
 
 QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
@@ -293,7 +299,10 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   return QSizeF( width, height );
 }
 
-bool QgsScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings & ) const { return false; }
+bool QgsScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings & ) const
+{
+  return false;
+}
 
 QString QgsScaleBarRenderer::firstLabelString( const QgsScaleBarSettings &settings ) const
 {
@@ -416,4 +425,7 @@ QList<double> QgsScaleBarRenderer::segmentWidths( const ScaleBarContext &scaleCo
   return widths;
 }
 
-bool QgsScaleBarRenderer::ScaleBarContext::isValid() const { return !std::isnan( segmentWidth ); }
+bool QgsScaleBarRenderer::ScaleBarContext::isValid() const
+{
+  return !std::isnan( segmentWidth );
+}

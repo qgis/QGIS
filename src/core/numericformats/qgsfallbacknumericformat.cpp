@@ -20,16 +20,37 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsFallbackNumericFormat::id() const { return u"default"_s; }
+QString QgsFallbackNumericFormat::id() const
+{
+  return u"default"_s;
+}
 
-QString QgsFallbackNumericFormat::visibleName() const { return QObject::tr( "General" ); }
+QString QgsFallbackNumericFormat::visibleName() const
+{
+  return QObject::tr( "General" );
+}
 
-int QgsFallbackNumericFormat::sortKey() { return 0; }
+int QgsFallbackNumericFormat::sortKey()
+{
+  return 0;
+}
 
-QString QgsFallbackNumericFormat::formatDouble( double value, const QgsNumericFormatContext & ) const { return QString::number( value ); }
+QString QgsFallbackNumericFormat::formatDouble( double value, const QgsNumericFormatContext & ) const
+{
+  return QString::number( value );
+}
 
-QgsNumericFormat *QgsFallbackNumericFormat::clone() const { return new QgsFallbackNumericFormat(); }
+QgsNumericFormat *QgsFallbackNumericFormat::clone() const
+{
+  return new QgsFallbackNumericFormat();
+}
 
-QgsNumericFormat *QgsFallbackNumericFormat::create( const QVariantMap &, const QgsReadWriteContext & ) const { return new QgsFallbackNumericFormat(); }
+QgsNumericFormat *QgsFallbackNumericFormat::create( const QVariantMap &, const QgsReadWriteContext & ) const
+{
+  return new QgsFallbackNumericFormat();
+}
 
-QVariantMap QgsFallbackNumericFormat::configuration( const QgsReadWriteContext & ) const { return QVariantMap(); }
+QVariantMap QgsFallbackNumericFormat::configuration( const QgsReadWriteContext & ) const
+{
+  return QVariantMap();
+}

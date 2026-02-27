@@ -28,7 +28,7 @@ of the callout and using any relevant symbology elements to render them.
 #include "qgscallout.h"
 %End
 %ConvertToSubClassCode
-if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
+    if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
     {
       sipType = sipType_QgsSimpleLineCallout;
     }
@@ -751,7 +751,9 @@ Sets whether callout lines should be drawn to all feature parts.
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
+    virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const /Factory/;
 %Docstring
 Creates a callout line between ``start`` and ``end`` in the desired
 style.
@@ -795,8 +797,9 @@ the ``properties`` map (corresponding to the output from
 
 
   protected:
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
-
+     virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const /Factory/;
 
   private:
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
@@ -875,8 +878,9 @@ Sets the callout line's curve ``orientation``.
 %End
 
   protected:
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const /Factory/;
-
+     virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext
+    ) const /Factory/;
 
   private:
     QgsCurvedLineCallout( const QgsCurvedLineCallout &other );

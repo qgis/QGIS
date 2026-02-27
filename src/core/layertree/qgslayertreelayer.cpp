@@ -83,7 +83,10 @@ void QgsLayerTreeLayer::attachToLayer()
 }
 
 
-QString QgsLayerTreeLayer::name() const { return ( mRef && mUseLayerName ) ? mRef->name() : mLayerName; }
+QString QgsLayerTreeLayer::name() const
+{
+  return ( mRef && mUseLayerName ) ? mRef->name() : mLayerName;
+}
 
 void QgsLayerTreeLayer::setName( const QString &n )
 {
@@ -185,9 +188,15 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
   parentElement.appendChild( elem );
 }
 
-QString QgsLayerTreeLayer::dump() const { return u"LAYER: %1 checked=%2 expanded=%3 id=%4\n"_s.arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() ); }
+QString QgsLayerTreeLayer::dump() const
+{
+  return u"LAYER: %1 checked=%2 expanded=%3 id=%4\n"_s.arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
+}
 
-QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const { return new QgsLayerTreeLayer( *this ); }
+QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const
+{
+  return new QgsLayerTreeLayer( *this );
+}
 
 void QgsLayerTreeLayer::layerWillBeDeleted()
 {
@@ -201,9 +210,15 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
   // layerId stays in the reference
 }
 
-void QgsLayerTreeLayer::setUseLayerName( const bool use ) { mUseLayerName = use; }
+void QgsLayerTreeLayer::setUseLayerName( const bool use )
+{
+  mUseLayerName = use;
+}
 
-bool QgsLayerTreeLayer::useLayerName() const { return mUseLayerName; }
+bool QgsLayerTreeLayer::useLayerName() const
+{
+  return mUseLayerName;
+}
 
 void QgsLayerTreeLayer::layerNameChanged()
 {
@@ -211,8 +226,17 @@ void QgsLayerTreeLayer::layerNameChanged()
   emit nameChanged( this, mRef->name() );
 }
 
-void QgsLayerTreeLayer::setLabelExpression( const QString &expression ) { mLabelExpression = expression; }
+void QgsLayerTreeLayer::setLabelExpression( const QString &expression )
+{
+  mLabelExpression = expression;
+}
 
-QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const { return mPatchShape; }
+QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const
+{
+  return mPatchShape;
+}
 
-void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape ) { mPatchShape = shape; }
+void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
+{
+  mPatchShape = shape;
+}

@@ -51,18 +51,23 @@ void QgsAnnotationRectangleTextItem::renderInBounds( QgsRenderContext &context, 
   const double marginRight = context.convertToPainterUnits( mMargins.right(), mMarginUnit );
   const double marginBottom = context.convertToPainterUnits( mMargins.bottom(), mMarginUnit );
 
-  const QRectF innerRect(
-    painterBounds.left() + marginLeft,
-    painterBounds.top() + marginTop,
-    painterBounds.width() - marginLeft - marginRight,
-    painterBounds.height() - marginTop - marginBottom
-  );
+  const QRectF innerRect( painterBounds.left() + marginLeft, painterBounds.top() + marginTop, painterBounds.width() - marginLeft - marginRight, painterBounds.height() - marginTop - marginBottom );
 
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
 
   const bool prevWorkaroundFlag = context.testFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
-  QgsTextRenderer::drawText( innerRect, 0, QgsTextRenderer::convertQtHAlignment( mAlignment ), mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat, true, QgsTextRenderer::convertQtVAlignment( mAlignment ), Qgis::TextRendererFlag::WrapLines );
+  QgsTextRenderer::drawText(
+    innerRect,
+    0,
+    QgsTextRenderer::convertQtHAlignment( mAlignment ),
+    mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ),
+    context,
+    mTextFormat,
+    true,
+    QgsTextRenderer::convertQtVAlignment( mAlignment ),
+    Qgis::TextRendererFlag::WrapLines
+  );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, prevWorkaroundFlag );
 }
 
@@ -127,11 +132,9 @@ Qgis::AnnotationItemFlags QgsAnnotationRectangleTextItem::flags() const
   switch ( placementMode() )
   {
     case Qgis::AnnotationPlacementMode::SpatialBounds:
-      return Qgis::AnnotationItemFlag::SupportsReferenceScale
-             | Qgis::AnnotationItemFlag::SupportsCallouts;
+      return Qgis::AnnotationItemFlag::SupportsReferenceScale | Qgis::AnnotationItemFlag::SupportsCallouts;
     case Qgis::AnnotationPlacementMode::FixedSize:
-      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-             | Qgis::AnnotationItemFlag::SupportsCallouts;
+      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsCallouts;
     case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
       return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
   }

@@ -89,8 +89,11 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     //! Constructor for a join layer, or dealing with renamed fields
     QgsGmlStreamingParser(
-      const QList<LayerProperties> &layerProperties, const QgsFields &fields, const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
-      AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn, bool invertAxisOrientation = false
+      const QList<LayerProperties> &layerProperties,
+      const QgsFields &fields,
+      const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
+      AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
+      bool invertAxisOrientation = false
     );
     ~QgsGmlStreamingParser();
 

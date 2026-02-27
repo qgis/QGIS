@@ -54,8 +54,21 @@ class CORE_EXPORT QgsLabelPosition
      * \param isUnplaced set to TRUE if label was unplaced (e.g. due to collisions with other labels)
      */
     QgsLabelPosition(
-      QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont,
-      bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(), const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false
+      QgsFeatureId id,
+      double r,
+      const QVector< QgsPointXY > &corners,
+      const QgsRectangle &rect,
+      double w,
+      double h,
+      const QString &layer,
+      const QString &labeltext,
+      const QFont &labelfont,
+      bool upside_down,
+      bool diagram = false,
+      bool pinned = false,
+      const QString &providerId = QString(),
+      const QgsGeometry &labelGeometry = QgsGeometry(),
+      bool isUnplaced = false
     )
       : featureId( id )
       , rotation( r )

@@ -19,6 +19,10 @@
 #include "qgspaintenginehack.h"
 
 // Hack to workaround Qt #5114 by disabling PatternTransform
-void QgsPaintEngineHack::fixFlags() {}
+void QgsPaintEngineHack::fixFlags()
+{}
 
-void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine ) { ( void ) engine; }
+void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
+{
+  ( void ) engine;
+}

@@ -64,9 +64,15 @@ void QgsMapViewsManager::clear()
   emit views3DListChanged();
 }
 
-QDomElement QgsMapViewsManager::get3DViewSettings( const QString &name ) const { return m3DMapViewsDom.value( name, QDomElement() ); }
+QDomElement QgsMapViewsManager::get3DViewSettings( const QString &name ) const
+{
+  return m3DMapViewsDom.value( name, QDomElement() );
+}
 
-QList<QDomElement> QgsMapViewsManager::get3DViews() const { return m3DMapViewsDom.values(); }
+QList<QDomElement> QgsMapViewsManager::get3DViews() const
+{
+  return m3DMapViewsDom.values();
+}
 
 void QgsMapViewsManager::register3DViewSettings( const QString &name, const QDomElement &dom )
 {
@@ -74,7 +80,10 @@ void QgsMapViewsManager::register3DViewSettings( const QString &name, const QDom
   emit views3DListChanged();
 }
 
-QStringList QgsMapViewsManager::get3DViewsNames() const { return m3DMapViewsDom.keys(); }
+QStringList QgsMapViewsManager::get3DViewsNames() const
+{
+  return m3DMapViewsDom.keys();
+}
 
 void QgsMapViewsManager::remove3DView( const QString &name )
 {
@@ -99,4 +108,7 @@ void QgsMapViewsManager::set3DViewInitiallyVisible( const QString &name, bool vi
   }
 }
 
-bool QgsMapViewsManager::is3DViewOpen( const QString &name ) { return m3DMapViewsDom.value( name, QDomElement() ).attribute( u"isOpen"_s, u"1"_s ).toInt() == 1; }
+bool QgsMapViewsManager::is3DViewOpen( const QString &name )
+{
+  return m3DMapViewsDom.value( name, QDomElement() ).attribute( u"isOpen"_s, u"1"_s ).toInt() == 1;
+}

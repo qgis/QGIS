@@ -56,7 +56,10 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, Qgis::DistanceUnit mapUnit
   return QgsMapToPixel( mapUnitsPerPixel * scale );
 }
 
-QgsMapToPixel::QgsMapToPixel() { updateMatrix(); }
+QgsMapToPixel::QgsMapToPixel()
+{
+  updateMatrix();
+}
 
 bool QgsMapToPixel::updateMatrix()
 {

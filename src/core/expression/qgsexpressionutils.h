@@ -186,7 +186,10 @@ class CORE_EXPORT QgsExpressionUtils
       return false;
     }
 
-    static inline bool isDateTimeSafe( const QVariant &v ) { return v.userType() == QMetaType::Type::QDateTime || v.userType() == QMetaType::Type::QDate || v.userType() == QMetaType::Type::QTime; }
+    static inline bool isDateTimeSafe( const QVariant &v )
+    {
+      return v.userType() == QMetaType::Type::QDateTime || v.userType() == QMetaType::Type::QDate || v.userType() == QMetaType::Type::QTime;
+    }
 
     static inline bool isIntervalSafe( const QVariant &v )
     {
@@ -202,12 +205,21 @@ class CORE_EXPORT QgsExpressionUtils
       return false;
     }
 
-    static inline bool isNull( const QVariant &v ) { return QgsVariantUtils::isNull( v ); }
+    static inline bool isNull( const QVariant &v )
+    {
+      return QgsVariantUtils::isNull( v );
+    }
 
-    static inline bool isList( const QVariant &v ) { return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList; }
+    static inline bool isList( const QVariant &v )
+    {
+      return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList;
+    }
 
     // implicit conversion to string
-    static QString getStringValue( const QVariant &value, QgsExpression * ) { return value.toString(); }
+    static QString getStringValue( const QVariant &value, QgsExpression * )
+    {
+      return value.toString();
+    }
 
     /**
      * Returns an expression value converted to binary (byte array) value.
@@ -523,8 +535,7 @@ class CORE_EXPORT QgsExpressionUtils
      * \since QGIS 3.22
      */
     static std::tuple<QMetaType::Type, int> determineResultType(
-      const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsExpressionContext &context = QgsExpressionContext(),
-      bool *foundFeatures = nullptr
+      const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsExpressionContext &context = QgsExpressionContext(), bool *foundFeatures = nullptr
     );
 
   private:

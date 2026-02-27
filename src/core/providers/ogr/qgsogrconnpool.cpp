@@ -44,6 +44,9 @@ QgsOgrConnPool::QgsOgrConnPool()
   QgsDebugCall;
 }
 
-QgsOgrConnPool::~QgsOgrConnPool() { QgsDebugCall; }
+QgsOgrConnPool::~QgsOgrConnPool()
+{
+  QgsDebugCall;
+}
 
 ///@endcond

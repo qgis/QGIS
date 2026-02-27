@@ -898,7 +898,10 @@ QgsPointLocator::~QgsPointLocator()
   destroyIndex();
 }
 
-QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const { return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem(); }
+QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
+{
+  return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem();
+}
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
 {
@@ -1004,7 +1007,10 @@ void QgsPointLocator::waitForIndexingFinished()
     onInitTaskFinished();
 }
 
-bool QgsPointLocator::hasIndex() const { return mIsIndexing || mRTree || mIsEmptyLayer; }
+bool QgsPointLocator::hasIndex() const
+{
+  return mIsIndexing || mRTree || mIsEmptyLayer;
+}
 
 bool QgsPointLocator::prepare( bool relaxed )
 {

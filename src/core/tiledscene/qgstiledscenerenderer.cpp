@@ -35,9 +35,15 @@ QgsTiledSceneRenderContext::QgsTiledSceneRenderContext( QgsRenderContext &contex
   , mFeedback( feedback )
 {}
 
-QImage QgsTiledSceneRenderContext::textureImage() const { return mTextureImage; }
+QImage QgsTiledSceneRenderContext::textureImage() const
+{
+  return mTextureImage;
+}
 
-void QgsTiledSceneRenderContext::setTextureImage( const QImage &image ) { mTextureImage = image; }
+void QgsTiledSceneRenderContext::setTextureImage( const QImage &image )
+{
+  mTextureImage = image;
+}
 
 void QgsTiledSceneRenderContext::setTextureCoordinates( float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3 )
 {
@@ -63,7 +69,10 @@ void QgsTiledSceneRenderContext::textureCoordinates( float &textureX1, float &te
 // QgsTiledSceneRenderer
 //
 
-Qgis::TiledSceneRendererFlags QgsTiledSceneRenderer::flags() const { return Qgis::TiledSceneRendererFlag::RendersLines | Qgis::TiledSceneRendererFlag::RendersTriangles; }
+Qgis::TiledSceneRendererFlags QgsTiledSceneRenderer::flags() const
+{
+  return Qgis::TiledSceneRendererFlag::RendersLines | Qgis::TiledSceneRendererFlag::RendersTriangles;
+}
 
 QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -102,17 +111,35 @@ void QgsTiledSceneRenderer::stopRender( QgsTiledSceneRenderContext & )
 #endif
 }
 
-double QgsTiledSceneRenderer::maximumScreenError() const { return mMaximumScreenError; }
+double QgsTiledSceneRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
 
-void QgsTiledSceneRenderer::setMaximumScreenError( double error ) { mMaximumScreenError = error; }
+void QgsTiledSceneRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
+}
 
-Qgis::RenderUnit QgsTiledSceneRenderer::maximumScreenErrorUnit() const { return mMaximumScreenErrorUnit; }
+Qgis::RenderUnit QgsTiledSceneRenderer::maximumScreenErrorUnit() const
+{
+  return mMaximumScreenErrorUnit;
+}
 
-void QgsTiledSceneRenderer::setMaximumScreenErrorUnit( Qgis::RenderUnit unit ) { mMaximumScreenErrorUnit = unit; }
+void QgsTiledSceneRenderer::setMaximumScreenErrorUnit( Qgis::RenderUnit unit )
+{
+  mMaximumScreenErrorUnit = unit;
+}
 
-QList<QgsLayerTreeModelLegendNode *> QgsTiledSceneRenderer::createLegendNodes( QgsLayerTreeLayer * ) { return QList<QgsLayerTreeModelLegendNode *>(); }
+QList<QgsLayerTreeModelLegendNode *> QgsTiledSceneRenderer::createLegendNodes( QgsLayerTreeLayer * )
+{
+  return QList<QgsLayerTreeModelLegendNode *>();
+}
 
-QStringList QgsTiledSceneRenderer::legendRuleKeys() const { return QStringList(); }
+QStringList QgsTiledSceneRenderer::legendRuleKeys() const
+{
+  return QStringList();
+}
 
 void QgsTiledSceneRenderer::copyCommonProperties( QgsTiledSceneRenderer *destination ) const
 {

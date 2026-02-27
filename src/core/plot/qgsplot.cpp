@@ -111,9 +111,15 @@ QgsPlotAxis::QgsPlotAxis()
 QgsPlotAxis::~QgsPlotAxis() = default;
 
 
-Qgis::PlotAxisType QgsPlotAxis::type() const { return mType; }
+Qgis::PlotAxisType QgsPlotAxis::type() const
+{
+  return mType;
+}
 
-void QgsPlotAxis::setType( Qgis::PlotAxisType type ) { mType = type; }
+void QgsPlotAxis::setType( Qgis::PlotAxisType type )
+{
+  mType = type;
+}
 
 bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
@@ -166,29 +172,65 @@ bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext
   return true;
 }
 
-QgsNumericFormat *QgsPlotAxis::numericFormat() const { return mNumericFormat.get(); }
+QgsNumericFormat *QgsPlotAxis::numericFormat() const
+{
+  return mNumericFormat.get();
+}
 
-void QgsPlotAxis::setNumericFormat( QgsNumericFormat *format ) { mNumericFormat.reset( format ); }
+void QgsPlotAxis::setNumericFormat( QgsNumericFormat *format )
+{
+  mNumericFormat.reset( format );
+}
 
-QString QgsPlotAxis::labelSuffix() const { return mLabelSuffix; }
+QString QgsPlotAxis::labelSuffix() const
+{
+  return mLabelSuffix;
+}
 
-void QgsPlotAxis::setLabelSuffix( const QString &suffix ) { mLabelSuffix = suffix; }
+void QgsPlotAxis::setLabelSuffix( const QString &suffix )
+{
+  mLabelSuffix = suffix;
+}
 
-Qgis::PlotAxisSuffixPlacement QgsPlotAxis::labelSuffixPlacement() const { return mSuffixPlacement; }
+Qgis::PlotAxisSuffixPlacement QgsPlotAxis::labelSuffixPlacement() const
+{
+  return mSuffixPlacement;
+}
 
-void QgsPlotAxis::setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement ) { mSuffixPlacement = placement; }
+void QgsPlotAxis::setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement )
+{
+  mSuffixPlacement = placement;
+}
 
-QgsLineSymbol *QgsPlotAxis::gridMajorSymbol() { return mGridMajorSymbol.get(); }
+QgsLineSymbol *QgsPlotAxis::gridMajorSymbol()
+{
+  return mGridMajorSymbol.get();
+}
 
-void QgsPlotAxis::setGridMajorSymbol( QgsLineSymbol *symbol ) { mGridMajorSymbol.reset( symbol ); }
+void QgsPlotAxis::setGridMajorSymbol( QgsLineSymbol *symbol )
+{
+  mGridMajorSymbol.reset( symbol );
+}
 
-QgsLineSymbol *QgsPlotAxis::gridMinorSymbol() { return mGridMinorSymbol.get(); }
+QgsLineSymbol *QgsPlotAxis::gridMinorSymbol()
+{
+  return mGridMinorSymbol.get();
+}
 
-void QgsPlotAxis::setGridMinorSymbol( QgsLineSymbol *symbol ) { mGridMinorSymbol.reset( symbol ); }
+void QgsPlotAxis::setGridMinorSymbol( QgsLineSymbol *symbol )
+{
+  mGridMinorSymbol.reset( symbol );
+}
 
-QgsTextFormat QgsPlotAxis::textFormat() const { return mLabelTextFormat; }
+QgsTextFormat QgsPlotAxis::textFormat() const
+{
+  return mLabelTextFormat;
+}
 
-void QgsPlotAxis::setTextFormat( const QgsTextFormat &format ) { mLabelTextFormat = format; }
+void QgsPlotAxis::setTextFormat( const QgsTextFormat &format )
+{
+  mLabelTextFormat = format;
+}
 
 
 //
@@ -228,13 +270,20 @@ void Qgs2DPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotCon
   renderContent( context, plotContext, plotArea, plotData );
 }
 
-void Qgs2DPlot::renderContent( QgsRenderContext &, QgsPlotRenderContext &, const QRectF &, const QgsPlotData & ) {}
+void Qgs2DPlot::renderContent( QgsRenderContext &, QgsPlotRenderContext &, const QRectF &, const QgsPlotData & )
+{}
 
 Qgs2DPlot::~Qgs2DPlot() = default;
 
-QSizeF Qgs2DPlot::size() const { return mSize; }
+QSizeF Qgs2DPlot::size() const
+{
+  return mSize;
+}
 
-void Qgs2DPlot::setSize( QSizeF size ) { mSize = size; }
+void Qgs2DPlot::setSize( QSizeF size )
+{
+  mSize = size;
+}
 
 QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &, const QgsPlotData & ) const
 {
@@ -249,9 +298,15 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderCont
   return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
-const QgsMargins &Qgs2DPlot::margins() const { return mMargins; }
+const QgsMargins &Qgs2DPlot::margins() const
+{
+  return mMargins;
+}
 
-void Qgs2DPlot::setMargins( const QgsMargins &margins ) { mMargins = margins; }
+void Qgs2DPlot::setMargins( const QgsMargins &margins )
+{
+  mMargins = margins;
+}
 
 void Qgs2DPlot::applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const
 {
@@ -498,10 +553,15 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // chart background
   mChartBackgroundSymbol->renderPolygon(
     QPolygonF(
-      { QPointF( chartAreaLeft, chartAreaTop ), QPointF( chartAreaRight, chartAreaTop ), QPointF( chartAreaRight, chartAreaBottom ), QPointF( chartAreaLeft, chartAreaBottom ),
+      { QPointF( chartAreaLeft, chartAreaTop ),
+        QPointF( chartAreaRight, chartAreaTop ),
+        QPointF( chartAreaRight, chartAreaBottom ),
+        QPointF( chartAreaLeft, chartAreaBottom ),
         QPointF( chartAreaLeft, chartAreaTop ) }
     ),
-    nullptr, nullptr, context
+    nullptr,
+    nullptr,
+    context
   );
 
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( maxX - minX );
@@ -613,8 +673,12 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
           }
 
           QgsTextRenderer::drawText(
-            QPointF( ( currentX - minX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( margins.bottom(), Qgis::RenderUnit::Millimeters ) ), 0,
-            Qgis::TextHorizontalAlignment::Center, { text }, context, xAxis->textFormat()
+            QPointF( ( currentX - minX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( margins.bottom(), Qgis::RenderUnit::Millimeters ) ),
+            0,
+            Qgis::TextHorizontalAlignment::Center,
+            { text },
+            context,
+            xAxis->textFormat()
           );
           if ( !hasMoreLabels )
             break;
@@ -632,8 +696,12 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
         const double currentX = ( i * categoryWidth ) + categoryWidth / 2.0;
         plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, categories.at( i ), true ) );
         QgsTextRenderer::drawText(
-          QPointF( currentX + chartAreaLeft, mSize.height() - context.convertToPainterUnits( margins.bottom(), Qgis::RenderUnit::Millimeters ) ), 0, Qgis::TextHorizontalAlignment::Center,
-          { categories.at( i ) }, context, xAxis->textFormat()
+          QPointF( currentX + chartAreaLeft, mSize.height() - context.convertToPainterUnits( margins.bottom(), Qgis::RenderUnit::Millimeters ) ),
+          0,
+          Qgis::TextHorizontalAlignment::Center,
+          { categories.at( i ) },
+          context,
+          xAxis->textFormat()
         );
         if ( i + 1 >= MAX_OBJECTS )
           break;
@@ -683,8 +751,13 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
 
           const double height = QgsTextRenderer::textHeight( context, yAxis->textFormat(), { text } );
           QgsTextRenderer::drawText(
-            QPointF( maxYAxisLabelWidth + context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ), chartAreaBottom - ( currentY - minY ) * yScale + height / 2 ), 0,
-            Qgis::TextHorizontalAlignment::Right, { text }, context, yAxis->textFormat(), false
+            QPointF( maxYAxisLabelWidth + context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ), chartAreaBottom - ( currentY - minY ) * yScale + height / 2 ),
+            0,
+            Qgis::TextHorizontalAlignment::Right,
+            { text },
+            context,
+            yAxis->textFormat(),
+            false
           );
           if ( !hasMoreLabels )
             break;
@@ -703,8 +776,13 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
         plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, categories.at( i ), true ) );
         const double height = QgsTextRenderer::textHeight( context, yAxis->textFormat(), { categories.at( i ) } );
         QgsTextRenderer::drawText(
-          QPointF( maxYAxisLabelWidth + context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ), chartAreaBottom - currentY + height / 2 ), 0,
-          Qgis::TextHorizontalAlignment::Right, { categories.at( i ) }, context, yAxis->textFormat(), false
+          QPointF( maxYAxisLabelWidth + context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ), chartAreaBottom - currentY + height / 2 ),
+          0,
+          Qgis::TextHorizontalAlignment::Right,
+          { categories.at( i ) },
+          context,
+          yAxis->textFormat(),
+          false
         );
 
         if ( i + 1 >= MAX_OBJECTS )
@@ -720,10 +798,15 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // border
   mChartBorderSymbol->renderPolygon(
     QPolygonF(
-      { QPointF( chartAreaLeft, chartAreaTop ), QPointF( chartAreaRight, chartAreaTop ), QPointF( chartAreaRight, chartAreaBottom ), QPointF( chartAreaLeft, chartAreaBottom ),
+      { QPointF( chartAreaLeft, chartAreaTop ),
+        QPointF( chartAreaRight, chartAreaTop ),
+        QPointF( chartAreaRight, chartAreaBottom ),
+        QPointF( chartAreaLeft, chartAreaBottom ),
         QPointF( chartAreaLeft, chartAreaTop ) }
     ),
-    nullptr, nullptr, context
+    nullptr,
+    nullptr,
+    context
   );
 
   mChartBackgroundSymbol->stopRender( context );
@@ -1014,14 +1097,20 @@ void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlo
     const QString suffixX = mXAxis.labelSuffix();
     const double suffixWidth = !suffixX.isEmpty() ? QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { suffixX } ) : 0;
     refineIntervalForAxis(
-      minX, maxX,
+      minX,
+      maxX,
       [this, &context, suffixWidth, &numericContext]( double position ) -> double {
         const QString text = mXAxis.numericFormat()->formatDouble( position, numericContext );
         // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
         // the suffix placement!
         return QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { text } ) + suffixWidth;
       },
-      availableSize, IDEAL_WIDTH, TOLERANCE, labelIntervalX, majorIntervalX, minorIntervalX
+      availableSize,
+      IDEAL_WIDTH,
+      TOLERANCE,
+      labelIntervalX,
+      majorIntervalX,
+      minorIntervalX
     );
     mXAxis.setLabelInterval( labelIntervalX );
     mXAxis.setGridIntervalMajor( majorIntervalX );
@@ -1032,14 +1121,20 @@ void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlo
     const double availableSize = mFlipAxes ? mSize.width() - leftMargin - rightMargin : mSize.height() - topMargin - bottomMargin;
     const QString suffixY = mYAxis.labelSuffix();
     refineIntervalForAxis(
-      minY, maxY,
+      minY,
+      maxY,
       [this, &context, suffixY, &numericContext]( double position ) -> double {
         const QString text = mYAxis.numericFormat()->formatDouble( position, numericContext );
         // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
         // the suffix placement!
         return QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text + suffixY } );
       },
-      availableSize, IDEAL_WIDTH, TOLERANCE, labelIntervalY, majorIntervalY, minorIntervalY
+      availableSize,
+      IDEAL_WIDTH,
+      TOLERANCE,
+      labelIntervalY,
+      majorIntervalY,
+      minorIntervalY
     );
     mYAxis.setLabelInterval( labelIntervalY );
     mYAxis.setGridIntervalMajor( majorIntervalY );
@@ -1047,19 +1142,43 @@ void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlo
   }
 }
 
-QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol() { return mChartBackgroundSymbol.get(); }
+QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol()
+{
+  return mChartBackgroundSymbol.get();
+}
 
-void Qgs2DXyPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol ) { mChartBackgroundSymbol.reset( symbol ); }
+void Qgs2DXyPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
+{
+  mChartBackgroundSymbol.reset( symbol );
+}
 
-QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol() { return mChartBorderSymbol.get(); }
+QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol()
+{
+  return mChartBorderSymbol.get();
+}
 
-void Qgs2DXyPlot::setChartBorderSymbol( QgsFillSymbol *symbol ) { mChartBorderSymbol.reset( symbol ); }
+void Qgs2DXyPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
+{
+  mChartBorderSymbol.reset( symbol );
+}
 
-void Qgs2DXyPlot::setFlipAxes( bool flipAxes ) { mFlipAxes = flipAxes; }
+void Qgs2DXyPlot::setFlipAxes( bool flipAxes )
+{
+  mFlipAxes = flipAxes;
+}
 
 void Qgs2DXyPlot::applyDataDefinedProperties(
-  QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY,
-  double &minorIntervalY, double &labelIntervalY
+  QgsRenderContext &context,
+  double &minX,
+  double &maxX,
+  double &minY,
+  double &maxY,
+  double &majorIntervalX,
+  double &minorIntervalX,
+  double &labelIntervalX,
+  double &majorIntervalY,
+  double &minorIntervalY,
+  double &labelIntervalY
 ) const
 {
   if ( !dataDefinedProperties().hasActiveProperties() )
@@ -1173,7 +1292,10 @@ void Qgs2DXyPlot::applyDataDefinedProperties(
 // QgsPlotDefaultSettings
 //
 
-QgsNumericFormat *QgsPlotDefaultSettings::axisLabelNumericFormat() { return new QgsBasicNumericFormat(); }
+QgsNumericFormat *QgsPlotDefaultSettings::axisLabelNumericFormat()
+{
+  return new QgsBasicNumericFormat();
+}
 
 QgsLineSymbol *QgsPlotDefaultSettings::axisGridMajorSymbol()
 {
@@ -1232,13 +1354,19 @@ QgsColorRamp *QgsPlotDefaultSettings::pieChartColorRamp()
   );
 }
 
-QgsNumericFormat *QgsPlotDefaultSettings::pieChartNumericFormat() { return new QgsBasicNumericFormat(); }
+QgsNumericFormat *QgsPlotDefaultSettings::pieChartNumericFormat()
+{
+  return new QgsBasicNumericFormat();
+}
 
 //
 // QgsPlotData
 //
 
-QgsPlotData::~QgsPlotData() { clearSeries(); }
+QgsPlotData::~QgsPlotData()
+{
+  clearSeries();
+}
 
 QgsPlotData::QgsPlotData( const QgsPlotData &other )
   : mCategories( other.mCategories )
@@ -1281,7 +1409,10 @@ QgsPlotData &QgsPlotData::operator=( QgsPlotData &&other )
   return *this;
 }
 
-QList<QgsAbstractPlotSeries *> QgsPlotData::series() const { return mSeries; }
+QList<QgsAbstractPlotSeries *> QgsPlotData::series() const
+{
+  return mSeries;
+}
 
 void QgsPlotData::addSeries( QgsAbstractPlotSeries *series )
 {
@@ -1297,29 +1428,53 @@ void QgsPlotData::clearSeries()
   mSeries.clear();
 }
 
-QStringList QgsPlotData::categories() const { return mCategories; }
+QStringList QgsPlotData::categories() const
+{
+  return mCategories;
+}
 
-void QgsPlotData::setCategories( const QStringList &categories ) { mCategories = categories; }
+void QgsPlotData::setCategories( const QStringList &categories )
+{
+  mCategories = categories;
+}
 
 //
 // QgsAbstractPlotSeries
 //
 
-QString QgsAbstractPlotSeries::name() const { return mName; }
+QString QgsAbstractPlotSeries::name() const
+{
+  return mName;
+}
 
-void QgsAbstractPlotSeries::setName( const QString &name ) { mName = name; }
+void QgsAbstractPlotSeries::setName( const QString &name )
+{
+  mName = name;
+}
 
 //
 // QgsXyPlotSeries
 //
 
-QList<std::pair<double, double>> QgsXyPlotSeries::data() const { return mData; }
+QList<std::pair<double, double>> QgsXyPlotSeries::data() const
+{
+  return mData;
+}
 
-void QgsXyPlotSeries::setData( const QList<std::pair<double, double>> &data ) { mData = data; }
+void QgsXyPlotSeries::setData( const QList<std::pair<double, double>> &data )
+{
+  mData = data;
+}
 
-void QgsXyPlotSeries::append( double x, double y ) { mData << std::make_pair( x, y ); }
+void QgsXyPlotSeries::append( double x, double y )
+{
+  mData << std::make_pair( x, y );
+}
 
-void QgsXyPlotSeries::clear() { mData.clear(); }
+void QgsXyPlotSeries::clear()
+{
+  mData.clear();
+}
 
 QgsAbstractPlotSeries *QgsXyPlotSeries::clone() const
 {

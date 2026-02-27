@@ -42,4 +42,7 @@ void QgsAttributeEditorField::loadConfiguration( const QDomElement &element, con
   Q_UNUSED( fields )
 }
 
-QString QgsAttributeEditorField::typeIdentifier() const { return u"attributeEditorField"_s; }
+QString QgsAttributeEditorField::typeIdentifier() const
+{
+  return u"attributeEditorField"_s;
+}

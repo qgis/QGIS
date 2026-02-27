@@ -658,7 +658,10 @@ void QgsApplication::invalidateCaches()
   QgsEllipsoidUtils::invalidateCache( true );
 }
 
-QgsApplication *QgsApplication::instance() { return qobject_cast<QgsApplication *>( QCoreApplication::instance() ); }
+QgsApplication *QgsApplication::instance()
+{
+  return qobject_cast<QgsApplication *>( QCoreApplication::instance() );
+}
 
 bool QgsApplication::event( QEvent *event )
 {
@@ -726,7 +729,10 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   return done;
 }
 
-QgsRuntimeProfiler *QgsApplication::profiler() { return QgsRuntimeProfiler::threadLocalInstance(); }
+QgsRuntimeProfiler *QgsApplication::profiler()
+{
+  return QgsRuntimeProfiler::threadLocalInstance();
+}
 
 void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
 {
@@ -766,7 +772,10 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
 #endif
 }
 
-void QgsApplication::setPluginPath( const QString &pluginPath ) { *sPluginPath() = pluginPath; }
+void QgsApplication::setPluginPath( const QString &pluginPath )
+{
+  *sPluginPath() = pluginPath;
+}
 
 void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
 {
@@ -779,7 +788,10 @@ void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
     *sDefaultSvgPaths() << mySvgPath;
 }
 
-void QgsApplication::setDefaultSvgPaths( const QStringList &pathList ) { *sDefaultSvgPaths() = pathList; }
+void QgsApplication::setDefaultSvgPaths( const QStringList &pathList )
+{
+  *sDefaultSvgPaths() = pathList;
+}
 
 void QgsApplication::setAuthDatabaseDirPath( const QString &authDbDirPath )
 {
@@ -808,7 +820,10 @@ QString QgsApplication::prefixPath()
 
   return *sPrefixPath();
 }
-QString QgsApplication::pluginPath() { return *sPluginPath(); }
+QString QgsApplication::pluginPath()
+{
+  return *sPluginPath();
+}
 
 QString QgsApplication::pkgDataPath()
 {
@@ -818,7 +833,10 @@ QString QgsApplication::pkgDataPath()
     return *sPkgDataPath();
 }
 
-QString QgsApplication::defaultThemePath() { return u":/images/themes/default/"_s; }
+QString QgsApplication::defaultThemePath()
+{
+  return u":/images/themes/default/"_s;
+}
 QString QgsApplication::activeThemePath()
 {
   QString usersThemes = userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
@@ -834,9 +852,15 @@ QString QgsApplication::activeThemePath()
   }
 }
 
-QString QgsApplication::appIconPath() { return iconsPath() + u"qgis-icon-60x60.png"_s; }
+QString QgsApplication::appIconPath()
+{
+  return iconsPath() + u"qgis-icon-60x60.png"_s;
+}
 
-int QgsApplication::maxThreads() { return ABISYM( sMaxThreads ); }
+int QgsApplication::maxThreads()
+{
+  return ABISYM( sMaxThreads );
+}
 
 QString QgsApplication::iconPath( const QString &iconFile )
 {
@@ -1001,7 +1025,10 @@ QPixmap QgsApplication::getThemePixmap( const QString &name, const QColor &foreC
   return QPixmap( path );
 }
 
-void QgsApplication::setThemeName( const QString &themeName ) { *sThemeName() = themeName; }
+void QgsApplication::setThemeName( const QString &themeName )
+{
+  *sThemeName() = themeName;
+}
 
 QString QgsApplication::resolvePkgPath()
 {
@@ -1084,7 +1111,10 @@ QString QgsApplication::resolvePkgPath()
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }
 
-QString QgsApplication::themeName() { return *sThemeName(); }
+QString QgsApplication::themeName()
+{
+  return *sThemeName();
+}
 
 void QgsApplication::setUITheme( const QString &themeName )
 {
@@ -1182,17 +1212,35 @@ QHash<QString, QString> QgsApplication::uiThemes()
   return mapping;
 }
 
-QString QgsApplication::authorsFilePath() { return pkgDataPath() + u"/doc/AUTHORS"_s; }
+QString QgsApplication::authorsFilePath()
+{
+  return pkgDataPath() + u"/doc/AUTHORS"_s;
+}
 
-QString QgsApplication::contributorsFilePath() { return pkgDataPath() + u"/doc/CONTRIBUTORS"_s; }
+QString QgsApplication::contributorsFilePath()
+{
+  return pkgDataPath() + u"/doc/CONTRIBUTORS"_s;
+}
 
-QString QgsApplication::sponsorsFilePath() { return pkgDataPath() + u"/doc/SPONSORS"_s; }
+QString QgsApplication::sponsorsFilePath()
+{
+  return pkgDataPath() + u"/doc/SPONSORS"_s;
+}
 
-QString QgsApplication::donorsFilePath() { return pkgDataPath() + u"/doc/DONORS"_s; }
+QString QgsApplication::donorsFilePath()
+{
+  return pkgDataPath() + u"/doc/DONORS"_s;
+}
 
-QString QgsApplication::translatorsFilePath() { return pkgDataPath() + u"/doc/TRANSLATORS"_s; }
+QString QgsApplication::translatorsFilePath()
+{
+  return pkgDataPath() + u"/doc/TRANSLATORS"_s;
+}
 
-QString QgsApplication::licenceFilePath() { return pkgDataPath() + u"/doc/LICENSE"_s; }
+QString QgsApplication::licenceFilePath()
+{
+  return pkgDataPath() + u"/doc/LICENSE"_s;
+}
 
 QString QgsApplication::i18nPath()
 {
@@ -1202,21 +1250,45 @@ QString QgsApplication::i18nPath()
     return pkgDataPath() + u"/i18n/"_s;
 }
 
-QString QgsApplication::metadataPath() { return pkgDataPath() + u"/resources/metadata-ISO/"_s; }
+QString QgsApplication::metadataPath()
+{
+  return pkgDataPath() + u"/resources/metadata-ISO/"_s;
+}
 
-QString QgsApplication::qgisMasterDatabaseFilePath() { return pkgDataPath() + u"/resources/qgis.db"_s; }
+QString QgsApplication::qgisMasterDatabaseFilePath()
+{
+  return pkgDataPath() + u"/resources/qgis.db"_s;
+}
 
-QString QgsApplication::qgisSettingsDirPath() { return *sConfigPath(); }
+QString QgsApplication::qgisSettingsDirPath()
+{
+  return *sConfigPath();
+}
 
-QString QgsApplication::qgisUserDatabaseFilePath() { return qgisSettingsDirPath() + u"qgis.db"_s; }
+QString QgsApplication::qgisUserDatabaseFilePath()
+{
+  return qgisSettingsDirPath() + u"qgis.db"_s;
+}
 
-QString QgsApplication::qgisAuthDatabaseFilePath() { return *sAuthDbDirPath() + u"qgis-auth.db"_s; }
+QString QgsApplication::qgisAuthDatabaseFilePath()
+{
+  return *sAuthDbDirPath() + u"qgis-auth.db"_s;
+}
 
-QString QgsApplication::qgisAuthDatabaseUri() { return *sAuthDbUri(); }
+QString QgsApplication::qgisAuthDatabaseUri()
+{
+  return *sAuthDbUri();
+}
 
-QString QgsApplication::splashPath() { return u":/images/splash/"_s; }
+QString QgsApplication::splashPath()
+{
+  return u":/images/splash/"_s;
+}
 
-QString QgsApplication::iconsPath() { return pkgDataPath() + u"/images/icons/"_s; }
+QString QgsApplication::iconsPath()
+{
+  return pkgDataPath() + u"/images/icons/"_s;
+}
 
 QString QgsApplication::srsDatabaseFilePath()
 {
@@ -1289,9 +1361,15 @@ QStringList QgsApplication::layoutTemplatePaths()
   return QgsLayout::settingsSearchPathForTemplates->value();
 }
 
-QMap<QString, QString> QgsApplication::systemEnvVars() { return *sSystemEnvVars(); }
+QMap<QString, QString> QgsApplication::systemEnvVars()
+{
+  return *sSystemEnvVars();
+}
 
-QString QgsApplication::userStylePath() { return qgisSettingsDirPath() + u"symbology-style.db"_s; }
+QString QgsApplication::userStylePath()
+{
+  return qgisSettingsDirPath() + u"symbology-style.db"_s;
+}
 
 QRegularExpression QgsApplication::shortNameRegularExpression()
 {
@@ -1398,7 +1476,10 @@ int QgsApplication::systemMemorySizeMb()
   return static_cast<int>( CPLGetUsablePhysicalRAM() / 1048576 );
 }
 
-QString QgsApplication::platform() { return *sPlatformName(); }
+QString QgsApplication::platform()
+{
+  return *sPlatformName();
+}
 
 QString QgsApplication::applicationFullName()
 {
@@ -1441,21 +1522,45 @@ void QgsApplication::setLocale( const QLocale &locale )
   emit instance() -> localeChanged();
 }
 
-QString QgsApplication::userThemesFolder() { return qgisSettingsDirPath() + u"/themes"_s; }
+QString QgsApplication::userThemesFolder()
+{
+  return qgisSettingsDirPath() + u"/themes"_s;
+}
 
-QString QgsApplication::defaultStylePath() { return pkgDataPath() + u"/resources/symbology-style.xml"_s; }
+QString QgsApplication::defaultStylePath()
+{
+  return pkgDataPath() + u"/resources/symbology-style.xml"_s;
+}
 
-QString QgsApplication::defaultThemesFolder() { return pkgDataPath() + u"/resources/themes"_s; }
+QString QgsApplication::defaultThemesFolder()
+{
+  return pkgDataPath() + u"/resources/themes"_s;
+}
 
-QString QgsApplication::serverResourcesPath() { return pkgDataPath() + u"/resources/server/"_s; }
+QString QgsApplication::serverResourcesPath()
+{
+  return pkgDataPath() + u"/resources/server/"_s;
+}
 
-QString QgsApplication::libraryPath() { return *sLibraryPath(); }
+QString QgsApplication::libraryPath()
+{
+  return *sLibraryPath();
+}
 
-QString QgsApplication::libexecPath() { return *sLibexecPath(); }
+QString QgsApplication::libexecPath()
+{
+  return *sLibexecPath();
+}
 
-QString QgsApplication::qmlImportPath() { return *sQmlImportPath(); }
+QString QgsApplication::qmlImportPath()
+{
+  return *sQmlImportPath();
+}
 
-QgsApplication::endian_t QgsApplication::endian() { return ( htonl( 1 ) == 1 ) ? XDR : NDR; }
+QgsApplication::endian_t QgsApplication::endian()
+{
+  return ( htonl( 1 ) == 1 ) ? XDR : NDR;
+}
 
 void QgsApplication::initQgis()
 {
@@ -1502,7 +1607,10 @@ QgsAuthManager *QgsApplication::authManager()
   }
 }
 
-QgsAuthConfigurationStorageRegistry *QgsApplication::authConfigurationStorageRegistry() { return authManager()->authConfigurationStorageRegistry(); }
+QgsAuthConfigurationStorageRegistry *QgsApplication::authConfigurationStorageRegistry()
+{
+  return authManager()->authConfigurationStorageRegistry();
+}
 
 
 void QgsApplication::exitQgis()
@@ -1851,12 +1959,21 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   return targetElems.join( '/'_L1 );
 }
 
-QString QgsApplication::buildSourcePath() { return *sBuildSourcePath(); }
+QString QgsApplication::buildSourcePath()
+{
+  return *sBuildSourcePath();
+}
 
-QString QgsApplication::buildOutputPath() { return *sBuildOutputPath(); }
+QString QgsApplication::buildOutputPath()
+{
+  return *sBuildOutputPath();
+}
 
 #if defined( _MSC_VER ) && !defined( USING_NMAKE ) && !defined( USING_NINJA )
-QString QgsApplication::cfgIntDir() { return *sCfgIntDir(); }
+QString QgsApplication::cfgIntDir()
+{
+  return *sCfgIntDir();
+}
 #endif
 
 void QgsApplication::skipGdalDriver( const QString &driver )
@@ -1883,7 +2000,10 @@ void QgsApplication::restoreGdalDriver( const QString &driver )
   applyGdalSkippedDrivers();
 }
 
-QStringList QgsApplication::skippedGdalDrivers() { return *sGdalSkipList(); }
+QStringList QgsApplication::skippedGdalDrivers()
+{
+  return *sGdalSkipList();
+}
 
 void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDrivers, const QStringList &deferredSkippedGdalDrivers )
 {
@@ -1919,7 +2039,10 @@ void QgsApplication::registerGdalDriversFromSettings()
   applyGdalSkippedDrivers();
 }
 
-QStringList QgsApplication::deferredSkippedGdalDrivers() { return *sDeferredSkippedGdalDrivers(); }
+QStringList QgsApplication::deferredSkippedGdalDrivers()
+{
+  return *sDeferredSkippedGdalDrivers();
+}
 
 void QgsApplication::applyGdalSkippedDrivers()
 {
@@ -2014,13 +2137,25 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   emit instance() -> customVariablesChanged();
 }
 
-QStringList QgsApplication::temporarilyTrustedProjectsFolders() { return instance()->mTemporarilyTrustedProjectFolders; }
+QStringList QgsApplication::temporarilyTrustedProjectsFolders()
+{
+  return instance()->mTemporarilyTrustedProjectFolders;
+}
 
-void QgsApplication::setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders ) { instance()->mTemporarilyTrustedProjectFolders = trustedProjectsFolders; }
+void QgsApplication::setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders )
+{
+  instance()->mTemporarilyTrustedProjectFolders = trustedProjectsFolders;
+}
 
-QStringList QgsApplication::temporarilyUntrustedProjectsFolders() { return instance()->mTemporarilyUntrustedProjectFolders; }
+QStringList QgsApplication::temporarilyUntrustedProjectsFolders()
+{
+  return instance()->mTemporarilyUntrustedProjectFolders;
+}
 
-void QgsApplication::setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders ) { instance()->mTemporarilyUntrustedProjectFolders = untrustedProjectsFolders; }
+void QgsApplication::setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders )
+{
+  instance()->mTemporarilyUntrustedProjectFolders = untrustedProjectsFolders;
+}
 
 int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio )
 {
@@ -2035,7 +2170,10 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   return scaledIconSize;
 }
 
-int QgsApplication::maxConcurrentConnectionsPerPool() const { return settingsConnectionPoolMaximumConcurrentConnections->value(); }
+int QgsApplication::maxConcurrentConnectionsPerPool() const
+{
+  return settingsConnectionPoolMaximumConcurrentConnections->value();
+}
 
 void QgsApplication::setTranslation( const QString &translation )
 {
@@ -2046,9 +2184,15 @@ void QgsApplication::setTranslation( const QString &translation )
   }
 }
 
-QString QgsApplication::translation() const { return *sTranslation(); }
+QString QgsApplication::translation() const
+{
+  return *sTranslation();
+}
 
-void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext ) { emit requestForTranslatableObjects( translationContext ); }
+void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )
+{
+  emit requestForTranslatableObjects( translationContext );
+}
 
 QString QgsApplication::nullRepresentation()
 {
@@ -2074,7 +2218,10 @@ void QgsApplication::setNullRepresentation( const QString &nullRepresentation )
     emit app->nullRepresentationChanged();
 }
 
-QgsActionScopeRegistry *QgsApplication::actionScopeRegistry() { return members()->mActionScopeRegistry.get(); }
+QgsActionScopeRegistry *QgsApplication::actionScopeRegistry()
+{
+  return members()->mActionScopeRegistry.get();
+}
 
 bool QgsApplication::createDatabase( QString *errorMessage )
 {
@@ -2171,7 +2318,9 @@ bool QgsApplication::createDatabase( QString *errorMessage )
              "deprecated boolean,"
              "wkt text);"
              "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);",
-             nullptr, nullptr, &errmsg
+             nullptr,
+             nullptr,
+             &errmsg
            )
            != SQLITE_OK )
       {
@@ -2212,7 +2361,9 @@ bool QgsApplication::createDatabase( QString *errorMessage )
                "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT "
                "srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
                "DROP TABLE tbl_srs_bak",
-               nullptr, nullptr, &errmsg
+               nullptr,
+               nullptr,
+               &errmsg
              )
              != SQLITE_OK )
         {
@@ -2240,7 +2391,9 @@ bool QgsApplication::createDatabase( QString *errorMessage )
              "notes varchar(255) NOT NULL default '',"
              "parameters varchar(255) NOT NULL default ''"
              ")",
-             nullptr, nullptr, &errmsg
+             nullptr,
+             nullptr,
+             &errmsg
            )
            != SQLITE_OK )
       {
@@ -2278,7 +2431,9 @@ bool QgsApplication::createDatabase( QString *errorMessage )
              "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT "
              "srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
              "DROP TABLE tbl_srs_bak",
-             nullptr, nullptr, &errmsg
+             nullptr,
+             nullptr,
+             &errmsg
            )
            != SQLITE_OK )
       {
@@ -2315,7 +2470,9 @@ bool QgsApplication::createDatabase( QString *errorMessage )
            " FROM tbl_srs a"
            " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
            " ORDER BY coalesce(b.name,a.projection_acronym),a.description",
-           nullptr, nullptr, &errmsg
+           nullptr,
+           nullptr,
+           &errmsg
          )
          != SQLITE_OK )
     {
@@ -2354,21 +2511,45 @@ void QgsApplication::setMaxThreads( int maxThreads )
   QgsDebugMsgLevel( u"set QThreadPool max thread count to %1"_s.arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 }
 
-QgsTaskManager *QgsApplication::taskManager() { return members()->mTaskManager.get(); }
+QgsTaskManager *QgsApplication::taskManager()
+{
+  return members()->mTaskManager.get();
+}
 
-QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore() { return members()->mSettingsRegistryCore.get(); }
+QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
+{
+  return members()->mSettingsRegistryCore.get();
+}
 
-QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry() { return members()->mColorSchemeRegistry.get(); }
+QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
+{
+  return members()->mColorSchemeRegistry.get();
+}
 
-QgsPaintEffectRegistry *QgsApplication::paintEffectRegistry() { return members()->mPaintEffectRegistry.get(); }
+QgsPaintEffectRegistry *QgsApplication::paintEffectRegistry()
+{
+  return members()->mPaintEffectRegistry.get();
+}
 
-QgsRendererRegistry *QgsApplication::rendererRegistry() { return members()->mRendererRegistry.get(); }
+QgsRendererRegistry *QgsApplication::rendererRegistry()
+{
+  return members()->mRendererRegistry.get();
+}
 
-QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry() { return members()->mRasterRendererRegistry.get(); }
+QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
+{
+  return members()->mRasterRendererRegistry.get();
+}
 
-QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry() { return members()->mPointCloudRendererRegistry.get(); }
+QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry()
+{
+  return members()->mPointCloudRendererRegistry.get();
+}
 
-QgsTiledSceneRendererRegistry *QgsApplication::tiledSceneRendererRegistry() { return members()->mTiledSceneRendererRegistry.get(); }
+QgsTiledSceneRendererRegistry *QgsApplication::tiledSceneRendererRegistry()
+{
+  return members()->mTiledSceneRendererRegistry.get();
+}
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
@@ -2390,83 +2571,200 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   }
 }
 
-QgsCoordinateReferenceSystemRegistry *QgsApplication::coordinateReferenceSystemRegistry() { return members()->mCrsRegistry.get(); }
+QgsCoordinateReferenceSystemRegistry *QgsApplication::coordinateReferenceSystemRegistry()
+{
+  return members()->mCrsRegistry.get();
+}
 
-QgsSvgCache *QgsApplication::svgCache() { return members()->mSvgCache.get(); }
+QgsSvgCache *QgsApplication::svgCache()
+{
+  return members()->mSvgCache.get();
+}
 
-QgsImageCache *QgsApplication::imageCache() { return members()->mImageCache.get(); }
+QgsImageCache *QgsApplication::imageCache()
+{
+  return members()->mImageCache.get();
+}
 
-QgsSourceCache *QgsApplication::sourceCache() { return members()->mSourceCache.get(); }
+QgsSourceCache *QgsApplication::sourceCache()
+{
+  return members()->mSourceCache.get();
+}
 
-QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry() { return members()->mNetworkContentFetcherRegistry.get(); }
+QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
+{
+  return members()->mNetworkContentFetcherRegistry.get();
+}
 
-QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry() { return members()->mValidityCheckRegistry.get(); }
+QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
+{
+  return members()->mValidityCheckRegistry.get();
+}
 
-QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry() { return members()->mSymbolLayerRegistry.get(); }
+QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
+{
+  return members()->mSymbolLayerRegistry.get();
+}
 
-QgsCalloutRegistry *QgsApplication::calloutRegistry() { return members()->mCalloutRegistry.get(); }
+QgsCalloutRegistry *QgsApplication::calloutRegistry()
+{
+  return members()->mCalloutRegistry.get();
+}
 
-QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry() { return members()->mLayoutItemRegistry.get(); }
+QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
+{
+  return members()->mLayoutItemRegistry.get();
+}
 
-QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry() { return members()->mAnnotationItemRegistry.get(); }
+QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
+{
+  return members()->mAnnotationItemRegistry.get();
+}
 
-QgsSensorRegistry *QgsApplication::sensorRegistry() { return members()->mSensorRegistry.get(); }
+QgsSensorRegistry *QgsApplication::sensorRegistry()
+{
+  return members()->mSensorRegistry.get();
+}
 
-QgsPlotRegistry *QgsApplication::plotRegistry() { return members()->mPlotRegistry.get(); }
+QgsPlotRegistry *QgsApplication::plotRegistry()
+{
+  return members()->mPlotRegistry.get();
+}
 
-QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry() { return members()->mGpsConnectionRegistry.get(); }
+QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
+{
+  return members()->mGpsConnectionRegistry.get();
+}
 
-QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry() { return members()->mGpsBabelFormatRegistry.get(); }
+QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry()
+{
+  return members()->mGpsBabelFormatRegistry.get();
+}
 
-QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry() { return members()->mPluginLayerRegistry.get(); }
+QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
+{
+  return members()->mPluginLayerRegistry.get();
+}
 
-QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry() { return members()->mClassificationMethodRegistry.get(); }
+QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry()
+{
+  return members()->mClassificationMethodRegistry.get();
+}
 
-QgsBookmarkManager *QgsApplication::bookmarkManager() { return members()->mBookmarkManager.get(); }
+QgsBookmarkManager *QgsApplication::bookmarkManager()
+{
+  return members()->mBookmarkManager.get();
+}
 
-QgsTileDownloadManager *QgsApplication::tileDownloadManager() { return members()->mTileDownloadManager.get(); }
+QgsTileDownloadManager *QgsApplication::tileDownloadManager()
+{
+  return members()->mTileDownloadManager.get();
+}
 
-QgsRecentStyleHandler *QgsApplication::recentStyleHandler() { return members()->mRecentStyleHandler.get(); }
+QgsRecentStyleHandler *QgsApplication::recentStyleHandler()
+{
+  return members()->mRecentStyleHandler.get();
+}
 
-QgsDatabaseQueryLog *QgsApplication::databaseQueryLog() { return members()->mQueryLogger.get(); }
+QgsDatabaseQueryLog *QgsApplication::databaseQueryLog()
+{
+  return members()->mQueryLogger.get();
+}
 
-QgsStyleModel *QgsApplication::defaultStyleModel() { return members()->mStyleModel.get(); }
+QgsStyleModel *QgsApplication::defaultStyleModel()
+{
+  return members()->mStyleModel.get();
+}
 
-QgsFontManager *QgsApplication::fontManager() { return members()->mFontManager.get(); }
+QgsFontManager *QgsApplication::fontManager()
+{
+  return members()->mFontManager.get();
+}
 
-QgsMessageLog *QgsApplication::messageLog() { return members()->mMessageLog.get(); }
+QgsMessageLog *QgsApplication::messageLog()
+{
+  return members()->mMessageLog.get();
+}
 
-QgsProcessingRegistry *QgsApplication::processingRegistry() { return members()->mProcessingRegistry.get(); }
+QgsProcessingRegistry *QgsApplication::processingRegistry()
+{
+  return members()->mProcessingRegistry.get();
+}
 
-QgsConnectionRegistry *QgsApplication::connectionRegistry() { return members()->mConnectionRegistry.get(); }
+QgsConnectionRegistry *QgsApplication::connectionRegistry()
+{
+  return members()->mConnectionRegistry.get();
+}
 
-QgsLayerMetadataProviderRegistry *QgsApplication::layerMetadataProviderRegistry() { return members()->mLayerMetadataProviderRegistry.get(); }
+QgsLayerMetadataProviderRegistry *QgsApplication::layerMetadataProviderRegistry()
+{
+  return members()->mLayerMetadataProviderRegistry.get();
+}
 
-QgsPageSizeRegistry *QgsApplication::pageSizeRegistry() { return members()->mPageSizeRegistry.get(); }
+QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
+{
+  return members()->mPageSizeRegistry.get();
+}
 
-QgsAnnotationRegistry *QgsApplication::annotationRegistry() { return members()->mAnnotationRegistry.get(); }
+QgsAnnotationRegistry *QgsApplication::annotationRegistry()
+{
+  return members()->mAnnotationRegistry.get();
+}
 
-QgsApplicationThemeRegistry *QgsApplication::applicationThemeRegistry() { return members()->mApplicationThemeRegistry.get(); }
+QgsApplicationThemeRegistry *QgsApplication::applicationThemeRegistry()
+{
+  return members()->mApplicationThemeRegistry.get();
+}
 
-QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry() { return members()->mNumericFormatRegistry.get(); }
+QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
+{
+  return members()->mNumericFormatRegistry.get();
+}
 
-QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry() { return members()->mFieldFormatterRegistry.get(); }
+QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
+{
+  return members()->mFieldFormatterRegistry.get();
+}
 
-Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry() { return members()->m3DRendererRegistry.get(); }
+Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
+{
+  return members()->m3DRendererRegistry.get();
+}
 
-Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry() { return members()->m3DSymbolRegistry.get(); }
+Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
+{
+  return members()->m3DSymbolRegistry.get();
+}
 
-QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry() { return members()->mScaleBarRendererRegistry.get(); }
+QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
+{
+  return members()->mScaleBarRendererRegistry.get();
+}
 
-QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry() { return members()->mLabelingEngineRuleRegistry.get(); }
+QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry()
+{
+  return members()->mLabelingEngineRuleRegistry.get();
+}
 
-QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry() { return members()->mProjectStorageRegistry.get(); }
+QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
+{
+  return members()->mProjectStorageRegistry.get();
+}
 
-QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry() { return members()->mExternalStorageRegistry.get(); }
+QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
+{
+  return members()->mExternalStorageRegistry.get();
+}
 
-QgsProfileSourceRegistry *QgsApplication::profileSourceRegistry() { return members()->mProfileSourceRegistry.get(); }
+QgsProfileSourceRegistry *QgsApplication::profileSourceRegistry()
+{
+  return members()->mProfileSourceRegistry.get();
+}
 
-QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry() { return members()->mLocalizedDataPathRegistry.get(); }
+QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
+{
+  return members()->mLocalizedDataPathRegistry.get();
+}
 
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {

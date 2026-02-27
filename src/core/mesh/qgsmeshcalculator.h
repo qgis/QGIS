@@ -104,8 +104,7 @@ class CORE_EXPORT QgsMeshCalculator
      * \since QGIS 3.12
      */
     QgsMeshCalculator(
-      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime,
-      QgsMeshLayer *layer
+      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime, QgsMeshLayer *layer
     );
 
     /**
@@ -122,8 +121,7 @@ class CORE_EXPORT QgsMeshCalculator
      * \since QGIS 3.12
      */
     QgsMeshCalculator(
-      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsGeometry &outputMask, double startTime, double endTime,
-      QgsMeshLayer *layer
+      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsGeometry &outputMask, double startTime, double endTime, QgsMeshLayer *layer
     );
 
     /**

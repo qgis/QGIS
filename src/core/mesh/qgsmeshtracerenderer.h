@@ -164,8 +164,15 @@ class QgsMeshStreamField
 
     //! Constructor
     QgsMeshStreamField(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent,
-      double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring, int resolution = 1
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &dataSetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QgsRectangle &layerExtent,
+      double magnitudeMaximum,
+      bool dataIsOnVertices,
+      const QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring,
+      int resolution = 1
     );
 
     QgsMeshStreamField( const QgsMeshStreamField &other );
@@ -315,13 +322,27 @@ class QgsMeshStreamlinesField : public QgsMeshStreamField
   public:
     //! Constructor
     Q_DECL_DEPRECATED QgsMeshStreamlinesField(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax,
-      bool dataIsOnVertices, QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QgsRectangle &layerExtent,
+      double magMax,
+      bool dataIsOnVertices,
+      QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
     );
 
     QgsMeshStreamlinesField(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QVector<double> &datasetMagValues,
-      const QgsRectangle &layerExtent, QgsMeshLayerRendererFeedback *feedBack, double magMax, bool dataIsOnVertices, QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetMagValues,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      double magMax,
+      bool dataIsOnVertices,
+      QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
     );
 
     void compose();
@@ -376,8 +397,14 @@ class QgsMeshParticleTracesField : public QgsMeshStreamField
   public:
     //! Constructor
     QgsMeshParticleTracesField(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax,
-      bool dataIsOnVertices, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QgsRectangle &layerExtent,
+      double magMax,
+      bool dataIsOnVertices,
+      const QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
     );
 
     QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
@@ -484,13 +511,27 @@ class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
   public:
     //!Constructor
     Q_DECL_DEPRECATED QgsMeshVectorStreamlineRenderer(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, bool dataIsOnVertices,
-      const QgsMeshRendererVectorSettings &settings, QgsRenderContext &rendererContext, const QgsRectangle &layerExtent, double magMax
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &dataSetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      bool dataIsOnVertices,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &rendererContext,
+      const QgsRectangle &layerExtent,
+      double magMax
     );
 
     QgsMeshVectorStreamlineRenderer(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QVector<double> &datasetMagValues,
-      bool dataIsOnVertices, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &rendererContext, const QgsRectangle &layerExtent, QgsMeshLayerRendererFeedback *feedBack, double magMax
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &dataSetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetMagValues,
+      bool dataIsOnVertices,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &rendererContext,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      double magMax
     );
 
     void draw() override;
@@ -516,8 +557,14 @@ class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
   public:
     //!Constructor
     QgsMeshVectorTraceRenderer(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, bool dataIsOnVertices,
-      const QgsMeshRendererVectorSettings &settings, QgsRenderContext &rendererContext, const QgsRectangle &layerExtent, double magMax
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &dataSetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      bool dataIsOnVertices,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &rendererContext,
+      const QgsRectangle &layerExtent,
+      double magMax
     );
 
     void draw() override;
@@ -546,8 +593,14 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
   public:
     //!Constructor to use from QgsMeshVectorRenderer
     QgsMeshVectorTraceAnimationGenerator(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, bool dataIsOnVertices,
-      const QgsRenderContext &rendererContext, const QgsRectangle &layerExtent, double magMax, const QgsMeshRendererVectorSettings &vectorSettings
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &dataSetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      bool dataIsOnVertices,
+      const QgsRenderContext &rendererContext,
+      const QgsRectangle &layerExtent,
+      double magMax,
+      const QgsMeshRendererVectorSettings &vectorSettings
     ) SIP_SKIP;
 
     //!Constructor to use with Python binding

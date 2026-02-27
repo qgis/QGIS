@@ -87,13 +87,25 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   mFetcher = new QgsNetworkContentFetcher();
 }
 
-QgsLayoutItemHtml::~QgsLayoutItemHtml() { mFetcher->deleteLater(); }
+QgsLayoutItemHtml::~QgsLayoutItemHtml()
+{
+  mFetcher->deleteLater();
+}
 
-int QgsLayoutItemHtml::type() const { return QgsLayoutItemRegistry::LayoutHtml; }
+int QgsLayoutItemHtml::type() const
+{
+  return QgsLayoutItemRegistry::LayoutHtml;
+}
 
-QIcon QgsLayoutItemHtml::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemHtml.svg"_s ); }
+QIcon QgsLayoutItemHtml::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemHtml.svg"_s );
+}
 
-QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout ) { return new QgsLayoutItemHtml( layout ); }
+QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemHtml( layout );
+}
 
 QgsLayoutItemHtml *QgsLayoutItemHtml::createFromLabel( QgsLayoutItemLabel *label )
 {
@@ -318,7 +330,10 @@ QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
   return mFetchedHtml;
 }
 
-QSizeF QgsLayoutItemHtml::totalSize() const { return mSize; }
+QSizeF QgsLayoutItemHtml::totalSize() const
+{
+  return mSize;
+}
 
 void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
@@ -331,8 +346,10 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
 
       // painter is scaled to dots, so scale back to layout units
       const QRectF painterRect = QRectF(
-        currentFrame->rect().left() * context.renderContext().scaleFactor(), currentFrame->rect().top() * context.renderContext().scaleFactor(),
-        currentFrame->rect().width() * context.renderContext().scaleFactor(), currentFrame->rect().height() * context.renderContext().scaleFactor()
+        currentFrame->rect().left() * context.renderContext().scaleFactor(),
+        currentFrame->rect().top() * context.renderContext().scaleFactor(),
+        currentFrame->rect().width() * context.renderContext().scaleFactor(),
+        currentFrame->rect().height() * context.renderContext().scaleFactor()
       );
 
       painter->setBrush( QBrush( QColor( 255, 125, 125, 125 ) ) );
@@ -488,7 +505,10 @@ void QgsLayoutItemHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
   }
 }
 
-QString QgsLayoutItemHtml::displayName() const { return tr( "<HTML frame>" ); }
+QString QgsLayoutItemHtml::displayName() const
+{
+  return tr( "<HTML frame>" );
+}
 
 bool QgsLayoutItemHtml::writePropertiesToElement( QDomElement &htmlElem, QDomDocument &, const QgsReadWriteContext & ) const
 {

@@ -102,7 +102,12 @@ class CORE_EXPORT QgsRasterFileWriter
      * \since QGIS 3.8
     */
     Qgis::RasterFileWriterResult writeRaster(
-      const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+      const QgsRasterPipe *pipe,
+      int nCols,
+      int nRows,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &crs,
+      const QgsCoordinateTransformContext &transformContext,
       QgsRasterBlockFeedback *feedback = nullptr
     );
 
@@ -361,16 +366,30 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     Qgis::RasterFileWriterResult writeDataRaster(
-      const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs,
-      const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback = nullptr
+      const QgsRasterPipe *pipe,
+      QgsRasterIterator *iter,
+      int nCols,
+      int nRows,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &crs,
+      const QgsCoordinateTransformContext &transformContext,
+      QgsRasterBlockFeedback *feedback = nullptr
     );
 
     // Helper method used by previous one
     Qgis::RasterFileWriterResult writeDataRaster(
-      const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, Qgis::DataType destDataType,
-      const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList,
+      const QgsRasterPipe *pipe,
+      QgsRasterIterator *iter,
+      int nCols,
+      int nRows,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &crs,
+      Qgis::DataType destDataType,
+      const QList<bool> &destHasNoDataValueList,
+      const QList<double> &destNoDataValueList,
       // This method can nullify the passed destProvider
-      std::unique_ptr<QgsRasterDataProvider> &destProvider, QgsRasterBlockFeedback *feedback = nullptr
+      std::unique_ptr<QgsRasterDataProvider> &destProvider,
+      QgsRasterBlockFeedback *feedback = nullptr
     );
 
     Qgis::RasterFileWriterResult writeImageRaster(
@@ -398,8 +417,7 @@ class CORE_EXPORT QgsRasterFileWriter
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider(
-      const QgsRectangle &extent, int nCols, int iterCols, int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
-      const QgsCoordinateReferenceSystem &crs
+      const QgsRectangle &extent, int nCols, int iterCols, int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type, const QgsCoordinateReferenceSystem &crs
     );
 
     /**
@@ -414,7 +432,13 @@ class CORE_EXPORT QgsRasterFileWriter
      *  \param destNoDataValueList no data value, indexed from 0
      */
     QgsRasterDataProvider *initOutput(
-      int nCols, int nRows, const QgsCoordinateReferenceSystem &crs, double *geoTransform, int nBands, Qgis::DataType type, const QList<bool> &destHasNoDataValueList = QList<bool>(),
+      int nCols,
+      int nRows,
+      const QgsCoordinateReferenceSystem &crs,
+      double *geoTransform,
+      int nBands,
+      Qgis::DataType type,
+      const QList<bool> &destHasNoDataValueList = QList<bool>(),
       const QList<double> &destNoDataValueList = QList<double>()
     );
 

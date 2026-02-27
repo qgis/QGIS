@@ -38,14 +38,16 @@
 
 using namespace Qt::StringLiterals;
 
-QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
+QVariantMap QgsArcGisRestQueryUtils::getServiceInfo(
+  const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, bool forceRefresh
+)
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
   QUrlQuery query( queryUrl );
   query.addQueryItem( u"f"_s, u"json"_s );
   queryUrl.setQuery( query );
-  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, nullptr, urlPrefix );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, nullptr, urlPrefix, forceRefresh );
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
@@ -59,8 +61,7 @@ QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, cons
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjectIds(
-  const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, const QgsRectangle &bbox,
-  const QString &whereClause
+  const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, const QgsRectangle &bbox, const QString &whereClause
 )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
@@ -101,8 +102,20 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const 
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects(
-  const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs, bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-  const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix
+  const QString &layerurl,
+  const QString &authcfg,
+  const QList<quint32> &objectIds,
+  const QString &crs,
+  bool fetchGeometry,
+  const QStringList &fetchAttributes,
+  bool fetchM,
+  bool fetchZ,
+  const QgsRectangle &filterRect,
+  QString &errorTitle,
+  QString &errorText,
+  const QgsHttpHeaders &requestHeaders,
+  QgsFeedback *feedback,
+  const QString &urlPrefix
 )
 {
   QStringList ids;
@@ -144,8 +157,15 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects(
 }
 
 QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent(
-  const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback,
-  const QString &whereClause, const QString &urlPrefix
+  const QString &layerurl,
+  const QgsRectangle &filterRect,
+  QString &errorTitle,
+  QString &errorText,
+  const QString &authcfg,
+  const QgsHttpHeaders &requestHeaders,
+  QgsFeedback *feedback,
+  const QString &whereClause,
+  const QString &urlPrefix
 )
 {
   QUrl queryUrl( layerurl + "/query" );
@@ -176,7 +196,7 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent(
 }
 
 QByteArray QgsArcGisRestQueryUtils::queryService(
-  const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, QString *contentType, const QString &urlPrefix
+  const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, QString *contentType, const QString &urlPrefix, bool forceRefresh
 )
 {
   QUrl url = parseUrl( u );
@@ -190,7 +210,7 @@ QByteArray QgsArcGisRestQueryUtils::queryService(
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authcfg );
-  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, forceRefresh, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return QByteArray();
@@ -221,10 +241,10 @@ QByteArray QgsArcGisRestQueryUtils::queryService(
 }
 
 QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON(
-  const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix
+  const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix, bool forceRefresh
 )
 {
-  const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback, nullptr, urlPrefix );
+  const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback, nullptr, urlPrefix, forceRefresh );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();
@@ -392,7 +412,10 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void( const
 void QgsArcGisRestQueryUtils::addLayerItems(
   const std::function<
     void( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QgsCoordinateReferenceSystem &, const QString & )> &visitor,
-  const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter
+  const QVariantMap &serviceData,
+  const QString &parentUrl,
+  const QString &parentSupportedFormats,
+  const ServiceTypeFilter filter
 )
 {
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( u"spatialReference"_s ).toMap() );

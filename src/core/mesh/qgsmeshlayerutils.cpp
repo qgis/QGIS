@@ -487,7 +487,10 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices(
 }
 
 QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices(
-  const QgsMesh &nativeMesh, const QgsMeshDatasetGroupMetadata &groupMetadata, const QgsMeshDataBlock &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
+  const QgsMesh &nativeMesh,
+  const QgsMeshDatasetGroupMetadata &groupMetadata,
+  const QgsMeshDataBlock &datasetValues,
+  const QgsMeshDataBlock &activeFaceFlagValues,
   const QgsMeshRendererScalarSettings::DataResamplingMethod method
 )
 {

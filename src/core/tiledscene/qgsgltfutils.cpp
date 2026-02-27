@@ -51,8 +51,16 @@ using namespace Qt::StringLiterals;
 
 
 bool QgsGltfUtils::accessorToMapCoordinates(
-  const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef,
-  const QMatrix4x4 *nodeTransform, Qgis::Axis gltfUpAxis, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz
+  const tinygltf::Model &model,
+  int accessorIndex,
+  const QgsMatrix4x4 &tileTransform,
+  const QgsCoordinateTransform *ecefToTargetCrs,
+  const QgsVector3D &tileTranslationEcef,
+  const QMatrix4x4 *nodeTransform,
+  Qgis::Axis gltfUpAxis,
+  QVector<double> &vx,
+  QVector<double> &vy,
+  QVector<double> &vz
 )
 {
   const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
@@ -808,7 +816,8 @@ bool QgsGltfUtils::writeGltfModel( const tinygltf::Model &model, const QString &
 {
   tinygltf::TinyGLTF gltf;
   bool res = gltf.WriteGltfSceneToFile(
-    &model, outputFilename.toStdString(),
+    &model,
+    outputFilename.toStdString(),
     false, // embedImages
     true,  // embedBuffers
     false, // prettyPrint

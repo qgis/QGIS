@@ -123,8 +123,15 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
      * For one face, Calculates average of volume values
      */
     void averageVolumeValuesForFace(
-      int faceIndex, int volumesBelowFaceCount, int startVolumeIndex, double methodLevelTop, double methodLevelBottom, bool isVector, const QVector<double> &verticalLevelsForFace,
-      const QVector<double> &volumeValues, QVector<double> &valuesFaces
+      int faceIndex,
+      int volumesBelowFaceCount,
+      int startVolumeIndex,
+      double methodLevelTop,
+      double methodLevelBottom,
+      bool isVector,
+      const QVector<double> &verticalLevelsForFace,
+      const QVector<double> &volumeValues,
+      QVector<double> &valuesFaces
     ) const;
 
     /**

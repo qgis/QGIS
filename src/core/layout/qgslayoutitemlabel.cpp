@@ -76,11 +76,20 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   refreshExpressionContext();
 }
 
-QgsLayoutItemLabel *QgsLayoutItemLabel::create( QgsLayout *layout ) { return new QgsLayoutItemLabel( layout ); }
+QgsLayoutItemLabel *QgsLayoutItemLabel::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemLabel( layout );
+}
 
-int QgsLayoutItemLabel::type() const { return QgsLayoutItemRegistry::LayoutLabel; }
+int QgsLayoutItemLabel::type() const
+{
+  return QgsLayoutItemRegistry::LayoutLabel;
+}
 
-QIcon QgsLayoutItemLabel::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemLabel.svg"_s ); }
+QIcon QgsLayoutItemLabel::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemLabel.svg"_s );
+}
 
 void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
@@ -277,7 +286,10 @@ void QgsLayoutItemLabel::setFont( const QFont &f )
   invalidateCache();
 }
 
-QgsTextFormat QgsLayoutItemLabel::textFormat() const { return mFormat; }
+QgsTextFormat QgsLayoutItemLabel::textFormat() const
+{
+  return mFormat;
+}
 
 void QgsLayoutItemLabel::setTextFormat( const QgsTextFormat &format )
 {
@@ -397,7 +409,10 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
   return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, Qgis::LayoutUnit::Millimeters ) );
 }
 
-QFont QgsLayoutItemLabel::font() const { return mFormat.font(); }
+QFont QgsLayoutItemLabel::font() const
+{
+  return mFormat.font();
+}
 
 bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
@@ -525,7 +540,10 @@ QString QgsLayoutItemLabel::displayName() const
   return QString(); // no warnings
 }
 
-QRectF QgsLayoutItemLabel::boundingRect() const { return mCurrentRectangle; }
+QRectF QgsLayoutItemLabel::boundingRect() const
+{
+  return mCurrentRectangle;
+}
 
 void QgsLayoutItemLabel::setFrameEnabled( bool drawFrame )
 {

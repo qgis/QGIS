@@ -23,7 +23,7 @@ provider.
 #include "qgsdataproviderelevationproperties.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsRasterDataProviderElevationProperties *>( sipCpp ) )
+    if ( dynamic_cast<QgsRasterDataProviderElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsRasterDataProviderElevationProperties;
     }

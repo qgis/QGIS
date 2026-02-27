@@ -220,7 +220,10 @@ void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderC
   }
 }
 
-QgsFeedback *QgsMeshLayerRenderer::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsMeshLayerRenderer::feedback() const
+{
+  return mFeedback.get();
+}
 
 void QgsMeshLayerRenderer::calculateOutputSize()
 {
@@ -707,8 +710,18 @@ void QgsMeshLayerRenderer::renderVectorDataset()
 
   std::unique_ptr<QgsMeshVectorRenderer> renderer(
     QgsMeshVectorRenderer::makeVectorRenderer(
-      mTriangularMesh, mVectorDatasetValues, mVectorActiveFaceFlagValues, mVectorDatasetValuesMag, mVectorDatasetMagMaximum, mVectorDatasetMagMinimum, mVectorDataType,
-      mRendererSettings.vectorSettings( groupIndex ), *renderContext(), mLayerExtent, mFeedback.get(), mOutputSize
+      mTriangularMesh,
+      mVectorDatasetValues,
+      mVectorActiveFaceFlagValues,
+      mVectorDatasetValuesMag,
+      mVectorDatasetMagMaximum,
+      mVectorDatasetMagMinimum,
+      mVectorDataType,
+      mRendererSettings.vectorSettings( groupIndex ),
+      *renderContext(),
+      mLayerExtent,
+      mFeedback.get(),
+      mOutputSize
     )
   );
 

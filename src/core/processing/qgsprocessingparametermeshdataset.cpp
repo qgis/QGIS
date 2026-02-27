@@ -34,7 +34,10 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone
   return new QgsProcessingParameterMeshDatasetGroups( name(), description(), mMeshLayerParameterName, mSupportedDataType );
 }
 
-QString QgsProcessingParameterMeshDatasetGroups::type() const { return typeName(); }
+QString QgsProcessingParameterMeshDatasetGroups::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterMeshDatasetGroups::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -96,9 +99,15 @@ QStringList QgsProcessingParameterMeshDatasetGroups::dependsOnOtherParameters() 
     return QStringList() << mMeshLayerParameterName;
 }
 
-QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const { return mMeshLayerParameterName; }
+QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
+{
+  return mMeshLayerParameterName;
+}
 
-bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const { return mSupportedDataType.contains( dataType ); }
+bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const
+{
+  return mSupportedDataType.contains( dataType );
+}
 
 QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const QVariant &value )
 {
@@ -184,7 +193,10 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetTime::clone()
   return new QgsProcessingParameterMeshDatasetTime( name(), description(), mMeshLayerParameterName, mDatasetGroupParameterName );
 }
 
-QString QgsProcessingParameterMeshDatasetTime::type() const { return typeName(); }
+QString QgsProcessingParameterMeshDatasetTime::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterMeshDatasetTime::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -272,9 +284,15 @@ bool QgsProcessingParameterMeshDatasetTime::fromVariantMap( const QVariantMap &m
   return true;
 }
 
-QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const { return mMeshLayerParameterName; }
+QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const
+{
+  return mMeshLayerParameterName;
+}
 
-QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const { return mDatasetGroupParameterName; }
+QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const
+{
+  return mDatasetGroupParameterName;
+}
 
 QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &value )
 {

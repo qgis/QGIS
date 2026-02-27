@@ -70,7 +70,8 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce
   }
 }
 
-QgsContrastEnhancement::~QgsContrastEnhancement() {}
+QgsContrastEnhancement::~QgsContrastEnhancement()
+{}
 
 int QgsContrastEnhancement::enhanceContrast( double value )
 {

@@ -38,7 +38,10 @@ QgsGeometryValidator::~QgsGeometryValidator()
   wait();
 }
 
-void QgsGeometryValidator::stop() { mStop = true; }
+void QgsGeometryValidator::stop()
+{
+  mStop = true;
+}
 
 void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex0, const QgsCurve *ring0, int partIndex1, int ringIndex1, const QgsCurve *ring1 )
 {

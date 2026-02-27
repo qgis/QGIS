@@ -316,8 +316,20 @@ class CORE_EXPORT QgsMagneticModel
      * \see fieldComponentsWithTimeDerivatives()
      */
     static bool fieldComponentsWithTimeDerivatives(
-      double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H SIP_OUT, double &F SIP_OUT, double &D SIP_OUT, double &I SIP_OUT, double &Ht SIP_OUT, double &Ft SIP_OUT,
-      double &Dt SIP_OUT, double &It SIP_OUT
+      double Bx,
+      double By,
+      double Bz,
+      double Bxt,
+      double Byt,
+      double Bzt,
+      double &H SIP_OUT,
+      double &F SIP_OUT,
+      double &D SIP_OUT,
+      double &I SIP_OUT,
+      double &Ht SIP_OUT,
+      double &Ft SIP_OUT,
+      double &Dt SIP_OUT,
+      double &It SIP_OUT
     ) SIP_THROW( QgsNotSupportedException );
 
   private:

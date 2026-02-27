@@ -25,11 +25,17 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer() { mFillSymbol = createDefaultFillSymbol(); }
+QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()
+{
+  mFillSymbol = createDefaultFillSymbol();
+}
 
 QgsTiledSceneTextureRenderer::~QgsTiledSceneTextureRenderer() = default;
 
-QString QgsTiledSceneTextureRenderer::type() const { return u"texture"_s; }
+QString QgsTiledSceneTextureRenderer::type() const
+{
+  return u"texture"_s;
+}
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
 {
@@ -73,9 +79,15 @@ std::unique_ptr<QgsFillSymbol> QgsTiledSceneTextureRenderer::createDefaultFillSy
   return QgsFillSymbol::createSimple( properties );
 }
 
-QgsFillSymbol *QgsTiledSceneTextureRenderer::fillSymbol() const { return mFillSymbol.get(); }
+QgsFillSymbol *QgsTiledSceneTextureRenderer::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
 
-void QgsTiledSceneTextureRenderer::setFillSymbol( QgsFillSymbol *symbol ) { mFillSymbol.reset( symbol ); }
+void QgsTiledSceneTextureRenderer::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
 
 QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -224,7 +236,8 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
   QgsPainting::drawTriangleUsingTexture( painter, growTriangle( triangle, 1 ), context.textureImage(), textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 }
 
-void QgsTiledSceneTextureRenderer::renderLine( QgsTiledSceneRenderContext &, const QPolygonF & ) {}
+void QgsTiledSceneTextureRenderer::renderLine( QgsTiledSceneRenderContext &, const QPolygonF & )
+{}
 
 void QgsTiledSceneTextureRenderer::startRender( QgsTiledSceneRenderContext &context )
 {

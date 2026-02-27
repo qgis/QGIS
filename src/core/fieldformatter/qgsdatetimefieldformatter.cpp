@@ -36,7 +36,10 @@ QString QgsDateTimeFieldFormatter::DATE_DISPLAY_FORMAT = u"yyyy-MM-dd"_s;
 QString QgsDateTimeFieldFormatter::DATETIME_DISPLAY_FORMAT = u"yyyy-MM-dd HH:mm:ss"_s;
 
 
-QString QgsDateTimeFieldFormatter::id() const { return u"DateTime"_s; }
+QString QgsDateTimeFieldFormatter::id() const
+{
+  return u"DateTime"_s;
+}
 
 QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -124,7 +127,10 @@ QString QgsDateTimeFieldFormatter::defaultFormat( QMetaType::Type type )
   }
 }
 
-QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type ) { return defaultFormat( QgsVariantUtils::variantTypeToMetaType( type ) ); }
+QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
+{
+  return defaultFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
 
 QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QMetaType::Type type )
@@ -140,7 +146,10 @@ QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QMetaType::Type type )
   }
 }
 
-QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QVariant::Type type ) { return defaultDisplayFormat( QgsVariantUtils::variantTypeToMetaType( type ) ); }
+QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QVariant::Type type )
+{
+  return defaultDisplayFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
 void QgsDateTimeFieldFormatter::applyLocaleChange()
 {

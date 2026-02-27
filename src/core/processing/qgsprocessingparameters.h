@@ -78,8 +78,11 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition(
-      const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-      Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid,
+      const QString &source = QString(),
+      bool selectedFeaturesOnly = false,
+      long long featureLimit = -1,
+      Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(),
+      Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid,
       const QString &filterExpression = QString()
     )
       : source( QgsProperty::fromValue( source ) )
@@ -107,8 +110,12 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition(
-      const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1, Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(),
-      Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString()
+      const QgsProperty &source,
+      bool selectedFeaturesOnly = false,
+      long long featureLimit = -1,
+      Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(),
+      Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid,
+      const QString &filterExpression = QString()
     )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
@@ -1265,9 +1272,17 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsFeatureSink *parameterAsSink(
-      const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(),
-      const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList()
+      const QgsProcessingParameterDefinition *definition,
+      const QVariantMap &parameters,
+      const QgsFields &fields,
+      Qgis::WkbType geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsProcessingContext &context,
+      QString &destinationIdentifier SIP_OUT,
+      QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
+      const QVariantMap &createOptions = QVariantMap(),
+      const QStringList &datasourceOptions = QStringList(),
+      const QStringList &layerOptions = QStringList()
     ) SIP_FACTORY;
 
     /**
@@ -1290,9 +1305,17 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QgsFeatureSink *parameterAsSink(
-      const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(),
-      const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList()
+      const QgsProcessingParameterDefinition *definition,
+      const QVariant &value,
+      const QgsFields &fields,
+      Qgis::WkbType geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsProcessingContext &context,
+      QString &destinationIdentifier SIP_OUT,
+      QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
+      const QVariantMap &createOptions = QVariantMap(),
+      const QStringList &datasourceOptions = QStringList(),
+      const QStringList &layerOptions = QStringList()
     ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
@@ -1333,8 +1356,12 @@ class CORE_EXPORT QgsProcessingParameters
      * to use parameterAsCompatibleSourceLayerPathAndLayerName() which may avoid conversion in more situations.
      */
     static QString parameterAsCompatibleSourceLayerPath(
-      const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats,
-      const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr
+      const QgsProcessingParameterDefinition *definition,
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      const QStringList &compatibleFormats,
+      const QString &preferredFormat = QString( "shp" ),
+      QgsProcessingFeedback *feedback = nullptr
     );
 
     /**
@@ -1367,8 +1394,13 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.10
      */
     static QString parameterAsCompatibleSourceLayerPathAndLayerName(
-      const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats,
-      const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr
+      const QgsProcessingParameterDefinition *definition,
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      const QStringList &compatibleFormats,
+      const QString &preferredFormat = QString( "shp" ),
+      QgsProcessingFeedback *feedback = nullptr,
+      QString *layerName SIP_OUT = nullptr
     );
 
     /**
@@ -1379,8 +1411,11 @@ class CORE_EXPORT QgsProcessingParameters
      * need to handle deletion of the returned layer.
      */
     static QgsMapLayer *parameterAsLayer(
-      const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
-      QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
+      const QgsProcessingParameterDefinition *definition,
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType,
+      QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
     );
 
     /**
@@ -1393,7 +1428,10 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QgsMapLayer *parameterAsLayer(
-      const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType,
+      const QgsProcessingParameterDefinition *definition,
+      const QVariant &value,
+      QgsProcessingContext &context,
+      QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType,
       QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
     );
 
@@ -2052,8 +2090,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      * The \a allowMultiPart argument allows specifying a multi part geometry
      */
     QgsProcessingParameterGeometry(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >(),
-      bool allowMultipart = true
+      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >(), bool allowMultipart = true
     );
 
     /**
@@ -2121,8 +2158,13 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      * if both are specified then \a fileFilter takes precedence.
      */
     QgsProcessingParameterFile(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File, const QString &extension = QString(),
-      const QVariant &defaultValue = QVariant(), bool optional = false, const QString &fileFilter = QString()
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File,
+      const QString &extension = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      const QString &fileFilter = QString()
     );
 
     /**
@@ -2215,8 +2257,13 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Constructor for QgsProcessingParameterMatrix.
      */
     QgsProcessingParameterMatrix(
-      const QString &name, const QString &description = QString(), int numberRows = 3, bool hasFixedNumberRows = false, const QStringList &headers = QStringList(),
-      const QVariant &defaultValue = QVariant(), bool optional = false
+      const QString &name,
+      const QString &description = QString(),
+      int numberRows = 3,
+      bool hasFixedNumberRows = false,
+      const QStringList &headers = QStringList(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false
     );
 
     /**
@@ -2298,7 +2345,10 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * Constructor for QgsProcessingParameterMultipleLayers.
      */
     QgsProcessingParameterMultipleLayers(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry,
+      const QVariant &defaultValue = QVariant(),
       bool optional = false
     );
 
@@ -2379,8 +2429,13 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Constructor for QgsProcessingParameterNumber.
      */
     explicit QgsProcessingParameterNumber(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer, const QVariant &defaultValue = QVariant(),
-      bool optional = false, double minValue = std::numeric_limits<double>::lowest() + 1, double maxValue = std::numeric_limits<double>::max()
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      double minValue = std::numeric_limits<double>::lowest() + 1,
+      double maxValue = std::numeric_limits<double>::max()
     );
 
     /**
@@ -2473,8 +2528,13 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * Constructor for QgsProcessingParameterDistance.
      */
     explicit QgsProcessingParameterDistance(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentParameterName = QString(), bool optional = false,
-      double minValue = std::numeric_limits<double>::lowest() + 1, double maxValue = std::numeric_limits<double>::max()
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentParameterName = QString(),
+      bool optional = false,
+      double minValue = std::numeric_limits<double>::lowest() + 1,
+      double maxValue = std::numeric_limits<double>::max()
     );
 
     /**
@@ -2555,8 +2615,13 @@ class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumb
      * Constructor for QgsProcessingParameterArea.
      */
     explicit QgsProcessingParameterArea(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentParameterName = QString(), bool optional = false,
-      double minValue = 0, double maxValue = std::numeric_limits<double>::max()
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentParameterName = QString(),
+      bool optional = false,
+      double minValue = 0,
+      double maxValue = std::numeric_limits<double>::max()
     );
 
     /**
@@ -2634,8 +2699,13 @@ class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNu
      * Constructor for QgsProcessingParameterVolume.
      */
     explicit QgsProcessingParameterVolume(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentParameterName = QString(), bool optional = false,
-      double minValue = 0, double maxValue = std::numeric_limits<double>::max()
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentParameterName = QString(),
+      bool optional = false,
+      double minValue = 0,
+      double maxValue = std::numeric_limits<double>::max()
     );
 
     /**
@@ -2700,7 +2770,11 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
      * Constructor for QgsProcessingParameterDuration.
      */
     explicit QgsProcessingParameterDuration(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, double minValue = std::numeric_limits<double>::lowest() + 1,
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      double minValue = std::numeric_limits<double>::lowest() + 1,
       double maxValue = std::numeric_limits<double>::max()
     );
 
@@ -2782,7 +2856,10 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Constructor for QgsProcessingParameterRange.
      */
     QgsProcessingParameterRange(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer, const QVariant &defaultValue = QVariant(),
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
+      const QVariant &defaultValue = QVariant(),
       bool optional = false
     );
 
@@ -2893,8 +2970,13 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      * Constructor for QgsProcessingParameterEnum.
      */
     QgsProcessingParameterEnum(
-      const QString &name, const QString &description = QString(), const QStringList &options = QStringList(), bool allowMultiple = false, const QVariant &defaultValue = QVariant(),
-      bool optional = false, bool usesStaticStrings = false
+      const QString &name,
+      const QString &description = QString(),
+      const QStringList &options = QStringList(),
+      bool allowMultiple = false,
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool usesStaticStrings = false
     );
 
     QString userFriendlyString( const QVariant &value ) const override;
@@ -3081,7 +3163,11 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      * Constructor for QgsProcessingParameterExpression.
      */
     QgsProcessingParameterExpression(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentLayerParameterName = QString(), bool optional = false,
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentLayerParameterName = QString(),
+      bool optional = false,
       Qgis::ExpressionType type = Qgis::ExpressionType::Qgis
     );
 
@@ -3288,8 +3374,14 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Constructor for QgsProcessingParameterField.
      */
     QgsProcessingParameterField(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentLayerParameterName = QString(),
-      Qgis::ProcessingFieldParameterDataType type = Qgis::ProcessingFieldParameterDataType::Any, bool allowMultiple = false, bool optional = false, bool defaultToAllFields = false
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentLayerParameterName = QString(),
+      Qgis::ProcessingFieldParameterDataType type = Qgis::ProcessingFieldParameterDataType::Any,
+      bool allowMultiple = false,
+      bool optional = false,
+      bool defaultToAllFields = false
     );
 
     /**
@@ -3549,8 +3641,13 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-      bool optional = false, bool createByDefault = true, bool supportsAppend = false
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry,
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool createByDefault = true,
+      bool supportsAppend = false
     );
 
     /**
@@ -3646,8 +3743,12 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * output will not be created by default.
      */
     QgsProcessingParameterVectorDestination(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-      bool optional = false, bool createByDefault = true
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry,
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool createByDefault = true
     );
 
     /**
@@ -3874,8 +3975,7 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      * Constructor for QgsProcessingParameterBand.
      */
     QgsProcessingParameterBand(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentLayerParameterName = QString(), bool optional = false,
-      bool allowMultiple = false
+      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentLayerParameterName = QString(), bool optional = false, bool allowMultiple = false
     );
 
     /**
@@ -4116,8 +4216,14 @@ class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessi
      * Constructor for QgsProcessingParameterCoordinateOperation.
      */
     QgsProcessingParameterCoordinateOperation(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &sourceCrsParameterName = QString(),
-      const QString &destinationCrsParameterName = QString(), const QVariant &staticSourceCrs = QVariant(), const QVariant &staticDestinationCrs = QVariant(), bool optional = false
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &sourceCrsParameterName = QString(),
+      const QString &destinationCrsParameterName = QString(),
+      const QVariant &staticSourceCrs = QVariant(),
+      const QVariant &staticDestinationCrs = QVariant(),
+      bool optional = false
     );
 
     /**
@@ -4261,8 +4367,13 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
      * Constructor for QgsProcessingParameterDateTime.
      */
     explicit QgsProcessingParameterDateTime(
-      const QString &name, const QString &description = QString(), Qgis::ProcessingDateTimeParameterDataType type = Qgis::ProcessingDateTimeParameterDataType::DateTime,
-      const QVariant &defaultValue = QVariant(), bool optional = false, const QDateTime &minValue = QDateTime(), const QDateTime &maxValue = QDateTime()
+      const QString &name,
+      const QString &description = QString(),
+      Qgis::ProcessingDateTimeParameterDataType type = Qgis::ProcessingDateTimeParameterDataType::DateTime,
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      const QDateTime &minValue = QDateTime(),
+      const QDateTime &maxValue = QDateTime()
     );
 
     /**
@@ -4490,8 +4601,13 @@ class CORE_EXPORT QgsProcessingParameterDatabaseTable : public QgsProcessingPara
      * in order for the model to work correctly. This is only implemented for a subset of current data providers.
      */
     QgsProcessingParameterDatabaseTable(
-      const QString &name, const QString &description, const QString &connectionParameterName = QString(), const QString &schemaParameterName = QString(), const QVariant &defaultValue = QVariant(),
-      bool optional = false, bool allowNewTableNames = false
+      const QString &name,
+      const QString &description,
+      const QString &connectionParameterName = QString(),
+      const QString &schemaParameterName = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool allowNewTableNames = false
     );
 
     /**
@@ -4679,8 +4795,13 @@ class CORE_EXPORT QgsProcessingParameterPointCloudAttribute : public QgsProcessi
      * Constructor for QgsProcessingParameterField.
      */
     QgsProcessingParameterPointCloudAttribute(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), const QString &parentLayerParameterName = QString(), bool allowMultiple = false,
-      bool optional = false, bool defaultToAllAttributes = false
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      const QString &parentLayerParameterName = QString(),
+      bool allowMultiple = false,
+      bool optional = false,
+      bool defaultToAllAttributes = false
     );
 
     /**

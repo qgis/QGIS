@@ -36,9 +36,15 @@ using namespace nlohmann;
 
 #include <QSettings>
 
-QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter() { setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues ); }
+QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
 
-QString QgsValueRelationFieldFormatter::id() const { return u"ValueRelation"_s; }
+QString QgsValueRelationFieldFormatter::id() const
+{
+  return u"ValueRelation"_s;
+}
 
 QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {

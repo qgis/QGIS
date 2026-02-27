@@ -206,8 +206,7 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
 //
 
 QgsSensorThingsLayerEntityItem::QgsSensorThingsLayerEntityItem(
-  QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType,
-  const QString &connectionName
+  QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType, const QString &connectionName
 )
   : QgsLayerItem( parent, name, path, QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uriParts ), type, provider )
   , mUriParts( uriParts )
@@ -258,11 +257,20 @@ QString QgsSensorThingsLayerEntityItem::layerName() const
 // QgsSensorThingsDataItemProvider
 //
 
-QString QgsSensorThingsDataItemProvider::name() { return u"SensorThings"_s; }
+QString QgsSensorThingsDataItemProvider::name()
+{
+  return u"SensorThings"_s;
+}
 
-QString QgsSensorThingsDataItemProvider::dataProviderKey() const { return u"sensorthings"_s; }
+QString QgsSensorThingsDataItemProvider::dataProviderKey() const
+{
+  return u"sensorthings"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsSensorThingsDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
+Qgis::DataItemProviderCapabilities QgsSensorThingsDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::NetworkSources;
+}
 
 QgsDataItem *QgsSensorThingsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

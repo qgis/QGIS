@@ -176,18 +176,32 @@ class QgsGdalProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     ) override;
 
     bool hasHistogram(
-      int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(),
-      const QgsRectangle &boundingBox = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false
+      int bandNo,
+      int binCount = 0,
+      double minimum = std::numeric_limits<double>::quiet_NaN(),
+      double maximum = std::numeric_limits<double>::quiet_NaN(),
+      const QgsRectangle &boundingBox = QgsRectangle(),
+      int sampleSize = 0,
+      bool includeOutOfRange = false
     ) override;
 
     QgsRasterHistogram histogram(
-      int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(),
-      const QgsRectangle &boundingBox = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr
+      int bandNo,
+      int binCount = 0,
+      double minimum = std::numeric_limits<double>::quiet_NaN(),
+      double maximum = std::numeric_limits<double>::quiet_NaN(),
+      const QgsRectangle &boundingBox = QgsRectangle(),
+      int sampleSize = 0,
+      bool includeOutOfRange = false,
+      QgsRasterBlockFeedback *feedback = nullptr
     ) override;
 
     QString buildPyramids(
-      const QList<QgsRasterPyramid> &rasterPyramidList, const QString &resamplingMethod = "NEAREST", Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
-      const QStringList &creationOptions = QStringList(), QgsRasterBlockFeedback *feedback = nullptr
+      const QList<QgsRasterPyramid> &rasterPyramidList,
+      const QString &resamplingMethod = "NEAREST",
+      Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
+      const QStringList &creationOptions = QStringList(),
+      QgsRasterBlockFeedback *feedback = nullptr
     ) override;
     QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() ) override;
 

@@ -47,8 +47,7 @@ QgsAuthMethodConfig::QgsAuthMethodConfig( const QString &method, int version )
   , mMethod( method )
   , mVersion( version )
   , mConfigMap( QgsStringMap() )
-{
-}
+{}
 
 bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
 {
@@ -64,11 +63,7 @@ bool QgsAuthMethodConfig::isValid( bool validateid ) const
 {
   const bool idvalid = validateid ? !mId.isEmpty() : true;
 
-  return (
-    idvalid
-    && !mName.isEmpty()
-    && !mMethod.isEmpty()
-  );
+  return ( idvalid && !mName.isEmpty() && !mMethod.isEmpty() );
 }
 
 const QString QgsAuthMethodConfig::configString() const
@@ -146,9 +141,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     const QUrl url( accessurl );
     if ( url.isValid() )
     {
-      res = u"%1://%2:%3%4"_s.arg( url.scheme(), url.host() )
-              .arg( url.port() )
-              .arg( withpath ? url.path() : QString() );
+      res = u"%1://%2:%3%4"_s.arg( url.scheme(), url.host() ).arg( url.port() ).arg( withpath ? url.path() : QString() );
     }
   }
   *resource = res;
@@ -218,9 +211,8 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert, const QSslKey &cl
 const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath, const QString &keyPath, const QString &keyPass, const QList<QSslCertificate> &caChain )
 {
   QgsPkiBundle pkibundle;
-  if ( !certPath.isEmpty() && !keyPath.isEmpty()
-       && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive ) || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) )
-       && QFile::exists( certPath ) && QFile::exists( keyPath ) )
+  if ( !certPath.isEmpty() && !keyPath.isEmpty() && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive ) || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) ) && QFile::exists( certPath )
+       && QFile::exists( keyPath ) )
   {
     // client cert
     const bool pem = certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive );
@@ -241,9 +233,7 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath, const QS
 const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath, const QString &bundlepass )
 {
   QgsPkiBundle pkibundle;
-  if ( QCA::isSupported( "pkcs12" )
-       && !bundlepath.isEmpty()
-       && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive ) || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
+  if ( QCA::isSupported( "pkcs12" ) && !bundlepath.isEmpty() && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive ) || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
        && QFile::exists( bundlepath ) )
   {
     QCA::SecureArray passarray;
@@ -329,8 +319,7 @@ QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config, const
   , mCert( cert )
   , mCertKey( certkey )
   , mCaChain( cachain )
-{
-}
+{}
 
 bool QgsPkiConfigBundle::isValid()
 {
@@ -369,11 +358,7 @@ const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
 
 const QString QgsAuthConfigSslServer::configString() const
 {
-  QStringList configlist {
-    QString::number( mVersion ),
-    QString::number( mQtVersion ),
-    encodeSslProtocol( mSslProtocol )
-  };
+  QStringList configlist { QString::number( mVersion ), QString::number( mQtVersion ), encodeSslProtocol( mSslProtocol ) };
 
   QStringList errs;
   for ( const auto err : mSslIgnoredErrors )

@@ -25,9 +25,15 @@ QgsProcessingParameterDxfLayers::QgsProcessingParameterDxfLayers( const QString 
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDxfLayers::clone() const { return new QgsProcessingParameterDxfLayers( *this ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterDxfLayers::clone() const
+{
+  return new QgsProcessingParameterDxfLayers( *this );
+}
 
-QString QgsProcessingParameterDxfLayers::type() const { return typeName(); }
+QString QgsProcessingParameterDxfLayers::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -239,7 +245,10 @@ QgsDxfExport::DxfLayer QgsProcessingParameterDxfLayers::variantMapAsLayer( const
   }
 
   QgsDxfExport::DxfLayer dxfLayer(
-    inputLayer, layerVariantMap[u"attributeIndex"_s].toInt(), layerVariantMap[u"buildDataDefinedBlocks"_s].toBool(), layerVariantMap[u"dataDefinedBlocksMaximumNumberOfClasses"_s].toInt(),
+    inputLayer,
+    layerVariantMap[u"attributeIndex"_s].toInt(),
+    layerVariantMap[u"buildDataDefinedBlocks"_s].toBool(),
+    layerVariantMap[u"dataDefinedBlocksMaximumNumberOfClasses"_s].toInt(),
     layerVariantMap[u"overriddenLayerName"_s].toString()
   );
   return dxfLayer;

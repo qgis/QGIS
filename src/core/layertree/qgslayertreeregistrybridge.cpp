@@ -197,4 +197,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   QMetaObject::invokeMethod( this, "removeLayersFromRegistry", Qt::QueuedConnection, Q_ARG( QStringList, toRemove ) );
 }
 
-void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList &layerIds ) { mProject->removeMapLayers( layerIds ); }
+void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList &layerIds )
+{
+  mProject->removeMapLayers( layerIds );
+}

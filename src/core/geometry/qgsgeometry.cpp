@@ -132,7 +132,10 @@ void QgsGeometry::reset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
   d->geometry = std::move( newGeometry );
 }
 
-const QgsAbstractGeometry *QgsGeometry::constGet() const { return d->geometry.get(); }
+const QgsAbstractGeometry *QgsGeometry::constGet() const
+{
+  return d->geometry.get();
+}
 
 QgsAbstractGeometry *QgsGeometry::get()
 {
@@ -150,7 +153,10 @@ void QgsGeometry::set( QgsAbstractGeometry *geometry )
   reset( std::unique_ptr< QgsAbstractGeometry >( geometry ) );
 }
 
-bool QgsGeometry::isNull() const { return !d->geometry; }
+bool QgsGeometry::isNull() const
+{
+  return !d->geometry;
+}
 
 typedef QCache< QString, QgsGeometry > WktCache;
 Q_GLOBAL_STATIC_WITH_ARGS( WktCache, sWktCache, ( 2000 ) ) // store up to 2000 geometries
@@ -176,7 +182,10 @@ QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point ) { return QgsGeometry( point.clone() ); }
+QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point )
+{
+  return QgsGeometry( point.clone() );
+}
 
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
@@ -188,7 +197,10 @@ QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline ) { return QgsGeometry( std::make_unique< QgsLineString >( polyline ) ); }
+QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
+{
+  return QgsGeometry( std::make_unique< QgsLineString >( polyline ) );
+}
 
 QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
 {
@@ -1692,7 +1704,10 @@ QString QgsGeometry::asWkt( int precision ) const
   return d->geometry->asWkt( precision );
 }
 
-QString QgsGeometry::asJson( int precision ) const { return QString::fromStdString( asJsonObject( precision ).dump() ); }
+QString QgsGeometry::asJson( int precision ) const
+{
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
 
 json QgsGeometry::asJsonObject( int precision ) const
 {
@@ -3343,9 +3358,15 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
 }
 ///@endcond
 
-int QgsGeometry::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const { return d->geometry ? d->geometry->wkbSize( flags ) : 0; }
+int QgsGeometry::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
+{
+  return d->geometry ? d->geometry->wkbSize( flags ) : 0;
+}
 
-QByteArray QgsGeometry::asWkb( QgsAbstractGeometry::WkbFlags flags ) const { return d->geometry ? d->geometry->asWkb( flags ) : QByteArray(); }
+QByteArray QgsGeometry::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
+{
+  return d->geometry ? d->geometry->asWkb( flags ) : QByteArray();
+}
 
 QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const
 {
@@ -3504,7 +3525,10 @@ QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepColla
   return result;
 }
 
-QgsGeometry QgsGeometry::forceRHR() const { return forcePolygonClockwise(); }
+QgsGeometry QgsGeometry::forceRHR() const
+{
+  return forcePolygonClockwise();
+}
 
 Qgis::AngularDirection QgsGeometry::polygonOrientation() const
 {
@@ -3982,7 +4006,10 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   return d->geometry->vertexNumberFromVertexId( id );
 }
 
-QString QgsGeometry::lastError() const { return mLastError; }
+QString QgsGeometry::lastError() const
+{
+  return mLastError;
+}
 
 void QgsGeometry::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
@@ -4072,7 +4099,10 @@ void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output 
   }
 }
 
-QgsGeometry QgsGeometry::fromQPointF( QPointF point ) { return QgsGeometry( std::make_unique< QgsPoint >( point.x(), point.y() ) ); }
+QgsGeometry QgsGeometry::fromQPointF( QPointF point )
+{
+  return QgsGeometry( std::make_unique< QgsPoint >( point.x(), point.y() ) );
+}
 
 QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 {
@@ -4626,7 +4656,10 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
-QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags ) { return new QgsGeos( geometry, precision, flags ); }
+QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags )
+{
+  return new QgsGeos( geometry, precision, flags );
+}
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )
 {
@@ -4649,11 +4682,20 @@ QDataStream &operator>>( QDataStream &in, QgsGeometry &geometry )
 }
 
 
-QString QgsGeometry::Error::what() const { return mMessage; }
+QString QgsGeometry::Error::what() const
+{
+  return mMessage;
+}
 
-QgsPointXY QgsGeometry::Error::where() const { return mLocation; }
+QgsPointXY QgsGeometry::Error::where() const
+{
+  return mLocation;
+}
 
-bool QgsGeometry::Error::hasWhere() const { return mHasLocation; }
+bool QgsGeometry::Error::hasWhere() const
+{
+  return mHasLocation;
+}
 
 QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const
 {
@@ -4850,9 +4892,15 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 }
 
 
-QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const { return doChamferFillet( ChamferFilletOperationType::Chamfer, vertexIndex, distance1, distance2, 0 ); }
+QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
+{
+  return doChamferFillet( ChamferFilletOperationType::Chamfer, vertexIndex, distance1, distance2, 0 );
+}
 
-QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const { return doChamferFillet( ChamferFilletOperationType::Fillet, vertexIndex, radius, 0.0, segments ); }
+QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
+{
+  return doChamferFillet( ChamferFilletOperationType::Fillet, vertexIndex, radius, 0.0, segments );
+}
 
 QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 )
 {

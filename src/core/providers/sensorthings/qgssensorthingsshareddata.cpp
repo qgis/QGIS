@@ -245,7 +245,10 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   return mFeatureCount;
 }
 
-QString QgsSensorThingsSharedData::subsetString() const { return mSubsetString; }
+QString QgsSensorThingsSharedData::subsetString() const
+{
+  return mSubsetString;
+}
 
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
@@ -289,7 +292,8 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   locker.unlock();
 
   processFeatureRequest(
-    mNextPage, feedback,
+    mNextPage,
+    feedback,
     [id, &f, &featureFetched]( const QgsFeature &feature ) {
       if ( feature.id() == id )
       {
@@ -361,7 +365,8 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   bool noMoreFeatures = false;
   bool hasFirstPage = false;
   const bool res = processFeatureRequest(
-    queryUrl, feedback,
+    queryUrl,
+    feedback,
     [&ids, &alreadyFetchedIds]( const QgsFeature &feature ) {
       if ( !alreadyFetchedIds.contains( feature.id() ) )
         ids.insert( feature.id() );
@@ -399,7 +404,10 @@ void QgsSensorThingsSharedData::clearCache()
 }
 
 bool QgsSensorThingsSharedData::processFeatureRequest(
-  QString &nextPage, QgsFeedback *feedback, const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback, const std::function<bool()> &continueFetchingCallback,
+  QString &nextPage,
+  QgsFeedback *feedback,
+  const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
+  const std::function<bool()> &continueFetchingCallback,
   const std::function<void()> &onNoMoreFeaturesCallback
 )
 {
@@ -627,74 +635,74 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                 }
               }
 
-              auto extendAttributes = [&getString, &getVariantMap, &getDateTimeRange, &getDateTime, &getStringList,
-                                       &getVariantList]( Qgis::SensorThingsEntity entityType, const auto &entityData, QgsAttributes &attributes ) {
-                const QString iotId = getString( entityData, "@iot.id" ).toString();
-                const QString selfLink = getString( entityData, "@iot.selfLink" ).toString();
+              auto extendAttributes =
+                [&getString, &getVariantMap, &getDateTimeRange, &getDateTime, &getStringList, &getVariantList]( Qgis::SensorThingsEntity entityType, const auto &entityData, QgsAttributes &attributes ) {
+                  const QString iotId = getString( entityData, "@iot.id" ).toString();
+                  const QString selfLink = getString( entityData, "@iot.selfLink" ).toString();
 
-                const QVariant properties = getVariantMap( entityData, "properties" );
+                  const QVariant properties = getVariantMap( entityData, "properties" );
 
-                // NOLINTBEGIN(bugprone-branch-clone)
-                switch ( entityType )
-                {
-                  case Qgis::SensorThingsEntity::Invalid:
-                    break;
-
-                  case Qgis::SensorThingsEntity::Thing:
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::Location:
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::HistoricalLocation:
-                    attributes << iotId << selfLink << getDateTime( entityData, "time" );
-                    break;
-
-                  case Qgis::SensorThingsEntity::Datastream:
+                  // NOLINTBEGIN(bugprone-branch-clone)
+                  switch ( entityType )
                   {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantMap( entityData, "unitOfMeasurement" )
-                               << getString( entityData, "observationType" ) << properties << phenomenonTime.first << phenomenonTime.second << resultTime.first << resultTime.second;
-                    break;
+                    case Qgis::SensorThingsEntity::Invalid:
+                      break;
+
+                    case Qgis::SensorThingsEntity::Thing:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::Location:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::HistoricalLocation:
+                      attributes << iotId << selfLink << getDateTime( entityData, "time" );
+                      break;
+
+                    case Qgis::SensorThingsEntity::Datastream:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantMap( entityData, "unitOfMeasurement" )
+                                 << getString( entityData, "observationType" ) << properties << phenomenonTime.first << phenomenonTime.second << resultTime.first << resultTime.second;
+                      break;
+                    }
+
+                    case Qgis::SensorThingsEntity::Sensor:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "metadata" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::ObservedProperty:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::Observation:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > validTime = getDateTimeRange( entityData, "validTime" );
+                      attributes << iotId << selfLink << phenomenonTime.first << phenomenonTime.second << getString( entityData, "result" ) // TODO -- result type handling!
+                                 << getDateTime( entityData, "resultTime" ) << getStringList( entityData, "resultQuality" ) << validTime.first << validTime.second
+                                 << getVariantMap( entityData, "parameters" );
+                      break;
+                    }
+
+                    case Qgis::SensorThingsEntity::FeatureOfInterest:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::MultiDatastream:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantList( entityData, "unitOfMeasurements" )
+                                 << getString( entityData, "observationType" ) << getStringList( entityData, "multiObservationDataTypes" ) << properties << phenomenonTime.first
+                                 << phenomenonTime.second << resultTime.first << resultTime.second;
+                      break;
+                    }
                   }
-
-                  case Qgis::SensorThingsEntity::Sensor:
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "metadata" ) << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::ObservedProperty:
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::Observation:
-                  {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > validTime = getDateTimeRange( entityData, "validTime" );
-                    attributes << iotId << selfLink << phenomenonTime.first << phenomenonTime.second << getString( entityData, "result" ) // TODO -- result type handling!
-                               << getDateTime( entityData, "resultTime" ) << getStringList( entityData, "resultQuality" ) << validTime.first << validTime.second
-                               << getVariantMap( entityData, "parameters" );
-                    break;
-                  }
-
-                  case Qgis::SensorThingsEntity::FeatureOfInterest:
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::MultiDatastream:
-                  {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantList( entityData, "unitOfMeasurements" )
-                               << getString( entityData, "observationType" ) << getStringList( entityData, "multiObservationDataTypes" ) << properties << phenomenonTime.first << phenomenonTime.second
-                               << resultTime.first << resultTime.second;
-                    break;
-                  }
-                }
-                // NOLINTEND(bugprone-branch-clone)
-              };
+                  // NOLINTEND(bugprone-branch-clone)
+                };
 
               QgsAttributes attributes;
               attributes.reserve( fields.size() );
@@ -718,7 +726,12 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
 
                 std::function< void( const nlohmann::json &, Qgis::SensorThingsEntity, const QList<QgsSensorThingsExpansionDefinition > &, const QString &, const QgsAttributes & ) > traverseExpansion;
                 traverseExpansion =
-                  [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes,
+                  [this,
+                   &feature,
+                   &getString,
+                   &traverseExpansion,
+                   &fetchedFeatureCallback,
+                   &extendAttributes,
                    &processFeature]( const nlohmann::json &currentLevelData, Qgis::SensorThingsEntity parentEntityType, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString &lowerLevelId, const QgsAttributes &lowerLevelAttributes ) {
                     const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
                     const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
@@ -741,8 +754,17 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
 
                     if ( currentLevelData.contains( currentExpansionPropertyString.toLocal8Bit().constData() ) )
                     {
-                      auto parseExpandedEntity = [lowerLevelAttributes, &feature, &processFeature, &lowerLevelId, &getString, &remainingExpansionTargets, &fetchedFeatureCallback, &extendAttributes,
-                                                  &traverseExpansion, &currentExpansionTarget, this]( const json &expandedEntityElement ) {
+                      auto parseExpandedEntity = [lowerLevelAttributes,
+                                                  &feature,
+                                                  &processFeature,
+                                                  &lowerLevelId,
+                                                  &getString,
+                                                  &remainingExpansionTargets,
+                                                  &fetchedFeatureCallback,
+                                                  &extendAttributes,
+                                                  &traverseExpansion,
+                                                  &currentExpansionTarget,
+                                                  this]( const json &expandedEntityElement ) {
                         QgsAttributes expandedAttributes = lowerLevelAttributes;
                         const QString expandedEntityIotId = getString( expandedEntityElement, "@iot.id" ).toString();
                         const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;

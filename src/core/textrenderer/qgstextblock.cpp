@@ -19,7 +19,10 @@
 
 #include <QSizeF>
 
-QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment ) { mFragments.append( fragment ); }
+QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
+{
+  mFragments.append( fragment );
+}
 
 QgsTextBlock QgsTextBlock::fromPlainText( const QString &text, const QgsTextCharacterFormat &format )
 {
@@ -59,23 +62,50 @@ QString QgsTextBlock::toPlainText() const
   return res;
 }
 
-void QgsTextBlock::reserve( int count ) { mFragments.reserve( count ); }
+void QgsTextBlock::reserve( int count )
+{
+  mFragments.reserve( count );
+}
 
-void QgsTextBlock::append( const QgsTextFragment &fragment ) { mFragments.append( fragment ); }
+void QgsTextBlock::append( const QgsTextFragment &fragment )
+{
+  mFragments.append( fragment );
+}
 
-void QgsTextBlock::append( QgsTextFragment &&fragment ) { mFragments.push_back( fragment ); }
+void QgsTextBlock::append( QgsTextFragment &&fragment )
+{
+  mFragments.push_back( fragment );
+}
 
-void QgsTextBlock::insert( int index, const QgsTextFragment &fragment ) { mFragments.insert( index, fragment ); }
+void QgsTextBlock::insert( int index, const QgsTextFragment &fragment )
+{
+  mFragments.insert( index, fragment );
+}
 
-void QgsTextBlock::insert( int index, QgsTextFragment &&fragment ) { mFragments.insert( index, fragment ); }
+void QgsTextBlock::insert( int index, QgsTextFragment &&fragment )
+{
+  mFragments.insert( index, fragment );
+}
 
-void QgsTextBlock::clear() { mFragments.clear(); }
+void QgsTextBlock::clear()
+{
+  mFragments.clear();
+}
 
-bool QgsTextBlock::empty() const { return mFragments.empty(); }
+bool QgsTextBlock::empty() const
+{
+  return mFragments.empty();
+}
 
-int QgsTextBlock::size() const { return mFragments.size(); }
+int QgsTextBlock::size() const
+{
+  return mFragments.size();
+}
 
-void QgsTextBlock::setBlockFormat( const QgsTextBlockFormat &format ) { mBlockFormat = format; }
+void QgsTextBlock::setBlockFormat( const QgsTextBlockFormat &format )
+{
+  mBlockFormat = format;
+}
 
 void QgsTextBlock::applyCapitalization( Qgis::Capitalization capitalization )
 {
@@ -90,12 +120,24 @@ bool QgsTextBlock::hasBackgrounds() const
   return mBlockFormat.hasBackground() || std::any_of( mFragments.begin(), mFragments.end(), []( const QgsTextFragment &fragment ) { return fragment.characterFormat().hasBackground(); } );
 }
 
-const QgsTextFragment &QgsTextBlock::at( int index ) const { return mFragments.at( index ); }
+const QgsTextFragment &QgsTextBlock::at( int index ) const
+{
+  return mFragments.at( index );
+}
 
-QgsTextFragment &QgsTextBlock::operator[]( int index ) { return mFragments[index]; }
+QgsTextFragment &QgsTextBlock::operator[]( int index )
+{
+  return mFragments[index];
+}
 
 ///@cond PRIVATE
-QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const { return mFragments.begin(); }
+QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const
+{
+  return mFragments.begin();
+}
 
-QVector< QgsTextFragment >::const_iterator QgsTextBlock::end() const { return mFragments.end(); }
+QVector< QgsTextFragment >::const_iterator QgsTextBlock::end() const
+{
+  return mFragments.end();
+}
 ///@endcond

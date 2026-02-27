@@ -20,7 +20,11 @@
 using namespace Qt::StringLiterals;
 
 QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat(
-  const QString &waypointDownloadCommand, const QString &waypointUploadCommand, const QString &routeDownloadCommand, const QString &routeUploadCommand, const QString &trackDownloadCommand,
+  const QString &waypointDownloadCommand,
+  const QString &waypointUploadCommand,
+  const QString &routeDownloadCommand,
+  const QString &routeUploadCommand,
+  const QString &trackDownloadCommand,
   const QString &trackUploadCommand
 )
 {

@@ -31,11 +31,18 @@ QgsMapLayerElevationProperties::QgsMapLayerElevationProperties( QObject *parent 
   : QObject( parent )
 {}
 
-bool QgsMapLayerElevationProperties::hasElevation() const { return false; }
+bool QgsMapLayerElevationProperties::hasElevation() const
+{
+  return false;
+}
 
-void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * ) {}
+void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * )
+{}
 
-QString QgsMapLayerElevationProperties::htmlSummary() const { return QString(); }
+QString QgsMapLayerElevationProperties::htmlSummary() const
+{
+  return QString();
+}
 
 void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
 {
@@ -64,13 +71,25 @@ void QgsMapLayerElevationProperties::copyCommonProperties( const QgsMapLayerElev
   mZOffset = other->zOffset();
 }
 
-bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const { return true; }
+bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const
+{
+  return true;
+}
 
-QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const { return QgsDoubleRange(); }
+QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
+{
+  return QgsDoubleRange();
+}
 
-QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const { return {}; }
+QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const
+{
+  return {};
+}
 
-bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return false; }
+bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return false;
+}
 
 void QgsMapLayerElevationProperties::setZOffset( double offset )
 {

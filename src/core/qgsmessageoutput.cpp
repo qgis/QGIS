@@ -25,15 +25,24 @@
 
 using namespace Qt::StringLiterals;
 
-static QgsMessageOutput *messageOutputConsole_() { return new QgsMessageOutputConsole; }
+static QgsMessageOutput *messageOutputConsole_()
+{
+  return new QgsMessageOutputConsole;
+}
 
 // default output creator - console
 MESSAGE_OUTPUT_CREATOR QgsMessageOutput::mMessageOutputCreator = messageOutputConsole_;
 
 
-void QgsMessageOutput::setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f ) { mMessageOutputCreator = f; }
+void QgsMessageOutput::setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f )
+{
+  mMessageOutputCreator = f;
+}
 
-QgsMessageOutput *QgsMessageOutput::createMessageOutput() { return mMessageOutputCreator(); }
+QgsMessageOutput *QgsMessageOutput::createMessageOutput()
+{
+  return mMessageOutputCreator();
+}
 
 void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::StringFormat format )
 {
@@ -52,7 +61,10 @@ void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::StringFo
   mFormat = format;
 }
 
-void QgsMessageOutputConsole::appendMessage( const QString &message ) { mMessage += message; }
+void QgsMessageOutputConsole::appendMessage( const QString &message )
+{
+  mMessage += message;
+}
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
@@ -68,4 +80,7 @@ void QgsMessageOutputConsole::showMessage( bool )
   delete this;
 }
 
-void QgsMessageOutputConsole::setTitle( const QString &title ) { mTitle = title; }
+void QgsMessageOutputConsole::setTitle( const QString &title )
+{
+  mTitle = title;
+}

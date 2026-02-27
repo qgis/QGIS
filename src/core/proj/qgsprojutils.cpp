@@ -37,7 +37,10 @@ thread_local QgsProjContext QgsProjContext::sProjContext;
 QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
 #endif
 
-QgsProjContext::QgsProjContext() { mContext = proj_context_create(); }
+QgsProjContext::QgsProjContext()
+{
+  mContext = proj_context_create();
+}
 
 QgsProjContext::~QgsProjContext()
 {
@@ -67,7 +70,10 @@ PJ_CONTEXT *QgsProjContext::get()
 #endif
 }
 
-void QgsProjUtils::ProjPJDeleter::operator()( PJ *object ) const { proj_destroy( object ); }
+void QgsProjUtils::ProjPJDeleter::operator()( PJ *object ) const
+{
+  proj_destroy( object );
+}
 
 bool QgsProjUtils::usesAngularUnit( const QString &projDef )
 {
@@ -352,7 +358,8 @@ void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const
   dest->append( messageString );
 }
 
-void QgsProjUtils::proj_silent_logger( void * /*user_data*/, int /*level*/, const char * /*message*/ ) {}
+void QgsProjUtils::proj_silent_logger( void * /*user_data*/, int /*level*/, const char * /*message*/ )
+{}
 
 void QgsProjUtils::proj_logger( void *, int level, const char *message )
 {
@@ -520,9 +527,15 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 }
 #endif
 
-int QgsProjUtils::projVersionMajor() { return PROJ_VERSION_MAJOR; }
+int QgsProjUtils::projVersionMajor()
+{
+  return PROJ_VERSION_MAJOR;
+}
 
-int QgsProjUtils::projVersionMinor() { return PROJ_VERSION_MINOR; }
+int QgsProjUtils::projVersionMinor()
+{
+  return PROJ_VERSION_MINOR;
+}
 
 QString QgsProjUtils::epsgRegistryVersion()
 {
@@ -595,7 +608,10 @@ QStringList QgsProjUtils::searchPaths()
 // QgsScopedProjCollectingLogger
 //
 
-QgsScopedProjCollectingLogger::QgsScopedProjCollectingLogger() { proj_log_func( QgsProjContext::get(), &mProjErrors, QgsProjUtils::proj_collecting_logger ); }
+QgsScopedProjCollectingLogger::QgsScopedProjCollectingLogger()
+{
+  proj_log_func( QgsProjContext::get(), &mProjErrors, QgsProjUtils::proj_collecting_logger );
+}
 
 QgsScopedProjCollectingLogger::~QgsScopedProjCollectingLogger()
 {
@@ -607,7 +623,10 @@ QgsScopedProjCollectingLogger::~QgsScopedProjCollectingLogger()
 // QgsScopedProjSilentLogger
 //
 
-QgsScopedProjSilentLogger::QgsScopedProjSilentLogger() { proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_silent_logger ); }
+QgsScopedProjSilentLogger::QgsScopedProjSilentLogger()
+{
+  proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_silent_logger );
+}
 
 QgsScopedProjSilentLogger::~QgsScopedProjSilentLogger()
 {

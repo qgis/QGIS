@@ -28,22 +28,46 @@ QgsProjectStoredObjectManagerModelBase::QgsProjectStoredObjectManagerModelBase( 
   : QAbstractListModel( parent )
 {}
 
-int QgsProjectStoredObjectManagerModelBase::rowCount( const QModelIndex &parent ) const { return rowCountInternal( parent ); }
+int QgsProjectStoredObjectManagerModelBase::rowCount( const QModelIndex &parent ) const
+{
+  return rowCountInternal( parent );
+}
 
-QVariant QgsProjectStoredObjectManagerModelBase::data( const QModelIndex &index, int role ) const { return dataInternal( index, role ); }
+QVariant QgsProjectStoredObjectManagerModelBase::data( const QModelIndex &index, int role ) const
+{
+  return dataInternal( index, role );
+}
 
-bool QgsProjectStoredObjectManagerModelBase::setData( const QModelIndex &index, const QVariant &value, int role ) { return setDataInternal( index, value, role ); }
+bool QgsProjectStoredObjectManagerModelBase::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  return setDataInternal( index, value, role );
+}
 
-Qt::ItemFlags QgsProjectStoredObjectManagerModelBase::flags( const QModelIndex &index ) const { return flagsInternal( index ); }
+Qt::ItemFlags QgsProjectStoredObjectManagerModelBase::flags( const QModelIndex &index ) const
+{
+  return flagsInternal( index );
+}
 
 ///@cond PRIVATE
-void QgsProjectStoredObjectManagerModelBase::objectAboutToBeAdded( const QString &name ) { objectAboutToBeAddedInternal( name ); }
+void QgsProjectStoredObjectManagerModelBase::objectAboutToBeAdded( const QString &name )
+{
+  objectAboutToBeAddedInternal( name );
+}
 
-void QgsProjectStoredObjectManagerModelBase::objectAboutToBeRemoved( const QString &name ) { objectAboutToBeRemovedInternal( name ); }
+void QgsProjectStoredObjectManagerModelBase::objectAboutToBeRemoved( const QString &name )
+{
+  objectAboutToBeRemovedInternal( name );
+}
 
-void QgsProjectStoredObjectManagerModelBase::objectAdded( const QString &name ) { objectAddedInternal( name ); }
+void QgsProjectStoredObjectManagerModelBase::objectAdded( const QString &name )
+{
+  objectAddedInternal( name );
+}
 
-void QgsProjectStoredObjectManagerModelBase::objectRemoved( const QString &name ) { objectRemovedInternal( name ); }
+void QgsProjectStoredObjectManagerModelBase::objectRemoved( const QString &name )
+{
+  objectRemovedInternal( name );
+}
 ///@endcond
 
 //
@@ -188,9 +212,15 @@ template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeRem
     beginRemoveRows( QModelIndex(), row, row );
 }
 
-template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAddedInternal( const QString & ) { endInsertRows(); }
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAddedInternal( const QString & )
+{
+  endInsertRows();
+}
 
-template<class T> void QgsProjectStoredObjectManagerModel<T>::objectRemovedInternal( const QString & ) { endRemoveRows(); }
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectRemovedInternal( const QString & )
+{
+  endRemoveRows();
+}
 
 template<class T> void QgsProjectStoredObjectManagerModel<T>::objectRenamedInternal( T *object, const QString & )
 {
@@ -381,7 +411,10 @@ bool QgsProjectStoredObjectManagerProxyModelBase::lessThan( const QModelIndex &l
   return QString::localeAwareCompare( leftText, rightText ) < 0;
 }
 
-bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const { return filterAcceptsRowInternal( sourceRow, sourceParent ); }
+bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  return filterAcceptsRowInternal( sourceRow, sourceParent );
+}
 
 void QgsProjectStoredObjectManagerProxyModelBase::setFilterString( const QString &filter )
 {
@@ -389,7 +422,10 @@ void QgsProjectStoredObjectManagerProxyModelBase::setFilterString( const QString
   invalidateFilter();
 }
 
-bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRowInternal( int, const QModelIndex & ) const { return true; }
+bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRowInternal( int, const QModelIndex & ) const
+{
+  return true;
+}
 
 //
 // QgsProjectStoredObjectManagerProxyModel

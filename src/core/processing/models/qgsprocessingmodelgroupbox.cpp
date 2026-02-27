@@ -31,7 +31,10 @@ QgsProcessingModelGroupBox::QgsProcessingModelGroupBox( const QString &descripti
   setSize( QSizeF( 400, 360 ) );
 }
 
-QgsProcessingModelGroupBox *QgsProcessingModelGroupBox::clone() const { return new QgsProcessingModelGroupBox( *this ); }
+QgsProcessingModelGroupBox *QgsProcessingModelGroupBox::clone() const
+{
+  return new QgsProcessingModelGroupBox( *this );
+}
 
 QVariant QgsProcessingModelGroupBox::toVariant() const
 {
@@ -49,7 +52,10 @@ bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map, bool ignor
   return true;
 }
 
-QString QgsProcessingModelGroupBox::uuid() const { return mUuid; }
+QString QgsProcessingModelGroupBox::uuid() const
+{
+  return mUuid;
+}
 
 
 ///@endcond

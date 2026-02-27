@@ -67,9 +67,7 @@ void QgsZipItem::init()
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
   static std::once_flag initialized;
-  std::call_once( initialized, [] {
-    sProviderNames << u"files"_s;
-  } );
+  std::call_once( initialized, [] { sProviderNames << u"files"_s; } );
 }
 
 bool QgsZipItem::hasDragEnabled() const

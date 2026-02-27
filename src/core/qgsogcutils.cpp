@@ -56,8 +56,17 @@ using namespace Qt::StringLiterals;
 #define SE_NAMESPACE u"http://www.opengis.net/se"_s
 
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter(
-  QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, QgsOgcUtils::FilterVersion filterVersion, const QString &namespacePrefix, const QString &namespaceURI, const QString &geometryName,
-  const QString &srsName, bool honourAxisOrientation, bool invertAxisOrientation, const QMap<QString, QString> &fieldNameToXPathMap, const QMap<QString, QString> &namespacePrefixToUriMap
+  QDomDocument &doc,
+  QgsOgcUtils::GMLVersion gmlVersion,
+  QgsOgcUtils::FilterVersion filterVersion,
+  const QString &namespacePrefix,
+  const QString &namespaceURI,
+  const QString &geometryName,
+  const QString &srsName,
+  bool honourAxisOrientation,
+  bool invertAxisOrientation,
+  const QMap<QString, QString> &fieldNameToXPathMap,
+  const QMap<QString, QString> &namespacePrefixToUriMap
 )
   : mDoc( doc )
   , mGMLVersion( gmlVersion )
@@ -1202,7 +1211,10 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
   return rect;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision ) { return rectangleToGMLBox( box, doc, QString(), false, precision ); }
+QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision )
+{
+  return rectangleToGMLBox( box, doc, QString(), false, precision );
+}
 
 QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, const QString &srsName, bool invertAxisOrientation, int precision )
 {
@@ -1236,7 +1248,10 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocumen
   return boxElem;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision ) { return rectangleToGMLEnvelope( env, doc, QString(), false, precision ); }
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision )
+{
+  return rectangleToGMLEnvelope( env, doc, QString(), false, precision );
+}
 
 QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, const QString &srsName, bool invertAxisOrientation, int precision )
 {
@@ -1695,7 +1710,10 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   }
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision ) { return geometryToGML( geometry, doc, u"GML2"_s, precision ); }
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision )
+{
+  return geometryToGML( geometry, doc, u"GML2"_s, precision );
+}
 
 QDomElement QgsOgcUtils::createGMLCoordinates( const QgsPolylineXY &points, QDomDocument &doc )
 {
@@ -1787,7 +1805,10 @@ QColor QgsOgcUtils::colorFromOgcFill( const QDomElement &fillElement )
 }
 
 
-QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer ) { return expressionFromOgcFilter( element, QgsOgcUtils::FILTER_OGC_1_0, layer ); }
+QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer )
+{
+  return expressionFromOgcFilter( element, QgsOgcUtils::FILTER_OGC_1_0, layer );
+}
 
 QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, const FilterVersion version, QgsVectorLayer *layer )
 {
@@ -1841,7 +1862,8 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element,
 
 typedef QMap<QString, int> IntMap;
 Q_GLOBAL_STATIC_WITH_ARGS(
-  IntMap, BINARY_OPERATORS_TAG_NAMES_MAP,
+  IntMap,
+  BINARY_OPERATORS_TAG_NAMES_MAP,
   ( {
     // logical
     { "Or"_L1, QgsExpressionNodeBinaryOperator::boOr },
@@ -1862,7 +1884,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(
   } )
 )
 
-static int binaryOperatorFromTagName( const QString &tagName ) { return BINARY_OPERATORS_TAG_NAMES_MAP()->value( tagName, -1 ); }
+static int binaryOperatorFromTagName( const QString &tagName )
+{
+  return BINARY_OPERATORS_TAG_NAMES_MAP()->value( tagName, -1 );
+}
 
 static QString binaryOperatorToTagName( QgsExpressionNodeBinaryOperator::BinaryOperator op )
 {
@@ -1873,7 +1898,10 @@ static QString binaryOperatorToTagName( QgsExpressionNodeBinaryOperator::BinaryO
   return BINARY_OPERATORS_TAG_NAMES_MAP()->key( op, QString() );
 }
 
-static bool isBinaryOperator( const QString &tagName ) { return binaryOperatorFromTagName( tagName ) >= 0; }
+static bool isBinaryOperator( const QString &tagName )
+{
+  return binaryOperatorFromTagName( tagName ) >= 0;
+}
 
 
 static bool isSpatialOperator( const QString &tagName )
@@ -1973,12 +2001,25 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QD
   return expressionToOgcExpression( exp, doc, GML_2_1_2, FILTER_OGC_1_0, u"geometry"_s, QString(), false, false, errorMessage, requiresFilterElement );
 }
 
-QDomElement QgsOgcUtils::elseFilterExpression( QDomDocument &doc ) { return doc.createElementNS( SE_NAMESPACE, u"se:ElseFilter"_s ); }
+QDomElement QgsOgcUtils::elseFilterExpression( QDomDocument &doc )
+{
+  return doc.createElementNS( SE_NAMESPACE, u"se:ElseFilter"_s );
+}
 
 
 QDomElement QgsOgcUtils::expressionToOgcFilter(
-  const QgsExpression &expression, QDomDocument &doc, GMLVersion gmlVersion, FilterVersion filterVersion, const QString &namespacePrefix, const QString &namespaceURI, const QString &geometryName,
-  const QString &srsName, bool honourAxisOrientation, bool invertAxisOrientation, QString *errorMessage, const QMap<QString, QString> &fieldNameToXPathMap,
+  const QgsExpression &expression,
+  QDomDocument &doc,
+  GMLVersion gmlVersion,
+  FilterVersion filterVersion,
+  const QString &namespacePrefix,
+  const QString &namespaceURI,
+  const QString &geometryName,
+  const QString &srsName,
+  bool honourAxisOrientation,
+  bool invertAxisOrientation,
+  QString *errorMessage,
+  const QMap<QString, QString> &fieldNameToXPathMap,
   const QMap<QString, QString> &namespacePrefixToUriMap
 )
 {
@@ -2011,8 +2052,18 @@ QDomElement QgsOgcUtils::expressionToOgcFilter(
 }
 
 QDomElement QgsOgcUtils::expressionToOgcExpression(
-  const QgsExpression &expression, QDomDocument &doc, GMLVersion gmlVersion, FilterVersion filterVersion, const QString &geometryName, const QString &srsName, bool honourAxisOrientation,
-  bool invertAxisOrientation, QString *errorMessage, bool requiresFilterElement, const QMap<QString, QString> &fieldNameToXPathMap, const QMap<QString, QString> &namespacePrefixToUriMap
+  const QgsExpression &expression,
+  QDomDocument &doc,
+  GMLVersion gmlVersion,
+  FilterVersion filterVersion,
+  const QString &geometryName,
+  const QString &srsName,
+  bool honourAxisOrientation,
+  bool invertAxisOrientation,
+  QString *errorMessage,
+  bool requiresFilterElement,
+  const QMap<QString, QString> &fieldNameToXPathMap,
+  const QMap<QString, QString> &namespacePrefixToUriMap
 )
 {
   QgsExpressionContext context;
@@ -2048,8 +2099,16 @@ QDomElement QgsOgcUtils::expressionToOgcExpression(
 }
 
 QDomElement QgsOgcUtils::SQLStatementToOgcFilter(
-  const QgsSQLStatement &statement, QDomDocument &doc, GMLVersion gmlVersion, FilterVersion filterVersion, const QList<LayerProperties> &layerProperties, bool honourAxisOrientation,
-  bool invertAxisOrientation, const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename, QString *errorMessage, const QMap<QString, QString> &fieldNameToXPathMap,
+  const QgsSQLStatement &statement,
+  QDomDocument &doc,
+  GMLVersion gmlVersion,
+  FilterVersion filterVersion,
+  const QList<LayerProperties> &layerProperties,
+  bool honourAxisOrientation,
+  bool invertAxisOrientation,
+  const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+  QString *errorMessage,
+  const QMap<QString, QString> &fieldNameToXPathMap,
   const QMap<QString, QString> &namespacePrefixToUriMap
 )
 {
@@ -2360,7 +2419,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
 }
 
 Q_GLOBAL_STATIC_WITH_ARGS(
-  QgsStringMap, BINARY_SPATIAL_OPS_MAP,
+  QgsStringMap,
+  BINARY_SPATIAL_OPS_MAP,
   (
     { { "disjoint"_L1, "Disjoint"_L1 },
       { "intersects"_L1, "Intersects"_L1 },
@@ -2372,9 +2432,15 @@ Q_GLOBAL_STATIC_WITH_ARGS(
   )
 )
 
-static bool isBinarySpatialOperator( const QString &fnName ) { return BINARY_SPATIAL_OPS_MAP()->contains( fnName ); }
+static bool isBinarySpatialOperator( const QString &fnName )
+{
+  return BINARY_SPATIAL_OPS_MAP()->contains( fnName );
+}
 
-static QString tagNameForSpatialOperator( const QString &fnName ) { return BINARY_SPATIAL_OPS_MAP()->value( fnName ); }
+static QString tagNameForSpatialOperator( const QString &fnName )
+{
+  return BINARY_SPATIAL_OPS_MAP()->value( fnName );
+}
 
 static bool isGeometryColumn( const QgsExpressionNode *node )
 {
@@ -2580,8 +2646,14 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
 //
 
 QgsOgcUtilsSQLStatementToFilter::QgsOgcUtilsSQLStatementToFilter(
-  QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, QgsOgcUtils::FilterVersion filterVersion, const QList<QgsOgcUtils::LayerProperties> &layerProperties, bool honourAxisOrientation,
-  bool invertAxisOrientation, const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename, const QMap<QString, QString> &fieldNameToXPathMap,
+  QDomDocument &doc,
+  QgsOgcUtils::GMLVersion gmlVersion,
+  QgsOgcUtils::FilterVersion filterVersion,
+  const QList<QgsOgcUtils::LayerProperties> &layerProperties,
+  bool honourAxisOrientation,
+  bool invertAxisOrientation,
+  const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+  const QMap<QString, QString> &fieldNameToXPathMap,
   const QMap<QString, QString> &namespacePrefixToUriMap
 )
   : mDoc( doc )
@@ -3812,7 +3884,10 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( 
   return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator.release(), leOperator.release() );
 }
 
-QString QgsOgcUtilsExpressionFromFilter::errorMessage() const { return mErrorMessage; }
+QString QgsOgcUtilsExpressionFromFilter::errorMessage() const
+{
+  return mErrorMessage;
+}
 
 QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, QString &authority, QString &code )
 {
@@ -3868,4 +3943,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLUsingGdal( const QDomElement &geometryEl
   return QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom.get() );
 }
 
-QgsGeometry QgsOgcUtils::geometryFromGMLMultiCurve( const QDomElement &geometryElement ) { return geometryFromGMLUsingGdal( geometryElement ); }
+QgsGeometry QgsOgcUtils::geometryFromGMLMultiCurve( const QDomElement &geometryElement )
+{
+  return geometryFromGMLUsingGdal( geometryElement );
+}

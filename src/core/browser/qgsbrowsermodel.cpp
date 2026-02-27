@@ -52,8 +52,7 @@ class QgsBrowserWatcher : public QFutureWatcher<QVector<QgsDataItem *> >
     QgsBrowserWatcher( QgsDataItem *item )
       : QFutureWatcher( nullptr )
       , mItem( item )
-    {
-    }
+    {}
 
     QgsDataItem *item() const { return mItem; }
 
@@ -278,8 +277,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   Q_NOWARN_DEPRECATED_POP
 
-  if ( ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
-       || ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+  if ( ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename ) || ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     flags |= Qt::ItemIsEditable;
 
   return flags;
@@ -356,8 +354,7 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
-       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )

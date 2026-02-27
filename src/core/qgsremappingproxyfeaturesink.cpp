@@ -36,7 +36,10 @@ QgsRemappingProxyFeatureSink::~QgsRemappingProxyFeatureSink()
     delete mSink;
 }
 
-void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context ) const { mContext = context; }
+void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context ) const
+{
+  mContext = context;
+}
 
 void QgsRemappingProxyFeatureSink::setTransformContext( const QgsCoordinateTransformContext &context )
 {
@@ -132,7 +135,10 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
   return res;
 }
 
-QString QgsRemappingProxyFeatureSink::lastError() const { return mSink->lastError(); }
+QString QgsRemappingProxyFeatureSink::lastError() const
+{
+  return mSink->lastError();
+}
 
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
@@ -189,4 +195,7 @@ bool QgsRemappingSinkDefinition::operator==( const QgsRemappingSinkDefinition &o
          && mDestinationCrs == other.mDestinationCrs;
 }
 
-bool QgsRemappingSinkDefinition::operator!=( const QgsRemappingSinkDefinition &other ) const { return !( *this == other ); }
+bool QgsRemappingSinkDefinition::operator!=( const QgsRemappingSinkDefinition &other ) const
+{
+  return !( *this == other );
+}

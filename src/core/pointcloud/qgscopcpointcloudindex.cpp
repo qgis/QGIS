@@ -239,9 +239,15 @@ const QByteArray QgsCopcPointCloudIndex::rawNodeData( QgsPointCloudNodeId n ) co
     return readRange( blockOffset, blockSize );
 }
 
-QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const { return mLazInfo->crs(); }
+QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const
+{
+  return mLazInfo->crs();
+}
 
-qint64 QgsCopcPointCloudIndex::pointCount() const { return mLazInfo->pointCount(); }
+qint64 QgsCopcPointCloudIndex::pointCount() const
+{
+  return mLazInfo->pointCount();
+}
 
 bool QgsCopcPointCloudIndex::loadHierarchy() const
 {
@@ -322,7 +328,10 @@ QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
   return *mStatistics;
 }
 
-bool QgsCopcPointCloudIndex::isValid() const { return mIsValid; }
+bool QgsCopcPointCloudIndex::isValid() const
+{
+  return mIsValid;
+}
 
 bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const
 {
@@ -393,7 +402,10 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
   }
 }
 
-bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const { return fetchNodeHierarchy( n ); }
+bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+{
+  return fetchNodeHierarchy( n );
+}
 
 QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {

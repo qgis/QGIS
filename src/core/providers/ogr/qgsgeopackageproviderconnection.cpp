@@ -301,7 +301,10 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   return tableInfo;
 }
 
-QIcon QgsGeoPackageProviderConnection::icon() const { return QgsApplication::getThemeIcon( u"mGeoPackage.svg"_s ); }
+QIcon QgsGeoPackageProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mGeoPackage.svg"_s );
+}
 
 void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 {
@@ -518,7 +521,10 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
   return results;
 }
 
-Qgis::DatabaseProviderTableImportCapabilities QgsGeoPackageProviderConnection::tableImportCapabilities() const { return Qgis::DatabaseProviderTableImportCapabilities(); }
+Qgis::DatabaseProviderTableImportCapabilities QgsGeoPackageProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapabilities();
+}
 
 QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table, QgsFeedback * ) const
 {
@@ -1023,9 +1029,15 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
   );
 }
 
-QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const { return { Qgis::FieldDomainType::Coded, Qgis::FieldDomainType::Glob, Qgis::FieldDomainType::Range }; }
+QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const
+{
+  return { Qgis::FieldDomainType::Coded, Qgis::FieldDomainType::Glob, Qgis::FieldDomainType::Range };
+}
 
-QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const { return u"QgsGeoPackageProviderConnection"_s; }
+QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const
+{
+  return u"QgsGeoPackageProviderConnection"_s;
+}
 
 
 ///@endcond

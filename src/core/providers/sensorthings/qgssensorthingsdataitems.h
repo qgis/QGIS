@@ -69,8 +69,7 @@ class CORE_EXPORT QgsSensorThingsLayerEntityItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsSensorThingsLayerEntityItem(
-      QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType,
-      const QString &connectionName
+      QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType, const QString &connectionName
     );
     QString layerName() const final;
 

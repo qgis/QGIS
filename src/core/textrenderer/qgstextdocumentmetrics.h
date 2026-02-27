@@ -106,7 +106,10 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * logistics of the calculated metrics.
      */
     static QgsTextDocumentMetrics calculateMetrics(
-      const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+      const QgsTextDocument &document,
+      const QgsTextFormat &format,
+      const QgsRenderContext &context,
+      double scaleFactor = 1.0,
       const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext()
     );
 
@@ -319,8 +322,16 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
     static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics );
     static void processFragment(
-      QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor,
-      DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock
+      QgsTextDocumentMetrics &res,
+      const QgsTextFormat &format,
+      const QgsRenderContext &context,
+      const QgsTextDocumentRenderContext &documentContext,
+      double scaleFactor,
+      DocumentMetrics &documentMetrics,
+      BlockMetrics &thisBlockMetrics,
+      const QFont &font,
+      const QgsTextFragment &fragment,
+      QgsTextBlock &currentOutputBlock
     );
 };
 

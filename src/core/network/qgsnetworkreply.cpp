@@ -38,9 +38,15 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
     mRequestId = requestId;
 }
 
-void QgsNetworkReplyContent::clear() { *this = QgsNetworkReplyContent(); }
+void QgsNetworkReplyContent::clear()
+{
+  *this = QgsNetworkReplyContent();
+}
 
-QVariant QgsNetworkReplyContent::attribute( QNetworkRequest::Attribute code ) const { return mAttributes.value( code ); }
+QVariant QgsNetworkReplyContent::attribute( QNetworkRequest::Attribute code ) const
+{
+  return mAttributes.value( code );
+}
 
 bool QgsNetworkReplyContent::hasRawHeader( const QByteArray &headerName ) const
 {

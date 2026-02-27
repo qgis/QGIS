@@ -28,8 +28,16 @@ using namespace Qt::StringLiterals;
 QgsWeakRelation::QgsWeakRelation() = default;
 
 QgsWeakRelation::QgsWeakRelation(
-  const QString &relationId, const QString &relationName, const Qgis::RelationshipStrength strength, const QString &referencingLayerId, const QString &referencingLayerName,
-  const QString &referencingLayerSource, const QString &referencingLayerProviderKey, const QString &referencedLayerId, const QString &referencedLayerName, const QString &referencedLayerSource,
+  const QString &relationId,
+  const QString &relationName,
+  const Qgis::RelationshipStrength strength,
+  const QString &referencingLayerId,
+  const QString &referencingLayerName,
+  const QString &referencingLayerSource,
+  const QString &referencingLayerProviderKey,
+  const QString &referencedLayerId,
+  const QString &referencedLayerName,
+  const QString &referencedLayerSource,
   const QString &referencedLayerProviderKey
 )
   : mReferencingLayer( referencingLayerId, referencingLayerName, referencingLayerSource, referencingLayerProviderKey )
@@ -132,11 +140,20 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
   return res;
 }
 
-QgsVectorLayerRef QgsWeakRelation::referencingLayer() const { return mReferencingLayer; }
+QgsVectorLayerRef QgsWeakRelation::referencingLayer() const
+{
+  return mReferencingLayer;
+}
 
-QString QgsWeakRelation::referencingLayerSource() const { return mReferencingLayer.source; }
+QString QgsWeakRelation::referencingLayerSource() const
+{
+  return mReferencingLayer.source;
+}
 
-QString QgsWeakRelation::referencingLayerProvider() const { return mReferencingLayer.provider; }
+QString QgsWeakRelation::referencingLayerProvider() const
+{
+  return mReferencingLayer.provider;
+}
 
 void QgsWeakRelation::setReferencingLayer( const QString &sourceUri, const QString &provider )
 {
@@ -153,11 +170,20 @@ QString QgsWeakRelation::referencingLayerName() const
   return QString();
 }
 
-QgsVectorLayerRef QgsWeakRelation::referencedLayer() const { return mReferencedLayer; }
+QgsVectorLayerRef QgsWeakRelation::referencedLayer() const
+{
+  return mReferencedLayer;
+}
 
-QString QgsWeakRelation::referencedLayerSource() const { return mReferencedLayer.source; }
+QString QgsWeakRelation::referencedLayerSource() const
+{
+  return mReferencedLayer.source;
+}
 
-QString QgsWeakRelation::referencedLayerProvider() const { return mReferencedLayer.provider; }
+QString QgsWeakRelation::referencedLayerProvider() const
+{
+  return mReferencedLayer.provider;
+}
 
 QString QgsWeakRelation::referencedLayerName() const
 {
@@ -174,13 +200,25 @@ void QgsWeakRelation::setReferencedLayer( const QString &sourceUri, const QStrin
   mReferencedLayer.provider = provider;
 }
 
-QgsVectorLayerRef QgsWeakRelation::mappingTable() const { return mMappingTable; }
+QgsVectorLayerRef QgsWeakRelation::mappingTable() const
+{
+  return mMappingTable;
+}
 
-void QgsWeakRelation::setMappingTable( const QgsVectorLayerRef &table ) { mMappingTable = table; }
+void QgsWeakRelation::setMappingTable( const QgsVectorLayerRef &table )
+{
+  mMappingTable = table;
+}
 
-QString QgsWeakRelation::mappingTableSource() const { return mMappingTable.source; }
+QString QgsWeakRelation::mappingTableSource() const
+{
+  return mMappingTable.source;
+}
 
-QString QgsWeakRelation::mappingTableProvider() const { return mMappingTable.provider; }
+QString QgsWeakRelation::mappingTableProvider() const
+{
+  return mMappingTable.provider;
+}
 
 QString QgsWeakRelation::mappingTableName() const
 {
@@ -197,7 +235,10 @@ void QgsWeakRelation::setMappingTable( const QString &sourceUri, const QString &
   mMappingTable.provider = provider;
 }
 
-Qgis::RelationshipStrength QgsWeakRelation::strength() const { return mStrength; }
+Qgis::RelationshipStrength QgsWeakRelation::strength() const
+{
+  return mStrength;
+}
 
 QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node, const QgsPathResolver resolver )
 {
@@ -223,11 +264,19 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
     case Referencing:
     {
       QgsWeakRelation rel {
-        relationElement.attribute( u"id"_s ), relationElement.attribute( u"name"_s ), static_cast<Qgis::RelationshipStrength>( relationElement.attribute( u"strength"_s ).toInt() ),
+        relationElement.attribute( u"id"_s ),
+        relationElement.attribute( u"name"_s ),
+        static_cast<Qgis::RelationshipStrength>( relationElement.attribute( u"strength"_s ).toInt() ),
         // Referencing
-        layer->id(), layer->name(), resolver.writePath( layer->publicSource() ), layer->providerType(),
+        layer->id(),
+        layer->name(),
+        resolver.writePath( layer->publicSource() ),
+        layer->providerType(),
         // Referenced
-        relationElement.attribute( u"layerId"_s ), relationElement.attribute( u"layerName"_s ), relationElement.attribute( u"dataSource"_s ), relationElement.attribute( u"providerKey"_s )
+        relationElement.attribute( u"layerId"_s ),
+        relationElement.attribute( u"layerName"_s ),
+        relationElement.attribute( u"dataSource"_s ),
+        relationElement.attribute( u"providerKey"_s )
       };
       rel.setReferencedLayerFields( referencedFields );
       rel.setReferencingLayerFields( referencingFields );
@@ -237,11 +286,19 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
     case Referenced:
     {
       QgsWeakRelation rel {
-        relationElement.attribute( u"id"_s ), relationElement.attribute( u"name"_s ), static_cast<Qgis::RelationshipStrength>( relationElement.attribute( u"strength"_s ).toInt() ),
+        relationElement.attribute( u"id"_s ),
+        relationElement.attribute( u"name"_s ),
+        static_cast<Qgis::RelationshipStrength>( relationElement.attribute( u"strength"_s ).toInt() ),
         // Referencing
-        relationElement.attribute( u"layerId"_s ), relationElement.attribute( u"layerName"_s ), relationElement.attribute( u"dataSource"_s ), relationElement.attribute( u"providerKey"_s ),
+        relationElement.attribute( u"layerId"_s ),
+        relationElement.attribute( u"layerName"_s ),
+        relationElement.attribute( u"dataSource"_s ),
+        relationElement.attribute( u"providerKey"_s ),
         // Referenced
-        layer->id(), layer->name(), resolver.writePath( layer->publicSource() ), layer->providerType()
+        layer->id(),
+        layer->name(),
+        resolver.writePath( layer->publicSource() ),
+        layer->providerType()
       };
       rel.setReferencedLayerFields( referencedFields );
       rel.setReferencingLayerFields( referencingFields );

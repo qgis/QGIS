@@ -33,15 +33,30 @@ QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   mTolerance = s.value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt();
 }
 
-QgsLayout *QgsLayoutSnapper::layout() { return mLayout; }
+QgsLayout *QgsLayoutSnapper::layout()
+{
+  return mLayout;
+}
 
-void QgsLayoutSnapper::setSnapTolerance( const int snapTolerance ) { mTolerance = snapTolerance; }
+void QgsLayoutSnapper::setSnapTolerance( const int snapTolerance )
+{
+  mTolerance = snapTolerance;
+}
 
-void QgsLayoutSnapper::setSnapToGrid( bool enabled ) { mSnapToGrid = enabled; }
+void QgsLayoutSnapper::setSnapToGrid( bool enabled )
+{
+  mSnapToGrid = enabled;
+}
 
-void QgsLayoutSnapper::setSnapToGuides( bool enabled ) { mSnapToGuides = enabled; }
+void QgsLayoutSnapper::setSnapToGuides( bool enabled )
+{
+  mSnapToGuides = enabled;
+}
 
-void QgsLayoutSnapper::setSnapToItems( bool enabled ) { mSnapToItems = enabled; }
+void QgsLayoutSnapper::setSnapToItems( bool enabled )
+{
+  mSnapToItems = enabled;
+}
 
 QPointF QgsLayoutSnapper::snapPoint(
   QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList< QgsLayoutItem * > *ignoreItems

@@ -222,7 +222,9 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     mActiveThreads.append( thread );
     filter->moveToThread( thread );
     connect(
-      thread, &QThread::started, filter,
+      thread,
+      &QThread::started,
+      filter,
       [filter, searchString, context, feedback] {
         int delay = filter->fetchResultsDelay();
         while ( delay > 0 )
@@ -255,7 +257,10 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     emit finished();
 }
 
-void QgsLocator::cancel() { cancelRunningQuery(); }
+void QgsLocator::cancel()
+{
+  cancelRunningQuery();
+}
 
 void QgsLocator::cancelWithoutBlocking()
 {
@@ -263,7 +268,10 @@ void QgsLocator::cancelWithoutBlocking()
     mFeedback->cancel();
 }
 
-bool QgsLocator::isRunning() const { return !mActiveThreads.empty(); }
+bool QgsLocator::isRunning() const
+{
+  return !mActiveThreads.empty();
+}
 
 void QgsLocator::clearPreviousResults()
 {

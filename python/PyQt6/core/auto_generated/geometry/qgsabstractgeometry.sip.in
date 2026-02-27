@@ -38,7 +38,7 @@ Abstract base class for all geometries.
 #include "qgsabstractgeometry.h"
 %End
 %ConvertToSubClassCode
-if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
+    if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;
     else if ( qgsgeometry_cast<QgsLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsLineString;

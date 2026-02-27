@@ -231,8 +231,15 @@ void QgsOgrProvider::repack()
 }
 
 Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer(
-  const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri,
-  QString *errorMessage, const QMap<QString, QVariant> *options
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem &srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString &createdLayerUri,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options
 )
 {
   QString encoding;
@@ -532,7 +539,10 @@ QString QgsOgrProvider::dataSourceUri( bool expandAuthConfig ) const
   }
 }
 
-QgsTransaction *QgsOgrProvider::transaction() const { return static_cast<QgsTransaction *>( mTransaction ); }
+QgsTransaction *QgsOgrProvider::transaction() const
+{
+  return static_cast<QgsTransaction *>( mTransaction );
+}
 
 void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
 {
@@ -546,13 +556,25 @@ void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
   }
 }
 
-QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const { return new QgsOgrFeatureSource( this ); }
+QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
+{
+  return new QgsOgrFeatureSource( this );
+}
 
-bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount ) { return _setSubsetString( theSQL, updateFeatureCount, true ); }
+bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
+{
+  return _setSubsetString( theSQL, updateFeatureCount, true );
+}
 
-QString QgsOgrProvider::subsetString() const { return mSubsetString; }
+QString QgsOgrProvider::subsetString() const
+{
+  return mSubsetString;
+}
 
-bool QgsOgrProvider::supportsSubsetString() const { return true; }
+bool QgsOgrProvider::supportsSubsetString() const
+{
+  return true;
+}
 
 QString QgsOgrProvider::subsetStringDialect() const
 {
@@ -654,7 +676,10 @@ QStringList QgsOgrProvider::subLayers() const
   return subLayerDetailsToStringList( _subLayers( flags ) );
 }
 
-QgsLayerMetadata QgsOgrProvider::layerMetadata() const { return mLayerMetadata; }
+QgsLayerMetadata QgsOgrProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
 
 QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQueryFlags flags ) const
 {
@@ -685,7 +710,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
     {
       QString errCause;
       QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer(
-        mOgrOrigLayer->datasetName(), mOgrOrigLayer->updateMode(), mOgrOrigLayer->options(), i, errCause,
+        mOgrOrigLayer->datasetName(),
+        mOgrOrigLayer->updateMode(),
+        mOgrOrigLayer->options(),
+        i,
+        errCause,
         // do not check timestamp beyond the first
         // layer
         !firstLayer
@@ -710,7 +739,10 @@ void QgsOgrProvider::afterRollbackToSavepoint( const QString &savepointName )
   mFieldsRequireReload = true;
 }
 
-void QgsOgrProvider::afterRollback() { mFieldsRequireReload = true; }
+void QgsOgrProvider::afterRollback()
+{
+  mFieldsRequireReload = true;
+}
 
 void QgsOgrProvider::setEncoding( const QString &e )
 {
@@ -1000,13 +1032,17 @@ void QgsOgrProvider::loadFields()
       typeName = OGR_GetFieldSubTypeName( ogrSubType );
 
     QgsField newField = QgsField(
-      name, varType,
+      name,
+      varType,
 #ifdef ANDROID
       typeName,
 #else
       textEncoding()->toUnicode( typeName.toStdString().c_str() ),
 #endif
-      width, prec, QString(), varSubType
+      width,
+      prec,
+      QString(),
+      varSubType
     );
 
     const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
@@ -1626,7 +1662,10 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
   }
 }
 
-void QgsOgrProvider::updateExtents() { invalidateCachedExtent( true ); }
+void QgsOgrProvider::updateExtents()
+{
+  invalidateCachedExtent( true );
+}
 
 void QgsOgrProvider::invalidateCachedExtent( bool bForceRecomputeExtent )
 {
@@ -1687,7 +1726,10 @@ QgsFields QgsOgrProvider::fields() const
 //TODO - add sanity check for shape file layers, to include checking to
 //       see if the .shp, .dbf, .shx files are all present and the layer
 //       actually has features
-bool QgsOgrProvider::isValid() const { return mValid; }
+bool QgsOgrProvider::isValid() const
+{
+  return mValid;
+}
 
 // Drivers may be more tolerant than we really wish (e.g. GeoPackage driver
 // may accept any geometry type)
@@ -3505,11 +3547,20 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   return true;
 }
 
-Qgis::VectorProviderCapabilities QgsOgrProvider::capabilities() const { return mCapabilities; }
+Qgis::VectorProviderCapabilities QgsOgrProvider::capabilities() const
+{
+  return mCapabilities;
+}
 
-Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditCapabilities() const { return mAttributeEditCapabilities; }
+Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditCapabilities() const
+{
+  return mAttributeEditCapabilities;
+}
 
-QgsAttributeList QgsOgrProvider::pkAttributeIndexes() const { return mPrimaryKeyAttrs; }
+QgsAttributeList QgsOgrProvider::pkAttributeIndexes() const
+{
+  return mPrimaryKeyAttrs;
+}
 
 QString QgsOgrProvider::geometryColumnName() const
 {
@@ -3706,11 +3757,20 @@ void QgsOgrProvider::computeCapabilities()
 }
 
 
-QString QgsOgrProvider::name() const { return TEXT_PROVIDER_KEY; }
+QString QgsOgrProvider::name() const
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsOgrProvider::providerKey() { return TEXT_PROVIDER_KEY; }
+QString QgsOgrProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsOgrProvider::description() const { return TEXT_PROVIDER_DESCRIPTION; }
+QString QgsOgrProvider::description() const
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
@@ -4195,7 +4255,10 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   return res;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const { return QgsOgrProviderUtils::quotedIdentifier( field, mGDALDriverName ); }
+QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
+{
+  return QgsOgrProviderUtils::quotedIdentifier( field, mGDALDriverName );
+}
 
 bool QgsOgrProvider::syncToDisc()
 {
@@ -4732,7 +4795,10 @@ Qgis::ProviderStyleStorageCapabilities QgsOgrProvider::styleStorageCapabilities(
   return storageCapabilities;
 }
 
-QString QgsOgrProvider::fileVectorFilters() const { return QgsOgrProviderUtils::fileVectorFilters(); }
+QString QgsOgrProvider::fileVectorFilters() const
+{
+  return QgsOgrProviderUtils::fileVectorFilters();
+}
 
 #undef TEXT_PROVIDER_KEY
 #undef TEXT_PROVIDER_DESCRIPTION

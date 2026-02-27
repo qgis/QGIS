@@ -31,7 +31,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey ) { return QgsProviderRegistry::instance()->createTransaction( providerKey, connString ); }
+QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
+{
+  return QgsProviderRegistry::instance()->createTransaction( providerKey, connString );
+}
 
 QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 {
@@ -62,9 +65,15 @@ QgsTransaction::QgsTransaction( const QString &connString )
   : mConnString( connString )
 {}
 
-QgsTransaction::~QgsTransaction() { setLayerTransactionIds( nullptr ); }
+QgsTransaction::~QgsTransaction()
+{
+  setLayerTransactionIds( nullptr );
+}
 
-QString QgsTransaction::connectionString() const { return mConnString; }
+QString QgsTransaction::connectionString() const
+{
+  return mConnString;
+}
 
 // For the needs of the OGR provider with GeoPackage datasources, remove
 // any reference to layers and filters in the connection string
@@ -200,7 +209,10 @@ bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
   return true;
 }
 
-void QgsTransaction::onLayerDeleted() { mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) ); }
+void QgsTransaction::onLayerDeleted()
+{
+  mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
+}
 
 void QgsTransaction::setLayerTransactionIds( QgsTransaction *transaction )
 {
@@ -267,4 +279,7 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
   return true;
 }
 
-void QgsTransaction::dirtyLastSavePoint() { mLastSavePointIsDirty = true; }
+void QgsTransaction::dirtyLastSavePoint()
+{
+  mLastSavePointIsDirty = true;
+}

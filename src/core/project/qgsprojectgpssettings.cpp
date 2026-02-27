@@ -132,15 +132,30 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
   return element;
 }
 
-bool QgsProjectGpsSettings::automaticallyAddTrackVertices() const { return mAutoAddTrackVertices; }
+bool QgsProjectGpsSettings::automaticallyAddTrackVertices() const
+{
+  return mAutoAddTrackVertices;
+}
 
-bool QgsProjectGpsSettings::automaticallyCommitFeatures() const { return mAutoCommitFeatures; }
+bool QgsProjectGpsSettings::automaticallyCommitFeatures() const
+{
+  return mAutoCommitFeatures;
+}
 
-bool QgsProjectGpsSettings::destinationFollowsActiveLayer() const { return mDestinationFollowsActiveLayer; }
+bool QgsProjectGpsSettings::destinationFollowsActiveLayer() const
+{
+  return mDestinationFollowsActiveLayer;
+}
 
-QgsVectorLayer *QgsProjectGpsSettings::destinationLayer() const { return mDestinationLayer.get(); }
+QgsVectorLayer *QgsProjectGpsSettings::destinationLayer() const
+{
+  return mDestinationLayer.get();
+}
 
-QMap<QString, QString> QgsProjectGpsSettings::destinationTimeStampFields() const { return mDestinationTimestampFields; }
+QMap<QString, QString> QgsProjectGpsSettings::destinationTimeStampFields() const
+{
+  return mDestinationTimestampFields;
+}
 
 QString QgsProjectGpsSettings::destinationTimeStampField() const
 {

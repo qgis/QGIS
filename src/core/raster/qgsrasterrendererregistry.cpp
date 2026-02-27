@@ -48,7 +48,10 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(
   , widgetCreateFunction( widgetFunction )
 {}
 
-QIcon QgsRasterRendererRegistryEntry::icon() { return QgsApplication::getThemeIcon( QString( "styleicons/%1.svg" ).arg( name ) ); }
+QIcon QgsRasterRendererRegistryEntry::icon()
+{
+  return QgsApplication::getThemeIcon( QString( "styleicons/%1.svg" ).arg( name ) );
+}
 
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
@@ -89,7 +92,10 @@ bool QgsRasterRendererRegistry::rendererData( const QString &rendererName, QgsRa
   return true;
 }
 
-QStringList QgsRasterRendererRegistry::renderersList() const { return mSortedEntries; }
+QStringList QgsRasterRendererRegistry::renderersList() const
+{
+  return mSortedEntries;
+}
 
 QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() const
 {

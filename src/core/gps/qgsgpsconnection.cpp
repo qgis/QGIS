@@ -75,7 +75,10 @@ QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   QObject::connect( this, &QgsGpsConnection::stateChanged, this, &QgsGpsConnection::onStateChanged );
 }
 
-QgsGpsConnection::~QgsGpsConnection() { cleanupSource(); }
+QgsGpsConnection::~QgsGpsConnection()
+{
+  cleanupSource();
+}
 
 bool QgsGpsConnection::connect()
 {
@@ -155,4 +158,7 @@ void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
   }
 }
 
-void QgsGpsConnection::clearLastGPSInformation() { mLastGPSInformation = QgsGpsInformation(); }
+void QgsGpsConnection::clearLastGPSInformation()
+{
+  mLastGPSInformation = QgsGpsInformation();
+}

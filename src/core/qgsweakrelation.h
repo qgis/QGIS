@@ -66,8 +66,16 @@ class CORE_EXPORT QgsWeakRelation
      * \since QGIS 3.30
      */
     QgsWeakRelation(
-      const QString &relationId, const QString &relationName, const Qgis::RelationshipStrength strength, const QString &referencingLayerId, const QString &referencingLayerName,
-      const QString &referencingLayerSource, const QString &referencingLayerProviderKey, const QString &referencedLayerId, const QString &referencedLayerName, const QString &referencedLayerSource,
+      const QString &relationId,
+      const QString &relationName,
+      const Qgis::RelationshipStrength strength,
+      const QString &referencingLayerId,
+      const QString &referencingLayerName,
+      const QString &referencingLayerSource,
+      const QString &referencingLayerProviderKey,
+      const QString &referencedLayerId,
+      const QString &referencedLayerName,
+      const QString &referencedLayerSource,
       const QString &referencedLayerProviderKey
     );
 

@@ -52,7 +52,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter() {}
+QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
+{}
 
 QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context )
 {
@@ -81,7 +82,10 @@ QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QStr
   return convert( QgsJsonUtils::parseJson( style ).toMap(), context );
 }
 
-QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() { qDeleteAll( mSources ); }
+QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter()
+{
+  qDeleteAll( mSources );
+}
 
 void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context )
 {
@@ -1919,7 +1923,15 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
       QString textAnchor;
 
       const QVariantMap conversionMap {
-        { u"center"_s, 4 }, { u"left"_s, 5 }, { u"right"_s, 3 }, { u"top"_s, 7 }, { u"bottom"_s, 1 }, { u"top-left"_s, 8 }, { u"top-right"_s, 6 }, { u"bottom-left"_s, 2 }, { u"bottom-right"_s, 0 },
+        { u"center"_s, 4 },
+        { u"left"_s, 5 },
+        { u"right"_s, 3 },
+        { u"top"_s, 7 },
+        { u"bottom"_s, 1 },
+        { u"top-left"_s, 8 },
+        { u"top-right"_s, 6 },
+        { u"bottom-left"_s, 2 },
+        { u"bottom-right"_s, 0 },
       };
 
       switch ( jsonTextAnchor.userType() )
@@ -2459,7 +2471,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
                       "%3, %4, %5, %6) "
       )
                       .arg(
-                        bz, tz, interpolateExpression( bz.toDouble(), tz.toDouble(), bcHue, tcHue, base, 1, &context ),
+                        bz,
+                        tz,
+                        interpolateExpression( bz.toDouble(), tz.toDouble(), bcHue, tcHue, base, 1, &context ),
                         interpolateExpression( bz.toDouble(), tz.toDouble(), bcSat, tcSat, base, 1, &context ),
                         interpolateExpression( bz.toDouble(), tz.toDouble(), bcLight, tcLight, base, 1, &context ),
                         interpolateExpression( bz.toDouble(), tz.toDouble(), bcAlpha, tcAlpha, base, 1, &context )
@@ -2476,7 +2490,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
              "%3, %4, %5, %6) "
         )
              .arg(
-               bz, tz,
+               bz,
+               tz,
                interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "hsl_hue" ), colorComponent.arg( topColorExpr ).arg( "hsl_hue" ), base, 1, &context ),
                interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "hsl_saturation" ), colorComponent.arg( topColorExpr ).arg( "hsl_saturation" ), base, 1, &context ),
                interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "lightness" ), colorComponent.arg( topColorExpr ).arg( "lightness" ), base, 1, &context ),
@@ -2546,7 +2561,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
       stops.last().toList().value( 0 ).toDouble(),     // zoomMax
       stops.value( 0 ).toList().value( 1 ),            // valueMin
       stops.last().toList().value( 1 ),                // valueMax
-      base, multiplier, &context
+      base,
+      multiplier,
+      &context
     );
   }
   else
@@ -2581,9 +2598,13 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
     double top = 0.0;
     const bool numeric = numericArgumentsOnly( bv, tv, bottom, top );
     scaleExpression = u"set_color_part(@symbol_color, 'alpha', %1)"_s.arg( interpolateExpression(
-      stops.value( 0 ).toList().value( 0 ).toDouble(), stops.last().toList().value( 0 ).toDouble(),
+      stops.value( 0 ).toList().value( 0 ).toDouble(),
+      stops.last().toList().value( 0 ).toDouble(),
       numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-      numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context
+      numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
+      base,
+      1,
+      &context
     ) );
   }
   else
@@ -2611,11 +2632,16 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                     "THEN set_color_part(@symbol_color, 'alpha', %3)"
     )
                     .arg(
-                      stops.value( i ).toList().value( 0 ).toString(), stops.value( i + 1 ).toList().value( 0 ).toString(),
+                      stops.value( i ).toList().value( 0 ).toString(),
+                      stops.value( i + 1 ).toList().value( 0 ).toString(),
                       interpolateExpression(
-                        stops.value( i ).toList().value( 0 ).toDouble(), stops.value( i + 1 ).toList().value( 0 ).toDouble(),
+                        stops.value( i ).toList().value( 0 ).toDouble(),
+                        stops.value( i + 1 ).toList().value( 0 ).toDouble(),
                         numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-                        numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context
+                        numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
+                        base,
+                        1,
+                        &context
                       )
                     );
   }
@@ -2645,12 +2671,22 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   {
     scaleExpression = u"array(%1,%2)"_s.arg(
       interpolateExpression(
-        stops.value( 0 ).toList().value( 0 ).toDouble(), stops.last().toList().value( 0 ).toDouble(), stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
-        stops.last().toList().value( 1 ).toList().value( 0 ), base, multiplier, &context
+        stops.value( 0 ).toList().value( 0 ).toDouble(),
+        stops.last().toList().value( 0 ).toDouble(),
+        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
+        stops.last().toList().value( 1 ).toList().value( 0 ),
+        base,
+        multiplier,
+        &context
       ),
       interpolateExpression(
-        stops.value( 0 ).toList().value( 0 ).toDouble(), stops.last().toList().value( 0 ).toDouble(), stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
-        stops.last().toList().value( 1 ).toList().value( 1 ), base, multiplier, &context
+        stops.value( 0 ).toList().value( 0 ).toDouble(),
+        stops.last().toList().value( 0 ).toDouble(),
+        stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
+        stops.last().toList().value( 1 ).toList().value( 1 ),
+        base,
+        multiplier,
+        &context
       )
     );
   }
@@ -2705,7 +2741,9 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
                     "THEN array(%3,%4)"
     )
                     .arg(
-                      bz.toString(), tz.toString(), interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, multiplier, &context ),
+                      bz.toString(),
+                      tz.toString(),
+                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, multiplier, &context ),
                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ), tv.toList().value( 1 ), base, multiplier, &context )
                     );
   }
@@ -4042,13 +4080,25 @@ QString QgsMapBoxGlStyleConverter::processLabelField( const QString &string, boo
   }
 }
 
-QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const { return mRenderer ? mRenderer->clone() : nullptr; }
+QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
+{
+  return mRenderer ? mRenderer->clone() : nullptr;
+}
 
-QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const { return mLabeling ? mLabeling->clone() : nullptr; }
+QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
+{
+  return mLabeling ? mLabeling->clone() : nullptr;
+}
 
-QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources() { return mSources; }
+QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources()
+{
+  return mSources;
+}
 
-QList<QgsMapBoxGlStyleRasterSubLayer> QgsMapBoxGlStyleConverter::rasterSubLayers() const { return mRasterSubLayers; }
+QList<QgsMapBoxGlStyleRasterSubLayer> QgsMapBoxGlStyleConverter::rasterSubLayers() const
+{
+  return mRasterSubLayers;
+}
 
 QList<QgsMapLayer *> QgsMapBoxGlStyleConverter::createSubLayers() const
 {
@@ -4163,19 +4213,40 @@ void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
   mWarnings << warning;
 }
 
-Qgis::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const { return mTargetUnit; }
+Qgis::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
+{
+  return mTargetUnit;
+}
 
-void QgsMapBoxGlStyleConversionContext::setTargetUnit( Qgis::RenderUnit targetUnit ) { mTargetUnit = targetUnit; }
+void QgsMapBoxGlStyleConversionContext::setTargetUnit( Qgis::RenderUnit targetUnit )
+{
+  mTargetUnit = targetUnit;
+}
 
-double QgsMapBoxGlStyleConversionContext::pixelSizeConversionFactor() const { return mSizeConversionFactor; }
+double QgsMapBoxGlStyleConversionContext::pixelSizeConversionFactor() const
+{
+  return mSizeConversionFactor;
+}
 
-void QgsMapBoxGlStyleConversionContext::setPixelSizeConversionFactor( double sizeConversionFactor ) { mSizeConversionFactor = sizeConversionFactor; }
+void QgsMapBoxGlStyleConversionContext::setPixelSizeConversionFactor( double sizeConversionFactor )
+{
+  mSizeConversionFactor = sizeConversionFactor;
+}
 
-QStringList QgsMapBoxGlStyleConversionContext::spriteCategories() const { return mSpriteImage.keys(); }
+QStringList QgsMapBoxGlStyleConversionContext::spriteCategories() const
+{
+  return mSpriteImage.keys();
+}
 
-QImage QgsMapBoxGlStyleConversionContext::spriteImage( const QString &category ) const { return mSpriteImage.contains( category ) ? mSpriteImage[category] : QImage(); }
+QImage QgsMapBoxGlStyleConversionContext::spriteImage( const QString &category ) const
+{
+  return mSpriteImage.contains( category ) ? mSpriteImage[category] : QImage();
+}
 
-QVariantMap QgsMapBoxGlStyleConversionContext::spriteDefinitions( const QString &category ) const { return mSpriteDefinitions.contains( category ) ? mSpriteDefinitions[category] : QVariantMap(); }
+QVariantMap QgsMapBoxGlStyleConversionContext::spriteDefinitions( const QString &category ) const
+{
+  return mSpriteDefinitions.contains( category ) ? mSpriteDefinitions[category] : QVariantMap();
+}
 
 void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QVariantMap &definitions, const QString &category )
 {
@@ -4188,9 +4259,15 @@ void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const Q
   setSprites( image, QgsJsonUtils::parseJson( definitions ).toMap(), category );
 }
 
-QString QgsMapBoxGlStyleConversionContext::layerId() const { return mLayerId; }
+QString QgsMapBoxGlStyleConversionContext::layerId() const
+{
+  return mLayerId;
+}
 
-void QgsMapBoxGlStyleConversionContext::setLayerId( const QString &value ) { mLayerId = value; }
+void QgsMapBoxGlStyleConversionContext::setLayerId( const QString &value )
+{
+  mLayerId = value;
+}
 
 //
 // QgsMapBoxGlStyleAbstractSource
@@ -4199,7 +4276,10 @@ QgsMapBoxGlStyleAbstractSource::QgsMapBoxGlStyleAbstractSource( const QString &n
   : mName( name )
 {}
 
-QString QgsMapBoxGlStyleAbstractSource::name() const { return mName; }
+QString QgsMapBoxGlStyleAbstractSource::name() const
+{
+  return mName;
+}
 
 QgsMapBoxGlStyleAbstractSource::~QgsMapBoxGlStyleAbstractSource() = default;
 
@@ -4211,7 +4291,10 @@ QgsMapBoxGlStyleRasterSource::QgsMapBoxGlStyleRasterSource( const QString &name 
   : QgsMapBoxGlStyleAbstractSource( name )
 {}
 
-Qgis::MapBoxGlStyleSourceType QgsMapBoxGlStyleRasterSource::type() const { return Qgis::MapBoxGlStyleSourceType::Raster; }
+Qgis::MapBoxGlStyleSourceType QgsMapBoxGlStyleRasterSource::type() const
+{
+  return Qgis::MapBoxGlStyleSourceType::Raster;
+}
 
 bool QgsMapBoxGlStyleRasterSource::setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context )
 {

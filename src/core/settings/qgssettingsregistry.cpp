@@ -28,7 +28,8 @@ QgsSettingsRegistry::QgsSettingsRegistry()
   , mSettingsRegistryChildList()
 {}
 
-QgsSettingsRegistry::~QgsSettingsRegistry() {}
+QgsSettingsRegistry::~QgsSettingsRegistry()
+{}
 
 bool QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
 {
@@ -59,7 +60,10 @@ void QgsSettingsRegistry::addSettingsEntryGroup( const QgsSettingsEntryGroup *se
   }
 }
 
-QList<const QgsSettingsEntryBase *> QgsSettingsRegistry::settingEntries() const { return mSettingsEntriesMap.values(); }
+QList<const QgsSettingsEntryBase *> QgsSettingsRegistry::settingEntries() const
+{
+  return mSettingsEntriesMap.values();
+}
 
 const QgsSettingsEntryBase *QgsSettingsRegistry::settingsEntry( const QString &key, bool searchChildRegistries ) const
 {
@@ -120,5 +124,8 @@ void QgsSettingsRegistry::removeSubRegistry( const QgsSettingsRegistry *settings
 }
 
 Q_NOWARN_DEPRECATED_PUSH
-QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const { return mSettingsRegistryChildList; }
+QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const
+{
+  return mSettingsRegistryChildList;
+}
 Q_NOWARN_DEPRECATED_POP

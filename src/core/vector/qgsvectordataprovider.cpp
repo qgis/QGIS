@@ -413,7 +413,10 @@ QString QgsVectorDataProvider::capabilitiesString() const
   return abilitiesList.join( ", "_L1 );
 }
 
-Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const { return Qgis::VectorDataProviderAttributeEditCapabilities(); }
+Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
+{
+  return Qgis::VectorDataProviderAttributeEditCapabilities();
+}
 
 int QgsVectorDataProvider::fieldNameIndex( const QString &fieldName ) const
 {
@@ -753,7 +756,10 @@ QVariant QgsVectorDataProvider::convertValue( QMetaType::Type type, const QStrin
   return v;
 }
 
-QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString &value ) { return convertValue( QgsVariantUtils::variantTypeToMetaType( type ), value ); }
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString &value )
+{
+  return convertValue( QgsVariantUtils::variantTypeToMetaType( type ), value );
+}
 
 QgsTransaction *QgsVectorDataProvider::transaction() const
 {
@@ -762,9 +768,15 @@ QgsTransaction *QgsVectorDataProvider::transaction() const
   return nullptr;
 }
 
-static bool _compareEncodings( const QString &s1, const QString &s2 ) { return s1.toLower() < s2.toLower(); }
+static bool _compareEncodings( const QString &s1, const QString &s2 )
+{
+  return s1.toLower() < s2.toLower();
+}
 
-static bool _removeDuplicateEncodings( const QString &s1, const QString &s2 ) { return s1.compare( s2, Qt::CaseInsensitive ) == 0; }
+static bool _removeDuplicateEncodings( const QString &s1, const QString &s2 )
+{
+  return s1.compare( s2, Qt::CaseInsensitive ) == 0;
+}
 
 QStringList QgsVectorDataProvider::availableEncodings()
 {

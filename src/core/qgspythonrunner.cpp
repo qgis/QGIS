@@ -25,7 +25,10 @@ QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
 ///////////////////////////
 // static methods
 
-bool QgsPythonRunner::isValid() { return nullptr != sInstance; }
+bool QgsPythonRunner::isValid()
+{
+  return nullptr != sInstance;
+}
 
 bool QgsPythonRunner::run( const QString &command, const QString &messageOnError )
 {

@@ -34,9 +34,15 @@ using namespace Qt::StringLiterals;
 // QgsBookMark
 //
 
-QString QgsBookmark::id() const { return mId; }
+QString QgsBookmark::id() const
+{
+  return mId;
+}
 
-void QgsBookmark::setId( const QString &id ) { mId = id; }
+void QgsBookmark::setId( const QString &id )
+{
+  mId = id;
+}
 
 QgsBookmark QgsBookmark::fromXml( const QDomElement &element, const QDomDocument & )
 {
@@ -69,23 +75,50 @@ bool QgsBookmark::operator==( const QgsBookmark &other ) const
   return mId == other.mId && mName == other.mName && mExtent == other.mExtent && mGroup == other.mGroup && qgsDoubleNear( mRotation, other.mRotation );
 }
 
-bool QgsBookmark::operator!=( const QgsBookmark &other ) const { return !( *this == other ); }
+bool QgsBookmark::operator!=( const QgsBookmark &other ) const
+{
+  return !( *this == other );
+}
 
-QString QgsBookmark::name() const { return mName; }
+QString QgsBookmark::name() const
+{
+  return mName;
+}
 
-void QgsBookmark::setName( const QString &name ) { mName = name; }
+void QgsBookmark::setName( const QString &name )
+{
+  mName = name;
+}
 
-QString QgsBookmark::group() const { return mGroup; }
+QString QgsBookmark::group() const
+{
+  return mGroup;
+}
 
-void QgsBookmark::setGroup( const QString &group ) { mGroup = group; }
+void QgsBookmark::setGroup( const QString &group )
+{
+  mGroup = group;
+}
 
-QgsReferencedRectangle QgsBookmark::extent() const { return mExtent; }
+QgsReferencedRectangle QgsBookmark::extent() const
+{
+  return mExtent;
+}
 
-void QgsBookmark::setExtent( const QgsReferencedRectangle &extent ) { mExtent = extent; }
+void QgsBookmark::setExtent( const QgsReferencedRectangle &extent )
+{
+  mExtent = extent;
+}
 
-double QgsBookmark::rotation() const { return mRotation; }
+double QgsBookmark::rotation() const
+{
+  return mRotation;
+}
 
-void QgsBookmark::setRotation( double rotation ) { mRotation = rotation; }
+void QgsBookmark::setRotation( double rotation )
+{
+  mRotation = rotation;
+}
 
 
 //
@@ -105,7 +138,10 @@ QgsBookmarkManager::QgsBookmarkManager( QObject *parent )
   // we defer actually loading bookmarks until initialize() is called..
 }
 
-QgsBookmarkManager::~QgsBookmarkManager() { store(); }
+QgsBookmarkManager::~QgsBookmarkManager()
+{
+  store();
+}
 
 QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
 {
@@ -216,7 +252,10 @@ void QgsBookmarkManager::clear()
   }
 }
 
-QStringList QgsBookmarkManager::groups() const { return mGroups; }
+QStringList QgsBookmarkManager::groups() const
+{
+  return mGroups;
+}
 
 void QgsBookmarkManager::renameGroup( const QString &oldName, const QString &newName )
 {
@@ -230,7 +269,10 @@ void QgsBookmarkManager::renameGroup( const QString &oldName, const QString &new
   }
 }
 
-QList<QgsBookmark> QgsBookmarkManager::bookmarks() const { return mBookmarks; }
+QList<QgsBookmark> QgsBookmarkManager::bookmarks() const
+{
+  return mBookmarks;
+}
 
 QgsBookmark QgsBookmarkManager::bookmarkById( const QString &id ) const
 {

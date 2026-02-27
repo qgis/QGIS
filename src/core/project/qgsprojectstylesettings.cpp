@@ -108,7 +108,10 @@ void QgsProjectStyleSettings::setDefaultSymbol( Qgis::SymbolType symbolType, Qgs
   }
 }
 
-QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr; }
+QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const
+{
+  return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr;
+}
 
 void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )
 {
@@ -120,7 +123,10 @@ void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )
   makeDirty();
 }
 
-QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const { return mDefaultTextFormat; }
+QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const
+{
+  return mDefaultTextFormat;
+}
 
 void QgsProjectStyleSettings::setDefaultTextFormat( const QgsTextFormat &textFormat )
 {
@@ -208,7 +214,10 @@ void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
   emit projectStyleChanged();
 }
 
-QgsStyle *QgsProjectStyleSettings::projectStyle() { return mProjectStyle; }
+QgsStyle *QgsProjectStyleSettings::projectStyle()
+{
+  return mProjectStyle;
+}
 
 bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags )
 {
@@ -499,7 +508,10 @@ void QgsProjectStyleSettings::clearStyles()
   mStyles.clear();
 }
 
-QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel() { return mCombinedStyleModel; }
+QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
+{
+  return mCombinedStyleModel;
+}
 
 void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 {
@@ -518,7 +530,10 @@ void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 #endif
 }
 
-Qgis::ColorModel QgsProjectStyleSettings::colorModel() const { return mColorModel; }
+Qgis::ColorModel QgsProjectStyleSettings::colorModel() const
+{
+  return mColorModel;
+}
 
 void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
 {
@@ -564,7 +579,10 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
     clearIccProfile();
 }
 
-QColorSpace QgsProjectStyleSettings::colorSpace() const { return mColorSpace; }
+QColorSpace QgsProjectStyleSettings::colorSpace() const
+{
+  return mColorSpace;
+}
 
 void QgsProjectStyleSettings::makeDirty()
 {
@@ -745,15 +763,30 @@ void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved( const QString 
     beginRemoveRows( QModelIndex(), row, row );
 }
 
-void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & ) { endInsertRows(); }
+void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & )
+{
+  endInsertRows();
+}
 
-void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & ) { endRemoveRows(); }
+void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & )
+{
+  endRemoveRows();
+}
 
-void QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed() { beginRemoveRows( QModelIndex(), 0, 0 ); }
+void QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed()
+{
+  beginRemoveRows( QModelIndex(), 0, 0 );
+}
 
-void QgsProjectStyleDatabaseModel::projectStyleDestroyed() { endRemoveRows(); }
+void QgsProjectStyleDatabaseModel::projectStyleDestroyed()
+{
+  endRemoveRows();
+}
 
-void QgsProjectStyleDatabaseModel::projectStyleChanged() { setProjectStyle( mSettings->projectStyle() ); }
+void QgsProjectStyleDatabaseModel::projectStyleChanged()
+{
+  setProjectStyle( mSettings->projectStyle() );
+}
 
 //
 // QgsProjectStyleDatabaseProxyModel
@@ -782,7 +815,10 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
   return true;
 }
 
-QgsProjectStyleDatabaseProxyModel::Filters QgsProjectStyleDatabaseProxyModel::filters() const { return mFilters; }
+QgsProjectStyleDatabaseProxyModel::Filters QgsProjectStyleDatabaseProxyModel::filters() const
+{
+  return mFilters;
+}
 
 void QgsProjectStyleDatabaseProxyModel::setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters )
 {

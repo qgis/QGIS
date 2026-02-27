@@ -28,7 +28,10 @@ QgsAbstractSensor::QgsAbstractSensor( QObject *parent )
   , mId( QUuid::createUuid().toString() )
 {}
 
-QString QgsAbstractSensor::name() const { return mName; }
+QString QgsAbstractSensor::name() const
+{
+  return mName;
+}
 
 void QgsAbstractSensor::setName( const QString &name )
 {
@@ -39,7 +42,10 @@ void QgsAbstractSensor::setName( const QString &name )
   emit nameChanged();
 }
 
-Qgis::DeviceConnectionStatus QgsAbstractSensor::status() const { return mStatus; }
+Qgis::DeviceConnectionStatus QgsAbstractSensor::status() const
+{
+  return mStatus;
+}
 
 void QgsAbstractSensor::setStatus( Qgis::DeviceConnectionStatus status )
 {
@@ -50,7 +56,10 @@ void QgsAbstractSensor::setStatus( Qgis::DeviceConnectionStatus status )
   emit statusChanged();
 }
 
-QgsAbstractSensor::SensorData QgsAbstractSensor::data() const { return mData; }
+QgsAbstractSensor::SensorData QgsAbstractSensor::data() const
+{
+  return mData;
+}
 
 void QgsAbstractSensor::setData( const QgsAbstractSensor::SensorData &data )
 {
@@ -58,7 +67,10 @@ void QgsAbstractSensor::setData( const QgsAbstractSensor::SensorData &data )
   emit dataChanged();
 }
 
-QString QgsAbstractSensor::errorString() const { return mErrorString; }
+QString QgsAbstractSensor::errorString() const
+{
+  return mErrorString;
+}
 
 void QgsAbstractSensor::connectSensor()
 {
@@ -72,9 +84,15 @@ void QgsAbstractSensor::disconnectSensor()
   setStatus( Qgis::DeviceConnectionStatus::Disconnected );
 }
 
-bool QgsAbstractSensor::writePropertiesToElement( QDomElement &, QDomDocument & ) const { return true; }
+bool QgsAbstractSensor::writePropertiesToElement( QDomElement &, QDomDocument & ) const
+{
+  return true;
+}
 
-bool QgsAbstractSensor::readPropertiesFromElement( const QDomElement &, const QDomDocument & ) { return true; }
+bool QgsAbstractSensor::readPropertiesFromElement( const QDomElement &, const QDomDocument & )
+{
+  return true;
+}
 
 bool QgsAbstractSensor::writeXml( QDomElement &parentElement, QDomDocument &document ) const
 {

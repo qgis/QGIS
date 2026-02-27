@@ -56,7 +56,10 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
   return true;
 }
 
-QSet<QgsVectorLayer *> QgsTransactionGroup::layers() const { return mLayers; }
+QSet<QgsVectorLayer *> QgsTransactionGroup::layers() const
+{
+  return mLayers;
+}
 
 bool QgsTransactionGroup::modified() const
 {
@@ -99,7 +102,10 @@ void QgsTransactionGroup::onEditingStarted()
   }
 }
 
-void QgsTransactionGroup::onLayerDeleted() { mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) ); }
+void QgsTransactionGroup::onLayerDeleted()
+{
+  mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
+}
 
 void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
 {
@@ -187,8 +193,17 @@ void QgsTransactionGroup::restartTransaction( const QgsVectorLayer *layer )
   QTimer::singleShot( 0, layer, &QgsVectorLayer::startEditing );
 }
 
-QString QgsTransactionGroup::providerKey() const { return mProviderKey; }
+QString QgsTransactionGroup::providerKey() const
+{
+  return mProviderKey;
+}
 
-bool QgsTransactionGroup::isEmpty() const { return mLayers.isEmpty(); }
+bool QgsTransactionGroup::isEmpty() const
+{
+  return mLayers.isEmpty();
+}
 
-QString QgsTransactionGroup::connString() const { return mConnString; }
+QString QgsTransactionGroup::connString() const
+{
+  return mConnString;
+}

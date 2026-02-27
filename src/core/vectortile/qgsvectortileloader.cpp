@@ -166,7 +166,10 @@ void QgsVectorTileLoader::canceled()
   mEventLoop->quit();
 }
 
-QString QgsVectorTileLoader::error() const { return mError; }
+QString QgsVectorTileLoader::error() const
+{
+  return mError;
+}
 
 //////
 

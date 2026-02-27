@@ -31,13 +31,25 @@ using namespace Qt::StringLiterals;
 #define TEXT_PROVIDER_KEY u"mesh_memory"_s
 #define TEXT_PROVIDER_DESCRIPTION u"Mesh memory provider"_s
 
-bool QgsMeshMemoryDataProvider::isValid() const { return true; }
+bool QgsMeshMemoryDataProvider::isValid() const
+{
+  return true;
+}
 
-QString QgsMeshMemoryDataProvider::name() const { return TEXT_PROVIDER_KEY; }
+QString QgsMeshMemoryDataProvider::name() const
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsMeshMemoryDataProvider::description() const { return TEXT_PROVIDER_DESCRIPTION; }
+QString QgsMeshMemoryDataProvider::description() const
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
 
-QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const { return QgsCoordinateReferenceSystem(); }
+QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
 
 QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
@@ -53,9 +65,15 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const 
   temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
 }
 
-QString QgsMeshMemoryDataProvider::providerKey() { return TEXT_PROVIDER_KEY; }
+QString QgsMeshMemoryDataProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsMeshMemoryDataProvider::providerDescription() { return TEXT_PROVIDER_DESCRIPTION; }
+QString QgsMeshMemoryDataProvider::providerDescription()
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
 
 bool QgsMeshMemoryDataProvider::splitMeshSections( const QString &uri )
 {
@@ -341,11 +359,20 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
   }
 }
 
-int QgsMeshMemoryDataProvider::vertexCount() const { return mVertices.size(); }
+int QgsMeshMemoryDataProvider::vertexCount() const
+{
+  return mVertices.size();
+}
 
-int QgsMeshMemoryDataProvider::faceCount() const { return mFaces.size(); }
+int QgsMeshMemoryDataProvider::faceCount() const
+{
+  return mFaces.size();
+}
 
-int QgsMeshMemoryDataProvider::edgeCount() const { return mEdges.size(); }
+int QgsMeshMemoryDataProvider::edgeCount() const
+{
+  return mEdges.size();
+}
 
 void QgsMeshMemoryDataProvider::populateMesh( QgsMesh *mesh ) const
 {
@@ -357,7 +384,10 @@ void QgsMeshMemoryDataProvider::populateMesh( QgsMesh *mesh ) const
   }
 }
 
-QgsRectangle QgsMeshMemoryDataProvider::extent() const { return calculateExtent(); }
+QgsRectangle QgsMeshMemoryDataProvider::extent() const
+{
+  return calculateExtent();
+}
 
 bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
 {
@@ -409,9 +439,15 @@ bool QgsMeshMemoryDataProvider::removeDatasetGroup( int index )
   }
 }
 
-QStringList QgsMeshMemoryDataProvider::extraDatasets() const { return mExtraDatasetUris; }
+QStringList QgsMeshMemoryDataProvider::extraDatasets() const
+{
+  return mExtraDatasetUris;
+}
 
-int QgsMeshMemoryDataProvider::datasetGroupCount() const { return mDatasetGroups.count(); }
+int QgsMeshMemoryDataProvider::datasetGroupCount() const
+{
+  return mDatasetGroups.count();
+}
 
 int QgsMeshMemoryDataProvider::datasetCount( int groupIndex ) const
 {
@@ -520,7 +556,11 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::areFacesActive( QgsMeshDatasetIndex 
 
 
 bool QgsMeshMemoryDataProvider::persistDatasetGroup(
-  const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive,
+  const QString &outputFilePath,
+  const QString &outputDriver,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
   const QVector<double> &times
 )
 {
@@ -569,14 +609,20 @@ QgsMeshMemoryProviderMetadata::QgsMeshMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription() )
 {}
 
-QIcon QgsMeshMemoryProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconMeshLayer.svg"_s ); }
+QIcon QgsMeshMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconMeshLayer.svg"_s );
+}
 
 QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMeshMemoryDataProvider( uri, options, flags );
 }
 
-QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Mesh }; }
+QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Mesh };
+}
 
 #undef TEXT_PROVIDER_KEY
 #undef TEXT_PROVIDER_DESCRIPTION

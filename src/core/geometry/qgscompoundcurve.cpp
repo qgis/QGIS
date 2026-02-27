@@ -35,9 +35,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCompoundCurve::QgsCompoundCurve() { mWkbType = Qgis::WkbType::CompoundCurve; }
+QgsCompoundCurve::QgsCompoundCurve()
+{
+  mWkbType = Qgis::WkbType::CompoundCurve;
+}
 
-QgsCompoundCurve::~QgsCompoundCurve() { clear(); }
+QgsCompoundCurve::~QgsCompoundCurve()
+{
+  clear();
+}
 
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
@@ -77,9 +83,15 @@ int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) con
   return 0;
 }
 
-QString QgsCompoundCurve::geometryType() const { return u"CompoundCurve"_s; }
+QString QgsCompoundCurve::geometryType() const
+{
+  return u"CompoundCurve"_s;
+}
 
-int QgsCompoundCurve::dimension() const { return 1; }
+int QgsCompoundCurve::dimension() const
+{
+  return 1;
+}
 
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve )
   : QgsCurve( curve )
@@ -106,7 +118,10 @@ QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
   return *this;
 }
 
-QgsCompoundCurve *QgsCompoundCurve::clone() const { return new QgsCompoundCurve( *this ); }
+QgsCompoundCurve *QgsCompoundCurve::clone() const
+{
+  return new QgsCompoundCurve( *this );
+}
 
 void QgsCompoundCurve::clear()
 {

@@ -79,7 +79,10 @@ Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
 %End
   public:
     static QgsTextDocumentMetrics calculateMetrics(
-      const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+      const QgsTextDocument &document,
+      const QgsTextFormat &format,
+      const QgsRenderContext &context,
+      double scaleFactor = 1.0,
       const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext()
     );
 %Docstring

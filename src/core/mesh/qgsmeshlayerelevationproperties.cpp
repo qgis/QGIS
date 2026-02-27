@@ -42,7 +42,10 @@ QgsMeshLayerElevationProperties::QgsMeshLayerElevationProperties( QObject *paren
 
 QgsMeshLayerElevationProperties::~QgsMeshLayerElevationProperties() = default;
 
-bool QgsMeshLayerElevationProperties::hasElevation() const { return true; }
+bool QgsMeshLayerElevationProperties::hasElevation() const
+{
+  return true;
+}
 
 QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -302,7 +305,10 @@ QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer *
   BUILTIN_UNREACHABLE
 }
 
-bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return true; }
+bool QgsMeshLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return true;
+}
 
 QgsMapLayerElevationProperties::Flags QgsMeshLayerElevationProperties::flags() const
 {
@@ -318,7 +324,10 @@ QgsMapLayerElevationProperties::Flags QgsMeshLayerElevationProperties::flags() c
   return QgsMapLayerElevationProperties::Flags();
 }
 
-Qgis::MeshElevationMode QgsMeshLayerElevationProperties::mode() const { return mMode; }
+Qgis::MeshElevationMode QgsMeshLayerElevationProperties::mode() const
+{
+  return mMode;
+}
 
 void QgsMeshLayerElevationProperties::setMode( Qgis::MeshElevationMode mode )
 {
@@ -329,7 +338,10 @@ void QgsMeshLayerElevationProperties::setMode( Qgis::MeshElevationMode mode )
   emit changed();
 }
 
-QgsDoubleRange QgsMeshLayerElevationProperties::fixedRange() const { return mFixedRange; }
+QgsDoubleRange QgsMeshLayerElevationProperties::fixedRange() const
+{
+  return mFixedRange;
+}
 
 void QgsMeshLayerElevationProperties::setFixedRange( const QgsDoubleRange &range )
 {
@@ -340,7 +352,10 @@ void QgsMeshLayerElevationProperties::setFixedRange( const QgsDoubleRange &range
   emit changed();
 }
 
-QMap<int, QgsDoubleRange> QgsMeshLayerElevationProperties::fixedRangePerGroup() const { return mRangePerGroup; }
+QMap<int, QgsDoubleRange> QgsMeshLayerElevationProperties::fixedRangePerGroup() const
+{
+  return mRangePerGroup;
+}
 
 void QgsMeshLayerElevationProperties::setFixedRangePerGroup( const QMap<int, QgsDoubleRange> &ranges )
 {
@@ -351,7 +366,10 @@ void QgsMeshLayerElevationProperties::setFixedRangePerGroup( const QMap<int, Qgs
   emit changed();
 }
 
-QgsLineSymbol *QgsMeshLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
+QgsLineSymbol *QgsMeshLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
 
 void QgsMeshLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -360,7 +378,10 @@ void QgsMeshLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbo
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsMeshLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
+QgsFillSymbol *QgsMeshLayerElevationProperties::profileFillSymbol() const
+{
+  return mProfileFillSymbol.get();
+}
 
 void QgsMeshLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -379,7 +400,10 @@ void QgsMeshLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceS
   emit profileRenderingPropertyChanged();
 }
 
-double QgsMeshLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
+double QgsMeshLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
 
 void QgsMeshLayerElevationProperties::setElevationLimit( double limit )
 {

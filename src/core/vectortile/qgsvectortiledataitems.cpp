@@ -59,11 +59,20 @@ QgsVectorTileLayerItem::QgsVectorTileLayerItem( QgsDataItem *parent, QString nam
 
 // ---------------------------------------------------------------------------
 
-QString QgsVectorTileDataItemProvider::name() { return u"Vector Tiles"_s; }
+QString QgsVectorTileDataItemProvider::name()
+{
+  return u"Vector Tiles"_s;
+}
 
-QString QgsVectorTileDataItemProvider::dataProviderKey() const { return u"vectortile"_s; }
+QString QgsVectorTileDataItemProvider::dataProviderKey() const
+{
+  return u"vectortile"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
+Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::NetworkSources;
+}
 
 QgsDataItem *QgsVectorTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

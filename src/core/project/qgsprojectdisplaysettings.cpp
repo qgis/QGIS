@@ -70,7 +70,10 @@ void QgsProjectDisplaySettings::setBearingFormat( QgsBearingNumericFormat *forma
   emit bearingFormatChanged();
 }
 
-const QgsBearingNumericFormat *QgsProjectDisplaySettings::bearingFormat() const { return mBearingFormat.get(); }
+const QgsBearingNumericFormat *QgsProjectDisplaySettings::bearingFormat() const
+{
+  return mBearingFormat.get();
+}
 
 void QgsProjectDisplaySettings::setGeographicCoordinateFormat( QgsGeographicCoordinateNumericFormat *format )
 {
@@ -78,7 +81,10 @@ void QgsProjectDisplaySettings::setGeographicCoordinateFormat( QgsGeographicCoor
   emit geographicCoordinateFormatChanged();
 }
 
-const QgsGeographicCoordinateNumericFormat *QgsProjectDisplaySettings::geographicCoordinateFormat() const { return mGeographicCoordinateFormat.get(); }
+const QgsGeographicCoordinateNumericFormat *QgsProjectDisplaySettings::geographicCoordinateFormat() const
+{
+  return mGeographicCoordinateFormat.get();
+}
 
 void QgsProjectDisplaySettings::setCoordinateType( Qgis::CoordinateDisplayType type )
 {

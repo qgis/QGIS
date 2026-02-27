@@ -190,7 +190,10 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRen
     mFeatures << label;
 }
 
-void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &geometry ) { mLabelClipFeatureGeom = geometry; }
+void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &geometry )
+{
+  mLabelClipFeatureGeom = geometry;
+}
 
 QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {

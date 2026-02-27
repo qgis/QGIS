@@ -258,7 +258,10 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   return false;
 }
 
-QString QgsFontUtils::standardTestFontFamily() { return u"QGIS Vera Sans"_s; }
+QString QgsFontUtils::standardTestFontFamily()
+{
+  return u"QGIS Vera Sans"_s;
+}
 
 bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 {

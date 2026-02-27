@@ -369,8 +369,7 @@ class CORE_EXPORT QgsArrowIterator
      * \throws QgsException if one or more attribute fields is of an unsupported type.
      */
     static QgsArrowSchema inferSchema(
-      const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-      const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
+      const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
     ) SIP_THROW( QgsException );
 
   private:

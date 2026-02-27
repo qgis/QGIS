@@ -186,7 +186,10 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
-bool QgsAbstractFeatureIterator::compileFailed() const { return mCompileFailed; }
+bool QgsAbstractFeatureIterator::compileFailed() const
+{
+  return mCompileFailed;
+}
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
@@ -252,7 +255,8 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return false;
 }
 
-void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * ) {}
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
+{}
 
 ///////
 
@@ -269,4 +273,7 @@ QgsFeatureIterator &QgsFeatureIterator::operator=( const QgsFeatureIterator &oth
   return *this;
 }
 
-bool QgsFeatureIterator::isValid() const { return mIter && mIter->isValid(); }
+bool QgsFeatureIterator::isValid() const
+{
+  return mIter && mIter->isValid();
+}

@@ -253,7 +253,10 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   return nullptr;
 }
 
-QgsProviderMetadata *QgsMapLayer::providerMetadata() const { return QgsProviderRegistry::instance()->providerMetadata( providerType() ); }
+QgsProviderMetadata *QgsMapLayer::providerMetadata() const
+{
+  return QgsProviderRegistry::instance()->providerMetadata( providerType() );
+}
 
 void QgsMapLayer::setShortName( const QString &shortName )
 {
@@ -2889,7 +2892,10 @@ void QgsMapLayer::emitStyleChanged()
     emit styleChanged();
 }
 
-void QgsMapLayer::setExtent( const QgsRectangle &extent ) { updateExtent( extent ); }
+void QgsMapLayer::setExtent( const QgsRectangle &extent )
+{
+  updateExtent( extent );
+}
 
 void QgsMapLayer::setExtent3D( const QgsBox3D &extent )
 {

@@ -501,7 +501,11 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.6
      */
     static QgsNetworkReplyContent blockingPost(
-      QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr,
+      QNetworkRequest &request,
+      const QByteArray &data,
+      const QString &authCfg = QString(),
+      bool forceRefresh = false,
+      QgsFeedback *feedback = nullptr,
       Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags()
     );
 

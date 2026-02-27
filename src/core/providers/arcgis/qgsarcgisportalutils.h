@@ -55,8 +55,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \since QGIS 3.24
      */
     static QVariantMap retrieveUserInfo(
-      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
-      QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString()
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString()
     );
 
     /**
@@ -77,8 +83,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo(
-      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders,
-      QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString()
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString()
     ) SIP_DEPRECATED;
 
     /**
@@ -99,8 +111,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \since QGIS 3.24
      */
     static QVariantList retrieveUserGroups(
-      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
-      QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString()
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString()
     );
 
     /**
@@ -121,8 +139,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveUserGroups(
-      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders,
-      QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString()
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString()
     ) SIP_DEPRECATED;
 
     /**
@@ -142,8 +166,15 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \since QGIS 3.24
      */
     static QVariantList retrieveGroupContent(
-      const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
-      QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString()
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
     );
 
     /**
@@ -163,8 +194,15 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupContent(
-      const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders,
-      QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString()
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = nullptr,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
     ) SIP_DEPRECATED;
 
     /**
@@ -185,8 +223,16 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \since QGIS 3.24
      */
     static QVariantList retrieveGroupItemsOfType(
-      const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList< int > &itemTypes, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT,
-      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString()
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      const QList< int > &itemTypes,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
     );
 
     /**
@@ -207,8 +253,16 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupItemsOfType(
-      const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList< int > &itemTypes, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT,
-      const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString()
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      const QList< int > &itemTypes,
+      QString &errorTitle SIP_OUT,
+      QString &errorText SIP_OUT,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = nullptr,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
     ) SIP_DEPRECATED;
 
   private:

@@ -27,12 +27,10 @@
 
 QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
   : QgsDataCollectionItem( parent, name, path, providerKey )
-{
-}
+{}
 
 QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
-{
-}
+{}
 
 QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const
 {

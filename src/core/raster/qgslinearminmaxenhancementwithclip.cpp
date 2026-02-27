@@ -42,4 +42,7 @@ int QgsLinearMinMaxEnhancementWithClip::enhance( double value )
   return myStretchedValue;
 }
 
-bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double value ) { return !( value < mMinimumValue || value > mMaximumValue ); }
+bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double value )
+{
+  return !( value < mMinimumValue || value > mMaximumValue );
+}

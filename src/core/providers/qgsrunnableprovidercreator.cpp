@@ -47,4 +47,7 @@ void QgsRunnableProviderCreator::run()
   emit providerCreated( mDataProvider->isValid(), mLayerId );
 }
 
-QgsDataProvider *QgsRunnableProviderCreator::dataProvider() { return mDataProvider.release(); }
+QgsDataProvider *QgsRunnableProviderCreator::dataProvider()
+{
+  return mDataProvider.release();
+}

@@ -77,8 +77,13 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.6
      */
     static QgsRasterBlock *exportRasterBlock(
-      const QgsMeshLayer &layer, const QgsMeshDatasetIndex &datasetIndex, const QgsCoordinateReferenceSystem &destinationCrs, const QgsCoordinateTransformContext &transformContext,
-      double mapUnitsPerPixel, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr
+      const QgsMeshLayer &layer,
+      const QgsMeshDatasetIndex &datasetIndex,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QgsCoordinateTransformContext &transformContext,
+      double mapUnitsPerPixel,
+      const QgsRectangle &extent,
+      QgsRasterBlockFeedback *feedback = nullptr
     ) SIP_FACTORY;
 
 
@@ -98,8 +103,14 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.18
      */
     static QgsRasterBlock *exportRasterBlock(
-      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetValues, const QgsMeshDataBlock &activeFlags, const QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsCoordinateTransform &transform, double mapUnitsPerPixel, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetValues,
+      const QgsMeshDataBlock &activeFlags,
+      const QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsCoordinateTransform &transform,
+      double mapUnitsPerPixel,
+      const QgsRectangle &extent,
+      QgsRasterBlockFeedback *feedback = nullptr
     ) SIP_SKIP;
 
     /**

@@ -48,7 +48,8 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
   , mModelGroupId( groupId )
 {}
 
-void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & ) {}
+void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
+{}
 
 Qgis::ProcessingAlgorithmFlags QgsProcessingModelAlgorithm::flags() const
 {
@@ -67,17 +68,35 @@ Qgis::ProcessingAlgorithmFlags QgsProcessingModelAlgorithm::flags() const
   return res;
 }
 
-QString QgsProcessingModelAlgorithm::name() const { return mModelName; }
+QString QgsProcessingModelAlgorithm::name() const
+{
+  return mModelName;
+}
 
-QString QgsProcessingModelAlgorithm::displayName() const { return mModelName; }
+QString QgsProcessingModelAlgorithm::displayName() const
+{
+  return mModelName;
+}
 
-QString QgsProcessingModelAlgorithm::group() const { return mModelGroup; }
+QString QgsProcessingModelAlgorithm::group() const
+{
+  return mModelGroup;
+}
 
-QString QgsProcessingModelAlgorithm::groupId() const { return mModelGroupId; }
+QString QgsProcessingModelAlgorithm::groupId() const
+{
+  return mModelGroupId;
+}
 
-QIcon QgsProcessingModelAlgorithm::icon() const { return QgsApplication::getThemeIcon( u"/processingModel.svg"_s ); }
+QIcon QgsProcessingModelAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/processingModel.svg"_s );
+}
 
-QString QgsProcessingModelAlgorithm::svgIconPath() const { return QgsApplication::iconPath( u"processingModel.svg"_s ); }
+QString QgsProcessingModelAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( u"processingModel.svg"_s );
+}
 
 QString QgsProcessingModelAlgorithm::shortHelpString() const
 {
@@ -87,13 +106,18 @@ QString QgsProcessingModelAlgorithm::shortHelpString() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
-QString QgsProcessingModelAlgorithm::shortDescription() const { return mHelpContent.value( u"SHORT_DESCRIPTION"_s ).toString(); }
+QString QgsProcessingModelAlgorithm::shortDescription() const
+{
+  return mHelpContent.value( u"SHORT_DESCRIPTION"_s ).toString();
+}
 
-QString QgsProcessingModelAlgorithm::helpUrl() const { return mHelpContent.value( u"HELP_URL"_s ).toString(); }
+QString QgsProcessingModelAlgorithm::helpUrl() const
+{
+  return mHelpContent.value( u"HELP_URL"_s ).toString();
+}
 
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm(
-  const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error,
-  const QgsProcessingContext *context
+  const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error, const QgsProcessingContext *context
 ) const
 {
   error.clear();
@@ -706,9 +730,15 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   return mResults;
 }
 
-QString QgsProcessingModelAlgorithm::sourceFilePath() const { return mSourceFile; }
+QString QgsProcessingModelAlgorithm::sourceFilePath() const
+{
+  return mSourceFile;
+}
 
-void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile ) { mSourceFile = sourceFile; }
+void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
+{
+  mSourceFile = sourceFile;
+}
 
 bool QgsProcessingModelAlgorithm::modelNameMatchesFilePath() const
 {
@@ -1144,7 +1174,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
   // layer sources
   sources = availableSourcesForChild(
-    childId, QStringList() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterRasterLayer::typeName(),
+    childId,
+    QStringList() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterRasterLayer::typeName(),
     QStringList() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputMapLayer::typeName()
   );
 
@@ -1400,13 +1431,25 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
   return sources;
 }
 
-QVariantMap QgsProcessingModelAlgorithm::helpContent() const { return mHelpContent; }
+QVariantMap QgsProcessingModelAlgorithm::helpContent() const
+{
+  return mHelpContent;
+}
 
-void QgsProcessingModelAlgorithm::setHelpContent( const QVariantMap &helpContent ) { mHelpContent = helpContent; }
+void QgsProcessingModelAlgorithm::setHelpContent( const QVariantMap &helpContent )
+{
+  mHelpContent = helpContent;
+}
 
-void QgsProcessingModelAlgorithm::setName( const QString &name ) { mModelName = name; }
+void QgsProcessingModelAlgorithm::setName( const QString &name )
+{
+  mModelName = name;
+}
 
-void QgsProcessingModelAlgorithm::setGroup( const QString &group ) { mModelGroup = group; }
+void QgsProcessingModelAlgorithm::setGroup( const QString &group )
+{
+  mModelGroup = group;
+}
 
 bool QgsProcessingModelAlgorithm::validate( QStringList &issues ) const
 {
@@ -1432,11 +1475,20 @@ bool QgsProcessingModelAlgorithm::validate( QStringList &issues ) const
   return res;
 }
 
-QMap<QString, QgsProcessingModelChildAlgorithm> QgsProcessingModelAlgorithm::childAlgorithms() const { return mChildAlgorithms; }
+QMap<QString, QgsProcessingModelChildAlgorithm> QgsProcessingModelAlgorithm::childAlgorithms() const
+{
+  return mChildAlgorithms;
+}
 
-void QgsProcessingModelAlgorithm::setParameterComponents( const QMap<QString, QgsProcessingModelParameter> &parameterComponents ) { mParameterComponents = parameterComponents; }
+void QgsProcessingModelAlgorithm::setParameterComponents( const QMap<QString, QgsProcessingModelParameter> &parameterComponents )
+{
+  mParameterComponents = parameterComponents;
+}
 
-void QgsProcessingModelAlgorithm::setParameterComponent( const QgsProcessingModelParameter &component ) { mParameterComponents.insert( component.parameterName(), component ); }
+void QgsProcessingModelAlgorithm::setParameterComponent( const QgsProcessingModelParameter &component )
+{
+  mParameterComponents.insert( component.parameterName(), component );
+}
 
 QgsProcessingModelParameter &QgsProcessingModelAlgorithm::parameterComponent( const QString &name )
 {
@@ -1473,7 +1525,10 @@ QList< QgsProcessingModelParameter > QgsProcessingModelAlgorithm::orderedParamet
   return res;
 }
 
-void QgsProcessingModelAlgorithm::setParameterOrder( const QStringList &order ) { mParameterOrder = order; }
+void QgsProcessingModelAlgorithm::setParameterOrder( const QStringList &order )
+{
+  mParameterOrder = order;
+}
 
 QList<QgsProcessingModelOutput> QgsProcessingModelAlgorithm::orderedOutputs() const
 {
@@ -1516,11 +1571,20 @@ QList<QgsProcessingModelOutput> QgsProcessingModelAlgorithm::orderedOutputs() co
   return res;
 }
 
-void QgsProcessingModelAlgorithm::setOutputOrder( const QStringList &order ) { mOutputOrder = order; }
+void QgsProcessingModelAlgorithm::setOutputOrder( const QStringList &order )
+{
+  mOutputOrder = order;
+}
 
-QString QgsProcessingModelAlgorithm::outputGroup() const { return mOutputGroup; }
+QString QgsProcessingModelAlgorithm::outputGroup() const
+{
+  return mOutputGroup;
+}
 
-void QgsProcessingModelAlgorithm::setOutputGroup( const QString &group ) { mOutputGroup = group; }
+void QgsProcessingModelAlgorithm::setOutputGroup( const QString &group )
+{
+  mOutputGroup = group;
+}
 
 void QgsProcessingModelAlgorithm::updateDestinationParameters()
 {
@@ -1607,11 +1671,20 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
   }
 }
 
-void QgsProcessingModelAlgorithm::addGroupBox( const QgsProcessingModelGroupBox &groupBox ) { mGroupBoxes.insert( groupBox.uuid(), groupBox ); }
+void QgsProcessingModelAlgorithm::addGroupBox( const QgsProcessingModelGroupBox &groupBox )
+{
+  mGroupBoxes.insert( groupBox.uuid(), groupBox );
+}
 
-QList<QgsProcessingModelGroupBox> QgsProcessingModelAlgorithm::groupBoxes() const { return mGroupBoxes.values(); }
+QList<QgsProcessingModelGroupBox> QgsProcessingModelAlgorithm::groupBoxes() const
+{
+  return mGroupBoxes.values();
+}
 
-void QgsProcessingModelAlgorithm::removeGroupBox( const QString &uuid ) { mGroupBoxes.remove( uuid ); }
+void QgsProcessingModelAlgorithm::removeGroupBox( const QString &uuid )
+{
+  mGroupBoxes.remove( uuid );
+}
 
 QVariant QgsProcessingModelAlgorithm::toVariant() const
 {
@@ -1852,7 +1925,10 @@ QString QgsProcessingModelAlgorithm::addChildAlgorithm( QgsProcessingModelChildA
   return algorithm.childId();
 }
 
-QgsProcessingModelChildAlgorithm &QgsProcessingModelAlgorithm::childAlgorithm( const QString &childId ) { return mChildAlgorithms[childId]; }
+QgsProcessingModelChildAlgorithm &QgsProcessingModelAlgorithm::childAlgorithm( const QString &childId )
+{
+  return mChildAlgorithms[childId];
+}
 
 bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
 {
@@ -2030,7 +2106,10 @@ bool QgsProcessingModelAlgorithm::otherParametersDependOnParameter( const QStrin
   return false;
 }
 
-QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::parameterComponents() const { return mParameterComponents; }
+QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::parameterComponents() const
+{
+  return mParameterComponents;
+}
 
 void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const
 {
@@ -2357,10 +2436,19 @@ QString QgsProcessingModelAlgorithm::safeName( const QString &name, bool capital
   return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
 }
 
-QVariantMap QgsProcessingModelAlgorithm::variables() const { return mVariables; }
+QVariantMap QgsProcessingModelAlgorithm::variables() const
+{
+  return mVariables;
+}
 
-void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables ) { mVariables = variables; }
+void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
+{
+  mVariables = variables;
+}
 
-QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const { return mDesignerParameterValues; }
+QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
+{
+  return mDesignerParameterValues;
+}
 
 ///@endcond

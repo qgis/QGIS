@@ -210,7 +210,10 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
 }
 
 
-QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset ) { return joinSubsetIndices( joinLayer->fields(), joinFieldsSubset ); }
+QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset )
+{
+  return joinSubsetIndices( joinLayer->fields(), joinFieldsSubset );
+}
 
 QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset )
 {
@@ -693,7 +696,10 @@ bool QgsVectorLayerJoinBuffer::changeAttributeValues( QgsFeatureId fid, const Qg
   return success;
 }
 
-bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context ) const { return deleteFeatures( QgsFeatureIds() << fid, context ); }
+bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context ) const
+{
+  return deleteFeatures( QgsFeatureIds() << fid, context );
+}
 
 bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context ) const
 {

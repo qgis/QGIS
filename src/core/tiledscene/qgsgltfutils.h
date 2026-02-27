@@ -79,8 +79,16 @@ class CORE_EXPORT QgsGltfUtils
      * using \a ecefToTargetCrs
      */
     static bool accessorToMapCoordinates(
-      const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef,
-      const QMatrix4x4 *nodeTransform, Qgis::Axis gltfUpAxis, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz
+      const tinygltf::Model &model,
+      int accessorIndex,
+      const QgsMatrix4x4 &tileTransform,
+      const QgsCoordinateTransform *ecefToTargetCrs,
+      const QgsVector3D &tileTranslationEcef,
+      const QMatrix4x4 *nodeTransform,
+      Qgis::Axis gltfUpAxis,
+      QVector<double> &vx,
+      QVector<double> &vy,
+      QVector<double> &vz
     );
 
     /**

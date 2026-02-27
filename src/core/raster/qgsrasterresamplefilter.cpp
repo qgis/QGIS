@@ -113,9 +113,15 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface *input )
   return true;
 }
 
-void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler *r ) { mZoomedInResampler.reset( r ); }
+void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler *r )
+{
+  mZoomedInResampler.reset( r );
+}
 
-void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r ) { mZoomedOutResampler.reset( r ); }
+void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r )
+{
+  mZoomedOutResampler.reset( r );
+}
 
 QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {

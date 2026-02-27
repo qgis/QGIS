@@ -154,7 +154,10 @@ void QgsFileDownloader::error( const QStringList &errorMessages )
   emit downloadError( mErrors );
 }
 
-void QgsFileDownloader::error( const QString &errorMessage ) { error( QStringList() << errorMessage ); }
+void QgsFileDownloader::error( const QString &errorMessage )
+{
+  error( QStringList() << errorMessage );
+}
 
 void QgsFileDownloader::onReadyRead()
 {

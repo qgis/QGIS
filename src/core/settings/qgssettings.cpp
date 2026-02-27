@@ -82,7 +82,8 @@ QgsSettings::QgsSettings( QObject *parent )
   init();
 }
 
-QgsSettings::~QgsSettings() {}
+QgsSettings::~QgsSettings()
+{}
 
 void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
@@ -103,7 +104,10 @@ void QgsSettings::endGroup()
   }
 }
 
-QString QgsSettings::group() const { return mUserSettings->group(); }
+QString QgsSettings::group() const
+{
+  return mUserSettings->group();
+}
 
 QStringList QgsSettings::allKeys() const
 {
@@ -152,9 +156,15 @@ QStringList QgsSettings::childGroups( Qgis::SettingsOrigin origin ) const
   BUILTIN_UNREACHABLE
 }
 
-QStringList QgsSettings::globalChildGroups() const { return childGroups( Qgis::SettingsOrigin::Global ); }
+QStringList QgsSettings::globalChildGroups() const
+{
+  return childGroups( Qgis::SettingsOrigin::Global );
+}
 
-QString QgsSettings::globalSettingsPath() { return *sGlobalSettingsPath(); }
+QString QgsSettings::globalSettingsPath()
+{
+  return *sGlobalSettingsPath();
+}
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
@@ -176,9 +186,15 @@ bool QgsSettings::contains( const QString &key, const QgsSettings::Section secti
   return mUserSettings->contains( pKey ) || ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
 }
 
-QString QgsSettings::fileName() const { return mUserSettings->fileName(); }
+QString QgsSettings::fileName() const
+{
+  return mUserSettings->fileName();
+}
 
-void QgsSettings::sync() { mUserSettings->sync(); }
+void QgsSettings::sync()
+{
+  mUserSettings->sync();
+}
 
 void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
@@ -301,9 +317,15 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 }
 
 // To lower case and clean the path
-QString QgsSettings::sanitizeKey( const QString &key ) const { return QDir::cleanPath( key ); }
+QString QgsSettings::sanitizeKey( const QString &key ) const
+{
+  return QDir::cleanPath( key );
+}
 
-void QgsSettings::clear() { mUserSettings->clear(); }
+void QgsSettings::clear()
+{
+  mUserSettings->clear();
+}
 
 void QgsSettings::holdFlush()
 {
@@ -319,4 +341,7 @@ void QgsSettings::releaseFlush()
   sQgsSettingsThreadSettings = nullptr;
 }
 
-QgsSettingsProxy QgsSettings::get() { return QgsSettingsProxy( sQgsSettingsThreadSettings ); }
+QgsSettingsProxy QgsSettings::get()
+{
+  return QgsSettingsProxy( sQgsSettingsThreadSettings );
+}

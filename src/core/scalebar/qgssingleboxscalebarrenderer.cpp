@@ -29,11 +29,20 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsSingleBoxScaleBarRenderer::id() const { return u"Single Box"_s; }
+QString QgsSingleBoxScaleBarRenderer::id() const
+{
+  return u"Single Box"_s;
+}
 
-QString QgsSingleBoxScaleBarRenderer::visibleName() const { return QObject::tr( "Single Box" ); }
+QString QgsSingleBoxScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Single Box" );
+}
 
-int QgsSingleBoxScaleBarRenderer::sortKey() const { return 1; }
+int QgsSingleBoxScaleBarRenderer::sortKey() const
+{
+  return 1;
+}
 
 QgsScaleBarRenderer::Flags QgsSingleBoxScaleBarRenderer::flags() const
 {
@@ -41,7 +50,10 @@ QgsScaleBarRenderer::Flags QgsSingleBoxScaleBarRenderer::flags() const
          | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
-QgsSingleBoxScaleBarRenderer *QgsSingleBoxScaleBarRenderer::clone() const { return new QgsSingleBoxScaleBarRenderer( *this ); }
+QgsSingleBoxScaleBarRenderer *QgsSingleBoxScaleBarRenderer::clone() const
+{
+  return new QgsSingleBoxScaleBarRenderer( *this );
+}
 
 void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
@@ -122,7 +134,9 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     lineSymbol->renderPolyline(
       QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight )
                   << QPointF( minX, barTopPosition ),
-      nullptr, context, layer
+      nullptr,
+      context,
+      layer
     );
   }
 

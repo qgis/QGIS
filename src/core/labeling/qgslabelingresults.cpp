@@ -25,7 +25,10 @@ QgsLabelingResults::QgsLabelingResults()
 QgsLabelingResults::~QgsLabelingResults() = default;
 
 
-QList<QgsLabelPosition> QgsLabelingResults::allLabels() const { return mLabelSearchTree ? mLabelSearchTree->allLabels() : QList<QgsLabelPosition>(); }
+QList<QgsLabelPosition> QgsLabelingResults::allLabels() const
+{
+  return mLabelSearchTree ? mLabelSearchTree->allLabels() : QList<QgsLabelPosition>();
+}
 
 QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
 {
@@ -92,4 +95,7 @@ QList<QgsCalloutPosition> QgsLabelingResults::calloutsWithinRectangle( const Qgs
   return positions;
 }
 
-void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings ) { mLabelSearchTree->setMapSettings( settings ); }
+void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings )
+{
+  mLabelSearchTree->setMapSettings( settings );
+}

@@ -335,9 +335,17 @@ interval
 
 
  static QgsGraduatedSymbolRenderer *createRenderer(
-      QgsVectorLayer *vlayer, const QString &attrName, int classes, Mode mode, QgsSymbol *symbol /Transfer/, QgsColorRamp *ramp /Transfer/,
-      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(), bool useSymmetricMode = false, double symmetryPoint = 0.0,
-      const QStringList &listForCboPrettyBreaks = QStringList(), bool astride = false
+      QgsVectorLayer *vlayer,
+      const QString &attrName,
+      int classes,
+      Mode mode,
+      QgsSymbol *symbol /Transfer/,
+      QgsColorRamp *ramp /Transfer/,
+      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
+      bool useSymmetricMode = false,
+      double symmetryPoint = 0.0,
+      const QStringList &listForCboPrettyBreaks = QStringList(),
+      bool astride = false
     ) /Deprecated="Since 3.10. "/;
 %Docstring
 Creates a new graduated renderer.

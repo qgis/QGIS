@@ -1032,8 +1032,10 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
                                                                                                                            : Qgis::TextHorizontalAlignment::Center;
 
     const QRectF
-      r( ( columnContext.left + ( halign == Qgis::TextHorizontalAlignment::Left ? sideMargin : 0 ) ) * dotsPerMM, top * dotsPerMM,
-         ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ) * dotsPerMM, overallTextHeight );
+      r( ( columnContext.left + ( halign == Qgis::TextHorizontalAlignment::Left ? sideMargin : 0 ) ) * dotsPerMM,
+         top * dotsPerMM,
+         ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ) * dotsPerMM,
+         overallTextHeight );
     QgsTextRenderer::drawText( r, 0, halign, lines, context, layerFormat );
   }
 
@@ -1078,8 +1080,10 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
                                                                                                                            : Qgis::TextHorizontalAlignment::Center;
 
     const QRectF
-      r( dotsPerMM * ( columnContext.left + ( halign == Qgis::TextHorizontalAlignment::Left ? sideMargin : 0 ) ), top * dotsPerMM,
-         dotsPerMM * ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ), overallTextHeight );
+      r( dotsPerMM * ( columnContext.left + ( halign == Qgis::TextHorizontalAlignment::Left ? sideMargin : 0 ) ),
+         top * dotsPerMM,
+         dotsPerMM * ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ),
+         overallTextHeight );
     QgsTextRenderer::drawText( r, 0, halign, lines, context, groupFormat );
   }
 
@@ -1110,9 +1114,15 @@ Qgis::LegendComponent QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node
   return Qgis::LegendComponent::Undefined; // should not happen, only if corrupted project file
 }
 
-Qgis::LegendComponent QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node ) { return nodeLegendStyle( node, mLegendModel ); }
+Qgis::LegendComponent QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node )
+{
+  return nodeLegendStyle( node, mLegendModel );
+}
 
-QgsLayerTreeFilterProxyModel *QgsLegendRenderer::proxyModel() { return mProxyModel.get(); }
+QgsLayerTreeFilterProxyModel *QgsLegendRenderer::proxyModel()
+{
+  return mProxyModel.get();
+}
 
 void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, Qgis::LegendComponent style )
 {
@@ -1138,4 +1148,7 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, Qgis::Legend
     node->removeCustomProperty( u"legend/title-style"_s );
 }
 
-void QgsLegendRenderer::drawLegend( QgsRenderContext &context ) { paintAndDetermineSize( context ); }
+void QgsLegendRenderer::drawLegend( QgsRenderContext &context )
+{
+  paintAndDetermineSize( context );
+}

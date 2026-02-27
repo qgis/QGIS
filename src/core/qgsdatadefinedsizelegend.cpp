@@ -71,17 +71,35 @@ QgsDataDefinedSizeLegend &QgsDataDefinedSizeLegend::operator=( const QgsDataDefi
   return *this;
 }
 
-void QgsDataDefinedSizeLegend::setSymbol( QgsMarkerSymbol *symbol ) { mSymbol.reset( symbol ); }
+void QgsDataDefinedSizeLegend::setSymbol( QgsMarkerSymbol *symbol )
+{
+  mSymbol.reset( symbol );
+}
 
-QgsMarkerSymbol *QgsDataDefinedSizeLegend::symbol() const { return mSymbol.get(); }
+QgsMarkerSymbol *QgsDataDefinedSizeLegend::symbol() const
+{
+  return mSymbol.get();
+}
 
-void QgsDataDefinedSizeLegend::setLineSymbol( QgsLineSymbol *symbol ) { mLineSymbol.reset( symbol ); }
+void QgsDataDefinedSizeLegend::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mLineSymbol.reset( symbol );
+}
 
-QgsLineSymbol *QgsDataDefinedSizeLegend::lineSymbol() const { return mLineSymbol.get(); }
+QgsLineSymbol *QgsDataDefinedSizeLegend::lineSymbol() const
+{
+  return mLineSymbol.get();
+}
 
-void QgsDataDefinedSizeLegend::setSizeScaleTransformer( QgsSizeScaleTransformer *transformer ) { mSizeScaleTransformer.reset( transformer ); }
+void QgsDataDefinedSizeLegend::setSizeScaleTransformer( QgsSizeScaleTransformer *transformer )
+{
+  mSizeScaleTransformer.reset( transformer );
+}
 
-QgsSizeScaleTransformer *QgsDataDefinedSizeLegend::sizeScaleTransformer() const { return mSizeScaleTransformer.get(); }
+QgsSizeScaleTransformer *QgsDataDefinedSizeLegend::sizeScaleTransformer() const
+{
+  return mSizeScaleTransformer.get();
+}
 
 
 void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbol *symbol, const QgsProperty &ddSize )

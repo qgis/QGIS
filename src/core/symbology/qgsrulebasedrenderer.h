@@ -160,7 +160,12 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         //! Constructor takes ownership of the symbol
         Rule(
-          QgsSymbol *symbol SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(), const QString &label = QString(), const QString &description = QString(),
+          QgsSymbol *symbol SIP_TRANSFER,
+          int maximumScale = 0,
+          int minimumScale = 0,
+          const QString &filterExp = QString(),
+          const QString &label = QString(),
+          const QString &description = QString(),
           bool elseRule = false
         );
         ~Rule();

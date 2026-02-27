@@ -62,7 +62,12 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * be deleted when the task completes.
      */
     QgsRasterFileWriterTask(
-      const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER, int columns, int rows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs,
+      const QgsRasterFileWriter &writer,
+      QgsRasterPipe *pipe SIP_TRANSFER,
+      int columns,
+      int rows,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &crs,
       const QgsCoordinateTransformContext &transformContext
     );
 

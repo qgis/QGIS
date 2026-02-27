@@ -219,7 +219,9 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
     bool handlesDirectoryPath( const QString &path ) override;
 
   private:
-    static QgsDataItem *createDataItemForPathPrivate( const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders, Qgis::SublayerQueryFlags queryFlags, const QVariantMap &extraUriParts );
+    static QgsDataItem *createDataItemForPathPrivate(
+      const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders, Qgis::SublayerQueryFlags queryFlags, const QVariantMap &extraUriParts
+    );
 };
 
 #endif // QGSFILEBASEDDATAITEMPROVIDER_H

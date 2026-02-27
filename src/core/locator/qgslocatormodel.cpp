@@ -59,9 +59,15 @@ void QgsLocatorModel::deferredClear()
   mDeferredClearTimer.start();
 }
 
-int QgsLocatorModel::rowCount( const QModelIndex & ) const { return mResults.count(); }
+int QgsLocatorModel::rowCount( const QModelIndex & ) const
+{
+  return mResults.count();
+}
 
-int QgsLocatorModel::columnCount( const QModelIndex & ) const { return 2; }
+int QgsLocatorModel::columnCount( const QModelIndex & ) const
+{
+  return 2;
+}
 
 QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 {
@@ -304,7 +310,10 @@ QgsLocatorAutomaticModel::QgsLocatorAutomaticModel( QgsLocator *locator )
   connect( mLocator, &QgsLocator::finished, this, &QgsLocatorAutomaticModel::searchFinished );
 }
 
-QgsLocator *QgsLocatorAutomaticModel::locator() { return mLocator; }
+QgsLocator *QgsLocatorAutomaticModel::locator()
+{
+  return mLocator;
+}
 
 void QgsLocatorAutomaticModel::search( const QString &string )
 {
@@ -325,7 +334,10 @@ void QgsLocatorAutomaticModel::search( const QString &string )
   }
 }
 
-QgsLocatorContext QgsLocatorAutomaticModel::createContext() { return QgsLocatorContext(); }
+QgsLocatorContext QgsLocatorAutomaticModel::createContext()
+{
+  return QgsLocatorContext();
+}
 
 void QgsLocatorAutomaticModel::searchFinished()
 {

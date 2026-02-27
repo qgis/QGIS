@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageSqlite::QgsAuthConfigurationStorageSqlite( const QString &databasePath )
   : QgsAuthConfigurationStorageDb( { { u"driver"_s, u"QSQLITE"_s }, { u"database"_s, databasePath } } )
-{
-}
+{}
 
 bool QgsAuthConfigurationStorageSqlite::initialize()
 {
@@ -92,9 +91,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   checkCapabilities();
 
   // Recompute capabilities if needed
-  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool ) {
-    checkCapabilities();
-  } );
+  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool ) { checkCapabilities(); } );
 
   return true;
 }

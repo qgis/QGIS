@@ -25,9 +25,15 @@ QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( cons
   : QgsProcessingParameterDefinition( name, description )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const { return new QgsProcessingParameterTinInputLayers( name(), description() ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const
+{
+  return new QgsProcessingParameterTinInputLayers( name(), description() );
+}
 
-QString QgsProcessingParameterTinInputLayers::type() const { return typeName(); }
+QString QgsProcessingParameterTinInputLayers::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {

@@ -23,7 +23,7 @@ Abstract base class for terrain providers.
 #include "qgsterrainprovider.h"
 %End
 %ConvertToSubClassCode
-if ( sipCpp->type().compare( QLatin1String( "flat" ) ) == 0 )
+    if ( sipCpp->type().compare( QLatin1String( "flat" ) ) == 0 )
     {
       sipType = sipType_QgsFlatTerrainProvider;
     }

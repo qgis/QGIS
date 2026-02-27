@@ -59,7 +59,10 @@ bool QgsAbstractVectorLayerLabeling::toSld( QDomNode &, QgsSldExportContext &con
   return false;
 }
 
-bool QgsAbstractVectorLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
+bool QgsAbstractVectorLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
 
 QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( const QgsVectorLayer *layer )
 {
@@ -87,15 +90,24 @@ QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( con
   return settings;
 }
 
-QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer *layer ) const { return new QgsVectorLayerLabelProvider( layer, QString(), false, mSettings.get() ); }
+QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer *layer ) const
+{
+  return new QgsVectorLayerLabelProvider( layer, QString(), false, mSettings.get() );
+}
 
 QgsVectorLayerSimpleLabeling::QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings )
   : mSettings( new QgsPalLayerSettings( settings ) )
 {}
 
-QString QgsVectorLayerSimpleLabeling::type() const { return u"simple"_s; }
+QString QgsVectorLayerSimpleLabeling::type() const
+{
+  return u"simple"_s;
+}
 
-QgsAbstractVectorLayerLabeling *QgsVectorLayerSimpleLabeling::clone() const { return new QgsVectorLayerSimpleLabeling( *mSettings ); }
+QgsAbstractVectorLayerLabeling *QgsVectorLayerSimpleLabeling::clone() const
+{
+  return new QgsVectorLayerSimpleLabeling( *mSettings );
+}
 
 QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -122,7 +134,10 @@ bool QgsVectorLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visit
   return true;
 }
 
-bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const { return mSettings->containsAdvancedEffects(); }
+bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
+{
+  return mSettings->containsAdvancedEffects();
+}
 
 bool QgsVectorLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 {

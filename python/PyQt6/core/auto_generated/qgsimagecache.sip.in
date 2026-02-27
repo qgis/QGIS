@@ -46,7 +46,14 @@ Returns the maximum size of the cache, in bytes.
 %End
 
     QImage pathAsImage(
-const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96, int frameNumber = -1
+      const QString &path,
+      const QSize size,
+      const bool keepAspectRatio,
+      const double opacity,
+      bool &fitsInCache /Out/,
+      bool blocking = false,
+      double targetDpi = 96,
+int frameNumber = -1
     );
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a

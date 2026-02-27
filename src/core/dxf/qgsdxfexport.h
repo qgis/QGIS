@@ -532,7 +532,16 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Write text (TEXT)
      * \note available in Python bindings as writeTextV2
      */
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
+    void writeText(
+      const QString &layer,
+      const QString &text,
+      const QgsPoint &pt,
+      double size,
+      double angle,
+      const QColor &color,
+      QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined,
+      QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined
+    ) SIP_PYNAME( writeTextV2 );
 
     /**
      * Write mtext (MTEXT)
@@ -680,7 +689,9 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     static bool hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
     void writeSymbolTableBlockRef( const QString &blockName );
     void writeSymbolLayerBlock( const QString &blockName, const QgsMarkerSymbolLayer *ml, QgsSymbolRenderContext &ctx );
-    void writePointBlockReference( const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize );
+    void writePointBlockReference(
+      const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
+    );
     static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
 
     double dashSize() const;

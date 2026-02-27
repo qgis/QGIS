@@ -40,11 +40,21 @@ using namespace Qt::StringLiterals;
 #define M_DEG2RAD 0.0174532925
 #endif
 
-inline bool nodataValue( double x, double y ) { return ( std::isnan( x ) || std::isnan( y ) ); }
+inline bool nodataValue( double x, double y )
+{
+  return ( std::isnan( x ) || std::isnan( y ) );
+}
 
 QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer(
-  const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetValues, const QVector<double> &datasetValuesMag, double datasetMagMaximumValue, double datasetMagMinimumValue,
-  QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context, QSize size
+  const QgsTriangularMesh &m,
+  const QgsMeshDataBlock &datasetValues,
+  const QVector<double> &datasetValuesMag,
+  double datasetMagMaximumValue,
+  double datasetMagMinimumValue,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsMeshRendererVectorSettings &settings,
+  QgsRenderContext &context,
+  QSize size
 )
   : mTriangularMesh( m )
   , mDatasetValues( datasetValues )
@@ -113,9 +123,13 @@ void QgsMeshVectorArrowRenderer::draw()
 }
 
 bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
-  QgsPointXY &lineEnd, double &vectorLength, double &cosAlpha,
+  QgsPointXY &lineEnd,
+  double &vectorLength,
+  double &cosAlpha,
   double &sinAlpha, //out
-  const QgsPointXY &lineStart, double xVal, double yVal,
+  const QgsPointXY &lineStart,
+  double xVal,
+  double yVal,
   double magnitude //in
 )
 {
@@ -404,9 +418,18 @@ void QgsMeshVectorArrowRenderer::drawVector( const QgsPointXY &lineStart, double
 QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
 
 QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
-  const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QVector<double> &datasetValuesMag, double datasetMagMaximumValue,
-  double datasetMagMinimumValue, QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context, const QgsRectangle &layerExtent,
-  QgsMeshLayerRendererFeedback *feedBack, const QSize &size
+  const QgsTriangularMesh &m,
+  const QgsMeshDataBlock &datasetVectorValues,
+  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+  const QVector<double> &datasetValuesMag,
+  double datasetMagMaximumValue,
+  double datasetMagMinimumValue,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsMeshRendererVectorSettings &settings,
+  QgsRenderContext &context,
+  const QgsRectangle &layerExtent,
+  QgsMeshLayerRendererFeedback *feedBack,
+  const QSize &size
 )
 {
   QgsMeshVectorRenderer *renderer = nullptr;
@@ -434,8 +457,15 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
 
 
 QgsMeshVectorWindBarbRenderer::QgsMeshVectorWindBarbRenderer(
-  const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetValues, const QVector<double> &datasetValuesMag, double datasetMagMaximumValue, double datasetMagMinimumValue,
-  QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context, QSize size
+  const QgsTriangularMesh &m,
+  const QgsMeshDataBlock &datasetValues,
+  const QVector<double> &datasetValuesMag,
+  double datasetMagMaximumValue,
+  double datasetMagMinimumValue,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsMeshRendererVectorSettings &settings,
+  QgsRenderContext &context,
+  QSize size
 )
   : QgsMeshVectorArrowRenderer( m, datasetValues, datasetValuesMag, datasetMagMinimumValue, datasetMagMaximumValue, dataType, settings, context, size )
 {

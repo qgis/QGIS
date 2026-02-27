@@ -110,8 +110,14 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
   public:
     //! \note not available in Python bindings
     QgsSymbolLayerMetadata(
-      const QString &name, const QString &visibleName, Qgis::SymbolType type, QgsSymbolLayerCreateFunc pfCreate, QgsSymbolLayerCreateFromSldFunc pfCreateFromSld = nullptr,
-      QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr, QgsSymbolLayerWidgetFunc pfWidget = nullptr, QgsSymbolLayerFontResolverFunc pfFontResolver = nullptr
+      const QString &name,
+      const QString &visibleName,
+      Qgis::SymbolType type,
+      QgsSymbolLayerCreateFunc pfCreate,
+      QgsSymbolLayerCreateFromSldFunc pfCreateFromSld = nullptr,
+      QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr,
+      QgsSymbolLayerWidgetFunc pfWidget = nullptr,
+      QgsSymbolLayerFontResolverFunc pfFontResolver = nullptr
     ) SIP_SKIP : QgsSymbolLayerAbstractMetadata( name, visibleName, type ),
                  mCreateFunc( pfCreate ),
                  mWidgetFunc( pfWidget ),

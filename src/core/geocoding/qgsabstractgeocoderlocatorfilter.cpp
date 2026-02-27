@@ -32,11 +32,20 @@ QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QStrin
   , mBoundingBox( boundingBox )
 {}
 
-QString QgsAbstractGeocoderLocatorFilter::name() const { return mName; }
+QString QgsAbstractGeocoderLocatorFilter::name() const
+{
+  return mName;
+}
 
-QString QgsAbstractGeocoderLocatorFilter::displayName() const { return mDisplayName; }
+QString QgsAbstractGeocoderLocatorFilter::displayName() const
+{
+  return mDisplayName;
+}
 
-QString QgsAbstractGeocoderLocatorFilter::prefix() const { return mPrefix; }
+QString QgsAbstractGeocoderLocatorFilter::prefix() const
+{
+  return mPrefix;
+}
 
 void QgsAbstractGeocoderLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
@@ -61,7 +70,10 @@ void QgsAbstractGeocoderLocatorFilter::triggerResult( const QgsLocatorResult &re
   handleGeocodeResult( geocodeResult );
 }
 
-QgsGeocoderInterface *QgsAbstractGeocoderLocatorFilter::geocoder() const { return mGeocoder; }
+QgsGeocoderInterface *QgsAbstractGeocoderLocatorFilter::geocoder() const
+{
+  return mGeocoder;
+}
 
 QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResult( const QgsLocatorResult &result ) const
 {

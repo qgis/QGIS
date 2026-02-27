@@ -110,7 +110,10 @@ QgsDistanceArea &QgsDistanceArea::operator=( QgsDistanceArea &&other )
   return *this;
 }
 
-bool QgsDistanceArea::willUseEllipsoid() const { return mEllipsoid != Qgis::geoNone(); }
+bool QgsDistanceArea::willUseEllipsoid() const
+{
+  return mEllipsoid != Qgis::geoNone();
+}
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
 {
@@ -442,8 +445,11 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
   QgsDebugMsgLevel(
     u"Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]"_s
       .arg(
-        QString::number( distance, 'f', 7 ), QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), QString::number( result, 'f', 7 ),
-        mCoordTransform.sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s, QgsUnitTypes::toString( sourceCrs().mapUnits() )
+        QString::number( distance, 'f', 7 ),
+        QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ),
+        QString::number( result, 'f', 7 ),
+        mCoordTransform.sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s,
+        QgsUnitTypes::toString( sourceCrs().mapUnits() )
       )
       .arg( azimuth )
       .arg( p1.asWkt(), p2.asWkt(), sourceCrs().description(), mEllipsoid )
@@ -806,9 +812,15 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
   return res;
 }
 
-Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const { return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits(); }
+Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const
+{
+  return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits();
+}
 
-Qgis::AreaUnit QgsDistanceArea::areaUnits() const { return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters : QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() ); }
+Qgis::AreaUnit QgsDistanceArea::areaUnits() const
+{
+  return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters : QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
+}
 
 double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
 {
@@ -969,9 +981,15 @@ double QgsDistanceArea::computePolygonFlatArea( const QVector<QgsPointXY> &point
   return std::fabs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit ) { return QgsUnitTypes::formatDistance( distance, decimals, unit, keepBaseUnit ); }
+QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit )
+{
+  return QgsUnitTypes::formatDistance( distance, decimals, unit, keepBaseUnit );
+}
 
-QString QgsDistanceArea::formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit ) { return QgsUnitTypes::formatArea( area, decimals, unit, keepBaseUnit ); }
+QString QgsDistanceArea::formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit )
+{
+  return QgsUnitTypes::formatArea( area, decimals, unit, keepBaseUnit );
+}
 
 double QgsDistanceArea::convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const
 {

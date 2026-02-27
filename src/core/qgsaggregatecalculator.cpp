@@ -37,7 +37,10 @@ QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer *layer )
   : mLayer( layer )
 {}
 
-const QgsVectorLayer *QgsAggregateCalculator::layer() const { return mLayer; }
+const QgsVectorLayer *QgsAggregateCalculator::layer() const
+{
+  return mLayer;
+}
 
 void QgsAggregateCalculator::setParameters( const AggregateParameters &parameters )
 {

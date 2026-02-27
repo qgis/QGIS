@@ -19,18 +19,36 @@ Qgs3DRendererAbstractMetadata::Qgs3DRendererAbstractMetadata( const QString &typ
   : mType( type )
 {}
 
-QString Qgs3DRendererAbstractMetadata::type() const { return mType; }
+QString Qgs3DRendererAbstractMetadata::type() const
+{
+  return mType;
+}
 
 
 // ----------
 
 
-Qgs3DRendererRegistry::~Qgs3DRendererRegistry() { qDeleteAll( mRenderers ); }
+Qgs3DRendererRegistry::~Qgs3DRendererRegistry()
+{
+  qDeleteAll( mRenderers );
+}
 
-void Qgs3DRendererRegistry::addRenderer( Qgs3DRendererAbstractMetadata *metadata ) { mRenderers.insert( metadata->type(), metadata ); }
+void Qgs3DRendererRegistry::addRenderer( Qgs3DRendererAbstractMetadata *metadata )
+{
+  mRenderers.insert( metadata->type(), metadata );
+}
 
-void Qgs3DRendererRegistry::removeRenderer( const QString &type ) { delete mRenderers.take( type ); }
+void Qgs3DRendererRegistry::removeRenderer( const QString &type )
+{
+  delete mRenderers.take( type );
+}
 
-Qgs3DRendererAbstractMetadata *Qgs3DRendererRegistry::rendererMetadata( const QString &type ) const { return mRenderers.value( type ); }
+Qgs3DRendererAbstractMetadata *Qgs3DRendererRegistry::rendererMetadata( const QString &type ) const
+{
+  return mRenderers.value( type );
+}
 
-QStringList Qgs3DRendererRegistry::renderersList() const { return mRenderers.keys(); }
+QStringList Qgs3DRendererRegistry::renderersList() const
+{
+  return mRenderers.keys();
+}

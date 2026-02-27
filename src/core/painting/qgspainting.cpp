@@ -200,9 +200,19 @@ bool QgsPainting::drawTriangleUsingTexture(
 {
   bool ok = false;
   const QTransform brushTransform = triangleToTriangleTransform(
-    textureX1 * ( textureImage.width() - 1 ), textureY1 * ( textureImage.height() - 1 ), textureX2 * ( textureImage.width() - 1 ), textureY2 * ( textureImage.height() - 1 ),
-    textureX3 * ( textureImage.width() - 1 ), textureY3 * ( textureImage.height() - 1 ), triangle.at( 0 ).x(), triangle.at( 0 ).y(), triangle.at( 1 ).x(), triangle.at( 1 ).y(), triangle.at( 2 ).x(),
-    triangle.at( 2 ).y(), ok
+    textureX1 * ( textureImage.width() - 1 ),
+    textureY1 * ( textureImage.height() - 1 ),
+    textureX2 * ( textureImage.width() - 1 ),
+    textureY2 * ( textureImage.height() - 1 ),
+    textureX3 * ( textureImage.width() - 1 ),
+    textureY3 * ( textureImage.height() - 1 ),
+    triangle.at( 0 ).x(),
+    triangle.at( 0 ).y(),
+    triangle.at( 1 ).x(),
+    triangle.at( 1 ).y(),
+    triangle.at( 2 ).x(),
+    triangle.at( 2 ).y(),
+    ok
   );
   if ( !ok )
     return false;
@@ -220,9 +230,15 @@ bool QgsPainting::drawTriangleUsingTexture(
   return true;
 }
 
-int QgsPainting::qtDefaultDpiX() { return qt_defaultDpiX(); }
+int QgsPainting::qtDefaultDpiX()
+{
+  return qt_defaultDpiX();
+}
 
-int QgsPainting::qtDefaultDpiY() { return qt_defaultDpiY(); }
+int QgsPainting::qtDefaultDpiY()
+{
+  return qt_defaultDpiY();
+}
 
 void QgsPainting::applyScaleFixForQPictureDpi( QPainter *painter )
 {

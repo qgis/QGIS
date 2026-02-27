@@ -68,9 +68,15 @@ QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
     delete d;
 }
 
-bool QgsSpatialIndexKDBush::addFeature( QgsFeatureId id, const QgsPointXY &point ) { return d->index->addFeature( id, point ); }
+bool QgsSpatialIndexKDBush::addFeature( QgsFeatureId id, const QgsPointXY &point )
+{
+  return d->index->addFeature( id, point );
+}
 
-void QgsSpatialIndexKDBush::finalize() { d->index->finalize(); }
+void QgsSpatialIndexKDBush::finalize()
+{
+  d->index->finalize();
+}
 
 QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
@@ -90,7 +96,10 @@ void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, cons
   d->index->within( point.x(), point.y(), radius, visitor );
 }
 
-qgssize QgsSpatialIndexKDBush::size() const { return d->index->size(); }
+qgssize QgsSpatialIndexKDBush::size() const
+{
+  return d->index->size();
+}
 
 QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle ) const
 {

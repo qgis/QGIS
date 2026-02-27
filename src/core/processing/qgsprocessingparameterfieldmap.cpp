@@ -24,9 +24,15 @@ QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QS
   , mParentLayerParameterName( parentLayerParameterName )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterFieldMapping::clone() const { return new QgsProcessingParameterFieldMapping( *this ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterFieldMapping::clone() const
+{
+  return new QgsProcessingParameterFieldMapping( *this );
+}
 
-QString QgsProcessingParameterFieldMapping::type() const { return typeName(); }
+QString QgsProcessingParameterFieldMapping::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
@@ -55,7 +61,10 @@ bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant 
   return true;
 }
 
-QString QgsProcessingParameterFieldMapping::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const { return QgsProcessingUtils::variantToPythonLiteral( value ); }
+QString QgsProcessingParameterFieldMapping::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  return QgsProcessingUtils::variantToPythonLiteral( value );
+}
 
 QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::PythonOutputType outputType ) const
 {
@@ -98,6 +107,12 @@ QStringList QgsProcessingParameterFieldMapping::dependsOnOtherParameters() const
   return depends;
 }
 
-QString QgsProcessingParameterFieldMapping::parentLayerParameterName() const { return mParentLayerParameterName; }
+QString QgsProcessingParameterFieldMapping::parentLayerParameterName() const
+{
+  return mParentLayerParameterName;
+}
 
-void QgsProcessingParameterFieldMapping::setParentLayerParameterName( const QString &name ) { mParentLayerParameterName = name; }
+void QgsProcessingParameterFieldMapping::setParentLayerParameterName( const QString &name )
+{
+  mParentLayerParameterName = name;
+}

@@ -28,8 +28,12 @@ group information.
 %End
   public:
     static bool loadLayerDefinition(
-      const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/,
-      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0
+      const QString &path,
+      QgsProject *project,
+      QgsLayerTreeGroup *rootGroup,
+      QString &errorMessage /Out/,
+      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup,
+      const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0
     );
 %Docstring
 Loads the QLR at path into QGIS. New layers are added to given project
@@ -47,8 +51,13 @@ into layer tree specified by rootGroup
 %End
 
     static bool loadLayerDefinition(
-      QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, QgsReadWriteContext &context,
-      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0
+      QDomDocument doc,
+      QgsProject *project,
+      QgsLayerTreeGroup *rootGroup,
+      QString &errorMessage /Out/,
+      QgsReadWriteContext &context,
+      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup,
+      const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0
     );
 %Docstring
 Loads the QLR from the XML document. New layers are added to given

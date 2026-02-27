@@ -391,8 +391,7 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
 }
 
 CPLErr QgsGdalProviderBase::gdalRasterIO(
-  GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace,
-  QgsRasterBlockFeedback *feedback
+  GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback
 )
 {
   GDALRasterIOExtraArg extra;

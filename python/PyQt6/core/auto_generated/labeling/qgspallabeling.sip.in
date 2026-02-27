@@ -386,7 +386,13 @@ legendString
 %End
 
  void calculateLabelSize(
-      const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0,
+      const QFontMetricsF *fm,
+      const QString &text,
+      double &labelX,
+      double &labelY,
+      const QgsFeature *f = 0,
+      QgsRenderContext *context = 0,
+      double *rotatedLabelX /Out/ = 0,
       double *rotatedLabelY /Out/ = 0
     ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 5.0."/;
 %Docstring

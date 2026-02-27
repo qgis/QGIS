@@ -344,9 +344,15 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
     offset = _rotatedOffset( offset, angle );
 }
 
-QString QgsEllipseSymbolLayer::layerType() const { return u"EllipseMarker"_s; }
+QString QgsEllipseSymbolLayer::layerType() const
+{
+  return u"EllipseMarker"_s;
+}
 
-Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const { return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
+Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
 
 void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -375,7 +381,8 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 }
 
-void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & ) {}
+void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
+{}
 
 QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 {

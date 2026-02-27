@@ -68,16 +68,31 @@ using namespace Qt::StringLiterals;
 
 #include "nlohmann/json.hpp"
 
-void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const { OGR_DS_Destroy( source ); }
+void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const
+{
+  OGR_DS_Destroy( source );
+}
 
 
-void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry ) const { OGR_G_DestroyGeometry( geometry ); }
+void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry ) const
+{
+  OGR_G_DestroyGeometry( geometry );
+}
 
-void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition ) const { OGR_Fld_Destroy( definition ); }
+void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition ) const
+{
+  OGR_Fld_Destroy( definition );
+}
 
-void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature ) const { OGR_F_Destroy( feature ); }
+void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature ) const
+{
+  OGR_F_Destroy( feature );
+}
 
-void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset ) const { GDALClose( dataset ); }
+void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset ) const
+{
+  GDALClose( dataset );
+}
 
 void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH driver, const QString &path )
 {
@@ -99,10 +114,16 @@ void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH
 }
 
 
-void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const { GDALDestroyWarpOptions( options ); }
+void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const
+{
+  GDALDestroyWarpOptions( options );
+}
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
-void gdal::GDALRelationshipDeleter::operator()( GDALRelationshipH relationship ) const { GDALDestroyRelationship( relationship ); }
+void gdal::GDALRelationshipDeleter::operator()( GDALRelationshipH relationship ) const
+{
+  GDALDestroyRelationship( relationship );
+}
 #endif
 
 static void setQTTimeZoneFromOGRTZFlag( QDateTime &dt, int nTZFlag )
@@ -2510,8 +2531,14 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
       if ( !min || !max )
         return nullptr;
       res = OGR_RangeFldDomain_Create(
-        domain->name().toUtf8().constData(), domain->description().toUtf8().constData(), domainFieldType, domainFieldSubType, min.get(),
-        qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimumIsInclusive(), max.get(), qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximumIsInclusive()
+        domain->name().toUtf8().constData(),
+        domain->description().toUtf8().constData(),
+        domainFieldType,
+        domainFieldSubType,
+        min.get(),
+        qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimumIsInclusive(),
+        max.get(),
+        qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximumIsInclusive()
       );
       break;
     }
@@ -2519,7 +2546,10 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
     case Qgis::FieldDomainType::Glob:
     {
       res = OGR_GlobFldDomain_Create(
-        domain->name().toUtf8().constData(), domain->description().toUtf8().constData(), domainFieldType, domainFieldSubType,
+        domain->name().toUtf8().constData(),
+        domain->description().toUtf8().constData(),
+        domainFieldType,
+        domainFieldSubType,
         qgis::down_cast< const QgsGlobFieldDomain * >( domain )->glob().toUtf8().constData()
       );
       break;
@@ -3049,8 +3079,16 @@ QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName
 }
 
 bool QgsOgrUtils::saveStyle(
-  GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription,
-  const QString &uiFileContent, bool useAsDefault, QString &errCause
+  GDALDatasetH hDS,
+  const QString &layerName,
+  const QString &geomColumn,
+  const QString &qmlStyle,
+  const QString &sldStyle,
+  const QString &styleName,
+  const QString &styleDescription,
+  const QString &uiFileContent,
+  bool useAsDefault,
+  QString &errCause
 )
 {
   // check if layer_styles table already exist

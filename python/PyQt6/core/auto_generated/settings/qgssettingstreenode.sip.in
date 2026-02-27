@@ -32,7 +32,7 @@ a settings entry on its creation when a parent is provided.
 #include "qgssettingstreenode.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
+    if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNamedListNode;
     else if ( dynamic_cast< QgsSettingsTreeNode * >( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNode;

@@ -299,8 +299,7 @@ Infer the :py:class:`QgsArrowSchema` for a given
 %End
 
     static QgsArrowSchema inferSchema(
-      const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-      const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
+      const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
     );
 %Docstring
 Infer the :py:class:`QgsArrowSchema` from components

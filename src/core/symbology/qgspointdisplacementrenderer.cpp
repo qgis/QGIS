@@ -204,7 +204,10 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   return r;
 }
 
-QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol() { return mCenterSymbol.get(); }
+QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
+{
+  return mCenterSymbol.get();
+}
 
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
@@ -262,11 +265,22 @@ bool QgsPointDisplacementRenderer::accept( QgsStyleEntityVisitorInterface *visit
   return true;
 }
 
-void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol ) { mCenterSymbol.reset( symbol ); }
+void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol )
+{
+  mCenterSymbol.reset( symbol );
+}
 
 void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions(
-  QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
-  double &gridRadius, int &gridSize, QVector<double> &diagonals
+  QgsSymbolRenderContext &symbolContext,
+  QPointF centerPoint,
+  int nPosition,
+  double symbolDiagonal,
+  QList<QPointF> &symbolPositions,
+  QList<QPointF> &labelShifts,
+  double &circleRadius,
+  double &gridRadius,
+  int &gridSize,
+  QVector<double> &diagonals
 ) const
 {
   symbolPositions.clear();

@@ -28,7 +28,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsMultiLineString::QgsMultiLineString() { mWkbType = Qgis::WkbType::MultiLineString; }
+QgsMultiLineString::QgsMultiLineString()
+{
+  mWkbType = Qgis::WkbType::MultiLineString;
+}
 
 QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString> &linestrings )
 {
@@ -58,11 +61,20 @@ QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString *> &linestring
   setZMTypeFromSubGeometry( linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
 }
 
-QgsLineString *QgsMultiLineString::lineStringN( int index ) { return qgsgeometry_cast< QgsLineString * >( geometryN( index ) ); }
+QgsLineString *QgsMultiLineString::lineStringN( int index )
+{
+  return qgsgeometry_cast< QgsLineString * >( geometryN( index ) );
+}
 
-const QgsLineString *QgsMultiLineString::lineStringN( int index ) const { return qgsgeometry_cast< const QgsLineString * >( geometryN( index ) ); }
+const QgsLineString *QgsMultiLineString::lineStringN( int index ) const
+{
+  return qgsgeometry_cast< const QgsLineString * >( geometryN( index ) );
+}
 
-QString QgsMultiLineString::geometryType() const { return u"MultiLineString"_s; }
+QString QgsMultiLineString::geometryType() const
+{
+  return u"MultiLineString"_s;
+}
 
 QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
 {
@@ -71,7 +83,10 @@ QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsMultiLineString *QgsMultiLineString::clone() const { return new QgsMultiLineString( *this ); }
+QgsMultiLineString *QgsMultiLineString::clone() const
+{
+  return new QgsMultiLineString( *this );
+}
 
 void QgsMultiLineString::clear()
 {
@@ -79,7 +94,10 @@ void QgsMultiLineString::clear()
   mWkbType = Qgis::WkbType::MultiLineString;
 }
 
-bool QgsMultiLineString::fromWkt( const QString &wkt ) { return fromCollectionWkt( wkt, { Qgis::WkbType::LineString }, u"LineString"_s ); }
+bool QgsMultiLineString::fromWkt( const QString &wkt )
+{
+  return fromCollectionWkt( wkt, { Qgis::WkbType::LineString }, u"LineString"_s );
+}
 
 QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
@@ -226,7 +244,10 @@ QgsMultiCurve *QgsMultiLineString::toCurveType() const
   return multiCurve;
 }
 
-bool QgsMultiLineString::wktOmitChildType() const { return true; }
+bool QgsMultiLineString::wktOmitChildType() const
+{
+  return true;
+}
 
 QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
 {

@@ -38,8 +38,10 @@ Works with one layer.
 %End
   public:
     explicit QgsPointLocator(
-      QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(), const QgsRectangle *extent = 0
+      QgsVectorLayer *layer,
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+      const QgsRectangle *extent = 0
     );
 %Docstring
 Construct point locator for a ``layer``.

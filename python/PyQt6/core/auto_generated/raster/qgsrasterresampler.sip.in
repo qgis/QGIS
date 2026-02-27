@@ -23,7 +23,7 @@ Interface for resampling rasters (e.g. to have a smoother appearance).
 #include "qgscubicrasterresampler.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
       sipType = sipType_QgsBilinearRasterResampler;
     else if ( dynamic_cast<QgsCubicRasterResampler *>( sipCpp ) != NULL )
       sipType = sipType_QgsCubicRasterResampler;

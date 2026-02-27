@@ -34,4 +34,7 @@ void QgsTemporalProperty::setIsActive( bool active )
   }
 }
 
-bool QgsTemporalProperty::isActive() const { return mActive; }
+bool QgsTemporalProperty::isActive() const
+{
+  return mActive;
+}

@@ -46,7 +46,7 @@ An abstract base class for :py:class:`QgsReport` subsections.
 #include "qgsabstractreportsection.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
+    if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
       sipType = sipType_QgsReportSectionFieldGroup;
     else if ( dynamic_cast< QgsReportSectionLayout * >( sipCpp ) )
       sipType = sipType_QgsReportSectionLayout;

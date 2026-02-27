@@ -41,7 +41,8 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &
   , mType( type )
 {}
 
-QgsRasterRenderer::~QgsRasterRenderer() {}
+QgsRasterRenderer::~QgsRasterRenderer()
+{}
 
 int QgsRasterRenderer::bandCount() const
 {
@@ -67,9 +68,15 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
   return Qgis::DataType::UnknownDataType;
 }
 
-Qgis::RasterRendererFlags QgsRasterRenderer::flags() const { return Qgis::RasterRendererFlags(); }
+Qgis::RasterRendererFlags QgsRasterRenderer::flags() const
+{
+  return Qgis::RasterRendererFlags();
+}
 
-bool QgsRasterRenderer::canCreateRasterAttributeTable() const { return false; }
+bool QgsRasterRenderer::canCreateRasterAttributeTable() const
+{
+  return false;
+}
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
@@ -98,9 +105,15 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
   return true;
 }
 
-int QgsRasterRenderer::inputBand() const { return -1; }
+int QgsRasterRenderer::inputBand() const
+{
+  return -1;
+}
 
-bool QgsRasterRenderer::setInputBand( int ) { return false; }
+bool QgsRasterRenderer::setInputBand( int )
+{
+  return false;
+}
 
 bool QgsRasterRenderer::usesTransparency() const
 {
@@ -111,9 +124,15 @@ bool QgsRasterRenderer::usesTransparency() const
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
-void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t ) { mRasterTransparency.reset( t ); }
+void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
+{
+  mRasterTransparency.reset( t );
+}
 
-QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const { return QList< QPair< QString, QColor > >(); }
+QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
+{
+  return QList< QPair< QString, QColor > >();
+}
 
 QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
@@ -236,7 +255,10 @@ bool QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldEx
   return true;
 }
 
-bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
+bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
 
 bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
 {

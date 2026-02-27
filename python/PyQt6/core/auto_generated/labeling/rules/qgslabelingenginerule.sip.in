@@ -107,7 +107,7 @@ violate custom constraints.
 #include "qgslabelingenginerule.h"
 %End
 %ConvertToSubClassCode
-if ( sipCpp->id() == "minimumDistanceLabelToFeature" )
+    if ( sipCpp->id() == "minimumDistanceLabelToFeature" )
     {
       sipType = sipType_QgsLabelingEngineRuleMinimumDistanceLabelToFeature;
     }

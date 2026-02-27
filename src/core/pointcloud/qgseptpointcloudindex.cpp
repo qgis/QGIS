@@ -53,7 +53,10 @@ using namespace Qt::StringLiterals;
 #define PROVIDER_KEY u"ept"_s
 #define PROVIDER_DESCRIPTION u"EPT point cloud provider"_s
 
-QgsEptPointCloudIndex::QgsEptPointCloudIndex() { mHierarchyNodes.insert( QgsPointCloudNodeId( 0, 0, 0, 0 ) ); }
+QgsEptPointCloudIndex::QgsEptPointCloudIndex()
+{
+  mHierarchyNodes.insert( QgsPointCloudNodeId( 0, 0, 0, 0 ) );
+}
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
@@ -461,11 +464,20 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
   return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), mAuthCfg );
 }
 
-bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const { return loadNodeHierarchy( n ); }
+bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+{
+  return loadNodeHierarchy( n );
+}
 
-QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const { return QgsCoordinateReferenceSystem::fromWkt( mWkt ); }
+QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
+{
+  return QgsCoordinateReferenceSystem::fromWkt( mWkt );
+}
 
-qint64 QgsEptPointCloudIndex::pointCount() const { return mPointCount; }
+qint64 QgsEptPointCloudIndex::pointCount() const
+{
+  return mPointCount;
+}
 
 QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
@@ -633,9 +645,15 @@ bool QgsEptPointCloudIndex::loadNodeHierarchy( const QgsPointCloudNodeId &nodeId
 }
 
 
-bool QgsEptPointCloudIndex::isValid() const { return mIsValid; }
+bool QgsEptPointCloudIndex::isValid() const
+{
+  return mIsValid;
+}
 
-Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const { return mAccessType; }
+Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const
+{
+  return mAccessType;
+}
 
 #undef PROVIDER_KEY
 #undef PROVIDER_DESCRIPTION

@@ -45,8 +45,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
     QgsSimpleFillSymbolLayer(
-      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE, const QColor &strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-      Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE, double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH, Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
+      Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
+      const QColor &strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+      Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+      double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+      Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
     );
 
     ~QgsSimpleFillSymbolLayer() override;
@@ -209,8 +213,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * Constructor for QgsGradientFillSymbolLayer.
      */
     QgsGradientFillSymbolLayer(
-      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white, Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
-      Qgis::GradientType gradientType = Qgis::GradientType::Linear, Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
+      const QColor &color2 = Qt::white,
+      Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
+      Qgis::GradientType gradientType = Qgis::GradientType::Linear,
+      Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
       Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
     );
 
@@ -462,8 +469,18 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     //! Applies the gradient to a brush
     void applyGradient(
-      const QgsSymbolRenderContext &context, QBrush &brush, const QColor &color, const QColor &color2, Qgis::GradientColorSource gradientColorType, QgsColorRamp *gradientRamp,
-      Qgis::GradientType gradientType, Qgis::SymbolCoordinateReference coordinateMode, Qgis::GradientSpread gradientSpread, QPointF referencePoint1, QPointF referencePoint2, double angle
+      const QgsSymbolRenderContext &context,
+      QBrush &brush,
+      const QColor &color,
+      const QColor &color2,
+      Qgis::GradientColorSource gradientColorType,
+      QgsColorRamp *gradientRamp,
+      Qgis::GradientType gradientType,
+      Qgis::SymbolCoordinateReference coordinateMode,
+      Qgis::GradientSpread gradientSpread,
+      QPointF referencePoint1,
+      QPointF referencePoint2,
+      double angle
     );
 
     //! Rotates a reference point by a specified angle around the point (0.5, 0.5)
@@ -482,8 +499,12 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Constructor for QgsShapeburstFillSymbolLayer.
      */
     QgsShapeburstFillSymbolLayer(
-      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white, Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor, int blurRadius = 0,
-      bool useWholeShape = true, double maxDistance = 5
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
+      const QColor &color2 = Qt::white,
+      Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor,
+      int blurRadius = 0,
+      bool useWholeShape = true,
+      double maxDistance = 5
     );
 
     ~QgsShapeburstFillSymbolLayer() override;
@@ -1440,8 +1461,17 @@ class CORE_EXPORT QgsSVGFillSymbolLayer : public QgsImageFillSymbolLayer
 
     //! Applies the svg pattern to the brush
     void applyPattern(
-      QBrush &brush, const QString &svgFilePath, double patternWidth, Qgis::RenderUnit patternWidthUnit, const QColor &svgFillColor, const QColor &svgStrokeColor, double svgStrokeWidth,
-      Qgis::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext &context, const QgsMapUnitScale &patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale,
+      QBrush &brush,
+      const QString &svgFilePath,
+      double patternWidth,
+      Qgis::RenderUnit patternWidthUnit,
+      const QColor &svgFillColor,
+      const QColor &svgStrokeColor,
+      double svgStrokeWidth,
+      Qgis::RenderUnit svgStrokeWidthUnit,
+      const QgsSymbolRenderContext &context,
+      const QgsMapUnitScale &patternWidthMapUnitScale,
+      const QgsMapUnitScale &svgStrokeWidthMapUnitScale,
       const QgsStringMap svgParameters
     );
 };

@@ -1169,7 +1169,10 @@ QMap<int, int> QgsOfflineEditing::attributeLookup( QgsVectorLayer *offlineLayer,
   return attrLookup;
 }
 
-void QgsOfflineEditing::showWarning( const QString &message ) { emit warning( tr( "Offline Editing Plugin" ), message ); }
+void QgsOfflineEditing::showWarning( const QString &message )
+{
+  emit warning( tr( "Offline Editing Plugin" ), message );
+}
 
 sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
 {
@@ -1364,9 +1367,12 @@ QList<QgsField> QgsOfflineEditing::sqlQueryAttributesAdded( sqlite3 *db, const Q
   while ( ret == SQLITE_ROW )
   {
     const QgsField field(
-      QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) ) ), static_cast< QMetaType::Type >( sqlite3_column_int( stmt, 1 ) ),
+      QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) ) ),
+      static_cast< QMetaType::Type >( sqlite3_column_int( stmt, 1 ) ),
       QString(), // typeName
-      sqlite3_column_int( stmt, 2 ), sqlite3_column_int( stmt, 3 ), QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) )
+      sqlite3_column_int( stmt, 2 ),
+      sqlite3_column_int( stmt, 3 ),
+      QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) )
     );
     values << field;
 

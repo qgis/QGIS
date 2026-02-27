@@ -101,21 +101,45 @@ bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &oth
   return true;
 }
 
-bool QgsTextBackgroundSettings::operator!=( const QgsTextBackgroundSettings &other ) const { return !( *this == other ); }
+bool QgsTextBackgroundSettings::operator!=( const QgsTextBackgroundSettings &other ) const
+{
+  return !( *this == other );
+}
 
-bool QgsTextBackgroundSettings::enabled() const { return d->enabled; }
+bool QgsTextBackgroundSettings::enabled() const
+{
+  return d->enabled;
+}
 
-void QgsTextBackgroundSettings::setEnabled( bool enabled ) { d->enabled = enabled; }
+void QgsTextBackgroundSettings::setEnabled( bool enabled )
+{
+  d->enabled = enabled;
+}
 
-QgsTextBackgroundSettings::ShapeType QgsTextBackgroundSettings::type() const { return d->type; }
+QgsTextBackgroundSettings::ShapeType QgsTextBackgroundSettings::type() const
+{
+  return d->type;
+}
 
-void QgsTextBackgroundSettings::setType( QgsTextBackgroundSettings::ShapeType type ) { d->type = type; }
+void QgsTextBackgroundSettings::setType( QgsTextBackgroundSettings::ShapeType type )
+{
+  d->type = type;
+}
 
-QString QgsTextBackgroundSettings::svgFile() const { return d->svgFile; }
+QString QgsTextBackgroundSettings::svgFile() const
+{
+  return d->svgFile;
+}
 
-void QgsTextBackgroundSettings::setSvgFile( const QString &file ) { d->svgFile = file; }
+void QgsTextBackgroundSettings::setSvgFile( const QString &file )
+{
+  d->svgFile = file;
+}
 
-QgsMarkerSymbol *QgsTextBackgroundSettings::markerSymbol() const { return d->markerSymbol.get(); }
+QgsMarkerSymbol *QgsTextBackgroundSettings::markerSymbol() const
+{
+  return d->markerSymbol.get();
+}
 
 void QgsTextBackgroundSettings::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
@@ -126,7 +150,10 @@ void QgsTextBackgroundSettings::setMarkerSymbol( QgsMarkerSymbol *symbol )
   d->markerSymbol.reset( symbol );
 }
 
-QgsFillSymbol *QgsTextBackgroundSettings::fillSymbol() const { return d->fillSymbol.get(); }
+QgsFillSymbol *QgsTextBackgroundSettings::fillSymbol() const
+{
+  return d->fillSymbol.get();
+}
 
 void QgsTextBackgroundSettings::setFillSymbol( QgsFillSymbol *symbol )
 {
@@ -137,63 +164,150 @@ void QgsTextBackgroundSettings::setFillSymbol( QgsFillSymbol *symbol )
   d->fillSymbol.reset( symbol );
 }
 
-QgsTextBackgroundSettings::SizeType QgsTextBackgroundSettings::sizeType() const { return d->sizeType; }
+QgsTextBackgroundSettings::SizeType QgsTextBackgroundSettings::sizeType() const
+{
+  return d->sizeType;
+}
 
-void QgsTextBackgroundSettings::setSizeType( QgsTextBackgroundSettings::SizeType type ) { d->sizeType = type; }
+void QgsTextBackgroundSettings::setSizeType( QgsTextBackgroundSettings::SizeType type )
+{
+  d->sizeType = type;
+}
 
-QSizeF QgsTextBackgroundSettings::size() const { return d->size; }
+QSizeF QgsTextBackgroundSettings::size() const
+{
+  return d->size;
+}
 
-void QgsTextBackgroundSettings::setSize( QSizeF size ) { d->size = size; }
+void QgsTextBackgroundSettings::setSize( QSizeF size )
+{
+  d->size = size;
+}
 
-Qgis::RenderUnit QgsTextBackgroundSettings::sizeUnit() const { return d->sizeUnits; }
+Qgis::RenderUnit QgsTextBackgroundSettings::sizeUnit() const
+{
+  return d->sizeUnits;
+}
 
-void QgsTextBackgroundSettings::setSizeUnit( Qgis::RenderUnit unit ) { d->sizeUnits = unit; }
+void QgsTextBackgroundSettings::setSizeUnit( Qgis::RenderUnit unit )
+{
+  d->sizeUnits = unit;
+}
 
-QgsMapUnitScale QgsTextBackgroundSettings::sizeMapUnitScale() const { return d->sizeMapUnitScale; }
+QgsMapUnitScale QgsTextBackgroundSettings::sizeMapUnitScale() const
+{
+  return d->sizeMapUnitScale;
+}
 
-void QgsTextBackgroundSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale ) { d->sizeMapUnitScale = scale; }
+void QgsTextBackgroundSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->sizeMapUnitScale = scale;
+}
 
-QgsTextBackgroundSettings::RotationType QgsTextBackgroundSettings::rotationType() const { return d->rotationType; }
+QgsTextBackgroundSettings::RotationType QgsTextBackgroundSettings::rotationType() const
+{
+  return d->rotationType;
+}
 
-void QgsTextBackgroundSettings::setRotationType( QgsTextBackgroundSettings::RotationType type ) { d->rotationType = type; }
+void QgsTextBackgroundSettings::setRotationType( QgsTextBackgroundSettings::RotationType type )
+{
+  d->rotationType = type;
+}
 
-double QgsTextBackgroundSettings::rotation() const { return d->rotation; }
+double QgsTextBackgroundSettings::rotation() const
+{
+  return d->rotation;
+}
 
-void QgsTextBackgroundSettings::setRotation( double rotation ) { d->rotation = rotation; }
+void QgsTextBackgroundSettings::setRotation( double rotation )
+{
+  d->rotation = rotation;
+}
 
-QPointF QgsTextBackgroundSettings::offset() const { return d->offset; }
+QPointF QgsTextBackgroundSettings::offset() const
+{
+  return d->offset;
+}
 
-void QgsTextBackgroundSettings::setOffset( QPointF offset ) { d->offset = offset; }
+void QgsTextBackgroundSettings::setOffset( QPointF offset )
+{
+  d->offset = offset;
+}
 
-Qgis::RenderUnit QgsTextBackgroundSettings::offsetUnit() const { return d->offsetUnits; }
+Qgis::RenderUnit QgsTextBackgroundSettings::offsetUnit() const
+{
+  return d->offsetUnits;
+}
 
-void QgsTextBackgroundSettings::setOffsetUnit( Qgis::RenderUnit units ) { d->offsetUnits = units; }
+void QgsTextBackgroundSettings::setOffsetUnit( Qgis::RenderUnit units )
+{
+  d->offsetUnits = units;
+}
 
-QgsMapUnitScale QgsTextBackgroundSettings::offsetMapUnitScale() const { return d->offsetMapUnitScale; }
+QgsMapUnitScale QgsTextBackgroundSettings::offsetMapUnitScale() const
+{
+  return d->offsetMapUnitScale;
+}
 
-void QgsTextBackgroundSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { d->offsetMapUnitScale = scale; }
+void QgsTextBackgroundSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->offsetMapUnitScale = scale;
+}
 
-QSizeF QgsTextBackgroundSettings::radii() const { return d->radii; }
+QSizeF QgsTextBackgroundSettings::radii() const
+{
+  return d->radii;
+}
 
-void QgsTextBackgroundSettings::setRadii( QSizeF radii ) { d->radii = radii; }
+void QgsTextBackgroundSettings::setRadii( QSizeF radii )
+{
+  d->radii = radii;
+}
 
-Qgis::RenderUnit QgsTextBackgroundSettings::radiiUnit() const { return d->radiiUnits; }
+Qgis::RenderUnit QgsTextBackgroundSettings::radiiUnit() const
+{
+  return d->radiiUnits;
+}
 
-void QgsTextBackgroundSettings::setRadiiUnit( Qgis::RenderUnit units ) { d->radiiUnits = units; }
+void QgsTextBackgroundSettings::setRadiiUnit( Qgis::RenderUnit units )
+{
+  d->radiiUnits = units;
+}
 
-QgsMapUnitScale QgsTextBackgroundSettings::radiiMapUnitScale() const { return d->radiiMapUnitScale; }
+QgsMapUnitScale QgsTextBackgroundSettings::radiiMapUnitScale() const
+{
+  return d->radiiMapUnitScale;
+}
 
-void QgsTextBackgroundSettings::setRadiiMapUnitScale( const QgsMapUnitScale &scale ) { d->radiiMapUnitScale = scale; }
+void QgsTextBackgroundSettings::setRadiiMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->radiiMapUnitScale = scale;
+}
 
-double QgsTextBackgroundSettings::opacity() const { return d->opacity; }
+double QgsTextBackgroundSettings::opacity() const
+{
+  return d->opacity;
+}
 
-void QgsTextBackgroundSettings::setOpacity( double opacity ) { d->opacity = opacity; }
+void QgsTextBackgroundSettings::setOpacity( double opacity )
+{
+  d->opacity = opacity;
+}
 
-QPainter::CompositionMode QgsTextBackgroundSettings::blendMode() const { return d->blendMode; }
+QPainter::CompositionMode QgsTextBackgroundSettings::blendMode() const
+{
+  return d->blendMode;
+}
 
-void QgsTextBackgroundSettings::setBlendMode( QPainter::CompositionMode mode ) { d->blendMode = mode; }
+void QgsTextBackgroundSettings::setBlendMode( QPainter::CompositionMode mode )
+{
+  d->blendMode = mode;
+}
 
-QColor QgsTextBackgroundSettings::fillColor() const { return d->fillSymbol ? d->fillSymbol->color() : d->fillColor; }
+QColor QgsTextBackgroundSettings::fillColor() const
+{
+  return d->fillSymbol ? d->fillSymbol->color() : d->fillColor;
+}
 
 void QgsTextBackgroundSettings::setFillColor( const QColor &color )
 {
@@ -296,9 +410,15 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   }
 }
 
-const QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const { return d->paintEffect.get(); }
+const QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
+{
+  return d->paintEffect.get();
+}
 
-void QgsTextBackgroundSettings::setPaintEffect( QgsPaintEffect *effect ) { d->paintEffect.reset( effect ); }
+void QgsTextBackgroundSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  d->paintEffect.reset( effect );
+}
 
 void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
 {

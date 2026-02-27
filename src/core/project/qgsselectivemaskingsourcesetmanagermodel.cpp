@@ -34,9 +34,15 @@ QgsSelectiveMaskingSourceSetManagerModel::QgsSelectiveMaskingSourceSetManagerMod
   } );
 }
 
-QgsSelectiveMaskingSourceSet *QgsSelectiveMaskingSourceSetManagerModel::setFromIndex( const QModelIndex &index ) const { return objectFromIndex( index ); }
+QgsSelectiveMaskingSourceSet *QgsSelectiveMaskingSourceSetManagerModel::setFromIndex( const QModelIndex &index ) const
+{
+  return objectFromIndex( index );
+}
 
-QModelIndex QgsSelectiveMaskingSourceSetManagerModel::indexFromSet( QgsSelectiveMaskingSourceSet *set ) const { return indexFromObject( set ); }
+QModelIndex QgsSelectiveMaskingSourceSetManagerModel::indexFromSet( QgsSelectiveMaskingSourceSet *set ) const
+{
+  return indexFromObject( set );
+}
 
 QVariant QgsSelectiveMaskingSourceSetManagerModel::data( const QModelIndex &index, int role ) const
 {

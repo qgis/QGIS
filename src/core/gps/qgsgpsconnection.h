@@ -62,10 +62,10 @@ template<class T> class QgsSettingsEntryEnumFlag;
       sipType = sipType_QgsNmeaConnection;
     else
       sipType = NULL;
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:

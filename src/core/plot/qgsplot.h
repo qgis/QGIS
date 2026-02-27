@@ -810,8 +810,17 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
   protected:
     //! Applies 2D XY plot data-defined properties
     void applyDataDefinedProperties(
-      QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY,
-      double &minorIntervalY, double &labelIntervalY
+      QgsRenderContext &context,
+      double &minX,
+      double &maxX,
+      double &minY,
+      double &maxY,
+      double &majorIntervalX,
+      double &minorIntervalX,
+      double &labelIntervalX,
+      double &majorIntervalY,
+      double &minorIntervalY,
+      double &labelIntervalY
     ) const;
 
   private:

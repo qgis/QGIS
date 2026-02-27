@@ -208,7 +208,14 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression, QgsExpressionContext *context );
 
     static QVariant calculate(
-      Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType, int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok = nullptr,
+      Qgis::Aggregate aggregate,
+      QgsFeatureIterator &fit,
+      QMetaType::Type resultType,
+      int attr,
+      QgsExpression *expression,
+      const QString &delimiter,
+      QgsExpressionContext *context,
+      bool *ok = nullptr,
       QString *error = nullptr
     );
     static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression, QgsExpressionContext *context, const QString &delimiter, bool unique = false );

@@ -46,7 +46,10 @@ void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
   }
 }
 
-QgsPointCloudLayer *QgsPointCloudAttributeModel::layer() { return mLayer; }
+QgsPointCloudLayer *QgsPointCloudAttributeModel::layer()
+{
+  return mLayer;
+}
 
 void QgsPointCloudAttributeModel::setAttributes( const QgsPointCloudAttributeCollection &attributes )
 {

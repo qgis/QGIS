@@ -21,9 +21,13 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DSymbolRegistry::Qgs3DSymbolRegistry() {}
+Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()
+{}
 
-Qgs3DSymbolRegistry::~Qgs3DSymbolRegistry() { qDeleteAll( mMetadata ); }
+Qgs3DSymbolRegistry::~Qgs3DSymbolRegistry()
+{
+  qDeleteAll( mMetadata );
+}
 
 bool Qgs3DSymbolRegistry::addSymbolType( Qgs3DSymbolAbstractMetadata *metadata )
 {
@@ -69,6 +73,12 @@ QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( QgsVectorLayer
   return it.value()->createFeatureHandler( layer, symbol );
 }
 
-Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const { return mMetadata.value( type ); }
+Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const
+{
+  return mMetadata.value( type );
+}
 
-QStringList Qgs3DSymbolRegistry::symbolTypes() const { return mMetadata.keys(); }
+QStringList Qgs3DSymbolRegistry::symbolTypes() const
+{
+  return mMetadata.keys();
+}

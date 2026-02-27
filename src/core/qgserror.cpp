@@ -34,11 +34,20 @@ QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, co
   , mLine( line )
 {}
 
-QgsError::QgsError( const QString &message, const QString &tag ) { append( message, tag ); }
+QgsError::QgsError( const QString &message, const QString &tag )
+{
+  append( message, tag );
+}
 
-void QgsError::append( const QString &message, const QString &tag ) { mMessageList.append( QgsErrorMessage( message, tag ) ); }
+void QgsError::append( const QString &message, const QString &tag )
+{
+  mMessageList.append( QgsErrorMessage( message, tag ) );
+}
 
-void QgsError::append( const QgsErrorMessage &message ) { mMessageList.append( message ); }
+void QgsError::append( const QgsErrorMessage &message )
+{
+  mMessageList.append( message );
+}
 
 QString QgsError::message( QgsErrorMessage::Format format ) const
 {

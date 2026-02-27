@@ -280,7 +280,11 @@ Loads this child from a QVariant.
 %End
 
     QStringList asPythonCode(
-      QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames,
+      QgsProcessing::PythonOutputType outputType,
+      const QgsStringMap &extraParameters,
+      int currentIndent,
+      int indentSize,
+      const QMap<QString, QString> &friendlyChildNames,
       const QMap<QString, QString> &friendlyOutputNames
     ) const;
 %Docstring

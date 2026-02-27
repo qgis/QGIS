@@ -109,7 +109,10 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QgsMbT
   mMatrixSet = other.mMatrixSet;
 }
 
-Qgis::DataProviderFlags QgsMbTilesVectorTileDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsMbTilesVectorTileDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 QString QgsMbTilesVectorTileDataProvider::name() const
 {
@@ -249,9 +252,15 @@ QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::crea
   return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
 }
 
-QIcon QgsMbTilesVectorTileDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
+QIcon QgsMbTilesVectorTileDataProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
 QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
 {
@@ -388,7 +397,10 @@ QString QgsMbTilesVectorTileDataProviderMetadata::relativeToAbsoluteUri( const Q
   return encodeUri( parts );
 }
 
-QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
+QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
 
 
 ///@endcond

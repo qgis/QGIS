@@ -333,10 +333,7 @@ void QgsAction::readXml( const QDomNode &actionNode, const QgsReadWriteContext &
 
   if ( actionScopeNodes.isEmpty() )
   {
-    mActionScopes
-      << u"Canvas"_s
-      << u"Field"_s
-      << u"Feature"_s;
+    mActionScopes << u"Canvas"_s << u"Field"_s << u"Feature"_s;
   }
   else
   {

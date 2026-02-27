@@ -57,9 +57,15 @@ QgsTextDocument &QgsTextDocument::operator=( QgsTextDocument &&other )
   return *this;
 }
 
-QgsTextDocument::QgsTextDocument( const QgsTextBlock &block ) { mBlocks.append( block ); }
+QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
+{
+  mBlocks.append( block );
+}
 
-QgsTextDocument::QgsTextDocument( const QgsTextFragment &fragment ) { mBlocks.append( QgsTextBlock( fragment ) ); }
+QgsTextDocument::QgsTextDocument( const QgsTextFragment &fragment )
+{
+  mBlocks.append( QgsTextBlock( fragment ) );
+}
 
 QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
 {
@@ -297,21 +303,45 @@ QgsTextDocument QgsTextDocument::fromTextAndFormat( const QStringList &lines, co
   return doc;
 }
 
-void QgsTextDocument::append( const QgsTextBlock &block ) { mBlocks.append( block ); }
+void QgsTextDocument::append( const QgsTextBlock &block )
+{
+  mBlocks.append( block );
+}
 
-void QgsTextDocument::append( QgsTextBlock &&block ) { mBlocks.push_back( block ); }
+void QgsTextDocument::append( QgsTextBlock &&block )
+{
+  mBlocks.push_back( block );
+}
 
-void QgsTextDocument::insert( int index, const QgsTextBlock &block ) { mBlocks.insert( index, block ); }
+void QgsTextDocument::insert( int index, const QgsTextBlock &block )
+{
+  mBlocks.insert( index, block );
+}
 
-void QgsTextDocument::insert( int index, QgsTextBlock &&block ) { mBlocks.insert( index, block ); }
+void QgsTextDocument::insert( int index, QgsTextBlock &&block )
+{
+  mBlocks.insert( index, block );
+}
 
-void QgsTextDocument::reserve( int count ) { mBlocks.reserve( count ); }
+void QgsTextDocument::reserve( int count )
+{
+  mBlocks.reserve( count );
+}
 
-const QgsTextBlock &QgsTextDocument::at( int i ) const { return mBlocks.at( i ); }
+const QgsTextBlock &QgsTextDocument::at( int i ) const
+{
+  return mBlocks.at( i );
+}
 
-QgsTextBlock &QgsTextDocument::operator[]( int i ) { return mBlocks[i]; }
+QgsTextBlock &QgsTextDocument::operator[]( int i )
+{
+  return mBlocks[i];
+}
 
-int QgsTextDocument::size() const { return mBlocks.size(); }
+int QgsTextDocument::size() const
+{
+  return mBlocks.size();
+}
 
 QStringList QgsTextDocument::toPlainText() const
 {
@@ -416,7 +446,13 @@ bool QgsTextDocument::hasBackgrounds() const
 }
 
 ///@cond PRIVATE
-QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const { return mBlocks.begin(); }
+QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
+{
+  return mBlocks.begin();
+}
 
-QVector< QgsTextBlock >::const_iterator QgsTextDocument::end() const { return mBlocks.end(); }
+QVector< QgsTextBlock >::const_iterator QgsTextDocument::end() const
+{
+  return mBlocks.end();
+}
 ///@endcond

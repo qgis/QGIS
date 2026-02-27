@@ -90,15 +90,24 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
   return false;
 }
 
-void QgsCredentials::lock() { mAuthMutex.lock(); }
+void QgsCredentials::lock()
+{
+  mAuthMutex.lock();
+}
 
-void QgsCredentials::unlock() { mAuthMutex.unlock(); }
+void QgsCredentials::unlock()
+{
+  mAuthMutex.unlock();
+}
 
 
 ////////////////////////////////
 // QgsCredentialsNone
 
-QgsCredentialsNone::QgsCredentialsNone() { setInstance( this ); }
+QgsCredentialsNone::QgsCredentialsNone()
+{
+  setInstance( this );
+}
 
 bool QgsCredentialsNone::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
@@ -119,7 +128,10 @@ bool QgsCredentialsNone::requestMasterPassword( QString &password, bool stored )
 ////////////////////////////////
 // QgsCredentialsConsole
 
-QgsCredentialsConsole::QgsCredentialsConsole() { setInstance( this ); }
+QgsCredentialsConsole::QgsCredentialsConsole()
+{
+  setInstance( this );
+}
 
 bool QgsCredentialsConsole::request( const QString &realm, QString &username, QString &password, const QString &message )
 {

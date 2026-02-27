@@ -43,13 +43,26 @@ QString QgsTextLabelFeature::text( int partId ) const
     return mTextMetrics->grapheme( partId );
 }
 
-QgsTextCharacterFormat QgsTextLabelFeature::characterFormat( int partId ) const { return mTextMetrics.has_value() ? mTextMetrics->graphemeFormat( partId ) : QgsTextCharacterFormat(); }
+QgsTextCharacterFormat QgsTextLabelFeature::characterFormat( int partId ) const
+{
+  return mTextMetrics.has_value() ? mTextMetrics->graphemeFormat( partId ) : QgsTextCharacterFormat();
+}
 
-bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const { return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount(); }
+bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
+{
+  return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
+}
 
 QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics(
-  const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing,
-  const QgsTextDocument &document, const QgsTextDocumentMetrics &
+  const QgsMapToPixel *xform,
+  const QgsRenderContext &context,
+  const QgsTextFormat &format,
+  const QFont &baseFont,
+  const QFontMetricsF &fontMetrics,
+  double letterSpacing,
+  double wordSpacing,
+  const QgsTextDocument &document,
+  const QgsTextDocumentMetrics &
 )
 {
   const double tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage

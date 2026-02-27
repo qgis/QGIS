@@ -306,7 +306,10 @@ QDebug operator<<( QDebug dbg, const QgsInterval &interval )
   return dbg.maybeSpace();
 }
 
-QDateTime operator+( const QDateTime &start, const QgsInterval &interval ) { return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) ); }
+QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
+{
+  return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
+}
 
 QgsInterval operator-( QDate date1, QDate date2 )
 {

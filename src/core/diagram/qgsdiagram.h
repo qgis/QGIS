@@ -60,7 +60,10 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     SIP_END
 #endif
 
-    virtual ~QgsDiagram() { clearCache(); }
+    virtual ~QgsDiagram()
+    {
+      clearCache();
+    }
 
     /**
      * Returns an instance that is equivalent to this one

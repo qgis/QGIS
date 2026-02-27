@@ -26,7 +26,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer() { setSubSymbol( new QgsLineSymbol() ); }
+QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
+{
+  setSubSymbol( new QgsLineSymbol() );
+}
 
 QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer() = default;
 
@@ -134,7 +137,10 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbol *QgsVectorFieldSymbolLayer::subSymbol() { return mLineSymbol.get(); }
+QgsSymbol *QgsVectorFieldSymbolLayer::subSymbol()
+{
+  return mLineSymbol.get();
+}
 
 void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
@@ -373,4 +379,7 @@ void QgsVectorFieldSymbolLayer::setColor( const QColor &color )
   mColor = color;
 }
 
-QColor QgsVectorFieldSymbolLayer::color() const { return mLineSymbol ? mLineSymbol->color() : mColor; }
+QColor QgsVectorFieldSymbolLayer::color() const
+{
+  return mLineSymbol ? mLineSymbol->color() : mColor;
+}

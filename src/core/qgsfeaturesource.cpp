@@ -24,7 +24,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const { return Qgis::FeatureAvailability::FeaturesMaybeAvailable; }
+Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const
+{
+  return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
+}
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
@@ -93,7 +96,10 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
   return max;
 }
 
-QgsRectangle QgsFeatureSource::sourceExtent() const { return sourceExtent3D().toRectangle(); }
+QgsRectangle QgsFeatureSource::sourceExtent() const
+{
+  return sourceExtent3D().toRectangle();
+}
 
 QgsBox3D QgsFeatureSource::sourceExtent3D() const
 {
@@ -183,4 +189,7 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
   return layer.release();
 }
 
-Qgis::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const { return Qgis::SpatialIndexPresence::Unknown; }
+Qgis::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
+{
+  return Qgis::SpatialIndexPresence::Unknown;
+}

@@ -449,13 +449,25 @@ int LabelPosition::partCount() const
     return 1;
 }
 
-int LabelPosition::getId() const { return id; }
+int LabelPosition::getId() const
+{
+  return id;
+}
 
-double LabelPosition::getX( int i ) const { return ( i >= 0 && i < 4 ? x[i] : -1 ); }
+double LabelPosition::getX( int i ) const
+{
+  return ( i >= 0 && i < 4 ? x[i] : -1 );
+}
 
-double LabelPosition::getY( int i ) const { return ( i >= 0 && i < 4 ? y[i] : -1 ); }
+double LabelPosition::getY( int i ) const
+{
+  return ( i >= 0 && i < 4 ? y[i] : -1 );
+}
 
-double LabelPosition::getAlpha() const { return alpha; }
+double LabelPosition::getAlpha() const
+{
+  return alpha;
+}
 
 void LabelPosition::validateCost()
 {
@@ -465,7 +477,10 @@ void LabelPosition::validateCost()
   }
 }
 
-FeaturePart *LabelPosition::getFeaturePart() const { return feature; }
+FeaturePart *LabelPosition::getFeaturePart() const
+{
+  return feature;
+}
 
 void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
 {
@@ -584,9 +599,15 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     mNextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal ) { index.remove( this, boundingBoxForCandidateConflicts( pal ) ); }
+void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal )
+{
+  index.remove( this, boundingBoxForCandidateConflicts( pal ) );
+}
 
-void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal ) { index.insert( this, boundingBoxForCandidateConflicts( pal ) ); }
+void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal )
+{
+  index.insert( this, boundingBoxForCandidateConflicts( pal ) );
+}
 
 const GEOSGeometry *LabelPosition::multiPartGeom() const
 {
@@ -633,7 +654,10 @@ const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
   return mMultipartPreparedGeos;
 }
 
-const GEOSPreparedGeometry *LabelPosition::preparedOuterBoundsGeom() const { return mPreparedOuterBoundsGeos; }
+const GEOSPreparedGeometry *LabelPosition::preparedOuterBoundsGeom() const
+{
+  return mPreparedOuterBoundsGeos;
+}
 
 double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBounds ) const
 {

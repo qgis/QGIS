@@ -29,7 +29,10 @@
 
 using namespace Qt::StringLiterals;
 
-bool QgsZipUtils::isZipFile( const QString &filename ) { return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0; }
+bool QgsZipUtils::isZipFile( const QString &filename )
+{
+  return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0;
+}
 
 bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files, bool checkConsistency )
 {
@@ -200,7 +203,10 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files, boo
   return true;
 }
 
-bool QgsZipUtils::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut ) { return decodeGzip( bytesIn.constData(), bytesIn.count(), bytesOut ); }
+bool QgsZipUtils::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
+{
+  return decodeGzip( bytesIn.constData(), bytesIn.count(), bytesOut );
+}
 
 bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray &bytesOut )
 {

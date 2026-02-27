@@ -247,11 +247,20 @@ QVariantMap QgsLinearReferencingSymbolLayer::properties() const
   return res;
 }
 
-QString QgsLinearReferencingSymbolLayer::layerType() const { return u"LinearReferencing"_s; }
+QString QgsLinearReferencingSymbolLayer::layerType() const
+{
+  return u"LinearReferencing"_s;
+}
 
-Qgis::SymbolLayerFlags QgsLinearReferencingSymbolLayer::flags() const { return Qgis::SymbolLayerFlag::DisableFeatureClipping | Qgis::SymbolLayerFlag::AffectsLabeling; }
+Qgis::SymbolLayerFlags QgsLinearReferencingSymbolLayer::flags() const
+{
+  return Qgis::SymbolLayerFlag::DisableFeatureClipping | Qgis::SymbolLayerFlag::AffectsLabeling;
+}
 
-QgsSymbol *QgsLinearReferencingSymbolLayer::subSymbol() { return mShowMarker ? mMarkerSymbol.get() : nullptr; }
+QgsSymbol *QgsLinearReferencingSymbolLayer::subSymbol()
+{
+  return mShowMarker ? mMarkerSymbol.get() : nullptr;
+}
 
 bool QgsLinearReferencingSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
@@ -294,8 +303,7 @@ void QgsLinearReferencingSymbolLayer::stopRender( QgsSymbolRenderContext &contex
 }
 
 void QgsLinearReferencingSymbolLayer::renderGeometryPart(
-  QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits,
-  bool showMarker
+  QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker
 )
 {
   if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( geometry ) )
@@ -313,8 +321,7 @@ void QgsLinearReferencingSymbolLayer::renderGeometryPart(
 }
 
 void QgsLinearReferencingSymbolLayer::renderLineString(
-  QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits,
-  bool showMarker
+  QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker
 )
 {
   if ( !line )
@@ -385,8 +392,17 @@ void QgsLinearReferencingSymbolLayer::renderPolyline( const QPolygonF &points, Q
 
 
 double calculateAveragedAngle(
-  double targetPointDistanceAlongSegment, double segmentLengthPainterUnits, double averageAngleLengthPainterUnits, double prevXPainterUnits, double prevYPainterUnits, double thisXPainterUnits,
-  double thisYPainterUnits, const double *xPainterUnits, const double *yPainterUnits, int totalPoints, int i
+  double targetPointDistanceAlongSegment,
+  double segmentLengthPainterUnits,
+  double averageAngleLengthPainterUnits,
+  double prevXPainterUnits,
+  double prevYPainterUnits,
+  double thisXPainterUnits,
+  double thisYPainterUnits,
+  const double *xPainterUnits,
+  const double *yPainterUnits,
+  int totalPoints,
+  int i
 )
 {
   // track forward by averageAngleLengthPainterUnits
@@ -563,7 +579,10 @@ void visitPointsByRegularDistance(
   }
 }
 
-double interpolateValue( double a, double b, double fraction ) { return a + ( b - a ) * fraction; }
+double interpolateValue( double a, double b, double fraction )
+{
+  return a + ( b - a ) * fraction;
+}
 
 
 void visitPointsByInterpolatedZM(
@@ -757,9 +776,12 @@ void QgsLinearReferencingSymbolLayer::renderPolylineInterval(
   }
 
   func(
-    line, painterUnitsGeometry.get(), emitFirstPoint, distance, averageAngleLengthPainterUnits,
-    [&context, &numericContext, skipMultiples, showMarker, labelOffsetPainterUnits, hasZ, hasM, labelProvider,
-     this]( double x, double y, double z, double m, double distanceFromStart, double angle ) -> bool {
+    line,
+    painterUnitsGeometry.get(),
+    emitFirstPoint,
+    distance,
+    averageAngleLengthPainterUnits,
+    [&context, &numericContext, skipMultiples, showMarker, labelOffsetPainterUnits, hasZ, hasM, labelProvider, this]( double x, double y, double z, double m, double distanceFromStart, double angle ) -> bool {
       if ( context.renderContext().renderingStopped() )
         return false;
 
@@ -1008,23 +1030,50 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex(
   }
 }
 
-QgsTextFormat QgsLinearReferencingSymbolLayer::textFormat() const { return mTextFormat; }
+QgsTextFormat QgsLinearReferencingSymbolLayer::textFormat() const
+{
+  return mTextFormat;
+}
 
-void QgsLinearReferencingSymbolLayer::setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+void QgsLinearReferencingSymbolLayer::setTextFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
+}
 
-QgsNumericFormat *QgsLinearReferencingSymbolLayer::numericFormat() const { return mNumericFormat.get(); }
+QgsNumericFormat *QgsLinearReferencingSymbolLayer::numericFormat() const
+{
+  return mNumericFormat.get();
+}
 
-void QgsLinearReferencingSymbolLayer::setNumericFormat( QgsNumericFormat *format ) { mNumericFormat.reset( format ); }
+void QgsLinearReferencingSymbolLayer::setNumericFormat( QgsNumericFormat *format )
+{
+  mNumericFormat.reset( format );
+}
 
-double QgsLinearReferencingSymbolLayer::interval() const { return mInterval; }
+double QgsLinearReferencingSymbolLayer::interval() const
+{
+  return mInterval;
+}
 
-void QgsLinearReferencingSymbolLayer::setInterval( double interval ) { mInterval = interval; }
+void QgsLinearReferencingSymbolLayer::setInterval( double interval )
+{
+  mInterval = interval;
+}
 
-double QgsLinearReferencingSymbolLayer::skipMultiplesOf() const { return mSkipMultiplesOf; }
+double QgsLinearReferencingSymbolLayer::skipMultiplesOf() const
+{
+  return mSkipMultiplesOf;
+}
 
-void QgsLinearReferencingSymbolLayer::setSkipMultiplesOf( double skipMultiplesOf ) { mSkipMultiplesOf = skipMultiplesOf; }
+void QgsLinearReferencingSymbolLayer::setSkipMultiplesOf( double skipMultiplesOf )
+{
+  mSkipMultiplesOf = skipMultiplesOf;
+}
 
-bool QgsLinearReferencingSymbolLayer::showMarker() const { return mShowMarker; }
+bool QgsLinearReferencingSymbolLayer::showMarker() const
+{
+  return mShowMarker;
+}
 
 void QgsLinearReferencingSymbolLayer::setShowMarker( bool show )
 {
@@ -1035,10 +1084,22 @@ void QgsLinearReferencingSymbolLayer::setShowMarker( bool show )
   }
 }
 
-Qgis::LinearReferencingPlacement QgsLinearReferencingSymbolLayer::placement() const { return mPlacement; }
+Qgis::LinearReferencingPlacement QgsLinearReferencingSymbolLayer::placement() const
+{
+  return mPlacement;
+}
 
-void QgsLinearReferencingSymbolLayer::setPlacement( Qgis::LinearReferencingPlacement placement ) { mPlacement = placement; }
+void QgsLinearReferencingSymbolLayer::setPlacement( Qgis::LinearReferencingPlacement placement )
+{
+  mPlacement = placement;
+}
 
-Qgis::LinearReferencingLabelSource QgsLinearReferencingSymbolLayer::labelSource() const { return mLabelSource; }
+Qgis::LinearReferencingLabelSource QgsLinearReferencingSymbolLayer::labelSource() const
+{
+  return mLabelSource;
+}
 
-void QgsLinearReferencingSymbolLayer::setLabelSource( Qgis::LinearReferencingLabelSource source ) { mLabelSource = source; }
+void QgsLinearReferencingSymbolLayer::setLabelSource( Qgis::LinearReferencingLabelSource source )
+{
+  mLabelSource = source;
+}

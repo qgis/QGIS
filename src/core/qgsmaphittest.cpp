@@ -116,7 +116,10 @@ void QgsMapHitTest::run()
   painter.end();
 }
 
-QMap<QString, QSet<QString> > QgsMapHitTest::results() const { return mHitTestRuleKey; }
+QMap<QString, QSet<QString> > QgsMapHitTest::results() const
+{
+  return mHitTestRuleKey;
+}
 
 ///@cond PRIVATE
 QMap<QString, QList<QString> > QgsMapHitTest::resultsPy() const
@@ -155,8 +158,15 @@ bool QgsMapHitTest::legendKeyVisible( const QString &ruleKey, QgsVectorLayer *la
 }
 
 void QgsMapHitTest::runHitTestFeatureSource(
-  QgsAbstractFeatureSource *source, const QString &layerId, const QgsFields &fields, const QgsFeatureRenderer *renderer, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey,
-  QgsRenderContext &context, QgsFeedback *feedback, const QgsGeometry &visibleExtent
+  QgsAbstractFeatureSource *source,
+  const QString &layerId,
+  const QgsFields &fields,
+  const QgsFeatureRenderer *renderer,
+  SymbolSet &usedSymbols,
+  SymbolSet &usedSymbolsRuleKey,
+  QgsRenderContext &context,
+  QgsFeedback *feedback,
+  const QgsGeometry &visibleExtent
 )
 {
   std::unique_ptr< QgsFeatureRenderer > r( renderer->clone() );
@@ -296,8 +306,14 @@ void QgsMapHitTest::runHitTestFeatureSource(
 }
 
 void QgsMapHitTest::runHitTestRasterSource(
-  QgsRasterDataProvider *provider, const QString &layerId, const int band, const QgsRasterMinMaxOrigin minMaxOrigin, const Qgis::RasterRangeLimit rangeLimit, const QgsRenderContext &context,
-  QgsFeedback *feedback, const QgsGeometry &visibleExtent
+  QgsRasterDataProvider *provider,
+  const QString &layerId,
+  const int band,
+  const QgsRasterMinMaxOrigin minMaxOrigin,
+  const Qgis::RasterRangeLimit rangeLimit,
+  const QgsRenderContext &context,
+  QgsFeedback *feedback,
+  const QgsGeometry &visibleExtent
 )
 {
   if ( feedback && feedback->isCanceled() )
@@ -404,7 +420,10 @@ QgsMapHitTestTask::QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings
   prepare();
 }
 
-QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const { return mResults; }
+QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const
+{
+  return mResults;
+}
 
 ///@cond PRIVATE
 QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const

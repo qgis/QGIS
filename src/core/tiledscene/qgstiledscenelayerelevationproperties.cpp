@@ -29,7 +29,10 @@ QgsTiledSceneLayerElevationProperties::QgsTiledSceneLayerElevationProperties( QO
   : QgsMapLayerElevationProperties( parent )
 {}
 
-bool QgsTiledSceneLayerElevationProperties::hasElevation() const { return true; }
+bool QgsTiledSceneLayerElevationProperties::hasElevation() const
+{
+  return true;
+}
 
 QDomElement QgsTiledSceneLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {

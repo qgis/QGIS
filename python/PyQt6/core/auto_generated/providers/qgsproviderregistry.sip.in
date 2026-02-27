@@ -81,7 +81,9 @@ Sets library directory where to search for plugins
 
 
     QgsDataProvider *createProvider(
-      const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+      const QString &providerKey,
+      const QString &dataSource,
+      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
       Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
     ) /TransferBack/;
 %Docstring
@@ -108,13 +110,29 @@ Returns the provider capabilities
    Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
 %End
 
-      const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerName
     );
 
 
     QgsRasterDataProvider *createRasterDataProvider(
-      const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QString &providerKey,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList()
     ) /Factory/;
 %Docstring
@@ -279,8 +297,15 @@ Deletes a layer style defined by ``styleId``
 %End
 
     bool saveStyle(
-      const QString &providerKey, const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent,
-      bool useAsDefault, QString &errCause
+      const QString &providerKey,
+      const QString &uri,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
     );
 %Docstring
 Saves a layer style to provider

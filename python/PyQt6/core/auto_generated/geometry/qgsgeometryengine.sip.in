@@ -67,7 +67,7 @@ Example
 #include "qgsgeometryengine.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
+    if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
       sipType = sipType_QgsGeos;
     else
       sipType = NULL;

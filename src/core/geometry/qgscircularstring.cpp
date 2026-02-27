@@ -40,7 +40,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCircularString::QgsCircularString() { mWkbType = Qgis::WkbType::CircularString; }
+QgsCircularString::QgsCircularString()
+{
+  mWkbType = Qgis::WkbType::CircularString;
+}
 
 QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
@@ -220,11 +223,20 @@ int QgsCircularString::compareToSameClass( const QgsAbstractGeometry *other ) co
   return 0;
 }
 
-QString QgsCircularString::geometryType() const { return u"CircularString"_s; }
+QString QgsCircularString::geometryType() const
+{
+  return u"CircularString"_s;
+}
 
-int QgsCircularString::dimension() const { return 1; }
+int QgsCircularString::dimension() const
+{
+  return 1;
+}
 
-QgsCircularString *QgsCircularString::clone() const { return new QgsCircularString( *this ); }
+QgsCircularString *QgsCircularString::clone() const
+{
+  return new QgsCircularString( *this );
+}
 
 void QgsCircularString::clear()
 {
@@ -558,7 +570,10 @@ json QgsCircularString::asJsonObject( int precision ) const
   return line->asJsonObject( precision );
 }
 
-bool QgsCircularString::isEmpty() const { return mX.isEmpty(); }
+bool QgsCircularString::isEmpty() const
+{
+  return mX.isEmpty();
+}
 
 bool QgsCircularString::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
@@ -682,7 +697,10 @@ bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
-int QgsCircularString::numPoints() const { return std::min( mX.size(), mY.size() ); }
+int QgsCircularString::numPoints() const
+{
+  return std::min( mX.size(), mY.size() );
+}
 
 int QgsCircularString::indexOf( const QgsPoint &point ) const
 {
@@ -1186,7 +1204,10 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
   }
 }
 
-void QgsCircularString::drawAsPolygon( QPainter &p ) const { draw( p ); }
+void QgsCircularString::drawAsPolygon( QPainter &p ) const
+{
+  draw( p );
+}
 
 bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
@@ -1486,7 +1507,10 @@ void QgsCircularString::sumUpArea3D( double &sum ) const
   sum += mSummedUpArea3D;
 }
 
-bool QgsCircularString::hasCurvedSegments() const { return true; }
+bool QgsCircularString::hasCurvedSegments() const
+{
+  return true;
+}
 
 double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3, const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon )
 {

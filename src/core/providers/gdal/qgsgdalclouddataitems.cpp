@@ -210,11 +210,20 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
 // QgsGdalCloudDataItemProvider
 //
 
-QString QgsGdalCloudDataItemProvider::name() { return u"GDAL Cloud"_s; }
+QString QgsGdalCloudDataItemProvider::name()
+{
+  return u"GDAL Cloud"_s;
+}
 
-QString QgsGdalCloudDataItemProvider::dataProviderKey() const { return u"cloud"_s; }
+QString QgsGdalCloudDataItemProvider::dataProviderKey() const
+{
+  return u"cloud"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsGdalCloudDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
+Qgis::DataItemProviderCapabilities QgsGdalCloudDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::NetworkSources;
+}
 
 QgsDataItem *QgsGdalCloudDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

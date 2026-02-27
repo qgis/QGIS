@@ -315,7 +315,11 @@ The ``flags`` argument was added in QGIS 4.0.
 %End
 
     static QgsNetworkReplyContent blockingPost(
-      QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0,
+      QNetworkRequest &request,
+      const QByteArray &data,
+      const QString &authCfg = QString(),
+      bool forceRefresh = false,
+      QgsFeedback *feedback = 0,
       Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags()
     );
 %Docstring
@@ -534,7 +538,8 @@ directly as desired.
     Py_BEGIN_ALLOW_THREADS
     id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
     {
-      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 

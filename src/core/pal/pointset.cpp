@@ -264,7 +264,10 @@ std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax
   return newShape;
 }
 
-std::unique_ptr<PointSet> PointSet::clone() const { return std::unique_ptr< PointSet>( new PointSet( *this ) ); }
+std::unique_ptr<PointSet> PointSet::clone() const
+{
+  return std::unique_ptr< PointSet>( new PointSet( *this ) );
+}
 
 bool PointSet::containsPoint( double x, double y ) const
 {
@@ -284,7 +287,10 @@ bool PointSet::containsPoint( double x, double y ) const
   }
 }
 
-bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const { return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha ); }
+bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const
+{
+  return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
+}
 
 QVector<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
 {
@@ -834,7 +840,15 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
   for ( int i = 0; i < 16; i = i + 4 )
   {
     GeomFunction::computeLineIntersection(
-      best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3], best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16], &finalBb.x[int( i / 4 )],
+      best_bb[i],
+      best_bb[i + 1],
+      best_bb[i + 2],
+      best_bb[i + 3],
+      best_bb[( i + 4 ) % 16],
+      best_bb[( i + 5 ) % 16],
+      best_bb[( i + 6 ) % 16],
+      best_bb[( i + 7 ) % 16],
+      &finalBb.x[int( i / 4 )],
       &finalBb.y[int( i / 4 )]
     );
   }
@@ -1101,7 +1115,10 @@ double PointSet::area() const
   }
 }
 
-bool PointSet::isClosed() const { return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] ); }
+bool PointSet::isClosed() const
+{
+  return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] );
+}
 
 QString PointSet::toWkt() const
 {

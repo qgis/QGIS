@@ -88,7 +88,10 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( u"GeometryGenerator"_s, QObject::tr( "Geometry Generator" ), Qgis::SymbolType::Hybrid, QgsGeometryGeneratorSymbolLayer::create ) );
 }
 
-QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry() { qDeleteAll( mMetadata ); }
+QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry()
+{
+  qDeleteAll( mMetadata );
+}
 
 bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata )
 {
@@ -110,7 +113,10 @@ bool QgsSymbolLayerRegistry::removeSymbolLayerType( QgsSymbolLayerAbstractMetada
 }
 
 
-QgsSymbolLayerAbstractMetadata *QgsSymbolLayerRegistry::symbolLayerMetadata( const QString &name ) const { return mMetadata.value( name ); }
+QgsSymbolLayerAbstractMetadata *QgsSymbolLayerRegistry::symbolLayerMetadata( const QString &name ) const
+{
+  return mMetadata.value( name );
+}
 
 std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerRegistry::defaultSymbolLayer( Qgis::SymbolType type )
 {

@@ -53,11 +53,20 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
 
 QgsLayoutItemMarker::~QgsLayoutItemMarker() = default;
 
-QgsLayoutItemMarker *QgsLayoutItemMarker::create( QgsLayout *layout ) { return new QgsLayoutItemMarker( layout ); }
+QgsLayoutItemMarker *QgsLayoutItemMarker::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemMarker( layout );
+}
 
-int QgsLayoutItemMarker::type() const { return QgsLayoutItemRegistry::LayoutMarker; }
+int QgsLayoutItemMarker::type() const
+{
+  return QgsLayoutItemRegistry::LayoutMarker;
+}
 
-QIcon QgsLayoutItemMarker::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemMarker.svg"_s ); }
+QIcon QgsLayoutItemMarker::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemMarker.svg"_s );
+}
 
 void QgsLayoutItemMarker::refreshSymbol()
 {
@@ -113,23 +122,50 @@ void QgsLayoutItemMarker::setSymbol( QgsMarkerSymbol *symbol )
   refreshSymbol();
 }
 
-QgsMarkerSymbol *QgsLayoutItemMarker::symbol() { return mShapeStyleSymbol.get(); }
+QgsMarkerSymbol *QgsLayoutItemMarker::symbol()
+{
+  return mShapeStyleSymbol.get();
+}
 
-void QgsLayoutItemMarker::setLinkedMap( QgsLayoutItemMap *map ) { mNorthArrowHandler->setLinkedMap( map ); }
+void QgsLayoutItemMarker::setLinkedMap( QgsLayoutItemMap *map )
+{
+  mNorthArrowHandler->setLinkedMap( map );
+}
 
-QgsLayoutItemMap *QgsLayoutItemMarker::linkedMap() const { return mNorthArrowHandler->linkedMap(); }
+QgsLayoutItemMap *QgsLayoutItemMarker::linkedMap() const
+{
+  return mNorthArrowHandler->linkedMap();
+}
 
-QgsLayoutNorthArrowHandler::NorthMode QgsLayoutItemMarker::northMode() const { return mNorthArrowHandler->northMode(); }
+QgsLayoutNorthArrowHandler::NorthMode QgsLayoutItemMarker::northMode() const
+{
+  return mNorthArrowHandler->northMode();
+}
 
-void QgsLayoutItemMarker::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode ) { mNorthArrowHandler->setNorthMode( mode ); }
+void QgsLayoutItemMarker::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode )
+{
+  mNorthArrowHandler->setNorthMode( mode );
+}
 
-double QgsLayoutItemMarker::northOffset() const { return mNorthArrowHandler->northOffset(); }
+double QgsLayoutItemMarker::northOffset() const
+{
+  return mNorthArrowHandler->northOffset();
+}
 
-void QgsLayoutItemMarker::setNorthOffset( double offset ) { mNorthArrowHandler->setNorthOffset( offset ); }
+void QgsLayoutItemMarker::setNorthOffset( double offset )
+{
+  mNorthArrowHandler->setNorthOffset( offset );
+}
 
-QRectF QgsLayoutItemMarker::boundingRect() const { return mCurrentRectangle; }
+QRectF QgsLayoutItemMarker::boundingRect() const
+{
+  return mCurrentRectangle;
+}
 
-QgsLayoutSize QgsLayoutItemMarker::fixedSize() const { return mFixedSize; }
+QgsLayoutSize QgsLayoutItemMarker::fixedSize() const
+{
+  return mFixedSize;
+}
 
 bool QgsLayoutItemMarker::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {

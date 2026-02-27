@@ -139,13 +139,25 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   QgsDebugMsgLevel( u"encoded uri: '%1'."_s.arg( QString( mUri.encodedUri() ) ), 4 );
 }
 
-QString QgsOwsConnection::connectionName() const { return mConnName; }
+QString QgsOwsConnection::connectionName() const
+{
+  return mConnName;
+}
 
-QString QgsOwsConnection::connectionInfo() const { return mConnectionInfo; }
+QString QgsOwsConnection::connectionInfo() const
+{
+  return mConnectionInfo;
+}
 
-QString QgsOwsConnection::service() const { return mService; }
+QString QgsOwsConnection::service() const
+{
+  return mService;
+}
 
-QgsDataSourceUri QgsOwsConnection::uri() const { return mUri; }
+QgsDataSourceUri QgsOwsConnection::uri() const
+{
+  return mUri;
+}
 
 QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
 {
@@ -283,11 +295,20 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
   return uri;
 }
 
-QStringList QgsOwsConnection::connectionList( const QString &service ) { return QgsOwsConnection::sTreeOwsConnections->items( { service.toLower() } ); }
+QStringList QgsOwsConnection::connectionList( const QString &service )
+{
+  return QgsOwsConnection::sTreeOwsConnections->items( { service.toLower() } );
+}
 
-QString QgsOwsConnection::selectedConnection( const QString &service ) { return QgsOwsConnection::sTreeOwsConnections->selectedItem( { service.toLower() } ); }
+QString QgsOwsConnection::selectedConnection( const QString &service )
+{
+  return QgsOwsConnection::sTreeOwsConnections->selectedItem( { service.toLower() } );
+}
 
-void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name ) { QgsOwsConnection::sTreeOwsConnections->setSelectedItem( name, { service.toLower() } ); }
+void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
+{
+  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( name, { service.toLower() } );
+}
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
 {
@@ -315,4 +336,7 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
   }
 }
 
-void QgsOwsConnection::deleteConnection( const QString &service, const QString &name ) { sTreeOwsConnections->deleteItem( name, { service.toLower() } ); }
+void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
+{
+  sTreeOwsConnections->deleteItem( name, { service.toLower() } );
+}

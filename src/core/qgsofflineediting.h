@@ -70,8 +70,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * \param layerNameSuffix Suffix string added to the offline layer name
      */
     bool convertToOfflineProject(
-      const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite,
-      const QString &layerNameSuffix = u" (offline)"_s
+      const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = u" (offline)"_s
     );
 
     //! Returns TRUE if current project is offline

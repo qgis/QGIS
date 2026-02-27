@@ -52,8 +52,15 @@ class QgsOgrProviderMetadata final : public QgsProviderMetadata
     QList< Qgis::LayerType > supportedLayerTypes() const override;
     bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
     Qgis::VectorExportResult createEmptyLayer(
-      const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
-      const QMap<QString, QVariant> *options, QString &createdLayerUri
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
     ) override;
     bool createDatabase( const QString &uri, QString &errorMessage ) override;
 

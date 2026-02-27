@@ -43,7 +43,10 @@ QgsWebEnginePage::QgsWebEnginePage( QObject *parent )
 
 QgsWebEnginePage::~QgsWebEnginePage() = default;
 
-QWebEnginePage *QgsWebEnginePage::page() { return mPage.get(); }
+QWebEnginePage *QgsWebEnginePage::page()
+{
+  return mPage.get();
+}
 
 bool QgsWebEnginePage::setContent( const QByteArray &data, const QString &mimeType, const QUrl &baseUrl, bool blocking )
 {
@@ -224,5 +227,8 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
   return printOk;
 }
 #else
-bool QgsWebEnginePage::render( QPainter *, const QRectF & ) { throw QgsNotSupportedException( QObject::tr( "Rendering web pages requires a QGIS build with PDF4Qt library support" ) ); }
+bool QgsWebEnginePage::render( QPainter *, const QRectF & )
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering web pages requires a QGIS build with PDF4Qt library support" ) );
+}
 #endif

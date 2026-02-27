@@ -40,7 +40,10 @@ QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol 
 
 QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
 
-QString QgsPointCloudExtentRenderer::type() const { return u"extent"_s; }
+QString QgsPointCloudExtentRenderer::type() const
+{
+  return u"extent"_s;
+}
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
 {
@@ -49,7 +52,8 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
   return res.release();
 }
 
-void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & ) {}
+void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & )
+{}
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -121,9 +125,15 @@ QgsFillSymbol *QgsPointCloudExtentRenderer::defaultFillSymbol()
   return new QgsFillSymbol( QgsSymbolLayerList() << layer.release() );
 }
 
-QgsFillSymbol *QgsPointCloudExtentRenderer::fillSymbol() const { return mFillSymbol.get(); }
+QgsFillSymbol *QgsPointCloudExtentRenderer::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
 
-void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol ) { mFillSymbol.reset( symbol ); }
+void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
 void QgsPointCloudExtentRenderer::renderLabel( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const
 {
   const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, labelTextFormat() );

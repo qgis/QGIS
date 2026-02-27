@@ -36,7 +36,10 @@ QString QgsReportSectionFieldGroup::description() const
     return QObject::tr( "Group" );
 }
 
-QIcon QgsReportSectionFieldGroup::icon() const { return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s ); }
+QIcon QgsReportSectionFieldGroup::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
+}
 
 QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 {
@@ -97,7 +100,10 @@ bool QgsReportSectionFieldGroup::prepareHeader()
   return mHeaderVisibility == AlwaysInclude || !mNoFeatures;
 }
 
-bool QgsReportSectionFieldGroup::prepareFooter() { return mFooterVisibility == AlwaysInclude || !mNoFeatures; }
+bool QgsReportSectionFieldGroup::prepareFooter()
+{
+  return mFooterVisibility == AlwaysInclude || !mNoFeatures;
+}
 
 QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
 {
@@ -223,9 +229,15 @@ bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &e
   return true;
 }
 
-bool QgsReportSectionFieldGroup::sortAscending() const { return mSortAscending; }
+bool QgsReportSectionFieldGroup::sortAscending() const
+{
+  return mSortAscending;
+}
 
-void QgsReportSectionFieldGroup::setSortAscending( bool sortAscending ) { mSortAscending = sortAscending; }
+void QgsReportSectionFieldGroup::setSortAscending( bool sortAscending )
+{
+  mSortAscending = sortAscending;
+}
 
 QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
 {

@@ -29,8 +29,7 @@ QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &wri
 {}
 
 QgsRasterFileWriterTask::QgsRasterFileWriterTask(
-  const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs,
-  const QgsCoordinateTransformContext &transformContext
+  const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext
 )
   : QgsTask( tr( "Saving %1" ).arg( writer.outputUrl() ), QgsTask::CanCancel )
   , mWriter( writer )

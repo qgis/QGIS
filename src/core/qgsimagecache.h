@@ -219,7 +219,14 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * \returns rendered image
      */
     QImage pathAsImage(
-      const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96, int frameNumber = -1,
+      const QString &path,
+      const QSize size,
+      const bool keepAspectRatio,
+      const double opacity,
+      bool &fitsInCache SIP_OUT,
+      bool blocking = false,
+      double targetDpi = 96,
+      int frameNumber = -1,
       bool *isMissing SIP_PYARGREMOVE = nullptr
     );
 
@@ -295,13 +302,11 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
     QImage pathAsImagePrivate(
-      const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing,
-      int &totalFrameCount, int &nextFrameDelayMs
+      const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs
     );
 
     QImage renderImage(
-      const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs,
-      bool blocking = false
+      const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking = false
     ) const;
 
     static QImage getFrameFromReader( QImageReader &reader, int frameNumber );

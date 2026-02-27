@@ -101,6 +101,12 @@ bool QgsCopyFileTask::run()
   return true;
 }
 
-const QString &QgsCopyFileTask::errorString() const { return mErrorString; }
+const QString &QgsCopyFileTask::errorString() const
+{
+  return mErrorString;
+}
 
-const QString &QgsCopyFileTask::destination() const { return mDestination; }
+const QString &QgsCopyFileTask::destination() const
+{
+  return mDestination;
+}

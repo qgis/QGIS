@@ -28,7 +28,10 @@ QgsSensorManager::QgsSensorManager( QObject *parent )
   : QObject( parent )
 {}
 
-QgsSensorManager::~QgsSensorManager() { clear(); }
+QgsSensorManager::~QgsSensorManager()
+{
+  clear();
+}
 
 void QgsSensorManager::clear()
 {
@@ -44,7 +47,10 @@ void QgsSensorManager::clear()
   mSensorsData.clear();
 }
 
-QList<QgsAbstractSensor *> QgsSensorManager::sensors() const { return mSensors; }
+QList<QgsAbstractSensor *> QgsSensorManager::sensors() const
+{
+  return mSensors;
+}
 
 QgsAbstractSensor *QgsSensorManager::sensor( const QString &id ) const
 {
@@ -59,9 +65,15 @@ QgsAbstractSensor *QgsSensorManager::sensor( const QString &id ) const
   return nullptr;
 }
 
-QgsAbstractSensor::SensorData QgsSensorManager::sensorData( const QString &name ) const { return mSensorsData.value( name ); }
+QgsAbstractSensor::SensorData QgsSensorManager::sensorData( const QString &name ) const
+{
+  return mSensorsData.value( name );
+}
 
-QMap<QString, QgsAbstractSensor::SensorData> QgsSensorManager::sensorsData() const { return mSensorsData; }
+QMap<QString, QgsAbstractSensor::SensorData> QgsSensorManager::sensorsData() const
+{
+  return mSensorsData;
+}
 
 QStringList QgsSensorManager::sensorNames() const
 {

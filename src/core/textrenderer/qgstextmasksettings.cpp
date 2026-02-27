@@ -26,7 +26,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTextMaskSettings::QgsTextMaskSettings() { d = new QgsTextMaskSettingsPrivate(); }
+QgsTextMaskSettings::QgsTextMaskSettings()
+{
+  d = new QgsTextMaskSettingsPrivate();
+}
 
 QgsTextMaskSettings::~QgsTextMaskSettings() = default;
 
@@ -68,40 +71,91 @@ bool QgsTextMaskSettings::operator==( const QgsTextMaskSettings &other ) const
   return true;
 }
 
-bool QgsTextMaskSettings::operator!=( const QgsTextMaskSettings &other ) const { return !( *this == other ); }
+bool QgsTextMaskSettings::operator!=( const QgsTextMaskSettings &other ) const
+{
+  return !( *this == other );
+}
 
-bool QgsTextMaskSettings::enabled() const { return d->enabled; }
+bool QgsTextMaskSettings::enabled() const
+{
+  return d->enabled;
+}
 
-void QgsTextMaskSettings::setEnabled( bool enabled ) { d->enabled = enabled; }
+void QgsTextMaskSettings::setEnabled( bool enabled )
+{
+  d->enabled = enabled;
+}
 
-QgsTextMaskSettings::MaskType QgsTextMaskSettings::type() const { return d->type; }
+QgsTextMaskSettings::MaskType QgsTextMaskSettings::type() const
+{
+  return d->type;
+}
 
-void QgsTextMaskSettings::setType( QgsTextMaskSettings::MaskType type ) { d->type = type; }
+void QgsTextMaskSettings::setType( QgsTextMaskSettings::MaskType type )
+{
+  d->type = type;
+}
 
 
-double QgsTextMaskSettings::size() const { return d->size; }
+double QgsTextMaskSettings::size() const
+{
+  return d->size;
+}
 
-void QgsTextMaskSettings::setSize( double size ) { d->size = size; }
+void QgsTextMaskSettings::setSize( double size )
+{
+  d->size = size;
+}
 
-Qgis::RenderUnit QgsTextMaskSettings::sizeUnit() const { return d->sizeUnit; }
+Qgis::RenderUnit QgsTextMaskSettings::sizeUnit() const
+{
+  return d->sizeUnit;
+}
 
-void QgsTextMaskSettings::setSizeUnit( Qgis::RenderUnit unit ) { d->sizeUnit = unit; }
+void QgsTextMaskSettings::setSizeUnit( Qgis::RenderUnit unit )
+{
+  d->sizeUnit = unit;
+}
 
-QgsMapUnitScale QgsTextMaskSettings::sizeMapUnitScale() const { return d->sizeMapUnitScale; }
+QgsMapUnitScale QgsTextMaskSettings::sizeMapUnitScale() const
+{
+  return d->sizeMapUnitScale;
+}
 
-void QgsTextMaskSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale ) { d->sizeMapUnitScale = scale; }
+void QgsTextMaskSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->sizeMapUnitScale = scale;
+}
 
-Qt::PenJoinStyle QgsTextMaskSettings::joinStyle() const { return d->joinStyle; }
+Qt::PenJoinStyle QgsTextMaskSettings::joinStyle() const
+{
+  return d->joinStyle;
+}
 
-void QgsTextMaskSettings::setJoinStyle( Qt::PenJoinStyle style ) { d->joinStyle = style; }
+void QgsTextMaskSettings::setJoinStyle( Qt::PenJoinStyle style )
+{
+  d->joinStyle = style;
+}
 
-double QgsTextMaskSettings::opacity() const { return d->opacity; }
+double QgsTextMaskSettings::opacity() const
+{
+  return d->opacity;
+}
 
-void QgsTextMaskSettings::setOpacity( double opacity ) { d->opacity = opacity; }
+void QgsTextMaskSettings::setOpacity( double opacity )
+{
+  d->opacity = opacity;
+}
 
-QgsPaintEffect *QgsTextMaskSettings::paintEffect() const { return d->paintEffect.get(); }
+QgsPaintEffect *QgsTextMaskSettings::paintEffect() const
+{
+  return d->paintEffect.get();
+}
 
-void QgsTextMaskSettings::setPaintEffect( QgsPaintEffect *effect ) { d->paintEffect.reset( effect ); }
+void QgsTextMaskSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  d->paintEffect.reset( effect );
+}
 
 void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
@@ -210,6 +264,12 @@ QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
   return textMaskElem;
 }
 
-QList<QgsSymbolLayerReference> QgsTextMaskSettings::maskedSymbolLayers() const { return d->maskedSymbolLayers; }
+QList<QgsSymbolLayerReference> QgsTextMaskSettings::maskedSymbolLayers() const
+{
+  return d->maskedSymbolLayers;
+}
 
-void QgsTextMaskSettings::setMaskedSymbolLayers( const QList<QgsSymbolLayerReference> &maskedSymbols ) { d->maskedSymbolLayers = maskedSymbols; }
+void QgsTextMaskSettings::setMaskedSymbolLayers( const QList<QgsSymbolLayerReference> &maskedSymbols )
+{
+  d->maskedSymbolLayers = maskedSymbols;
+}

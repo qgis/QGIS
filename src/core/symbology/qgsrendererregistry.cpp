@@ -67,7 +67,10 @@ QgsRendererRegistry::QgsRendererRegistry()
   addRenderer( new QgsRendererMetadata( u"embeddedSymbol"_s, QObject::tr( "Embedded Symbols" ), QgsEmbeddedSymbolRenderer::create ) );
 }
 
-QgsRendererRegistry::~QgsRendererRegistry() { qDeleteAll( mRenderers ); }
+QgsRendererRegistry::~QgsRendererRegistry()
+{
+  qDeleteAll( mRenderers );
+}
 
 bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata *metadata )
 {
@@ -90,7 +93,10 @@ bool QgsRendererRegistry::removeRenderer( const QString &rendererName )
   return true;
 }
 
-QgsRendererAbstractMetadata *QgsRendererRegistry::rendererMetadata( const QString &rendererName ) { return mRenderers.value( rendererName ); }
+QgsRendererAbstractMetadata *QgsRendererRegistry::rendererMetadata( const QString &rendererName )
+{
+  return mRenderers.value( rendererName );
+}
 
 QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes ) const
 {

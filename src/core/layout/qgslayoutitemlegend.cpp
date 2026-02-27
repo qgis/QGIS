@@ -142,13 +142,25 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   } );
 }
 
-QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout ) { return new QgsLayoutItemLegend( layout ); }
+QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemLegend( layout );
+}
 
-int QgsLayoutItemLegend::type() const { return QgsLayoutItemRegistry::LayoutLegend; }
+int QgsLayoutItemLegend::type() const
+{
+  return QgsLayoutItemRegistry::LayoutLegend;
+}
 
-QIcon QgsLayoutItemLegend::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemLegend.svg"_s ); }
+QIcon QgsLayoutItemLegend::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemLegend.svg"_s );
+}
 
-QgsLayoutItem::Flags QgsLayoutItemLegend::itemFlags() const { return QgsLayoutItem::FlagOverridesPaint; }
+QgsLayoutItem::Flags QgsLayoutItemLegend::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
+}
 
 void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
@@ -342,9 +354,15 @@ void QgsLayoutItemLegend::adjustBoxSize()
   }
 }
 
-void QgsLayoutItemLegend::setResizeToContents( bool enabled ) { mSizeToContents = enabled; }
+void QgsLayoutItemLegend::setResizeToContents( bool enabled )
+{
+  mSizeToContents = enabled;
+}
 
-bool QgsLayoutItemLegend::resizeToContents() const { return mSizeToContents; }
+bool QgsLayoutItemLegend::resizeToContents() const
+{
+  return mSizeToContents;
+}
 
 void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
@@ -415,7 +433,10 @@ const QgsLegendModel *QgsLayoutItemLegend::model() const
   return mLegendModel.get();
 }
 
-void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate ) { setSyncMode( autoUpdate ? Qgis::LegendSyncMode::AllProjectLayers : Qgis::LegendSyncMode::Manual ); }
+void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
+{
+  setSyncMode( autoUpdate ? Qgis::LegendSyncMode::AllProjectLayers : Qgis::LegendSyncMode::Manual );
+}
 
 void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
 {
@@ -542,9 +563,15 @@ void QgsLayoutItemLegend::nodeVisibilityChanged( QgsLayerTreeNode * )
   }
 }
 
-bool QgsLayoutItemLegend::autoUpdateModel() const { return mSyncMode != Qgis::LegendSyncMode::Manual; }
+bool QgsLayoutItemLegend::autoUpdateModel() const
+{
+  return mSyncMode != Qgis::LegendSyncMode::Manual;
+}
 
-Qgis::LegendSyncMode QgsLayoutItemLegend::syncMode() const { return mSyncMode; }
+Qgis::LegendSyncMode QgsLayoutItemLegend::syncMode() const
+{
+  return mSyncMode;
+}
 
 void QgsLayoutItemLegend::setLegendFilterByMapEnabled( bool enabled )
 {
@@ -566,17 +593,35 @@ void QgsLayoutItemLegend::setTitle( const QString &t )
     mLayout->itemsModel()->updateItemDisplayName( this );
   }
 }
-QString QgsLayoutItemLegend::title() const { return mTitle; }
+QString QgsLayoutItemLegend::title() const
+{
+  return mTitle;
+}
 
-Qt::AlignmentFlag QgsLayoutItemLegend::titleAlignment() const { return mSettings.titleAlignment(); }
+Qt::AlignmentFlag QgsLayoutItemLegend::titleAlignment() const
+{
+  return mSettings.titleAlignment();
+}
 
-void QgsLayoutItemLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
+void QgsLayoutItemLegend::setTitleAlignment( Qt::AlignmentFlag alignment )
+{
+  mSettings.setTitleAlignment( alignment );
+}
 
-QgsLegendStyle &QgsLayoutItemLegend::rstyle( Qgis::LegendComponent s ) { return mSettings.rstyle( s ); }
+QgsLegendStyle &QgsLayoutItemLegend::rstyle( Qgis::LegendComponent s )
+{
+  return mSettings.rstyle( s );
+}
 
-QgsLegendStyle QgsLayoutItemLegend::style( Qgis::LegendComponent s ) const { return mSettings.style( s ); }
+QgsLegendStyle QgsLayoutItemLegend::style( Qgis::LegendComponent s ) const
+{
+  return mSettings.style( s );
+}
 
-void QgsLayoutItemLegend::setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style ) { mSettings.setStyle( s, style ); }
+void QgsLayoutItemLegend::setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style )
+{
+  mSettings.setStyle( s, style );
+}
 
 QFont QgsLayoutItemLegend::styleFont( Qgis::LegendComponent s ) const
 {
@@ -592,9 +637,15 @@ void QgsLayoutItemLegend::setStyleFont( Qgis::LegendComponent s, const QFont &f 
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, double margin ) { rstyle( s ).setMargin( margin ); }
+void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, double margin )
+{
+  rstyle( s ).setMargin( margin );
+}
 
-void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, QgsLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
+void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, QgsLegendStyle::Side side, double margin )
+{
+  rstyle( s ).setMargin( side, margin );
+}
 
 double QgsLayoutItemLegend::lineSpacing() const
 {
@@ -610,13 +661,25 @@ void QgsLayoutItemLegend::setLineSpacing( double spacing )
   Q_NOWARN_DEPRECATED_POP
 }
 
-double QgsLayoutItemLegend::boxSpace() const { return mSettings.boxSpace(); }
+double QgsLayoutItemLegend::boxSpace() const
+{
+  return mSettings.boxSpace();
+}
 
-void QgsLayoutItemLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
+void QgsLayoutItemLegend::setBoxSpace( double s )
+{
+  mSettings.setBoxSpace( s );
+}
 
-double QgsLayoutItemLegend::columnSpace() const { return mSettings.columnSpace(); }
+double QgsLayoutItemLegend::columnSpace() const
+{
+  return mSettings.columnSpace();
+}
 
-void QgsLayoutItemLegend::setColumnSpace( double s ) { mSettings.setColumnSpace( s ); }
+void QgsLayoutItemLegend::setColumnSpace( double s )
+{
+  mSettings.setColumnSpace( s );
+}
 
 QColor QgsLayoutItemLegend::fontColor() const
 {
@@ -632,38 +695,89 @@ void QgsLayoutItemLegend::setFontColor( const QColor &c )
   Q_NOWARN_DEPRECATED_POP
 }
 
-double QgsLayoutItemLegend::symbolWidth() const { return mSettings.symbolSize().width(); }
+double QgsLayoutItemLegend::symbolWidth() const
+{
+  return mSettings.symbolSize().width();
+}
 
-void QgsLayoutItemLegend::setSymbolWidth( double w ) { mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) ); }
+void QgsLayoutItemLegend::setSymbolWidth( double w )
+{
+  mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
+}
 
-double QgsLayoutItemLegend::maximumSymbolSize() const { return mSettings.maximumSymbolSize(); }
+double QgsLayoutItemLegend::maximumSymbolSize() const
+{
+  return mSettings.maximumSymbolSize();
+}
 
-void QgsLayoutItemLegend::setMaximumSymbolSize( double size ) { mSettings.setMaximumSymbolSize( size ); }
+void QgsLayoutItemLegend::setMaximumSymbolSize( double size )
+{
+  mSettings.setMaximumSymbolSize( size );
+}
 
-double QgsLayoutItemLegend::minimumSymbolSize() const { return mSettings.minimumSymbolSize(); }
+double QgsLayoutItemLegend::minimumSymbolSize() const
+{
+  return mSettings.minimumSymbolSize();
+}
 
-void QgsLayoutItemLegend::setMinimumSymbolSize( double size ) { mSettings.setMinimumSymbolSize( size ); }
+void QgsLayoutItemLegend::setMinimumSymbolSize( double size )
+{
+  mSettings.setMinimumSymbolSize( size );
+}
 
-void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment ) { mSettings.setSymbolAlignment( alignment ); }
+void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment )
+{
+  mSettings.setSymbolAlignment( alignment );
+}
 
-Qt::AlignmentFlag QgsLayoutItemLegend::symbolAlignment() const { return mSettings.symbolAlignment(); }
+Qt::AlignmentFlag QgsLayoutItemLegend::symbolAlignment() const
+{
+  return mSettings.symbolAlignment();
+}
 
-double QgsLayoutItemLegend::symbolHeight() const { return mSettings.symbolSize().height(); }
+double QgsLayoutItemLegend::symbolHeight() const
+{
+  return mSettings.symbolSize().height();
+}
 
-void QgsLayoutItemLegend::setSymbolHeight( double h ) { mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) ); }
+void QgsLayoutItemLegend::setSymbolHeight( double h )
+{
+  mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) );
+}
 
-double QgsLayoutItemLegend::wmsLegendWidth() const { return mSettings.wmsLegendSize().width(); }
+double QgsLayoutItemLegend::wmsLegendWidth() const
+{
+  return mSettings.wmsLegendSize().width();
+}
 
-void QgsLayoutItemLegend::setWmsLegendWidth( double w ) { mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) ); }
+void QgsLayoutItemLegend::setWmsLegendWidth( double w )
+{
+  mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) );
+}
 
-double QgsLayoutItemLegend::wmsLegendHeight() const { return mSettings.wmsLegendSize().height(); }
-void QgsLayoutItemLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) ); }
+double QgsLayoutItemLegend::wmsLegendHeight() const
+{
+  return mSettings.wmsLegendSize().height();
+}
+void QgsLayoutItemLegend::setWmsLegendHeight( double h )
+{
+  mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) );
+}
 
-void QgsLayoutItemLegend::setWrapString( const QString &t ) { mSettings.setWrapChar( t ); }
+void QgsLayoutItemLegend::setWrapString( const QString &t )
+{
+  mSettings.setWrapChar( t );
+}
 
-QString QgsLayoutItemLegend::wrapString() const { return mSettings.wrapChar(); }
+QString QgsLayoutItemLegend::wrapString() const
+{
+  return mSettings.wrapChar();
+}
 
-int QgsLayoutItemLegend::columnCount() const { return mColumnCount; }
+int QgsLayoutItemLegend::columnCount() const
+{
+  return mColumnCount;
+}
 
 void QgsLayoutItemLegend::setColumnCount( int c )
 {
@@ -671,29 +785,65 @@ void QgsLayoutItemLegend::setColumnCount( int c )
   mSettings.setColumnCount( c );
 }
 
-bool QgsLayoutItemLegend::splitLayer() const { return mSettings.splitLayer(); }
+bool QgsLayoutItemLegend::splitLayer() const
+{
+  return mSettings.splitLayer();
+}
 
-void QgsLayoutItemLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
+void QgsLayoutItemLegend::setSplitLayer( bool s )
+{
+  mSettings.setSplitLayer( s );
+}
 
-bool QgsLayoutItemLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
+bool QgsLayoutItemLegend::equalColumnWidth() const
+{
+  return mSettings.equalColumnWidth();
+}
 
-void QgsLayoutItemLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
+void QgsLayoutItemLegend::setEqualColumnWidth( bool s )
+{
+  mSettings.setEqualColumnWidth( s );
+}
 
-bool QgsLayoutItemLegend::drawRasterStroke() const { return mSettings.drawRasterStroke(); }
+bool QgsLayoutItemLegend::drawRasterStroke() const
+{
+  return mSettings.drawRasterStroke();
+}
 
-void QgsLayoutItemLegend::setDrawRasterStroke( bool enabled ) { mSettings.setDrawRasterStroke( enabled ); }
+void QgsLayoutItemLegend::setDrawRasterStroke( bool enabled )
+{
+  mSettings.setDrawRasterStroke( enabled );
+}
 
-QColor QgsLayoutItemLegend::rasterStrokeColor() const { return mSettings.rasterStrokeColor(); }
+QColor QgsLayoutItemLegend::rasterStrokeColor() const
+{
+  return mSettings.rasterStrokeColor();
+}
 
-void QgsLayoutItemLegend::setRasterStrokeColor( const QColor &color ) { mSettings.setRasterStrokeColor( color ); }
+void QgsLayoutItemLegend::setRasterStrokeColor( const QColor &color )
+{
+  mSettings.setRasterStrokeColor( color );
+}
 
-double QgsLayoutItemLegend::rasterStrokeWidth() const { return mSettings.rasterStrokeWidth(); }
+double QgsLayoutItemLegend::rasterStrokeWidth() const
+{
+  return mSettings.rasterStrokeWidth();
+}
 
-void QgsLayoutItemLegend::setRasterStrokeWidth( double width ) { mSettings.setRasterStrokeWidth( width ); }
+void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
+{
+  mSettings.setRasterStrokeWidth( width );
+}
 
-double QgsLayoutItemLegend::autoWrapLinesAfter() const { return mSettings.autoWrapLinesAfter(); }
+double QgsLayoutItemLegend::autoWrapLinesAfter() const
+{
+  return mSettings.autoWrapLinesAfter();
+}
 
-void QgsLayoutItemLegend::setAutoWrapLinesAfter( double length ) { mSettings.setAutoWrapLinesAfter( length ); }
+void QgsLayoutItemLegend::setAutoWrapLinesAfter( double length )
+{
+  mSettings.setAutoWrapLinesAfter( length );
+}
 
 void QgsLayoutItemLegend::updateLegend()
 {
@@ -967,9 +1117,15 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
-bool QgsLayoutItemLegend::requiresRasterization() const { return blendMode() != QPainter::CompositionMode_SourceOver; }
+bool QgsLayoutItemLegend::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
 
-bool QgsLayoutItemLegend::containsAdvancedEffects() const { return mEvaluatedOpacity < 1.0; }
+bool QgsLayoutItemLegend::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
+}
 
 void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool connectSlots )
 {
@@ -1053,7 +1209,10 @@ QList<QgsLayoutItemMap *> QgsLayoutItemLegend::filterByMapItems() const
   return res;
 }
 
-void QgsLayoutItemLegend::invalidateCurrentMap() { setLinkedMap( nullptr ); }
+void QgsLayoutItemLegend::invalidateCurrentMap()
+{
+  setLinkedMap( nullptr );
+}
 
 void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
@@ -1101,7 +1260,10 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
 }
 
 
-void QgsLayoutItemLegend::updateFilterByMapAndRedraw() { updateFilterByMap( true ); }
+void QgsLayoutItemLegend::updateFilterByMapAndRedraw()
+{
+  updateFilterByMap( true );
+}
 
 void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &overrides )
 {
@@ -1339,11 +1501,20 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
   mForceResize = true;
 }
 
-QString QgsLayoutItemLegend::themeName() const { return mThemeName; }
+QString QgsLayoutItemLegend::themeName() const
+{
+  return mThemeName;
+}
 
-void QgsLayoutItemLegend::setLegendFilterOutAtlas( bool doFilter ) { mFilterOutAtlas = doFilter; }
+void QgsLayoutItemLegend::setLegendFilterOutAtlas( bool doFilter )
+{
+  mFilterOutAtlas = doFilter;
+}
 
-bool QgsLayoutItemLegend::legendFilterOutAtlas() const { return mFilterOutAtlas; }
+bool QgsLayoutItemLegend::legendFilterOutAtlas() const
+{
+  return mFilterOutAtlas;
+}
 
 void QgsLayoutItemLegend::onAtlasFeature()
 {
@@ -1382,7 +1553,10 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   return context;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() const { return MustPlaceInOwnLayer; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() const
+{
+  return MustPlaceInOwnLayer;
+}
 
 bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -1427,7 +1601,10 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
   return visit( model()->rootGroup() );
 }
 
-bool QgsLayoutItemLegend::isRefreshing() const { return mLegendModel->hitTestInProgress(); }
+bool QgsLayoutItemLegend::isRefreshing() const
+{
+  return mLegendModel->hitTestInProgress();
+}
 
 
 bool QgsLayoutItemLegend::requiresFilteringBecauseOfRendererSetting()
@@ -1546,6 +1723,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerT
   return lst;
 }
 
-void QgsLegendModel::clearCachedData( QgsLayerTreeNode *node ) const { node->removeCustomProperty( u"cached_name"_s ); }
+void QgsLegendModel::clearCachedData( QgsLayerTreeNode *node ) const
+{
+  node->removeCustomProperty( u"cached_name"_s );
+}
 
-void QgsLegendModel::forceRefresh() { emit refreshLegend(); }
+void QgsLegendModel::forceRefresh()
+{
+  emit refreshLegend();
+}

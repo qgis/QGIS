@@ -30,10 +30,22 @@ QgsGeocoderResult::QgsGeocoderResult( const QString &identifier, const QgsGeomet
   , mCrs( crs )
 {}
 
-QString QgsGeocoderResult::group() const { return mGroup; }
+QString QgsGeocoderResult::group() const
+{
+  return mGroup;
+}
 
-void QgsGeocoderResult::setGroup( const QString &group ) { mGroup = group; }
+void QgsGeocoderResult::setGroup( const QString &group )
+{
+  mGroup = group;
+}
 
-QString QgsGeocoderResult::description() const { return mDescription; }
+QString QgsGeocoderResult::description() const
+{
+  return mDescription;
+}
 
-void QgsGeocoderResult::setDescription( const QString &description ) { mDescription = description; }
+void QgsGeocoderResult::setDescription( const QString &description )
+{
+  mDescription = description;
+}

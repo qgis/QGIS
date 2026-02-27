@@ -47,11 +47,20 @@ QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
   connect( &mGathererTimer, &QTimer::timeout, this, &QgsLayoutItemChart::gatherData );
 }
 
-int QgsLayoutItemChart::type() const { return QgsLayoutItemRegistry::LayoutChart; }
+int QgsLayoutItemChart::type() const
+{
+  return QgsLayoutItemRegistry::LayoutChart;
+}
 
-QIcon QgsLayoutItemChart::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemChart.svg"_s ); }
+QIcon QgsLayoutItemChart::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemChart.svg"_s );
+}
 
-QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout ) { return new QgsLayoutItemChart( layout ); }
+QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemChart( layout );
+}
 
 void QgsLayoutItemChart::setPlot( QgsPlot *plot )
 {
@@ -210,7 +219,8 @@ void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDe
   emit changed();
 }
 
-void QgsLayoutItemChart::draw( QgsLayoutItemRenderContext & ) {}
+void QgsLayoutItemChart::draw( QgsLayoutItemRenderContext & )
+{}
 
 void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
@@ -311,7 +321,10 @@ void QgsLayoutItemChart::refresh()
   }
 }
 
-void QgsLayoutItemChart::refreshData() { mGathererTimer.start(); }
+void QgsLayoutItemChart::refreshData()
+{
+  mGathererTimer.start();
+}
 
 void QgsLayoutItemChart::gatherData()
 {

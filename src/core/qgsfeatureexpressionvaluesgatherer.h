@@ -58,7 +58,10 @@ class QgsFeatureExpressionValuesGatherer : public QThread
     {}
 
     QgsFeatureExpressionValuesGatherer(
-      QgsVectorLayer *layer, const QString &displayExpression = QString(), const QString &orderExpression = QString(), const QgsFeatureRequest &request = QgsFeatureRequest(),
+      QgsVectorLayer *layer,
+      const QString &displayExpression = QString(),
+      const QString &orderExpression = QString(),
+      const QgsFeatureRequest &request = QgsFeatureRequest(),
       const QStringList &identifierFields = QStringList()
     )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )

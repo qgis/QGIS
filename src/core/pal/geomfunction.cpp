@@ -138,17 +138,30 @@ void heapsort2( int *x, double *heap, std::size_t N )
 }
 
 bool GeomFunction::isSegIntersects(
-  double x1, double y1, double x2, double y2, // 1st segment
-  double x3, double y3, double x4, double y4
+  double x1,
+  double y1,
+  double x2,
+  double y2, // 1st segment
+  double x3,
+  double y3,
+  double x4,
+  double y4
 ) // 2nd segment
 {
   return ( cross_product( x1, y1, x2, y2, x3, y3 ) * cross_product( x1, y1, x2, y2, x4, y4 ) < 0 && cross_product( x3, y3, x4, y4, x1, y1 ) * cross_product( x3, y3, x4, y4, x2, y2 ) < 0 );
 }
 
 bool GeomFunction::computeLineIntersection(
-  double x1, double y1, double x2, double y2, // 1st line (segment)
-  double x3, double y3, double x4, double y4, // 2nd line segment
-  double *x, double *y
+  double x1,
+  double y1,
+  double x2,
+  double y2, // 1st line (segment)
+  double x3,
+  double y3,
+  double x4,
+  double y4, // 2nd line segment
+  double *x,
+  double *y
 )
 {
   double a1, a2, b1, b2, c1, c2;

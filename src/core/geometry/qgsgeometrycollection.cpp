@@ -35,7 +35,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsGeometryCollection::QgsGeometryCollection() { mWkbType = Qgis::WkbType::GeometryCollection; }
+QgsGeometryCollection::QgsGeometryCollection()
+{
+  mWkbType = Qgis::WkbType::GeometryCollection;
+}
 
 QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c )
   : QgsAbstractGeometry( c )
@@ -67,7 +70,10 @@ QgsGeometryCollection &QgsGeometryCollection::operator=( const QgsGeometryCollec
   return *this;
 }
 
-QgsGeometryCollection::~QgsGeometryCollection() { clear(); }
+QgsGeometryCollection::~QgsGeometryCollection()
+{
+  clear();
+}
 
 QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
@@ -76,7 +82,10 @@ QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsGeometryCollection *QgsGeometryCollection::clone() const { return new QgsGeometryCollection( *this ); }
+QgsGeometryCollection *QgsGeometryCollection::clone() const
+{
+  return new QgsGeometryCollection( *this );
+}
 
 void QgsGeometryCollection::clear()
 {
@@ -115,7 +124,10 @@ bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValue
   return result;
 }
 
-QgsAbstractGeometry *QgsGeometryCollection::boundary() const { return nullptr; }
+QgsAbstractGeometry *QgsGeometryCollection::boundary() const
+{
+  return nullptr;
+}
 
 void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
 {
@@ -184,7 +196,10 @@ bool QgsGeometryCollection::boundingBoxIntersects( const QgsBox3D &box3d ) const
   return QgsAbstractGeometry::boundingBoxIntersects( box3d );
 }
 
-void QgsGeometryCollection::reserve( int size ) { mGeometries.reserve( size ); }
+void QgsGeometryCollection::reserve( int size )
+{
+  mGeometries.reserve( size );
+}
 
 QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n )
 {
@@ -282,7 +297,10 @@ int QgsGeometryCollection::dimension() const
   return maxDim;
 }
 
-QString QgsGeometryCollection::geometryType() const { return u"GeometryCollection"_s; }
+QString QgsGeometryCollection::geometryType() const
+{
+  return u"GeometryCollection"_s;
+}
 
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
@@ -366,9 +384,21 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt(
     wkt,
-    { Qgis::WkbType::Point, Qgis::WkbType::LineString, Qgis::WkbType::Polygon, Qgis::WkbType::CircularString, Qgis::WkbType::CompoundCurve, Qgis::WkbType::CurvePolygon, Qgis::WkbType::MultiPoint,
-      Qgis::WkbType::MultiLineString, Qgis::WkbType::MultiPolygon, Qgis::WkbType::GeometryCollection, Qgis::WkbType::MultiCurve, Qgis::WkbType::MultiSurface, Qgis::WkbType::Triangle,
-      Qgis::WkbType::PolyhedralSurface, Qgis::WkbType::TIN },
+    { Qgis::WkbType::Point,
+      Qgis::WkbType::LineString,
+      Qgis::WkbType::Polygon,
+      Qgis::WkbType::CircularString,
+      Qgis::WkbType::CompoundCurve,
+      Qgis::WkbType::CurvePolygon,
+      Qgis::WkbType::MultiPoint,
+      Qgis::WkbType::MultiLineString,
+      Qgis::WkbType::MultiPolygon,
+      Qgis::WkbType::GeometryCollection,
+      Qgis::WkbType::MultiCurve,
+      Qgis::WkbType::MultiSurface,
+      Qgis::WkbType::Triangle,
+      Qgis::WkbType::PolyhedralSurface,
+      Qgis::WkbType::TIN },
     u"GeometryCollection"_s
   );
 }
@@ -841,7 +871,10 @@ int QgsGeometryCollection::ringCount( int part ) const
   return mGeometries[part]->ringCount();
 }
 
-int QgsGeometryCollection::partCount() const { return mGeometries.size(); }
+int QgsGeometryCollection::partCount() const
+{
+  return mGeometries.size();
+}
 
 QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
 {
@@ -1088,9 +1121,15 @@ bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transform
   return res;
 }
 
-bool QgsGeometryCollection::wktOmitChildType() const { return false; }
+bool QgsGeometryCollection::wktOmitChildType() const
+{
+  return false;
+}
 
-int QgsGeometryCollection::childCount() const { return mGeometries.count(); }
+int QgsGeometryCollection::childCount() const
+{
+  return mGeometries.count();
+}
 
 QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
 {

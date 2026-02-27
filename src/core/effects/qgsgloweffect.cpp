@@ -39,9 +39,15 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   operator=( other );
 }
 
-QgsGlowEffect::~QgsGlowEffect() { delete mRamp; }
+QgsGlowEffect::~QgsGlowEffect()
+{
+  delete mRamp;
+}
 
-Qgis::PaintEffectFlags QgsGlowEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
+Qgis::PaintEffectFlags QgsGlowEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
 
 void QgsGlowEffect::draw( QgsRenderContext &context )
 {

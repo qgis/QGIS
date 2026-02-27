@@ -214,7 +214,7 @@ Abstract base class for all rendered symbols.
 #include "qgssymbol.h"
 %End
 %ConvertToSubClassCode
-switch ( sipCpp->type() )
+    switch ( sipCpp->type() )
     {
       case Qgis::SymbolType::Marker:
         sipType = sipType_QgsMarkerSymbol;
@@ -485,8 +485,13 @@ unlocked symbol layer.
 %End
 
     void drawPreviewIcon(
-      QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
-      const QgsLegendPatchShape *patchShape = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+      QPainter *painter,
+      QSize size,
+      QgsRenderContext *customContext = 0,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = 0,
+      const QgsLegendPatchShape *patchShape = 0,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size``
@@ -539,7 +544,8 @@ the preview icon exactly matches the settings from that context.
 %End
 
     QImage bigSymbolPreviewImage(
-      QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
+      QgsExpressionContext *expressionContext = 0,
+      Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
       const QgsScreenProperties &screen = QgsScreenProperties()
     ) /PyName=bigSymbolPreviewImageV2/;
 %Docstring
@@ -901,8 +907,13 @@ Sets the vector ``layer`` associated with the symbol.
 %End
 
     void renderFeature(
-      const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false,
-      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0
+      const QgsFeature &feature,
+      QgsRenderContext &context,
+      int layer = -1,
+      bool selected = false,
+      bool drawVertexMarker = false,
+      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle,
+      double currentVertexMarkerSize = 0.0
     );
 %Docstring
 Render a feature. Before calling this the

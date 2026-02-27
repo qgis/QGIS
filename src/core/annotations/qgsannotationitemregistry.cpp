@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsAnnotationItemRegistry::~QgsAnnotationItemRegistry()
 {

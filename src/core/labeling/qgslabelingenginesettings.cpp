@@ -25,7 +25,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLabelingEngineSettings::QgsLabelingEngineSettings() {}
+QgsLabelingEngineSettings::QgsLabelingEngineSettings()
+{}
 
 QgsLabelingEngineSettings::~QgsLabelingEngineSettings() = default;
 
@@ -97,7 +98,10 @@ QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( QgsLabelingEngi
   return *this;
 }
 
-void QgsLabelingEngineSettings::clear() { *this = QgsLabelingEngineSettings(); }
+void QgsLabelingEngineSettings::clear()
+{
+  *this = QgsLabelingEngineSettings();
+}
 
 void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
 {
@@ -206,13 +210,25 @@ void QgsLabelingEngineSettings::resolveReferences( const QgsProject *project )
   }
 }
 
-QColor QgsLabelingEngineSettings::unplacedLabelColor() const { return mUnplacedLabelColor; }
+QColor QgsLabelingEngineSettings::unplacedLabelColor() const
+{
+  return mUnplacedLabelColor;
+}
 
-void QgsLabelingEngineSettings::setUnplacedLabelColor( const QColor &unplacedLabelColor ) { mUnplacedLabelColor = unplacedLabelColor; }
+void QgsLabelingEngineSettings::setUnplacedLabelColor( const QColor &unplacedLabelColor )
+{
+  mUnplacedLabelColor = unplacedLabelColor;
+}
 
-Qgis::LabelPlacementEngineVersion QgsLabelingEngineSettings::placementVersion() const { return mPlacementVersion; }
+Qgis::LabelPlacementEngineVersion QgsLabelingEngineSettings::placementVersion() const
+{
+  return mPlacementVersion;
+}
 
-void QgsLabelingEngineSettings::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion ) { mPlacementVersion = placementVersion; }
+void QgsLabelingEngineSettings::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
+{
+  mPlacementVersion = placementVersion;
+}
 
 QList<QgsAbstractLabelingEngineRule *> QgsLabelingEngineSettings::rules()
 {
@@ -234,7 +250,10 @@ QList<const QgsAbstractLabelingEngineRule *> QgsLabelingEngineSettings::rules() 
   return res;
 }
 
-void QgsLabelingEngineSettings::addRule( QgsAbstractLabelingEngineRule *rule ) { mEngineRules.emplace_back( rule ); }
+void QgsLabelingEngineSettings::addRule( QgsAbstractLabelingEngineRule *rule )
+{
+  mEngineRules.emplace_back( rule );
+}
 
 void QgsLabelingEngineSettings::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
 {

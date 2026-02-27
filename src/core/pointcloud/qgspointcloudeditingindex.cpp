@@ -48,25 +48,55 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &
   mIsValid = true;
 }
 
-void QgsPointCloudEditingIndex::load( const QString &, const QString & ) { return; }
+void QgsPointCloudEditingIndex::load( const QString &, const QString & )
+{
+  return;
+}
 
-bool QgsPointCloudEditingIndex::isValid() const { return mIsValid && mIndex.isValid(); }
+bool QgsPointCloudEditingIndex::isValid() const
+{
+  return mIsValid && mIndex.isValid();
+}
 
-Qgis::PointCloudAccessType QgsPointCloudEditingIndex::accessType() const { return mIndex.accessType(); }
+Qgis::PointCloudAccessType QgsPointCloudEditingIndex::accessType() const
+{
+  return mIndex.accessType();
+}
 
-QgsCoordinateReferenceSystem QgsPointCloudEditingIndex::crs() const { return mIndex.crs(); }
+QgsCoordinateReferenceSystem QgsPointCloudEditingIndex::crs() const
+{
+  return mIndex.crs();
+}
 
-qint64 QgsPointCloudEditingIndex::pointCount() const { return mIndex.pointCount(); }
+qint64 QgsPointCloudEditingIndex::pointCount() const
+{
+  return mIndex.pointCount();
+}
 
-QVariantMap QgsPointCloudEditingIndex::originalMetadata() const { return mIndex.originalMetadata(); }
+QVariantMap QgsPointCloudEditingIndex::originalMetadata() const
+{
+  return mIndex.originalMetadata();
+}
 
-bool QgsPointCloudEditingIndex::hasNode( const QgsPointCloudNodeId &n ) const { return mIndex.hasNode( n ); }
+bool QgsPointCloudEditingIndex::hasNode( const QgsPointCloudNodeId &n ) const
+{
+  return mIndex.hasNode( n );
+}
 
-QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId &id ) const { return mIndex.getNode( id ); }
+QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId &id ) const
+{
+  return mIndex.getNode( id );
+}
 
-bool QgsPointCloudEditingIndex::setSubsetString( const QString &subset ) { return mIndex.setSubsetString( subset ); }
+bool QgsPointCloudEditingIndex::setSubsetString( const QString &subset )
+{
+  return mIndex.setSubsetString( subset );
+}
 
-QString QgsPointCloudEditingIndex::subsetString() const { return mIndex.subsetString(); }
+QString QgsPointCloudEditingIndex::subsetString() const
+{
+  return mIndex.subsetString();
+}
 
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
@@ -104,7 +134,10 @@ QgsPointCloudBlockRequest *QgsPointCloudEditingIndex::asyncNodeData( const QgsPo
   return nullptr;
 }
 
-QgsPointCloudIndex QgsPointCloudEditingIndex::backingIndex() const { return mIndex; }
+QgsPointCloudIndex QgsPointCloudEditingIndex::backingIndex() const
+{
+  return mIndex;
+}
 
 const QByteArray QgsPointCloudEditingIndex::rawEditedNodeData( QgsPointCloudNodeId n ) const
 {

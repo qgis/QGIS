@@ -23,7 +23,7 @@ is within a transaction.
 #include "qgsvectorlayereditpassthrough.h"
 %End
 %ConvertToSubClassCode
-if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
+    if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
       sipType = sipType_QgsVectorLayerEditPassthrough;
     else
       sipType = nullptr;

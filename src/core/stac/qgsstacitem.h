@@ -48,8 +48,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
      * \param bbox Bounding Box of the asset represented by this Item. Required if geometry is not null
      */
     QgsStacItem(
-      const QString &id, const QString &version, const QgsGeometry &geometry, const QVariantMap &properties, const QVector< QgsStacLink > &links, const QMap< QString, QgsStacAsset > &assets,
-      const QgsBox3D &bbox
+      const QString &id, const QString &version, const QgsGeometry &geometry, const QVariantMap &properties, const QVector< QgsStacLink > &links, const QMap< QString, QgsStacAsset > &assets, const QgsBox3D &bbox
     );
 
     Qgis::StacObjectType type() const override;

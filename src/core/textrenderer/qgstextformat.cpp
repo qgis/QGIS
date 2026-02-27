@@ -37,7 +37,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTextFormat::QgsTextFormat() { d = new QgsTextSettingsPrivate(); }
+QgsTextFormat::QgsTextFormat()
+{
+  d = new QgsTextSettingsPrivate();
+}
 
 QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
                                                            //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
@@ -110,11 +113,20 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
   return true;
 }
 
-bool QgsTextFormat::operator!=( const QgsTextFormat &other ) const { return !( *this == other ); }
+bool QgsTextFormat::operator!=( const QgsTextFormat &other ) const
+{
+  return !( *this == other );
+}
 
-bool QgsTextFormat::isValid() const { return d->isValid; }
+bool QgsTextFormat::isValid() const
+{
+  return d->isValid;
+}
 
-void QgsTextFormat::setValid() { d->isValid = true; }
+void QgsTextFormat::setValid()
+{
+  d->isValid = true;
+}
 
 QgsTextBufferSettings &QgsTextFormat::buffer()
 {
@@ -164,7 +176,10 @@ void QgsTextFormat::setMask( const QgsTextMaskSettings &maskSettings )
   mMaskSettings = maskSettings;
 }
 
-QFont QgsTextFormat::font() const { return d->textFont; }
+QFont QgsTextFormat::font() const
+{
+  return d->textFont;
+}
 
 QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor, bool *isZeroSize ) const
 {
@@ -229,7 +244,10 @@ void QgsTextFormat::setNamedStyle( const QString &style )
   d->textNamedStyle = style;
 }
 
-bool QgsTextFormat::forcedBold() const { return d->forcedBold; }
+bool QgsTextFormat::forcedBold() const
+{
+  return d->forcedBold;
+}
 
 void QgsTextFormat::setForcedBold( bool forced )
 {
@@ -238,7 +256,10 @@ void QgsTextFormat::setForcedBold( bool forced )
   d->forcedBold = true;
 }
 
-bool QgsTextFormat::forcedItalic() const { return d->forcedItalic; }
+bool QgsTextFormat::forcedItalic() const
+{
+  return d->forcedItalic;
+}
 
 void QgsTextFormat::setForcedItalic( bool forced )
 {
@@ -247,7 +268,10 @@ void QgsTextFormat::setForcedItalic( bool forced )
   d->forcedItalic = true;
 }
 
-QStringList QgsTextFormat::families() const { return d->families; }
+QStringList QgsTextFormat::families() const
+{
+  return d->families;
+}
 
 void QgsTextFormat::setFamilies( const QStringList &families )
 {
@@ -255,7 +279,10 @@ void QgsTextFormat::setFamilies( const QStringList &families )
   d->families = families;
 }
 
-Qgis::RenderUnit QgsTextFormat::sizeUnit() const { return d->fontSizeUnits; }
+Qgis::RenderUnit QgsTextFormat::sizeUnit() const
+{
+  return d->fontSizeUnits;
+}
 
 void QgsTextFormat::setSizeUnit( Qgis::RenderUnit unit )
 {
@@ -263,7 +290,10 @@ void QgsTextFormat::setSizeUnit( Qgis::RenderUnit unit )
   d->fontSizeUnits = unit;
 }
 
-QgsMapUnitScale QgsTextFormat::sizeMapUnitScale() const { return d->fontSizeMapUnitScale; }
+QgsMapUnitScale QgsTextFormat::sizeMapUnitScale() const
+{
+  return d->fontSizeMapUnitScale;
+}
 
 void QgsTextFormat::setSizeMapUnitScale( const QgsMapUnitScale &scale )
 {
@@ -271,7 +301,10 @@ void QgsTextFormat::setSizeMapUnitScale( const QgsMapUnitScale &scale )
   d->fontSizeMapUnitScale = scale;
 }
 
-double QgsTextFormat::size() const { return d->fontSize; }
+double QgsTextFormat::size() const
+{
+  return d->fontSize;
+}
 
 void QgsTextFormat::setSize( double size )
 {
@@ -279,7 +312,10 @@ void QgsTextFormat::setSize( double size )
   d->fontSize = size;
 }
 
-QColor QgsTextFormat::color() const { return d->textColor; }
+QColor QgsTextFormat::color() const
+{
+  return d->textColor;
+}
 
 void QgsTextFormat::setColor( const QColor &color )
 {
@@ -287,7 +323,10 @@ void QgsTextFormat::setColor( const QColor &color )
   d->textColor = color;
 }
 
-double QgsTextFormat::opacity() const { return d->opacity; }
+double QgsTextFormat::opacity() const
+{
+  return d->opacity;
+}
 
 void QgsTextFormat::multiplyOpacity( double opacityFactor )
 {
@@ -306,7 +345,10 @@ void QgsTextFormat::setOpacity( double opacity )
   d->opacity = opacity;
 }
 
-int QgsTextFormat::stretchFactor() const { return d->textFont.stretch() > 0 ? d->textFont.stretch() : 100; }
+int QgsTextFormat::stretchFactor() const
+{
+  return d->textFont.stretch() > 0 ? d->textFont.stretch() : 100;
+}
 
 void QgsTextFormat::setStretchFactor( int factor )
 {
@@ -314,7 +356,10 @@ void QgsTextFormat::setStretchFactor( int factor )
   d->textFont.setStretch( factor );
 }
 
-QPainter::CompositionMode QgsTextFormat::blendMode() const { return d->blendMode; }
+QPainter::CompositionMode QgsTextFormat::blendMode() const
+{
+  return d->blendMode;
+}
 
 void QgsTextFormat::setBlendMode( QPainter::CompositionMode mode )
 {
@@ -322,7 +367,10 @@ void QgsTextFormat::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
-double QgsTextFormat::lineHeight() const { return d->multilineHeight; }
+double QgsTextFormat::lineHeight() const
+{
+  return d->multilineHeight;
+}
 
 void QgsTextFormat::setLineHeight( double height )
 {
@@ -330,7 +378,10 @@ void QgsTextFormat::setLineHeight( double height )
   d->multilineHeight = height;
 }
 
-Qgis::RenderUnit QgsTextFormat::lineHeightUnit() const { return d->multilineHeightUnits; }
+Qgis::RenderUnit QgsTextFormat::lineHeightUnit() const
+{
+  return d->multilineHeightUnits;
+}
 
 void QgsTextFormat::setLineHeightUnit( Qgis::RenderUnit unit )
 {
@@ -338,7 +389,10 @@ void QgsTextFormat::setLineHeightUnit( Qgis::RenderUnit unit )
   d->multilineHeightUnits = unit;
 }
 
-double QgsTextFormat::tabStopDistance() const { return d->tabStopDistance; }
+double QgsTextFormat::tabStopDistance() const
+{
+  return d->tabStopDistance;
+}
 
 void QgsTextFormat::setTabStopDistance( double distance )
 {
@@ -346,7 +400,10 @@ void QgsTextFormat::setTabStopDistance( double distance )
   d->tabStopDistance = distance;
 }
 
-QList<QgsTextFormat::Tab> QgsTextFormat::tabPositions() const { return d->tabPositions; }
+QList<QgsTextFormat::Tab> QgsTextFormat::tabPositions() const
+{
+  return d->tabPositions;
+}
 
 void QgsTextFormat::setTabPositions( const QList<Tab> &positions )
 {
@@ -354,7 +411,10 @@ void QgsTextFormat::setTabPositions( const QList<Tab> &positions )
   d->tabPositions = positions;
 }
 
-Qgis::RenderUnit QgsTextFormat::tabStopDistanceUnit() const { return d->tabStopDistanceUnits; }
+Qgis::RenderUnit QgsTextFormat::tabStopDistanceUnit() const
+{
+  return d->tabStopDistanceUnits;
+}
 
 void QgsTextFormat::setTabStopDistanceUnit( Qgis::RenderUnit unit )
 {
@@ -362,7 +422,10 @@ void QgsTextFormat::setTabStopDistanceUnit( Qgis::RenderUnit unit )
   d->tabStopDistanceUnits = unit;
 }
 
-QgsMapUnitScale QgsTextFormat::tabStopDistanceMapUnitScale() const { return d->tabStopDistanceMapUnitScale; }
+QgsMapUnitScale QgsTextFormat::tabStopDistanceMapUnitScale() const
+{
+  return d->tabStopDistanceMapUnitScale;
+}
 
 void QgsTextFormat::setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale )
 {
@@ -370,7 +433,10 @@ void QgsTextFormat::setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale
   d->tabStopDistanceMapUnitScale = scale;
 }
 
-Qgis::TextOrientation QgsTextFormat::orientation() const { return d->orientation; }
+Qgis::TextOrientation QgsTextFormat::orientation() const
+{
+  return d->orientation;
+}
 
 void QgsTextFormat::setOrientation( Qgis::TextOrientation orientation )
 {
@@ -392,7 +458,10 @@ void QgsTextFormat::setCapitalization( Qgis::Capitalization capitalization )
   d->textFont.setCapitalization( capitalization == Qgis::Capitalization::SmallCaps || capitalization == Qgis::Capitalization::AllSmallCaps ? QFont::SmallCaps : QFont::MixedCase );
 }
 
-bool QgsTextFormat::allowHtmlFormatting() const { return d->allowHtmlFormatting; }
+bool QgsTextFormat::allowHtmlFormatting() const
+{
+  return d->allowHtmlFormatting;
+}
 
 void QgsTextFormat::setAllowHtmlFormatting( bool allow )
 {
@@ -400,7 +469,10 @@ void QgsTextFormat::setAllowHtmlFormatting( bool allow )
   d->allowHtmlFormatting = allow;
 }
 
-QColor QgsTextFormat::previewBackgroundColor() const { return d->previewBackgroundColor; }
+QColor QgsTextFormat::previewBackgroundColor() const
+{
+  return d->previewBackgroundColor;
+}
 
 void QgsTextFormat::setPreviewBackgroundColor( const QColor &color )
 {
@@ -905,7 +977,10 @@ QgsPropertyCollection &QgsTextFormat::dataDefinedProperties()
   return d->mDataDefinedProperties;
 }
 
-const QgsPropertyCollection &QgsTextFormat::dataDefinedProperties() const { return d->mDataDefinedProperties; }
+const QgsPropertyCollection &QgsTextFormat::dataDefinedProperties() const
+{
+  return d->mDataDefinedProperties;
+}
 
 QSet<QString> QgsTextFormat::referencedFields( const QgsRenderContext &context ) const
 {
@@ -1248,9 +1323,9 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   double ytrans = 0.0;
   if ( tempFormat.buffer().enabled() )
     ytrans = std::max(
-      ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                ? fontSize * tempFormat.buffer().size() / 100
-                : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() )
+      ytrans,
+      tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat.buffer().size() / 100
+                                                                     : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() )
     );
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );

@@ -48,8 +48,15 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
      *
      */
     QgsScopedExpressionFunction(
-      const QString &fnname, int params, const QString &group, const QString &helpText = QString(), bool usesGeometry = false, const QSet<QString> &referencedColumns = QSet<QString>(),
-      bool lazyEval = false, bool handlesNull = false, bool isContextual = true
+      const QString &fnname,
+      int params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      bool handlesNull = false,
+      bool isContextual = true
     )
       : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
       , mUsesGeometry( usesGeometry )
@@ -61,8 +68,15 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
      *
      */
     QgsScopedExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QString &group, const QString &helpText = QString(), bool usesGeometry = false,
-      const QSet<QString> &referencedColumns = QSet<QString>(), bool lazyEval = false, bool handlesNull = false, bool isContextual = true
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      bool handlesNull = false,
+      bool isContextual = true
     )
       : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
       , mUsesGeometry( usesGeometry )

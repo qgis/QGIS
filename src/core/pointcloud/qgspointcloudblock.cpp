@@ -29,17 +29,35 @@ QgsPointCloudBlock::QgsPointCloudBlock( int count, const QgsPointCloudAttributeC
   , mOffset( offset )
 {}
 
-QgsPointCloudBlock *QgsPointCloudBlock::clone() const { return new QgsPointCloudBlock( *this ); }
+QgsPointCloudBlock *QgsPointCloudBlock::clone() const
+{
+  return new QgsPointCloudBlock( *this );
+}
 
-const char *QgsPointCloudBlock::data() const { return mStorage.data(); }
+const char *QgsPointCloudBlock::data() const
+{
+  return mStorage.data();
+}
 
-int QgsPointCloudBlock::pointCount() const { return mPointCount; }
+int QgsPointCloudBlock::pointCount() const
+{
+  return mPointCount;
+}
 
-QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const { return mAttributes; }
+QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
+{
+  return mAttributes;
+}
 
-QgsVector3D QgsPointCloudBlock::scale() const { return mScale; }
+QgsVector3D QgsPointCloudBlock::scale() const
+{
+  return mScale;
+}
 
-QgsVector3D QgsPointCloudBlock::offset() const { return mOffset; }
+QgsVector3D QgsPointCloudBlock::offset() const
+{
+  return mOffset;
+}
 
 void QgsPointCloudBlock::setPointCount( int size )
 {

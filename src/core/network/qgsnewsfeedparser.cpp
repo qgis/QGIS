@@ -121,7 +121,10 @@ void QgsNewsFeedParser::setEnabled( bool enabled )
   QgsSettings().setValue( u"%1/disabled"_s.arg( mFeedKey ), !mEnabled, QgsSettings::Core );
 }
 
-QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const { return mEntries; }
+QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
+{
+  return mEntries;
+}
 
 void QgsNewsFeedParser::dismissEntry( int key )
 {
@@ -129,7 +132,8 @@ void QgsNewsFeedParser::dismissEntry( int key )
   const int beforeSize = mEntries.size();
   mEntries.erase(
     std::remove_if(
-      mEntries.begin(), mEntries.end(),
+      mEntries.begin(),
+      mEntries.end(),
       [key, &dismissed]( const Entry &entry ) {
         if ( entry.key == key )
         {
@@ -177,7 +181,10 @@ void QgsNewsFeedParser::dismissAll()
   }
 }
 
-QString QgsNewsFeedParser::authcfg() const { return mAuthCfg; }
+QString QgsNewsFeedParser::authcfg() const
+{
+  return mAuthCfg;
+}
 
 void QgsNewsFeedParser::fetch()
 {

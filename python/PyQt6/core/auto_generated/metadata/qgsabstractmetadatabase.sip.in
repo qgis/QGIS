@@ -45,7 +45,7 @@ against the native QGIS metadata schema can be performed using
 #include "qgsabstractmetadatabase.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+    if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsLayerMetadata;
     else if ( dynamic_cast< QgsProjectMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsProjectMetadata;
@@ -60,7 +60,11 @@ if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
     struct Address
     {
         Address(
-          const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(),
+          const QString &type = QString(),
+          const QString &address = QString(),
+          const QString &city = QString(),
+          const QString &administrativeArea = QString(),
+          const QString &postalCode = QString(),
           const QString &country = QString()
         );
 %Docstring

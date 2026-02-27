@@ -482,7 +482,10 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
   }
 }
 
-template<typename T> void fillTypedData( double value, void *data, std::size_t count ) { std::fill_n( static_cast<T *>( data ), count, static_cast<T>( value ) ); };
+template<typename T> void fillTypedData( double value, void *data, std::size_t count )
+{
+  std::fill_n( static_cast<T *>( data ), count, static_cast<T>( value ) );
+};
 
 bool QgsRasterBlock::fill( double value )
 {
@@ -626,7 +629,10 @@ const char *QgsRasterBlock::constBits( qgssize index ) const
   return nullptr;
 }
 
-char *QgsRasterBlock::bits( int row, int column ) { return bits( static_cast< qgssize >( row ) * mWidth + column ); }
+char *QgsRasterBlock::bits( int row, int column )
+{
+  return bits( static_cast< qgssize >( row ) * mWidth + column );
+}
 
 char *QgsRasterBlock::bits()
 {
@@ -919,7 +925,10 @@ bool QgsRasterBlock::createNoDataBitmap()
   return true;
 }
 
-QString QgsRasterBlock::toString() const { return u"dataType = %1 width = %2 height = %3"_s.arg( qgsEnumValueToKey< Qgis::DataType >( mDataType ) ).arg( mWidth ).arg( mHeight ); }
+QString QgsRasterBlock::toString() const
+{
+  return u"dataType = %1 width = %2 height = %3"_s.arg( qgsEnumValueToKey< Qgis::DataType >( mDataType ) ).arg( mWidth ).arg( mHeight );
+}
 
 QRect QgsRasterBlock::subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent )
 {

@@ -112,11 +112,20 @@ void QgsMapRendererSequentialJob::waitForFinished()
   mInternalJob->waitForFinished();
 }
 
-bool QgsMapRendererSequentialJob::isActive() const { return nullptr != mInternalJob; }
+bool QgsMapRendererSequentialJob::isActive() const
+{
+  return nullptr != mInternalJob;
+}
 
-bool QgsMapRendererSequentialJob::usedCachedLabels() const { return mUsedCachedLabels; }
+bool QgsMapRendererSequentialJob::usedCachedLabels() const
+{
+  return mUsedCachedLabels;
+}
 
-QgsLabelingResults *QgsMapRendererSequentialJob::takeLabelingResults() { return mLabelingResults.release(); }
+QgsLabelingResults *QgsMapRendererSequentialJob::takeLabelingResults()
+{
+  return mLabelingResults.release();
+}
 
 
 QImage QgsMapRendererSequentialJob::renderedImage()

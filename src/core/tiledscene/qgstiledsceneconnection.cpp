@@ -86,7 +86,10 @@ QString QgsTiledSceneProviderConnection::encodedLayerUri( const QgsTiledScenePro
   return uri.encodedUri();
 }
 
-QStringList QgsTiledSceneProviderConnection::connectionList() { return QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items(); }
+QStringList QgsTiledSceneProviderConnection::connectionList()
+{
+  return QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
+}
 
 QgsTiledSceneProviderConnection::Data QgsTiledSceneProviderConnection::connection( const QString &name )
 {
@@ -116,9 +119,15 @@ void QgsTiledSceneProviderConnection::addConnection( const QString &name, const 
   settingsHeaders->setValue( conn.httpHeaders.headers(), name );
 }
 
-QString QgsTiledSceneProviderConnection::selectedConnection() { return sTreeConnectionTiledScene->selectedItem(); }
+QString QgsTiledSceneProviderConnection::selectedConnection()
+{
+  return sTreeConnectionTiledScene->selectedItem();
+}
 
-void QgsTiledSceneProviderConnection::setSelectedConnection( const QString &name ) { sTreeConnectionTiledScene->setSelectedItem( name ); }
+void QgsTiledSceneProviderConnection::setSelectedConnection( const QString &name )
+{
+  sTreeConnectionTiledScene->setSelectedItem( name );
+}
 
 QgsTiledSceneProviderConnection::QgsTiledSceneProviderConnection( const QString &name )
   : QgsAbstractProviderConnection( name )
@@ -140,4 +149,7 @@ void QgsTiledSceneProviderConnection::store( const QString &name ) const
   addConnection( name, connectionData );
 }
 
-void QgsTiledSceneProviderConnection::remove( const QString &name ) const { sTreeConnectionTiledScene->deleteItem( name ); }
+void QgsTiledSceneProviderConnection::remove( const QString &name ) const
+{
+  sTreeConnectionTiledScene->deleteItem( name );
+}

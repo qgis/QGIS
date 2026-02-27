@@ -525,4 +525,7 @@ void QgsFieldModel::setFields( const QgsFields &fields )
   endResetModel();
 }
 
-QgsFields QgsFieldModel::fields() const { return mFields; }
+QgsFields QgsFieldModel::fields() const
+{
+  return mFields;
+}

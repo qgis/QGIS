@@ -140,8 +140,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
      */
     static void setCustomMissingPreferredGridHandler(
       const std::function< void(
-        const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation,
-        const QgsDatumTransform::TransformDetails &availableOperation
+        const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation
       )> &handler
     );
 

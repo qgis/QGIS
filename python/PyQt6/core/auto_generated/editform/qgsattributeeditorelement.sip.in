@@ -26,7 +26,7 @@ children of another layer.
 #include "qgsattributeeditorelement.h"
 %End
 %ConvertToSubClassCode
-switch ( sipCpp->type() )
+    switch ( sipCpp->type() )
     {
       case Qgis::AttributeEditorType::Container:
         sipType = sipType_QgsAttributeEditorContainer;

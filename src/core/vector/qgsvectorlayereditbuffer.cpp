@@ -50,7 +50,10 @@ QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer *layer )
   connect( L->undoStack(), &QUndoStack::indexChanged, this, &QgsVectorLayerEditBuffer::undoIndexChanged ); // TODO[MD]: queued?
 }
 
-bool QgsVectorLayerEditBuffer::isModified() const { return !L->undoStack()->isClean(); }
+bool QgsVectorLayerEditBuffer::isModified() const
+{
+  return !L->undoStack()->isClean();
+}
 
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
@@ -87,9 +90,15 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields &fields )
   }
 }
 
-QgsVectorLayerEditBufferGroup *QgsVectorLayerEditBuffer::editBufferGroup() const { return mEditBufferGroup; }
+QgsVectorLayerEditBufferGroup *QgsVectorLayerEditBuffer::editBufferGroup() const
+{
+  return mEditBufferGroup;
+}
 
-void QgsVectorLayerEditBuffer::setEditBufferGroup( QgsVectorLayerEditBufferGroup *editBufferGroup ) { mEditBufferGroup = editBufferGroup; }
+void QgsVectorLayerEditBuffer::setEditBufferGroup( QgsVectorLayerEditBufferGroup *editBufferGroup )
+{
+  mEditBufferGroup = editBufferGroup;
+}
 
 void QgsVectorLayerEditBuffer::updateFeatureGeometry( QgsFeature &f )
 {
@@ -604,7 +613,10 @@ void QgsVectorLayerEditBuffer::updateAttributeMapIndex( QgsAttributeMap &map, in
 }
 
 
-void QgsVectorLayerEditBuffer::updateLayerFields() { L->updateFields(); }
+void QgsVectorLayerEditBuffer::updateLayerFields()
+{
+  L->updateFields();
+}
 
 bool QgsVectorLayerEditBuffer::commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors )
 {

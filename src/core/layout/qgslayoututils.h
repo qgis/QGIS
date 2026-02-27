@@ -187,8 +187,14 @@ class CORE_EXPORT QgsLayoutUtils
      * The \a flags parameter allows for passing Qt::TextFlags to control appearance of rendered text.
      */
     static void drawText(
-      QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft,
-      Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap
+      QPainter *painter,
+      const QRectF &rectangle,
+      const QString &text,
+      const QFont &font,
+      const QColor &color = QColor(),
+      Qt::AlignmentFlag halignment = Qt::AlignLeft,
+      Qt::AlignmentFlag valignment = Qt::AlignTop,
+      int flags = Qt::TextWordWrap
     );
 
     /**

@@ -194,16 +194,37 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
 }
 
 std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement(
-  const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction,
-  double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags, double additionalCharacterSpacing, double additionalWordSpacing
+  const QgsPrecalculatedTextMetrics &metrics,
+  const double *x,
+  const double *y,
+  int numPoints,
+  const std::vector<double> &pathDistances,
+  double offsetAlongLine,
+  LabelLineDirection direction,
+  double maxConcaveAngle,
+  double maxConvexAngle,
+  Qgis::CurvedTextFlags flags,
+  double additionalCharacterSpacing,
+  double additionalWordSpacing
 )
 {
   return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, false, additionalCharacterSpacing, additionalWordSpacing );
 }
 
 std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate(
-  const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction,
-  Qgis::CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt, double additionalCharacterSpacing, double additionalWordSpacing
+  const QgsPrecalculatedTextMetrics &metrics,
+  const double *x,
+  const double *y,
+  int numPoints,
+  const std::vector<double> &pathDistances,
+  double offsetAlongLine,
+  LabelLineDirection direction,
+  Qgis::CurvedTextFlags flags,
+  double maxConcaveAngle,
+  double maxConvexAngle,
+  bool isSecondAttempt,
+  double additionalCharacterSpacing,
+  double additionalWordSpacing
 )
 {
   auto output = std::make_unique< CurvePlacementProperties >();
@@ -437,8 +458,19 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
 }
 
 bool QgsTextRendererUtils::nextCharPosition(
-  double charWidth, const std::vector<double> &pathDistances, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX,
-  double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags, double additionalSpacing
+  double charWidth,
+  const std::vector<double> &pathDistances,
+  const double *x,
+  const double *y,
+  int numPoints,
+  int &index,
+  double &currentDistanceAlongSegment,
+  double &characterStartX,
+  double &characterStartY,
+  double &characterEndX,
+  double &characterEndY,
+  Qgis::CurvedTextFlags flags,
+  double additionalSpacing
 )
 {
   if ( !qgsDoubleNear( additionalSpacing, 0.0 ) )

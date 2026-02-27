@@ -22,7 +22,10 @@ QgsRay3D::QgsRay3D( const QVector3D &origin, const QVector3D &direction )
   , mDirectionInversed( 1.0f / mDirection.x(), 1.0f / mDirection.y(), 1.0f / mDirection.z() )
 {}
 
-void QgsRay3D::setOrigin( const QVector3D &origin ) { mOrigin = origin; }
+void QgsRay3D::setOrigin( const QVector3D &origin )
+{
+  mOrigin = origin;
+}
 
 void QgsRay3D::setDirection( const QVector3D direction )
 {
@@ -30,11 +33,20 @@ void QgsRay3D::setDirection( const QVector3D direction )
   mDirectionInversed = QVector3D( 1.0f / mDirection.x(), 1.0f / mDirection.y(), 1.0f / mDirection.z() );
 }
 
-QVector3D QgsRay3D::projectedPoint( const QVector3D &point ) const { return mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection; }
+QVector3D QgsRay3D::projectedPoint( const QVector3D &point ) const
+{
+  return mOrigin + QVector3D::dotProduct( point - mOrigin, mDirection ) * mDirection;
+}
 
-float QgsRay3D::projectedDistance( const QVector3D &point ) const { return QVector3D::dotProduct( point - mOrigin, mDirection ) / mDirection.lengthSquared(); }
+float QgsRay3D::projectedDistance( const QVector3D &point ) const
+{
+  return QVector3D::dotProduct( point - mOrigin, mDirection ) / mDirection.lengthSquared();
+}
 
-bool QgsRay3D::isInFront( const QVector3D &point ) const { return QVector3D::dotProduct( ( point - mOrigin ).normalized(), mDirection ) >= 0.0; }
+bool QgsRay3D::isInFront( const QVector3D &point ) const
+{
+  return QVector3D::dotProduct( ( point - mOrigin ).normalized(), mDirection ) >= 0.0;
+}
 
 double QgsRay3D::angleToPoint( const QVector3D &point ) const
 {
@@ -47,4 +59,7 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
   return qRadiansToDegrees( std::atan2( v2.length(), v1.length() ) );
 }
 
-QVector3D QgsRay3D::point( float distance ) const { return mOrigin + distance * mDirection; }
+QVector3D QgsRay3D::point( float distance ) const
+{
+  return mOrigin + distance * mDirection;
+}

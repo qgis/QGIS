@@ -460,7 +460,14 @@ create new empty GeoPackage or FileGeodatabase databases.
 
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
-      const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList()
     ) /Factory/;
 %Docstring

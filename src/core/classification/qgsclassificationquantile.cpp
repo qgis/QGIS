@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsClassificationQuantile::QgsClassificationQuantile()
   : QgsClassificationMethod()
-{
-}
+{}
 
 QString QgsClassificationQuantile::name() const
 {

@@ -91,7 +91,11 @@ class CORE_EXPORT QgsAbstractMetadataBase
        * Constructor for Address.
        */
         Address(
-          const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(),
+          const QString &type = QString(),
+          const QString &address = QString(),
+          const QString &city = QString(),
+          const QString &administrativeArea = QString(),
+          const QString &postalCode = QString(),
           const QString &country = QString()
         )
           : type( type )

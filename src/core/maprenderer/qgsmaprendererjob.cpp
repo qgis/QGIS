@@ -191,20 +191,35 @@ void QgsMapRendererJob::start()
   }
 }
 
-QStringList QgsMapRendererJob::layersRedrawnFromCache() const { return mLayersRedrawnFromCache; }
+QStringList QgsMapRendererJob::layersRedrawnFromCache() const
+{
+  return mLayersRedrawnFromCache;
+}
 
-QgsRenderedItemResults *QgsMapRendererJob::takeRenderedItemResults() { return mRenderedItemResults.release(); }
+QgsRenderedItemResults *QgsMapRendererJob::takeRenderedItemResults()
+{
+  return mRenderedItemResults.release();
+}
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )
 {}
 
 
-QgsMapRendererJob::Errors QgsMapRendererJob::errors() const { return mErrors; }
+QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
+{
+  return mErrors;
+}
 
-void QgsMapRendererJob::setCache( QgsMapRendererCache *cache ) { mCache = cache; }
+void QgsMapRendererJob::setCache( QgsMapRendererCache *cache )
+{
+  mCache = cache;
+}
 
-QgsLabelingEngineFeedback *QgsMapRendererJob::labelingEngineFeedback() { return mLabelingEngineFeedback; }
+QgsLabelingEngineFeedback *QgsMapRendererJob::labelingEngineFeedback()
+{
+  return mLabelingEngineFeedback;
+}
 
 QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
 {
@@ -217,9 +232,15 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   return result;
 }
 
-void QgsMapRendererJob::setLayerRenderingTimeHints( const QHash<QString, int> &hints ) { mLayerRenderingTimeHints = hints; }
+void QgsMapRendererJob::setLayerRenderingTimeHints( const QHash<QString, int> &hints )
+{
+  mLayerRenderingTimeHints = hints;
+}
 
-const QgsMapSettings &QgsMapRendererJob::mapSettings() const { return mSettings; }
+const QgsMapSettings &QgsMapRendererJob::mapSettings() const
+{
+  return mSettings;
+}
 
 bool QgsMapRendererJob::prepareLabelCache() const
 {

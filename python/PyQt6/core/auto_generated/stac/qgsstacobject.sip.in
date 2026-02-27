@@ -24,7 +24,7 @@ Abstract base class for storing STAC objects.
 #include "qgsstaccatalog.h"
 %End
 %ConvertToSubClassCode
-if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
+    if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
     {
       sipType = sipType_QgsStacItem;
     }

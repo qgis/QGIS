@@ -72,11 +72,20 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   connect( mNorthArrowHandler, &QgsLayoutNorthArrowHandler::arrowRotationChanged, this, &QgsLayoutItemPicture::updateNorthArrowRotation );
 }
 
-int QgsLayoutItemPicture::type() const { return QgsLayoutItemRegistry::LayoutPicture; }
+int QgsLayoutItemPicture::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPicture;
+}
 
-QIcon QgsLayoutItemPicture::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemPicture.svg"_s ); }
+QIcon QgsLayoutItemPicture::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPicture.svg"_s );
+}
 
-QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout ) { return new QgsLayoutItemPicture( layout ); }
+QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemPicture( layout );
+}
 
 void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
@@ -120,7 +129,9 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
       imageRect = QRect(
-        0, 0, mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length() * mLayout->renderContext().dpi() / 25.4,
+        0,
+        0,
+        mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length() * mLayout->renderContext().dpi() / 25.4,
         mLayout->convertFromLayoutUnits( rect().height(), Qgis::LayoutUnit::Millimeters ).length() * mLayout->renderContext().dpi() / 25.4
       );
     }
@@ -621,9 +632,15 @@ QSizeF QgsLayoutItemPicture::pictureSize()
   }
 }
 
-bool QgsLayoutItemPicture::isMissingImage() const { return mIsMissingImage; }
+bool QgsLayoutItemPicture::isMissingImage() const
+{
+  return mIsMissingImage;
+}
 
-QString QgsLayoutItemPicture::evaluatedPath() const { return mEvaluatedPath; }
+QString QgsLayoutItemPicture::evaluatedPath() const
+{
+  return mEvaluatedPath;
+}
 
 QMap<QString, QgsProperty> QgsLayoutItemPicture::svgDynamicParameters() const
 {
@@ -687,7 +704,10 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
   emit pictureRotationChanged( mPictureRotation );
 }
 
-void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map ) { mNorthArrowHandler->setLinkedMap( map ); }
+void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
+{
+  mNorthArrowHandler->setLinkedMap( map );
+}
 
 void QgsLayoutItemPicture::setResizeMode( QgsLayoutItemPicture::ResizeMode mode )
 {
@@ -728,7 +748,10 @@ void QgsLayoutItemPicture::setPicturePath( const QString &path, Qgis::PictureFor
   refreshPicture();
 }
 
-QString QgsLayoutItemPicture::picturePath() const { return mSourcePath; }
+QString QgsLayoutItemPicture::picturePath() const
+{
+  return mSourcePath;
+}
 
 bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocument &, const QgsReadWriteContext &context ) const
 {
@@ -832,15 +855,30 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   return true;
 }
 
-QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const { return mNorthArrowHandler->linkedMap(); }
+QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const
+{
+  return mNorthArrowHandler->linkedMap();
+}
 
-QgsLayoutItemPicture::NorthMode QgsLayoutItemPicture::northMode() const { return static_cast< QgsLayoutItemPicture::NorthMode >( mNorthArrowHandler->northMode() ); }
+QgsLayoutItemPicture::NorthMode QgsLayoutItemPicture::northMode() const
+{
+  return static_cast< QgsLayoutItemPicture::NorthMode >( mNorthArrowHandler->northMode() );
+}
 
-void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode ) { mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( mode ) ); }
+void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode )
+{
+  mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( mode ) );
+}
 
-double QgsLayoutItemPicture::northOffset() const { return mNorthArrowHandler->northOffset(); }
+double QgsLayoutItemPicture::northOffset() const
+{
+  return mNorthArrowHandler->northOffset();
+}
 
-void QgsLayoutItemPicture::setNorthOffset( double offset ) { mNorthArrowHandler->setNorthOffset( offset ); }
+void QgsLayoutItemPicture::setNorthOffset( double offset )
+{
+  mNorthArrowHandler->setNorthOffset( offset );
+}
 
 void QgsLayoutItemPicture::setPictureAnchor( ReferencePoint anchor )
 {

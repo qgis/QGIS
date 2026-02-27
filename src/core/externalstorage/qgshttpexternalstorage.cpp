@@ -80,9 +80,15 @@ void QgsHttpExternalStorageStoreTask::cancel()
   QgsTask::cancel();
 }
 
-QString QgsHttpExternalStorageStoreTask::errorString() const { return mErrorString; }
+QString QgsHttpExternalStorageStoreTask::errorString() const
+{
+  return mErrorString;
+}
 
-void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler ) { mPrepareRequestHandler = std::move( handler ); }
+void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
+{
+  mPrepareRequestHandler = std::move( handler );
+}
 
 QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
 {
@@ -124,7 +130,10 @@ void QgsHttpExternalStorageStoredContent::cancel()
   mUploadTask->cancel();
 }
 
-QString QgsHttpExternalStorageStoredContent::url() const { return mUrl; }
+QString QgsHttpExternalStorageStoredContent::url() const
+{
+  return mUrl;
+}
 
 void QgsHttpExternalStorageStoredContent::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
@@ -158,7 +167,10 @@ void QgsHttpExternalStorageFetchedContent::fetch()
   }
 }
 
-QString QgsHttpExternalStorageFetchedContent::filePath() const { return mFetchedContent ? mFetchedContent->filePath() : QString(); }
+QString QgsHttpExternalStorageFetchedContent::filePath() const
+{
+  return mFetchedContent ? mFetchedContent->filePath() : QString();
+}
 
 void QgsHttpExternalStorageFetchedContent::onFetched()
 {
@@ -172,14 +184,23 @@ void QgsHttpExternalStorageFetchedContent::onFetched()
   }
 }
 
-void QgsHttpExternalStorageFetchedContent::cancel() { mFetchedContent->cancel(); }
+void QgsHttpExternalStorageFetchedContent::cancel()
+{
+  mFetchedContent->cancel();
+}
 
 
 // WEB DAV PROTOCOL
 
-QString QgsWebDavExternalStorage::type() const { return u"WebDAV"_s; };
+QString QgsWebDavExternalStorage::type() const
+{
+  return u"WebDAV"_s;
+};
 
-QString QgsWebDavExternalStorage::displayName() const { return QObject::tr( "WebDAV Storage" ); };
+QString QgsWebDavExternalStorage::displayName() const
+{
+  return QObject::tr( "WebDAV Storage" );
+};
 
 QgsExternalStorageStoredContent *QgsWebDavExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
@@ -196,9 +217,15 @@ QgsExternalStorageFetchedContent *QgsWebDavExternalStorage::doFetch( const QStri
 
 // AWS S3 PROTOCOL
 
-QString QgsAwsS3ExternalStorage::type() const { return u"AWSS3"_s; };
+QString QgsAwsS3ExternalStorage::type() const
+{
+  return u"AWSS3"_s;
+};
 
-QString QgsAwsS3ExternalStorage::displayName() const { return QObject::tr( "AWS S3" ); };
+QString QgsAwsS3ExternalStorage::displayName() const
+{
+  return QObject::tr( "AWS S3" );
+};
 
 QgsExternalStorageStoredContent *QgsAwsS3ExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {

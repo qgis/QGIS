@@ -241,13 +241,23 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   }
 }
 
-QgsMemoryProvider::~QgsMemoryProvider() {}
+QgsMemoryProvider::~QgsMemoryProvider()
+{}
 
-QString QgsMemoryProvider::providerKey() { return TEXT_PROVIDER_KEY; }
+QString QgsMemoryProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsMemoryProvider::providerDescription() { return TEXT_PROVIDER_DESCRIPTION; }
+QString QgsMemoryProvider::providerDescription()
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
 
-QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const { return new QgsMemoryFeatureSource( this ); }
+QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
+{
+  return new QgsMemoryFeatureSource( this );
+}
 
 QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 {
@@ -319,7 +329,10 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   return QString( uri.toEncoded() );
 }
 
-QString QgsMemoryProvider::storageType() const { return u"Memory storage"_s; }
+QString QgsMemoryProvider::storageType() const
+{
+  return u"Memory storage"_s;
+}
 
 QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
@@ -361,7 +374,10 @@ QgsRectangle QgsMemoryProvider::extent() const
   return mExtent;
 }
 
-Qgis::WkbType QgsMemoryProvider::wkbType() const { return mWkbType; }
+Qgis::WkbType QgsMemoryProvider::wkbType() const
+{
+  return mWkbType;
+}
 
 long long QgsMemoryProvider::featureCount() const
 {
@@ -379,9 +395,15 @@ long long QgsMemoryProvider::featureCount() const
   return count;
 }
 
-QgsFields QgsMemoryProvider::fields() const { return mFields; }
+QgsFields QgsMemoryProvider::fields() const
+{
+  return mFields;
+}
 
-bool QgsMemoryProvider::isValid() const { return ( mWkbType != Qgis::WkbType::Unknown ); }
+bool QgsMemoryProvider::isValid() const
+{
+  return ( mWkbType != Qgis::WkbType::Unknown );
+}
 
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 {
@@ -719,7 +741,10 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   return true;
 }
 
-QString QgsMemoryProvider::subsetString() const { return mSubsetString; }
+QString QgsMemoryProvider::subsetString() const
+{
+  return mSubsetString;
+}
 
 bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
@@ -743,9 +768,15 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   return true;
 }
 
-bool QgsMemoryProvider::supportsSubsetString() const { return true; }
+bool QgsMemoryProvider::supportsSubsetString() const
+{
+  return true;
+}
 
-QString QgsMemoryProvider::subsetStringDialect() const { return tr( "QGIS expression" ); }
+QString QgsMemoryProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
 
 QString QgsMemoryProvider::subsetStringHelpUrl() const
 {
@@ -768,7 +799,10 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
-Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const { return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent; }
+Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
+}
 
 Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
@@ -791,25 +825,40 @@ bool QgsMemoryProvider::truncate()
   return true;
 }
 
-void QgsMemoryProvider::updateExtents() { mExtent.setNull(); }
+void QgsMemoryProvider::updateExtents()
+{
+  mExtent.setNull();
+}
 
-QString QgsMemoryProvider::name() const { return TEXT_PROVIDER_KEY; }
+QString QgsMemoryProvider::name() const
+{
+  return TEXT_PROVIDER_KEY;
+}
 
-QString QgsMemoryProvider::description() const { return TEXT_PROVIDER_DESCRIPTION; }
+QString QgsMemoryProvider::description() const
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
 
 
 QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
 {}
 
-QIcon QgsMemoryProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconMemory.svg"_s ); }
+QIcon QgsMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconMemory.svg"_s );
+}
 
 QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMemoryProvider( uri, options, flags );
 }
 
-QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Vector }; }
+QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
 
 #undef TEXT_PROVIDER_KEY
 #undef TEXT_PROVIDER_DESCRIPTION

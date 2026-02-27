@@ -106,7 +106,10 @@ void QgsClipper::clipped3dLine( const QVector< double > &xIn, const QVector< dou
   }
 }
 
-QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent ) { return clippedLine( curve.asQPolygonF(), clipExtent ); }
+QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
+{
+  return clippedLine( curve.asQPolygonF(), clipExtent );
+}
 
 QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent )
 {

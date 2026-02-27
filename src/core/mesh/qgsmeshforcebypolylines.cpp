@@ -24,7 +24,10 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 
-static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face ) { return face.indexOf( vertexIndex ); }
+static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
+{
+  return face.indexOf( vertexIndex );
+}
 
 static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex )
 {
@@ -125,7 +128,13 @@ static void buildHolesWithOneFace(
 
 //! Returns the next faces (face on the other side of the cut edge)
 static int cutEdgeFromSnappedVertex(
-  QgsMeshEditor *meshEditor, int faceIndex, int startingSnappedVertex, int edgePosition, QList<int> &newVerticesOnLeftHole, QList<int> &newNeighborsOnLeftHole, QList<int> &newVerticesOnRightHole,
+  QgsMeshEditor *meshEditor,
+  int faceIndex,
+  int startingSnappedVertex,
+  int edgePosition,
+  QList<int> &newVerticesOnLeftHole,
+  QList<int> &newNeighborsOnLeftHole,
+  QList<int> &newVerticesOnRightHole,
   QList<int> &newNeighborsOnRightHole
 )
 {
@@ -290,7 +299,10 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
   return QgsTopologicalMesh::Changes();
 }
 
-void QgsMeshEditForceByLine::finish() { mIsFinished = true; }
+void QgsMeshEditForceByLine::finish()
+{
+  mIsFinished = true;
+}
 
 void QgsMeshEditForceByLine::interpolateZValueOnMesh( QgsPoint &point ) const
 {
@@ -1034,9 +1046,15 @@ bool QgsMeshEditForceByLine::finishForcingLine()
 }
 
 
-QString QgsMeshEditForceByPolylines::text() const { return QObject::tr( "Force mesh by polyline" ); }
+QString QgsMeshEditForceByPolylines::text() const
+{
+  return QObject::tr( "Force mesh by polyline" );
+}
 
-bool QgsMeshEditForceByPolylines::isFinished() const { return mCurrentPolyline >= mPolylines.count() && QgsMeshEditForceByLine::isFinished(); }
+bool QgsMeshEditForceByPolylines::isFinished() const
+{
+  return mCurrentPolyline >= mPolylines.count() && QgsMeshEditForceByLine::isFinished();
+}
 
 QgsTopologicalMesh::Changes QgsMeshEditForceByPolylines::apply( QgsMeshEditor *meshEditor )
 {
@@ -1129,13 +1147,25 @@ void QgsMeshEditForceByPolylines::addLinesFromGeometries( const QList<QgsGeometr
     addLineFromGeometry( geom );
 }
 
-void QgsMeshEditForceByLine::setTolerance( double tolerance ) { mTolerance = tolerance; }
+void QgsMeshEditForceByLine::setTolerance( double tolerance )
+{
+  mTolerance = tolerance;
+}
 
-void QgsMeshEditForceByLine::setAddVertexOnIntersection( bool addVertex ) { mNewVertexOnIntersection = addVertex; }
+void QgsMeshEditForceByLine::setAddVertexOnIntersection( bool addVertex )
+{
+  mNewVertexOnIntersection = addVertex;
+}
 
-void QgsMeshEditForceByLine::setDefaultZValue( double defaultZValue ) { mDefaultZValue = defaultZValue; }
+void QgsMeshEditForceByLine::setDefaultZValue( double defaultZValue )
+{
+  mDefaultZValue = defaultZValue;
+}
 
-void QgsMeshEditForceByLine::setInterpolateZValueOnMesh( bool interpolateZValueOnMesh ) { mInterpolateZValueOnMesh = interpolateZValueOnMesh; }
+void QgsMeshEditForceByLine::setInterpolateZValueOnMesh( bool interpolateZValueOnMesh )
+{
+  mInterpolateZValueOnMesh = interpolateZValueOnMesh;
+}
 
 void QgsMeshEditForceByPolylines::incrementSegment()
 {

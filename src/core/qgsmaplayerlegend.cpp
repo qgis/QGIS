@@ -60,13 +60,25 @@ QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteCo
   return elem;
 }
 
-QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl ) { return new QgsDefaultVectorLayerLegend( vl ); }
+QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )
+{
+  return new QgsDefaultVectorLayerLegend( vl );
+}
 
-QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl ) { return new QgsDefaultRasterLayerLegend( rl ); }
+QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl )
+{
+  return new QgsDefaultRasterLayerLegend( rl );
+}
 
-QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml ) { return new QgsDefaultMeshLayerLegend( ml ); }
+QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
+{
+  return new QgsDefaultMeshLayerLegend( ml );
+}
 
-QgsMapLayerLegend *QgsMapLayerLegend::defaultPointCloudLegend( QgsPointCloudLayer *layer ) { return new QgsDefaultPointCloudLayerLegend( layer ); }
+QgsMapLayerLegend *QgsMapLayerLegend::defaultPointCloudLegend( QgsPointCloudLayer *layer )
+{
+  return new QgsDefaultPointCloudLayerLegend( layer );
+}
 
 // -------------------------------------------------------------------------
 
@@ -135,7 +147,10 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer *nodeLayer
   return lst;
 }
 
-bool QgsMapLayerLegendUtils::hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer ) { return nodeLayer->customProperties().contains( u"legend/node-order"_s ); }
+bool QgsMapLayerLegendUtils::hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer )
+{
+  return nodeLayer->customProperties().contains( u"legend/node-order"_s );
+}
 
 void QgsMapLayerLegendUtils::setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel )
 {
@@ -609,8 +624,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
               if ( !shader.colorRampItemList().isEmpty() )
               {
                 nodes << new QgsColorRampLegendNode(
-                  nodeLayer, shader.createColorRamp(), shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(), shader.minimumValue(), shader.maximumValue(), nullptr,
-                  u"vectorLegend"_s, vectorNameKey
+                  nodeLayer,
+                  shader.createColorRamp(),
+                  shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                  shader.minimumValue(),
+                  shader.maximumValue(),
+                  nullptr,
+                  u"vectorLegend"_s,
+                  vectorNameKey
                 );
               }
               break;

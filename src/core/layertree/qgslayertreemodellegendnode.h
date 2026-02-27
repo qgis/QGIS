@@ -71,10 +71,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:
@@ -696,7 +696,12 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param parentRuleKey rule key of parent (since QGIS 3.40)
      */
     QgsRasterSymbolLegendNode(
-      QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString(),
+      QgsLayerTreeLayer *nodeLayer,
+      const QColor &color,
+      const QString &label,
+      QObject *parent SIP_TRANSFERTHIS = nullptr,
+      bool isCheckable = false,
+      const QString &ruleKey = QString(),
       const QString &parentRuleKey = QString()
     );
 

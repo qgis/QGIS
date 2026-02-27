@@ -48,7 +48,11 @@ class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
      * \param trackUploadCommand command for uploading tracks to device
      */
     QgsBabelGpsDeviceFormat(
-      const QString &waypointDownloadCommand, const QString &waypointUploadCommand, const QString &routeDownloadCommand, const QString &routeUploadCommand, const QString &trackDownloadCommand,
+      const QString &waypointDownloadCommand,
+      const QString &waypointUploadCommand,
+      const QString &routeDownloadCommand,
+      const QString &routeUploadCommand,
+      const QString &trackDownloadCommand,
       const QString &trackUploadCommand
     );
 

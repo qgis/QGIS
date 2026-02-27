@@ -31,8 +31,7 @@ using namespace Qt::StringLiterals;
 
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )
-{
-}
+{}
 
 QgsSvgAnnotation *QgsSvgAnnotation::clone() const
 {

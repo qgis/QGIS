@@ -35,17 +35,35 @@ QgsElevationProfileManager::QgsElevationProfileManager( QgsProject *project )
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsElevationProfileManager::profileAboutToBeRemoved );
 }
 
-QgsElevationProfileManager::~QgsElevationProfileManager() { clearObjects(); }
+QgsElevationProfileManager::~QgsElevationProfileManager()
+{
+  clearObjects();
+}
 
-bool QgsElevationProfileManager::addProfile( QgsElevationProfile *profile ) { return addObject( profile ); }
+bool QgsElevationProfileManager::addProfile( QgsElevationProfile *profile )
+{
+  return addObject( profile );
+}
 
-bool QgsElevationProfileManager::removeProfile( QgsElevationProfile *profile ) { return removeObject( profile ); }
+bool QgsElevationProfileManager::removeProfile( QgsElevationProfile *profile )
+{
+  return removeObject( profile );
+}
 
-void QgsElevationProfileManager::clear() { clearObjects(); }
+void QgsElevationProfileManager::clear()
+{
+  clearObjects();
+}
 
-QList<QgsElevationProfile *> QgsElevationProfileManager::profiles() const { return mObjects; }
+QList<QgsElevationProfile *> QgsElevationProfileManager::profiles() const
+{
+  return mObjects;
+}
 
-QgsElevationProfile *QgsElevationProfileManager::profileByName( const QString &name ) const { return objectByName( name ); }
+QgsElevationProfile *QgsElevationProfileManager::profileByName( const QString &name ) const
+{
+  return objectByName( name );
+}
 
 bool QgsElevationProfileManager::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {

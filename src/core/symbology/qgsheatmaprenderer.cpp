@@ -40,7 +40,10 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
   mLegendSettings.setMaximumLabel( QObject::tr( "Maximum" ) );
 }
 
-QgsHeatmapRenderer::~QgsHeatmapRenderer() { delete mGradientRamp; }
+QgsHeatmapRenderer::~QgsHeatmapRenderer()
+{
+  delete mGradientRamp;
+}
 
 void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
 {
@@ -203,13 +206,25 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
   return 1.0;
 }
 
-double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const { return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 ); }
+double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
+{
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
+}
 
-double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const { return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 ); }
+double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
+{
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
+}
 
-double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const { return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) ); }
+double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
+{
+  return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) );
+}
 
-double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const { return ( 1. - ( distance / static_cast< double >( bandwidth ) ) ); }
+double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const
+{
+  return ( 1. - ( distance / static_cast< double >( bandwidth ) ) );
+}
 
 void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 {
@@ -264,7 +279,10 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
   }
 }
 
-QString QgsHeatmapRenderer::dump() const { return u"[HEATMAP]"_s; }
+QString QgsHeatmapRenderer::dump() const
+{
+  return u"[HEATMAP]"_s;
+}
 
 QgsHeatmapRenderer *QgsHeatmapRenderer::clone() const
 {
@@ -349,7 +367,10 @@ QgsSymbol *QgsHeatmapRenderer::symbolForFeature( const QgsFeature &feature, QgsR
   return nullptr;
 }
 
-QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const { return QgsSymbolList(); }
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const
+{
+  return QgsSymbolList();
+}
 
 QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) const
 {
@@ -404,4 +425,7 @@ void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )
   mGradientRamp = ramp;
 }
 
-void QgsHeatmapRenderer::setLegendSettings( const QgsColorRampLegendNodeSettings &settings ) { mLegendSettings = settings; }
+void QgsHeatmapRenderer::setLegendSettings( const QgsColorRampLegendNodeSettings &settings )
+{
+  mLegendSettings = settings;
+}

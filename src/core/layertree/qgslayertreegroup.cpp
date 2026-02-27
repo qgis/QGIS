@@ -59,7 +59,10 @@ void QgsLayerTreeGroup::init()
   connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::updateGroupLayers );
 }
 
-QString QgsLayerTreeGroup::name() const { return mName; }
+QString QgsLayerTreeGroup::name() const
+{
+  return mName;
+}
 
 void QgsLayerTreeGroup::setName( const QString &n )
 {
@@ -272,7 +275,10 @@ void QgsLayerTreeGroup::removeChildrenGroupWithoutLayers()
   updateGroupLayers();
 }
 
-void QgsLayerTreeGroup::removeAllChildren() { removeChildren( 0, mChildren.count() ); }
+void QgsLayerTreeGroup::removeAllChildren()
+{
+  removeChildren( 0, mChildren.count() );
+}
 
 QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( QgsMapLayer *layer ) const
 {
@@ -608,7 +614,10 @@ QString QgsLayerTreeGroup::dump() const
   return header + childrenDump.join( QLatin1Char( '\n' ) );
 }
 
-QgsLayerTreeGroup *QgsLayerTreeGroup::clone() const { return new QgsLayerTreeGroup( *this ); }
+QgsLayerTreeGroup *QgsLayerTreeGroup::clone() const
+{
+  return new QgsLayerTreeGroup( *this );
+}
 
 void QgsLayerTreeGroup::resolveReferences( const QgsProject *project, bool looseMatching )
 {
@@ -618,10 +627,16 @@ void QgsLayerTreeGroup::resolveReferences( const QgsProject *project, bool loose
   mGroupLayer.resolve( project );
 }
 
-static bool _nodeIsChecked( QgsLayerTreeNode *node ) { return node->itemVisibilityChecked(); }
+static bool _nodeIsChecked( QgsLayerTreeNode *node )
+{
+  return node->itemVisibilityChecked();
+}
 
 
-bool QgsLayerTreeGroup::isMutuallyExclusive() const { return mMutuallyExclusive; }
+bool QgsLayerTreeGroup::isMutuallyExclusive() const
+{
+  return mMutuallyExclusive;
+}
 
 void QgsLayerTreeGroup::setIsMutuallyExclusive( bool enabled, int initialChildIndex )
 {
@@ -651,7 +666,10 @@ void QgsLayerTreeGroup::setIsMutuallyExclusive( bool enabled, int initialChildIn
   updateChildVisibilityMutuallyExclusive();
 }
 
-QgsGroupLayer *QgsLayerTreeGroup::groupLayer() { return qobject_cast< QgsGroupLayer * >( mGroupLayer.layer ); }
+QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
+{
+  return qobject_cast< QgsGroupLayer * >( mGroupLayer.layer );
+}
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
@@ -820,10 +838,22 @@ void QgsLayerTreeGroup::setItemVisibilityCheckedRecursive( bool checked )
   updateGroupLayers();
 }
 
-QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() { return mServerProperties.get(); }
+QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties()
+{
+  return mServerProperties.get();
+}
 
-const QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() const { return mServerProperties.get(); }
+const QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() const
+{
+  return mServerProperties.get();
+}
 
-void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension ) { mWmsHasTimeDimension = hasWmsTimeDimension; }
+void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
+{
+  mWmsHasTimeDimension = hasWmsTimeDimension;
+}
 
-bool QgsLayerTreeGroup::hasWmsTimeDimension() const { return mWmsHasTimeDimension; }
+bool QgsLayerTreeGroup::hasWmsTimeDimension() const
+{
+  return mWmsHasTimeDimension;
+}

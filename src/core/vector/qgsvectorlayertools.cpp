@@ -159,6 +159,12 @@ bool QgsVectorLayerTools::copyMoveFeatures(
   return res;
 }
 
-bool QgsVectorLayerTools::forceSuppressFormPopup() const { return mForceSuppressFormPopup; }
+bool QgsVectorLayerTools::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
 
-void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup ) { mForceSuppressFormPopup = forceSuppressFormPopup; }
+void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = forceSuppressFormPopup;
+}

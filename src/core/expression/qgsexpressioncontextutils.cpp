@@ -72,9 +72,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
   return scope;
 }
 
-void QgsExpressionContextUtils::setGlobalVariable( const QString &name, const QVariant &value ) { QgsApplication::setCustomVariable( name, value ); }
+void QgsExpressionContextUtils::setGlobalVariable( const QString &name, const QVariant &value )
+{
+  QgsApplication::setCustomVariable( name, value );
+}
 
-void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables ) { QgsApplication::setCustomVariables( variables ); }
+void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables )
+{
+  QgsApplication::setCustomVariables( variables );
+}
 
 void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
 {
@@ -1394,5 +1400,8 @@ bool LoadLayerFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpr
   return false;
 }
 
-QgsScopedExpressionFunction *LoadLayerFunction::clone() const { return new LoadLayerFunction(); }
+QgsScopedExpressionFunction *LoadLayerFunction::clone() const
+{
+  return new LoadLayerFunction();
+}
 ///@endcond

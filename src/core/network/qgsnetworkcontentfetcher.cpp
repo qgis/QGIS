@@ -103,7 +103,10 @@ QNetworkReply *QgsNetworkContentFetcher::reply()
   return mReply.get();
 }
 
-QString QgsNetworkContentFetcher::contentDispositionFilename() const { return mReply ? QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( mReply.get() ) : QString(); }
+QString QgsNetworkContentFetcher::contentDispositionFilename() const
+{
+  return mReply ? QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( mReply.get() ) : QString();
+}
 
 QString QgsNetworkContentFetcher::contentAsString() const
 {
@@ -132,7 +135,10 @@ void QgsNetworkContentFetcher::cancel()
   }
 }
 
-bool QgsNetworkContentFetcher::wasCanceled() const { return mIsCanceled; }
+bool QgsNetworkContentFetcher::wasCanceled() const
+{
+  return mIsCanceled;
+}
 
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {

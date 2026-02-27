@@ -32,15 +32,12 @@ QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, Qgs
   : QgsAnnotationItem()
   , mText( text )
   , mPoint( point )
-{
-}
+{}
 
 Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-         | Qgis::AnnotationItemFlag::SupportsReferenceScale
-         | Qgis::AnnotationItemFlag::SupportsCallouts;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsReferenceScale | Qgis::AnnotationItemFlag::SupportsCallouts;
 }
 
 QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;
@@ -81,18 +78,15 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
 
   if ( callout() )
   {
-    const double textWidth = QgsTextRenderer::textWidth(
-      context, mTextFormat, displayText.split( '\n' )
-    );
-    const double textHeight = QgsTextRenderer::textHeight(
-      context, mTextFormat, displayText.split( '\n' )
-    );
+    const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayText.split( '\n' ) );
+    const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayText.split( '\n' ) );
 
     QgsCallout::QgsCalloutContext calloutContext;
     renderCallout( context, QRectF( pt.x(), pt.y() - textHeight, textWidth, textHeight ), angle, calloutContext, feedback );
   }
 
-  QgsTextRenderer::drawText( pt, -angle * M_PI / 180.0, QgsTextRenderer::convertQtHAlignment( mAlignment ), mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat );
+  QgsTextRenderer::
+    drawText( pt, -angle * M_PI / 180.0, QgsTextRenderer::convertQtHAlignment( mAlignment ), mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat );
 }
 
 bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const

@@ -145,8 +145,12 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final : public QgsMeshDataProvider
 
     using QgsMeshDataProvider::persistDatasetGroup;
     bool persistDatasetGroup(
-      const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues,
-      const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
+      const QString &outputFilePath,
+      const QString &outputDriver,
+      const QgsMeshDatasetGroupMetadata &meta,
+      const QVector<QgsMeshDataBlock> &datasetValues,
+      const QVector<QgsMeshDataBlock> &datasetActive,
+      const QVector<double> &times
     ) override;
 
     bool persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, QgsMeshDatasetSourceInterface *source, int datasetGroupIndex ) override;

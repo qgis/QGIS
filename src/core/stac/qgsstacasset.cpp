@@ -28,15 +28,30 @@ QgsStacAsset::QgsStacAsset( const QString &href, const QString &title, const QSt
   , mRoles( roles )
 {}
 
-QString QgsStacAsset::href() const { return mHref; }
+QString QgsStacAsset::href() const
+{
+  return mHref;
+}
 
-QString QgsStacAsset::title() const { return mTitle; }
+QString QgsStacAsset::title() const
+{
+  return mTitle;
+}
 
-QString QgsStacAsset::description() const { return mDescription; }
+QString QgsStacAsset::description() const
+{
+  return mDescription;
+}
 
-QString QgsStacAsset::mediaType() const { return mMediaType; }
+QString QgsStacAsset::mediaType() const
+{
+  return mMediaType;
+}
 
-QStringList QgsStacAsset::roles() const { return mRoles; }
+QStringList QgsStacAsset::roles() const
+{
+  return mRoles;
+}
 
 bool QgsStacAsset::isCloudOptimized() const
 {

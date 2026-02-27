@@ -675,20 +675,41 @@ QString createFilters( const QString &type )
   }
 }
 
-QString QgsOgrProviderUtils::fileVectorFilters() { return createFilters( u"file"_s ); }
+QString QgsOgrProviderUtils::fileVectorFilters()
+{
+  return createFilters( u"file"_s );
+}
 
-QString QgsOgrProviderUtils::databaseDrivers() { return createFilters( u"database"_s ); }
+QString QgsOgrProviderUtils::databaseDrivers()
+{
+  return createFilters( u"database"_s );
+}
 
-QString QgsOgrProviderUtils::protocolDrivers() { return createFilters( u"protocol"_s ); }
+QString QgsOgrProviderUtils::protocolDrivers()
+{
+  return createFilters( u"protocol"_s );
+}
 
 
-QString QgsOgrProviderUtils::directoryDrivers() { return createFilters( u"directory"_s ); }
+QString QgsOgrProviderUtils::directoryDrivers()
+{
+  return createFilters( u"directory"_s );
+}
 
-QStringList QgsOgrProviderUtils::fileExtensions() { return createFilters( u"extensions"_s ).split( '|' ); }
+QStringList QgsOgrProviderUtils::fileExtensions()
+{
+  return createFilters( u"extensions"_s ).split( '|' );
+}
 
-QStringList QgsOgrProviderUtils::directoryExtensions() { return createFilters( u"directory_extensions"_s ).split( '|' ); }
+QStringList QgsOgrProviderUtils::directoryExtensions()
+{
+  return createFilters( u"directory_extensions"_s ).split( '|' );
+}
 
-QStringList QgsOgrProviderUtils::wildcards() { return createFilters( u"wildcards"_s ).split( '|' ); }
+QStringList QgsOgrProviderUtils::wildcards()
+{
+  return createFilters( u"wildcards"_s ).split( '|' );
+}
 
 QStringList QgsOgrProviderUtils::tableNamesFromSelectSQL( const QString &sql )
 {
@@ -708,8 +729,7 @@ QStringList QgsOgrProviderUtils::tableNamesFromSelectSQL( const QString &sql )
 }
 
 bool QgsOgrProviderUtils::createEmptyDataSource(
-  const QString &uri, const QString &format, const QString &encoding, Qgis::WkbType vectortype, const QList< QPair<QString, QString> > &attributes, const QgsCoordinateReferenceSystem &srs,
-  QString &errorMessage
+  const QString &uri, const QString &format, const QString &encoding, Qgis::WkbType vectortype, const QList< QPair<QString, QString> > &attributes, const QgsCoordinateReferenceSystem &srs, QString &errorMessage
 )
 {
   QgsDebugMsgLevel( u"Creating empty vector layer with format: %1"_s.arg( format ), 2 );
@@ -1071,7 +1091,8 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
       "SELECT sql FROM sqlite_master WHERE type = 'trigger' AND "
       "NAME ='gpkg_metadata_reference_column_name_update' AND "
       "sql LIKE '%column_nameIS%'",
-      nullptr, nullptr
+      nullptr,
+      nullptr
     );
     if ( hSqlLyr )
     {
@@ -1379,9 +1400,15 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   return subsetLayer;
 }
 
-QString QgsOgrProviderUtils::DatasetIdentification::toString() const { return dsName + ( updateMode ? u"update"_s : u"read-only"_s ) + options.join( ',' ); }
+QString QgsOgrProviderUtils::DatasetIdentification::toString() const
+{
+  return dsName + ( updateMode ? u"update"_s : u"read-only"_s ) + options.join( ',' );
+}
 
-bool QgsOgrProviderUtils::DatasetIdentification::operator<( const QgsOgrProviderUtils::DatasetIdentification &other ) const { return toString() < other.toString(); }
+bool QgsOgrProviderUtils::DatasetIdentification::operator<( const QgsOgrProviderUtils::DatasetIdentification &other ) const
+{
+  return toString() < other.toString();
+}
 
 static GDALDatasetH OpenHelper( const QString &dsName, bool updateMode, const QStringList &options )
 {
@@ -2142,7 +2169,10 @@ QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
   return geom;
 }
 
-static bool isMultiPatchAsGeomCollectionZOfTinZ( const QString &driverName ) { return driverName == "ESRI Shapefile"_L1 || driverName == "OpenFileGDB"_L1 || driverName == "FileGDB"_L1; }
+static bool isMultiPatchAsGeomCollectionZOfTinZ( const QString &driverName )
+{
+  return driverName == "ESRI Shapefile"_L1 || driverName == "OpenFileGDB"_L1 || driverName == "FileGDB"_L1;
+}
 
 OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName )
 {
@@ -2314,7 +2344,10 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer, O
   return QgsOgrLayer::CreateForSql( ident, sql, baseLayer->ds, hSqlLayer );
 }
 
-void QgsOgrProviderUtils::incrementDeferDatasetClosingCounter() { ++sDeferDatasetClosingCounter; }
+void QgsOgrProviderUtils::incrementDeferDatasetClosingCounter()
+{
+  ++sDeferDatasetClosingCounter;
+}
 
 void QgsOgrProviderUtils::decrementDeferDatasetClosingCounter()
 {
@@ -2422,7 +2455,10 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *ds )
   delete ds;
 }
 
-bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName ) { return driverName != "OSM"_L1; }
+bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
+{
+  return driverName != "OSM"_L1;
+}
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName, bool updateMode, const QString &dsName )
 {
@@ -2870,7 +2906,10 @@ void QgsOgrDataset::releaseResultSet( OGRLayerH hSqlLayer )
   GDALDatasetReleaseResultSet( mDs->hDS, hSqlLayer );
 }
 
-QgsOgrLayer::QgsOgrLayer() { oFDefn.layer = this; }
+QgsOgrLayer::QgsOgrLayer()
+{
+  oFDefn.layer = this;
+}
 
 QgsOgrLayerUniquePtr QgsOgrLayer::CreateForLayer( const QgsOgrProviderUtils::DatasetIdentification &ident, const QString &layerName, QgsOgrProviderUtils::DatasetWithLayers *ds, OGRLayerH hLayer )
 {
@@ -2910,9 +2949,15 @@ int QgsOgrLayer::GetLayerCount()
   return GDALDatasetGetLayerCount( ds->hDS );
 }
 
-GDALDriverH QgsOgrLayer::driver() { return GDALGetDatasetDriver( ds->hDS ); }
+GDALDriverH QgsOgrLayer::driver()
+{
+  return GDALGetDatasetDriver( ds->hDS );
+}
 
-QString QgsOgrLayer::driverName() { return QString::fromUtf8( GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) ) ); }
+QString QgsOgrLayer::driverName()
+{
+  return QString::fromUtf8( GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) ) );
+}
 
 QByteArray QgsOgrLayer::name()
 {
@@ -2950,7 +2995,10 @@ OGRFeatureH QgsOgrLayer::GetFeature( GIntBig fid )
   return OGR_L_GetFeature( hLayer, fid );
 }
 
-QgsOgrFeatureDefn &QgsOgrLayer::GetLayerDefn() { return oFDefn; }
+QgsOgrFeatureDefn &QgsOgrLayer::GetLayerDefn()
+{
+  return oFDefn;
+}
 
 GIntBig QgsOgrLayer::GetFeatureCount( bool force )
 {
@@ -3380,7 +3428,10 @@ QString QgsOgrLayer::GetMetadataItem( const QString &key, const QString &domain 
   return GDALGetMetadataItem( hLayer, key.toUtf8().constData(), domain.toUtf8().constData() );
 }
 
-QRecursiveMutex &QgsOgrFeatureDefn::mutex() { return layer->mutex(); }
+QRecursiveMutex &QgsOgrFeatureDefn::mutex()
+{
+  return layer->mutex();
+}
 
 OGRFeatureDefnH QgsOgrFeatureDefn::get()
 {
@@ -3511,6 +3562,9 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
   return false;
 }
 
-void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer ) const { QgsOgrProviderUtils::release( layer ); }
+void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer ) const
+{
+  QgsOgrProviderUtils::release( layer );
+}
 
 ///@endcond

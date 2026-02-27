@@ -20,7 +20,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAttributeEditorElement *QgsAttributeEditorSpacerElement::clone( QgsAttributeEditorElement *parent ) const { return new QgsAttributeEditorSpacerElement( name(), parent ); }
+QgsAttributeEditorElement *QgsAttributeEditorSpacerElement::clone( QgsAttributeEditorElement *parent ) const
+{
+  return new QgsAttributeEditorSpacerElement( name(), parent );
+}
 
 void QgsAttributeEditorSpacerElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
@@ -41,8 +44,17 @@ void QgsAttributeEditorSpacerElement::loadConfiguration( const QDomElement &elem
     mDrawLine = drawLine;
 }
 
-QString QgsAttributeEditorSpacerElement::typeIdentifier() const { return u"attributeEditorSpacerElement"_s; }
+QString QgsAttributeEditorSpacerElement::typeIdentifier() const
+{
+  return u"attributeEditorSpacerElement"_s;
+}
 
-bool QgsAttributeEditorSpacerElement::drawLine() const { return mDrawLine; }
+bool QgsAttributeEditorSpacerElement::drawLine() const
+{
+  return mDrawLine;
+}
 
-void QgsAttributeEditorSpacerElement::setDrawLine( bool drawLine ) { mDrawLine = drawLine; }
+void QgsAttributeEditorSpacerElement::setDrawLine( bool drawLine )
+{
+  mDrawLine = drawLine;
+}

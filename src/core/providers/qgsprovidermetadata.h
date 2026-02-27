@@ -488,8 +488,15 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.10
      */
     virtual Qgis::VectorExportResult createEmptyLayer(
-      const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
-      const QMap<QString, QVariant> *options, QString &createdLayerUri
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
     );
 #endif
 
@@ -517,7 +524,14 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.10
      */
     virtual QgsRasterDataProvider *createRasterDataProvider(
-      const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList()
     ) SIP_FACTORY;
 

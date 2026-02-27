@@ -91,7 +91,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      */
     explicit QgsCoordinateTransform(
-      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context,
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsCoordinateTransformContext &context,
       Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
     );
 
@@ -121,7 +123,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * however dynamic CRS to dynamic CRS transformations are not currently supported.
      */
     explicit QgsCoordinateTransform(
-      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project,
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsProject *project,
       Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
     );
 
@@ -660,8 +664,7 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     static void setCustomMissingPreferredGridHandler(
       const std::function< void(
-        const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation,
-        const QgsDatumTransform::TransformDetails &availableOperation
+        const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation
       )> &handler
     );
 

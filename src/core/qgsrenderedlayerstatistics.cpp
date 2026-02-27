@@ -28,7 +28,10 @@ QgsRenderedLayerStatistics::QgsRenderedLayerStatistics( const QString &layerId, 
   , mMax( { maximum } )
 {}
 
-QList<double> QgsRenderedLayerStatistics::minimum() const { return mMin; }
+QList<double> QgsRenderedLayerStatistics::minimum() const
+{
+  return mMin;
+}
 
 double QgsRenderedLayerStatistics::minimum( int index ) const
 {
@@ -40,7 +43,10 @@ double QgsRenderedLayerStatistics::minimum( int index ) const
   return mMin.at( index );
 }
 
-QList<double> QgsRenderedLayerStatistics::maximum() const { return mMax; }
+QList<double> QgsRenderedLayerStatistics::maximum() const
+{
+  return mMax;
+}
 
 double QgsRenderedLayerStatistics::maximum( int index ) const
 {
@@ -53,7 +59,10 @@ double QgsRenderedLayerStatistics::maximum( int index ) const
 }
 
 
-void QgsRenderedLayerStatistics::setMinimum( QList<double> &minimum ) { mMin = minimum; }
+void QgsRenderedLayerStatistics::setMinimum( QList<double> &minimum )
+{
+  mMin = minimum;
+}
 
 bool QgsRenderedLayerStatistics::setMinimum( int index, double minimum )
 {
@@ -66,7 +75,10 @@ bool QgsRenderedLayerStatistics::setMinimum( int index, double minimum )
   return true;
 }
 
-void QgsRenderedLayerStatistics::setMaximum( QList<double> &maximum ) { mMax = maximum; }
+void QgsRenderedLayerStatistics::setMaximum( QList<double> &maximum )
+{
+  mMax = maximum;
+}
 
 bool QgsRenderedLayerStatistics::setMaximum( int index, double maximum )
 {

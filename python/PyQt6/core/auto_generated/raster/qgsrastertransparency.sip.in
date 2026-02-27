@@ -27,8 +27,13 @@ transparent when rendering rasters.
     struct TransparentThreeValuePixel
     {
         TransparentThreeValuePixel(
-          double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * DBL_EPSILON,
-          double fuzzyToleranceGreen = 4 * DBL_EPSILON, double fuzzyToleranceBlue = 4 * DBL_EPSILON
+          double red = 0,
+          double green = 0,
+          double blue = 0,
+          double opacity = 0,
+          double fuzzyToleranceRed = 4 * DBL_EPSILON,
+          double fuzzyToleranceGreen = 4 * DBL_EPSILON,
+          double fuzzyToleranceBlue = 4 * DBL_EPSILON
         );
 %Docstring
 Constructor for TransparentThreeValuePixel.

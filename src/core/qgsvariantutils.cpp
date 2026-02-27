@@ -617,9 +617,15 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
   return QVariant::Type::UserType;
 }
 
-bool QgsVariantUtils::isUnsetAttributeValue( const QVariant &variant ) { return variant.userType() == qMetaTypeId< QgsUnsetAttributeValue >(); }
+bool QgsVariantUtils::isUnsetAttributeValue( const QVariant &variant )
+{
+  return variant.userType() == qMetaTypeId< QgsUnsetAttributeValue >();
+}
 
-QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType ) { return QVariant( QMetaType( metaType ) ); }
+QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
+{
+  return QVariant( QMetaType( metaType ) );
+}
 
 QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
 {

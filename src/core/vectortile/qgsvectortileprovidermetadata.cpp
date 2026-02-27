@@ -36,7 +36,10 @@ QgsVectorTileProviderMetadata::QgsVectorTileProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsVectorTileProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
+QIcon QgsVectorTileProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
+}
 
 QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() const
 {
@@ -50,13 +53,25 @@ QMap<QString, QgsAbstractProviderConnection *> QgsVectorTileProviderMetadata::co
   return connectionsProtected<QgsVectorTileProviderConnection, QgsVectorTileProviderConnection>( cached );
 }
 
-QgsAbstractProviderConnection *QgsVectorTileProviderMetadata::createConnection( const QString &name ) { return new QgsVectorTileProviderConnection( name ); }
+QgsAbstractProviderConnection *QgsVectorTileProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsVectorTileProviderConnection( name );
+}
 
-void QgsVectorTileProviderMetadata::deleteConnection( const QString &name ) { deleteConnectionProtected<QgsVectorTileProviderConnection>( name ); }
+void QgsVectorTileProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsVectorTileProviderConnection>( name );
+}
 
-void QgsVectorTileProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) { saveConnectionProtected( connection, name ); }
+void QgsVectorTileProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
+{
+  saveConnectionProtected( connection, name );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsVectorTileProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsVectorTileProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
 QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
 {
@@ -177,6 +192,9 @@ QString QgsVectorTileProviderMetadata::relativeToAbsoluteUri( const QString &uri
   return uri;
 }
 
-QList<Qgis::LayerType> QgsVectorTileProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
+QList<Qgis::LayerType> QgsVectorTileProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
 
 ///@endcond

@@ -77,9 +77,15 @@ void QgsLayoutUndoStack::cancelCommand()
   mActiveCommands.pop_back();
 }
 
-QUndoStack *QgsLayoutUndoStack::stack() { return mUndoStack.get(); }
+QUndoStack *QgsLayoutUndoStack::stack()
+{
+  return mUndoStack.get();
+}
 
-void QgsLayoutUndoStack::notifyUndoRedoOccurred( QgsLayoutItem *item ) { mUndoRedoOccurredItemUuids.insert( item->uuid() ); }
+void QgsLayoutUndoStack::notifyUndoRedoOccurred( QgsLayoutItem *item )
+{
+  mUndoRedoOccurredItemUuids.insert( item->uuid() );
+}
 
 void QgsLayoutUndoStack::blockCommands( bool blocked )
 {
@@ -94,7 +100,10 @@ void QgsLayoutUndoStack::blockCommands( bool blocked )
   }
 }
 
-bool QgsLayoutUndoStack::isBlocked() const { return mBlockedCommands > 0; }
+bool QgsLayoutUndoStack::isBlocked() const
+{
+  return mBlockedCommands > 0;
+}
 
 void QgsLayoutUndoStack::push( QUndoCommand *cmd )
 {

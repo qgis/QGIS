@@ -34,8 +34,7 @@ canceled. An optional authentication configuration can be specified.
 %End
   public:
     QgsFileDownloader(
-      const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get,
-      const QByteArray &data = QByteArray()
+      const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get, const QByteArray &data = QByteArray()
     );
 %Docstring
 QgsFileDownloader

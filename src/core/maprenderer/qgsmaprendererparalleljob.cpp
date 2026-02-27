@@ -201,9 +201,15 @@ void QgsMapRendererParallelJob::waitForFinished()
   Q_ASSERT( mStatus == Idle );
 }
 
-bool QgsMapRendererParallelJob::isActive() const { return mStatus != Idle; }
+bool QgsMapRendererParallelJob::isActive() const
+{
+  return mStatus != Idle;
+}
 
-bool QgsMapRendererParallelJob::usedCachedLabels() const { return mLabelJob.cached; }
+bool QgsMapRendererParallelJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
 
 QgsLabelingResults *QgsMapRendererParallelJob::takeLabelingResults()
 {

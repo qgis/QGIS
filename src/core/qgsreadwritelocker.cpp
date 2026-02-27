@@ -50,4 +50,7 @@ void QgsReadWriteLocker::unlock()
   mMode = Unlocked;
 }
 
-QgsReadWriteLocker::~QgsReadWriteLocker() { unlock(); }
+QgsReadWriteLocker::~QgsReadWriteLocker()
+{
+  unlock();
+}

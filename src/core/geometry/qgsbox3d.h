@@ -52,8 +52,13 @@ class CORE_EXPORT QgsBox3D
     */
 #ifndef SIP_RUN
     QgsBox3D(
-      double xmin = std::numeric_limits<double>::quiet_NaN(), double ymin = std::numeric_limits<double>::quiet_NaN(), double zmin = std::numeric_limits<double>::quiet_NaN(),
-      double xmax = std::numeric_limits<double>::quiet_NaN(), double ymax = std::numeric_limits<double>::quiet_NaN(), double zmax = std::numeric_limits<double>::quiet_NaN(), bool normalize = true
+      double xmin = std::numeric_limits<double>::quiet_NaN(),
+      double ymin = std::numeric_limits<double>::quiet_NaN(),
+      double zmin = std::numeric_limits<double>::quiet_NaN(),
+      double xmax = std::numeric_limits<double>::quiet_NaN(),
+      double ymax = std::numeric_limits<double>::quiet_NaN(),
+      double zmax = std::numeric_limits<double>::quiet_NaN(),
+      bool normalize = true
     );
 
     /**

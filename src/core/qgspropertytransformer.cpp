@@ -148,7 +148,7 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
 
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
-  std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue, mMaxValue, mMinOutput, mMaxOutput, mNullOutput, mExponent ) );
+  auto t = std::make_unique<QgsGenericNumericTransformer>( mMinValue, mMaxValue, mMinOutput, mMaxOutput, mNullOutput, mExponent );
   if ( mCurveTransform )
     t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
   return t.release();
@@ -318,7 +318,7 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
 
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const
 {
-  std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType, mMinValue, mMaxValue, mMinSize, mMaxSize, mNullSize, mExponent ) );
+  auto t = std::make_unique<QgsSizeScaleTransformer>( mType, mMinValue, mMaxValue, mMinSize, mMaxSize, mNullSize, mExponent );
   if ( mCurveTransform )
     t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
   return t.release();
@@ -554,7 +554,7 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
 
 QgsColorRampTransformer *QgsColorRampTransformer::clone() const
 {
-  std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue, mGradientRamp ? mGradientRamp->clone() : nullptr, mNullColor ) );
+  auto c = std::make_unique<QgsColorRampTransformer>( mMinValue, mMaxValue, mGradientRamp ? mGradientRamp->clone() : nullptr, mNullColor );
   c->setRampName( mRampName );
   if ( mCurveTransform )
     c->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
@@ -641,16 +641,25 @@ QColor QgsColorRampTransformer::color( double value ) const
   return mGradientRamp->color( scaledVal );
 }
 
-QgsColorRamp *QgsColorRampTransformer::colorRamp() const { return mGradientRamp.get(); }
+QgsColorRamp *QgsColorRampTransformer::colorRamp() const
+{
+  return mGradientRamp.get();
+}
 
-void QgsColorRampTransformer::setColorRamp( QgsColorRamp *ramp ) { mGradientRamp.reset( ramp ); }
+void QgsColorRampTransformer::setColorRamp( QgsColorRamp *ramp )
+{
+  mGradientRamp.reset( ramp );
+}
 
 
 //
 // QgsCurveTransform
 //
 
-bool sortByX( const QgsPointXY &a, const QgsPointXY &b ) { return a.x() < b.x(); }
+bool sortByX( const QgsPointXY &a, const QgsPointXY &b )
+{
+  return a.x() < b.x();
+}
 
 QgsCurveTransform::QgsCurveTransform()
 {
@@ -665,7 +674,10 @@ QgsCurveTransform::QgsCurveTransform( const QList<QgsPointXY> &controlPoints )
   calcSecondDerivativeArray();
 }
 
-QgsCurveTransform::~QgsCurveTransform() { delete[] mSecondDerivativeArray; }
+QgsCurveTransform::~QgsCurveTransform()
+{
+  delete[] mSecondDerivativeArray;
+}
 
 QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform &other )
   : mControlPoints( other.mControlPoints )

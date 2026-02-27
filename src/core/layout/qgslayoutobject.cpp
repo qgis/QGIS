@@ -37,16 +37,19 @@ void QgsLayoutObject::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::TestProperty ), QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ), QgsPropertyDefinition(
-                                                                                     "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ),
-                                                                                     QObject::tr( "string " )
-                                                                                       + QLatin1String(
-                                                                                         "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
-                                                                                         "|<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
-                                                                                         "|<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
-                                                                                         "|<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
-                                                                                       )
-                                                                                   ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ),
+      QgsPropertyDefinition(
+        "dataDefinedPaperSize",
+        QgsPropertyDefinition::DataTypeString,
+        QObject::tr( "Paper size" ),
+        QObject::tr( "string " )
+          + QLatin1String(
+            "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+            "|<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+            "|<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+            "|<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+          )
+      ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperWidth ), QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperHeight ), QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::NumPages ), QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
@@ -122,7 +125,9 @@ void QgsLayoutObject::initPropertyDefinitions()
       QgsPropertyDefinition( "dataDefinedMapGridDrawAnnotation", QObject::tr( "Draw map grid annotation" ), QgsPropertyDefinition::Boolean, QString(), QObject::tr( "Allows control over the visibility of individual grid annotations" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ),
       QgsPropertyDefinition(
-        "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ),
+        "dataDefinedCrs",
+        QgsPropertyDefinition::DataTypeString,
+        QObject::tr( "Map CRS" ),
         QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" )
       ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ),
@@ -315,17 +320,35 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   }
 }
 
-const QgsLayout *QgsLayoutObject::layout() const { return mLayout.data(); }
+const QgsLayout *QgsLayoutObject::layout() const
+{
+  return mLayout.data();
+}
 
-QgsLayout *QgsLayoutObject::layout() { return mLayout.data(); }
+QgsLayout *QgsLayoutObject::layout()
+{
+  return mLayout.data();
+}
 
-void QgsLayoutObject::setCustomProperty( const QString &key, const QVariant &value ) { mCustomProperties.setValue( key, value ); }
+void QgsLayoutObject::setCustomProperty( const QString &key, const QVariant &value )
+{
+  mCustomProperties.setValue( key, value );
+}
 
-QVariant QgsLayoutObject::customProperty( const QString &key, const QVariant &defaultValue ) const { return mCustomProperties.value( key, defaultValue ); }
+QVariant QgsLayoutObject::customProperty( const QString &key, const QVariant &defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
 
-void QgsLayoutObject::removeCustomProperty( const QString &key ) { mCustomProperties.remove( key ); }
+void QgsLayoutObject::removeCustomProperty( const QString &key )
+{
+  mCustomProperties.remove( key );
+}
 
-QStringList QgsLayoutObject::customProperties() const { return mCustomProperties.keys(); }
+QStringList QgsLayoutObject::customProperties() const
+{
+  return mCustomProperties.keys();
+}
 
 QgsExpressionContext QgsLayoutObject::createExpressionContext() const
 {

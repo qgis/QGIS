@@ -27,9 +27,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter() { setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues ); }
+QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
 
-QString QgsRelationReferenceFieldFormatter::id() const { return u"RelationReference"_s; }
+QString QgsRelationReferenceFieldFormatter::id() const
+{
+  return u"RelationReference"_s;
+}
 
 QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -185,7 +191,9 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
   }
 
   const QList<QgsVectorLayerRef> result { { QgsVectorLayerRef(
-    config.value( u"ReferencedLayerId"_s ).toString(), config.value( u"ReferencedLayerName"_s ).toString(), config.value( u"ReferencedLayerDataSource"_s ).toString(),
+    config.value( u"ReferencedLayerId"_s ).toString(),
+    config.value( u"ReferencedLayerName"_s ).toString(),
+    config.value( u"ReferencedLayerDataSource"_s ).toString(),
     config.value( u"ReferencedLayerProviderKey"_s ).toString()
   ) } };
   return result;

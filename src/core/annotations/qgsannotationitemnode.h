@@ -106,10 +106,7 @@ class CORE_EXPORT QgsAnnotationItemNode
      * \see setCursor()
      * \since QGIS 3.34
      */
-    Qt::CursorShape cursor() const
-    {
-      return mCursor;
-    }
+    Qt::CursorShape cursor() const { return mCursor; }
 
     /**
      * Sets the mouse cursor \a shape to use when hovering the node.
@@ -117,21 +114,12 @@ class CORE_EXPORT QgsAnnotationItemNode
      * \see cursor()
      * \since QGIS 3.34
      */
-    void setCursor( Qt::CursorShape shape )
-    {
-      mCursor = shape;
-    }
+    void setCursor( Qt::CursorShape shape ) { mCursor = shape; }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsAnnotationItemNode &other ) const
-    {
-      return mId == other.mId && mType == other.mType && mPoint == other.mPoint;
-    }
+    bool operator==( const QgsAnnotationItemNode &other ) const { return mId == other.mId && mType == other.mType && mPoint == other.mPoint; }
 
-    bool operator!=( const QgsAnnotationItemNode &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsAnnotationItemNode &other ) const { return !( *this == other ); }
 
   private:
     QgsVertexId mId;

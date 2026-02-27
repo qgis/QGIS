@@ -61,11 +61,20 @@ QgsLayoutItemScaleBar::QgsLayoutItemScaleBar( QgsLayout *layout )
   applyDefaultSize();
 }
 
-int QgsLayoutItemScaleBar::type() const { return QgsLayoutItemRegistry::LayoutScaleBar; }
+int QgsLayoutItemScaleBar::type() const
+{
+  return QgsLayoutItemRegistry::LayoutScaleBar;
+}
 
-QIcon QgsLayoutItemScaleBar::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemScaleBar.svg"_s ); }
+QIcon QgsLayoutItemScaleBar::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemScaleBar.svg"_s );
+}
 
-QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout ) { return new QgsLayoutItemScaleBar( layout ); }
+QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemScaleBar( layout );
+}
 
 QgsLayoutSize QgsLayoutItemScaleBar::minimumSize() const
 {
@@ -208,7 +217,10 @@ void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
   resizeToMinimumWidth();
 }
 
-QgsTextFormat QgsLayoutItemScaleBar::textFormat() const { return mSettings.textFormat(); }
+QgsTextFormat QgsLayoutItemScaleBar::textFormat() const
+{
+  return mSettings.textFormat();
+}
 
 void QgsLayoutItemScaleBar::setTextFormat( const QgsTextFormat &format )
 {
@@ -217,25 +229,55 @@ void QgsLayoutItemScaleBar::setTextFormat( const QgsTextFormat &format )
   emit changed();
 }
 
-QgsLineSymbol *QgsLayoutItemScaleBar::lineSymbol() const { return mSettings.lineSymbol(); }
+QgsLineSymbol *QgsLayoutItemScaleBar::lineSymbol() const
+{
+  return mSettings.lineSymbol();
+}
 
-void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol ) { mSettings.setLineSymbol( symbol ); }
+void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mSettings.setLineSymbol( symbol );
+}
 
-QgsLineSymbol *QgsLayoutItemScaleBar::divisionLineSymbol() const { return mSettings.divisionLineSymbol(); }
+QgsLineSymbol *QgsLayoutItemScaleBar::divisionLineSymbol() const
+{
+  return mSettings.divisionLineSymbol();
+}
 
-void QgsLayoutItemScaleBar::setDivisionLineSymbol( QgsLineSymbol *symbol ) { mSettings.setDivisionLineSymbol( symbol ); }
+void QgsLayoutItemScaleBar::setDivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mSettings.setDivisionLineSymbol( symbol );
+}
 
-QgsLineSymbol *QgsLayoutItemScaleBar::subdivisionLineSymbol() const { return mSettings.subdivisionLineSymbol(); }
+QgsLineSymbol *QgsLayoutItemScaleBar::subdivisionLineSymbol() const
+{
+  return mSettings.subdivisionLineSymbol();
+}
 
-void QgsLayoutItemScaleBar::setSubdivisionLineSymbol( QgsLineSymbol *symbol ) { mSettings.setSubdivisionLineSymbol( symbol ); }
+void QgsLayoutItemScaleBar::setSubdivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mSettings.setSubdivisionLineSymbol( symbol );
+}
 
-QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const { return mSettings.fillSymbol(); }
+QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const
+{
+  return mSettings.fillSymbol();
+}
 
-void QgsLayoutItemScaleBar::setFillSymbol( QgsFillSymbol *symbol ) { mSettings.setFillSymbol( symbol ); }
+void QgsLayoutItemScaleBar::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mSettings.setFillSymbol( symbol );
+}
 
-QgsFillSymbol *QgsLayoutItemScaleBar::alternateFillSymbol() const { return mSettings.alternateFillSymbol(); }
+QgsFillSymbol *QgsLayoutItemScaleBar::alternateFillSymbol() const
+{
+  return mSettings.alternateFillSymbol();
+}
 
-void QgsLayoutItemScaleBar::setAlternateFillSymbol( QgsFillSymbol *symbol ) { mSettings.setAlternateFillSymbol( symbol ); }
+void QgsLayoutItemScaleBar::setAlternateFillSymbol( QgsFillSymbol *symbol )
+{
+  mSettings.setAlternateFillSymbol( symbol );
+}
 
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
 {
@@ -289,7 +331,10 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
   mMap = nullptr;
 }
 
-Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const { return mMethod; }
+Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const
+{
+  return mMethod;
+}
 
 void QgsLayoutItemScaleBar::setMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -768,7 +813,10 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   emit changed();
 }
 
-bool QgsLayoutItemScaleBar::applyDefaultRendererSettings( QgsScaleBarRenderer *renderer ) { return renderer->applyDefaultSettings( mSettings ); }
+bool QgsLayoutItemScaleBar::applyDefaultRendererSettings( QgsScaleBarRenderer *renderer )
+{
+  return renderer->applyDefaultSettings( mSettings );
+}
 
 Qgis::DistanceUnit QgsLayoutItemScaleBar::guessUnits() const
 {
@@ -916,11 +964,20 @@ QString QgsLayoutItemScaleBar::style() const
   }
 }
 
-const QgsNumericFormat *QgsLayoutItemScaleBar::numericFormat() const { return mSettings.numericFormat(); }
+const QgsNumericFormat *QgsLayoutItemScaleBar::numericFormat() const
+{
+  return mSettings.numericFormat();
+}
 
-void QgsLayoutItemScaleBar::setNumericFormat( QgsNumericFormat *format ) { mSettings.setNumericFormat( format ); }
+void QgsLayoutItemScaleBar::setNumericFormat( QgsNumericFormat *format )
+{
+  mSettings.setNumericFormat( format );
+}
 
-QFont QgsLayoutItemScaleBar::font() const { return mSettings.textFormat().font(); }
+QFont QgsLayoutItemScaleBar::font() const
+{
+  return mSettings.textFormat().font();
+}
 
 void QgsLayoutItemScaleBar::setFont( const QFont &font )
 {
@@ -1471,4 +1528,7 @@ bool QgsLayoutItemScaleBar::accept( QgsStyleEntityVisitorInterface *visitor ) co
   return true;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}

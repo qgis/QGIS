@@ -47,7 +47,10 @@ using namespace Qt::StringLiterals;
  * See details in QEP #17
  ****************************************************************************/
 
-QgsLineString::QgsLineString() { mWkbType = Qgis::WkbType::LineString; }
+QgsLineString::QgsLineString()
+{
+  mWkbType = Qgis::WkbType::LineString;
+}
 
 QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
 {
@@ -218,8 +221,29 @@ std::unique_ptr< QgsLineString > QgsLineString::fromBezierCurve( const QgsPoint 
     double im = std::numeric_limits<double>::quiet_NaN();
 
     QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-      start.x(), start.y(), start.z(), start.m(), controlPoint1.x(), controlPoint1.y(), controlPoint1.z(), controlPoint1.m(), controlPoint2.x(), controlPoint2.y(), controlPoint2.z(),
-      controlPoint2.m(), end.x(), end.y(), end.z(), end.m(), t, hasZ, hasM, ix, iy, iz, im
+      start.x(),
+      start.y(),
+      start.z(),
+      start.m(),
+      controlPoint1.x(),
+      controlPoint1.y(),
+      controlPoint1.z(),
+      controlPoint1.m(),
+      controlPoint2.x(),
+      controlPoint2.y(),
+      controlPoint2.z(),
+      controlPoint2.m(),
+      end.x(),
+      end.y(),
+      end.z(),
+      end.m(),
+      t,
+      hasZ,
+      hasM,
+      ix,
+      iy,
+      iz,
+      im
     );
 
     *xData++ = ix;
@@ -253,7 +277,10 @@ std::unique_ptr< QgsLineString > QgsLineString::fromQPolygonF( const QPolygonF &
   return std::make_unique< QgsLineString >( x, y );
 }
 
-QgsLineString *QgsLineString::clone() const { return new QgsLineString( *this ); }
+QgsLineString *QgsLineString::clone() const
+{
+  return new QgsLineString( *this );
+}
 
 void QgsLineString::clear()
 {
@@ -265,7 +292,10 @@ void QgsLineString::clear()
   clearCache();
 }
 
-bool QgsLineString::isEmpty() const { return mX.isEmpty(); }
+bool QgsLineString::isEmpty() const
+{
+  return mX.isEmpty();
+}
 
 int QgsLineString::indexOf( const QgsPoint &point ) const
 {
@@ -759,7 +789,10 @@ QgsBox3D QgsLineString::calculateBoundingBox3D() const
   return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 }
 
-QgsBox3D QgsLineString::calculateBoundingBox3d() const { return calculateBoundingBox3D(); }
+QgsBox3D QgsLineString::calculateBoundingBox3d() const
+{
+  return calculateBoundingBox3D();
+}
 
 void QgsLineString::scroll( int index )
 {
@@ -1156,9 +1189,15 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
   return clone();
 }
 
-int QgsLineString::numPoints() const { return mX.size(); }
+int QgsLineString::numPoints() const
+{
+  return mX.size();
+}
 
-int QgsLineString::nCoordinates() const { return mX.size(); }
+int QgsLineString::nCoordinates() const
+{
+  return mX.size();
+}
 
 QgsPoint QgsLineString::pointN( int i ) const
 {
@@ -1737,7 +1776,10 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::draw( QPainter &p ) const { p.drawPolyline( asQPolygonF() ); }
+void QgsLineString::draw( QPainter &p ) const
+{
+  p.drawPolyline( asQPolygonF() );
+}
 
 void QgsLineString::addToPainterPath( QPainterPath &path ) const
 {
@@ -1758,7 +1800,10 @@ void QgsLineString::addToPainterPath( QPainterPath &path ) const
   }
 }
 
-void QgsLineString::drawAsPolygon( QPainter &p ) const { p.drawPolygon( asQPolygonF() ); }
+void QgsLineString::drawAsPolygon( QPainter &p ) const
+{
+  p.drawPolygon( asQPolygonF() );
+}
 
 QgsCompoundCurve *QgsLineString::toCurveType() const
 {
@@ -1890,9 +1935,15 @@ int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
   return 0;
 }
 
-QString QgsLineString::geometryType() const { return u"LineString"_s; }
+QString QgsLineString::geometryType() const
+{
+  return u"LineString"_s;
+}
 
-int QgsLineString::dimension() const { return 1; }
+int QgsLineString::dimension() const
+{
+  return 1;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

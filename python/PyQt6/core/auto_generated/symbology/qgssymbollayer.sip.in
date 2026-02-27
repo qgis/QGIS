@@ -23,7 +23,7 @@ Abstract base class for symbol layers.
 #include "qgslinesymbollayer.h"
 %End
 %ConvertToSubClassCode
-switch ( sipCpp->type() )
+    switch ( sipCpp->type() )
     {
       case Qgis::SymbolType::Marker:
         if ( sipCpp->layerType() == "EllipseMarker" )
@@ -1221,7 +1221,14 @@ and any displacement required to align with the marker's anchor point.
 %End
 
     void markerOffset(
-      QgsSymbolRenderContext &context, double width, double height, Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit, double &offsetX, double &offsetY, const QgsMapUnitScale &widthMapUnitScale,
+      QgsSymbolRenderContext &context,
+      double width,
+      double height,
+      Qgis::RenderUnit widthUnit,
+      Qgis::RenderUnit heightUnit,
+      double &offsetX,
+      double &offsetY,
+      const QgsMapUnitScale &widthMapUnitScale,
       const QgsMapUnitScale &heightMapUnitScale
     ) const /PyName=markerOffset2/;
 %Docstring

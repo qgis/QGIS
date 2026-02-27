@@ -51,9 +51,15 @@ bool QgsOgrTransaction::beginTransaction( QString &error, int /* statementTimeou
   return executeSql( u"BEGIN"_s, error );
 }
 
-bool QgsOgrTransaction::commitTransaction( QString &error ) { return executeSql( u"COMMIT"_s, error ); }
+bool QgsOgrTransaction::commitTransaction( QString &error )
+{
+  return executeSql( u"COMMIT"_s, error );
+}
 
-bool QgsOgrTransaction::rollbackTransaction( QString &error ) { return executeSql( u"ROLLBACK"_s, error ); }
+bool QgsOgrTransaction::rollbackTransaction( QString &error )
+{
+  return executeSql( u"ROLLBACK"_s, error );
+}
 
 bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool isDirty, const QString &name )
 {

@@ -51,11 +51,20 @@ QgsPrintLayout *QgsPrintLayout::clone() const
   return newLayout.release();
 }
 
-QgsProject *QgsPrintLayout::layoutProject() const { return project(); }
+QgsProject *QgsPrintLayout::layoutProject() const
+{
+  return project();
+}
 
-QIcon QgsPrintLayout::icon() const { return QgsApplication::getThemeIcon( u"mIconLayout.svg"_s ); }
+QIcon QgsPrintLayout::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconLayout.svg"_s );
+}
 
-QgsLayoutAtlas *QgsPrintLayout::atlas() { return mAtlas; }
+QgsLayoutAtlas *QgsPrintLayout::atlas()
+{
+  return mAtlas;
+}
 
 void QgsPrintLayout::setName( const QString &name )
 {
@@ -85,9 +94,15 @@ bool QgsPrintLayout::readXml( const QDomElement &layoutElement, const QDomDocume
   return true;
 }
 
-QDomElement QgsPrintLayout::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const { return writeXml( document, context ); }
+QDomElement QgsPrintLayout::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  return writeXml( document, context );
+}
 
-bool QgsPrintLayout::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) { return readXml( layoutElement, document, context ); }
+bool QgsPrintLayout::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  return readXml( layoutElement, document, context );
+}
 
 QgsExpressionContext QgsPrintLayout::createExpressionContext() const
 {
@@ -101,7 +116,10 @@ QgsExpressionContext QgsPrintLayout::createExpressionContext() const
   return context;
 }
 
-void QgsPrintLayout::updateSettings() { reloadSettings(); }
+void QgsPrintLayout::updateSettings()
+{
+  reloadSettings();
+}
 
 bool QgsPrintLayout::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -116,4 +134,7 @@ bool QgsPrintLayout::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) con
   return true;
 }
 
-QgsMasterLayoutInterface::Type QgsPrintLayout::layoutType() const { return QgsMasterLayoutInterface::PrintLayout; }
+QgsMasterLayoutInterface::Type QgsPrintLayout::layoutType() const
+{
+  return QgsMasterLayoutInterface::PrintLayout;
+}

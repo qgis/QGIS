@@ -266,8 +266,16 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
 
 
 void QgsTextDocumentMetrics::processFragment(
-  QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor, DocumentMetrics &documentMetrics,
-  BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock
+  QgsTextDocumentMetrics &res,
+  const QgsTextFormat &format,
+  const QgsRenderContext &context,
+  const QgsTextDocumentRenderContext &documentContext,
+  double scaleFactor,
+  DocumentMetrics &documentMetrics,
+  BlockMetrics &thisBlockMetrics,
+  const QFont &font,
+  const QgsTextFragment &fragment,
+  QgsTextBlock &currentOutputBlock
 )
 {
   if ( fragment.isTab() )
@@ -378,7 +386,11 @@ void QgsTextDocumentMetrics::processFragment(
       thisBlockMetrics.previousNonSuperSubScriptFont = updatedFont;
     }
 
-    auto updateCommonBlockMetrics = [&fragmentVerticalOffset, &fragmentYMaxAdjust, &fragmentHeightForVerticallyOffsetText, &updatedFont, &fm,
+    auto updateCommonBlockMetrics = [&fragmentVerticalOffset,
+                                     &fragmentYMaxAdjust,
+                                     &fragmentHeightForVerticallyOffsetText,
+                                     &updatedFont,
+                                     &fm,
                                      scaleFactor]( BlockMetrics &thisBlockMetrics, double fragmentWidth, const QgsTextFragment &fragment ) {
       thisBlockMetrics.fragmentVerticalOffsets << fragmentVerticalOffset;
       thisBlockMetrics.blockYMaxAdjustLabel = std::max( thisBlockMetrics.blockYMaxAdjustLabel, fragmentYMaxAdjust );
@@ -466,7 +478,11 @@ void QgsTextDocumentMetrics::processFragment(
       const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
       const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
 
-      auto finalizeTextFragment = [fragmentHeightUsingAscentDescent, fragmentHeightUsingLineSpacing, &fm, scaleFactor, &currentOutputBlock,
+      auto finalizeTextFragment = [fragmentHeightUsingAscentDescent,
+                                   fragmentHeightUsingLineSpacing,
+                                   &fm,
+                                   scaleFactor,
+                                   &currentOutputBlock,
                                    &updateCommonBlockMetrics]( BlockMetrics &thisBlockMetrics, const QgsTextFragment &fragment, double fragmentWidth ) {
         thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
 
@@ -718,7 +734,9 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics(
   res.mRightBlockMargins = documentMetrics.blockRightMargin;
 
   res.mOuterBoundsLabelMode = QRectF(
-    documentMetrics.outerXMin, -documentMetrics.outerYMaxLabel, documentMetrics.outerXMax - documentMetrics.outerXMin,
+    documentMetrics.outerXMin,
+    -documentMetrics.outerYMaxLabel,
+    documentMetrics.outerXMax - documentMetrics.outerXMin,
     documentMetrics.heightLabelMode - documentMetrics.outerYMinLabel + documentMetrics.outerYMaxLabel
   );
 
@@ -782,11 +800,20 @@ QRectF QgsTextDocumentMetrics::outerBounds( Qgis::TextLayoutMode mode, Qgis::Tex
   BUILTIN_UNREACHABLE
 }
 
-double QgsTextDocumentMetrics::blockWidth( int blockIndex ) const { return mBlockWidths.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockWidth( int blockIndex ) const
+{
+  return mBlockWidths.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::blockHeight( int blockIndex ) const { return mBlockHeights.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockHeight( int blockIndex ) const
+{
+  return mBlockHeights.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::firstLineCapHeight() const { return mFirstLineCapHeight; }
+double QgsTextDocumentMetrics::firstLineCapHeight() const
+{
+  return mFirstLineCapHeight;
+}
 
 double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const
 {
@@ -834,21 +861,45 @@ double QgsTextDocumentMetrics::fragmentVerticalOffset( int blockIndex, int fragm
   BUILTIN_UNREACHABLE
 }
 
-double QgsTextDocumentMetrics::fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const { return mFragmentFixedHeights.value( blockIndex ).value( fragmentIndex ); }
+double QgsTextDocumentMetrics::fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentFixedHeights.value( blockIndex ).value( fragmentIndex );
+}
 
-double QgsTextDocumentMetrics::fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const { return mFragmentAscent.value( blockIndex ).value( fragmentIndex ); }
+double QgsTextDocumentMetrics::fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentAscent.value( blockIndex ).value( fragmentIndex );
+}
 
-double QgsTextDocumentMetrics::fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const { return mFragmentDescent.value( blockIndex ).value( fragmentIndex ); }
+double QgsTextDocumentMetrics::fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentDescent.value( blockIndex ).value( fragmentIndex );
+}
 
-double QgsTextDocumentMetrics::verticalOrientationXOffset( int blockIndex ) const { return mVerticalOrientationXOffsets.value( blockIndex ); }
+double QgsTextDocumentMetrics::verticalOrientationXOffset( int blockIndex ) const
+{
+  return mVerticalOrientationXOffsets.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::blockMaximumCharacterWidth( int blockIndex ) const { return mBlockMaxCharacterWidth.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockMaximumCharacterWidth( int blockIndex ) const
+{
+  return mBlockMaxCharacterWidth.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::blockMaximumDescent( int blockIndex ) const { return mBlockMaxDescent.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockMaximumDescent( int blockIndex ) const
+{
+  return mBlockMaxDescent.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::blockMaximumAscent( int blockIndex ) const { return mBlockMaxAscent.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockMaximumAscent( int blockIndex ) const
+{
+  return mBlockMaxAscent.value( blockIndex );
+}
 
-QFont QgsTextDocumentMetrics::fragmentFont( int blockIndex, int fragmentIndex ) const { return mFragmentFonts.value( blockIndex ).value( fragmentIndex ); }
+QFont QgsTextDocumentMetrics::fragmentFont( int blockIndex, int fragmentIndex ) const
+{
+  return mFragmentFonts.value( blockIndex ).value( fragmentIndex );
+}
 
 double QgsTextDocumentMetrics::blockVerticalMargin( int blockIndex ) const
 {
@@ -858,6 +909,12 @@ double QgsTextDocumentMetrics::blockVerticalMargin( int blockIndex ) const
   return mVerticalMarginsBetweenBlocks.value( blockIndex + 1 );
 }
 
-double QgsTextDocumentMetrics::blockLeftMargin( int blockIndex ) const { return mLeftBlockMargins.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockLeftMargin( int blockIndex ) const
+{
+  return mLeftBlockMargins.value( blockIndex );
+}
 
-double QgsTextDocumentMetrics::blockRightMargin( int blockIndex ) const { return mRightBlockMargins.value( blockIndex ); }
+double QgsTextDocumentMetrics::blockRightMargin( int blockIndex ) const
+{
+  return mRightBlockMargins.value( blockIndex );
+}

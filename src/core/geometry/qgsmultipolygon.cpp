@@ -28,7 +28,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsMultiPolygon::QgsMultiPolygon() { mWkbType = Qgis::WkbType::MultiPolygon; }
+QgsMultiPolygon::QgsMultiPolygon()
+{
+  mWkbType = Qgis::WkbType::MultiPolygon;
+}
 
 QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon> &polygons )
 {
@@ -58,11 +61,20 @@ QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon *> &polygons )
   setZMTypeFromSubGeometry( polygons.at( 0 ), Qgis::WkbType::MultiPolygon );
 }
 
-QgsPolygon *QgsMultiPolygon::polygonN( int index ) { return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) ); }
+QgsPolygon *QgsMultiPolygon::polygonN( int index )
+{
+  return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) );
+}
 
-const QgsPolygon *QgsMultiPolygon::polygonN( int index ) const { return qgsgeometry_cast< const QgsPolygon * >( geometryN( index ) ); }
+const QgsPolygon *QgsMultiPolygon::polygonN( int index ) const
+{
+  return qgsgeometry_cast< const QgsPolygon * >( geometryN( index ) );
+}
 
-QString QgsMultiPolygon::geometryType() const { return u"MultiPolygon"_s; }
+QString QgsMultiPolygon::geometryType() const
+{
+  return u"MultiPolygon"_s;
+}
 
 void QgsMultiPolygon::clear()
 {
@@ -77,9 +89,15 @@ QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsMultiPolygon *QgsMultiPolygon::clone() const { return new QgsMultiPolygon( *this ); }
+QgsMultiPolygon *QgsMultiPolygon::clone() const
+{
+  return new QgsMultiPolygon( *this );
+}
 
-bool QgsMultiPolygon::fromWkt( const QString &wkt ) { return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon }, u"Polygon"_s ); }
+bool QgsMultiPolygon::fromWkt( const QString &wkt )
+{
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon }, u"Polygon"_s );
+}
 
 QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
@@ -276,4 +294,7 @@ QgsAbstractGeometry *QgsMultiPolygon::boundary() const
   return multiLine.release();
 }
 
-bool QgsMultiPolygon::wktOmitChildType() const { return true; }
+bool QgsMultiPolygon::wktOmitChildType() const
+{
+  return true;
+}

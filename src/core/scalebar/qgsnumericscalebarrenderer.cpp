@@ -27,15 +27,30 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsNumericScaleBarRenderer::id() const { return u"Numeric"_s; }
+QString QgsNumericScaleBarRenderer::id() const
+{
+  return u"Numeric"_s;
+}
 
-QString QgsNumericScaleBarRenderer::visibleName() const { return QObject::tr( "Numeric" ); }
+QString QgsNumericScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Numeric" );
+}
 
-int QgsNumericScaleBarRenderer::sortKey() const { return 100; }
+int QgsNumericScaleBarRenderer::sortKey() const
+{
+  return 100;
+}
 
-QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const { return Flag::FlagUsesAlignment; }
+QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesAlignment;
+}
 
-QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const { return new QgsNumericScaleBarRenderer( *this ); }
+QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const
+{
+  return new QgsNumericScaleBarRenderer( *this );
+}
 
 void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
@@ -91,4 +106,7 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
   return QSizeF( 2 * settings.boxContentSpace() + textWidth, textHeight + 2 * settings.boxContentSpace() );
 }
 
-QString QgsNumericScaleBarRenderer::scaleText( double scale, const QgsScaleBarSettings &settings ) const { return "1:" + settings.numericFormat()->formatDouble( scale, QgsNumericFormatContext() ); }
+QString QgsNumericScaleBarRenderer::scaleText( double scale, const QgsScaleBarSettings &settings ) const
+{
+  return "1:" + settings.numericFormat()->formatDouble( scale, QgsNumericFormatContext() );
+}

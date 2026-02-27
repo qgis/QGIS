@@ -51,11 +51,20 @@ bool QgsVirtualLayerTask::run()
   return rc;
 }
 
-QgsVirtualLayerDefinition QgsVirtualLayerTask::definition() const { return mDefinition; }
+QgsVirtualLayerDefinition QgsVirtualLayerTask::definition() const
+{
+  return mDefinition;
+}
 
-QgsVectorLayer *QgsVirtualLayerTask::layer() { return mLayer.get(); }
+QgsVectorLayer *QgsVirtualLayerTask::layer()
+{
+  return mLayer.get();
+}
 
-QgsVectorLayer *QgsVirtualLayerTask::takeLayer() { return mLayer.release(); }
+QgsVectorLayer *QgsVirtualLayerTask::takeLayer()
+{
+  return mLayer.release();
+}
 
 void QgsVirtualLayerTask::cancel()
 {
@@ -63,6 +72,12 @@ void QgsVirtualLayerTask::cancel()
   QgsTask::cancel();
 }
 
-QString QgsVirtualLayerTask::exceptionText() const { return mExceptionText; }
+QString QgsVirtualLayerTask::exceptionText() const
+{
+  return mExceptionText;
+}
 
-void QgsVirtualLayerTask::setExceptionText( const QString &exceptionText ) { mExceptionText = exceptionText; }
+void QgsVirtualLayerTask::setExceptionText( const QString &exceptionText )
+{
+  mExceptionText = exceptionText;
+}

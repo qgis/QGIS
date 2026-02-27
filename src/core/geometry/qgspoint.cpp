@@ -135,7 +135,10 @@ QgsPoint::QgsPoint( const QgsVector3D &vect, double m )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsPoint *QgsPoint::clone() const { return new QgsPoint( *this ); }
+QgsPoint *QgsPoint::clone() const
+{
+  return new QgsPoint( *this );
+}
 
 QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool ) const
 {
@@ -157,9 +160,15 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
   return new QgsPoint( mWkbType, x, y, z, m );
 }
 
-QgsPoint *QgsPoint::simplifyByDistance( double ) const { return clone(); }
+QgsPoint *QgsPoint::simplifyByDistance( double ) const
+{
+  return clone();
+}
 
-bool QgsPoint::removeDuplicateNodes( double, bool ) { return false; }
+bool QgsPoint::removeDuplicateNodes( double, bool )
+{
+  return false;
+}
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
@@ -364,11 +373,20 @@ json QgsPoint::asJsonObject( int precision ) const
   return j;
 }
 
-QString QgsPoint::asKml( int precision ) const { return u"<Point><coordinates>%1,%2</coordinates></Point>"_s.arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) ); }
+QString QgsPoint::asKml( int precision ) const
+{
+  return u"<Point><coordinates>%1,%2</coordinates></Point>"_s.arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) );
+}
 
-void QgsPoint::draw( QPainter &p ) const { p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) ); }
+void QgsPoint::draw( QPainter &p ) const
+{
+  p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
+}
 
-QPainterPath QgsPoint::asQPainterPath() const { return QPainterPath(); }
+QPainterPath QgsPoint::asQPainterPath() const
+{
+  return QPainterPath();
+}
 
 void QgsPoint::clear()
 {
@@ -417,7 +435,10 @@ QgsCoordinateSequence QgsPoint::coordinateSequence() const
   return cs;
 }
 
-int QgsPoint::nCoordinates() const { return 1; }
+int QgsPoint::nCoordinates() const
+{
+  return 1;
+}
 
 int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
 {
@@ -427,9 +448,15 @@ int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
     return 0;
 }
 
-QgsAbstractGeometry *QgsPoint::boundary() const { return nullptr; }
+QgsAbstractGeometry *QgsPoint::boundary() const
+{
+  return nullptr;
+}
 
-bool QgsPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const { return true; }
+bool QgsPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
+{
+  return true;
+}
 
 bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
@@ -512,21 +539,45 @@ double QgsPoint::vertexAngle( QgsVertexId vertex ) const
   return 0.0;
 }
 
-int QgsPoint::vertexCount( int, int ) const { return 1; }
+int QgsPoint::vertexCount( int, int ) const
+{
+  return 1;
+}
 
-int QgsPoint::ringCount( int ) const { return 1; }
+int QgsPoint::ringCount( int ) const
+{
+  return 1;
+}
 
-int QgsPoint::partCount() const { return 1; }
+int QgsPoint::partCount() const
+{
+  return 1;
+}
 
-QgsPoint QgsPoint::vertexAt( QgsVertexId ) const { return *this; }
+QgsPoint QgsPoint::vertexAt( QgsVertexId ) const
+{
+  return *this;
+}
 
-QgsPoint *QgsPoint::toCurveType() const { return clone(); }
+QgsPoint *QgsPoint::toCurveType() const
+{
+  return clone();
+}
 
-double QgsPoint::segmentLength( QgsVertexId ) const { return 0.0; }
+double QgsPoint::segmentLength( QgsVertexId ) const
+{
+  return 0.0;
+}
 
-bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const { return rectangle.contains( mX, mY ); }
+bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return rectangle.contains( mX, mY );
+}
 
-bool QgsPoint::boundingBoxIntersects( const QgsBox3D &box3d ) const { return box3d.contains( mX, mY, mZ ); }
+bool QgsPoint::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return box3d.contains( mX, mY, mZ );
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -663,7 +714,10 @@ void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint &
   clearCache();
 }
 
-double QgsPoint::azimuth( const QgsPoint &other ) const { return QgsGeometryUtilsBase::azimuth( mX, mY, other.x(), other.y() ); }
+double QgsPoint::azimuth( const QgsPoint &other ) const
+{
+  return QgsGeometryUtilsBase::azimuth( mX, mY, other.x(), other.y() );
+}
 
 double QgsPoint::inclination( const QgsPoint &other ) const
 {
@@ -709,15 +763,30 @@ void QgsPoint::normalize()
   // nothing to do
 }
 
-bool QgsPoint::isEmpty() const { return std::isnan( mX ) || std::isnan( mY ); }
+bool QgsPoint::isEmpty() const
+{
+  return std::isnan( mX ) || std::isnan( mY );
+}
 
-QgsBox3D QgsPoint::boundingBox3D() const { return QgsBox3D( mX, mY, mZ, mX, mY, mZ ); }
+QgsBox3D QgsPoint::boundingBox3D() const
+{
+  return QgsBox3D( mX, mY, mZ, mX, mY, mZ );
+}
 
-QString QgsPoint::geometryType() const { return u"Point"_s; }
+QString QgsPoint::geometryType() const
+{
+  return u"Point"_s;
+}
 
-int QgsPoint::dimension() const { return 0; }
+int QgsPoint::dimension() const
+{
+  return 0;
+}
 
-int QgsPoint::childCount() const { return 1; }
+int QgsPoint::childCount() const
+{
+  return 1;
+}
 
 QgsPoint QgsPoint::childPoint( int index ) const
 {

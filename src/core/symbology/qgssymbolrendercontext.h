@@ -48,8 +48,14 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param mapUnitScale
      */
     QgsSymbolRenderContext(
-      QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = nullptr,
-      const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale()
+      QgsRenderContext &c,
+      Qgis::RenderUnit u,
+      qreal opacity = 1.0,
+      bool selected = false,
+      Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(),
+      const QgsFeature *f = nullptr,
+      const QgsFields &fields = QgsFields(),
+      const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale()
     );
 
     ~QgsSymbolRenderContext();

@@ -34,14 +34,12 @@ QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCu
   : QgsAnnotationItem()
   , mText( text )
   , mCurve( curve )
-{
-}
+{}
 
 Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;
@@ -73,10 +71,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) {
-               return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-             } ),
-             pts.end() );
+  pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) { return !std::isfinite( point.x() ) || !std::isfinite( point.y() ); } ), pts.end() );
 
   QPointF *ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )

@@ -318,8 +318,20 @@ Compute various quantities dependent on a magnetic field.
 %End
 
     static bool fieldComponentsWithTimeDerivatives(
-      double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H /Out/, double &F /Out/, double &D /Out/, double &I /Out/, double &Ht /Out/, double &Ft /Out/,
-      double &Dt /Out/, double &It /Out/
+      double Bx,
+      double By,
+      double Bz,
+      double Bxt,
+      double Byt,
+      double Bzt,
+      double &H /Out/,
+      double &F /Out/,
+      double &D /Out/,
+      double &I /Out/,
+      double &Ht /Out/,
+      double &Ft /Out/,
+      double &Dt /Out/,
+      double &It /Out/
     );
 %Docstring
 Compute various quantities dependent on a magnetic field and their rates

@@ -25,13 +25,25 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProject *QgsTranslationContext::project() const { return mProject; }
+QgsProject *QgsTranslationContext::project() const
+{
+  return mProject;
+}
 
-void QgsTranslationContext::setProject( QgsProject *project ) { mProject = project; }
+void QgsTranslationContext::setProject( QgsProject *project )
+{
+  mProject = project;
+}
 
-QString QgsTranslationContext::fileName() const { return mFileName; }
+QString QgsTranslationContext::fileName() const
+{
+  return mFileName;
+}
 
-void QgsTranslationContext::setFileName( const QString &fileName ) { mFileName = fileName; }
+void QgsTranslationContext::setFileName( const QString &fileName )
+{
+  mFileName = fileName;
+}
 
 void QgsTranslationContext::registerTranslation( const QString &context, const QString &source )
 {

@@ -47,7 +47,10 @@ QgsRasterContourRenderer *QgsRasterContourRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const { return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels; }
+Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels;
+}
 
 QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -236,7 +239,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes
   return nodes;
 }
 
-int QgsRasterContourRenderer::inputBand() const { return mInputBand; }
+int QgsRasterContourRenderer::inputBand() const
+{
+  return mInputBand;
+}
 
 bool QgsRasterContourRenderer::setInputBand( int band )
 {
@@ -253,6 +259,12 @@ bool QgsRasterContourRenderer::setInputBand( int band )
   return false;
 }
 
-void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol ) { mContourSymbol.reset( symbol ); }
+void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol )
+{
+  mContourSymbol.reset( symbol );
+}
 
-void QgsRasterContourRenderer::setContourIndexSymbol( QgsLineSymbol *symbol ) { mContourIndexSymbol.reset( symbol ); }
+void QgsRasterContourRenderer::setContourIndexSymbol( QgsLineSymbol *symbol )
+{
+  mContourIndexSymbol.reset( symbol );
+}

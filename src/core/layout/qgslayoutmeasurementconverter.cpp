@@ -156,16 +156,37 @@ double QgsLayoutMeasurementConverter::convertToMillimeters( const QgsLayoutMeasu
   return measurement.length();
 }
 
-double QgsLayoutMeasurementConverter::convertToCentimeters( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) / 10.0; }
+double QgsLayoutMeasurementConverter::convertToCentimeters( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) / 10.0;
+}
 
-double QgsLayoutMeasurementConverter::convertToMeters( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) / 1000.0; }
+double QgsLayoutMeasurementConverter::convertToMeters( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) / 1000.0;
+}
 
-double QgsLayoutMeasurementConverter::convertToInches( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) / 25.4; }
+double QgsLayoutMeasurementConverter::convertToInches( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) / 25.4;
+}
 
-double QgsLayoutMeasurementConverter::convertToFeet( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) / 304.8; }
+double QgsLayoutMeasurementConverter::convertToFeet( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) / 304.8;
+}
 
-double QgsLayoutMeasurementConverter::convertToPoints( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) * 2.83464567; }
+double QgsLayoutMeasurementConverter::convertToPoints( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) * 2.83464567;
+}
 
-double QgsLayoutMeasurementConverter::convertToPicas( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) * 0.236220472; }
+double QgsLayoutMeasurementConverter::convertToPicas( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) * 0.236220472;
+}
 
-double QgsLayoutMeasurementConverter::convertToPixels( const QgsLayoutMeasurement measurement ) const { return convertToMillimeters( measurement ) * mDpi / 25.4; }
+double QgsLayoutMeasurementConverter::convertToPixels( const QgsLayoutMeasurement measurement ) const
+{
+  return convertToMillimeters( measurement ) * mDpi / 25.4;
+}

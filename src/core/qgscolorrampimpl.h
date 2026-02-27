@@ -339,8 +339,13 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      * \param valMax maximum color value
      */
     QgsLimitedRandomColorRamp(
-      int count = DEFAULT_RANDOM_COUNT, int hueMin = DEFAULT_RANDOM_HUE_MIN, int hueMax = DEFAULT_RANDOM_HUE_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX,
-      int valMin = DEFAULT_RANDOM_VAL_MIN, int valMax = DEFAULT_RANDOM_VAL_MAX
+      int count = DEFAULT_RANDOM_COUNT,
+      int hueMin = DEFAULT_RANDOM_HUE_MIN,
+      int hueMax = DEFAULT_RANDOM_HUE_MAX,
+      int satMin = DEFAULT_RANDOM_SAT_MIN,
+      int satMax = DEFAULT_RANDOM_SAT_MAX,
+      int valMin = DEFAULT_RANDOM_VAL_MIN,
+      int valMax = DEFAULT_RANDOM_VAL_MAX
     );
 
     /**
@@ -370,8 +375,13 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      * Gets a list of random colors
      */
     static QList<QColor> randomColors(
-      int count, int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
-      int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN
+      int count,
+      int hueMax = DEFAULT_RANDOM_HUE_MAX,
+      int hueMin = DEFAULT_RANDOM_HUE_MIN,
+      int satMax = DEFAULT_RANDOM_SAT_MAX,
+      int satMin = DEFAULT_RANDOM_SAT_MIN,
+      int valMax = DEFAULT_RANDOM_VAL_MAX,
+      int valMin = DEFAULT_RANDOM_VAL_MIN
     );
 
     /**

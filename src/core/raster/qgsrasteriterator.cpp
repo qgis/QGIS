@@ -87,7 +87,9 @@ QgsRectangle QgsRasterIterator::subRegion(
   subRegionTop = top;
 
   return QgsRectangle(
-    rasterExtent.xMinimum() + ( left * xRes ), rasterExtent.yMaximum() - ( ( top + subRegionHeight ) * yRes ), rasterExtent.xMinimum() + ( ( left + subRegionWidth ) * xRes ),
+    rasterExtent.xMinimum() + ( left * xRes ),
+    rasterExtent.yMaximum() - ( ( top + subRegionHeight ) * yRes ),
+    rasterExtent.xMinimum() + ( ( left + subRegionWidth ) * xRes ),
     rasterExtent.yMaximum() - ( top * yRes )
   );
 }
@@ -137,8 +139,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRo
 }
 
 bool QgsRasterIterator::readNextRasterPart(
-  int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int *tileColumns, int *tileRows, int *tileTopLeftColumn,
-  int *tileTopLeftRow
+  int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int *tileColumns, int *tileRows, int *tileTopLeftColumn, int *tileTopLeftRow
 )
 {
   int outTileColumns = 0;
@@ -160,8 +161,7 @@ bool QgsRasterIterator::readNextRasterPart(
 }
 
 bool QgsRasterIterator::readNextRasterPartInternal(
-  int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn,
-  int &tileTopLeftRow
+  int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow
 )
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
@@ -262,7 +262,10 @@ bool QgsRasterIterator::readNextRasterPartInternal(
   return true;
 }
 
-void QgsRasterIterator::stopRasterRead( int bandNumber ) { removePartInfo( bandNumber ); }
+void QgsRasterIterator::stopRasterRead( int bandNumber )
+{
+  removePartInfo( bandNumber );
+}
 
 double QgsRasterIterator::progress( int bandNumber, double currentBlockProgress ) const
 {

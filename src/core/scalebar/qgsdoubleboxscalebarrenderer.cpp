@@ -29,9 +29,15 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsDoubleBoxScaleBarRenderer::id() const { return u"Double Box"_s; }
+QString QgsDoubleBoxScaleBarRenderer::id() const
+{
+  return u"Double Box"_s;
+}
 
-QString QgsDoubleBoxScaleBarRenderer::visibleName() const { return QObject::tr( "Double Box" ); }
+QString QgsDoubleBoxScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Double Box" );
+}
 
 QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
 {
@@ -39,9 +45,15 @@ QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
          | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
-int QgsDoubleBoxScaleBarRenderer::sortKey() const { return 2; }
+int QgsDoubleBoxScaleBarRenderer::sortKey() const
+{
+  return 2;
+}
 
-QgsDoubleBoxScaleBarRenderer *QgsDoubleBoxScaleBarRenderer::clone() const { return new QgsDoubleBoxScaleBarRenderer( *this ); }
+QgsDoubleBoxScaleBarRenderer *QgsDoubleBoxScaleBarRenderer::clone() const
+{
+  return new QgsDoubleBoxScaleBarRenderer( *this );
+}
 
 void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
@@ -147,7 +159,9 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     lineSymbol->renderPolyline(
       QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + segmentHeight * 2 ) << QPointF( minX, barTopPosition + segmentHeight * 2 )
                   << QPointF( minX, barTopPosition ),
-      nullptr, context, layer
+      nullptr,
+      context,
+      layer
     );
   }
 

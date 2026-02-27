@@ -83,7 +83,10 @@ QModelIndex QgsSingleItemModel::index( int row, int column, const QModelIndex &p
   return QModelIndex();
 }
 
-QModelIndex QgsSingleItemModel::parent( const QModelIndex & ) const { return QModelIndex(); }
+QModelIndex QgsSingleItemModel::parent( const QModelIndex & ) const
+{
+  return QModelIndex();
+}
 
 int QgsSingleItemModel::rowCount( const QModelIndex &parent ) const
 {

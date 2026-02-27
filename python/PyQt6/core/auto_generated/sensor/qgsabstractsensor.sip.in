@@ -23,7 +23,7 @@ An abstract base class for sensors.
 #include "qgssensorregistry.h"
 %End
 %ConvertToSubClassCode
-if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
+    if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
     {
       if ( item->type() == QLatin1String( "tcp_socket" ) && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
       {

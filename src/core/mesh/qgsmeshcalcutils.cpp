@@ -84,7 +84,10 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDataset
   return grp;
 }
 
-std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const { return createMemoryDataset( grp.dataType() ); }
+std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const
+{
+  return createMemoryDataset( grp.dataType() );
+}
 
 std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshDatasetIndex &datasetIndex ) const
 {
@@ -374,9 +377,15 @@ QgsMeshCalcUtils::QgsMeshCalcUtils(
   mIgnoreTime = true;
 }
 
-bool QgsMeshCalcUtils::isValid() const { return mIsValid; }
+bool QgsMeshCalcUtils::isValid() const
+{
+  return mIsValid;
+}
 
-const QgsMeshLayer *QgsMeshCalcUtils::layer() const { return mMeshLayer; }
+const QgsMeshLayer *QgsMeshCalcUtils::layer() const
+{
+  return mMeshLayer;
+}
 
 std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName, bool isAggregate ) const
 {
@@ -386,7 +395,10 @@ std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const 
     return mDatasetGroupMap.value( datasetName );
 }
 
-std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName ) const { return mDatasetGroupMap[datasetName]; }
+std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName ) const
+{
+  return mDatasetGroupMap[datasetName];
+}
 
 void QgsMeshCalcUtils::populateSpatialFilter( QgsMeshMemoryDatasetGroup &filter, const QgsRectangle &extent ) const
 {
@@ -800,7 +812,10 @@ void QgsMeshCalcUtils::updateMesh() const
   }
 }
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::outputType() const { return mOutputType; }
+QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::outputType() const
+{
+  return mOutputType;
+}
 
 void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup, const QgsMeshMemoryDatasetGroup &falseGroup, const QgsMeshMemoryDatasetGroup &condition ) const
 {
@@ -1136,11 +1151,20 @@ double QgsMeshCalcUtils::faverageAggregated( QVector<double> &vals ) const
   return fsumAggregated( vals ) / vals.size();
 }
 
-void QgsMeshCalcUtils::logicalNot( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::flogicalNot, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::logicalNot( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return func1( group1, std::bind( &QgsMeshCalcUtils::flogicalNot, this, std::placeholders::_1 ) );
+}
 
-void QgsMeshCalcUtils::changeSign( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::fchangeSign, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::changeSign( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return func1( group1, std::bind( &QgsMeshCalcUtils::fchangeSign, this, std::placeholders::_1 ) );
+}
 
-void QgsMeshCalcUtils::abs( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::fabs, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::abs( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return func1( group1, std::bind( &QgsMeshCalcUtils::fabs, this, std::placeholders::_1 ) );
+}
 
 void QgsMeshCalcUtils::add( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
@@ -1260,12 +1284,24 @@ void QgsMeshCalcUtils::filter( QgsMeshMemoryDatasetGroup &group1, const QgsGeome
   return func2( group1, filter, std::bind( &QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
-void QgsMeshCalcUtils::sumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fsumAggregated, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::sumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fsumAggregated, this, std::placeholders::_1 ) );
+}
 
-void QgsMeshCalcUtils::minimumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fminimumAggregated, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::minimumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fminimumAggregated, this, std::placeholders::_1 ) );
+}
 
-void QgsMeshCalcUtils::maximumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fmaximumAggregated, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::maximumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fmaximumAggregated, this, std::placeholders::_1 ) );
+}
 
-void QgsMeshCalcUtils::averageAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::faverageAggregated, this, std::placeholders::_1 ) ); }
+void QgsMeshCalcUtils::averageAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
+{
+  return funcAggr( group1, std::bind( &QgsMeshCalcUtils::faverageAggregated, this, std::placeholders::_1 ) );
+}
 
 ///@endcond

@@ -282,8 +282,7 @@ class CORE_EXPORT QgsTessellator
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
     QVector3D applyTransformWithExtrusion( const QVector3D point, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
     void addVertex(
-      const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer,
-      const size_t &vertexBufferOffset
+      const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer, const size_t &vertexBufferOffset
     );
     void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
     void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );

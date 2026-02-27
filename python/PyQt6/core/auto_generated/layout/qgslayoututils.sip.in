@@ -194,8 +194,14 @@ specified, the current painter pen color will be used instead.
 %End
 
     static void drawText(
-      QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft,
-      Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap
+      QPainter *painter,
+      const QRectF &rectangle,
+      const QString &text,
+      const QFont &font,
+      const QColor &color = QColor(),
+      Qt::AlignmentFlag halignment = Qt::AlignLeft,
+      Qt::AlignmentFlag valignment = Qt::AlignTop,
+      int flags = Qt::TextWordWrap
     );
 %Docstring
 Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of

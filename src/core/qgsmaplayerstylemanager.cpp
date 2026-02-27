@@ -34,7 +34,10 @@ QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   reset();
 }
 
-QString QgsMapLayerStyleManager::defaultStyleName() { return tr( "default" ); }
+QString QgsMapLayerStyleManager::defaultStyleName()
+{
+  return tr( "default" );
+}
 
 
 void QgsMapLayerStyleManager::reset()
@@ -85,9 +88,15 @@ void QgsMapLayerStyleManager::writeXml( QDomElement &mgrElement ) const
   }
 }
 
-QStringList QgsMapLayerStyleManager::styles() const { return mStyles.keys(); }
+QStringList QgsMapLayerStyleManager::styles() const
+{
+  return mStyles.keys();
+}
 
-QMap<QString, QgsMapLayerStyle> QgsMapLayerStyleManager::mapLayerStyles() const { return mStyles; }
+QMap<QString, QgsMapLayerStyle> QgsMapLayerStyleManager::mapLayerStyles() const
+{
+  return mStyles;
+}
 
 QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString &name ) const
 {
@@ -157,7 +166,10 @@ bool QgsMapLayerStyleManager::renameStyle( const QString &name, const QString &n
   return true;
 }
 
-QString QgsMapLayerStyleManager::currentStyle() const { return mCurrentStyle; }
+QString QgsMapLayerStyleManager::currentStyle() const
+{
+  return mCurrentStyle;
+}
 
 bool QgsMapLayerStyleManager::setCurrentStyle( const QString &name )
 {
@@ -219,7 +231,10 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   return true;
 }
 
-bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) { return styleName == defaultStyleName(); }
+bool QgsMapLayerStyleManager::isDefault( const QString &styleName )
+{
+  return styleName == defaultStyleName();
+}
 
 void QgsMapLayerStyleManager::copyStylesFrom( QgsMapLayerStyleManager *other )
 {

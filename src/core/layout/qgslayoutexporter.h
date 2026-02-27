@@ -266,8 +266,7 @@ class CORE_EXPORT QgsLayoutExporter
      * to the error description.
      */
     static ExportResult exportToImage(
-      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error SIP_OUT,
-      QgsFeedback *feedback = nullptr
+      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error SIP_OUT, QgsFeedback *feedback = nullptr
     );
 
 
@@ -770,8 +769,17 @@ class CORE_EXPORT QgsLayoutExporter
     static void updatePrinterPageSize( QgsLayout *layout, QPagedPaintDevice *device, int page );
 
     ExportResult renderToLayeredSvg(
-      const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg,
-      QDomNode &svgDocRoot, bool includeMetadata
+      const SvgExportSettings &settings,
+      double width,
+      double height,
+      int page,
+      const QRectF &bounds,
+      const QString &filename,
+      unsigned int svgLayerId,
+      const QString &layerName,
+      QDomDocument &svg,
+      QDomNode &svgDocRoot,
+      bool includeMetadata
     ) const;
 
     void appendMetadataToSvg( QDomDocument &svg ) const;
@@ -781,7 +789,8 @@ class CORE_EXPORT QgsLayoutExporter
     ) const;
 
     ExportResult handleLayeredExport(
-      const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc,
+      const QList<QGraphicsItem *> &items,
+      const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc,
       const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc
     );
 

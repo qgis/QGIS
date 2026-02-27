@@ -118,24 +118,57 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
   }
 }
 
-QString QgsAttributeEditorRelation::typeIdentifier() const { return u"attributeEditorRelation"_s; }
+QString QgsAttributeEditorRelation::typeIdentifier() const
+{
+  return u"attributeEditorRelation"_s;
+}
 
-void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup ) { mForceSuppressFormPopup = forceSuppressFormPopup; }
+void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = forceSuppressFormPopup;
+}
 
-bool QgsAttributeEditorRelation::forceSuppressFormPopup() const { return mForceSuppressFormPopup; }
+bool QgsAttributeEditorRelation::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
 
-void QgsAttributeEditorRelation::setNmRelationId( const QVariant &nmRelationId ) { mNmRelationId = nmRelationId; }
+void QgsAttributeEditorRelation::setNmRelationId( const QVariant &nmRelationId )
+{
+  mNmRelationId = nmRelationId;
+}
 
-QVariant QgsAttributeEditorRelation::nmRelationId() const { return mNmRelationId; }
+QVariant QgsAttributeEditorRelation::nmRelationId() const
+{
+  return mNmRelationId;
+}
 
-void QgsAttributeEditorRelation::setLabel( const QString &label ) { mLabel = label; }
+void QgsAttributeEditorRelation::setLabel( const QString &label )
+{
+  mLabel = label;
+}
 
-QString QgsAttributeEditorRelation::label() const { return mLabel; }
+QString QgsAttributeEditorRelation::label() const
+{
+  return mLabel;
+}
 
-QString QgsAttributeEditorRelation::relationWidgetTypeId() const { return mRelationWidgetTypeId; }
+QString QgsAttributeEditorRelation::relationWidgetTypeId() const
+{
+  return mRelationWidgetTypeId;
+}
 
-void QgsAttributeEditorRelation::setRelationWidgetTypeId( const QString &relationWidgetTypeId ) { mRelationWidgetTypeId = relationWidgetTypeId; }
+void QgsAttributeEditorRelation::setRelationWidgetTypeId( const QString &relationWidgetTypeId )
+{
+  mRelationWidgetTypeId = relationWidgetTypeId;
+}
 
-QVariantMap QgsAttributeEditorRelation::relationEditorConfiguration() const { return mRelationEditorConfig; }
+QVariantMap QgsAttributeEditorRelation::relationEditorConfiguration() const
+{
+  return mRelationEditorConfig;
+}
 
-void QgsAttributeEditorRelation::setRelationEditorConfiguration( const QVariantMap &config ) { mRelationEditorConfig = config; }
+void QgsAttributeEditorRelation::setRelationEditorConfiguration( const QVariantMap &config )
+{
+  mRelationEditorConfig = config;
+}

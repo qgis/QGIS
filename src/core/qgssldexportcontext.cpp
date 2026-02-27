@@ -21,18 +21,42 @@ QgsSldExportContext::QgsSldExportContext( const Qgis::SldExportOptions &options,
   , mExportFilePath( filePath )
 {}
 
-Qgis::SldExportOptions QgsSldExportContext::exportOptions() const { return mExportOptions; }
+Qgis::SldExportOptions QgsSldExportContext::exportOptions() const
+{
+  return mExportOptions;
+}
 
-void QgsSldExportContext::setExportOptions( const Qgis::SldExportOptions &exportOptions ) { mExportOptions = exportOptions; }
+void QgsSldExportContext::setExportOptions( const Qgis::SldExportOptions &exportOptions )
+{
+  mExportOptions = exportOptions;
+}
 
-Qgis::SldExportVendorExtension QgsSldExportContext::vendorExtensions() const { return mVendorExtensions; }
+Qgis::SldExportVendorExtension QgsSldExportContext::vendorExtensions() const
+{
+  return mVendorExtensions;
+}
 
-void QgsSldExportContext::setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension ) { mVendorExtensions = vendorExtension; }
+void QgsSldExportContext::setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension )
+{
+  mVendorExtensions = vendorExtension;
+}
 
-QString QgsSldExportContext::exportFilePath() const { return mExportFilePath; }
+QString QgsSldExportContext::exportFilePath() const
+{
+  return mExportFilePath;
+}
 
-void QgsSldExportContext::setExportFilePath( const QString &exportFilePath ) { mExportFilePath = exportFilePath; }
+void QgsSldExportContext::setExportFilePath( const QString &exportFilePath )
+{
+  mExportFilePath = exportFilePath;
+}
 
-QVariantMap QgsSldExportContext::extraProperties() const { return mExtraProperties; }
+QVariantMap QgsSldExportContext::extraProperties() const
+{
+  return mExtraProperties;
+}
 
-void QgsSldExportContext::setExtraProperties( const QVariantMap &properties ) { mExtraProperties = properties; }
+void QgsSldExportContext::setExtraProperties( const QVariantMap &properties )
+{
+  mExtraProperties = properties;
+}

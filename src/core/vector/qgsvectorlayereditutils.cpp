@@ -927,7 +927,10 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointSequence &ps )
   return pointsAdded ? 0 : 2;
 }
 
-int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p ) { return addTopologicalPoints( QgsPoint( p ) ); }
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
+{
+  return addTopologicalPoints( QgsPoint( p ) );
+}
 
 bool QgsVectorLayerEditUtils::mergeFeatures(
   const QgsFeatureId &targetFeatureId, const QgsFeatureIds &mergeFeatureIds, const QgsAttributes &mergeAttributes, const QgsGeometry &unionGeometry, QString &errorMessage

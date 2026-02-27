@@ -96,7 +96,10 @@ QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
   return renderer.release();
 }
 
-Qgis::RasterRendererFlags QgsPalettedRasterRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsPalettedRasterRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
 QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -143,9 +146,15 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
   return r;
 }
 
-QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classes() const { return classData(); }
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classes() const
+{
+  return classData();
+}
 
-QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::multiValueClasses() const { return mMultiValueClassData; }
+QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::multiValueClasses() const
+{
+  return mMultiValueClassData;
+}
 
 void QgsPalettedRasterRenderer::setMultiValueClasses( const MultiValueClassData &classes )
 {
@@ -181,7 +190,10 @@ void QgsPalettedRasterRenderer::setLabel( double idx, const QString &label )
   }
 }
 
-int QgsPalettedRasterRenderer::inputBand() const { return mBand; }
+int QgsPalettedRasterRenderer::inputBand() const
+{
+  return mBand;
+}
 
 bool QgsPalettedRasterRenderer::setInputBand( int band )
 {
@@ -293,7 +305,10 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle const &exten
   return outputBlock.release();
 }
 
-int QgsPalettedRasterRenderer::nColors() const { return mMultiValueClassData.size(); }
+int QgsPalettedRasterRenderer::nColors() const
+{
+  return mMultiValueClassData.size();
+}
 
 void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
@@ -469,9 +484,15 @@ QList<int> QgsPalettedRasterRenderer::usesBands() const
   return bandList;
 }
 
-void QgsPalettedRasterRenderer::setSourceColorRamp( QgsColorRamp *ramp ) { mSourceColorRamp.reset( ramp ); }
+void QgsPalettedRasterRenderer::setSourceColorRamp( QgsColorRamp *ramp )
+{
+  mSourceColorRamp.reset( ramp );
+}
 
-QgsColorRamp *QgsPalettedRasterRenderer::sourceColorRamp() const { return mSourceColorRamp.get(); }
+QgsColorRamp *QgsPalettedRasterRenderer::sourceColorRamp() const
+{
+  return mSourceColorRamp.get();
+}
 
 QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table )
 {
@@ -834,7 +855,10 @@ void QgsPalettedRasterRenderer::updateArrays()
   }
 }
 
-bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable() const { return true; }
+bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable() const
+{
+  return true;
+}
 
 QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector< QVariant > &values, const QColor &color, const QString &label )
   : values( values )

@@ -213,8 +213,12 @@ class CORE_EXPORT QgsVectorLayerUtils
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
     static bool validateAttribute(
-      const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
-      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet, QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
+      const QgsVectorLayer *layer,
+      const QgsFeature &feature,
+      int attributeIndex,
+      QStringList &errors SIP_OUT,
+      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
+      QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
     );
 
     /**
@@ -430,7 +434,10 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.14
      */
     static bool impactsCascadeFeatures(
-      const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT,
+      const QgsVectorLayer *layer,
+      const QgsFeatureIds &fids,
+      const QgsProject *project,
+      QgsDuplicateFeatureContext &context SIP_OUT,
       QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags()
     );
 

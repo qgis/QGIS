@@ -21,7 +21,10 @@
 #include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 
-void QgsFeatureExpressionFilterProvider::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const { this->filterFeatures( layer->id(), filterFeatures ); }
+void QgsFeatureExpressionFilterProvider::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const
+{
+  this->filterFeatures( layer->id(), filterFeatures );
+}
 
 void QgsFeatureExpressionFilterProvider::filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const
 {
@@ -45,4 +48,7 @@ QgsFeatureExpressionFilterProvider *QgsFeatureExpressionFilterProvider::clone() 
   return filter;
 }
 
-void QgsFeatureExpressionFilterProvider::setFilter( const QString &layerId, const QgsExpression &filter ) { mFilters[layerId] = filter.dump(); }
+void QgsFeatureExpressionFilterProvider::setFilter( const QString &layerId, const QgsExpression &filter )
+{
+  mFilters[layerId] = filter.dump();
+}

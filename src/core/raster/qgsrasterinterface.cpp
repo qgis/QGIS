@@ -38,7 +38,10 @@ QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )
 {}
 
-Qgis::RasterInterfaceCapabilities QgsRasterInterface::capabilities() const { return Qgis::RasterInterfaceCapability::NoCapabilities; }
+Qgis::RasterInterfaceCapabilities QgsRasterInterface::capabilities() const
+{
+  return Qgis::RasterInterfaceCapability::NoCapabilities;
+}
 
 void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics, int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &boundingBox, int sampleSize ) const
 {
@@ -632,6 +635,12 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo, int stats, co
   return bandStatistics( bandNo, static_cast< Qgis::RasterBandStatistics>( stats ), extent, sampleSize, feedback );
 }
 
-QgsRenderContext QgsRasterBlockFeedback::renderContext() const { return mRenderContext; }
+QgsRenderContext QgsRasterBlockFeedback::renderContext() const
+{
+  return mRenderContext;
+}
 
-void QgsRasterBlockFeedback::setRenderContext( const QgsRenderContext &renderContext ) { mRenderContext = renderContext; }
+void QgsRasterBlockFeedback::setRenderContext( const QgsRenderContext &renderContext )
+{
+  mRenderContext = renderContext;
+}

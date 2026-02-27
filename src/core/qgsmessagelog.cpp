@@ -69,8 +69,10 @@ QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
   connect(
-    QgsApplication::messageLog(), static_cast< void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithFormat ),
-    this, static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage )
+    QgsApplication::messageLog(),
+    static_cast< void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithFormat ),
+    this,
+    static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage )
   );
 }
 
@@ -99,6 +101,12 @@ QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QS
 // QgsMessageLogNotifyBlocker
 //
 
-QgsMessageLogNotifyBlocker::QgsMessageLogNotifyBlocker() { QgsApplication::messageLog()->mAdviseBlockCount++; }
+QgsMessageLogNotifyBlocker::QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount++;
+}
 
-QgsMessageLogNotifyBlocker::~QgsMessageLogNotifyBlocker() { QgsApplication::messageLog()->mAdviseBlockCount--; }
+QgsMessageLogNotifyBlocker::~QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount--;
+}

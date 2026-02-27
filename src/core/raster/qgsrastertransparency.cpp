@@ -27,9 +27,15 @@ email                : ersts@amnh.org
 
 using namespace Qt::StringLiterals;
 
-QVector<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const { return mTransparentSingleValuePixelList; }
+QVector<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const
+{
+  return mTransparentSingleValuePixelList;
+}
 
-QVector<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const { return mTransparentThreeValuePixelList; }
+QVector<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const
+{
+  return mTransparentThreeValuePixelList;
+}
 
 void QgsRasterTransparency::initializeTransparentPixelList( double value )
 {
@@ -49,11 +55,20 @@ void QgsRasterTransparency::initializeTransparentPixelList( double redValue, dou
   mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( redValue, greenValue, blueValue, 0 ) );
 }
 
-void QgsRasterTransparency::setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList ) { mTransparentSingleValuePixelList = newList; }
+void QgsRasterTransparency::setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList )
+{
+  mTransparentSingleValuePixelList = newList;
+}
 
-void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList ) { mTransparentThreeValuePixelList = newList; }
+void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList )
+{
+  mTransparentThreeValuePixelList = newList;
+}
 
-int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const { return static_cast< int >( opacityForValue( value ) * globalTransparency ); }
+int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
+{
+  return static_cast< int >( opacityForValue( value ) * globalTransparency );
+}
 
 double QgsRasterTransparency::opacityForValue( double value ) const
 {
@@ -102,7 +117,10 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   return 1;
 }
 
-bool QgsRasterTransparency::isEmpty() const { return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty(); }
+bool QgsRasterTransparency::isEmpty() const
+{
+  return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty();
+}
 
 void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
@@ -197,7 +215,12 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       bool blueOk = false;
       const double toleranceBlue = currentEntryElem.attribute( u"toleranceBlue"_s ).toDouble( &blueOk );
       mTransparentThreeValuePixelList.append( TransparentThreeValuePixel(
-        red, green, blue, opacity, redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(), greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
+        red,
+        green,
+        blue,
+        opacity,
+        redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(),
+        greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
         blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon()
       ) );
     }

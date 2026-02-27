@@ -395,8 +395,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *  \param generateLookupTableFlag Generate lookup table.
     */
     void setContrastEnhancement(
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum, const QgsRectangle &extent = QgsRectangle(),
-      int sampleSize = QgsRasterLayer::SAMPLE_SIZE, bool generateLookupTableFlag = true
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+      Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
+      const QgsRectangle &extent = QgsRectangle(),
+      int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
+      bool generateLookupTableFlag = true
     );
 
     /**
@@ -584,8 +587,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
     void setContrastEnhancement(
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag,
-      QgsRasterRenderer *rasterRenderer
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag, QgsRasterRenderer *rasterRenderer
     );
 
     /**

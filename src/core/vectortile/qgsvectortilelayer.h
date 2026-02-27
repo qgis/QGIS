@@ -280,8 +280,12 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      * \since QGIS 3.28
      */
     void selectByGeometry(
-      const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
-      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect, Qgis::SelectionFlags flags = Qgis::SelectionFlags(), QgsRenderContext *renderContext = nullptr
+      const QgsGeometry &geometry,
+      const QgsSelectionContext &context,
+      Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+      Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+      QgsRenderContext *renderContext = nullptr
     );
 
   public slots:

@@ -23,11 +23,20 @@
 
 using namespace Qt::StringLiterals;
 
-void QgsSimplifyMethod::setMethodType( MethodType methodType ) { mMethodType = methodType; }
+void QgsSimplifyMethod::setMethodType( MethodType methodType )
+{
+  mMethodType = methodType;
+}
 
-void QgsSimplifyMethod::setTolerance( double tolerance ) { mTolerance = tolerance; }
+void QgsSimplifyMethod::setTolerance( double tolerance )
+{
+  mTolerance = tolerance;
+}
 
-void QgsSimplifyMethod::setForceLocalOptimization( bool localOptimization ) { mForceLocalOptimization = localOptimization; }
+void QgsSimplifyMethod::setForceLocalOptimization( bool localOptimization )
+{
+  mForceLocalOptimization = localOptimization;
+}
 
 QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod )
 {
@@ -55,4 +64,7 @@ bool QgsSimplifyMethod::operator==( const QgsSimplifyMethod &v ) const
   return mMethodType == v.mMethodType && mTolerance == v.mTolerance && mThreshold == v.mThreshold && mForceLocalOptimization == v.mForceLocalOptimization;
 }
 
-bool QgsSimplifyMethod::operator!=( const QgsSimplifyMethod &v ) const { return !( v == *this ); }
+bool QgsSimplifyMethod::operator!=( const QgsSimplifyMethod &v ) const
+{
+  return !( v == *this );
+}

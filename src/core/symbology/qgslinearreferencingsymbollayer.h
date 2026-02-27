@@ -309,12 +309,16 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
       const QgsLineString *line, QgsSymbolRenderContext &context, double skipMultiples, const QPointF &labelOffsetPainterUnits, double averageAngleLengthPainterUnits, bool showMarker
     );
     void renderGeometryPart(
-      QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples,
-      double averageAngleDistancePainterUnits, bool showMarker
+      QgsSymbolRenderContext &context,
+      const QgsAbstractGeometry *geometry,
+      double labelOffsetPainterUnitsX,
+      double labelOffsetPainterUnitsY,
+      double skipMultiples,
+      double averageAngleDistancePainterUnits,
+      bool showMarker
     );
     void renderLineString(
-      QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits,
-      bool showMarker
+      QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker
     );
 
     static QPointF pointToPainter( QgsSymbolRenderContext &context, double x, double y, double z );

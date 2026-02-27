@@ -33,11 +33,20 @@ QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;
 
-void QgsMeshAdvancedEditing::setInputVertices( const QList<int> verticesIndexes ) { mInputVertices = verticesIndexes; }
+void QgsMeshAdvancedEditing::setInputVertices( const QList<int> verticesIndexes )
+{
+  mInputVertices = verticesIndexes;
+}
 
-void QgsMeshAdvancedEditing::setInputFaces( const QList<int> faceIndexes ) { mInputFaces = faceIndexes; }
+void QgsMeshAdvancedEditing::setInputFaces( const QList<int> faceIndexes )
+{
+  mInputFaces = faceIndexes;
+}
 
-QString QgsMeshAdvancedEditing::message() const { return mMessage; }
+QString QgsMeshAdvancedEditing::message() const
+{
+  return mMessage;
+}
 
 void QgsMeshAdvancedEditing::clear()
 {
@@ -48,9 +57,15 @@ void QgsMeshAdvancedEditing::clear()
   clearChanges();
 }
 
-bool QgsMeshAdvancedEditing::isFinished() const { return mIsFinished; }
+bool QgsMeshAdvancedEditing::isFinished() const
+{
+  return mIsFinished;
+}
 
-QString QgsMeshAdvancedEditing::text() const { return QString(); }
+QString QgsMeshAdvancedEditing::text() const
+{
+  return QString();
+}
 
 QgsMeshEditRefineFaces::QgsMeshEditRefineFaces() = default;
 
@@ -172,7 +187,8 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
           mFacesNeighborhoodToAdd.append( { -1, faceStartIndex + 3, -1 } );
         }
         QgsMeshFace newFace(
-          { refinement.newVerticesLocalIndex.at( 0 ) + startingVertexIndex, refinement.newVerticesLocalIndex.at( 1 ) + startingVertexIndex,
+          { refinement.newVerticesLocalIndex.at( 0 ) + startingVertexIndex,
+            refinement.newVerticesLocalIndex.at( 1 ) + startingVertexIndex,
             refinement.newVerticesLocalIndex.at( ( 2 ) % faceSize ) + startingVertexIndex }
         );
         refinement.newFacesChangesIndex.append( mFacesToAdd.count() );
@@ -190,8 +206,7 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
         for ( int i = 0; i < faceSize; ++i )
         {
           QgsMeshFace newFace(
-            { face.at( i ), refinement.newVerticesLocalIndex.at( i ) + startingVertexIndex, centerVertexIndex,
-              refinement.newVerticesLocalIndex.at( ( i + faceSize - 1 ) % faceSize ) + startingVertexIndex }
+            { face.at( i ), refinement.newVerticesLocalIndex.at( i ) + startingVertexIndex, centerVertexIndex, refinement.newVerticesLocalIndex.at( ( i + faceSize - 1 ) % faceSize ) + startingVertexIndex }
           );
           refinement.newFacesChangesIndex.append( mFacesToAdd.count() );
           mFacesToAdd.append( newFace );
@@ -583,7 +598,10 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor, co
   return true;
 }
 
-QString QgsMeshEditRefineFaces::text() const { return QObject::tr( "Refine %n face(s)", nullptr, mInputFaces.count() ); }
+QString QgsMeshEditRefineFaces::text() const
+{
+  return QObject::tr( "Refine %n face(s)", nullptr, mInputFaces.count() );
+}
 
 bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsProject *project )
 {
@@ -770,7 +788,10 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
   return ( !calcX && !calcY ) || layer->meshEditor()->canBeTransformed( mNativeFacesIndexesGeometryChanged, transformFunction );
 }
 
-QString QgsMeshTransformVerticesByExpression::text() const { return QObject::tr( "Transform %n vertices by expression", nullptr, mInputVertices.count() ); }
+QString QgsMeshTransformVerticesByExpression::text() const
+{
+  return QObject::tr( "Transform %n vertices by expression", nullptr, mInputVertices.count() );
+}
 
 void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ )
 {
@@ -812,4 +833,7 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
     return layer->nativeMesh()->vertex( vertexIndex );
 }
 
-void QgsMeshTransformVerticesByExpression::setZFromTerrain( bool enable ) { mZFromTerrain = enable; }
+void QgsMeshTransformVerticesByExpression::setZFromTerrain( bool enable )
+{
+  mZFromTerrain = enable;
+}

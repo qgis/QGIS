@@ -35,16 +35,25 @@ QgsSymbolRenderContext::QgsSymbolRenderContext(
 
 QgsSymbolRenderContext::~QgsSymbolRenderContext() = default;
 
-void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value ) { mRenderContext.expressionContext().setOriginalValueVariable( value ); }
+void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
+{
+  mRenderContext.expressionContext().setOriginalValueVariable( value );
+}
 
 bool QgsSymbolRenderContext::forceVectorRendering() const
 {
   return mRenderContext.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
 }
 
-double QgsSymbolRenderContext::outputLineWidth( double width ) const { return mRenderContext.convertToPainterUnits( width, mOutputUnit, mMapUnitScale ); }
+double QgsSymbolRenderContext::outputLineWidth( double width ) const
+{
+  return mRenderContext.convertToPainterUnits( width, mOutputUnit, mMapUnitScale );
+}
 
-double QgsSymbolRenderContext::outputPixelSize( double size ) const { return mRenderContext.convertToPainterUnits( size, mOutputUnit, mMapUnitScale ); }
+double QgsSymbolRenderContext::outputPixelSize( double size ) const
+{
+  return mRenderContext.convertToPainterUnits( size, mOutputUnit, mMapUnitScale );
+}
 
 // cppcheck-suppress operatorEqVarError
 QgsSymbolRenderContext &QgsSymbolRenderContext::operator=( const QgsSymbolRenderContext & )
@@ -57,10 +66,22 @@ QgsSymbolRenderContext &QgsSymbolRenderContext::operator=( const QgsSymbolRender
   return *this;
 }
 
-QgsExpressionContextScope *QgsSymbolRenderContext::expressionContextScope() { return mExpressionContextScope.get(); }
+QgsExpressionContextScope *QgsSymbolRenderContext::expressionContextScope()
+{
+  return mExpressionContextScope.get();
+}
 
-void QgsSymbolRenderContext::setExpressionContextScope( QgsExpressionContextScope *contextScope ) { mExpressionContextScope.reset( contextScope ); }
+void QgsSymbolRenderContext::setExpressionContextScope( QgsExpressionContextScope *contextScope )
+{
+  mExpressionContextScope.reset( contextScope );
+}
 
-const QgsLegendPatchShape *QgsSymbolRenderContext::patchShape() const { return mPatchShape.get(); }
+const QgsLegendPatchShape *QgsSymbolRenderContext::patchShape() const
+{
+  return mPatchShape.get();
+}
 
-void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShape ) { mPatchShape = std::make_unique<QgsLegendPatchShape>( patchShape ); }
+void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShape )
+{
+  mPatchShape = std::make_unique<QgsLegendPatchShape>( patchShape );
+}

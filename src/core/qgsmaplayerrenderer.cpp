@@ -20,12 +20,27 @@
 QgsMapLayerRenderer::~QgsMapLayerRenderer() = default;
 
 
-bool QgsMapLayerRenderer::forceRasterRender() const { return false; }
+bool QgsMapLayerRenderer::forceRasterRender() const
+{
+  return false;
+}
 
-Qgis::MapLayerRendererFlags QgsMapLayerRenderer::flags() const { return Qgis::MapLayerRendererFlags(); }
+Qgis::MapLayerRendererFlags QgsMapLayerRenderer::flags() const
+{
+  return Qgis::MapLayerRendererFlags();
+}
 
-QgsFeedback *QgsMapLayerRenderer::feedback() const { return nullptr; }
+QgsFeedback *QgsMapLayerRenderer::feedback() const
+{
+  return nullptr;
+}
 
-QList<QgsRenderedItemDetails *> QgsMapLayerRenderer::takeRenderedItemDetails() { return std::move( mRenderedItemDetails ); }
+QList<QgsRenderedItemDetails *> QgsMapLayerRenderer::takeRenderedItemDetails()
+{
+  return std::move( mRenderedItemDetails );
+}
 
-void QgsMapLayerRenderer::appendRenderedItemDetails( QgsRenderedItemDetails *details ) { mRenderedItemDetails.append( details ); }
+void QgsMapLayerRenderer::appendRenderedItemDetails( QgsRenderedItemDetails *details )
+{
+  mRenderedItemDetails.append( details );
+}

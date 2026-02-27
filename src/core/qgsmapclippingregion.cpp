@@ -19,13 +19,25 @@
 
 #include "qgsmaplayerlistutils_p.h"
 
-QgsGeometry QgsMapClippingRegion::geometry() const { return mGeometry; }
+QgsGeometry QgsMapClippingRegion::geometry() const
+{
+  return mGeometry;
+}
 
-void QgsMapClippingRegion::setGeometry( const QgsGeometry &geometry ) { mGeometry = geometry; }
+void QgsMapClippingRegion::setGeometry( const QgsGeometry &geometry )
+{
+  mGeometry = geometry;
+}
 
-void QgsMapClippingRegion::setRestrictedLayers( const QList<QgsMapLayer *> &layers ) { mRestrictToLayersList = _qgis_listRawToQPointer( layers ); }
+void QgsMapClippingRegion::setRestrictedLayers( const QList<QgsMapLayer *> &layers )
+{
+  mRestrictToLayersList = _qgis_listRawToQPointer( layers );
+}
 
-QList<QgsMapLayer *> QgsMapClippingRegion::restrictedLayers() const { return _qgis_listQPointerToRaw( mRestrictToLayersList ); }
+QList<QgsMapLayer *> QgsMapClippingRegion::restrictedLayers() const
+{
+  return _qgis_listQPointerToRaw( mRestrictToLayersList );
+}
 
 bool QgsMapClippingRegion::appliesToLayer( const QgsMapLayer *layer ) const
 {
@@ -39,6 +51,12 @@ bool QgsMapClippingRegion::appliesToLayer( const QgsMapLayer *layer ) const
   return it != mRestrictToLayersList.end();
 }
 
-bool QgsMapClippingRegion::restrictToLayers() const { return mRestrictToLayers; }
+bool QgsMapClippingRegion::restrictToLayers() const
+{
+  return mRestrictToLayers;
+}
 
-void QgsMapClippingRegion::setRestrictToLayers( bool enabled ) { mRestrictToLayers = enabled; }
+void QgsMapClippingRegion::setRestrictToLayers( bool enabled )
+{
+  mRestrictToLayers = enabled;
+}

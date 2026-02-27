@@ -107,11 +107,20 @@ QgsLayoutItemMap::~QgsLayoutItemMap()
   }
 }
 
-int QgsLayoutItemMap::type() const { return QgsLayoutItemRegistry::LayoutMap; }
+int QgsLayoutItemMap::type() const
+{
+  return QgsLayoutItemRegistry::LayoutMap;
+}
 
-QIcon QgsLayoutItemMap::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemMap.svg"_s ); }
+QIcon QgsLayoutItemMap::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemMap.svg"_s );
+}
 
-QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const { return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching; }
+QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
+}
 
 void QgsLayoutItemMap::assignFreeId()
 {
@@ -151,7 +160,10 @@ QString QgsLayoutItemMap::displayName() const
   return tr( "Map %1" ).arg( mMapId );
 }
 
-QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout ) { return new QgsLayoutItemMap( layout ); }
+QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemMap( layout );
+}
 
 void QgsLayoutItemMap::refresh()
 {
@@ -291,7 +303,10 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
   emit extentChanged();
 }
 
-QgsRectangle QgsLayoutItemMap::extent() const { return mExtent; }
+QgsRectangle QgsLayoutItemMap::extent() const
+{
+  return mExtent;
+}
 
 QPolygonF QgsLayoutItemMap::calculateVisibleExtentPolygon( bool includeClipping ) const
 {
@@ -322,7 +337,10 @@ QPolygonF QgsLayoutItemMap::calculateVisibleExtentPolygon( bool includeClipping 
   return poly;
 }
 
-QPolygonF QgsLayoutItemMap::visibleExtentPolygon() const { return calculateVisibleExtentPolygon( true ); }
+QPolygonF QgsLayoutItemMap::visibleExtentPolygon() const
+{
+  return calculateVisibleExtentPolygon( true );
+}
 
 QgsCoordinateReferenceSystem QgsLayoutItemMap::crs() const
 {
@@ -342,7 +360,10 @@ void QgsLayoutItemMap::setCrs( const QgsCoordinateReferenceSystem &crs )
   emit crsChanged();
 }
 
-QList<QgsMapLayer *> QgsLayoutItemMap::layers() const { return _qgis_listRefToRaw( mLayers ); }
+QList<QgsMapLayer *> QgsLayoutItemMap::layers() const
+{
+  return _qgis_listRefToRaw( mLayers );
+}
 
 void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
@@ -616,7 +637,10 @@ void QgsLayoutItemMap::setMapRotation( double rotation )
   emit changed();
 }
 
-double QgsLayoutItemMap::mapRotation( QgsLayoutObject::PropertyValueType valueType ) const { return valueType == QgsLayoutObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation; }
+double QgsLayoutItemMap::mapRotation( QgsLayoutObject::PropertyValueType valueType ) const
+{
+  return valueType == QgsLayoutObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
+}
 
 void QgsLayoutItemMap::setAtlasDriven( bool enabled )
 {
@@ -696,7 +720,8 @@ double QgsLayoutItemMap::estimatedFrameBleed() const
   return frameBleed;
 }
 
-void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & ) {}
+void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
+{}
 
 bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -1252,7 +1277,9 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       QPointF tl = -boundingRect().topLeft();
       QRect imagePaintRect(
-        static_cast< int >( std::round( tl.x() * dotsPerMM ) ), static_cast< int >( std::round( tl.y() * dotsPerMM ) ), static_cast< int >( std::round( thisPaintRect.width() * dotsPerMM ) ),
+        static_cast< int >( std::round( tl.x() * dotsPerMM ) ),
+        static_cast< int >( std::round( tl.y() * dotsPerMM ) ),
+        static_cast< int >( std::round( thisPaintRect.width() * dotsPerMM ) ),
         static_cast< int >( std::round( thisPaintRect.height() * dotsPerMM ) )
       );
       p.setClipRect( imagePaintRect );
@@ -1453,7 +1480,10 @@ bool QgsLayoutItemMap::nextExportPart()
   return false;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const { return ItemContainsSubLayers; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const
+{
+  return ItemContainsSubLayers;
+}
 
 QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
 {
@@ -1742,9 +1772,15 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mDrawingPreview = false;
 }
 
-QgsLayoutItemMap::MapItemFlags QgsLayoutItemMap::mapFlags() const { return mMapFlags; }
+QgsLayoutItemMap::MapItemFlags QgsLayoutItemMap::mapFlags() const
+{
+  return mMapFlags;
+}
 
-void QgsLayoutItemMap::setMapFlags( QgsLayoutItemMap::MapItemFlags mapFlags ) { mMapFlags = mapFlags; }
+void QgsLayoutItemMap::setMapFlags( QgsLayoutItemMap::MapItemFlags mapFlags )
+{
+  mMapFlags = mapFlags;
+}
 
 QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
 {
@@ -1941,7 +1977,10 @@ void QgsLayoutItemMap::setMoveContentPreviewOffset( double xOffset, double yOffs
   mYOffset = yOffset;
 }
 
-QRectF QgsLayoutItemMap::boundingRect() const { return mCurrentRectangle; }
+QRectF QgsLayoutItemMap::boundingRect() const
+{
+  return mCurrentRectangle;
+}
 
 QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 {
@@ -2054,9 +2093,15 @@ void QgsLayoutItemMap::removeLabelBlockingItem( QgsLayoutItem *item )
     disconnect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemMap::invalidateCache );
 }
 
-bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const { return mBlockingLabelItems.contains( item ); }
+bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
+{
+  return mBlockingLabelItems.contains( item );
+}
 
-QgsLabelingResults *QgsLayoutItemMap::previewLabelingResults() const { return mPreviewLabelingResults.get(); }
+QgsLabelingResults *QgsLayoutItemMap::previewLabelingResults() const
+{
+  return mPreviewLabelingResults.get();
+}
 
 bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -2088,9 +2133,15 @@ bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-void QgsLayoutItemMap::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler ) { mRenderedFeatureHandlers.append( handler ); }
+void QgsLayoutItemMap::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
 
-void QgsLayoutItemMap::removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler ) { mRenderedFeatureHandlers.removeAll( handler ); }
+void QgsLayoutItemMap::removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.removeAll( handler );
+}
 
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const
 {
@@ -2384,13 +2435,25 @@ QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
   return mapTransform;
 }
 
-void QgsLayoutItemMap::setZRangeEnabled( bool enabled ) { mZRangeEnabled = enabled; }
+void QgsLayoutItemMap::setZRangeEnabled( bool enabled )
+{
+  mZRangeEnabled = enabled;
+}
 
-bool QgsLayoutItemMap::zRangeEnabled() const { return mZRangeEnabled; }
+bool QgsLayoutItemMap::zRangeEnabled() const
+{
+  return mZRangeEnabled;
+}
 
-QgsDoubleRange QgsLayoutItemMap::zRange() const { return mZRange; }
+QgsDoubleRange QgsLayoutItemMap::zRange() const
+{
+  return mZRange;
+}
 
-void QgsLayoutItemMap::setZRange( const QgsDoubleRange &range ) { mZRange = range; }
+void QgsLayoutItemMap::setZRange( const QgsDoubleRange &range )
+{
+  mZRange = range;
+}
 
 QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const
 {
@@ -2420,7 +2483,10 @@ QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( cons
   return blockers;
 }
 
-QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const { return mLabelMargin; }
+QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const
+{
+  return mLabelMargin;
+}
 
 void QgsLayoutItemMap::setLabelMargin( const QgsLayoutMeasurement &margin )
 {
@@ -2428,7 +2494,10 @@ void QgsLayoutItemMap::setLabelMargin( const QgsLayoutMeasurement &margin )
   refreshLabelMargin( false );
 }
 
-void QgsLayoutItemMap::updateToolTip() { setToolTip( displayName() ); }
+void QgsLayoutItemMap::updateToolTip()
+{
+  setToolTip( displayName() );
+}
 
 QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) const
 {
@@ -3104,7 +3173,10 @@ QgsLayoutItemMapAtlasClippingSettings::QgsLayoutItemMapAtlasClippingSettings( Qg
   }
 }
 
-bool QgsLayoutItemMapAtlasClippingSettings::enabled() const { return mClipToAtlasFeature; }
+bool QgsLayoutItemMapAtlasClippingSettings::enabled() const
+{
+  return mClipToAtlasFeature;
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setEnabled( bool enabled )
 {
@@ -3115,7 +3187,10 @@ void QgsLayoutItemMapAtlasClippingSettings::setEnabled( bool enabled )
   emit changed();
 }
 
-QgsMapClippingRegion::FeatureClippingType QgsLayoutItemMapAtlasClippingSettings::featureClippingType() const { return mFeatureClippingType; }
+QgsMapClippingRegion::FeatureClippingType QgsLayoutItemMapAtlasClippingSettings::featureClippingType() const
+{
+  return mFeatureClippingType;
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type )
 {
@@ -3126,7 +3201,10 @@ void QgsLayoutItemMapAtlasClippingSettings::setFeatureClippingType( QgsMapClippi
   emit changed();
 }
 
-bool QgsLayoutItemMapAtlasClippingSettings::forceLabelsInsideFeature() const { return mForceLabelsInsideFeature; }
+bool QgsLayoutItemMapAtlasClippingSettings::forceLabelsInsideFeature() const
+{
+  return mForceLabelsInsideFeature;
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setForceLabelsInsideFeature( bool forceInside )
 {
@@ -3137,7 +3215,10 @@ void QgsLayoutItemMapAtlasClippingSettings::setForceLabelsInsideFeature( bool fo
   emit changed();
 }
 
-bool QgsLayoutItemMapAtlasClippingSettings::clipItemShape() const { return mClipItemShape; }
+bool QgsLayoutItemMapAtlasClippingSettings::clipItemShape() const
+{
+  return mClipItemShape;
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setClipItemShape( bool clipItemShape )
 {
@@ -3148,7 +3229,10 @@ void QgsLayoutItemMapAtlasClippingSettings::setClipItemShape( bool clipItemShape
   emit changed();
 }
 
-bool QgsLayoutItemMapAtlasClippingSettings::restrictToLayers() const { return mRestrictToLayers; }
+bool QgsLayoutItemMapAtlasClippingSettings::restrictToLayers() const
+{
+  return mRestrictToLayers;
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setRestrictToLayers( bool enabled )
 {
@@ -3159,7 +3243,10 @@ void QgsLayoutItemMapAtlasClippingSettings::setRestrictToLayers( bool enabled )
   emit changed();
 }
 
-QList<QgsMapLayer *> QgsLayoutItemMapAtlasClippingSettings::layersToClip() const { return _qgis_listRefToRaw( mLayersToClip ); }
+QList<QgsMapLayer *> QgsLayoutItemMapAtlasClippingSettings::layersToClip() const
+{
+  return _qgis_listRefToRaw( mLayersToClip );
+}
 
 void QgsLayoutItemMapAtlasClippingSettings::setLayersToClip( const QList< QgsMapLayer * > &layersToClip )
 {
@@ -3252,9 +3339,15 @@ QgsLayoutItemMapItemClipPathSettings::QgsLayoutItemMapItemClipPathSettings( QgsL
   , mMap( map )
 {}
 
-bool QgsLayoutItemMapItemClipPathSettings::isActive() const { return mEnabled && mClipPathSource; }
+bool QgsLayoutItemMapItemClipPathSettings::isActive() const
+{
+  return mEnabled && mClipPathSource;
+}
 
-bool QgsLayoutItemMapItemClipPathSettings::enabled() const { return mEnabled; }
+bool QgsLayoutItemMapItemClipPathSettings::enabled() const
+{
+  return mEnabled;
+}
 
 void QgsLayoutItemMapItemClipPathSettings::setEnabled( bool enabled )
 {
@@ -3337,9 +3430,15 @@ void QgsLayoutItemMapItemClipPathSettings::setSourceItem( QgsLayoutItem *item )
   emit changed();
 }
 
-QgsLayoutItem *QgsLayoutItemMapItemClipPathSettings::sourceItem() { return mClipPathSource; }
+QgsLayoutItem *QgsLayoutItemMapItemClipPathSettings::sourceItem()
+{
+  return mClipPathSource;
+}
 
-QgsMapClippingRegion::FeatureClippingType QgsLayoutItemMapItemClipPathSettings::featureClippingType() const { return mFeatureClippingType; }
+QgsMapClippingRegion::FeatureClippingType QgsLayoutItemMapItemClipPathSettings::featureClippingType() const
+{
+  return mFeatureClippingType;
+}
 
 void QgsLayoutItemMapItemClipPathSettings::setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type )
 {
@@ -3350,7 +3449,10 @@ void QgsLayoutItemMapItemClipPathSettings::setFeatureClippingType( QgsMapClippin
   emit changed();
 }
 
-bool QgsLayoutItemMapItemClipPathSettings::forceLabelsInsideClipPath() const { return mForceLabelsInsideClipPath; }
+bool QgsLayoutItemMapItemClipPathSettings::forceLabelsInsideClipPath() const
+{
+  return mForceLabelsInsideClipPath;
+}
 
 void QgsLayoutItemMapItemClipPathSettings::setForceLabelsInsideClipPath( bool forceInside )
 {

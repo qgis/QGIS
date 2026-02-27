@@ -64,7 +64,10 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   return colorList;
 }
 
-QgsRecentColorScheme *QgsRecentColorScheme::clone() const { return new QgsRecentColorScheme(); }
+QgsRecentColorScheme *QgsRecentColorScheme::clone() const
+{
+  return new QgsRecentColorScheme();
+}
 
 void QgsRecentColorScheme::addRecentColor( const QColor &color )
 {
@@ -185,7 +188,10 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
   return true;
 }
 
-QgsCustomColorScheme *QgsCustomColorScheme::clone() const { return new QgsCustomColorScheme(); }
+QgsCustomColorScheme *QgsCustomColorScheme::clone() const
+{
+  return new QgsCustomColorScheme();
+}
 
 
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
@@ -224,7 +230,10 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
   return true;
 }
 
-QgsProjectColorScheme *QgsProjectColorScheme::clone() const { return new QgsProjectColorScheme(); }
+QgsProjectColorScheme *QgsProjectColorScheme::clone() const
+{
+  return new QgsProjectColorScheme();
+}
 
 
 //
@@ -319,9 +328,15 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   mEditable = !sourceFileInfo.exists() || sourceFileInfo.isWritable();
 }
 
-QString QgsUserColorScheme::schemeName() const { return mName; }
+QString QgsUserColorScheme::schemeName() const
+{
+  return mName;
+}
 
-QgsUserColorScheme *QgsUserColorScheme::clone() const { return new QgsUserColorScheme( mFilename ); }
+QgsUserColorScheme *QgsUserColorScheme::clone() const
+{
+  return new QgsUserColorScheme( mFilename );
+}
 
 QgsColorScheme::SchemeFlags QgsUserColorScheme::flags() const
 {

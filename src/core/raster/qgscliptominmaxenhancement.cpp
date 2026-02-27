@@ -41,4 +41,7 @@ int QgsClipToMinMaxEnhancement::enhance( double value )
   }
 }
 
-bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double value ) { return !( value < mMinimumValue || value > mMaximumValue ); }
+bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double value )
+{
+  return !( value < mMinimumValue || value > mMaximumValue );
+}

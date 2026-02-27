@@ -65,7 +65,9 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
     return std::make_pair( id, std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() ) );
   } );
 
-  std::sort( mItems.begin(), mItems.end(), []( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a, const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b ) { return a.second->zIndex() < b.second->zIndex(); } );
+  std::sort( mItems.begin(), mItems.end(), []( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a, const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b ) {
+    return a.second->zIndex() < b.second->zIndex();
+  } );
 
   if ( layer->paintEffect() && layer->paintEffect()->enabled() )
   {

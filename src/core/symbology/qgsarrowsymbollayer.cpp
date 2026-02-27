@@ -128,9 +128,15 @@ QgsArrowSymbolLayer *QgsArrowSymbolLayer::clone() const
   return l;
 }
 
-QgsSymbol *QgsArrowSymbolLayer::subSymbol() { return mSymbol.get(); }
+QgsSymbol *QgsArrowSymbolLayer::subSymbol()
+{
+  return mSymbol.get();
+}
 
-QString QgsArrowSymbolLayer::layerType() const { return u"ArrowLine"_s; }
+QString QgsArrowSymbolLayer::layerType() const
+{
+  return u"ArrowLine"_s;
+}
 
 QVariantMap QgsArrowSymbolLayer::properties() const
 {
@@ -227,7 +233,10 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mSymbol->startRender( context.renderContext(), context.fields() );
 }
 
-void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context ) { mSymbol->stopRender( context.renderContext() ); }
+void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
+{
+  mSymbol->stopRender( context.renderContext() );
+}
 
 void QgsArrowSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
@@ -243,7 +252,10 @@ void QgsArrowSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContex
   // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
 }
 
-inline qreal euclidean_distance( QPointF po, QPointF pd ) { return QgsGeometryUtilsBase::distance2D( po.x(), po.y(), pd.x(), pd.y() ); }
+inline qreal euclidean_distance( QPointF po, QPointF pd )
+{
+  return QgsGeometryUtilsBase::distance2D( po.x(), po.y(), pd.x(), pd.y() );
+}
 
 QPolygonF straightArrow(
   QPointF po, QPointF pd, qreal startWidth, qreal width, qreal headWidth, qreal headHeight, QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType, qreal offset
@@ -944,6 +956,12 @@ void QgsArrowSymbolLayer::setColor( const QColor &c )
   mColor = c;
 }
 
-QColor QgsArrowSymbolLayer::color() const { return mSymbol.get() ? mSymbol->color() : mColor; }
+QColor QgsArrowSymbolLayer::color() const
+{
+  return mSymbol.get() ? mSymbol->color() : mColor;
+}
 
-bool QgsArrowSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const { return true; }
+bool QgsArrowSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}

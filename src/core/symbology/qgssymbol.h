@@ -524,8 +524,13 @@ class CORE_EXPORT QgsSymbol
      * \see asImage()
      */
     void drawPreviewIcon(
-      QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
-      const QgsLegendPatchShape *patchShape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties()
+      QPainter *painter,
+      QSize size,
+      QgsRenderContext *customContext = nullptr,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = nullptr,
+      const QgsLegendPatchShape *patchShape = nullptr,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 
     /**
@@ -562,7 +567,8 @@ class CORE_EXPORT QgsSymbol
      * \see drawPreviewIcon()
      */
     QImage bigSymbolPreviewImage(
-      QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
+      QgsExpressionContext *expressionContext = nullptr,
+      Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
       const QgsScreenProperties &screen = QgsScreenProperties()
     ) SIP_PYNAME( bigSymbolPreviewImageV2 );
 
@@ -874,8 +880,13 @@ class CORE_EXPORT QgsSymbol
      * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature(
-      const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false,
-      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0
+      const QgsFeature &feature,
+      QgsRenderContext &context,
+      int layer = -1,
+      bool selected = false,
+      bool drawVertexMarker = false,
+      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle,
+      double currentVertexMarkerSize = 0.0
     ) SIP_THROW( QgsCsException );
 
     /**

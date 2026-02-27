@@ -34,7 +34,7 @@ behaves with relation to z values or elevations.
 #include "qgstiledscenelayerelevationproperties.h"
 %End
 %ConvertToSubClassCode
-if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
+    if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
     }

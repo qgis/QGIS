@@ -40,7 +40,10 @@ struct QgsOgrConn
     bool valid;
 };
 
-inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c ) { return c->path; }
+inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
+{
+  return c->path;
+}
 
 inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrConn *&c )
 {
@@ -66,9 +69,15 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn *c )
   delete c;
 }
 
-inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn *c ) { c->valid = false; }
+inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn *c )
+{
+  c->valid = false;
+}
 
-inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn *c ) { return c->valid; }
+inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn *c )
+{
+  return c->valid;
+}
 
 class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgrConn *>
 {

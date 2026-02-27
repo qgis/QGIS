@@ -86,7 +86,10 @@ QgsGdalCloudProviderConnection::Data QgsGdalCloudProviderConnection::decodedUri(
   return conn;
 }
 
-QStringList QgsGdalCloudProviderConnection::connectionList() { return QgsGdalCloudProviderConnection::sTreeConnectionCloud->items(); }
+QStringList QgsGdalCloudProviderConnection::connectionList()
+{
+  return QgsGdalCloudProviderConnection::sTreeConnectionCloud->items();
+}
 
 QgsGdalCloudProviderConnection::Data QgsGdalCloudProviderConnection::connection( const QString &name )
 {
@@ -110,9 +113,15 @@ void QgsGdalCloudProviderConnection::addConnection( const QString &name, const D
   settingsCredentialOptions->setValue( conn.credentialOptions, name );
 }
 
-QString QgsGdalCloudProviderConnection::selectedConnection() { return sTreeConnectionCloud->selectedItem(); }
+QString QgsGdalCloudProviderConnection::selectedConnection()
+{
+  return sTreeConnectionCloud->selectedItem();
+}
 
-void QgsGdalCloudProviderConnection::setSelectedConnection( const QString &name ) { sTreeConnectionCloud->setSelectedItem( name ); }
+void QgsGdalCloudProviderConnection::setSelectedConnection( const QString &name )
+{
+  sTreeConnectionCloud->setSelectedItem( name );
+}
 
 QgsGdalCloudProviderConnection::QgsGdalCloudProviderConnection( const QString &name )
   : QgsAbstractProviderConnection( name )
@@ -131,7 +140,10 @@ void QgsGdalCloudProviderConnection::store( const QString &name ) const
   addConnection( name, connectionData );
 }
 
-void QgsGdalCloudProviderConnection::remove( const QString &name ) const { sTreeConnectionCloud->deleteItem( name ); }
+void QgsGdalCloudProviderConnection::remove( const QString &name ) const
+{
+  sTreeConnectionCloud->deleteItem( name );
+}
 
 QList<QgsGdalCloudProviderConnection::DirectoryObject> QgsGdalCloudProviderConnection::contents( const QString &path ) const
 {

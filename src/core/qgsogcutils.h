@@ -188,9 +188,19 @@ class CORE_EXPORT QgsOgcUtils
      * \note not available in Python bindings
      */
     static QDomElement expressionToOgcFilter(
-      const QgsExpression &exp, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, FilterVersion filterVersion, const QString &namespacePrefix, const QString &namespaceURI,
-      const QString &geometryName, const QString &srsName, bool honourAxisOrientation, bool invertAxisOrientation, QString *errorMessage = nullptr,
-      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(), const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
+      const QgsExpression &exp,
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      const QString &namespacePrefix,
+      const QString &namespaceURI,
+      const QString &geometryName,
+      const QString &srsName,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      QString *errorMessage = nullptr,
+      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+      const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
     ) SIP_SKIP;
 
     /**
@@ -214,8 +224,17 @@ class CORE_EXPORT QgsOgcUtils
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression(
-      const QgsExpression &exp, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, FilterVersion filterVersion, const QString &geometryName, const QString &srsName, bool honourAxisOrientation,
-      bool invertAxisOrientation, QString *errorMessage = nullptr, bool requiresFilterElement = false, const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+      const QgsExpression &exp,
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      const QString &geometryName,
+      const QString &srsName,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      QString *errorMessage = nullptr,
+      bool requiresFilterElement = false,
+      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
       const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
     );
 
@@ -262,9 +281,17 @@ class CORE_EXPORT QgsOgcUtils
      * \note not available in Python bindings
      */
     static QDomElement SQLStatementToOgcFilter(
-      const QgsSQLStatement &statement, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, FilterVersion filterVersion, const QList<LayerProperties> &layerProperties, bool honourAxisOrientation,
-      bool invertAxisOrientation, const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename, QString *errorMessage = nullptr,
-      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(), const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
+      const QgsSQLStatement &statement,
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      const QList<LayerProperties> &layerProperties,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+      QString *errorMessage = nullptr,
+      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+      const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
     ) SIP_SKIP;
 
     /**
@@ -366,8 +393,17 @@ class QgsOgcUtilsExprToFilter
   public:
     //! Constructor
     QgsOgcUtilsExprToFilter(
-      QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, QgsOgcUtils::FilterVersion filterVersion, const QString &namespacePrefix, const QString &namespaceURI, const QString &geometryName,
-      const QString &srsName, bool honourAxisOrientation, bool invertAxisOrientation, const QMap<QString, QString> &fieldNameToXPathMap, const QMap<QString, QString> &namespacePrefixToUriMap
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      QgsOgcUtils::FilterVersion filterVersion,
+      const QString &namespacePrefix,
+      const QString &namespaceURI,
+      const QString &geometryName,
+      const QString &srsName,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      const QMap<QString, QString> &fieldNameToXPathMap,
+      const QMap<QString, QString> &namespacePrefixToUriMap
     );
 
     //! Convert an expression to a OGC filter
@@ -499,8 +535,14 @@ class QgsOgcUtilsSQLStatementToFilter
   public:
     //! Constructor
     QgsOgcUtilsSQLStatementToFilter(
-      QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, QgsOgcUtils::FilterVersion filterVersion, const QList<QgsOgcUtils::LayerProperties> &layerProperties, bool honourAxisOrientation,
-      bool invertAxisOrientation, const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename, const QMap<QString, QString> &fieldNameToXPathMap,
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      QgsOgcUtils::FilterVersion filterVersion,
+      const QList<QgsOgcUtils::LayerProperties> &layerProperties,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+      const QMap<QString, QString> &fieldNameToXPathMap,
       const QMap<QString, QString> &namespacePrefixToUriMap
     );
 

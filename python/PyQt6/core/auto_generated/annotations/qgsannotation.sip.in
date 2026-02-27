@@ -33,7 +33,7 @@ Derived classes should implement their custom painting routines within a
 #include "qgsannotation.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
+    if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
       sipType = sipType_QgsTextAnnotation;
     else if ( dynamic_cast< QgsSvgAnnotation * >( sipCpp ) )
       sipType = sipType_QgsSvgAnnotation;

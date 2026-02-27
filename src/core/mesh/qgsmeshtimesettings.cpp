@@ -40,10 +40,22 @@ void QgsMeshTimeSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mAbsoluteTimeFormat = elem.attribute( u"absolute-time-format"_s );
 }
 
-QString QgsMeshTimeSettings::relativeTimeFormat() const { return mRelativeTimeFormat; }
+QString QgsMeshTimeSettings::relativeTimeFormat() const
+{
+  return mRelativeTimeFormat;
+}
 
-void QgsMeshTimeSettings::setRelativeTimeFormat( const QString &relativeTimeFormat ) { mRelativeTimeFormat = relativeTimeFormat; }
+void QgsMeshTimeSettings::setRelativeTimeFormat( const QString &relativeTimeFormat )
+{
+  mRelativeTimeFormat = relativeTimeFormat;
+}
 
-QString QgsMeshTimeSettings::absoluteTimeFormat() const { return mAbsoluteTimeFormat; }
+QString QgsMeshTimeSettings::absoluteTimeFormat() const
+{
+  return mAbsoluteTimeFormat;
+}
 
-void QgsMeshTimeSettings::setAbsoluteTimeFormat( const QString &absoluteTimeFormat ) { mAbsoluteTimeFormat = absoluteTimeFormat; }
+void QgsMeshTimeSettings::setAbsoluteTimeFormat( const QString &absoluteTimeFormat )
+{
+  mAbsoluteTimeFormat = absoluteTimeFormat;
+}

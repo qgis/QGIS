@@ -410,8 +410,7 @@ bool QgsFileDataCollectionItem::canAddVectorLayers() const
 
   // explicitly blocklist some drivers which we don't want to expose drop support for
   const QString driverName = GDALGetDriverShortName( hDriver );
-  if ( driverName == "PDF"_L1
-       || driverName == "DXF"_L1 )
+  if ( driverName == "PDF"_L1 || driverName == "DXF"_L1 )
   {
     mCachedSupportsDrop = false;
     return mCachedSupportsDrop;
@@ -466,8 +465,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   }
 
   const QString driverName = GDALGetDriverShortName( hDriver );
-  if ( driverName == "PDF"_L1
-       || driverName == "DXF"_L1 )
+  if ( driverName == "PDF"_L1 || driverName == "DXF"_L1 )
   {
     // unwanted drivers -- it's slow to create connections for these, and we don't really want
     // to expose database capabilities for them (even though they kind of are database formats)
@@ -560,12 +558,16 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
   return createDataItemForPathPrivate( path, parentItem, nullptr, Qgis::SublayerQueryFlags(), QVariantMap() );
 }
 
-QgsDataItem *QgsFileBasedDataItemProvider::createLayerItemForPath( const QString &path, QgsDataItem *parentItem, const QStringList &allowedProviders, const QVariantMap &extraUriParts, Qgis::SublayerQueryFlags queryFlags )
+QgsDataItem *QgsFileBasedDataItemProvider::createLayerItemForPath(
+  const QString &path, QgsDataItem *parentItem, const QStringList &allowedProviders, const QVariantMap &extraUriParts, Qgis::SublayerQueryFlags queryFlags
+)
 {
   return createDataItemForPathPrivate( path, parentItem, &allowedProviders, queryFlags, extraUriParts );
 }
 
-QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders, Qgis::SublayerQueryFlags queryFlags, const QVariantMap &extraUriParts )
+QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate(
+  const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders, Qgis::SublayerQueryFlags queryFlags, const QVariantMap &extraUriParts
+)
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -619,7 +621,8 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   QgsSettings settings;
 
   // should we fast scan only?
-  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s, "extension" ).toString() == "extension"_L1 ) || ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( parentItem->path() ) ) )
+  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s, "extension" ).toString() == "extension"_L1 )
+       || ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;
   }

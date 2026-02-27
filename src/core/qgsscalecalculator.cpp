@@ -34,10 +34,19 @@ QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits 
   , mMapUnits( mapUnits )
 {}
 
-void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method ) { mMethod = method; }
+void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
+{
+  mMethod = method;
+}
 
-void QgsScaleCalculator::setDpi( double dpi ) { mDpi = dpi; }
-double QgsScaleCalculator::dpi() const { return mDpi; }
+void QgsScaleCalculator::setDpi( double dpi )
+{
+  mDpi = dpi;
+}
+double QgsScaleCalculator::dpi() const
+{
+  return mDpi;
+}
 
 void QgsScaleCalculator::setMapUnits( Qgis::DistanceUnit mapUnits )
 {

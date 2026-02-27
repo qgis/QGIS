@@ -44,11 +44,20 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   }
 }
 
-QgsLayoutFrame::~QgsLayoutFrame() { QgsLayoutFrame::cleanup(); }
+QgsLayoutFrame::~QgsLayoutFrame()
+{
+  QgsLayoutFrame::cleanup();
+}
 
-QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout ) { return new QgsLayoutFrame( layout, nullptr ); }
+QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout )
+{
+  return new QgsLayoutFrame( layout, nullptr );
+}
 
-QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const { return mMultiFrame; }
+QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const
+{
+  return mMultiFrame;
+}
 
 QgsLayoutSize QgsLayoutFrame::minimumSize() const
 {
@@ -72,7 +81,10 @@ QgsLayoutSize QgsLayoutFrame::fixedSize() const
   return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
 
-int QgsLayoutFrame::type() const { return QgsLayoutItemRegistry::LayoutFrame; }
+int QgsLayoutFrame::type() const
+{
+  return QgsLayoutItemRegistry::LayoutFrame;
+}
 
 QIcon QgsLayoutFrame::icon() const
 {
@@ -82,7 +94,10 @@ QIcon QgsLayoutFrame::icon() const
     return QIcon();
 }
 
-void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty ) { mHidePageIfEmpty = hidePageIfEmpty; }
+void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
+{
+  mHidePageIfEmpty = hidePageIfEmpty;
+}
 
 void QgsLayoutFrame::setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty )
 {
@@ -126,7 +141,10 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   return context;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
 
 QString QgsLayoutFrame::displayName() const
 {

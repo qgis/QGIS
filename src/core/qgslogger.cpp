@@ -121,7 +121,10 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
   }
 }
 
-void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line ) { debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line ); }
+void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
+{
+  debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line );
+}
 
 void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {

@@ -350,8 +350,12 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * \since QGIS 3.12.3
      */
     virtual bool persistDatasetGroup(
-      const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues,
-      const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
+      const QString &outputFilePath,
+      const QString &outputDriver,
+      const QgsMeshDatasetGroupMetadata &meta,
+      const QVector<QgsMeshDataBlock> &datasetValues,
+      const QVector<QgsMeshDataBlock> &datasetActive,
+      const QVector<double> &times
     ) = 0;
 
 

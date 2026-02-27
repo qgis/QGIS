@@ -35,14 +35,23 @@ QgsFieldDomain::QgsFieldDomain( const QString &name, const QString &description,
 
 QgsFieldDomain::~QgsFieldDomain() = default;
 
-void QgsFieldDomain::setFieldType( QVariant::Type type ) { setFieldType( QgsVariantUtils::variantTypeToMetaType( type ) ); }
+void QgsFieldDomain::setFieldType( QVariant::Type type )
+{
+  setFieldType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
 //
 // QgsCodedValue
 //
-bool QgsCodedValue::operator==( const QgsCodedValue &other ) const { return other.mCode == mCode && other.mValue == mValue; }
+bool QgsCodedValue::operator==( const QgsCodedValue &other ) const
+{
+  return other.mCode == mCode && other.mValue == mValue;
+}
 
-bool QgsCodedValue::operator!=( const QgsCodedValue &other ) const { return !( *this == other ); }
+bool QgsCodedValue::operator!=( const QgsCodedValue &other ) const
+{
+  return !( *this == other );
+}
 
 //
 // QgsCodedFieldDomain
@@ -57,9 +66,15 @@ QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &de
   : QgsCodedFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), values )
 {}
 
-Qgis::FieldDomainType QgsCodedFieldDomain::type() const { return Qgis::FieldDomainType::Coded; }
+Qgis::FieldDomainType QgsCodedFieldDomain::type() const
+{
+  return Qgis::FieldDomainType::Coded;
+}
 
-QString QgsCodedFieldDomain::typeName() const { return QObject::tr( "Coded Values" ); }
+QString QgsCodedFieldDomain::typeName() const
+{
+  return QObject::tr( "Coded Values" );
+}
 
 QgsCodedFieldDomain *QgsCodedFieldDomain::clone() const
 {
@@ -89,9 +104,15 @@ QgsRangeFieldDomain::QgsRangeFieldDomain(
   : QgsRangeFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), minimum, minimumIsInclusive, maximum, maximumIsInclusive )
 {}
 
-Qgis::FieldDomainType QgsRangeFieldDomain::type() const { return Qgis::FieldDomainType::Range; }
+Qgis::FieldDomainType QgsRangeFieldDomain::type() const
+{
+  return Qgis::FieldDomainType::Range;
+}
 
-QString QgsRangeFieldDomain::typeName() const { return QObject::tr( "Range" ); }
+QString QgsRangeFieldDomain::typeName() const
+{
+  return QObject::tr( "Range" );
+}
 
 QgsRangeFieldDomain *QgsRangeFieldDomain::clone() const
 {
@@ -115,9 +136,15 @@ QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &desc
   : QgsGlobFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), glob )
 {}
 
-Qgis::FieldDomainType QgsGlobFieldDomain::type() const { return Qgis::FieldDomainType::Glob; }
+Qgis::FieldDomainType QgsGlobFieldDomain::type() const
+{
+  return Qgis::FieldDomainType::Glob;
+}
 
-QString QgsGlobFieldDomain::typeName() const { return QObject::tr( "Glob" ); }
+QString QgsGlobFieldDomain::typeName() const
+{
+  return QObject::tr( "Glob" );
+}
 
 QgsGlobFieldDomain *QgsGlobFieldDomain::clone() const
 {

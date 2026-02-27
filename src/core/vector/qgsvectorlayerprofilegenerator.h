@@ -87,8 +87,12 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
     void visitFeaturesAtPoint(
-      const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,
-      const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin
+      const QgsProfilePoint &point,
+      double maximumPointDistanceDelta,
+      double maximumPointElevationDelta,
+      double maximumSurfaceElevationDelta,
+      const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor,
+      bool visitWithin
     ) const;
     void visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const std::function<void( QgsFeatureId )> &visitor ) const;
 };

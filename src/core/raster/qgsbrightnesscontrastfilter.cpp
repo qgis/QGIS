@@ -165,11 +165,20 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle con
   return outputBlock.release();
 }
 
-void QgsBrightnessContrastFilter::setBrightness( int brightness ) { mBrightness = std::clamp( brightness, -255, 255 ); }
+void QgsBrightnessContrastFilter::setBrightness( int brightness )
+{
+  mBrightness = std::clamp( brightness, -255, 255 );
+}
 
-void QgsBrightnessContrastFilter::setContrast( int contrast ) { mContrast = std::clamp( contrast, -100, 100 ); }
+void QgsBrightnessContrastFilter::setContrast( int contrast )
+{
+  mContrast = std::clamp( contrast, -100, 100 );
+}
 
-void QgsBrightnessContrastFilter::setGamma( double gamma ) { mGamma = std::clamp( gamma, 0.1, 10.0 ); }
+void QgsBrightnessContrastFilter::setGamma( double gamma )
+{
+  mGamma = std::clamp( gamma, 0.1, 10.0 );
+}
 
 int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor, double gammaCorrection ) const
 {

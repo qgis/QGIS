@@ -65,7 +65,10 @@ QgsMultiBandColorRenderer *QgsMultiBandColorRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsMultiBandColorRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsMultiBandColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement *ce )
 {
@@ -75,7 +78,10 @@ void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancemen
   mRedContrastEnhancement.reset( ce );
 }
 
-const QgsContrastEnhancement *QgsMultiBandColorRenderer::greenContrastEnhancement() const { return mGreenContrastEnhancement.get(); }
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::greenContrastEnhancement() const
+{
+  return mGreenContrastEnhancement.get();
+}
 
 void QgsMultiBandColorRenderer::setGreenContrastEnhancement( QgsContrastEnhancement *ce )
 {
@@ -85,7 +91,10 @@ void QgsMultiBandColorRenderer::setGreenContrastEnhancement( QgsContrastEnhancem
   mGreenContrastEnhancement.reset( ce );
 }
 
-const QgsContrastEnhancement *QgsMultiBandColorRenderer::blueContrastEnhancement() const { return mBlueContrastEnhancement.get(); }
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::blueContrastEnhancement() const
+{
+  return mBlueContrastEnhancement.get();
+}
 
 void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhancement *ce )
 {
@@ -394,7 +403,10 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle const
   return outputBlock.release();
 }
 
-const QgsContrastEnhancement *QgsMultiBandColorRenderer::redContrastEnhancement() const { return mRedContrastEnhancement.get(); }
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::redContrastEnhancement() const
+{
+  return mRedContrastEnhancement.get();
+}
 
 void QgsMultiBandColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {

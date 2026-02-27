@@ -547,10 +547,22 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
   return finalUri.encodedUri();
 }
 
-Qgis::TiledSceneProviderCapabilities QgsQuantizedMeshDataProvider::capabilities() const { return Qgis::TiledSceneProviderCapabilities(); }
-QgsTiledSceneDataProvider *QgsQuantizedMeshDataProvider::clone() const { return new QgsQuantizedMeshDataProvider( mUri, mProviderOptions ); }
-const QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::sceneCrs() const { return mMetadata->mCrs; }
-const QgsTiledSceneBoundingVolume &QgsQuantizedMeshDataProvider::boundingVolume() const { return mMetadata->mBoundingVolume; }
+Qgis::TiledSceneProviderCapabilities QgsQuantizedMeshDataProvider::capabilities() const
+{
+  return Qgis::TiledSceneProviderCapabilities();
+}
+QgsTiledSceneDataProvider *QgsQuantizedMeshDataProvider::clone() const
+{
+  return new QgsQuantizedMeshDataProvider( mUri, mProviderOptions );
+}
+const QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::sceneCrs() const
+{
+  return mMetadata->mCrs;
+}
+const QgsTiledSceneBoundingVolume &QgsQuantizedMeshDataProvider::boundingVolume() const
+{
+  return mMetadata->mBoundingVolume;
+}
 
 QgsTiledSceneIndex QgsQuantizedMeshDataProvider::index() const
 {
@@ -560,14 +572,35 @@ QgsTiledSceneIndex QgsQuantizedMeshDataProvider::index() const
   return *mIndex;
 }
 
-QgsDoubleRange QgsQuantizedMeshDataProvider::zRange() const { return mMetadata->dummyZRange; }
-QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::crs() const { return mMetadata->mCrs; }
-QgsRectangle QgsQuantizedMeshDataProvider::extent() const { return mMetadata->mExtent; }
-bool QgsQuantizedMeshDataProvider::isValid() const { return mIsValid; }
-QString QgsQuantizedMeshDataProvider::name() const { return providerName; }
-QString QgsQuantizedMeshDataProvider::description() const { return providerDescription; }
+QgsDoubleRange QgsQuantizedMeshDataProvider::zRange() const
+{
+  return mMetadata->dummyZRange;
+}
+QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::crs() const
+{
+  return mMetadata->mCrs;
+}
+QgsRectangle QgsQuantizedMeshDataProvider::extent() const
+{
+  return mMetadata->mExtent;
+}
+bool QgsQuantizedMeshDataProvider::isValid() const
+{
+  return mIsValid;
+}
+QString QgsQuantizedMeshDataProvider::name() const
+{
+  return providerName;
+}
+QString QgsQuantizedMeshDataProvider::description() const
+{
+  return providerDescription;
+}
 
-const QgsQuantizedMeshMetadata &QgsQuantizedMeshDataProvider::quantizedMeshMetadata() const { return *mMetadata; }
+const QgsQuantizedMeshMetadata &QgsQuantizedMeshDataProvider::quantizedMeshMetadata() const
+{
+  return *mMetadata;
+}
 
 QgsQuantizedMeshProviderMetadata::QgsQuantizedMeshProviderMetadata()
   : QgsProviderMetadata( QgsQuantizedMeshDataProvider::providerName, QgsQuantizedMeshDataProvider::providerDescription )

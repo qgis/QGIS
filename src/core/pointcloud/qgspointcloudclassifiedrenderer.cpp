@@ -49,7 +49,10 @@ QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer( const QString 
   , mCategories( categories )
 {}
 
-QString QgsPointCloudClassifiedRenderer::type() const { return u"classified"_s; }
+QString QgsPointCloudClassifiedRenderer::type() const
+{
+  return u"classified"_s;
+}
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 {
@@ -323,15 +326,30 @@ void QgsPointCloudClassifiedRenderer::checkLegendItem( const QString &key, bool 
   }
 }
 
-QString QgsPointCloudClassifiedRenderer::attribute() const { return mAttribute; }
+QString QgsPointCloudClassifiedRenderer::attribute() const
+{
+  return mAttribute;
+}
 
-void QgsPointCloudClassifiedRenderer::setAttribute( const QString &attribute ) { mAttribute = attribute; }
+void QgsPointCloudClassifiedRenderer::setAttribute( const QString &attribute )
+{
+  mAttribute = attribute;
+}
 
-QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::categories() const { return mCategories; }
+QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::categories() const
+{
+  return mCategories;
+}
 
-void QgsPointCloudClassifiedRenderer::setCategories( const QgsPointCloudCategoryList &categories ) { mCategories = categories; }
+void QgsPointCloudClassifiedRenderer::setCategories( const QgsPointCloudCategoryList &categories )
+{
+  mCategories = categories;
+}
 
-void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &category ) { mCategories.append( category ); }
+void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &category )
+{
+  mCategories.append( category );
+}
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRenderer::prepare()
 {
@@ -349,7 +367,10 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRender
   return data;
 }
 
-QSet<QString> QgsPointCloudClassifiedRendererPreparedData::usedAttributes() const { return { attributeName }; }
+QSet<QString> QgsPointCloudClassifiedRendererPreparedData::usedAttributes() const
+{
+  return { attributeName };
+}
 
 bool QgsPointCloudClassifiedRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
 {

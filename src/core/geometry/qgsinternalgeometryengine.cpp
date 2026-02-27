@@ -46,7 +46,10 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometr
   : mGeometry( geometry.constGet() )
 {}
 
-QString QgsInternalGeometryEngine::lastError() const { return mLastError; }
+QString QgsInternalGeometryEngine::lastError() const
+{
+  return mLastError;
+}
 
 
 enum class Direction
@@ -334,7 +337,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
   std::unique_ptr< Cell > bestCell( getCentroidCell( polygon ) );
 
   // special case for rectangular polygons
-  std::unique_ptr< Cell > bboxCell( new Cell( bounds.xMinimum() + bounds.width() / 2.0, bounds.yMinimum() + bounds.height() / 2.0, 0, polygon ) );
+  auto bboxCell = std::make_unique<Cell>( bounds.xMinimum() + bounds.width() / 2.0, bounds.yMinimum() + bounds.height() / 2.0, 0, polygon );
   if ( bboxCell->d > bestCell->d )
   {
     bestCell = std::move( bboxCell );
@@ -432,7 +435,10 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 // helpers for orthogonalize
 // adapted from original code in potlatch/id osm editor
 
-bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold ) { return lowerThreshold > std::fabs( dotProduct ) || std::fabs( dotProduct ) > upperThreshold; }
+bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
+{
+  return lowerThreshold > std::fabs( dotProduct ) || std::fabs( dotProduct ) > upperThreshold;
+}
 
 double normalizedDotProduct( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c )
 {
@@ -1913,8 +1919,13 @@ std::unique_ptr< QgsLineString > triangularWavesAlongLine( const QgsLineString *
 }
 
 std::unique_ptr< QgsLineString > triangularWavesRandomizedAlongLine(
-  const QgsLineString *line, const double minimumWavelength, const double maximumWavelength, const double minimumAmplitude, const double maximumAmplitude,
-  std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt
+  const QgsLineString *line,
+  const double minimumWavelength,
+  const double maximumWavelength,
+  const double minimumAmplitude,
+  const double maximumAmplitude,
+  std::uniform_real_distribution<> &uniformDist,
+  std::mt19937 &mt
 )
 {
   const int totalPoints = line->numPoints();
@@ -2204,8 +2215,13 @@ std::unique_ptr< QgsLineString > squareWavesAlongLine( const QgsLineString *line
 }
 
 std::unique_ptr< QgsLineString > squareWavesRandomizedAlongLine(
-  const QgsLineString *line, const double minimumWavelength, const double maximumWavelength, const double minimumAmplitude, const double maximumAmplitude,
-  std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt
+  const QgsLineString *line,
+  const double minimumWavelength,
+  const double maximumWavelength,
+  const double minimumAmplitude,
+  const double maximumAmplitude,
+  std::uniform_real_distribution<> &uniformDist,
+  std::mt19937 &mt
 )
 {
   const int totalPoints = line->numPoints();
@@ -2547,8 +2563,13 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
 }
 
 std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine(
-  const QgsLineString *line, const double minimumWavelength, const double maximumWavelength, const double minimumAmplitude, const double maximumAmplitude,
-  std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt
+  const QgsLineString *line,
+  const double minimumWavelength,
+  const double maximumWavelength,
+  const double minimumAmplitude,
+  const double maximumAmplitude,
+  std::uniform_real_distribution<> &uniformDist,
+  std::mt19937 &mt
 )
 {
   const int totalPoints = line->numPoints();
@@ -2830,8 +2851,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavel
 }
 
 std::unique_ptr< QgsMultiLineString > dashPatternAlongLine(
-  const QgsLineString *line, const QVector< double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment,
-  double patternOffset
+  const QgsLineString *line, const QVector< double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment, double patternOffset
 )
 {
   const int totalPoints = line->numPoints();
@@ -3062,8 +3082,7 @@ std::unique_ptr< QgsMultiLineString > dashPatternAlongLine(
 }
 
 std::unique_ptr< QgsAbstractGeometry > applyDashPatternPrivate(
-  const QgsAbstractGeometry *geom, const QVector<double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment,
-  double patternOffset
+  const QgsAbstractGeometry *geom, const QVector<double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment, double patternOffset
 )
 {
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;

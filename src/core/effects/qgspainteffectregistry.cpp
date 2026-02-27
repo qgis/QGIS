@@ -46,7 +46,10 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
   addEffectType( new QgsPaintEffectMetadata( u"color"_s, QObject::tr( "Colorise" ), QgsColorEffect::create, nullptr ) );
 }
 
-QgsPaintEffectRegistry::~QgsPaintEffectRegistry() { qDeleteAll( mMetadata ); }
+QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
+{
+  qDeleteAll( mMetadata );
+}
 
 QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QString &name ) const
 {

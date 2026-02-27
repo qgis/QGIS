@@ -52,9 +52,15 @@ void QgsVectorLayerUndoPassthroughCommand::setError()
   }
 }
 
-void QgsVectorLayerUndoPassthroughCommand::setErrorMessage( const QString &errorMessage ) { mError = errorMessage; }
+void QgsVectorLayerUndoPassthroughCommand::setErrorMessage( const QString &errorMessage )
+{
+  mError = errorMessage;
+}
 
-QString QgsVectorLayerUndoPassthroughCommand::errorMessage() const { return mError; }
+QString QgsVectorLayerUndoPassthroughCommand::errorMessage() const
+{
+  return mError;
+}
 
 bool QgsVectorLayerUndoPassthroughCommand::setSavePoint( const QString &savePointId )
 {

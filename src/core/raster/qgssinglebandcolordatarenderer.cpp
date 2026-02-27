@@ -41,7 +41,10 @@ QgsSingleBandColorDataRenderer *QgsSingleBandColorDataRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsSingleBandColorDataRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsSingleBandColorDataRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
 QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -142,7 +145,10 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
   return false;
 }
 
-int QgsSingleBandColorDataRenderer::inputBand() const { return mBand; }
+int QgsSingleBandColorDataRenderer::inputBand() const
+{
+  return mBand;
+}
 
 bool QgsSingleBandColorDataRenderer::setInputBand( int band )
 {

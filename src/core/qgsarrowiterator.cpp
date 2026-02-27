@@ -46,13 +46,21 @@ using namespace Qt::StringLiterals;
   } while ( 0 )
 
 
-QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions() {}
+QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions()
+{}
 
-void QgsArrowInferSchemaOptions::setGeometryColumnName( const QString &geometryColumnName ) { mGeometryColumnName = geometryColumnName; }
+void QgsArrowInferSchemaOptions::setGeometryColumnName( const QString &geometryColumnName )
+{
+  mGeometryColumnName = geometryColumnName;
+}
 
-QString QgsArrowInferSchemaOptions::geometryColumnName() const { return mGeometryColumnName; }
+QString QgsArrowInferSchemaOptions::geometryColumnName() const
+{
+  return mGeometryColumnName;
+}
 
-QgsArrowSchema::QgsArrowSchema() {}
+QgsArrowSchema::QgsArrowSchema()
+{}
 
 QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
 {
@@ -79,9 +87,15 @@ QgsArrowSchema::~QgsArrowSchema()
   }
 }
 
-struct ArrowSchema *QgsArrowSchema::schema() { return &mSchema; }
+struct ArrowSchema *QgsArrowSchema::schema()
+{
+  return &mSchema;
+}
 
-const struct ArrowSchema *QgsArrowSchema::schema() const { return &mSchema; }
+const struct ArrowSchema *QgsArrowSchema::schema() const
+{
+  return &mSchema;
+}
 
 unsigned long long QgsArrowSchema::cSchemaAddress() const
 {
@@ -100,11 +114,20 @@ void QgsArrowSchema::exportToAddress( unsigned long long otherAddress )
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &mSchema, otherArrowSchema ) );
 }
 
-bool QgsArrowSchema::isValid() const { return mSchema.release; }
+bool QgsArrowSchema::isValid() const
+{
+  return mSchema.release;
+}
 
-int QgsArrowSchema::geometryColumnIndex() const { return mGeometryColumnIndex; }
+int QgsArrowSchema::geometryColumnIndex() const
+{
+  return mGeometryColumnIndex;
+}
 
-void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex ) { mGeometryColumnIndex = geometryColumnIndex; }
+void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex )
+{
+  mGeometryColumnIndex = geometryColumnIndex;
+}
 
 QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
 {
@@ -134,9 +157,15 @@ QgsArrowArray::~QgsArrowArray()
   }
 }
 
-struct ArrowArray *QgsArrowArray::array() { return &mArray; }
+struct ArrowArray *QgsArrowArray::array()
+{
+  return &mArray;
+}
 
-const struct ArrowArray *QgsArrowArray::array() const { return &mArray; }
+const struct ArrowArray *QgsArrowArray::array() const
+{
+  return &mArray;
+}
 
 unsigned long long QgsArrowArray::cArrayAddress() const
 {
@@ -155,7 +184,10 @@ void QgsArrowArray::exportToAddress( unsigned long long otherAddress )
   ArrowArrayMove( &mArray, otherArrowArray );
 }
 
-bool QgsArrowArray::isValid() const { return mArray.release; }
+bool QgsArrowArray::isValid() const
+{
+  return mArray.release;
+}
 
 QgsArrowArrayStream::QgsArrowArrayStream( QgsArrowArrayStream &&other )
 {
@@ -185,7 +217,10 @@ QgsArrowArrayStream::~QgsArrowArrayStream()
   }
 }
 
-struct ArrowArrayStream *QgsArrowArrayStream::arrayStream() { return &mArrayStream; }
+struct ArrowArrayStream *QgsArrowArrayStream::arrayStream()
+{
+  return &mArrayStream;
+}
 
 unsigned long long QgsArrowArrayStream::cArrayStreamAddress() const
 {
@@ -204,7 +239,10 @@ void QgsArrowArrayStream::exportToAddress( unsigned long long otherAddress )
   ArrowArrayStreamMove( &mArrayStream, otherArrowArrayStream );
 }
 
-bool QgsArrowArrayStream::isValid() const { return mArrayStream.release; }
+bool QgsArrowArrayStream::isValid() const
+{
+  return mArrayStream.release;
+}
 
 namespace
 {
@@ -561,7 +599,10 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
   : mFeatureIterator( featureIterator )
 {}
 
-struct ArrowSchema *QgsArrowIterator::schema() { return mSchema.schema(); }
+struct ArrowSchema *QgsArrowIterator::schema()
+{
+  return mSchema.schema();
+}
 
 void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
 {

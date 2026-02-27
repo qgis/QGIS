@@ -253,7 +253,10 @@ QgsSymbolList QgsRuleBasedRenderer::Rule::symbols( const QgsRenderContext &conte
   return lst;
 }
 
-void QgsRuleBasedRenderer::Rule::setSymbol( QgsSymbol *sym ) { mSymbol.reset( sym ); }
+void QgsRuleBasedRenderer::Rule::setSymbol( QgsSymbol *sym )
+{
+  mSymbol.reset( sym );
+}
 
 void QgsRuleBasedRenderer::Rule::setFilterExpression( const QString &filterExp )
 {
@@ -540,7 +543,10 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
   return true;
 }
 
-bool QgsRuleBasedRenderer::Rule::hasActiveChildren() const { return !mActiveChildren.empty(); }
+bool QgsRuleBasedRenderer::Rule::hasActiveChildren() const
+{
+  return !mActiveChildren.empty();
+}
 
 QSet<int> QgsRuleBasedRenderer::Rule::collectZLevels()
 {
@@ -978,7 +984,10 @@ QgsRuleBasedRenderer::QgsRuleBasedRenderer( QgsSymbol *defaultSymbol )
   mRootRule->appendChild( new Rule( defaultSymbol ) );
 }
 
-QgsRuleBasedRenderer::~QgsRuleBasedRenderer() { delete mRootRule; }
+QgsRuleBasedRenderer::~QgsRuleBasedRenderer()
+{
+  delete mRootRule;
+}
 
 
 QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
@@ -1050,7 +1059,10 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   mRootRule->setNormZLevels( zLevelsToNormLevels );
 }
 
-bool QgsRuleBasedRenderer::canSkipRender() { return !mRootRule->hasActiveChildren(); }
+bool QgsRuleBasedRenderer::canSkipRender()
+{
+  return !mRootRule->hasActiveChildren();
+}
 
 void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
 {
@@ -1100,11 +1112,20 @@ void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
   mRootRule->stopRender( context );
 }
 
-QString QgsRuleBasedRenderer::filter( const QgsFields & ) { return mFilter; }
+QString QgsRuleBasedRenderer::filter( const QgsFields & )
+{
+  return mFilter;
+}
 
-QSet<QString> QgsRuleBasedRenderer::usedAttributes( const QgsRenderContext &context ) const { return mRootRule->usedAttributes( context ); }
+QSet<QString> QgsRuleBasedRenderer::usedAttributes( const QgsRenderContext &context ) const
+{
+  return mRootRule->usedAttributes( context );
+}
 
-bool QgsRuleBasedRenderer::filterNeedsGeometry() const { return mRootRule->needsGeometry(); }
+bool QgsRuleBasedRenderer::filterNeedsGeometry() const
+{
+  return mRootRule->needsGeometry();
+}
 
 QgsRuleBasedRenderer *QgsRuleBasedRenderer::clone() const
 {
@@ -1132,10 +1153,16 @@ void QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, const
   toSld( doc, element, context );
 }
 
-bool QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const { return mRootRule->toSld( doc, element, context ); }
+bool QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return mRootRule->toSld( doc, element, context );
+}
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
-QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context ) const { return mRootRule->symbols( context ); }
+QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context ) const
+{
+  return mRootRule->symbols( context );
+}
 
 QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
@@ -1156,7 +1183,10 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
   return rendererElem;
 }
 
-bool QgsRuleBasedRenderer::legendSymbolItemsCheckable() const { return true; }
+bool QgsRuleBasedRenderer::legendSymbolItemsCheckable() const
+{
+  return true;
+}
 
 bool QgsRuleBasedRenderer::legendSymbolItemChecked( const QString &key )
 {
@@ -1249,7 +1279,10 @@ void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *s
     delete symbol;
 }
 
-QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems() const { return mRootRule->legendSymbolItems(); }
+QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems() const
+{
+  return mRootRule->legendSymbolItems();
+}
 
 
 QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
@@ -1399,15 +1432,30 @@ QString QgsRuleBasedRenderer::dump() const
   return msg;
 }
 
-bool QgsRuleBasedRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return mRootRule->willRenderFeature( feature, &context ); }
+bool QgsRuleBasedRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return mRootRule->willRenderFeature( feature, &context );
+}
 
-QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return mRootRule->symbolsForFeature( feature, &context ); }
+QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return mRootRule->symbolsForFeature( feature, &context );
+}
 
-QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return mRootRule->symbolsForFeature( feature, &context ); }
+QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return mRootRule->symbolsForFeature( feature, &context );
+}
 
-QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return mRootRule->legendKeysForFeature( feature, &context ); }
+QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  return mRootRule->legendKeysForFeature( feature, &context );
+}
 
-bool QgsRuleBasedRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const { return mRootRule->accept( visitor ); }
+bool QgsRuleBasedRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  return mRootRule->accept( visitor );
+}
 
 QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer )
 {

@@ -910,9 +910,15 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesData
   mShared = other.mShared;
 }
 
-Qgis::DataProviderFlags QgsCesiumTilesDataProvider::flags() const { return mProviderFlags; }
+Qgis::DataProviderFlags QgsCesiumTilesDataProvider::flags() const
+{
+  return mProviderFlags;
+}
 
-Qgis::TiledSceneProviderCapabilities QgsCesiumTilesDataProvider::capabilities() const { return Qgis::TiledSceneProviderCapability::ReadLayerMetadata; }
+Qgis::TiledSceneProviderCapabilities QgsCesiumTilesDataProvider::capabilities() const
+{
+  return Qgis::TiledSceneProviderCapability::ReadLayerMetadata;
+}
 
 QgsCesiumTilesDataProvider::~QgsCesiumTilesDataProvider() = default;
 
@@ -1268,7 +1274,10 @@ QgsCesiumTilesProviderMetadata::QgsCesiumTilesProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsCesiumTilesProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconCesium3dTiles.svg"_s ); }
+QIcon QgsCesiumTilesProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconCesium3dTiles.svg"_s );
+}
 
 QgsCesiumTilesDataProvider *QgsCesiumTilesProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -1338,9 +1347,15 @@ QString QgsCesiumTilesProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsCesiumTilesProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsCesiumTilesProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QList<Qgis::LayerType> QgsCesiumTilesProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::TiledScene }; }
+QList<Qgis::LayerType> QgsCesiumTilesProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::TiledScene };
+}
 
 QString QgsCesiumTilesProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {

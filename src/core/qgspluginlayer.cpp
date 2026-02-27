@@ -33,7 +33,10 @@ QgsPluginLayer::~QgsPluginLayer()
   delete mDataProvider;
 }
 
-QString QgsPluginLayer::pluginLayerType() const { return mPluginLayerType; }
+QString QgsPluginLayer::pluginLayerType() const
+{
+  return mPluginLayerType;
+}
 
 void QgsPluginLayer::setExtent( const QgsRectangle &extent )
 {
@@ -41,13 +44,25 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   static_cast<QgsPluginLayerDataProvider *>( mDataProvider )->setExtent( extent );
 }
 
-void QgsPluginLayer::setSource( const QString &source ) { mDataSource = source; }
+void QgsPluginLayer::setSource( const QString &source )
+{
+  mDataSource = source;
+}
 
-QgsDataProvider *QgsPluginLayer::dataProvider() { return mDataProvider; }
+QgsDataProvider *QgsPluginLayer::dataProvider()
+{
+  return mDataProvider;
+}
 
-const QgsDataProvider *QgsPluginLayer::dataProvider() const { return mDataProvider; }
+const QgsDataProvider *QgsPluginLayer::dataProvider() const
+{
+  return mDataProvider;
+}
 
-QIcon QgsPluginLayer::icon() const { return QgsIconUtils::iconForLayerType( Qgis::LayerType::Plugin ); }
+QIcon QgsPluginLayer::icon() const
+{
+  return QgsIconUtils::iconForLayerType( Qgis::LayerType::Plugin );
+}
 
 //
 // QgsPluginLayerDataProvider
@@ -58,13 +73,28 @@ QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType
   , mName( layerType )
 {}
 
-QgsCoordinateReferenceSystem QgsPluginLayerDataProvider::crs() const { return QgsCoordinateReferenceSystem(); }
+QgsCoordinateReferenceSystem QgsPluginLayerDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
 
-QString QgsPluginLayerDataProvider::name() const { return mName; }
+QString QgsPluginLayerDataProvider::name() const
+{
+  return mName;
+}
 
-QString QgsPluginLayerDataProvider::description() const { return QString(); }
+QString QgsPluginLayerDataProvider::description() const
+{
+  return QString();
+}
 
-QgsRectangle QgsPluginLayerDataProvider::extent() const { return mExtent; }
+QgsRectangle QgsPluginLayerDataProvider::extent() const
+{
+  return mExtent;
+}
 
-bool QgsPluginLayerDataProvider::isValid() const { return true; }
+bool QgsPluginLayerDataProvider::isValid() const
+{
+  return true;
+}
 ///@endcond

@@ -55,9 +55,15 @@ QgsTask::~QgsTask()
   mNotStartedMutex.release();
 }
 
-void QgsTask::setDescription( const QString &description ) { mDescription = description; }
+void QgsTask::setDescription( const QString &description )
+{
+  mDescription = description;
+}
 
-qint64 QgsTask::elapsedTime() const { return mElapsedTime.elapsed(); }
+qint64 QgsTask::elapsedTime() const
+{
+  return mElapsedTime.elapsed();
+}
 
 void QgsTask::start()
 {
@@ -160,7 +166,10 @@ void QgsTask::addSubTask( QgsTask *subTask, const QgsTaskList &dependencies, Sub
   connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
 }
 
-QList<QgsMapLayer *> QgsTask::dependentLayers() const { return _qgis_listQPointerToRaw( mDependentLayers ); }
+QList<QgsMapLayer *> QgsTask::dependentLayers() const
+{
+  return _qgis_listQPointerToRaw( mDependentLayers );
+}
 
 bool QgsTask::waitForFinished( int timeout )
 {
@@ -191,7 +200,10 @@ bool QgsTask::waitForFinished( int timeout )
   return rv;
 }
 
-void QgsTask::setDependentLayers( const QList< QgsMapLayer * > &dependentLayers ) { mDependentLayers = _qgis_listRawToQPointer( dependentLayers ); }
+void QgsTask::setDependentLayers( const QList< QgsMapLayer * > &dependentLayers )
+{
+  mDependentLayers = _qgis_listRawToQPointer( dependentLayers );
+}
 
 void QgsTask::subTaskStatusChanged( int status )
 {
@@ -404,11 +416,20 @@ QgsTaskManager::~QgsTaskManager()
   mThreadPool->waitForDone();
 }
 
-QThreadPool *QgsTaskManager::threadPool() { return mThreadPool; }
+QThreadPool *QgsTaskManager::threadPool()
+{
+  return mThreadPool;
+}
 
-long QgsTaskManager::addTask( QgsTask *task, int priority ) { return addTaskPrivate( task, QgsTaskList(), false, priority ); }
+long QgsTaskManager::addTask( QgsTask *task, int priority )
+{
+  return addTaskPrivate( task, QgsTaskList(), false, priority );
+}
 
-long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, int priority ) { return addTaskPrivate( definition.task, definition.dependentTasks, false, priority ); }
+long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, int priority )
+{
+  return addTaskPrivate( definition.task, definition.dependentTasks, false, priority );
+}
 
 
 long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bool isSubTask, int priority )
@@ -422,8 +443,10 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
     // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
     // cos that forces early creation of QgsProject
     connect(
-      QgsProject::instance(), static_cast< void ( QgsProject::* )( const QList< QgsMapLayer * > & ) >( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
-      this, &QgsTaskManager::layersWillBeRemoved
+      QgsProject::instance(),
+      static_cast< void ( QgsProject::* )( const QList< QgsMapLayer * > & ) >( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
+      this,
+      &QgsTaskManager::layersWillBeRemoved
     );
   }
 
@@ -919,7 +942,10 @@ QgsTaskWithSerialSubTasks::~QgsTaskWithSerialSubTasks()
   }
 }
 
-void QgsTaskWithSerialSubTasks::addSubTask( QgsTask *subTask ) { mSubTasksSerial << subTask; }
+void QgsTaskWithSerialSubTasks::addSubTask( QgsTask *subTask )
+{
+  mSubTasksSerial << subTask;
+}
 
 bool QgsTaskWithSerialSubTasks::run()
 {

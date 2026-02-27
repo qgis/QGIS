@@ -472,9 +472,12 @@ static QgsOrientedBox3D parseBox( const json &box )
     json quaternion = box["quaternion"]; // order is x, y, z, w
 
     return QgsOrientedBox3D(
-      QgsVector3D( center[0].get<double>(), center[1].get<double>(), center[2].get<double>() ), QgsVector3D( halfSize[0].get<double>(), halfSize[1].get<double>(), halfSize[2].get<double>() ),
+      QgsVector3D( center[0].get<double>(), center[1].get<double>(), center[2].get<double>() ),
+      QgsVector3D( halfSize[0].get<double>(), halfSize[1].get<double>(), halfSize[2].get<double>() ),
       QQuaternion(
-        static_cast<float>( quaternion[3].get<double>() ), static_cast<float>( quaternion[0].get<double>() ), static_cast<float>( quaternion[1].get<double>() ),
+        static_cast<float>( quaternion[3].get<double>() ),
+        static_cast<float>( quaternion[0].get<double>() ),
+        static_cast<float>( quaternion[1].get<double>() ),
         static_cast<float>( quaternion[2].get<double>() )
       )
     );
@@ -906,9 +909,15 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QgsEsriI3SDataProvider &ot
 
 QgsEsriI3SDataProvider::~QgsEsriI3SDataProvider() = default;
 
-Qgis::DataProviderFlags QgsEsriI3SDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsEsriI3SDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
-Qgis::TiledSceneProviderCapabilities QgsEsriI3SDataProvider::capabilities() const { return Qgis::TiledSceneProviderCapabilities(); }
+Qgis::TiledSceneProviderCapabilities QgsEsriI3SDataProvider::capabilities() const
+{
+  return Qgis::TiledSceneProviderCapabilities();
+}
 
 QgsEsriI3SDataProvider *QgsEsriI3SDataProvider::clone() const
 {
@@ -1053,7 +1062,10 @@ QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata()
   : QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsEsriI3SProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconEsriI3s.svg"_s ); }
+QIcon QgsEsriI3SProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconEsriI3s.svg"_s );
+}
 
 QgsEsriI3SDataProvider *QgsEsriI3SProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -1144,11 +1156,20 @@ QString QgsEsriI3SProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsEsriI3SProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsEsriI3SProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QList<Qgis::LayerType> QgsEsriI3SProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::TiledScene }; }
+QList<Qgis::LayerType> QgsEsriI3SProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::TiledScene };
+}
 
-QgsProviderMetadata::ProviderMetadataCapabilities QgsEsriI3SProviderMetadata::capabilities() const { return ProviderMetadataCapability::PriorityForUri; }
+QgsProviderMetadata::ProviderMetadataCapabilities QgsEsriI3SProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::PriorityForUri;
+}
 
 int QgsEsriI3SProviderMetadata::priorityForUri( const QString &uri ) const
 {

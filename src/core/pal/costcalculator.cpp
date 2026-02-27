@@ -27,7 +27,10 @@
 
 using namespace pal;
 
-bool CostCalculator::candidateSortGrow( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 ) { return c1->cost() < c2->cost(); }
+bool CostCalculator::candidateSortGrow( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 )
+{
+  return c1->cost() < c2->cost();
+}
 
 void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle, Pal *pal )
 {
@@ -271,4 +274,7 @@ void CandidatePolygonRingDistanceCalculator::addRing( const pal::PointSet *ring 
   }
 }
 
-double CandidatePolygonRingDistanceCalculator::minimumDistance() const { return mMinDistance; }
+double CandidatePolygonRingDistanceCalculator::minimumDistance() const
+{
+  return mMinDistance;
+}

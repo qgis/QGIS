@@ -38,7 +38,10 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
     return Fail;
 }
 
-QString QgsSqlExpressionCompiler::result() { return mResult; }
+QString QgsSqlExpressionCompiler::result()
+{
+  return mResult;
+}
 
 bool QgsSqlExpressionCompiler::opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op )
 {
@@ -528,7 +531,10 @@ QString QgsSqlExpressionCompiler::castToReal( const QString &value ) const
   return QString();
 }
 
-QString QgsSqlExpressionCompiler::castToText( const QString &value ) const { return value; }
+QString QgsSqlExpressionCompiler::castToText( const QString &value ) const
+{
+  return value;
+}
 
 QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const
 {

@@ -25,33 +25,75 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLayerMetadata *QgsLayerMetadata::clone() const { return new QgsLayerMetadata( *this ); }
+QgsLayerMetadata *QgsLayerMetadata::clone() const
+{
+  return new QgsLayerMetadata( *this );
+}
 
-QString QgsLayerMetadata::fees() const { return mFees; }
+QString QgsLayerMetadata::fees() const
+{
+  return mFees;
+}
 
-void QgsLayerMetadata::setFees( const QString &fees ) { mFees = fees; }
+void QgsLayerMetadata::setFees( const QString &fees )
+{
+  mFees = fees;
+}
 
-void QgsLayerMetadata::addConstraint( const QgsLayerMetadata::Constraint &constraint ) { mConstraints << constraint; }
+void QgsLayerMetadata::addConstraint( const QgsLayerMetadata::Constraint &constraint )
+{
+  mConstraints << constraint;
+}
 
-QList<QgsLayerMetadata::Constraint> QgsLayerMetadata::constraints() const { return mConstraints; }
+QList<QgsLayerMetadata::Constraint> QgsLayerMetadata::constraints() const
+{
+  return mConstraints;
+}
 
-void QgsLayerMetadata::setConstraints( const QList<Constraint> &constraints ) { mConstraints = constraints; }
+void QgsLayerMetadata::setConstraints( const QList<Constraint> &constraints )
+{
+  mConstraints = constraints;
+}
 
-QStringList QgsLayerMetadata::rights() const { return mRights; }
+QStringList QgsLayerMetadata::rights() const
+{
+  return mRights;
+}
 
-void QgsLayerMetadata::setRights( const QStringList &rights ) { mRights = rights; }
+void QgsLayerMetadata::setRights( const QStringList &rights )
+{
+  mRights = rights;
+}
 
-QStringList QgsLayerMetadata::licenses() const { return mLicenses; }
+QStringList QgsLayerMetadata::licenses() const
+{
+  return mLicenses;
+}
 
-void QgsLayerMetadata::setLicenses( const QStringList &licenses ) { mLicenses = licenses; }
+void QgsLayerMetadata::setLicenses( const QStringList &licenses )
+{
+  mLicenses = licenses;
+}
 
-QString QgsLayerMetadata::encoding() const { return mEncoding; }
+QString QgsLayerMetadata::encoding() const
+{
+  return mEncoding;
+}
 
-void QgsLayerMetadata::setEncoding( const QString &encoding ) { mEncoding = encoding; }
+void QgsLayerMetadata::setEncoding( const QString &encoding )
+{
+  mEncoding = encoding;
+}
 
-QgsCoordinateReferenceSystem QgsLayerMetadata::crs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsLayerMetadata::crs() const
+{
+  return mCrs;
+}
 
-void QgsLayerMetadata::setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
+void QgsLayerMetadata::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+}
 
 void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
 {
@@ -349,21 +391,45 @@ void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )
   }
 }
 
-const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const { return mExtent; }
+const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const
+{
+  return mExtent;
+}
 
-QgsLayerMetadata::Extent &QgsLayerMetadata::extent() { return mExtent; }
+QgsLayerMetadata::Extent &QgsLayerMetadata::extent()
+{
+  return mExtent;
+}
 
-void QgsLayerMetadata::setExtent( const Extent &extent ) { mExtent = extent; }
+void QgsLayerMetadata::setExtent( const Extent &extent )
+{
+  mExtent = extent;
+}
 
-QList<QgsLayerMetadata::SpatialExtent> QgsLayerMetadata::Extent::spatialExtents() const { return mSpatialExtents; }
+QList<QgsLayerMetadata::SpatialExtent> QgsLayerMetadata::Extent::spatialExtents() const
+{
+  return mSpatialExtents;
+}
 
-void QgsLayerMetadata::Extent::setSpatialExtents( const QList<QgsLayerMetadata::SpatialExtent> &spatialExtents ) { mSpatialExtents = spatialExtents; }
+void QgsLayerMetadata::Extent::setSpatialExtents( const QList<QgsLayerMetadata::SpatialExtent> &spatialExtents )
+{
+  mSpatialExtents = spatialExtents;
+}
 
-QList<QgsDateTimeRange> QgsLayerMetadata::Extent::temporalExtents() const { return mTemporalExtents; }
+QList<QgsDateTimeRange> QgsLayerMetadata::Extent::temporalExtents() const
+{
+  return mTemporalExtents;
+}
 
-void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange> &temporalExtents ) { mTemporalExtents = temporalExtents; }
+void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange> &temporalExtents )
+{
+  mTemporalExtents = temporalExtents;
+}
 
-bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other ) const { return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents; }
+bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other ) const
+{
+  return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents;
+}
 
 bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other ) const
 {
@@ -441,6 +507,12 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
   return false;
 }
 
-bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const { return extentCrs == other.extentCrs && bounds == other.bounds; }
+bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const
+{
+  return extentCrs == other.extentCrs && bounds == other.bounds;
+}
 
-bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const { return type == other.type && constraint == other.constraint; }
+bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const
+{
+  return type == other.type && constraint == other.constraint;
+}

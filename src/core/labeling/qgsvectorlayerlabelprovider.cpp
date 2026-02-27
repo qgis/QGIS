@@ -67,8 +67,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 }
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider(
-  Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer,
-  const QString &layerName
+  Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName
 )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
@@ -109,7 +108,10 @@ void QgsVectorLayerLabelProvider::init()
 }
 
 
-QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider() { qDeleteAll( mLabels ); }
+QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
+{
+  qDeleteAll( mLabels );
+}
 
 
 bool QgsVectorLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
@@ -695,6 +697,12 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 }
 
-const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const { return mSettings; }
+const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const
+{
+  return mSettings;
+}
 
-void QgsVectorLayerLabelProvider::setFields( const QgsFields &fields ) { mFields = fields; }
+void QgsVectorLayerLabelProvider::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}

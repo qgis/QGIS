@@ -51,7 +51,10 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
   }
 }
 
-QgsLineSymbol *QgsPointCloudLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
+QgsLineSymbol *QgsPointCloudLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
 
 void QgsPointCloudLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -63,7 +66,10 @@ void QgsPointCloudLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol 
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsPointCloudLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
+QgsFillSymbol *QgsPointCloudLayerElevationProperties::profileFillSymbol() const
+{
+  return mProfileFillSymbol.get();
+}
 
 void QgsPointCloudLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -85,7 +91,10 @@ void QgsPointCloudLayerElevationProperties::setProfileSymbology( Qgis::ProfileSu
   emit profileRenderingPropertyChanged();
 }
 
-double QgsPointCloudLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
+double QgsPointCloudLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
 
 void QgsPointCloudLayerElevationProperties::setElevationLimit( double limit )
 {
@@ -112,7 +121,10 @@ void QgsPointCloudLayerElevationProperties::setDefaultProfileFillSymbol( const Q
 }
 
 
-bool QgsPointCloudLayerElevationProperties::hasElevation() const { return true; }
+bool QgsPointCloudLayerElevationProperties::hasElevation() const
+{
+  return true;
+}
 
 QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -279,7 +291,10 @@ QList<double> QgsPointCloudLayerElevationProperties::significantZValues( QgsMapL
     return {};
 }
 
-bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return true; }
+bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return true;
+}
 
 void QgsPointCloudLayerElevationProperties::setMaximumScreenError( double error )
 {
@@ -301,7 +316,10 @@ void QgsPointCloudLayerElevationProperties::setMaximumScreenErrorUnit( Qgis::Ren
   emit profileGenerationPropertyChanged();
 }
 
-Qgis::PointCloudSymbol QgsPointCloudLayerElevationProperties::pointSymbol() const { return mPointSymbol; }
+Qgis::PointCloudSymbol QgsPointCloudLayerElevationProperties::pointSymbol() const
+{
+  return mPointSymbol;
+}
 
 void QgsPointCloudLayerElevationProperties::setPointSymbol( Qgis::PointCloudSymbol symbol )
 {

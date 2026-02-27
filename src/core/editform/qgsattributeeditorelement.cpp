@@ -43,13 +43,25 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   return elem;
 }
 
-bool QgsAttributeEditorElement::showLabel() const { return mShowLabel; }
+bool QgsAttributeEditorElement::showLabel() const
+{
+  return mShowLabel;
+}
 
-void QgsAttributeEditorElement::setShowLabel( bool showLabel ) { mShowLabel = showLabel; }
+void QgsAttributeEditorElement::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
+}
 
-QgsAttributeEditorElement::LabelStyle QgsAttributeEditorElement::labelStyle() const { return mLabelStyle; }
+QgsAttributeEditorElement::LabelStyle QgsAttributeEditorElement::labelStyle() const
+{
+  return mLabelStyle;
+}
 
-void QgsAttributeEditorElement::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle ) { mLabelStyle = labelStyle; }
+void QgsAttributeEditorElement::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
+{
+  mLabelStyle = labelStyle;
+}
 
 QgsAttributeEditorElement *QgsAttributeEditorElement::create(
   const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent

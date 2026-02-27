@@ -36,9 +36,15 @@ QgsScaleBarRendererRegistry::QgsScaleBarRendererRegistry()
   addRenderer( new QgsHollowScaleBarRenderer() );
 }
 
-QgsScaleBarRendererRegistry::~QgsScaleBarRendererRegistry() { qDeleteAll( mRenderers ); }
+QgsScaleBarRendererRegistry::~QgsScaleBarRendererRegistry()
+{
+  qDeleteAll( mRenderers );
+}
 
-QStringList QgsScaleBarRendererRegistry::renderers() const { return mRenderers.keys(); }
+QStringList QgsScaleBarRendererRegistry::renderers() const
+{
+  return mRenderers.keys();
+}
 
 QStringList QgsScaleBarRendererRegistry::sortedRendererList() const
 {

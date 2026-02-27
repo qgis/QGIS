@@ -388,7 +388,15 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * \param uri The uri of the dataset
      */
     QgsMeshDatasetGroupMetadata(
-      const QString &name, const QString uri, bool isScalar, DataType dataType, double minimum, double maximum, int maximumVerticalLevels, const QDateTime &referenceTime, bool isTemporal,
+      const QString &name,
+      const QString uri,
+      bool isScalar,
+      DataType dataType,
+      double minimum,
+      double maximum,
+      int maximumVerticalLevels,
+      const QDateTime &referenceTime,
+      bool isTemporal,
       const QMap<QString, QString> &extraOptions
     );
 

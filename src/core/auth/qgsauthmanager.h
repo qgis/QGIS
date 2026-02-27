@@ -672,10 +672,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return map of sha1 <source, certificates>
      * \note not available in Python bindings
      */
-    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > caCertsCache() SIP_SKIP
-    {
-      return mCaCertsCache;
-    }
+    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > caCertsCache() SIP_SKIP { return mCaCertsCache; }
 
     //! Rebuild certificate authority cache
     bool rebuildCaCertsCache();
@@ -869,7 +866,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \see QgsMessageLog
      * \deprecated QGIS 3.40. Use passwordHelperMessageLog() instead.
      */
-    Q_DECL_DEPRECATED void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO )
+      SIP_DEPRECATED;
 
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions

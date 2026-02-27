@@ -92,7 +92,10 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier ) { return QgsSqliteUtils::quotedIdentifier( identifier ); }
+QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier )
+{
+  return QgsSqliteUtils::quotedIdentifier( identifier );
+}
 
 QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
@@ -103,8 +106,16 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &o
 QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
   static const QMap<QString, QString> FN_NAMES {
-    { "abs", "abs" },   { "char", "char" },   { "coalesce", "coalesce" }, { "lower", "lower" }, { "round", "round" },
-    { "trim", "trim" }, { "upper", "upper" }, { "make_datetime", "" },    { "make_date", "" },  { "make_time", "" },
+    { "abs", "abs" },
+    { "char", "char" },
+    { "coalesce", "coalesce" },
+    { "lower", "lower" },
+    { "round", "round" },
+    { "trim", "trim" },
+    { "upper", "upper" },
+    { "make_datetime", "" },
+    { "make_date", "" },
+    { "make_time", "" },
   };
 
   return FN_NAMES.value( fnName, QString() );
@@ -133,10 +144,19 @@ QStringList QgsSQLiteExpressionCompiler::sqlArgumentsFromFunctionName( const QSt
   return args;
 }
 
-QString QgsSQLiteExpressionCompiler::castToReal( const QString &value ) const { return u"CAST((%1) AS REAL)"_s.arg( value ); }
+QString QgsSQLiteExpressionCompiler::castToReal( const QString &value ) const
+{
+  return u"CAST((%1) AS REAL)"_s.arg( value );
+}
 
-QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const { return u"CAST((%1) AS INTEGER)"_s.arg( value ); }
+QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const
+{
+  return u"CAST((%1) AS INTEGER)"_s.arg( value );
+}
 
-QString QgsSQLiteExpressionCompiler::castToText( const QString &value ) const { return u"CAST((%1) AS TEXT)"_s.arg( value ); }
+QString QgsSQLiteExpressionCompiler::castToText( const QString &value ) const
+{
+  return u"CAST((%1) AS TEXT)"_s.arg( value );
+}
 
 ///@endcond

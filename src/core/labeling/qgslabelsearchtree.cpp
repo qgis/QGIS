@@ -73,8 +73,16 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
 }
 
 bool QgsLabelSearchTree::insertLabel(
-  pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId,
-  bool isUnplaced, long long linkedId
+  pal::LabelPosition *labelPos,
+  QgsFeatureId featureId,
+  const QString &layerName,
+  const QString &labeltext,
+  const QFont &labelfont,
+  bool diagram,
+  bool pinned,
+  const QString &providerId,
+  bool isUnplaced,
+  long long linkedId
 )
 {
   if ( !labelPos )
@@ -109,8 +117,21 @@ bool QgsLabelSearchTree::insertLabel(
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
   auto newEntry = std::make_unique< QgsLabelPosition >(
-    featureId, -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(), cornerPoints, bounds, labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont,
-    labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced
+    featureId,
+    -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(),
+    cornerPoints,
+    bounds,
+    labelPos->getWidth(),
+    labelPos->getHeight(),
+    layerName,
+    labeltext,
+    labelfont,
+    labelPos->getUpsideDown(),
+    diagram,
+    pinned,
+    providerId,
+    labelGeometry,
+    isUnplaced
   );
   newEntry->groupedLabelId = uniqueLinkedId;
   mSpatialIndex.insert( newEntry.get(), bounds );
@@ -158,7 +179,10 @@ QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const
   return searchResults;
 }
 
-QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const { return mLinkedLabelHash.value( groupId ); }
+QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const
+{
+  return mLinkedLabelHash.value( groupId );
+}
 
 void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
 {
@@ -179,4 +203,5 @@ void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
 }
 
 
-void QgsLabelSearchTree::clear() {}
+void QgsLabelSearchTree::clear()
+{}

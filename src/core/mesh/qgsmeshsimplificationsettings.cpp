@@ -21,13 +21,25 @@
 
 using namespace Qt::StringLiterals;
 
-bool QgsMeshSimplificationSettings::isEnabled() const { return mEnabled; }
+bool QgsMeshSimplificationSettings::isEnabled() const
+{
+  return mEnabled;
+}
 
-void QgsMeshSimplificationSettings::setEnabled( bool active ) { mEnabled = active; }
+void QgsMeshSimplificationSettings::setEnabled( bool active )
+{
+  mEnabled = active;
+}
 
-double QgsMeshSimplificationSettings::reductionFactor() const { return mReductionFactor; }
+double QgsMeshSimplificationSettings::reductionFactor() const
+{
+  return mReductionFactor;
+}
 
-void QgsMeshSimplificationSettings::setReductionFactor( double value ) { mReductionFactor = value; }
+void QgsMeshSimplificationSettings::setReductionFactor( double value )
+{
+  mReductionFactor = value;
+}
 
 QDomElement QgsMeshSimplificationSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -47,6 +59,12 @@ void QgsMeshSimplificationSettings::readXml( const QDomElement &elem, const QgsR
   mMeshResolution = elem.attribute( u"mesh-resolution"_s ).toInt();
 }
 
-int QgsMeshSimplificationSettings::meshResolution() const { return mMeshResolution; }
+int QgsMeshSimplificationSettings::meshResolution() const
+{
+  return mMeshResolution;
+}
 
-void QgsMeshSimplificationSettings::setMeshResolution( int meshResolution ) { mMeshResolution = meshResolution; }
+void QgsMeshSimplificationSettings::setMeshResolution( int meshResolution )
+{
+  mMeshResolution = meshResolution;
+}

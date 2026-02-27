@@ -38,7 +38,10 @@ using namespace Qt::StringLiterals;
 // QgsRasterLayerProfileResults
 //
 
-QString QgsRasterLayerProfileResults::type() const { return u"raster"_s; }
+QString QgsRasterLayerProfileResults::type() const
+{
+  return u"raster"_s;
+}
 
 QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
 {
@@ -84,11 +87,20 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   mFillSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
-QString QgsRasterLayerProfileGenerator::sourceId() const { return mId; }
+QString QgsRasterLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
-QString QgsRasterLayerProfileGenerator::type() const { return u"raster"_s; }
+QString QgsRasterLayerProfileGenerator::type() const
+{
+  return u"raster"_s;
+}
 
-Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const { return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit; }
+Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;
+}
 
 QgsRasterLayerProfileGenerator::~QgsRasterLayerProfileGenerator() = default;
 
@@ -359,6 +371,12 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   return true;
 }
 
-QgsAbstractProfileResults *QgsRasterLayerProfileGenerator::takeResults() { return mResults.release(); }
+QgsAbstractProfileResults *QgsRasterLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
+}
 
-QgsFeedback *QgsRasterLayerProfileGenerator::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsRasterLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}

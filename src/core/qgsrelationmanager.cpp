@@ -41,7 +41,10 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
   }
 }
 
-QgsRelationContext QgsRelationManager::context() const { return QgsRelationContext( mProject ); }
+QgsRelationContext QgsRelationManager::context() const
+{
+  return QgsRelationContext( mProject );
+}
 
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
 {
@@ -53,7 +56,10 @@ void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
   emit changed();
 }
 
-QMap<QString, QgsRelation> QgsRelationManager::relations() const { return mRelations; }
+QMap<QString, QgsRelation> QgsRelationManager::relations() const
+{
+  return mRelations;
+}
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
@@ -323,9 +329,15 @@ QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelatio
   return result;
 }
 
-QMap<QString, QgsPolymorphicRelation> QgsRelationManager::polymorphicRelations() const { return mPolymorphicRelations; }
+QMap<QString, QgsPolymorphicRelation> QgsRelationManager::polymorphicRelations() const
+{
+  return mPolymorphicRelations;
+}
 
-QgsPolymorphicRelation QgsRelationManager::polymorphicRelation( const QString &polymorphicRelationId ) const { return mPolymorphicRelations.value( polymorphicRelationId ); }
+QgsPolymorphicRelation QgsRelationManager::polymorphicRelation( const QString &polymorphicRelationId ) const
+{
+  return mPolymorphicRelations.value( polymorphicRelationId );
+}
 
 void QgsRelationManager::addPolymorphicRelation( const QgsPolymorphicRelation &polymorphicRelation )
 {

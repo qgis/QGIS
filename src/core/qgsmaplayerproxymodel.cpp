@@ -83,7 +83,10 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
   return false;
 }
 
-void QgsMapLayerProxyModel::setLayerWhitelist( const QList<QgsMapLayer *> &layers ) { setLayerAllowlist( layers ); }
+void QgsMapLayerProxyModel::setLayerWhitelist( const QList<QgsMapLayer *> &layers )
+{
+  setLayerAllowlist( layers );
+}
 
 void QgsMapLayerProxyModel::setLayerAllowlist( const QList<QgsMapLayer *> &layers )
 {
@@ -103,7 +106,10 @@ void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer *> &ex
   invalidateFilter();
 }
 
-void QgsMapLayerProxyModel::setProject( QgsProject *project ) { mModel->setProject( project ); }
+void QgsMapLayerProxyModel::setProject( QgsProject *project )
+{
+  mModel->setProject( project );
+}
 
 void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
 {

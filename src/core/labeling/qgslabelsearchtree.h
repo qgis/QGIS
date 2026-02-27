@@ -90,8 +90,16 @@ class CORE_EXPORT QgsLabelSearchTree
      * \note not available in Python bindings
      */
     bool insertLabel(
-      pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false,
-      const QString &providerId = QString(), bool isUnplaced = false, long long linkedId = 0
+      pal::LabelPosition *labelPos,
+      QgsFeatureId featureId,
+      const QString &layerName,
+      const QString &labeltext,
+      const QFont &labelfont,
+      bool diagram = false,
+      bool pinned = false,
+      const QString &providerId = QString(),
+      bool isUnplaced = false,
+      long long linkedId = 0
     ) SIP_SKIP;
 
     /**

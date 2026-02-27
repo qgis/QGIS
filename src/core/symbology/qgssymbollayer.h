@@ -1111,7 +1111,14 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param heightMapUnitScale map unit scale for marker height
      */
     void markerOffset(
-      QgsSymbolRenderContext &context, double width, double height, Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit, double &offsetX, double &offsetY, const QgsMapUnitScale &widthMapUnitScale,
+      QgsSymbolRenderContext &context,
+      double width,
+      double height,
+      Qgis::RenderUnit widthUnit,
+      Qgis::RenderUnit heightUnit,
+      double &offsetX,
+      double &offsetY,
+      const QgsMapUnitScale &widthMapUnitScale,
       const QgsMapUnitScale &heightMapUnitScale
     ) const SIP_PYNAME( markerOffset2 );
 

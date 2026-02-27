@@ -337,7 +337,10 @@ QStringList QgsEllipsoidUtils::acronyms()
   return result;
 }
 
-QList<QgsCelestialBody> QgsEllipsoidUtils::celestialBodies() { return QgsApplication::coordinateReferenceSystemRegistry()->celestialBodies(); }
+QList<QgsCelestialBody> QgsEllipsoidUtils::celestialBodies()
+{
+  return QgsApplication::coordinateReferenceSystemRegistry()->celestialBodies();
+}
 
 void QgsEllipsoidUtils::invalidateCache( bool disableCache )
 {

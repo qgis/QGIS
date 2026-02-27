@@ -46,9 +46,15 @@ void QgsEditFormConfig::setDataDefinedFieldProperties( const QString &fieldName,
   d->mDataDefinedFieldProperties[fieldName] = properties;
 }
 
-QgsPropertyCollection QgsEditFormConfig::dataDefinedFieldProperties( const QString &fieldName ) const { return d->mDataDefinedFieldProperties.value( fieldName ); }
+QgsPropertyCollection QgsEditFormConfig::dataDefinedFieldProperties( const QString &fieldName ) const
+{
+  return d->mDataDefinedFieldProperties.value( fieldName );
+}
 
-const QgsPropertiesDefinition &QgsEditFormConfig::propertyDefinitions() { return QgsEditFormConfigPrivate::propertyDefinitions(); }
+const QgsPropertiesDefinition &QgsEditFormConfig::propertyDefinitions()
+{
+  return QgsEditFormConfigPrivate::propertyDefinitions();
+}
 
 QVariantMap QgsEditFormConfig::widgetConfig( const QString &widgetName ) const
 {
@@ -171,7 +177,10 @@ QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o ) //
   return *this;
 }
 
-bool QgsEditFormConfig::operator==( const QgsEditFormConfig &o ) const { return d == o.d; }
+bool QgsEditFormConfig::operator==( const QgsEditFormConfig &o ) const
+{
+  return d == o.d;
+}
 
 void QgsEditFormConfig::addTab( QgsAttributeEditorElement *data )
 {
@@ -179,7 +188,10 @@ void QgsEditFormConfig::addTab( QgsAttributeEditorElement *data )
   d->mInvisibleRootContainer->addChildElement( data );
 }
 
-QList<QgsAttributeEditorElement *> QgsEditFormConfig::tabs() const { return d->mInvisibleRootContainer->children(); }
+QList<QgsAttributeEditorElement *> QgsEditFormConfig::tabs() const
+{
+  return d->mInvisibleRootContainer->children();
+}
 
 void QgsEditFormConfig::clearTabs()
 {
@@ -187,9 +199,15 @@ void QgsEditFormConfig::clearTabs()
   d->mInvisibleRootContainer->clear();
 }
 
-QgsAttributeEditorContainer *QgsEditFormConfig::invisibleRootContainer() { return d->mInvisibleRootContainer; }
+QgsAttributeEditorContainer *QgsEditFormConfig::invisibleRootContainer()
+{
+  return d->mInvisibleRootContainer;
+}
 
-Qgis::AttributeFormLayout QgsEditFormConfig::layout() const { return d->mEditorLayout; }
+Qgis::AttributeFormLayout QgsEditFormConfig::layout() const
+{
+  return d->mEditorLayout;
+}
 
 void QgsEditFormConfig::setLayout( Qgis::AttributeFormLayout editorLayout )
 {
@@ -200,7 +218,10 @@ void QgsEditFormConfig::setLayout( Qgis::AttributeFormLayout editorLayout )
     d->mConfiguredRootContainer = true;
 }
 
-QString QgsEditFormConfig::uiForm() const { return d->mUiFormPath; }
+QString QgsEditFormConfig::uiForm() const
+{
+  return d->mUiFormPath;
+}
 
 void QgsEditFormConfig::setUiForm( const QString &ui )
 {
@@ -295,7 +316,10 @@ void QgsEditFormConfig::setReuseLastValuePolicy( int index, Qgis::AttributeFormR
   }
 }
 
-QString QgsEditFormConfig::initFunction() const { return d->mInitFunction; }
+QString QgsEditFormConfig::initFunction() const
+{
+  return d->mInitFunction;
+}
 
 void QgsEditFormConfig::setInitFunction( const QString &function )
 {
@@ -303,7 +327,10 @@ void QgsEditFormConfig::setInitFunction( const QString &function )
   d->mInitFunction = function;
 }
 
-QString QgsEditFormConfig::initCode() const { return d->mInitCode; }
+QString QgsEditFormConfig::initCode() const
+{
+  return d->mInitCode;
+}
 
 void QgsEditFormConfig::setInitCode( const QString &code )
 {
@@ -311,7 +338,10 @@ void QgsEditFormConfig::setInitCode( const QString &code )
   d->mInitCode = code;
 }
 
-QString QgsEditFormConfig::initFilePath() const { return d->mInitFilePath; }
+QString QgsEditFormConfig::initFilePath() const
+{
+  return d->mInitFilePath;
+}
 
 void QgsEditFormConfig::setInitFilePath( const QString &filePath )
 {
@@ -326,7 +356,10 @@ void QgsEditFormConfig::setInitFilePath( const QString &filePath )
   }
 }
 
-Qgis::AttributeFormPythonInitCodeSource QgsEditFormConfig::initCodeSource() const { return d->mInitCodeSource; }
+Qgis::AttributeFormPythonInitCodeSource QgsEditFormConfig::initCodeSource() const
+{
+  return d->mInitCodeSource;
+}
 
 void QgsEditFormConfig::setInitCodeSource( const Qgis::AttributeFormPythonInitCodeSource initCodeSource )
 {
@@ -334,7 +367,10 @@ void QgsEditFormConfig::setInitCodeSource( const Qgis::AttributeFormPythonInitCo
   d->mInitCodeSource = initCodeSource;
 }
 
-Qgis::AttributeFormSuppression QgsEditFormConfig::suppress() const { return d->mSuppressForm; }
+Qgis::AttributeFormSuppression QgsEditFormConfig::suppress() const
+{
+  return d->mSuppressForm;
+}
 
 void QgsEditFormConfig::setSuppress( Qgis::AttributeFormSuppression s )
 {

@@ -37,7 +37,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsVectorTileWriter::QgsVectorTileWriter() { setRootTileMatrix( QgsTileMatrix::fromWebMercator( 0 ) ); }
+QgsVectorTileWriter::QgsVectorTileWriter()
+{
+  setRootTileMatrix( QgsTileMatrix::fromWebMercator( 0 ) );
+}
 
 
 bool QgsVectorTileWriter::setRootTileMatrix( const QgsTileMatrix &tileMatrix )

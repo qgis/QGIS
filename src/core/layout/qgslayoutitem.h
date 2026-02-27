@@ -194,10 +194,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       default:
         sipType = NULL;
     }
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
     Q_OBJECT
     Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 

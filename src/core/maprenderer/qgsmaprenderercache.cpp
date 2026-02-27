@@ -25,7 +25,10 @@
 
 #include "moc_qgsmaprenderercache.cpp"
 
-QgsMapRendererCache::QgsMapRendererCache() { clear(); }
+QgsMapRendererCache::QgsMapRendererCache()
+{
+  clear();
+}
 
 void QgsMapRendererCache::clear()
 {

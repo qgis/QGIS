@@ -28,7 +28,7 @@ reference to the :py:class:`QgsLayout` to be checked.
 #include "qgsvaliditycheckcontext.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsLayoutValidityCheckContext *>( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsLayoutValidityCheckContext *>( sipCpp ) != NULL )
       sipType = sipType_QgsLayoutValidityCheckContext;
     else
       sipType = 0;

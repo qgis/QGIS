@@ -24,9 +24,15 @@ QgsProcessingParameterAggregate::QgsProcessingParameterAggregate( const QString 
   , mParentLayerParameterName( parentLayerParameterName )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterAggregate::clone() const { return new QgsProcessingParameterAggregate( *this ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterAggregate::clone() const
+{
+  return new QgsProcessingParameterAggregate( *this );
+}
 
-QString QgsProcessingParameterAggregate::type() const { return typeName(); }
+QString QgsProcessingParameterAggregate::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
@@ -57,7 +63,10 @@ bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &in
   return true;
 }
 
-QString QgsProcessingParameterAggregate::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const { return QgsProcessingUtils::variantToPythonLiteral( value ); }
+QString QgsProcessingParameterAggregate::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  return QgsProcessingUtils::variantToPythonLiteral( value );
+}
 
 QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOutputType outputType ) const
 {
@@ -100,6 +109,12 @@ QStringList QgsProcessingParameterAggregate::dependsOnOtherParameters() const
   return depends;
 }
 
-QString QgsProcessingParameterAggregate::parentLayerParameterName() const { return mParentLayerParameterName; }
+QString QgsProcessingParameterAggregate::parentLayerParameterName() const
+{
+  return mParentLayerParameterName;
+}
 
-void QgsProcessingParameterAggregate::setParentLayerParameterName( const QString &name ) { mParentLayerParameterName = name; }
+void QgsProcessingParameterAggregate::setParentLayerParameterName( const QString &name )
+{
+  mParentLayerParameterName = name;
+}

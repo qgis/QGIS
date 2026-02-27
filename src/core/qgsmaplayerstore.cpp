@@ -32,7 +32,10 @@ QgsMapLayerStore::QgsMapLayerStore( QObject *parent )
   : QObject( parent )
 {}
 
-QgsMapLayerStore::~QgsMapLayerStore() { removeAllMapLayers(); }
+QgsMapLayerStore::~QgsMapLayerStore()
+{
+  removeAllMapLayers();
+}
 
 int QgsMapLayerStore::count() const
 {

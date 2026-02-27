@@ -76,7 +76,10 @@ static QVector3D oct16Decode( uint8_t x, uint8_t y )
 }
 
 // Copied from specification
-static uint16_t zigZagDecode( uint16_t value ) { return ( value >> 1 ) ^ ( -( value & 1 ) ); }
+static uint16_t zigZagDecode( uint16_t value )
+{
+  return ( value >> 1 ) ^ ( -( value & 1 ) );
+}
 
 static std::vector<uint32_t> parseU32OrU16Array( VectorStream &stream, bool isU32, size_t countMult )
 {

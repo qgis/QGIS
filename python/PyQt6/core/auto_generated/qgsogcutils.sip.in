@@ -183,8 +183,17 @@ Creates an ElseFilter from ``doc``
 %End
 
     static QDomElement expressionToOgcExpression(
-      const QgsExpression &exp, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, FilterVersion filterVersion, const QString &geometryName, const QString &srsName, bool honourAxisOrientation,
-      bool invertAxisOrientation, QString *errorMessage = 0, bool requiresFilterElement = false, const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+      const QgsExpression &exp,
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      const QString &geometryName,
+      const QString &srsName,
+      bool honourAxisOrientation,
+      bool invertAxisOrientation,
+      QString *errorMessage = 0,
+      bool requiresFilterElement = false,
+      const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
       const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
     );
 %Docstring

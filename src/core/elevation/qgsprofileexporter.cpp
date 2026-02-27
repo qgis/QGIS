@@ -302,4 +302,7 @@ QList<QgsVectorLayer *> QgsProfileExporterTask::takeLayers()
   return res;
 }
 
-QgsProfileExporterTask::ExportResult QgsProfileExporterTask::result() const { return mResult; }
+QgsProfileExporterTask::ExportResult QgsProfileExporterTask::result() const
+{
+  return mResult;
+}

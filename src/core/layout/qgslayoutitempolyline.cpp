@@ -53,11 +53,20 @@ QgsLayoutItemPolyline::QgsLayoutItemPolyline( const QPolygonF &polyline, QgsLayo
 
 QgsLayoutItemPolyline::~QgsLayoutItemPolyline() = default;
 
-QgsLayoutItemPolyline *QgsLayoutItemPolyline::create( QgsLayout *layout ) { return new QgsLayoutItemPolyline( layout ); }
+QgsLayoutItemPolyline *QgsLayoutItemPolyline::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemPolyline( layout );
+}
 
-int QgsLayoutItemPolyline::type() const { return QgsLayoutItemRegistry::LayoutPolyline; }
+int QgsLayoutItemPolyline::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPolyline;
+}
 
-QIcon QgsLayoutItemPolyline::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemPolyline.svg"_s ); }
+QIcon QgsLayoutItemPolyline::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPolyline.svg"_s );
+}
 
 bool QgsLayoutItemPolyline::_addNode( const int indexPoint, QPointF newPoint, const double radius )
 {
@@ -290,7 +299,10 @@ void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QS
   drawEndMarker( renderContext.painter() );
 }
 
-void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context ) { mPolylineStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, context ); }
+void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
+{
+  mPolylineStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, context );
+}
 
 void QgsLayoutItemPolyline::setSymbol( QgsLineSymbol *symbol )
 {
@@ -347,7 +359,10 @@ bool QgsLayoutItemPolyline::isValid() const
   return false;
 }
 
-QgsLineSymbol *QgsLayoutItemPolyline::symbol() { return mPolylineStyleSymbol.get(); }
+QgsLineSymbol *QgsLayoutItemPolyline::symbol()
+{
+  return mPolylineStyleSymbol.get();
+}
 
 void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )
 {

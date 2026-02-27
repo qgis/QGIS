@@ -60,8 +60,15 @@ QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, con
 }
 
 Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer(
-  const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
-  const QMap<QString, QVariant> *options, QString &createdLayerUri
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem &srs,
+  bool overwrite,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
+  const QMap<QString, QVariant> *options,
+  QString &createdLayerUri
 )
 {
   return QgsOgrProvider::createEmptyLayer( uri, fields, wkbType, srs, overwrite, &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options );
@@ -716,7 +723,10 @@ QgsOgrProviderMetadata::QgsOgrProviderMetadata()
   : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsOgrProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVector.svg"_s ); }
+QIcon QgsOgrProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconVector.svg"_s );
+}
 
 QString QgsOgrProviderMetadata::filters( Qgis::FileFilterType type )
 {
@@ -736,7 +746,10 @@ QString QgsOgrProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderMetadataCapabilities QgsOgrProviderMetadata::capabilities() const { return QuerySublayers | CreateDatabase | UrisReferToSame; }
+QgsProviderMetadata::ProviderMetadataCapabilities QgsOgrProviderMetadata::capabilities() const
+{
+  return QuerySublayers | CreateDatabase | UrisReferToSame;
+}
 
 bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 {
@@ -971,7 +984,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( i != 0 )
       {
         layer = QgsOgrProviderUtils::getLayer(
-          firstLayer->datasetName(), false, firstLayer->options(), i, errCause,
+          firstLayer->datasetName(),
+          false,
+          firstLayer->options(),
+          i,
+          errCause,
           // do not check timestamp beyond the first
           // layer
           !firstLayer
@@ -1024,7 +1041,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     // remove non-matching, unwanted layers
     res.erase(
       std::remove_if(
-        res.begin(), res.end(),
+        res.begin(),
+        res.end(),
         [this, originalUriLayerName]( const QgsProviderSublayerDetails &sublayer ) {
           const QVariantMap uriParts = decodeUri( sublayer.uri() );
           return uriParts.value( u"layerName"_s ).toString() != originalUriLayerName && sublayer.name() != originalUriLayerName;
@@ -1159,7 +1177,10 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
   return res;
 }
 
-QList<Qgis::LayerType> QgsOgrProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Vector }; }
+QList<Qgis::LayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
 
 bool QgsOgrProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
 {
@@ -1180,9 +1201,15 @@ bool QgsOgrProviderMetadata::urisReferToSame( const QString &uri1, const QString
   return false;
 }
 
-QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached ) { return connectionsProtected<QgsGeoPackageProviderConnection, QgsOgrDbConnection>( cached ); }
+QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsGeoPackageProviderConnection, QgsOgrDbConnection>( cached );
+}
 
-QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &connName ) { return new QgsGeoPackageProviderConnection( connName ); }
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &connName )
+{
+  return new QgsGeoPackageProviderConnection( connName );
+}
 
 QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
 {
@@ -1195,11 +1222,20 @@ QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const Q
     return new QgsOgrProviderConnection( uri, configuration );
 }
 
-void QgsOgrProviderMetadata::deleteConnection( const QString &name ) { deleteConnectionProtected<QgsGeoPackageProviderConnection>( name ); }
+void QgsOgrProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsGeoPackageProviderConnection>( name );
+}
 
-void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name ) { saveConnectionProtected( conn, name ); }
+void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
+{
+  saveConnectionProtected( conn, name );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const { return FileBasedUris | SaveLayerMetadata; }
+QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris | SaveLayerMetadata;
+}
 
 #undef TEXT_PROVIDER_KEY
 #undef TEXT_PROVIDER_DESCRIPTION

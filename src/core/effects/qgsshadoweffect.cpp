@@ -30,7 +30,10 @@ QgsShadowEffect::QgsShadowEffect()
   : mColor( Qt::black )
 {}
 
-Qgis::PaintEffectFlags QgsShadowEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
+Qgis::PaintEffectFlags QgsShadowEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
 
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
@@ -212,11 +215,20 @@ QgsDropShadowEffect::QgsDropShadowEffect()
   : QgsShadowEffect()
 {}
 
-QString QgsDropShadowEffect::type() const { return u"dropShadow"_s; }
+QString QgsDropShadowEffect::type() const
+{
+  return u"dropShadow"_s;
+}
 
-QgsDropShadowEffect *QgsDropShadowEffect::clone() const { return new QgsDropShadowEffect( *this ); }
+QgsDropShadowEffect *QgsDropShadowEffect::clone() const
+{
+  return new QgsDropShadowEffect( *this );
+}
 
-bool QgsDropShadowEffect::exteriorShadow() const { return true; }
+bool QgsDropShadowEffect::exteriorShadow() const
+{
+  return true;
+}
 
 
 //
@@ -234,8 +246,17 @@ QgsInnerShadowEffect::QgsInnerShadowEffect()
   : QgsShadowEffect()
 {}
 
-QString QgsInnerShadowEffect::type() const { return u"innerShadow"_s; }
+QString QgsInnerShadowEffect::type() const
+{
+  return u"innerShadow"_s;
+}
 
-QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const { return new QgsInnerShadowEffect( *this ); }
+QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const
+{
+  return new QgsInnerShadowEffect( *this );
+}
 
-bool QgsInnerShadowEffect::exteriorShadow() const { return false; }
+bool QgsInnerShadowEffect::exteriorShadow() const
+{
+  return false;
+}

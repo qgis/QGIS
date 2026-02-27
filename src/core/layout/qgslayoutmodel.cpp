@@ -266,7 +266,10 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
   }
 }
 
-Qt::DropActions QgsLayoutModel::supportedDropActions() const { return Qt::MoveAction; }
+Qt::DropActions QgsLayoutModel::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
 
 QStringList QgsLayoutModel::mimeTypes() const
 {
@@ -300,7 +303,10 @@ QMimeData *QgsLayoutModel::mimeData( const QModelIndexList &indexes ) const
   return mimeData;
 }
 
-bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 ) { return item1->zValue() > item2->zValue(); }
+bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 )
+{
+  return item1->zValue() > item2->zValue();
+}
 
 bool QgsLayoutModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
@@ -431,7 +437,10 @@ void QgsLayoutModel::clear()
   endResetModel();
 }
 
-int QgsLayoutModel::zOrderListSize() const { return mItemZList.size(); }
+int QgsLayoutModel::zOrderListSize() const
+{
+  return mItemZList.size();
+}
 
 void QgsLayoutModel::rebuildZList()
 {
@@ -855,7 +864,10 @@ QgsLayoutItem *QgsLayoutModel::findItemBelow( QgsLayoutItem *item ) const
   return nullptr;
 }
 
-QList<QgsLayoutItem *> &QgsLayoutModel::zOrderList() { return mItemZList; }
+QList<QgsLayoutItem *> &QgsLayoutModel::zOrderList()
+{
+  return mItemZList;
+}
 
 ///@endcond
 
@@ -981,7 +993,10 @@ void QgsLayoutProxyModel::setAllowEmptyItem( bool allowEmpty )
   invalidateFilter();
 }
 
-bool QgsLayoutProxyModel::allowEmptyItem() const { return mAllowEmpty; }
+bool QgsLayoutProxyModel::allowEmptyItem() const
+{
+  return mAllowEmpty;
+}
 
 void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
 {
@@ -989,7 +1004,10 @@ void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
   invalidateFilter();
 }
 
-QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const { return mItemFlags; }
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
+{
+  return mItemFlags;
+}
 
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {

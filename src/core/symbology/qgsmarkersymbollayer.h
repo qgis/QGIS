@@ -183,8 +183,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param penJoinStyle join style for stroke pen
     */
     QgsSimpleMarkerSymbolLayer(
-      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-      const QColor &color = DEFAULT_SIMPLEMARKER_COLOR, const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR, Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
+      double size = DEFAULT_SIMPLEMARKER_SIZE,
+      double angle = DEFAULT_SIMPLEMARKER_ANGLE,
+      Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+      const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
+      const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+      Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE
     );
 
     ~QgsSimpleMarkerSymbolLayer() override;
@@ -856,7 +861,10 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
   public:
     //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer(
-      const QString &fontFamily = DEFAULT_FONTMARKER_FONT, QString chr = DEFAULT_FONTMARKER_CHR, double pointSize = DEFAULT_FONTMARKER_SIZE, const QColor &color = DEFAULT_FONTMARKER_COLOR,
+      const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
+      QString chr = DEFAULT_FONTMARKER_CHR,
+      double pointSize = DEFAULT_FONTMARKER_SIZE,
+      const QColor &color = DEFAULT_FONTMARKER_COLOR,
       double angle = DEFAULT_FONTMARKER_ANGLE
     );
 

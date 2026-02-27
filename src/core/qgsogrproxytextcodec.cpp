@@ -66,9 +66,15 @@ QByteArray QgsOgrProxyTextCodec::convertFromUnicode( const QChar *unicode, int l
 // MY 5 YEAR OLD DAUGHTER WROTE THIS LINE, REMOVE AT YOUR OWN RISK!!!
 // i don't want this to be here
 
-QByteArray QgsOgrProxyTextCodec::name() const { return mName; }
+QByteArray QgsOgrProxyTextCodec::name() const
+{
+  return mName;
+}
 
-QList<QByteArray> QgsOgrProxyTextCodec::aliases() const { return QList<QByteArray>(); }
+QList<QByteArray> QgsOgrProxyTextCodec::aliases() const
+{
+  return QList<QByteArray>();
+}
 
 int QgsOgrProxyTextCodec::mibEnum() const
 {

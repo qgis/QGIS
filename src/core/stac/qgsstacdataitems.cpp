@@ -55,7 +55,10 @@ QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, co
   setState( Qgis::BrowserItemState::Populated );
 }
 
-bool QgsStacAssetItem::hasDragEnabled() const { return mStacAsset->isCloudOptimized(); }
+bool QgsStacAssetItem::hasDragEnabled() const
+{
+  return mStacAsset->isCloudOptimized();
+}
 
 QgsStacController *QgsStacAssetItem::stacController() const
 {
@@ -90,7 +93,10 @@ QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
   return { uri };
 }
 
-bool QgsStacAssetItem::equal( const QgsDataItem * ) { return false; }
+bool QgsStacAssetItem::equal( const QgsDataItem * )
+{
+  return false;
+}
 
 void QgsStacAssetItem::updateToolTip()
 {
@@ -194,7 +200,10 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
   return uris;
 }
 
-bool QgsStacItemItem::equal( const QgsDataItem * ) { return false; }
+bool QgsStacItemItem::equal( const QgsDataItem * )
+{
+  return false;
+}
 
 void QgsStacItemItem::updateToolTip()
 {
@@ -225,7 +234,10 @@ void QgsStacItemItem::setStacItem( std::unique_ptr<QgsStacItem> item )
   updateToolTip();
 }
 
-QgsStacItem *QgsStacItemItem::stacItem() const { return mStacItem.get(); }
+QgsStacItem *QgsStacItemItem::stacItem() const
+{
+  return mStacItem.get();
+}
 
 void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
 {
@@ -266,9 +278,15 @@ QgsStacCatalogItem::QgsStacCatalogItem( QgsDataItem *parent, const QString &name
   updateToolTip();
 }
 
-bool QgsStacCatalogItem::isCatalog() const { return !mIsCollection; }
+bool QgsStacCatalogItem::isCatalog() const
+{
+  return !mIsCollection;
+}
 
-bool QgsStacCatalogItem::isCollection() const { return mIsCollection; }
+bool QgsStacCatalogItem::isCollection() const
+{
+  return mIsCollection;
+}
 
 QgsStacController *QgsStacCatalogItem::stacController() const
 {
@@ -506,7 +524,10 @@ void QgsStacCatalogItem::setStacCatalog( std::unique_ptr<QgsStacCatalog> catalog
   updateToolTip();
 }
 
-QgsStacCatalog *QgsStacCatalogItem::stacCatalog() const { return mStacCatalog.get(); }
+QgsStacCatalog *QgsStacCatalogItem::stacCatalog() const
+{
+  return mStacCatalog.get();
+}
 
 QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacItem *> items )
 {
@@ -600,7 +621,10 @@ QgsStacConnectionItem::QgsStacConnectionItem( QgsDataItem *parent, const QString
   mToolTip = u"Connection:\n%1\n%2"_s.arg( connectionName, mPath );
 }
 
-QgsStacController *QgsStacConnectionItem::controller() const { return mController.get(); }
+QgsStacController *QgsStacConnectionItem::controller() const
+{
+  return mController.get();
+}
 
 
 //
@@ -627,18 +651,30 @@ QVector<QgsDataItem *> QgsStacRootItem::createChildren()
   return connections;
 }
 
-void QgsStacRootItem::onConnectionsChanged() { refresh(); }
+void QgsStacRootItem::onConnectionsChanged()
+{
+  refresh();
+}
 
 
 //
 // QgsStacDataItemProvider
 //
 
-QString QgsStacDataItemProvider::name() { return u"STAC"_s; }
+QString QgsStacDataItemProvider::name()
+{
+  return u"STAC"_s;
+}
 
-QString QgsStacDataItemProvider::dataProviderKey() const { return u"special:Stac"_s; }
+QString QgsStacDataItemProvider::dataProviderKey() const
+{
+  return u"special:Stac"_s;
+}
 
-Qgis::DataItemProviderCapabilities QgsStacDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
+Qgis::DataItemProviderCapabilities QgsStacDataItemProvider::capabilities() const
+{
+  return Qgis::DataItemProviderCapability::NetworkSources;
+}
 
 QgsDataItem *QgsStacDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

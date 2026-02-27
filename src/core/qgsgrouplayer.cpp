@@ -49,7 +49,10 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   mDataProvider = std::make_unique<QgsGroupLayerDataProvider>( providerOptions, Qgis::DataProviderReadFlags() );
 }
 
-QgsGroupLayer::~QgsGroupLayer() { emit willBeDeleted(); }
+QgsGroupLayer::~QgsGroupLayer()
+{
+  emit willBeDeleted();
+}
 
 QgsGroupLayer *QgsGroupLayer::clone() const
 {

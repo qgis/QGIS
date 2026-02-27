@@ -39,10 +39,22 @@ void QgsAbstractLayoutUndoCommand::redo()
   restoreState( mAfterState );
 }
 
-void QgsAbstractLayoutUndoCommand::saveBeforeState() { saveState( mBeforeState ); }
+void QgsAbstractLayoutUndoCommand::saveBeforeState()
+{
+  saveState( mBeforeState );
+}
 
-void QgsAbstractLayoutUndoCommand::saveAfterState() { saveState( mAfterState ); }
+void QgsAbstractLayoutUndoCommand::saveAfterState()
+{
+  saveState( mAfterState );
+}
 
-bool QgsAbstractLayoutUndoCommand::containsChange() const { return !( mBeforeState.isNull() || mAfterState.isNull() || mBeforeState.toString() == mAfterState.toString() ); }
+bool QgsAbstractLayoutUndoCommand::containsChange() const
+{
+  return !( mBeforeState.isNull() || mAfterState.isNull() || mBeforeState.toString() == mAfterState.toString() );
+}
 
-void QgsAbstractLayoutUndoCommand::setAfterState( const QDomDocument &stateDoc ) { mAfterState = stateDoc; }
+void QgsAbstractLayoutUndoCommand::setAfterState( const QDomDocument &stateDoc )
+{
+  mAfterState = stateDoc;
+}

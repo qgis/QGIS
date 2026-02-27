@@ -280,7 +280,10 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   return true;
 }
 
-QSizeF QgsLayoutTable::totalSize() const { return mTableSize; }
+QSizeF QgsLayoutTable::totalSize() const
+{
+  return mTableSize;
+}
 
 void QgsLayoutTable::refresh()
 {
@@ -478,10 +481,18 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         QgsScopedRenderContextScaleToPixels scale( context.renderContext() );
         QgsTextRenderer::drawText(
           QRectF(
-            textCell.left() * context.renderContext().scaleFactor(), textCell.top() * context.renderContext().scaleFactor(), textCell.width() * context.renderContext().scaleFactor(),
+            textCell.left() * context.renderContext().scaleFactor(),
+            textCell.top() * context.renderContext().scaleFactor(),
+            textCell.width() * context.renderContext().scaleFactor(),
             textCell.height() * context.renderContext().scaleFactor()
           ),
-          0, headerAlign, str, context.renderContext(), headerFormat, true, Qgis::TextVerticalAlignment::VerticalCenter,
+          0,
+          headerAlign,
+          str,
+          context.renderContext(),
+          headerFormat,
+          true,
+          Qgis::TextVerticalAlignment::VerticalCenter,
           mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags()
         );
       }
@@ -580,11 +591,19 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
             QgsScopedRenderContextScaleToPixels scale( context.renderContext() );
             QgsTextRenderer::drawText(
               QRectF(
-                textCell.left() * context.renderContext().scaleFactor(), textCell.top() * context.renderContext().scaleFactor(), textCell.width() * context.renderContext().scaleFactor(),
+                textCell.left() * context.renderContext().scaleFactor(),
+                textCell.top() * context.renderContext().scaleFactor(),
+                textCell.width() * context.renderContext().scaleFactor(),
                 textCell.height() * context.renderContext().scaleFactor()
               ),
-              0, QgsTextRenderer::convertQtHAlignment( horizontalAlignmentForCell( row, col ) ), str, context.renderContext(), cellFormat, true,
-              QgsTextRenderer::convertQtVAlignment( verticalAlignmentForCell( row, col ) ), mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags()
+              0,
+              QgsTextRenderer::convertQtHAlignment( horizontalAlignmentForCell( row, col ) ),
+              str,
+              context.renderContext(),
+              cellFormat,
+              true,
+              QgsTextRenderer::convertQtVAlignment( verticalAlignmentForCell( row, col ) ),
+              mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags()
             );
           }
           p->restore();
@@ -670,10 +689,18 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       QgsScopedRenderContextScaleToPixels scale( context.renderContext() );
       QgsTextRenderer::drawText(
         QRectF(
-          cell.left() * context.renderContext().scaleFactor(), cell.top() * context.renderContext().scaleFactor(), cell.width() * context.renderContext().scaleFactor(),
+          cell.left() * context.renderContext().scaleFactor(),
+          cell.top() * context.renderContext().scaleFactor(),
+          cell.width() * context.renderContext().scaleFactor(),
           cell.height() * context.renderContext().scaleFactor()
         ),
-        0, Qgis::TextHorizontalAlignment::Center, QStringList() << mEmptyTableMessage, context.renderContext(), mContentTextFormat, true, Qgis::TextVerticalAlignment::VerticalCenter
+        0,
+        Qgis::TextHorizontalAlignment::Center,
+        QStringList() << mEmptyTableMessage,
+        context.renderContext(),
+        mContentTextFormat,
+        true,
+        Qgis::TextVerticalAlignment::VerticalCenter
       );
     }
   }
@@ -758,7 +785,10 @@ void QgsLayoutTable::setHeaderFont( const QFont &font )
   emit changed();
 }
 
-QFont QgsLayoutTable::headerFont() const { return mHeaderTextFormat.toQFont(); }
+QFont QgsLayoutTable::headerFont() const
+{
+  return mHeaderTextFormat.toQFont();
+}
 
 void QgsLayoutTable::setHeaderFontColor( const QColor &color )
 {
@@ -773,7 +803,10 @@ void QgsLayoutTable::setHeaderFontColor( const QColor &color )
   emit changed();
 }
 
-QColor QgsLayoutTable::headerFontColor() const { return mHeaderTextFormat.color(); }
+QColor QgsLayoutTable::headerFontColor() const
+{
+  return mHeaderTextFormat.color();
+}
 
 void QgsLayoutTable::setHeaderTextFormat( const QgsTextFormat &format )
 {
@@ -785,7 +818,10 @@ void QgsLayoutTable::setHeaderTextFormat( const QgsTextFormat &format )
   emit changed();
 }
 
-QgsTextFormat QgsLayoutTable::headerTextFormat() const { return mHeaderTextFormat; }
+QgsTextFormat QgsLayoutTable::headerTextFormat() const
+{
+  return mHeaderTextFormat;
+}
 
 void QgsLayoutTable::setHeaderHAlignment( const QgsLayoutTable::HeaderHAlignment alignment )
 {
@@ -833,7 +869,10 @@ void QgsLayoutTable::setContentFont( const QFont &font )
   emit changed();
 }
 
-QFont QgsLayoutTable::contentFont() const { return mContentTextFormat.toQFont(); }
+QFont QgsLayoutTable::contentFont() const
+{
+  return mContentTextFormat.toQFont();
+}
 
 void QgsLayoutTable::setContentFontColor( const QColor &color )
 {
@@ -848,7 +887,10 @@ void QgsLayoutTable::setContentFontColor( const QColor &color )
   emit changed();
 }
 
-QColor QgsLayoutTable::contentFontColor() const { return mContentTextFormat.color(); }
+QColor QgsLayoutTable::contentFontColor() const
+{
+  return mContentTextFormat.color();
+}
 
 void QgsLayoutTable::setContentTextFormat( const QgsTextFormat &format )
 {
@@ -860,7 +902,10 @@ void QgsLayoutTable::setContentTextFormat( const QgsTextFormat &format )
   emit changed();
 }
 
-QgsTextFormat QgsLayoutTable::contentTextFormat() const { return mContentTextFormat; }
+QgsTextFormat QgsLayoutTable::contentTextFormat() const
+{
+  return mContentTextFormat;
+}
 
 void QgsLayoutTable::setShowGrid( const bool showGrid )
 {
@@ -975,7 +1020,10 @@ void QgsLayoutTable::setColumns( const QgsLayoutTableColumns &columns )
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsLayoutTable::setSortColumns( const QgsLayoutTableSortColumns &sortColumns ) { mSortColumns = sortColumns; }
+void QgsLayoutTable::setSortColumns( const QgsLayoutTableSortColumns &sortColumns )
+{
+  mSortColumns = sortColumns;
+}
 
 void QgsLayoutTable::setCellStyle( QgsLayoutTable::CellStyleGroup group, const QgsLayoutTableStyle &style )
 {
@@ -1014,11 +1062,20 @@ QgsExpressionContextScope *QgsLayoutTable::scopeForCell( int row, int column ) c
   return cellScope.release();
 }
 
-int QgsLayoutTable::rowSpan( int, int ) const { return 1; }
+int QgsLayoutTable::rowSpan( int, int ) const
+{
+  return 1;
+}
 
-int QgsLayoutTable::columnSpan( int, int ) const { return 1; }
+int QgsLayoutTable::columnSpan( int, int ) const
+{
+  return 1;
+}
 
-QgsConditionalStyle QgsLayoutTable::conditionalCellStyle( int, int ) const { return QgsConditionalStyle(); }
+QgsConditionalStyle QgsLayoutTable::conditionalCellStyle( int, int ) const
+{
+  return QgsConditionalStyle();
+}
 
 QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
 {
@@ -1038,9 +1095,10 @@ QSizeF QgsLayoutTable::minFrameSize( const int frameIndex ) const
     for ( int col = 0; col < mColumns.size(); ++col )
     {
       height = std::max(
-        height, 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin
-                  + QgsTextRenderer::fontMetrics( context, textFormatForHeader( col ), QgsTextRenderer::FONT_WORKAROUND_SCALE ).ascent() / QgsTextRenderer::FONT_WORKAROUND_SCALE
-                      / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters )
+        height,
+        2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin
+          + QgsTextRenderer::fontMetrics( context, textFormatForHeader( col ), QgsTextRenderer::FONT_WORKAROUND_SCALE ).ascent() / QgsTextRenderer::FONT_WORKAROUND_SCALE
+              / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters )
       );
     }
   }
@@ -1206,8 +1264,13 @@ bool QgsLayoutTable::calculateMaxRowHeights()
     else
     {
       heights[i] = QgsTextRenderer::textHeight(
-                     context, cellFormat, QStringList() << col.heading(), Qgis::TextLayoutMode::Rectangle, nullptr,
-                     mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags(), context.convertToPainterUnits( mColumns.at( i ).width(), Qgis::RenderUnit::Millimeters )
+                     context,
+                     cellFormat,
+                     QStringList() << col.heading(),
+                     Qgis::TextLayoutMode::Rectangle,
+                     nullptr,
+                     mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags(),
+                     context.convertToPainterUnits( mColumns.at( i ).width(), Qgis::RenderUnit::Millimeters )
                    ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters )
                    - headerDescentMm;
     }
@@ -1231,7 +1294,11 @@ bool QgsLayoutTable::calculateMaxRowHeights()
       const QString localizedString { QgsExpressionUtils::toLocalizedString( *colIt ) };
 
       heights[row * cols + i] = QgsTextRenderer::textHeight(
-                                  context, cellFormat, QStringList() << localizedString.split( '\n' ), Qgis::TextLayoutMode::Rectangle, nullptr,
+                                  context,
+                                  cellFormat,
+                                  QStringList() << localizedString.split( '\n' ),
+                                  Qgis::TextLayoutMode::Rectangle,
+                                  nullptr,
                                   mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags(),
                                   context.convertToPainterUnits( mColumns.at( i ).width(), Qgis::RenderUnit::Millimeters )
                                 ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters )
@@ -1600,12 +1667,27 @@ void QgsLayoutTable::recalculateTableSize()
   recalculateFrameRects();
 }
 
-bool QgsLayoutTable::contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const { return ( contents.indexOf( row ) >= 0 ); }
+bool QgsLayoutTable::contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const
+{
+  return ( contents.indexOf( row ) >= 0 );
+}
 
-QgsTextFormat QgsLayoutTable::textFormatForCell( int, int ) const { return mContentTextFormat; }
+QgsTextFormat QgsLayoutTable::textFormatForCell( int, int ) const
+{
+  return mContentTextFormat;
+}
 
-QgsTextFormat QgsLayoutTable::textFormatForHeader( int ) const { return mHeaderTextFormat; }
+QgsTextFormat QgsLayoutTable::textFormatForHeader( int ) const
+{
+  return mHeaderTextFormat;
+}
 
-Qt::Alignment QgsLayoutTable::horizontalAlignmentForCell( int, int column ) const { return mColumns.value( column ).hAlignment(); }
+Qt::Alignment QgsLayoutTable::horizontalAlignmentForCell( int, int column ) const
+{
+  return mColumns.value( column ).hAlignment();
+}
 
-Qt::Alignment QgsLayoutTable::verticalAlignmentForCell( int, int column ) const { return mColumns.value( column ).vAlignment(); }
+Qt::Alignment QgsLayoutTable::verticalAlignmentForCell( int, int column ) const
+{
+  return mColumns.value( column ).vAlignment();
+}

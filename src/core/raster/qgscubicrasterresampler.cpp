@@ -26,14 +26,29 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const { return new QgsCubicRasterResampler(); }
+QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
+{
+  return new QgsCubicRasterResampler();
+}
 
-QImage QgsCubicRasterResampler::resampleV2( const QImage &source, const QSize &size ) { return QgsGdalUtils::resampleImage( source, size, GRIORA_Cubic ); }
+QImage QgsCubicRasterResampler::resampleV2( const QImage &source, const QSize &size )
+{
+  return QgsGdalUtils::resampleImage( source, size, GRIORA_Cubic );
+}
 
 Q_NOWARN_DEPRECATED_PUSH
-void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage ) { dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Cubic ); }
+void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
+{
+  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Cubic );
+}
 Q_NOWARN_DEPRECATED_POP
 
-QString QgsCubicRasterResampler::type() const { return u"cubic"_s; }
+QString QgsCubicRasterResampler::type() const
+{
+  return u"cubic"_s;
+}
 
-int QgsCubicRasterResampler::tileBufferPixels() const { return 2; }
+int QgsCubicRasterResampler::tileBufferPixels() const
+{
+  return 2;
+}

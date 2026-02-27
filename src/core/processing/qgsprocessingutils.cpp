@@ -48,7 +48,10 @@
 
 using namespace Qt::StringLiterals;
 
-QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsRasterLayer >( project, sort ); }
+QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsRasterLayer >( project, sort );
+}
 
 QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *project, const QList<int> &geometryTypes, bool sort )
 {
@@ -70,11 +73,20 @@ QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *
   return layers;
 }
 
-QList<QgsMeshLayer *> QgsProcessingUtils::compatibleMeshLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsMeshLayer >( project, sort ); }
+QList<QgsMeshLayer *> QgsProcessingUtils::compatibleMeshLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsMeshLayer >( project, sort );
+}
 
-QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsPluginLayer >( project, sort ); }
+QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsPluginLayer >( project, sort );
+}
 
-QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsPointCloudLayer >( project, sort ); }
+QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsPointCloudLayer >( project, sort );
+}
 
 QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsProject *project, bool sort )
 {
@@ -91,9 +103,15 @@ QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsP
   return res;
 }
 
-QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsVectorTileLayer >( project, sort ); }
+QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
+}
 
-QList<QgsTiledSceneLayer *> QgsProcessingUtils::compatibleTiledSceneLayers( QgsProject *project, bool sort ) { return compatibleMapLayers< QgsTiledSceneLayer >( project, sort ); }
+QList<QgsTiledSceneLayer *> QgsProcessingUtils::compatibleTiledSceneLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsTiledSceneLayer >( project, sort );
+}
 
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
@@ -162,7 +180,10 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
-QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey, const QString &uri ) { return u"%1://%2"_s.arg( providerKey, uri ); }
+QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey, const QString &uri )
+{
+  return u"%1://%2"_s.arg( providerKey, uri );
+}
 
 bool QgsProcessingUtils::decodeProviderKeyAndUri( const QString &string, QString &providerKey, QString &uri )
 {
@@ -187,7 +208,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
   layers.erase(
     std::remove_if(
-      layers.begin(), layers.end(),
+      layers.begin(),
+      layers.end(),
       []( QgsMapLayer *layer ) {
         switch ( layer->type() )
         {
@@ -671,19 +693,40 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
   return QgsCoordinateReferenceSystem();
 }
 
-bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer ) { return layer && layer->dataProvider(); }
+bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
+{
+  return layer && layer->dataProvider();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsPluginLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsPluginLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
-bool QgsProcessingUtils::canUseLayer( const QgsTiledSceneLayer *layer ) { return layer && layer->isValid(); }
+bool QgsProcessingUtils::canUseLayer( const QgsTiledSceneLayer *layer )
+{
+  return layer && layer->isValid();
+}
 
 bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<int> &sourceTypes )
 {
@@ -915,8 +958,16 @@ void QgsProcessingUtils::parseDestinationString(
 }
 
 QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
-  QString &destination, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions,
-  const QStringList &datasourceOptions, const QStringList &layerOptions, QgsFeatureSink::SinkFlags sinkFlags, QgsRemappingSinkDefinition *remappingDefinition
+  QString &destination,
+  QgsProcessingContext &context,
+  const QgsFields &fields,
+  Qgis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem &crs,
+  const QVariantMap &createOptions,
+  const QStringList &datasourceOptions,
+  const QStringList &layerOptions,
+  QgsFeatureSink::SinkFlags sinkFlags,
+  QgsRemappingSinkDefinition *remappingDefinition
 )
 {
   QVariantMap options = createOptions;
@@ -1326,8 +1377,17 @@ int QgsProcessingUtils::outputDefinitionIndex( const QgsProcessingAlgorithm *alg
 }
 
 QString convertToCompatibleFormatInternal(
-  const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context,
-  QgsProcessingFeedback *feedback, QString *layerName, long long featureLimit, const QString &filterExpression, bool renameFid
+  const QgsVectorLayer *vl,
+  bool selectedFeaturesOnly,
+  const QString &baseName,
+  const QStringList &compatibleFormats,
+  const QString &preferredFormat,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  QString *layerName,
+  long long featureLimit,
+  const QString &filterExpression,
+  bool renameFid
 )
 {
   bool requiresTranslation = false;
@@ -1454,16 +1514,31 @@ QString convertToCompatibleFormatInternal(
 }
 
 QString QgsProcessingUtils::convertToCompatibleFormat(
-  const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context,
-  QgsProcessingFeedback *feedback, long long featureLimit, const QString &filterExpression
+  const QgsVectorLayer *vl,
+  bool selectedFeaturesOnly,
+  const QString &baseName,
+  const QStringList &compatibleFormats,
+  const QString &preferredFormat,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  long long featureLimit,
+  const QString &filterExpression
 )
 {
   return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr, featureLimit, filterExpression, false );
 }
 
 QString QgsProcessingUtils::convertToCompatibleFormatAndLayerName(
-  const QgsVectorLayer *layer, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context,
-  QgsProcessingFeedback *feedback, QString &layerName, long long featureLimit, const QString &filterExpression
+  const QgsVectorLayer *layer,
+  bool selectedFeaturesOnly,
+  const QString &baseName,
+  const QStringList &compatibleFormats,
+  const QString &preferredFormat,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  QString &layerName,
+  long long featureLimit,
+  const QString &filterExpression
 )
 {
   layerName.clear();
@@ -1579,9 +1654,15 @@ QString QgsProcessingUtils::defaultRasterExtension()
   return u"tif"_s;
 }
 
-QString QgsProcessingUtils::defaultPointCloudExtension() { return u"las"_s; }
+QString QgsProcessingUtils::defaultPointCloudExtension()
+{
+  return u"las"_s;
+}
 
-QString QgsProcessingUtils::defaultVectorTileExtension() { return u"mbtiles"_s; }
+QString QgsProcessingUtils::defaultVectorTileExtension()
+{
+  return u"mbtiles"_s;
+}
 
 QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &map )
 {
@@ -1794,11 +1875,20 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   return mSource->getFeatures( req );
 }
 
-QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const { return mSourceCrs; }
+QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const
+{
+  return mSourceCrs;
+}
 
-QgsFields QgsProcessingFeatureSource::fields() const { return mSourceFields; }
+QgsFields QgsProcessingFeatureSource::fields() const
+{
+  return mSourceFields;
+}
 
-Qgis::WkbType QgsProcessingFeatureSource::wkbType() const { return mSourceWkbType; }
+Qgis::WkbType QgsProcessingFeatureSource::wkbType() const
+{
+  return mSourceWkbType;
+}
 
 long long QgsProcessingFeatureSource::featureCount() const
 {
@@ -1811,7 +1901,10 @@ long long QgsProcessingFeatureSource::featureCount() const
     return std::min( mFeatureLimit, mSource->featureCount() );
 }
 
-QString QgsProcessingFeatureSource::sourceName() const { return mSourceName; }
+QString QgsProcessingFeatureSource::sourceName() const
+{
+  return mSourceName;
+}
 
 QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
@@ -1896,7 +1989,10 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
   return max;
 }
 
-QgsRectangle QgsProcessingFeatureSource::sourceExtent() const { return mSourceExtent; }
+QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
+{
+  return mSourceExtent;
+}
 
 QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
 {
@@ -1916,7 +2012,10 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
   return ids;
 }
 
-Qgis::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const { return mSourceSpatialIndexPresence; }
+Qgis::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+{
+  return mSourceSpatialIndexPresence;
+}
 
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
@@ -1948,7 +2047,10 @@ void QgsProcessingFeatureSource::setInvalidGeometryCheck( Qgis::InvalidGeometryC
   }
 }
 
-Qgis::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const { return mInvalidGeometryCheck; }
+Qgis::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const
+{
+  return mInvalidGeometryCheck;
+}
 
 
 //

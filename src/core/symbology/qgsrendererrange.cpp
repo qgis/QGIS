@@ -75,15 +75,30 @@ bool QgsRendererRange::operator<( const QgsRendererRange &other ) const
   return lowerValue() < other.lowerValue() || ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
 }
 
-QString QgsRendererRange::uuid() const { return mUuid; }
+QString QgsRendererRange::uuid() const
+{
+  return mUuid;
+}
 
-double QgsRendererRange::lowerValue() const { return mLowerValue; }
+double QgsRendererRange::lowerValue() const
+{
+  return mLowerValue;
+}
 
-double QgsRendererRange::upperValue() const { return mUpperValue; }
+double QgsRendererRange::upperValue() const
+{
+  return mUpperValue;
+}
 
-QgsSymbol *QgsRendererRange::symbol() const { return mSymbol.get(); }
+QgsSymbol *QgsRendererRange::symbol() const
+{
+  return mSymbol.get();
+}
 
-QString QgsRendererRange::label() const { return mLabel; }
+QString QgsRendererRange::label() const
+{
+  return mLabel;
+}
 
 void QgsRendererRange::setSymbol( QgsSymbol *s )
 {
@@ -91,17 +106,35 @@ void QgsRendererRange::setSymbol( QgsSymbol *s )
     mSymbol.reset( s );
 }
 
-void QgsRendererRange::setLabel( const QString &label ) { mLabel = label; }
+void QgsRendererRange::setLabel( const QString &label )
+{
+  mLabel = label;
+}
 
-void QgsRendererRange::setUpperValue( double upperValue ) { mUpperValue = upperValue; }
+void QgsRendererRange::setUpperValue( double upperValue )
+{
+  mUpperValue = upperValue;
+}
 
-void QgsRendererRange::setLowerValue( double lowerValue ) { mLowerValue = lowerValue; }
+void QgsRendererRange::setLowerValue( double lowerValue )
+{
+  mLowerValue = lowerValue;
+}
 
-bool QgsRendererRange::renderState() const { return mRender; }
+bool QgsRendererRange::renderState() const
+{
+  return mRender;
+}
 
-void QgsRendererRange::setRenderState( bool render ) { mRender = render; }
+void QgsRendererRange::setRenderState( bool render )
+{
+  mRender = render;
+}
 
-QString QgsRendererRange::dump() const { return u"%1 - %2::%3::%4\n"_s.arg( mLowerValue ).arg( mUpperValue ).arg( mLabel, mSymbol ? mSymbol->dump() : u"(no symbol)"_s ); }
+QString QgsRendererRange::dump() const
+{
+  return u"%1 - %2::%3::%4\n"_s.arg( mLowerValue ).arg( mUpperValue ).arg( mLabel, mSymbol ? mSymbol->dump() : u"(no symbol)"_s );
+}
 
 void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange ) const
 {
@@ -173,7 +206,10 @@ bool QgsRendererRangeLabelFormat::operator==( const QgsRendererRangeLabelFormat 
   return format() == other.format() && precision() == other.precision() && trimTrailingZeroes() == other.trimTrailingZeroes();
 }
 
-bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat &other ) const { return !( *this == other ); }
+bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat &other ) const
+{
+  return !( *this == other );
+}
 
 void QgsRendererRangeLabelFormat::setPrecision( int precision )
 {
@@ -190,7 +226,10 @@ void QgsRendererRangeLabelFormat::setPrecision( int precision )
   }
 }
 
-QString QgsRendererRangeLabelFormat::labelForRange( const QgsRendererRange &range ) const { return labelForRange( range.lowerValue(), range.upperValue() ); }
+QString QgsRendererRangeLabelFormat::labelForRange( const QgsRendererRange &range ) const
+{
+  return labelForRange( range.lowerValue(), range.upperValue() );
+}
 
 QString QgsRendererRangeLabelFormat::formatNumber( double value ) const
 {

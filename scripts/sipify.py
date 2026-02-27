@@ -782,9 +782,10 @@ def read_line():
                 )  # exclude single ":" but allow "::"
                 and not re.match(r"^\s*Q_NOWARN_DEPRECATED", new_line)
                 and not re.match(
-                    r"^\s*(?:public|protected|private|signals|slots|Q_OBJECT|Q_GADGET|Q_PROPERTY|Q_ENUM|Q_FLAG|Q_DECLARE|Q_SIGNALS|Q_SLOTS|SIP_|signals|emit)\b",
+                    r"^\s*(?:public|protected|private|signals|slots|Q_OBJECT|Q_GADGET|Q_PROPERTY|Q_ENUM|Q_FLAG|Q_DECLARE|Q_SIGNALS|Q_SLOTS|signals|emit)\b",
                     new_line,
                 )
+                and not re.match(r"^\s*SIP_", new_line)
             )
         )
     ):
@@ -2220,6 +2221,9 @@ def try_skip_misc_q_macros():
 def try_process_sip_skip():
     if re.search(r"SIP_SKIP|SIP_PYTHON_SPECIAL_", CONTEXT.current_line):
         dbg_info("SIP SKIP!")
+        # Ensure bracket counting happens for closing braces on SIP_SKIP lines
+        # (e.g., "} mStatus = Idle SIP_SKIP;" closing a multi-line anonymous enum)
+        process_brackets()
         # if multiline definition, remove previous lines
         if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
             dbg_info("SIP_SKIP with MultiLine")

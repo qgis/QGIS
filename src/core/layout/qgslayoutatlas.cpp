@@ -48,9 +48,15 @@ QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
     mLayout->setCustomProperty( u"singleFile"_s, true );
 }
 
-QString QgsLayoutAtlas::stringType() const { return u"atlas"_s; }
+QString QgsLayoutAtlas::stringType() const
+{
+  return u"atlas"_s;
+}
 
-QgsLayout *QgsLayoutAtlas::layout() { return mLayout; }
+QgsLayout *QgsLayoutAtlas::layout()
+{
+  return mLayout;
+}
 
 const QgsLayout *QgsLayoutAtlas::layout() const // cppcheck-suppress duplInheritedMember
 {
@@ -415,7 +421,10 @@ bool QgsLayoutAtlas::endRender()
   return true;
 }
 
-int QgsLayoutAtlas::count() const { return mFeatureIds.size(); }
+int QgsLayoutAtlas::count() const
+{
+  return mFeatureIds.size();
+}
 
 QString QgsLayoutAtlas::filePath( const QString &baseFilePath, const QString &extension )
 {
@@ -450,11 +459,20 @@ bool QgsLayoutAtlas::previous()
   return prepareForFeature( newFeatureNo );
 }
 
-bool QgsLayoutAtlas::first() { return prepareForFeature( 0 ); }
+bool QgsLayoutAtlas::first()
+{
+  return prepareForFeature( 0 );
+}
 
-bool QgsLayoutAtlas::last() { return prepareForFeature( mFeatureIds.size() - 1 ); }
+bool QgsLayoutAtlas::last()
+{
+  return prepareForFeature( mFeatureIds.size() - 1 );
+}
 
-bool QgsLayoutAtlas::seekTo( int feature ) { return prepareForFeature( feature ); }
+bool QgsLayoutAtlas::seekTo( int feature )
+{
+  return prepareForFeature( feature );
+}
 
 bool QgsLayoutAtlas::seekTo( const QgsFeature &feature )
 {
@@ -478,7 +496,10 @@ bool QgsLayoutAtlas::seekTo( const QgsFeature &feature )
   return seekTo( i );
 }
 
-void QgsLayoutAtlas::refreshCurrentFeature() { prepareForFeature( mCurrentFeatureNo ); }
+void QgsLayoutAtlas::refreshCurrentFeature()
+{
+  prepareForFeature( mCurrentFeatureNo );
+}
 
 void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
@@ -513,7 +534,10 @@ bool QgsLayoutAtlas::setFilenameExpression( const QString &pattern, QString &err
   return updateFilenameExpression( errorString );
 }
 
-QString QgsLayoutAtlas::currentFilename() const { return mCurrentFilename; }
+QString QgsLayoutAtlas::currentFilename() const
+{
+  return mCurrentFilename;
+}
 
 QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
 {

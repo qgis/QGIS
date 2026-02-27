@@ -609,7 +609,10 @@ bool QgsTracer::initGraph()
   return true;
 }
 
-QgsTracer::~QgsTracer() { invalidateGraph(); }
+QgsTracer::~QgsTracer()
+{
+  invalidateGraph();
+}
 
 void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
 {
@@ -665,7 +668,10 @@ void QgsTracer::setExtent( const QgsRectangle &extent )
   invalidateGraph();
 }
 
-void QgsTracer::setOffset( double offset ) { mOffset = offset; }
+void QgsTracer::setOffset( double offset )
+{
+  mOffset = offset;
+}
 
 void QgsTracer::offsetParameters( int &quadSegments, int &joinStyle, double &miterLimit )
 {
@@ -693,7 +699,10 @@ bool QgsTracer::init()
 }
 
 
-void QgsTracer::invalidateGraph() { mGraph.reset( nullptr ); }
+void QgsTracer::invalidateGraph()
+{
+  mGraph.reset( nullptr );
+}
 
 void QgsTracer::onFeatureAdded( QgsFeatureId fid )
 {
@@ -722,9 +731,15 @@ void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVaria
   invalidateGraph();
 }
 
-void QgsTracer::onDataChanged() { invalidateGraph(); }
+void QgsTracer::onDataChanged()
+{
+  invalidateGraph();
+}
 
-void QgsTracer::onStyleChanged() { invalidateGraph(); }
+void QgsTracer::onStyleChanged()
+{
+  invalidateGraph();
+}
 
 void QgsTracer::onLayerDestroyed( QObject *obj )
 {

@@ -109,7 +109,10 @@ void QgsLayoutNorthArrowHandler::setLinkedMap( QgsLayoutItemMap *map )
   }
 }
 
-QgsLayoutItemMap *QgsLayoutNorthArrowHandler::linkedMap() const { return mRotationMap; }
+QgsLayoutItemMap *QgsLayoutNorthArrowHandler::linkedMap() const
+{
+  return mRotationMap;
+}
 
 void QgsLayoutNorthArrowHandler::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode )
 {

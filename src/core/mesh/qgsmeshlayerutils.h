@@ -253,7 +253,9 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.14
      */
     static QVector<double> calculateMagnitudeOnVertices(
-      const QgsMeshLayer *meshLayer, const QgsMeshDatasetIndex index, QgsMeshDataBlock *activeFaceFlagValues,
+      const QgsMeshLayer *meshLayer,
+      const QgsMeshDatasetIndex index,
+      QgsMeshDataBlock *activeFaceFlagValues,
       const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage
     );
 
@@ -270,7 +272,10 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.18
      */
     static QVector<double> calculateMagnitudeOnVertices(
-      const QgsMesh &nativeMesh, const QgsMeshDatasetGroupMetadata &groupMetadata, const QgsMeshDataBlock &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
+      const QgsMesh &nativeMesh,
+      const QgsMeshDatasetGroupMetadata &groupMetadata,
+      const QgsMeshDataBlock &datasetValues,
+      const QgsMeshDataBlock &activeFaceFlagValues,
       const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage
     );
 

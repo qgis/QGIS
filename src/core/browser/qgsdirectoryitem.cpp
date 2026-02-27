@@ -175,9 +175,7 @@ QIcon QgsDirectoryItem::icon()
   // symbolic link? use link icon
   if ( mIsDir && mIsSymLink )
   {
-    return mIconColor.isValid()
-             ? QgsApplication::getThemeIcon( u"/mIconFolderLinkParams.svg"_s, mIconColor, mIconColor.darker() )
-             : QgsApplication::getThemeIcon( u"/mIconFolderLink.svg"_s );
+    return mIconColor.isValid() ? QgsApplication::getThemeIcon( u"/mIconFolderLinkParams.svg"_s, mIconColor, mIconColor.darker() ) : QgsApplication::getThemeIcon( u"/mIconFolderLink.svg"_s );
   }
 
   // loaded? show the open dir icon
@@ -661,8 +659,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
   : QgsDirectoryItem( parent, name, dirPath, path, u"special:ProjectHome"_s )
-{
-}
+{}
 
 QIcon QgsProjectHomeItem::icon()
 {

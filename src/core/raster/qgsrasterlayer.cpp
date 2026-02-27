@@ -1398,8 +1398,11 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
   {
     setContrastEnhancement(
       ce->contrastEnhancementAlgorithm() == QgsContrastEnhancement::NoEnhancement ? QgsContrastEnhancement::StretchToMinimumMaximum : ce->contrastEnhancementAlgorithm(),
-      renderer()->minMaxOrigin().limits() == Qgis::RasterRangeLimit::NotSet ? Qgis::RasterRangeLimit::MinimumMaximum : renderer()->minMaxOrigin().limits(), extent, static_cast<int>( SAMPLE_SIZE ),
-      true, renderer()
+      renderer()->minMaxOrigin().limits() == Qgis::RasterRangeLimit::NotSet ? Qgis::RasterRangeLimit::MinimumMaximum : renderer()->minMaxOrigin().limits(),
+      extent,
+      static_cast<int>( SAMPLE_SIZE ),
+      true,
+      renderer()
     );
   }
   else

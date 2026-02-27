@@ -33,8 +33,13 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 std::unique_ptr<QgsPointCloudBlock> decompressBinary_(
-  const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale,
-  const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect
+  const QByteArray &dataUncompressed,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  QgsPointCloudExpression &filterExpression,
+  QgsRectangle &filterRect
 )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize();
@@ -143,8 +148,13 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_(
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary(
-  const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset,
-  QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect
+  const QString &filename,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  QgsPointCloudExpression &filterExpression,
+  QgsRectangle &filterRect
 )
 {
   if ( !QFile::exists( filename ) )
@@ -160,8 +170,13 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary(
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary(
-  const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset,
-  QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect
+  const QByteArray &data,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  QgsPointCloudExpression &filterExpression,
+  QgsRectangle &filterRect
 )
 {
   return decompressBinary_( data, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
@@ -198,8 +213,13 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard(
-  const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset,
-  QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect
+  const QString &filename,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  QgsPointCloudExpression &filterExpression,
+  QgsRectangle &filterRect
 )
 {
   if ( !QFile::exists( filename ) )
@@ -216,8 +236,13 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard(
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard(
-  const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset,
-  QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect
+  const QByteArray &data,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  QgsPointCloudExpression &filterExpression,
+  QgsRectangle &filterRect
 )
 {
   const QByteArray dataUncompressed = decompressZtdStream( data );

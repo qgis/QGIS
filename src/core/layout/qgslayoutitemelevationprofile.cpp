@@ -115,11 +115,20 @@ QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
   }
 }
 
-QgsLayoutItemElevationProfile *QgsLayoutItemElevationProfile::create( QgsLayout *layout ) { return new QgsLayoutItemElevationProfile( layout ); }
+QgsLayoutItemElevationProfile *QgsLayoutItemElevationProfile::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemElevationProfile( layout );
+}
 
-int QgsLayoutItemElevationProfile::type() const { return QgsLayoutItemRegistry::LayoutElevationProfile; }
+int QgsLayoutItemElevationProfile::type() const
+{
+  return QgsLayoutItemRegistry::LayoutElevationProfile;
+}
 
-QIcon QgsLayoutItemElevationProfile::icon() const { return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s ); }
+QIcon QgsLayoutItemElevationProfile::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s );
+}
 
 void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedProperty property )
 {
@@ -446,17 +455,35 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const { return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching; }
+QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
+}
 
-bool QgsLayoutItemElevationProfile::requiresRasterization() const { return blendMode() != QPainter::CompositionMode_SourceOver; }
+bool QgsLayoutItemElevationProfile::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
 
-bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const { return mEvaluatedOpacity < 1.0; }
+bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
+}
 
-Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() { return mPlot.get(); }
+Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot()
+{
+  return mPlot.get();
+}
 
-const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const { return mPlot.get(); }
+const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const
+{
+  return mPlot.get();
+}
 
-QList<QgsMapLayer *> QgsLayoutItemElevationProfile::layers() const { return _qgis_listRefToRaw( mLayers ); }
+QList<QgsMapLayer *> QgsLayoutItemElevationProfile::layers() const
+{
+  return _qgis_listRefToRaw( mLayers );
+}
 
 void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layers )
 {
@@ -542,7 +569,10 @@ void QgsLayoutItemElevationProfile::setProfileCurve( QgsCurve *curve )
   invalidateCache();
 }
 
-QgsCurve *QgsLayoutItemElevationProfile::profileCurve() const { return mCurve.get(); }
+QgsCurve *QgsLayoutItemElevationProfile::profileCurve() const
+{
+  return mCurve.get();
+}
 
 void QgsLayoutItemElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -553,7 +583,10 @@ void QgsLayoutItemElevationProfile::setCrs( const QgsCoordinateReferenceSystem &
   invalidateCache();
 }
 
-QgsCoordinateReferenceSystem QgsLayoutItemElevationProfile::crs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsLayoutItemElevationProfile::crs() const
+{
+  return mCrs;
+}
 
 void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
 {
@@ -564,9 +597,15 @@ void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
   invalidateCache();
 }
 
-double QgsLayoutItemElevationProfile::tolerance() const { return mTolerance; }
+double QgsLayoutItemElevationProfile::tolerance() const
+{
+  return mTolerance;
+}
 
-void QgsLayoutItemElevationProfile::setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
+void QgsLayoutItemElevationProfile::setAtlasDriven( bool enabled )
+{
+  mAtlasDriven = enabled;
+}
 
 QgsProfileRequest QgsLayoutItemElevationProfile::profileRequest() const
 {
@@ -829,7 +868,8 @@ void QgsLayoutItemElevationProfile::invalidateCache()
   update();
 }
 
-void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & ) {}
+void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
+{}
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
@@ -1108,7 +1148,10 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   emit previewRefreshed();
 }
 
-Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const { return mDistanceUnit; }
+Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const
+{
+  return mDistanceUnit;
+}
 
 void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
 {
@@ -1177,7 +1220,10 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
   }
 }
 
-void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol ) { mSubsectionsSymbol.reset( symbol ); }
+void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+}
 
 void QgsLayoutItemElevationProfile::setSourcesPrivate()
 {

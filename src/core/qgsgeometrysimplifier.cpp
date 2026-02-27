@@ -45,7 +45,10 @@ QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double toleran
   : mTolerance( tolerance )
 {}
 
-QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const { return geometry.simplify( mTolerance ); }
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const
+{
+  return geometry.simplify( mTolerance );
+}
 
 QgsAbstractGeometry *QgsTopologyPreservingSimplifier::simplify( const QgsAbstractGeometry *geometry ) const
 {

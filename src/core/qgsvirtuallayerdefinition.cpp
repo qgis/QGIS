@@ -245,9 +245,15 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   return url;
 }
 
-QString QgsVirtualLayerDefinition::toString() const { return QString( toUrl().toEncoded() ); }
+QString QgsVirtualLayerDefinition::toString() const
+{
+  return QString( toUrl().toEncoded() );
+}
 
-void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &ref ) { mSourceLayers.append( SourceLayer( name, ref ) ); }
+void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &ref )
+{
+  mSourceLayers.append( SourceLayer( name, ref ) );
+}
 
 void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding )
 {
@@ -280,6 +286,12 @@ bool QgsVirtualLayerDefinition::hasReferencedLayers() const
   return false;
 }
 
-QString QgsVirtualLayerDefinition::subsetString() const { return mSubsetString; }
+QString QgsVirtualLayerDefinition::subsetString() const
+{
+  return mSubsetString;
+}
 
-void QgsVirtualLayerDefinition::setSubsetString( const QString &subsetString ) { mSubsetString = subsetString; }
+void QgsVirtualLayerDefinition::setSubsetString( const QString &subsetString )
+{
+  mSubsetString = subsetString;
+}

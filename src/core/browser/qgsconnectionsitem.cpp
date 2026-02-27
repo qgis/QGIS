@@ -21,5 +21,4 @@
 
 QgsConnectionsRootItem::QgsConnectionsRootItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
   : QgsDataCollectionItem( parent, name, path, providerKey )
-{
-}
+{}

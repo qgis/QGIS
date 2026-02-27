@@ -23,9 +23,13 @@ QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVecto
   : C( cachedVectorLayer )
 {}
 
-void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid ) { Q_UNUSED( fid ) }
+void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid )
+{
+  Q_UNUSED( fid )
+}
 
-void QgsCacheIndexFeatureId::flush() {}
+void QgsCacheIndexFeatureId::flush()
+{}
 
 void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {

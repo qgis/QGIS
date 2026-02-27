@@ -130,8 +130,7 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
 
 
 QByteArray QgsPointCloudLayerEditUtils::updateChunkValues(
-  QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues,
-  std::optional<double> newValue
+  QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues, std::optional<double> newValue
 )
 {
   QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerEditUtils::updateChunkValues"_s );

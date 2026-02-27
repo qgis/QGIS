@@ -45,11 +45,20 @@ QgsLayoutPoint::QgsLayoutPoint( const Qgis::LayoutUnit units )
   : mUnits( units )
 {}
 
-bool QgsLayoutPoint::isNull() const { return qgsDoubleNear( mX, 0 ) && qgsDoubleNear( mY, 0 ); }
+bool QgsLayoutPoint::isNull() const
+{
+  return qgsDoubleNear( mX, 0 ) && qgsDoubleNear( mY, 0 );
+}
 
-QPointF QgsLayoutPoint::toQPointF() const { return QPointF( mX, mY ); }
+QPointF QgsLayoutPoint::toQPointF() const
+{
+  return QPointF( mX, mY );
+}
 
-QString QgsLayoutPoint::encodePoint() const { return u"%1,%2,%3"_s.arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) ); }
+QString QgsLayoutPoint::encodePoint() const
+{
+  return u"%1,%2,%3"_s.arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+}
 
 QgsLayoutPoint QgsLayoutPoint::decodePoint( const QString &string )
 {
@@ -70,11 +79,20 @@ QgsLayoutPoint QgsLayoutPoint::decodePoint( const QString &string )
   return QgsLayoutPoint( x, y, QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 }
 
-bool QgsLayoutPoint::operator==( const QgsLayoutPoint &other ) const { return other.units() == mUnits && qgsDoubleNear( other.x(), mX ) && qgsDoubleNear( other.y(), mY ); }
+bool QgsLayoutPoint::operator==( const QgsLayoutPoint &other ) const
+{
+  return other.units() == mUnits && qgsDoubleNear( other.x(), mX ) && qgsDoubleNear( other.y(), mY );
+}
 
-bool QgsLayoutPoint::operator!=( const QgsLayoutPoint &other ) const { return ( !operator==( other ) ); }
+bool QgsLayoutPoint::operator!=( const QgsLayoutPoint &other ) const
+{
+  return ( !operator==( other ) );
+}
 
-QgsLayoutPoint QgsLayoutPoint::operator*( const double v ) const { return QgsLayoutPoint( mX * v, mY * v, mUnits ); }
+QgsLayoutPoint QgsLayoutPoint::operator*( const double v ) const
+{
+  return QgsLayoutPoint( mX * v, mY * v, mUnits );
+}
 
 QgsLayoutPoint QgsLayoutPoint::operator*=( const double v )
 {
@@ -82,7 +100,10 @@ QgsLayoutPoint QgsLayoutPoint::operator*=( const double v )
   return *this;
 }
 
-QgsLayoutPoint QgsLayoutPoint::operator/( const double v ) const { return QgsLayoutPoint( mX / v, mY / v, mUnits ); }
+QgsLayoutPoint QgsLayoutPoint::operator/( const double v ) const
+{
+  return QgsLayoutPoint( mX / v, mY / v, mUnits );
+}
 
 QgsLayoutPoint QgsLayoutPoint::operator/=( const double v )
 {

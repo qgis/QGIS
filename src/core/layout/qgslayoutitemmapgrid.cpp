@@ -60,13 +60,25 @@ QgsLayoutItemMapGridStack::QgsLayoutItemMapGridStack( QgsLayoutItemMap *map )
   : QgsLayoutItemMapItemStack( map )
 {}
 
-void QgsLayoutItemMapGridStack::addGrid( QgsLayoutItemMapGrid *grid ) { QgsLayoutItemMapItemStack::addItem( grid ); }
+void QgsLayoutItemMapGridStack::addGrid( QgsLayoutItemMapGrid *grid )
+{
+  QgsLayoutItemMapItemStack::addItem( grid );
+}
 
-void QgsLayoutItemMapGridStack::removeGrid( const QString &gridId ) { QgsLayoutItemMapItemStack::removeItem( gridId ); }
+void QgsLayoutItemMapGridStack::removeGrid( const QString &gridId )
+{
+  QgsLayoutItemMapItemStack::removeItem( gridId );
+}
 
-void QgsLayoutItemMapGridStack::moveGridUp( const QString &gridId ) { QgsLayoutItemMapItemStack::moveItemUp( gridId ); }
+void QgsLayoutItemMapGridStack::moveGridUp( const QString &gridId )
+{
+  QgsLayoutItemMapItemStack::moveItemUp( gridId );
+}
 
-void QgsLayoutItemMapGridStack::moveGridDown( const QString &gridId ) { QgsLayoutItemMapItemStack::moveItemDown( gridId ); }
+void QgsLayoutItemMapGridStack::moveGridDown( const QString &gridId )
+{
+  QgsLayoutItemMapItemStack::moveItemDown( gridId );
+}
 
 QgsLayoutItemMapGrid *QgsLayoutItemMapGridStack::grid( const QString &gridId ) const
 {
@@ -454,7 +466,10 @@ void QgsLayoutItemMapGrid::setCrs( const QgsCoordinateReferenceSystem &crs )
   emit crsChanged();
 }
 
-bool QgsLayoutItemMapGrid::usesAdvancedEffects() const { return mBlendMode != QPainter::CompositionMode_SourceOver; }
+bool QgsLayoutItemMapGrid::usesAdvancedEffects() const
+{
+  return mBlendMode != QPainter::CompositionMode_SourceOver;
+}
 
 QPolygonF QgsLayoutItemMapGrid::scalePolygon( const QPolygonF &polygon, const double scale ) const
 {
@@ -2314,7 +2329,10 @@ double QgsLayoutItemMapGrid::mapWidth() const
   }
 }
 
-bool sortByDistance( QPair<qreal, Qgis::MapGridBorderSide> a, QPair<qreal, Qgis::MapGridBorderSide> b ) { return a.first < b.first; }
+bool sortByDistance( QPair<qreal, Qgis::MapGridBorderSide> a, QPair<qreal, Qgis::MapGridBorderSide> b )
+{
+  return a.first < b.first;
+}
 
 Qgis::MapGridBorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPointF p, const Qgis::MapGridAnnotationType coordinateType ) const
 {
@@ -2369,17 +2387,35 @@ Qgis::MapGridBorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPointF p, con
   return distanceToSide.at( 0 ).second;
 }
 
-void QgsLayoutItemMapGrid::setLineSymbol( QgsLineSymbol *symbol ) { mGridLineSymbol.reset( symbol ); }
+void QgsLayoutItemMapGrid::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mGridLineSymbol.reset( symbol );
+}
 
-const QgsLineSymbol *QgsLayoutItemMapGrid::lineSymbol() const { return mGridLineSymbol.get(); }
+const QgsLineSymbol *QgsLayoutItemMapGrid::lineSymbol() const
+{
+  return mGridLineSymbol.get();
+}
 
-QgsLineSymbol *QgsLayoutItemMapGrid::lineSymbol() { return mGridLineSymbol.get(); }
+QgsLineSymbol *QgsLayoutItemMapGrid::lineSymbol()
+{
+  return mGridLineSymbol.get();
+}
 
-void QgsLayoutItemMapGrid::setMarkerSymbol( QgsMarkerSymbol *symbol ) { mGridMarkerSymbol.reset( symbol ); }
+void QgsLayoutItemMapGrid::setMarkerSymbol( QgsMarkerSymbol *symbol )
+{
+  mGridMarkerSymbol.reset( symbol );
+}
 
-const QgsMarkerSymbol *QgsLayoutItemMapGrid::markerSymbol() const { return mGridMarkerSymbol.get(); }
+const QgsMarkerSymbol *QgsLayoutItemMapGrid::markerSymbol() const
+{
+  return mGridMarkerSymbol.get();
+}
 
-QgsMarkerSymbol *QgsLayoutItemMapGrid::markerSymbol() { return mGridMarkerSymbol.get(); }
+QgsMarkerSymbol *QgsLayoutItemMapGrid::markerSymbol()
+{
+  return mGridMarkerSymbol.get();
+}
 
 void QgsLayoutItemMapGrid::setAnnotationFont( const QFont &font )
 {
@@ -2396,11 +2432,20 @@ void QgsLayoutItemMapGrid::setAnnotationFont( const QFont &font )
   }
 }
 
-QFont QgsLayoutItemMapGrid::annotationFont() const { return mAnnotationFormat.toQFont(); }
+QFont QgsLayoutItemMapGrid::annotationFont() const
+{
+  return mAnnotationFormat.toQFont();
+}
 
-void QgsLayoutItemMapGrid::setAnnotationFontColor( const QColor &color ) { mAnnotationFormat.setColor( color ); }
+void QgsLayoutItemMapGrid::setAnnotationFontColor( const QColor &color )
+{
+  mAnnotationFormat.setColor( color );
+}
 
-QColor QgsLayoutItemMapGrid::annotationFontColor() const { return mAnnotationFormat.color(); }
+QColor QgsLayoutItemMapGrid::annotationFontColor() const
+{
+  return mAnnotationFormat.color();
+}
 
 void QgsLayoutItemMapGrid::setAnnotationDisplay( const Qgis::MapGridComponentVisibility display, const Qgis::MapGridBorderSide border )
 {
@@ -2635,11 +2680,20 @@ void QgsLayoutItemMapGrid::setAnnotationDirection( const Qgis::MapGridAnnotation
   }
 }
 
-void QgsLayoutItemMapGrid::setFrameSideFlags( Qgis::MapGridFrameSideFlags flags ) { mGridFrameSides = flags; }
+void QgsLayoutItemMapGrid::setFrameSideFlags( Qgis::MapGridFrameSideFlags flags )
+{
+  mGridFrameSides = flags;
+}
 
-void QgsLayoutItemMapGrid::setFrameSideFlag( Qgis::MapGridFrameSideFlag flag, bool on ) { mGridFrameSides.setFlag( flag, on ); }
+void QgsLayoutItemMapGrid::setFrameSideFlag( Qgis::MapGridFrameSideFlag flag, bool on )
+{
+  mGridFrameSides.setFlag( flag, on );
+}
 
-Qgis::MapGridFrameSideFlags QgsLayoutItemMapGrid::frameSideFlags() const { return mGridFrameSides; }
+Qgis::MapGridFrameSideFlags QgsLayoutItemMapGrid::frameSideFlags() const
+{
+  return mGridFrameSides;
+}
 
 QgsExpressionContext QgsLayoutItemMapGrid::createExpressionContext() const
 {
@@ -2677,7 +2731,10 @@ void QgsLayoutItemMapGrid::refresh()
   mMap->update();
 }
 
-bool QgsLayoutItemMapGrid::testFrameSideFlag( Qgis::MapGridFrameSideFlag flag ) const { return mGridFrameSides.testFlag( flag ); }
+bool QgsLayoutItemMapGrid::testFrameSideFlag( Qgis::MapGridFrameSideFlag flag ) const
+{
+  return mGridFrameSides.testFlag( flag );
+}
 
 void QgsLayoutItemMapGrid::setFrameWidth( const double width )
 {
@@ -2697,9 +2754,15 @@ void QgsLayoutItemMapGrid::setFramePenSize( const double width )
   refreshDataDefinedProperties();
 }
 
-Qgis::TextHorizontalAlignment QgsLayoutItemMapGrid::horizontalAlignment() const { return mHAlign; }
+Qgis::TextHorizontalAlignment QgsLayoutItemMapGrid::horizontalAlignment() const
+{
+  return mHAlign;
+}
 
-void QgsLayoutItemMapGrid::setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment ) { mHAlign = alignment; }
+void QgsLayoutItemMapGrid::setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment )
+{
+  mHAlign = alignment;
+}
 
 void QgsLayoutItemMapGrid::setAnnotationDirection( const Qgis::MapGridAnnotationDirection direction )
 {

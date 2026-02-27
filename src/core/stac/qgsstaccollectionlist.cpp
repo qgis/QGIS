@@ -31,9 +31,15 @@ QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection *
 }
 
 
-QgsStacCollectionList::~QgsStacCollectionList() { qDeleteAll( mCollections ); }
+QgsStacCollectionList::~QgsStacCollectionList()
+{
+  qDeleteAll( mCollections );
+}
 
-QVector<QgsStacCollection *> QgsStacCollectionList::collections() const { return mCollections; }
+QVector<QgsStacCollection *> QgsStacCollectionList::collections() const
+{
+  return mCollections;
+}
 
 QVector<QgsStacCollection *> QgsStacCollectionList::takeCollections()
 {
@@ -42,14 +48,32 @@ QVector<QgsStacCollection *> QgsStacCollectionList::takeCollections()
   return cols;
 }
 
-int QgsStacCollectionList::numberReturned() const { return mCollections.size(); }
+int QgsStacCollectionList::numberReturned() const
+{
+  return mCollections.size();
+}
 
-int QgsStacCollectionList::numberMatched() const { return mNumberMatched; }
+int QgsStacCollectionList::numberMatched() const
+{
+  return mNumberMatched;
+}
 
-QUrl QgsStacCollectionList::url() const { return QUrl( mUrls.value( u"self"_s, QString() ) ); }
+QUrl QgsStacCollectionList::url() const
+{
+  return QUrl( mUrls.value( u"self"_s, QString() ) );
+}
 
-QUrl QgsStacCollectionList::rootUrl() const { return QUrl( mUrls.value( u"root"_s, QString() ) ); }
+QUrl QgsStacCollectionList::rootUrl() const
+{
+  return QUrl( mUrls.value( u"root"_s, QString() ) );
+}
 
-QUrl QgsStacCollectionList::nextUrl() const { return QUrl( mUrls.value( u"next"_s, QString() ) ); }
+QUrl QgsStacCollectionList::nextUrl() const
+{
+  return QUrl( mUrls.value( u"next"_s, QString() ) );
+}
 
-QUrl QgsStacCollectionList::prevUrl() const { return QUrl( mUrls.value( u"prev"_s, QString() ) ); }
+QUrl QgsStacCollectionList::prevUrl() const
+{
+  return QUrl( mUrls.value( u"prev"_s, QString() ) );
+}

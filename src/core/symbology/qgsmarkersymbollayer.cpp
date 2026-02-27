@@ -175,7 +175,10 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   QgsMarkerSymbolLayer::startRender( context );
 }
 
-void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
+void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolRenderContext &context )
+{
+  Q_UNUSED( context )
+}
 
 void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
@@ -455,7 +458,10 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( Qgis::MarkerShape shape )
   return QString();
 }
 
-bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerShape( Qgis::MarkerShape shape ) { return shapeToPolygon( shape, mPolygon ); }
+bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerShape( Qgis::MarkerShape shape )
+{
+  return shapeToPolygon( shape, mPolygon );
+}
 
 bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QPolygonF &polygon ) const
 {
@@ -948,9 +954,15 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
 }
 
 
-QString QgsSimpleMarkerSymbolLayer::layerType() const { return u"SimpleMarker"_s; }
+QString QgsSimpleMarkerSymbolLayer::layerType() const
+{
+  return u"SimpleMarker"_s;
+}
 
-Qgis::SymbolLayerFlags QgsSimpleMarkerSymbolLayer::flags() const { return QgsSimpleMarkerSymbolLayerBase::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
+Qgis::SymbolLayerFlags QgsSimpleMarkerSymbolLayer::flags() const
+{
+  return QgsSimpleMarkerSymbolLayerBase::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
 
 void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -1278,7 +1290,10 @@ void QgsSimpleMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element,
   toSld( doc, element, context );
 }
 
-bool QgsSimpleMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const { return QgsSimpleMarkerSymbolLayerBase::toSld( doc, element, context ); }
+bool QgsSimpleMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsSimpleMarkerSymbolLayerBase::toSld( doc, element, context );
+}
 
 void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
@@ -1796,7 +1811,10 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
   return m;
 }
 
-QString QgsFilledMarkerSymbolLayer::layerType() const { return u"FilledMarker"_s; }
+QString QgsFilledMarkerSymbolLayer::layerType() const
+{
+  return u"FilledMarker"_s;
+}
 
 void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -1861,7 +1879,10 @@ QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
   return m;
 }
 
-QgsSymbol *QgsFilledMarkerSymbolLayer::subSymbol() { return mFill.get(); }
+QgsSymbol *QgsFilledMarkerSymbolLayer::subSymbol()
+{
+  return mFill.get();
+}
 
 bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
@@ -1910,7 +1931,10 @@ void QgsFilledMarkerSymbolLayer::setColor( const QColor &c )
     mFill->setColor( c );
 }
 
-QColor QgsFilledMarkerSymbolLayer::color() const { return mFill ? mFill->color() : mColor; }
+QColor QgsFilledMarkerSymbolLayer::color() const
+{
+  return mFill ? mFill->color() : mColor;
+}
 
 bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
 {
@@ -2126,8 +2150,22 @@ void QgsSvgMarkerSymbolLayer::setPath( const QString &path )
   bool hasFillOpacityParam = false, hasStrokeParam = false, hasStrokeWidthParam = false, hasStrokeOpacityParam = false;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false, hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
   QgsApplication::svgCache()->containsParams(
-    path, mHasFillParam, hasDefaultFillColor, defaultFillColor, hasFillOpacityParam, hasDefaultFillOpacity, fillOpacity, hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor, hasStrokeWidthParam,
-    hasDefaultStrokeWidth, strokeWidth, hasStrokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity
+    path,
+    mHasFillParam,
+    hasDefaultFillColor,
+    defaultFillColor,
+    hasFillOpacityParam,
+    hasDefaultFillOpacity,
+    fillOpacity,
+    hasStrokeParam,
+    hasDefaultStrokeColor,
+    defaultStrokeColor,
+    hasStrokeWidthParam,
+    hasDefaultStrokeWidth,
+    strokeWidth,
+    hasStrokeOpacityParam,
+    hasDefaultStrokeOpacity,
+    strokeOpacity
   );
 
   const double newFillOpacity = hasFillOpacityParam ? fillColor().alphaF() : 1.0;
@@ -2192,12 +2230,21 @@ bool QgsSvgMarkerSymbolLayer::setPreservedAspectRatio( bool par )
   return preservedAspectRatio();
 }
 
-void QgsSvgMarkerSymbolLayer::setParameters( const QMap<QString, QgsProperty> &parameters ) { mParameters = parameters; }
+void QgsSvgMarkerSymbolLayer::setParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mParameters = parameters;
+}
 
 
-QString QgsSvgMarkerSymbolLayer::layerType() const { return u"SvgMarker"_s; }
+QString QgsSvgMarkerSymbolLayer::layerType() const
+{
+  return u"SvgMarker"_s;
+}
 
-Qgis::SymbolLayerFlags QgsSvgMarkerSymbolLayer::flags() const { return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
+Qgis::SymbolLayerFlags QgsSvgMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
 
 void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -2205,7 +2252,10 @@ void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsSvgMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
+void QgsSvgMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
+{
+  Q_UNUSED( context )
+}
 
 void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
@@ -2494,7 +2544,10 @@ bool QgsSvgMarkerSymbolLayer::usesMapUnits() const
          || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
-QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const { return new QgsSvgMarkerSymbolLayer( *this ); }
+QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
+{
+  return new QgsSvgMarkerSymbolLayer( *this );
+}
 
 void QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
@@ -2503,7 +2556,10 @@ void QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, co
   toSld( doc, element, context );
 }
 
-bool QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const { return QgsMarkerSymbolLayer::toSld( doc, element, context ); }
+bool QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsMarkerSymbolLayer::toSld( doc, element, context );
+}
 
 void QgsSvgMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
@@ -3035,9 +3091,15 @@ double QgsRasterMarkerSymbolLayer::updateDefaultAspectRatio()
   return mDefaultAspectRatio;
 }
 
-QString QgsRasterMarkerSymbolLayer::layerType() const { return u"RasterMarker"_s; }
+QString QgsRasterMarkerSymbolLayer::layerType() const
+{
+  return u"RasterMarker"_s;
+}
 
-Qgis::SymbolLayerFlags QgsRasterMarkerSymbolLayer::flags() const { return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
+Qgis::SymbolLayerFlags QgsRasterMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
 
 void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
@@ -3300,11 +3362,20 @@ bool QgsRasterMarkerSymbolLayer::usesMapUnits() const
   return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
-QColor QgsRasterMarkerSymbolLayer::color() const { return QColor(); }
+QColor QgsRasterMarkerSymbolLayer::color() const
+{
+  return QColor();
+}
 
-void QgsRasterMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale ) { QgsMarkerSymbolLayer::setMapUnitScale( scale ); }
+void QgsRasterMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  QgsMarkerSymbolLayer::setMapUnitScale( scale );
+}
 
-QgsMapUnitScale QgsRasterMarkerSymbolLayer::mapUnitScale() const { return QgsMarkerSymbolLayer::mapUnitScale(); }
+QgsMapUnitScale QgsRasterMarkerSymbolLayer::mapUnitScale() const
+{
+  return QgsMarkerSymbolLayer::mapUnitScale();
+}
 
 QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
@@ -3504,9 +3575,15 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
   return m;
 }
 
-QString QgsFontMarkerSymbolLayer::layerType() const { return u"FontMarker"_s; }
+QString QgsFontMarkerSymbolLayer::layerType() const
+{
+  return u"FontMarker"_s;
+}
 
-Qgis::SymbolLayerFlags QgsFontMarkerSymbolLayer::flags() const { return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
+Qgis::SymbolLayerFlags QgsFontMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
 
 void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -3576,7 +3653,10 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   }
 }
 
-void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
+void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
+{
+  Q_UNUSED( context )
+}
 
 QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &context, QPointF &charOffset, double &charWidth )
 {
@@ -3863,7 +3943,10 @@ void QgsFontMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   toSld( doc, element, context );
 }
 
-bool QgsFontMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const { return QgsMarkerSymbolLayer::toSld( doc, element, context ); }
+bool QgsFontMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsMarkerSymbolLayer::toSld( doc, element, context );
+}
 
 void QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
@@ -4063,7 +4146,10 @@ QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &propert
   return m.release();
 }
 
-QString QgsAnimatedMarkerSymbolLayer::layerType() const { return u"AnimatedMarker"_s; }
+QString QgsAnimatedMarkerSymbolLayer::layerType() const
+{
+  return u"AnimatedMarker"_s;
+}
 
 QVariantMap QgsAnimatedMarkerSymbolLayer::properties() const
 {

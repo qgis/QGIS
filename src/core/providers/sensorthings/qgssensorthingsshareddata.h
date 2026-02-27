@@ -62,7 +62,10 @@ class QgsSensorThingsSharedData
 
   private:
     bool processFeatureRequest(
-      QString &nextPage, QgsFeedback *feedback, const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback, const std::function< bool() > &continueFetchingCallback,
+      QString &nextPage,
+      QgsFeedback *feedback,
+      const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
+      const std::function< bool() > &continueFetchingCallback,
       const std::function< void() > &onNoMoreFeaturesCallback
     );
 

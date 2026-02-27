@@ -33,8 +33,14 @@ accessed through :py:func:`QgsApplication.messageLog()`.
 
 
     static void logMessage(
-      const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true, const char *file = __builtin_FILE(),
-      const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText
+      const QString &message,
+      const QString &tag = QString(),
+      Qgis::MessageLevel level = Qgis::MessageLevel::Warning,
+      bool notifyUser = true,
+      const char *file = __builtin_FILE(),
+      const char *function = __builtin_FUNCTION(),
+      int line = __builtin_LINE(),
+      Qgis::StringFormat format = Qgis::StringFormat::PlainText
     );
 %Docstring
 Adds a ``message`` to the log instance (and creates it if necessary).

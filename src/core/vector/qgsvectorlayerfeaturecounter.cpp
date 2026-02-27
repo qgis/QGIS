@@ -122,10 +122,22 @@ void QgsVectorLayerFeatureCounter::cancel()
   QgsTask::cancel();
 }
 
-QHash<QString, long long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const { return mSymbolFeatureCountMap; }
+QHash<QString, long long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
+{
+  return mSymbolFeatureCountMap;
+}
 
-long long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const { return mSymbolFeatureCountMap.value( legendKey, -1 ); }
+long long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
+{
+  return mSymbolFeatureCountMap.value( legendKey, -1 );
+}
 
-QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const { return mSymbolFeatureIdMap; }
+QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
+{
+  return mSymbolFeatureIdMap;
+}
 
-QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString &symbolkey ) const { return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() ); }
+QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString &symbolkey ) const
+{
+  return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
+}

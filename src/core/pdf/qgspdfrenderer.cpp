@@ -72,7 +72,10 @@ int QgsPdfRenderer::pageCount() const
   return catalog->getPageCount();
 }
 #else
-int QgsPdfRenderer::pageCount() const { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
+int QgsPdfRenderer::pageCount() const
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
+}
 #endif
 
 #ifdef HAVE_PDF4QT
@@ -85,7 +88,10 @@ QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
   return catalog->getPage( pageNumber )->getMediaBox();
 }
 #else
-QRectF QgsPdfRenderer::pageMediaBox( int ) const { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
+QRectF QgsPdfRenderer::pageMediaBox( int ) const
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
+}
 #endif
 
 #ifdef HAVE_PDF4QT
@@ -95,6 +101,9 @@ bool QgsPdfRenderer::render( QPainter *painter, const QRectF &rectangle, int pag
   return true;
 }
 #else
-bool QgsPdfRenderer::render( QPainter *, const QRectF &, int ) { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
+bool QgsPdfRenderer::render( QPainter *, const QRectF &, int )
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
+}
 
 #endif

@@ -148,9 +148,15 @@ void QgsLayout::clear()
   mUndoStack->stack()->clear();
 }
 
-QgsProject *QgsLayout::project() const { return mProject; }
+QgsProject *QgsLayout::project() const
+{
+  return mProject;
+}
 
-QgsLayoutModel *QgsLayout::itemsModel() { return mItemsModel.get(); }
+QgsLayoutModel *QgsLayout::itemsModel()
+{
+  return mItemsModel.get();
+}
 
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
 {
@@ -303,7 +309,10 @@ QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool incl
   return nullptr;
 }
 
-QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked, double searchTolerance ) const { return layoutItemAt( position, nullptr, ignoreLocked, searchTolerance ); }
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked, double searchTolerance ) const
+{
+  return layoutItemAt( position, nullptr, ignoreLocked, searchTolerance );
+}
 
 QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked, double searchTolerance ) const
 {
@@ -350,11 +359,20 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
   return nullptr;
 }
 
-double QgsLayout::convertToLayoutUnits( QgsLayoutMeasurement measurement ) const { return mRenderContext->measurementConverter().convert( measurement, mUnits ).length(); }
+double QgsLayout::convertToLayoutUnits( QgsLayoutMeasurement measurement ) const
+{
+  return mRenderContext->measurementConverter().convert( measurement, mUnits ).length();
+}
 
-QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const { return mRenderContext->measurementConverter().convert( size, mUnits ).toQSizeF(); }
+QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const
+{
+  return mRenderContext->measurementConverter().convert( size, mUnits ).toQSizeF();
+}
 
-QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const { return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF(); }
+QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
+{
+  return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF();
+}
 
 QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const Qgis::LayoutUnit unit ) const
 {
@@ -371,13 +389,25 @@ QgsLayoutPoint QgsLayout::convertFromLayoutUnits( QPointF point, const Qgis::Lay
   return mRenderContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
 }
 
-QgsLayoutRenderContext &QgsLayout::renderContext() { return *mRenderContext; }
+QgsLayoutRenderContext &QgsLayout::renderContext()
+{
+  return *mRenderContext;
+}
 
-const QgsLayoutRenderContext &QgsLayout::renderContext() const { return *mRenderContext; }
+const QgsLayoutRenderContext &QgsLayout::renderContext() const
+{
+  return *mRenderContext;
+}
 
-QgsLayoutReportContext &QgsLayout::reportContext() { return *mReportContext; }
+QgsLayoutReportContext &QgsLayout::reportContext()
+{
+  return *mReportContext;
+}
 
-const QgsLayoutReportContext &QgsLayout::reportContext() const { return *mReportContext; }
+const QgsLayoutReportContext &QgsLayout::reportContext() const
+{
+  return *mReportContext;
+}
 
 void QgsLayout::reloadSettings()
 {
@@ -385,9 +415,15 @@ void QgsLayout::reloadSettings()
   mPageCollection->redraw();
 }
 
-QgsLayoutGuideCollection &QgsLayout::guides() { return mPageCollection->guides(); }
+QgsLayoutGuideCollection &QgsLayout::guides()
+{
+  return mPageCollection->guides();
+}
 
-const QgsLayoutGuideCollection &QgsLayout::guides() const { return mPageCollection->guides(); }
+const QgsLayoutGuideCollection &QgsLayout::guides() const
+{
+  return mPageCollection->guides();
+}
 
 QgsExpressionContext QgsLayout::createExpressionContext() const
 {
@@ -409,11 +445,20 @@ void QgsLayout::setCustomProperty( const QString &key, const QVariant &value )
     emit variablesChanged();
 }
 
-QVariant QgsLayout::customProperty( const QString &key, const QVariant &defaultValue ) const { return mCustomProperties.value( key, defaultValue ); }
+QVariant QgsLayout::customProperty( const QString &key, const QVariant &defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
 
-void QgsLayout::removeCustomProperty( const QString &key ) { mCustomProperties.remove( key ); }
+void QgsLayout::removeCustomProperty( const QString &key )
+{
+  mCustomProperties.remove( key );
+}
 
-QStringList QgsLayout::customProperties() const { return mCustomProperties.keys(); }
+QStringList QgsLayout::customProperties() const
+{
+  return mCustomProperties.keys();
+}
 
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
@@ -444,9 +489,15 @@ void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
   mProject->setDirty( true );
 }
 
-QgsLayoutPageCollection *QgsLayout::pageCollection() { return mPageCollection.get(); }
+QgsLayoutPageCollection *QgsLayout::pageCollection()
+{
+  return mPageCollection.get();
+}
 
-const QgsLayoutPageCollection *QgsLayout::pageCollection() const { return mPageCollection.get(); }
+const QgsLayoutPageCollection *QgsLayout::pageCollection() const
+{
+  return mPageCollection.get();
+}
 
 QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 {
@@ -559,9 +610,15 @@ void QgsLayout::addMultiFrame( QgsLayoutMultiFrame *multiFrame )
     mMultiFrames << multiFrame;
 }
 
-void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame ) { mMultiFrames.removeAll( multiFrame ); }
+void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame )
+{
+  mMultiFrames.removeAll( multiFrame );
+}
 
-QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const { return mMultiFrames; }
+QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
+{
+  return mMultiFrames;
+}
 
 bool QgsLayout::saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const
 {
@@ -658,9 +715,15 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
   return result;
 }
 
-QgsLayoutUndoStack *QgsLayout::undoStack() { return mUndoStack.get(); }
+QgsLayoutUndoStack *QgsLayout::undoStack()
+{
+  return mUndoStack.get();
+}
 
-const QgsLayoutUndoStack *QgsLayout::undoStack() const { return mUndoStack.get(); }
+const QgsLayoutUndoStack *QgsLayout::undoStack() const
+{
+  return mUndoStack.get();
+}
 
 ///@cond PRIVATE
 class QgsLayoutUndoCommand : public QgsAbstractLayoutUndoCommand
@@ -696,7 +759,10 @@ class QgsLayoutUndoCommand : public QgsAbstractLayoutUndoCommand
 };
 ///@endcond
 
-QgsAbstractLayoutUndoCommand *QgsLayout::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutUndoCommand( this, text, id, parent ); }
+QgsAbstractLayoutUndoCommand *QgsLayout::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutUndoCommand( this, text, id, parent );
+}
 
 QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
 {
@@ -1145,7 +1211,10 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   return newItems;
 }
 
-void QgsLayout::updateBounds() { setSceneRect( layoutBounds( false, 0.05 ) ); }
+void QgsLayout::updateBounds()
+{
+  setSceneRect( layoutBounds( false, 0.05 ) );
+}
 
 void QgsLayout::itemBackgroundTaskCountChanged( int count )
 {

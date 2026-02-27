@@ -61,7 +61,10 @@ void QgsSimpleCopyExternalStorageStoredContent::cancel()
   mCopyTask->cancel();
 }
 
-QString QgsSimpleCopyExternalStorageStoredContent::url() const { return mUrl; }
+QString QgsSimpleCopyExternalStorageStoredContent::url() const
+{
+  return mUrl;
+}
 
 QgsSimpleCopyExternalStorageFetchedContent::QgsSimpleCopyExternalStorageFetchedContent( const QString &filePath )
   : mFilePath( filePath )
@@ -82,11 +85,20 @@ void QgsSimpleCopyExternalStorageFetchedContent::fetch()
   }
 }
 
-QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const { return mResultFilePath; }
+QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const
+{
+  return mResultFilePath;
+}
 
-QString QgsSimpleCopyExternalStorage::type() const { return u"SimpleCopy"_s; };
+QString QgsSimpleCopyExternalStorage::type() const
+{
+  return u"SimpleCopy"_s;
+};
 
-QString QgsSimpleCopyExternalStorage::displayName() const { return QObject::tr( "Simple copy" ); };
+QString QgsSimpleCopyExternalStorage::displayName() const
+{
+  return QObject::tr( "Simple copy" );
+};
 
 QgsExternalStorageStoredContent *QgsSimpleCopyExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {

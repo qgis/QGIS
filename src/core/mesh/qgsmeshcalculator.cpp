@@ -62,8 +62,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString, const QStrin
 
 
 QgsMeshCalculator::QgsMeshCalculator(
-  const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime,
-  QgsMeshLayer *layer
+  const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime, QgsMeshLayer *layer
 )
   : mFormulaString( formulaString )
   , mOutputDriver( outputDriver )
@@ -146,7 +145,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     return CreateOutputError;
   }
 
-  if ( !mMeshLayer || !mMeshLayer->dataProvider() || mMeshLayer->providerType() != u"mdal"_s )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() || mMeshLayer->providerType() != "mdal"_L1 )
   {
     return CreateOutputError;
   }

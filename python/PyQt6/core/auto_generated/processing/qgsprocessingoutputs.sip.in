@@ -27,7 +27,7 @@ algorithms, such as generated layers or calculated values.
 #include "qgsprocessingoutputs.h"
 %End
 %ConvertToSubClassCode
-if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
+    if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;

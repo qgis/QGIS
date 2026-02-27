@@ -42,43 +42,96 @@ QgsProviderMetadata::QgsProviderMetadata( const QString &key, const QString &des
   , mCreateFunction( createFunc )
 {}
 
-QgsProviderMetadata::~QgsProviderMetadata() { qDeleteAll( mProviderConnections ); }
+QgsProviderMetadata::~QgsProviderMetadata()
+{
+  qDeleteAll( mProviderConnections );
+}
 
-QString QgsProviderMetadata::key() const { return mKey; }
+QString QgsProviderMetadata::key() const
+{
+  return mKey;
+}
 
-QString QgsProviderMetadata::description() const { return mDescription; }
+QString QgsProviderMetadata::description() const
+{
+  return mDescription;
+}
 
-QIcon QgsProviderMetadata::icon() const { return QIcon(); }
+QIcon QgsProviderMetadata::icon() const
+{
+  return QIcon();
+}
 
-QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const { return QgsProviderMetadata::ProviderMetadataCapabilities(); }
+QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapabilities();
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilities() const { return QgsProviderMetadata::ProviderCapabilities(); }
+QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapabilities();
+}
 
-QList<Qgis::LayerType> QgsProviderMetadata::supportedLayerTypes() const { return {}; }
+QList<Qgis::LayerType> QgsProviderMetadata::supportedLayerTypes() const
+{
+  return {};
+}
 
-QString QgsProviderMetadata::library() const { return mLibrary; }
+QString QgsProviderMetadata::library() const
+{
+  return mLibrary;
+}
 
-QString QgsProviderMetadata::suggestGroupNameForUri( const QString & /*uri*/ ) const { return QString(); }
+QString QgsProviderMetadata::suggestGroupNameForUri( const QString & /*uri*/ ) const
+{
+  return QString();
+}
 
-QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunction() const { return mCreateFunction; }
+QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunction() const
+{
+  return mCreateFunction;
+}
 
-void QgsProviderMetadata::initProvider() {}
+void QgsProviderMetadata::initProvider()
+{}
 
-void QgsProviderMetadata::cleanupProvider() {}
+void QgsProviderMetadata::cleanupProvider()
+{}
 
-QString QgsProviderMetadata::filters( Qgis::FileFilterType ) { return QString(); }
+QString QgsProviderMetadata::filters( Qgis::FileFilterType )
+{
+  return QString();
+}
 
-QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata() { return QList<QgsMeshDriverMetadata>(); }
+QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
+{
+  return QList<QgsMeshDriverMetadata>();
+}
 
-int QgsProviderMetadata::priorityForUri( const QString & ) const { return 0; }
+int QgsProviderMetadata::priorityForUri( const QString & ) const
+{
+  return 0;
+}
 
-QList<Qgis::LayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const { return QList<Qgis::LayerType>(); }
+QList<Qgis::LayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
+{
+  return QList<Qgis::LayerType>();
+}
 
-bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const { return false; }
+bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
+{
+  return false;
+}
 
-QStringList QgsProviderMetadata::sidecarFilesForUri( const QString & ) const { return QStringList(); }
+QStringList QgsProviderMetadata::sidecarFilesForUri( const QString & ) const
+{
+  return QStringList();
+}
 
-QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QString &, Qgis::SublayerQueryFlags, QgsFeedback * ) const { return QList<QgsProviderSublayerDetails>(); }
+QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QString &, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  return QList<QgsProviderSublayerDetails>();
+}
 
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -118,13 +171,25 @@ bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &
   return defaultValue;
 }
 
-QVariantMap QgsProviderMetadata::decodeUri( const QString & ) const { return QVariantMap(); }
+QVariantMap QgsProviderMetadata::decodeUri( const QString & ) const
+{
+  return QVariantMap();
+}
 
-QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const { return QString(); }
+QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
+{
+  return QString();
+}
 
-QString QgsProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const { return context.pathResolver().writePath( uri ); }
+QString QgsProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().writePath( uri );
+}
 
-QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const { return context.pathResolver().readPath( uri ); }
+QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().readPath( uri );
+}
 
 QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlags flags ) const
 {
@@ -135,7 +200,10 @@ QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlag
   return uri;
 }
 
-bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgis::SourceHierarchyLevel ) const { return false; }
+bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgis::SourceHierarchyLevel ) const
+{
+  return false;
+}
 
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
   const QString &, const QgsFields &, Qgis::WkbType, const QgsCoordinateReferenceSystem &, bool, QMap<int, int> &, QString &errorMessage, const QMap<QString, QVariant> *, QString &
@@ -156,13 +224,25 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider( const QStr
   return nullptr;
 }
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const { return false; }
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
+{
+  return false;
+}
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const { return false; }
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
+{
+  return false;
+}
 
-QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods() { return QList<QPair<QString, QString> >(); }
+QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods()
+{
+  return QList<QPair<QString, QString> >();
+}
 
-QList<QgsDataItemProvider *> QgsProviderMetadata::dataItemProviders() const { return QList<QgsDataItemProvider *>(); }
+QList<QgsDataItemProvider *> QgsProviderMetadata::dataItemProviders() const
+{
+  return QList<QgsDataItemProvider *>();
+}
 
 int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &, QStringList &, QString &errCause )
 {
@@ -218,7 +298,10 @@ bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
   return false;
 }
 
-QgsTransaction *QgsProviderMetadata::createTransaction( const QString & ) { return nullptr; }
+QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
+{
+  return nullptr;
+}
 
 QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
 {
@@ -226,7 +309,10 @@ QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections(
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"connections"_s ) );
 }
 
-QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached ) { return connections<QgsAbstractDatabaseProviderConnection>( cached ); }
+QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
+{
+  return connections<QgsAbstractDatabaseProviderConnection>( cached );
+}
 
 QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
 {
@@ -319,14 +405,32 @@ QgsMeshDriverMetadata::QgsMeshDriverMetadata(
   , mMaxVerticesPerFace( maxVerticesPerface )
 {}
 
-QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const { return mCapabilities; }
+QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const
+{
+  return mCapabilities;
+}
 
-QString QgsMeshDriverMetadata::name() const { return mName; }
+QString QgsMeshDriverMetadata::name() const
+{
+  return mName;
+}
 
-QString QgsMeshDriverMetadata::description() const { return mDescription; }
+QString QgsMeshDriverMetadata::description() const
+{
+  return mDescription;
+}
 
-QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const { return mWriteDatasetOnFileSuffix; }
+QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
+{
+  return mWriteDatasetOnFileSuffix;
+}
 
-QString QgsMeshDriverMetadata::writeMeshFrameOnFileSuffix() const { return mWriteMeshFrameOnFileSuffix; }
+QString QgsMeshDriverMetadata::writeMeshFrameOnFileSuffix() const
+{
+  return mWriteMeshFrameOnFileSuffix;
+}
 
-int QgsMeshDriverMetadata::maximumVerticesCountPerFace() const { return mMaxVerticesPerFace; }
+int QgsMeshDriverMetadata::maximumVerticesCountPerFace() const
+{
+  return mMaxVerticesPerFace;
+}

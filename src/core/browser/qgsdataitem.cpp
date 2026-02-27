@@ -67,8 +67,7 @@ QgsDataItem::QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent, const
   , mName( name )
   , mProviderKey( providerKey )
   , mPath( path )
-{
-}
+{}
 
 QgsDataItem::~QgsDataItem()
 {
@@ -383,8 +382,7 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
         // The child cannot createChildren() itself
         mChildren.value( index )->refresh( child->children() );
       }
-      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated
-                && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
+      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
       {
         mChildren.value( index )->refresh();
       }

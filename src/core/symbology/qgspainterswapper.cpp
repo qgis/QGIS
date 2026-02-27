@@ -27,4 +27,7 @@ QgsPainterSwapper::QgsPainterSwapper( QgsRenderContext &renderContext, QPainter 
   mRenderContext.setPainter( newPainter );
 }
 
-QgsPainterSwapper::~QgsPainterSwapper() { mRenderContext.setPainter( mOriginalPainter ); }
+QgsPainterSwapper::~QgsPainterSwapper()
+{
+  mRenderContext.setPainter( mOriginalPainter );
+}

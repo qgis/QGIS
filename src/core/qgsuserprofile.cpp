@@ -28,9 +28,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsUserProfile::QgsUserProfile( const QString &folder ) { mProfileFolder = folder; }
+QgsUserProfile::QgsUserProfile( const QString &folder )
+{
+  mProfileFolder = folder;
+}
 
-const QString QgsUserProfile::folder() const { return mProfileFolder; }
+const QString QgsUserProfile::folder() const
+{
+  return mProfileFolder;
+}
 
 QgsError QgsUserProfile::validate() const
 {
@@ -137,4 +143,7 @@ const QIcon QgsUserProfile::icon() const
   return QgsApplication::getThemeIcon( "user.svg" );
 }
 
-QString QgsUserProfile::qgisDB() const { return mProfileFolder + QDir::separator() + "qgis.db"; }
+QString QgsUserProfile::qgisDB() const
+{
+  return mProfileFolder + QDir::separator() + "qgis.db";
+}

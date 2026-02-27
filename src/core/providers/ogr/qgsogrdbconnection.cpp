@@ -50,11 +50,20 @@ QgsDataSourceUri QgsOgrDbConnection::uri()
   return uri;
 }
 
-void QgsOgrDbConnection::setPath( const QString &path ) { mPath = path; }
+void QgsOgrDbConnection::setPath( const QString &path )
+{
+  mPath = path;
+}
 
-void QgsOgrDbConnection::save() { settingsOgrConnectionPath->setValue( mPath, { mSettingsKey, mConnName } ); }
+void QgsOgrDbConnection::save()
+{
+  settingsOgrConnectionPath->setValue( mPath, { mSettingsKey, mConnName } );
+}
 
-bool QgsOgrDbConnection::allowProjectsInDatabase() { return mSettingsKey == "GPKG"_L1; }
+bool QgsOgrDbConnection::allowProjectsInDatabase()
+{
+  return mSettingsKey == "GPKG"_L1;
+}
 
 const QStringList QgsOgrDbConnection::connectionList( const QString &driverName )
 {
@@ -63,9 +72,15 @@ const QStringList QgsOgrDbConnection::connectionList( const QString &driverName 
   return settings.childGroups();
 }
 
-QString QgsOgrDbConnection::selectedConnection( const QString &driverName ) { return settingsOgrConnectionSelected->value( driverName ); }
+QString QgsOgrDbConnection::selectedConnection( const QString &driverName )
+{
+  return settingsOgrConnectionSelected->value( driverName );
+}
 
-void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName ) { settingsOgrConnectionSelected->setValue( connName, { driverName } ); }
+void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName )
+{
+  settingsOgrConnectionSelected->setValue( connName, { driverName } );
+}
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )
 {

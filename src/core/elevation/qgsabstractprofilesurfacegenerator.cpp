@@ -35,11 +35,20 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractProfileSurfaceResults::~QgsAbstractProfileSurfaceResults() = default;
 
-QMap<double, double> QgsAbstractProfileSurfaceResults::distanceToHeightMap() const { return mDistanceToHeightMap; }
+QMap<double, double> QgsAbstractProfileSurfaceResults::distanceToHeightMap() const
+{
+  return mDistanceToHeightMap;
+}
 
-QgsPointSequence QgsAbstractProfileSurfaceResults::sampledPoints() const { return mRawPoints; }
+QgsPointSequence QgsAbstractProfileSurfaceResults::sampledPoints() const
+{
+  return mRawPoints;
+}
 
-QgsDoubleRange QgsAbstractProfileSurfaceResults::zRange() const { return QgsDoubleRange( minZ, maxZ ); }
+QgsDoubleRange QgsAbstractProfileSurfaceResults::zRange() const
+{
+  return QgsDoubleRange( minZ, maxZ );
+}
 
 QVector<QgsGeometry> QgsAbstractProfileSurfaceResults::asGeometries() const
 {
@@ -367,12 +376,27 @@ QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const Qg
 
 QgsAbstractProfileSurfaceGenerator::~QgsAbstractProfileSurfaceGenerator() = default;
 
-Qgis::ProfileSurfaceSymbology QgsAbstractProfileSurfaceGenerator::symbology() const { return mSymbology; }
+Qgis::ProfileSurfaceSymbology QgsAbstractProfileSurfaceGenerator::symbology() const
+{
+  return mSymbology;
+}
 
-QgsLineSymbol *QgsAbstractProfileSurfaceGenerator::lineSymbol() const { return mLineSymbol.get(); }
+QgsLineSymbol *QgsAbstractProfileSurfaceGenerator::lineSymbol() const
+{
+  return mLineSymbol.get();
+}
 
-QgsFillSymbol *QgsAbstractProfileSurfaceGenerator::fillSymbol() const { return mFillSymbol.get(); }
+QgsFillSymbol *QgsAbstractProfileSurfaceGenerator::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
 
-double QgsAbstractProfileSurfaceGenerator::elevationLimit() const { return mElevationLimit; }
+double QgsAbstractProfileSurfaceGenerator::elevationLimit() const
+{
+  return mElevationLimit;
+}
 
-void QgsAbstractProfileSurfaceGenerator::setElevationLimit( double limit ) { mElevationLimit = limit; }
+void QgsAbstractProfileSurfaceGenerator::setElevationLimit( double limit )
+{
+  mElevationLimit = limit;
+}

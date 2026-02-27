@@ -212,7 +212,10 @@ void QgsLayoutItemMapOverview::finalizeRestoreFromXml()
   }
 }
 
-bool QgsLayoutItemMapOverview::usesAdvancedEffects() const { return mBlendMode != QPainter::CompositionMode_SourceOver; }
+bool QgsLayoutItemMapOverview::usesAdvancedEffects() const
+{
+  return mBlendMode != QPainter::CompositionMode_SourceOver;
+}
 
 void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
 {
@@ -234,7 +237,10 @@ void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
   mMap->invalidateCache();
 }
 
-QgsLayoutItemMap *QgsLayoutItemMapOverview::linkedMap() { return mFrameMap; }
+QgsLayoutItemMap *QgsLayoutItemMapOverview::linkedMap()
+{
+  return mFrameMap;
+}
 
 void QgsLayoutItemMapOverview::connectSignals()
 {
@@ -304,7 +310,10 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
   return mExtentLayer.get();
 }
 
-QgsMapLayer *QgsLayoutItemMapOverview::mapLayer() { return mExtentLayer.get(); }
+QgsMapLayer *QgsLayoutItemMapOverview::mapLayer()
+{
+  return mExtentLayer.get();
+}
 
 bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -318,15 +327,30 @@ bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor )
   return true;
 }
 
-void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol ) { mFrameSymbol.reset( symbol ); }
+void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol )
+{
+  mFrameSymbol.reset( symbol );
+}
 
-QgsFillSymbol *QgsLayoutItemMapOverview::frameSymbol() { return mFrameSymbol.get(); }
+QgsFillSymbol *QgsLayoutItemMapOverview::frameSymbol()
+{
+  return mFrameSymbol.get();
+}
 
-const QgsFillSymbol *QgsLayoutItemMapOverview::frameSymbol() const { return mFrameSymbol.get(); }
+const QgsFillSymbol *QgsLayoutItemMapOverview::frameSymbol() const
+{
+  return mFrameSymbol.get();
+}
 
-void QgsLayoutItemMapOverview::setBlendMode( const QPainter::CompositionMode blendMode ) { mBlendMode = blendMode; }
+void QgsLayoutItemMapOverview::setBlendMode( const QPainter::CompositionMode blendMode )
+{
+  mBlendMode = blendMode;
+}
 
-void QgsLayoutItemMapOverview::setInverted( const bool inverted ) { mInverted = inverted; }
+void QgsLayoutItemMapOverview::setInverted( const bool inverted )
+{
+  mInverted = inverted;
+}
 
 void QgsLayoutItemMapOverview::setCentered( const bool centered )
 {
@@ -365,13 +389,25 @@ QgsLayoutItemMapOverviewStack::QgsLayoutItemMapOverviewStack( QgsLayoutItemMap *
   : QgsLayoutItemMapItemStack( map )
 {}
 
-void QgsLayoutItemMapOverviewStack::addOverview( QgsLayoutItemMapOverview *overview ) { QgsLayoutItemMapItemStack::addItem( overview ); }
+void QgsLayoutItemMapOverviewStack::addOverview( QgsLayoutItemMapOverview *overview )
+{
+  QgsLayoutItemMapItemStack::addItem( overview );
+}
 
-void QgsLayoutItemMapOverviewStack::removeOverview( const QString &overviewId ) { QgsLayoutItemMapItemStack::removeItem( overviewId ); }
+void QgsLayoutItemMapOverviewStack::removeOverview( const QString &overviewId )
+{
+  QgsLayoutItemMapItemStack::removeItem( overviewId );
+}
 
-void QgsLayoutItemMapOverviewStack::moveOverviewUp( const QString &overviewId ) { QgsLayoutItemMapItemStack::moveItemUp( overviewId ); }
+void QgsLayoutItemMapOverviewStack::moveOverviewUp( const QString &overviewId )
+{
+  QgsLayoutItemMapItemStack::moveItemUp( overviewId );
+}
 
-void QgsLayoutItemMapOverviewStack::moveOverviewDown( const QString &overviewId ) { QgsLayoutItemMapItemStack::moveItemDown( overviewId ); }
+void QgsLayoutItemMapOverviewStack::moveOverviewDown( const QString &overviewId )
+{
+  QgsLayoutItemMapItemStack::moveItemDown( overviewId );
+}
 
 QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const QString &overviewId ) const
 {

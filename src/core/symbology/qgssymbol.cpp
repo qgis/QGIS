@@ -101,9 +101,15 @@ QgsSymbolBufferSettings &QgsSymbolBufferSettings::operator=( const QgsSymbolBuff
   return *this;
 }
 
-QgsFillSymbol *QgsSymbolBufferSettings::fillSymbol() const { return mFillSymbol.get(); }
+QgsFillSymbol *QgsSymbolBufferSettings::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
 
-void QgsSymbolBufferSettings::setFillSymbol( QgsFillSymbol *symbol ) { mFillSymbol.reset( symbol ); }
+void QgsSymbolBufferSettings::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
 
 QgsSymbolBufferSettings::~QgsSymbolBufferSettings() = default;
 
@@ -773,9 +779,15 @@ void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale ) const
   }
 }
 
-QgsSymbolBufferSettings *QgsSymbol::bufferSettings() { return mBufferSettings.get(); }
+QgsSymbolBufferSettings *QgsSymbol::bufferSettings()
+{
+  return mBufferSettings.get();
+}
 
-const QgsSymbolBufferSettings *QgsSymbol::bufferSettings() const { return mBufferSettings.get(); }
+const QgsSymbolBufferSettings *QgsSymbol::bufferSettings() const
+{
+  return mBufferSettings.get();
+}
 
 void QgsSymbol::setBufferSettings( QgsSymbolBufferSettings *settings )
 {
@@ -784,11 +796,20 @@ void QgsSymbol::setBufferSettings( QgsSymbolBufferSettings *settings )
   mBufferSettings.reset( settings );
 }
 
-QgsSymbolAnimationSettings &QgsSymbol::animationSettings() { return mAnimationSettings; }
+QgsSymbolAnimationSettings &QgsSymbol::animationSettings()
+{
+  return mAnimationSettings;
+}
 
-const QgsSymbolAnimationSettings &QgsSymbol::animationSettings() const { return mAnimationSettings; }
+const QgsSymbolAnimationSettings &QgsSymbol::animationSettings() const
+{
+  return mAnimationSettings;
+}
 
-void QgsSymbol::setAnimationSettings( const QgsSymbolAnimationSettings &settings ) { mAnimationSettings = settings; }
+void QgsSymbol::setAnimationSettings( const QgsSymbolAnimationSettings &settings )
+{
+  mAnimationSettings = settings;
+}
 
 QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
 {
@@ -855,9 +876,15 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
   return s.release();
 }
 
-QgsSymbolLayer *QgsSymbol::symbolLayer( int layer ) { return mLayers.value( layer ); }
+QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
+{
+  return mLayers.value( layer );
+}
 
-const QgsSymbolLayer *QgsSymbol::symbolLayer( int layer ) const { return mLayers.value( layer ); }
+const QgsSymbolLayer *QgsSymbol::symbolLayer( int layer ) const
+{
+  return mLayers.value( layer );
+}
 
 bool QgsSymbol::insertSymbolLayer( int index, QgsSymbolLayer *layer )
 {
@@ -1306,7 +1333,10 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   return preview;
 }
 
-QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, int flags ) { return bigSymbolPreviewImage( expressionContext, static_cast< Qgis::SymbolPreviewFlags >( flags ) ); }
+QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, int flags )
+{
+  return bigSymbolPreviewImage( expressionContext, static_cast< Qgis::SymbolPreviewFlags >( flags ) );
+}
 
 QString QgsSymbol::dump() const
 {
@@ -1452,7 +1482,10 @@ QSet<QString> QgsSymbol::usedAttributes( const QgsRenderContext &context ) const
   return attributes;
 }
 
-void QgsSymbol::setDataDefinedProperty( QgsSymbol::Property key, const QgsProperty &property ) { mDataDefinedProperties.setProperty( key, property ); }
+void QgsSymbol::setDataDefinedProperty( QgsSymbol::Property key, const QgsProperty &property )
+{
+  mDataDefinedProperties.setProperty( key, property );
+}
 
 bool QgsSymbol::hasDataDefinedProperties() const
 {
@@ -1640,7 +1673,15 @@ void QgsSymbol::renderFeature(
   QVector< PolygonInfo > polygonsToRender;
 
   std::function< void( const QgsAbstractGeometry *, int partIndex )> getPartGeometry;
-  getPartGeometry = [&pointsToRender, &linesToRender, &polygonsToRender, &getPartGeometry, &context, &clippingEnabled, &markers, &feature, &usingSegmentizedGeometry,
+  getPartGeometry = [&pointsToRender,
+                     &linesToRender,
+                     &polygonsToRender,
+                     &getPartGeometry,
+                     &context,
+                     &clippingEnabled,
+                     &markers,
+                     &feature,
+                     &usingSegmentizedGeometry,
                      this]( const QgsAbstractGeometry *part, int partIndex = 0 ) {
     Q_UNUSED( feature )
 
@@ -2235,9 +2276,15 @@ void QgsSymbol::renderFeature(
   }
 }
 
-QgsSymbolRenderContext *QgsSymbol::symbolRenderContext() { return mSymbolRenderContext.get(); }
+QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
+{
+  return mSymbolRenderContext.get();
+}
 
-double QgsSymbol::extentBuffer() const { return mExtentBuffer; }
+double QgsSymbol::extentBuffer() const
+{
+  return mExtentBuffer;
+}
 
 void QgsSymbol::setExtentBuffer( double extentBuffer )
 {

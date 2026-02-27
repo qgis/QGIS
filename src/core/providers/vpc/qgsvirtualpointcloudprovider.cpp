@@ -63,7 +63,10 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider( const QString &uri, 
   parseFile();
 }
 
-Qgis::DataProviderFlags QgsVirtualPointCloudProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsVirtualPointCloudProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 QgsVirtualPointCloudProvider::~QgsVirtualPointCloudProvider() = default;
 
@@ -453,7 +456,10 @@ void QgsVirtualPointCloudProvider::parseFile()
   populateAttributeCollection( attributeNames );
 }
 
-QgsGeometry QgsVirtualPointCloudProvider::polygonBounds() const { return *mPolygonBounds; }
+QgsGeometry QgsVirtualPointCloudProvider::polygonBounds() const
+{
+  return *mPolygonBounds;
+}
 
 void QgsVirtualPointCloudProvider::loadSubIndex( int i )
 {
@@ -629,7 +635,10 @@ QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsVirtualPointCloudProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s ); }
+QIcon QgsVirtualPointCloudProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s );
+}
 
 QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -710,9 +719,15 @@ QString QgsVirtualPointCloudProviderMetadata::filters( Qgis::FileFilterType type
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsVirtualPointCloudProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsVirtualPointCloudProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::PointCloud }; }
+QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::PointCloud };
+}
 
 QString QgsVirtualPointCloudProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {

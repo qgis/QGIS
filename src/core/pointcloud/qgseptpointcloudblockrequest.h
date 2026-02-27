@@ -45,8 +45,16 @@ class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockReques
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
     QgsEptPointCloudBlockRequest(
-      const QgsPointCloudNodeId &node, const QString &Uri, const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-      const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect, const QString &authcfg = QString()
+      const QgsPointCloudNodeId &node,
+      const QString &Uri,
+      const QString &dataType,
+      const QgsPointCloudAttributeCollection &attributes,
+      const QgsPointCloudAttributeCollection &requestedAttributes,
+      const QgsVector3D &scale,
+      const QgsVector3D &offset,
+      const QgsPointCloudExpression &filterExpression,
+      const QgsRectangle &filterRect,
+      const QString &authcfg = QString()
     );
 
     ~QgsEptPointCloudBlockRequest() override = default;

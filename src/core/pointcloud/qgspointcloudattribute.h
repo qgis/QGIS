@@ -117,8 +117,20 @@ class CORE_EXPORT QgsPointCloudAttribute
     * Retrieves the x, y, z values for the point at index \a i.
     */
       static void getPointXYZ(
-        const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType, int yOffset, QgsPointCloudAttribute::DataType yType, int zOffset,
-        QgsPointCloudAttribute::DataType zType, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z
+        const char *ptr,
+        int i,
+        std::size_t pointRecordSize,
+        int xOffset,
+        QgsPointCloudAttribute::DataType xType,
+        int yOffset,
+        QgsPointCloudAttribute::DataType yType,
+        int zOffset,
+        QgsPointCloudAttribute::DataType zType,
+        const QgsVector3D &indexScale,
+        const QgsVector3D &indexOffset,
+        double &x,
+        double &y,
+        double &z
       ) SIP_SKIP;
 
     /**

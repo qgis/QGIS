@@ -166,7 +166,10 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   return QgsCircle( center, radius );
 }
 
-QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth ) { return QgsCircle( center, diameter / 2.0, azimuth ); }
+QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth )
+{
+  return QgsCircle( center, diameter / 2.0, azimuth );
+}
 
 QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) // cppcheck-suppress duplInheritedMember
 {
@@ -355,7 +358,10 @@ int QgsCircle::intersections( const QgsCircle &other, QgsPoint &intersection1, Q
   return res;
 }
 
-bool QgsCircle::tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1, QgsPointXY &pt2 ) const { return QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( mCenter ), radius(), p, pt1, pt2 ); }
+bool QgsCircle::tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1, QgsPointXY &pt2 ) const
+{
+  return QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( mCenter ), radius(), p, pt1, pt2 );
+}
 
 int QgsCircle::outerTangents( const QgsCircle &other, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2 ) const
 {
@@ -382,9 +388,15 @@ QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) // c
   return QgsCircle( center, delta_x / 2.0, 0 );
 }
 
-double QgsCircle::area() const { return M_PI * mSemiMajorAxis * mSemiMajorAxis; }
+double QgsCircle::area() const
+{
+  return M_PI * mSemiMajorAxis * mSemiMajorAxis;
+}
 
-double QgsCircle::perimeter() const { return 2.0 * M_PI * mSemiMajorAxis; }
+double QgsCircle::perimeter() const
+{
+  return 2.0 * M_PI * mSemiMajorAxis;
+}
 
 void QgsCircle::setSemiMajorAxis( const double semiMajorAxis )
 {
@@ -432,9 +444,15 @@ QgsCircularString *QgsCircle::toCircularString( bool oriented ) const
   return circString.release();
 }
 
-bool QgsCircle::contains( const QgsPoint &point, double epsilon ) const { return ( mCenter.distance( point ) <= mSemiMajorAxis + epsilon ); }
+bool QgsCircle::contains( const QgsPoint &point, double epsilon ) const
+{
+  return ( mCenter.distance( point ) <= mSemiMajorAxis + epsilon );
+}
 
-QgsRectangle QgsCircle::boundingBox() const { return QgsRectangle( mCenter.x() - mSemiMajorAxis, mCenter.y() - mSemiMajorAxis, mCenter.x() + mSemiMajorAxis, mCenter.y() + mSemiMajorAxis ); }
+QgsRectangle QgsCircle::boundingBox() const
+{
+  return QgsRectangle( mCenter.x() - mSemiMajorAxis, mCenter.y() - mSemiMajorAxis, mCenter.x() + mSemiMajorAxis, mCenter.y() + mSemiMajorAxis );
+}
 
 QString QgsCircle::toString( int pointPrecision, int radiusPrecision, int azimuthPrecision ) const
 {

@@ -50,7 +50,15 @@ Constructor for QgsSvgCache.
 %End
 
     QImage svgAsImage(
-      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
+      const QString &path,
+      double size,
+      const QColor &fill,
+      const QColor &stroke,
+      double strokeWidth,
+      double widthScaleFactor,
+      bool &fitsInCache,
+      double fixedAspectRatio = 0,
+      bool blocking = false,
       const QMap<QString, QString> &parameters = QMap<QString, QString>()
     );
 %Docstring
@@ -76,8 +84,16 @@ Returns an SVG drawing as a QImage.
 %End
 
     QPicture svgAsPicture(
-      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0,
-      bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>()
+      const QString &path,
+      double size,
+      const QColor &fill,
+      const QColor &stroke,
+      double strokeWidth,
+      double widthScaleFactor,
+      bool forceVectorOutput = false,
+      double fixedAspectRatio = 0,
+      bool blocking = false,
+      const QMap<QString, QString> &parameters = QMap<QString, QString>()
     );
 %Docstring
 Returns an SVG drawing as a QPicture.
@@ -109,7 +125,14 @@ Returns an SVG drawing as a QPicture.
 %End
 
     QSizeF svgViewboxSize(
-      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false,
+      const QString &path,
+      double size,
+      const QColor &fill,
+      const QColor &stroke,
+      double strokeWidth,
+      double widthScaleFactor,
+      double fixedAspectRatio = 0,
+      bool blocking = false,
       const QMap<QString, QString> &parameters = QMap<QString, QString>()
     );
 %Docstring
@@ -149,9 +172,23 @@ result. Only for use in external scripts or QGIS server.
 %End
 
     void containsParams(
-      const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor, bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-      bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth, bool &hasStrokeOpacityParam,
-      bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity, bool blocking = false
+      const QString &path,
+      bool &hasFillParam,
+      bool &hasDefaultFillParam,
+      QColor &defaultFillColor,
+      bool &hasFillOpacityParam,
+      bool &hasDefaultFillOpacity,
+      double &defaultFillOpacity,
+      bool &hasStrokeParam,
+      bool &hasDefaultStrokeColor,
+      QColor &defaultStrokeColor,
+      bool &hasStrokeWidthParam,
+      bool &hasDefaultStrokeWidth,
+      double &defaultStrokeWidth,
+      bool &hasStrokeOpacityParam,
+      bool &hasDefaultStrokeOpacity,
+      double &defaultStrokeOpacity,
+      bool blocking = false
     ) const /PyName=containsParamsV3/;
 %Docstring
 Tests if an SVG file contains parameters for fill, stroke color, stroke
@@ -220,7 +257,14 @@ loaded in the same thread to ensure provided the remote content.
 %End
 
     QByteArray svgContent(
-      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false,
+      const QString &path,
+      double size,
+      const QColor &fill,
+      const QColor &stroke,
+      double strokeWidth,
+      double widthScaleFactor,
+      double fixedAspectRatio = 0,
+      bool blocking = false,
       const QMap<QString, QString> &parameters = QMap<QString, QString>()
     );
 %Docstring

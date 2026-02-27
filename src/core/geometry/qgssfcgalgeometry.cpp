@@ -177,7 +177,10 @@ QString QgsSfcgalGeometry::geometryType() const
   return out;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const { return std::make_unique<QgsSfcgalGeometry>( *this ); }
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const
+{
+  return std::make_unique<QgsSfcgalGeometry>( *this );
+}
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::fromWkb( const QgsConstWkbPtr &wkbPtr )
 {
@@ -270,7 +273,10 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 #endif
 }
 
-bool QgsSfcgalGeometry::operator!=( const QgsSfcgalGeometry &other ) const { return !( *this == other ); }
+bool QgsSfcgalGeometry::operator!=( const QgsSfcgalGeometry &other ) const
+{
+  return !( *this == other );
+}
 
 bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const
 {
@@ -426,7 +432,8 @@ bool QgsSfcgalGeometry::isValid() const
   return valid;
 }
 
-void QgsSfcgalGeometry::clearCache() const {}
+void QgsSfcgalGeometry::clearCache() const
+{}
 
 bool QgsSfcgalGeometry::isSimple() const
 {
@@ -981,7 +988,10 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
 
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation ) { mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() ); }
+void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
+{
+  mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() );
+}
 
 void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
 {

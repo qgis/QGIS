@@ -84,7 +84,10 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   }
 }
 
-QgsLayoutItem::~QgsLayoutItem() { QgsLayoutItem::cleanup(); }
+QgsLayoutItem::~QgsLayoutItem()
+{
+  QgsLayoutItem::cleanup();
+}
 
 void QgsLayoutItem::cleanup()
 {
@@ -111,11 +114,20 @@ QString QgsLayoutItem::displayName() const
   return tr( "<item>" );
 }
 
-int QgsLayoutItem::type() const { return QgsLayoutItemRegistry::LayoutItem; }
+int QgsLayoutItem::type() const
+{
+  return QgsLayoutItemRegistry::LayoutItem;
+}
 
-QIcon QgsLayoutItem::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s ); }
+QIcon QgsLayoutItem::icon() const
+{
+  return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s );
+}
 
-QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const { return QgsLayoutItem::Flags(); }
+QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
+{
+  return QgsLayoutItem::Flags();
+}
 
 void QgsLayoutItem::setId( const QString &id )
 {
@@ -208,7 +220,10 @@ void QgsLayoutItem::setLocked( const bool locked )
   emit lockChanged();
 }
 
-bool QgsLayoutItem::isGroupMember() const { return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) ); }
+bool QgsLayoutItem::isGroupMember() const
+{
+  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
 
 QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
 {
@@ -227,13 +242,21 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const { return CanGroupWithAnyOtherItem; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
+{
+  return CanGroupWithAnyOtherItem;
+}
 
-int QgsLayoutItem::numberExportLayers() const { return 0; }
+int QgsLayoutItem::numberExportLayers() const
+{
+  return 0;
+}
 
-void QgsLayoutItem::startLayeredExport() {}
+void QgsLayoutItem::startLayeredExport()
+{}
 
-void QgsLayoutItem::stopLayeredExport() {}
+void QgsLayoutItem::stopLayeredExport()
+{}
 
 bool QgsLayoutItem::nextExportPart()
 {
@@ -248,7 +271,10 @@ bool QgsLayoutItem::nextExportPart()
   Q_NOWARN_DEPRECATED_POP
 }
 
-QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const { return QgsLayoutItem::ExportLayerDetail(); }
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const
+{
+  return QgsLayoutItem::ExportLayerDetail();
+}
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
@@ -566,7 +592,10 @@ void QgsLayoutItem::setScenePos( const QPointF destinationPos )
     setPos( pos() + ( destinationPos - scenePos() ) );
 }
 
-bool QgsLayoutItem::shouldBlockUndoCommands() const { return !mLayout || mLayout != scene() || mBlockUndoCommands; }
+bool QgsLayoutItem::shouldBlockUndoCommands() const
+{
+  return !mLayout || mLayout != scene() || mBlockUndoCommands;
+}
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
@@ -583,7 +612,10 @@ bool QgsLayoutItem::shouldDrawItem() const
   return !mEvaluatedExcludeFromExports;
 }
 
-double QgsLayoutItem::itemRotation() const { return mItemRotation; }
+double QgsLayoutItem::itemRotation() const
+{
+  return mItemRotation;
+}
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -799,9 +831,13 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   return result;
 }
 
-void QgsLayoutItem::finalizeRestoreFromXml() {}
+void QgsLayoutItem::finalizeRestoreFromXml()
+{}
 
-QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutItemUndoCommand( this, text, id, parent ); }
+QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemUndoCommand( this, text, id, parent );
+}
 
 void QgsLayoutItem::setFrameEnabled( bool drawFrame )
 {
@@ -885,7 +921,10 @@ void QgsLayoutItem::setItemOpacity( double opacity )
     invalidateCache();
 }
 
-bool QgsLayoutItem::excludeFromExports() const { return mExcludeFromExports; }
+bool QgsLayoutItem::excludeFromExports() const
+{
+  return mExcludeFromExports;
+}
 
 void QgsLayoutItem::setExcludeFromExports( bool exclude )
 {
@@ -893,9 +932,15 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
   refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports );
 }
 
-bool QgsLayoutItem::containsAdvancedEffects() const { return itemFlags() & Flag::FlagOverridesPaint ? false : mEvaluatedOpacity < 1.0; }
+bool QgsLayoutItem::containsAdvancedEffects() const
+{
+  return itemFlags() & Flag::FlagOverridesPaint ? false : mEvaluatedOpacity < 1.0;
+}
 
-bool QgsLayoutItem::requiresRasterization() const { return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) || blendMode() != QPainter::CompositionMode_SourceOver; }
+bool QgsLayoutItem::requiresRasterization() const
+{
+  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) || blendMode() != QPainter::CompositionMode_SourceOver;
+}
 
 double QgsLayoutItem::estimatedFrameBleed() const
 {
@@ -913,11 +958,14 @@ QRectF QgsLayoutItem::rectWithFrame() const
   return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
 }
 
-void QgsLayoutItem::moveContent( double, double ) {}
+void QgsLayoutItem::moveContent( double, double )
+{}
 
-void QgsLayoutItem::setMoveContentPreviewOffset( double, double ) {}
+void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
+{}
 
-void QgsLayoutItem::zoomContent( double, QPointF ) {}
+void QgsLayoutItem::zoomContent( double, QPointF )
+{}
 
 void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
 {
@@ -1117,7 +1165,10 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF transformOrigi
   refreshItemRotation( &itemTransformOrigin );
 }
 
-bool QgsLayoutItem::isRefreshing() const { return false; }
+bool QgsLayoutItem::isRefreshing() const
+{
+  return false;
+}
 
 QgsExpressionContext QgsLayoutItem::createExpressionContext() const
 {
@@ -1132,7 +1183,10 @@ bool QgsLayoutItem::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-QgsGeometry QgsLayoutItem::clipPath() const { return QgsGeometry(); }
+QgsGeometry QgsLayoutItem::clipPath() const
+{
+  return QgsGeometry();
+}
 
 void QgsLayoutItem::refresh()
 {
@@ -1152,7 +1206,10 @@ void QgsLayoutItem::invalidateCache()
   }
 }
 
-void QgsLayoutItem::redraw() { update(); }
+void QgsLayoutItem::redraw()
+{
+  update();
+}
 
 void QgsLayoutItem::drawDebugRect( QPainter *painter )
 {
@@ -1230,11 +1287,20 @@ void QgsLayoutItem::setMinimumSize( const QgsLayoutSize &size )
   refreshItemSize();
 }
 
-QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF targetSize ) { return targetSize; }
+QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF targetSize )
+{
+  return targetSize;
+}
 
-void QgsLayoutItem::refreshItemSize() { attemptResize( mItemSize ); }
+void QgsLayoutItem::refreshItemSize()
+{
+  attemptResize( mItemSize );
+}
 
-void QgsLayoutItem::refreshItemPosition() { attemptMove( mItemPosition ); }
+void QgsLayoutItem::refreshItemPosition()
+{
+  attemptMove( mItemPosition );
+}
 
 QPointF QgsLayoutItem::itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF size ) const
 {
@@ -1283,9 +1349,15 @@ QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &poi
   return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
-bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const { return true; }
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
+{
+  return true;
+}
 
-bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & ) { return true; }
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
+{
+  return true;
+}
 
 void QgsLayoutItem::initConnectionsToLayout()
 {
@@ -1314,7 +1386,10 @@ bool QgsLayoutItem::shouldDrawAntialiased() const
   return mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Antialiasing ) && !mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
 }
 
-bool QgsLayoutItem::shouldDrawDebugRect() const { return mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug ); }
+bool QgsLayoutItem::shouldDrawDebugRect() const
+{
+  return mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
+}
 
 QSizeF QgsLayoutItem::applyMinimumSize( const QSizeF targetSize )
 {
@@ -1438,7 +1513,10 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
   }
 }
 
-QColor QgsLayoutItem::backgroundColor( bool useDataDefined ) const { return useDataDefined ? brush().color() : mBackgroundColor; }
+QColor QgsLayoutItem::backgroundColor( bool useDataDefined ) const
+{
+  return useDataDefined ? brush().color() : mBackgroundColor;
+}
 
 
 void QgsLayoutItem::refreshBackgroundColor( bool updateItem )

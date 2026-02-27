@@ -37,7 +37,10 @@ QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QgsLayerTreeCustomNode &ot
   , mName( other.mName )
 {}
 
-QString QgsLayerTreeCustomNode::name() const { return mName; }
+QString QgsLayerTreeCustomNode::name() const
+{
+  return mName;
+}
 
 void QgsLayerTreeCustomNode::setName( const QString &name )
 {
@@ -76,8 +79,15 @@ void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsRead
   parentElement.appendChild( elem );
 }
 
-QString QgsLayerTreeCustomNode::dump() const { return u"CUSTOM NODE: %1 checked=%2 id=%3\n"_s.arg( mName ).arg( mChecked ).arg( mId ); }
+QString QgsLayerTreeCustomNode::dump() const
+{
+  return u"CUSTOM NODE: %1 checked=%2 id=%3\n"_s.arg( mName ).arg( mChecked ).arg( mId );
+}
 
-QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::clone() const { return new QgsLayerTreeCustomNode( *this ); }
+QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::clone() const
+{
+  return new QgsLayerTreeCustomNode( *this );
+}
 
-void QgsLayerTreeCustomNode::resolveReferences( const QgsProject *, bool ) {}
+void QgsLayerTreeCustomNode::resolveReferences( const QgsProject *, bool )
+{}

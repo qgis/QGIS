@@ -30,21 +30,45 @@ QgsProcessingModelComponent::QgsProcessingModelComponent( const QString &descrip
   : mDescription( description )
 {}
 
-QString QgsProcessingModelComponent::description() const { return mDescription; }
+QString QgsProcessingModelComponent::description() const
+{
+  return mDescription;
+}
 
-void QgsProcessingModelComponent::setDescription( const QString &description ) { mDescription = description; }
+void QgsProcessingModelComponent::setDescription( const QString &description )
+{
+  mDescription = description;
+}
 
-QPointF QgsProcessingModelComponent::position() const { return mPosition; }
+QPointF QgsProcessingModelComponent::position() const
+{
+  return mPosition;
+}
 
-void QgsProcessingModelComponent::setPosition( QPointF position ) { mPosition = position; }
+void QgsProcessingModelComponent::setPosition( QPointF position )
+{
+  mPosition = position;
+}
 
-QSizeF QgsProcessingModelComponent::size() const { return mSize; }
+QSizeF QgsProcessingModelComponent::size() const
+{
+  return mSize;
+}
 
-void QgsProcessingModelComponent::setSize( QSizeF size ) { mSize = size; }
+void QgsProcessingModelComponent::setSize( QSizeF size )
+{
+  mSize = size;
+}
 
-QColor QgsProcessingModelComponent::color() const { return mColor; }
+QColor QgsProcessingModelComponent::color() const
+{
+  return mColor;
+}
 
-void QgsProcessingModelComponent::setColor( const QColor &color ) { mColor = color; }
+void QgsProcessingModelComponent::setColor( const QColor &color )
+{
+  mColor = color;
+}
 
 bool QgsProcessingModelComponent::linksCollapsed( Qt::Edge edge ) const
 {
@@ -81,7 +105,8 @@ void QgsProcessingModelComponent::setLinksCollapsed( Qt::Edge edge, bool collaps
   }
 }
 
-void QgsProcessingModelComponent::setComment( const QgsProcessingModelComment & ) {}
+void QgsProcessingModelComponent::setComment( const QgsProcessingModelComment & )
+{}
 
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {

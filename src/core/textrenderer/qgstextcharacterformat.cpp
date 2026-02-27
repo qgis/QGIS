@@ -111,41 +111,95 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mBackgroundPath = other.mBackgroundPath;
 }
 
-QColor QgsTextCharacterFormat::textColor() const { return mTextColor; }
+QColor QgsTextCharacterFormat::textColor() const
+{
+  return mTextColor;
+}
 
-void QgsTextCharacterFormat::setTextColor( const QColor &textColor ) { mTextColor = textColor; }
+void QgsTextCharacterFormat::setTextColor( const QColor &textColor )
+{
+  mTextColor = textColor;
+}
 
-double QgsTextCharacterFormat::fontPointSize() const { return mFontPointSize; }
+double QgsTextCharacterFormat::fontPointSize() const
+{
+  return mFontPointSize;
+}
 
-void QgsTextCharacterFormat::setFontPointSize( double size ) { mFontPointSize = size; }
+void QgsTextCharacterFormat::setFontPointSize( double size )
+{
+  mFontPointSize = size;
+}
 
-double QgsTextCharacterFormat::fontPercentageSize() const { return mFontPercentageSize; }
+double QgsTextCharacterFormat::fontPercentageSize() const
+{
+  return mFontPercentageSize;
+}
 
-void QgsTextCharacterFormat::setFontPercentageSize( double size ) { mFontPercentageSize = size; }
+void QgsTextCharacterFormat::setFontPercentageSize( double size )
+{
+  mFontPercentageSize = size;
+}
 
-QString QgsTextCharacterFormat::family() const { return mFontFamily; }
+QString QgsTextCharacterFormat::family() const
+{
+  return mFontFamily;
+}
 
-void QgsTextCharacterFormat::setFamily( const QString &family ) { mFontFamily = family; }
+void QgsTextCharacterFormat::setFamily( const QString &family )
+{
+  mFontFamily = family;
+}
 
-QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::strikeOut() const { return mStrikethrough; }
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::strikeOut() const
+{
+  return mStrikethrough;
+}
 
-void QgsTextCharacterFormat::setStrikeOut( BooleanValue strikethrough ) { mStrikethrough = strikethrough; }
+void QgsTextCharacterFormat::setStrikeOut( BooleanValue strikethrough )
+{
+  mStrikethrough = strikethrough;
+}
 
-QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::underline() const { return mUnderline; }
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::underline() const
+{
+  return mUnderline;
+}
 
-void QgsTextCharacterFormat::setUnderline( BooleanValue underline ) { mUnderline = underline; }
+void QgsTextCharacterFormat::setUnderline( BooleanValue underline )
+{
+  mUnderline = underline;
+}
 
-QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::overline() const { return mOverline; }
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::overline() const
+{
+  return mOverline;
+}
 
-void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue enabled ) { mOverline = enabled; }
+void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue enabled )
+{
+  mOverline = enabled;
+}
 
-QString QgsTextCharacterFormat::imagePath() const { return mImagePath; }
+QString QgsTextCharacterFormat::imagePath() const
+{
+  return mImagePath;
+}
 
-void QgsTextCharacterFormat::setImagePath( const QString &path ) { mImagePath = path; }
+void QgsTextCharacterFormat::setImagePath( const QString &path )
+{
+  mImagePath = path;
+}
 
-QSizeF QgsTextCharacterFormat::imageSize() const { return mImageSize; }
+QSizeF QgsTextCharacterFormat::imageSize() const
+{
+  return mImageSize;
+}
 
-void QgsTextCharacterFormat::setImageSize( const QSizeF &size ) { mImageSize = size; }
+void QgsTextCharacterFormat::setImageSize( const QSizeF &size )
+{
+  mImageSize = size;
+}
 
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const
 {
@@ -201,24 +255,57 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
   }
 }
 
-QString QgsTextCharacterFormat::backgroundImagePath() const { return mBackgroundPath; }
+QString QgsTextCharacterFormat::backgroundImagePath() const
+{
+  return mBackgroundPath;
+}
 
-void QgsTextCharacterFormat::setBackgroundImagePath( const QString &path ) { mBackgroundPath = path; }
+void QgsTextCharacterFormat::setBackgroundImagePath( const QString &path )
+{
+  mBackgroundPath = path;
+}
 
-QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const { return mItalic; }
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
+{
+  return mItalic;
+}
 
-void QgsTextCharacterFormat::setItalic( QgsTextCharacterFormat::BooleanValue enabled ) { mItalic = enabled; }
+void QgsTextCharacterFormat::setItalic( QgsTextCharacterFormat::BooleanValue enabled )
+{
+  mItalic = enabled;
+}
 
-int QgsTextCharacterFormat::fontWeight() const { return mFontWeight; }
+int QgsTextCharacterFormat::fontWeight() const
+{
+  return mFontWeight;
+}
 
-void QgsTextCharacterFormat::setFontWeight( int fontWeight ) { mFontWeight = fontWeight; }
+void QgsTextCharacterFormat::setFontWeight( int fontWeight )
+{
+  mFontWeight = fontWeight;
+}
 
-double QgsTextCharacterFormat::wordSpacing() const { return mWordSpacing; }
+double QgsTextCharacterFormat::wordSpacing() const
+{
+  return mWordSpacing;
+}
 
-void QgsTextCharacterFormat::setWordSpacing( double spacing ) { mWordSpacing = spacing; }
+void QgsTextCharacterFormat::setWordSpacing( double spacing )
+{
+  mWordSpacing = spacing;
+}
 
-bool QgsTextCharacterFormat::hasBackground() const { return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty(); }
+bool QgsTextCharacterFormat::hasBackground() const
+{
+  return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty();
+}
 
-QBrush QgsTextCharacterFormat::backgroundBrush() const { return mBackgroundBrush; }
+QBrush QgsTextCharacterFormat::backgroundBrush() const
+{
+  return mBackgroundBrush;
+}
 
-void QgsTextCharacterFormat::setBackgroundBrush( const QBrush &brush ) { mBackgroundBrush = brush; }
+void QgsTextCharacterFormat::setBackgroundBrush( const QBrush &brush )
+{
+  mBackgroundBrush = brush;
+}

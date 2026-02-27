@@ -58,11 +58,20 @@ QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLaye
   return *this;
 }
 
-QgsMapSettings &QgsLayerTreeFilterSettings::mapSettings() { return *mMapSettings.get(); }
+QgsMapSettings &QgsLayerTreeFilterSettings::mapSettings()
+{
+  return *mMapSettings.get();
+}
 
-QMap<QString, QString> QgsLayerTreeFilterSettings::layerFilterExpressions() const { return mLayerFilterExpressions; }
+QMap<QString, QString> QgsLayerTreeFilterSettings::layerFilterExpressions() const
+{
+  return mLayerFilterExpressions;
+}
 
-void QgsLayerTreeFilterSettings::setLayerFilterExpressions( const QMap<QString, QString> &expressions ) { mLayerFilterExpressions = expressions; }
+void QgsLayerTreeFilterSettings::setLayerFilterExpressions( const QMap<QString, QString> &expressions )
+{
+  mLayerFilterExpressions = expressions;
+}
 
 void QgsLayerTreeFilterSettings::setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree )
 {
@@ -80,15 +89,30 @@ void QgsLayerTreeFilterSettings::setLayerFilterExpressionsFromLayerTree( QgsLaye
   mLayerFilterExpressions = legendFilterExpressions;
 }
 
-QString QgsLayerTreeFilterSettings::layerFilterExpression( const QString &layerId ) const { return mLayerFilterExpressions.value( layerId ); }
+QString QgsLayerTreeFilterSettings::layerFilterExpression( const QString &layerId ) const
+{
+  return mLayerFilterExpressions.value( layerId );
+}
 
-QgsGeometry QgsLayerTreeFilterSettings::filterPolygon() const { return mFilterPolygon; }
+QgsGeometry QgsLayerTreeFilterSettings::filterPolygon() const
+{
+  return mFilterPolygon;
+}
 
-void QgsLayerTreeFilterSettings::setFilterPolygon( const QgsGeometry &newFilterPolygon ) { mFilterPolygon = newFilterPolygon; }
+void QgsLayerTreeFilterSettings::setFilterPolygon( const QgsGeometry &newFilterPolygon )
+{
+  mFilterPolygon = newFilterPolygon;
+}
 
-Qgis::LayerTreeFilterFlags QgsLayerTreeFilterSettings::flags() const { return mFlags; }
+Qgis::LayerTreeFilterFlags QgsLayerTreeFilterSettings::flags() const
+{
+  return mFlags;
+}
 
-void QgsLayerTreeFilterSettings::setFlags( Qgis::LayerTreeFilterFlags flags ) { mFlags = flags; }
+void QgsLayerTreeFilterSettings::setFlags( Qgis::LayerTreeFilterFlags flags )
+{
+  mFlags = flags;
+}
 
 void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, const QgsReferencedGeometry &polygon )
 {
@@ -144,4 +168,7 @@ QgsGeometry QgsLayerTreeFilterSettings::combinedVisibleExtentForLayer( const Qgs
     return QgsGeometry();
 }
 
-QList<QgsMapLayer *> QgsLayerTreeFilterSettings::layers() const { return _qgis_listQPointerToRaw( mLayers ); }
+QList<QgsMapLayer *> QgsLayerTreeFilterSettings::layers() const
+{
+  return _qgis_listQPointerToRaw( mLayers );
+}

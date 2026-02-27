@@ -509,11 +509,18 @@ QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
   return new QgsRuleBasedLabeling( rootRule );
 }
 
-QgsRuleBasedLabeling::~QgsRuleBasedLabeling() {}
+QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
+{}
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() { return mRootRule.get(); }
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule()
+{
+  return mRootRule.get();
+}
 
-const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const { return mRootRule.get(); }
+const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const
+{
+  return mRootRule.get();
+}
 
 
 QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
@@ -528,7 +535,10 @@ QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, 
   return rl;
 }
 
-QString QgsRuleBasedLabeling::type() const { return u"rule-based"_s; }
+QString QgsRuleBasedLabeling::type() const
+{
+  return u"rule-based"_s;
+}
 
 QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -542,7 +552,10 @@ QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc, const QgsReadWriteCon
   return elem;
 }
 
-QgsVectorLayerLabelProvider *QgsRuleBasedLabeling::provider( QgsVectorLayer *layer ) const { return new QgsRuleBasedLabelProvider( *this, layer, false ); }
+QgsVectorLayerLabelProvider *QgsRuleBasedLabeling::provider( QgsVectorLayer *layer ) const
+{
+  return new QgsRuleBasedLabelProvider( *this, layer, false );
+}
 
 QStringList QgsRuleBasedLabeling::subProviders() const
 {
@@ -560,11 +573,20 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( const QString &providerId ) 
   return QgsPalLayerSettings();
 }
 
-bool QgsRuleBasedLabeling::accept( QgsStyleEntityVisitorInterface *visitor ) const { return mRootRule->accept( visitor ); }
+bool QgsRuleBasedLabeling::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  return mRootRule->accept( visitor );
+}
 
-bool QgsRuleBasedLabeling::requiresAdvancedEffects() const { return mRootRule->requiresAdvancedEffects(); }
+bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
+{
+  return mRootRule->requiresAdvancedEffects();
+}
 
-bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const { return mRootRule->hasNonDefaultCompositionMode(); }
+bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const
+{
+  return mRootRule->hasNonDefaultCompositionMode();
+}
 
 void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
 {

@@ -78,14 +78,20 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata = other.mLayerMetadata;
 }
 
-Qgis::DataProviderFlags QgsArcGisVectorTileServiceDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsArcGisVectorTileServiceDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 Qgis::VectorTileProviderFlags QgsArcGisVectorTileServiceDataProvider::providerFlags() const
 {
   return QgsXyzVectorTileDataProviderBase::providerFlags() | Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
 }
 
-Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const { return Qgis::VectorTileProviderCapability::ReadLayerMetadata; }
+Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+{
+  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
+}
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const
 {
@@ -371,9 +377,15 @@ QgsArcGisVectorTileServiceDataProviderMetadata::QgsArcGisVectorTileServiceDataPr
   : QgsProviderMetadata( QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY, QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsArcGisVectorTileServiceDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
+QIcon QgsArcGisVectorTileServiceDataProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsArcGisVectorTileServiceDataProviderMetadata::providerCapabilities() const { return QgsProviderMetadata::ProviderCapabilities(); }
+QgsProviderMetadata::ProviderCapabilities QgsArcGisVectorTileServiceDataProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapabilities();
+}
 
 QgsArcGisVectorTileServiceDataProvider *QgsArcGisVectorTileServiceDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -444,6 +456,9 @@ QString QgsArcGisVectorTileServiceDataProviderMetadata::relativeToAbsoluteUri( c
   return uri;
 }
 
-QList<Qgis::LayerType> QgsArcGisVectorTileServiceDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
+QList<Qgis::LayerType> QgsArcGisVectorTileServiceDataProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
 
 ///@endcond

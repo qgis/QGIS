@@ -330,9 +330,15 @@ class QgsSpatialIndexData : public QSharedData
 // -------------------------------------------------------------------------
 
 
-QgsSpatialIndex::QgsSpatialIndex( QgsSpatialIndex::Flags flags ) { d = new QgsSpatialIndexData( flags ); }
+QgsSpatialIndex::QgsSpatialIndex( QgsSpatialIndex::Flags flags )
+{
+  d = new QgsSpatialIndexData( flags );
+}
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback, QgsSpatialIndex::Flags flags ) { d = new QgsSpatialIndexData( fi, feedback, flags ); }
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
+{
+  d = new QgsSpatialIndexData( fi, feedback, flags );
+}
 
 ///@cond PRIVATE // else throws a doxygen warning?
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags )
@@ -420,7 +426,10 @@ bool QgsSpatialIndex::insertFeature( const QgsFeature &f )
   return addFeature( feature );
 }
 
-bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) { return addFeature( id, bounds ); }
+bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds )
+{
+  return addFeature( id, bounds );
+}
 
 bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
 {
@@ -537,4 +546,7 @@ QgsGeometry QgsSpatialIndex::geometry( QgsFeatureId id ) const
   return d->mGeometries.value( id );
 }
 
-QAtomicInt QgsSpatialIndex::refs() const { return d->ref; }
+QAtomicInt QgsSpatialIndex::refs() const
+{
+  return d->ref;
+}

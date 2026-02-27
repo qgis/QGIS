@@ -206,7 +206,10 @@ void QgsGml::fillMapsFromParser()
   }
 }
 
-void QgsGml::setFinished() { mFinished = true; }
+void QgsGml::setFinished()
+{
+  mFinished = true;
+}
 
 void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 {
@@ -323,8 +326,11 @@ static QString stripNS( const QString &string )
 }
 
 QgsGmlStreamingParser::QgsGmlStreamingParser(
-  const QList<LayerProperties> &layerProperties, const QgsFields &fields, const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
-  AxisOrientationLogic axisOrientationLogic, bool invertAxisOrientation
+  const QList<LayerProperties> &layerProperties,
+  const QgsFields &fields,
+  const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
+  AxisOrientationLogic axisOrientationLogic,
+  bool invertAxisOrientation
 )
   : mLayerProperties( layerProperties )
   , mTypeNameUTF8Len( 0 )

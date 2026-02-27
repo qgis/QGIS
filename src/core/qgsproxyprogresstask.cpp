@@ -50,7 +50,10 @@ bool QgsProxyProgressTask::run()
   return mResult;
 }
 
-void QgsProxyProgressTask::setProxyProgress( double progress ) { QMetaObject::invokeMethod( this, "setProgress", Qt::AutoConnection, Q_ARG( double, progress ) ); }
+void QgsProxyProgressTask::setProxyProgress( double progress )
+{
+  QMetaObject::invokeMethod( this, "setProgress", Qt::AutoConnection, Q_ARG( double, progress ) );
+}
 
 void QgsProxyProgressTask::cancel()
 {
@@ -69,6 +72,12 @@ QgsScopedProxyProgressTask::QgsScopedProxyProgressTask( const QString &descripti
   QgsApplication::taskManager()->addTask( mTask );
 }
 
-QgsScopedProxyProgressTask::~QgsScopedProxyProgressTask() { mTask->finalize( true ); }
+QgsScopedProxyProgressTask::~QgsScopedProxyProgressTask()
+{
+  mTask->finalize( true );
+}
 
-void QgsScopedProxyProgressTask::setProgress( double progress ) { mTask->setProxyProgress( progress ); }
+void QgsScopedProxyProgressTask::setProgress( double progress )
+{
+  mTask->setProxyProgress( progress );
+}

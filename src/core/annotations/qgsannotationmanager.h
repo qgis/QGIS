@@ -115,7 +115,8 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * \see writeXml()
      * \since QGIS 3.40
      */
-    bool readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
+    bool readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
+      SIP_SKIP;
 
     /**
      * Returns a DOM element representing the state of the manager.

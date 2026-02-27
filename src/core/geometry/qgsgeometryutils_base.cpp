@@ -431,8 +431,17 @@ int QgsGeometryUtilsBase::closestSideOfRectangle( double right, double bottom, d
 }
 
 void QgsGeometryUtilsBase::perpendicularCenterSegment(
-  double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y,
-  double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength
+  double pointx,
+  double pointy,
+  double segmentPoint1x,
+  double segmentPoint1y,
+  double segmentPoint2x,
+  double segmentPoint2y,
+  double &perpendicularSegmentPoint1x,
+  double &perpendicularSegmentPoint1y,
+  double &perpendicularSegmentPoint2x,
+  double &perpendicularSegmentPoint2y,
+  double desiredSegmentLength
 )
 {
   QgsVector segmentVector = QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
@@ -581,11 +590,13 @@ bool QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( double x1, double 
   return lineIntersection( x1, y1, v1, x2, y2, v2, intersectionX, intersectionY );
 }
 
-static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 ) { return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon ); }
+static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 )
+{
+  return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon );
+}
 
 bool QgsGeometryUtilsBase::segmentIntersection(
-  double p1x, double p1y, double p2x, double p2y, double q1x, double q1y, double q2x, double q2y, double &intersectionPointX, double &intersectionPointY, bool &isIntersection, double tolerance,
-  bool acceptImproperIntersection
+  double p1x, double p1y, double p2x, double p2y, double q1x, double q1y, double q2x, double q2y, double &intersectionPointX, double &intersectionPointY, bool &isIntersection, double tolerance, bool acceptImproperIntersection
 )
 {
   isIntersection = false;
@@ -708,7 +719,10 @@ bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const Qg
   return true;
 }
 
-double QgsGeometryUtilsBase::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) { return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) ); }
+double QgsGeometryUtilsBase::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY )
+{
+  return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
+}
 
 double QgsGeometryUtilsBase::pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
 {
@@ -813,8 +827,15 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
 
 
 double QgsGeometryUtilsBase::maximumFilletRadius(
-  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
-  const double segment2EndY, double epsilon
+  const double segment1StartX,
+  const double segment1StartY,
+  const double segment1EndX,
+  const double segment1EndY,
+  const double segment2StartX,
+  const double segment2StartY,
+  const double segment2EndX,
+  const double segment2EndY,
+  double epsilon
 )
 {
   double intersectionX, intersectionY;
@@ -891,9 +912,26 @@ double QgsGeometryUtilsBase::maximumFilletRadius(
 }
 
 bool QgsGeometryUtilsBase::createFillet(
-  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
-  const double segment2EndY, const double radius, double *filletPointsX, double *filletPointsY, double *trim1StartX, double *trim1StartY, double *trim1EndX, double *trim1EndY, double *trim2StartX,
-  double *trim2StartY, double *trim2EndX, double *trim2EndY, const double epsilon
+  const double segment1StartX,
+  const double segment1StartY,
+  const double segment1EndX,
+  const double segment1EndY,
+  const double segment2StartX,
+  const double segment2StartY,
+  const double segment2EndX,
+  const double segment2EndY,
+  const double radius,
+  double *filletPointsX,
+  double *filletPointsY,
+  double *trim1StartX,
+  double *trim1StartY,
+  double *trim1EndX,
+  double *trim1EndY,
+  double *trim2StartX,
+  double *trim2StartY,
+  double *trim2EndX,
+  double *trim2EndY,
+  const double epsilon
 )
 {
   if ( radius <= 0 )
@@ -1040,9 +1078,29 @@ bool QgsGeometryUtilsBase::createFillet(
 }
 
 bool QgsGeometryUtilsBase::createChamfer(
-  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
-  const double segment2EndY, double distance1, double distance2, double &chamferStartX, double &chamferStartY, double &chamferEndX, double &chamferEndY, double *trim1StartX, double *trim1StartY,
-  double *trim1EndX, double *trim1EndY, double *trim2StartX, double *trim2StartY, double *trim2EndX, double *trim2EndY, const double epsilon
+  const double segment1StartX,
+  const double segment1StartY,
+  const double segment1EndX,
+  const double segment1EndY,
+  const double segment2StartX,
+  const double segment2StartY,
+  const double segment2EndX,
+  const double segment2EndY,
+  double distance1,
+  double distance2,
+  double &chamferStartX,
+  double &chamferStartY,
+  double &chamferEndX,
+  double &chamferEndY,
+  double *trim1StartX,
+  double *trim1StartY,
+  double *trim1EndX,
+  double *trim1EndY,
+  double *trim2StartX,
+  double *trim2StartY,
+  double *trim2EndX,
+  double *trim2EndY,
+  const double epsilon
 )
 {
   // Apply symmetric distance if distance2 is negative

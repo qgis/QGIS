@@ -303,8 +303,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see pyramidResamplingMethods()
      */
     virtual QString buildPyramids(
-      const QList<QgsRasterPyramid> &pyramidList, const QString &resamplingMethod = "NEAREST", Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
-      const QStringList &configOptions = QStringList(), QgsRasterBlockFeedback *feedback = nullptr
+      const QList<QgsRasterPyramid> &pyramidList,
+      const QString &resamplingMethod = "NEAREST",
+      Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
+      const QStringList &configOptions = QStringList(),
+      QgsRasterBlockFeedback *feedback = nullptr
     )
     {
       Q_UNUSED( pyramidList )
@@ -488,7 +491,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create(
-      const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QString &providerKey,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList()
     );
 

@@ -35,7 +35,10 @@ static MINHEAP initiate_minheap( int npoints )
   return tree;
 }
 
-static void destroy_minheap( MINHEAP tree ) { lwfree( tree.key_array ); }
+static void destroy_minheap( MINHEAP tree )
+{
+  lwfree( tree.key_array );
+}
 
 /**
  * Calculate the area of a triangle in 2d
@@ -241,7 +244,8 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
       lwerror(
         "Oh no, this is a bug. For some reason the minHeap returned our points in the wrong order. Please file a ticket in PostGIS ticket system, or send a mail at the mailing list. Returned area = "
         "%lf, and last area = %lf",
-        ea->res_arealist[current], check_order_min_area
+        ea->res_arealist[current],
+        check_order_min_area
       );
 
     check_order_min_area = ea->res_arealist[current];

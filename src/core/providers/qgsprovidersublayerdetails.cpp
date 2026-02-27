@@ -60,4 +60,7 @@ bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &o
          && mSkippedContainerScan == other.mSkippedContainerScan && mDriverName == other.mDriverName;
 }
 
-bool QgsProviderSublayerDetails::operator!=( const QgsProviderSublayerDetails &other ) const { return !( *this == other ); }
+bool QgsProviderSublayerDetails::operator!=( const QgsProviderSublayerDetails &other ) const
+{
+  return !( *this == other );
+}

@@ -340,9 +340,15 @@ void QgsRenderContext::setTransformContext( const QgsCoordinateTransformContext 
 #endif
 }
 
-void QgsRenderContext::setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
+void QgsRenderContext::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
 
-QgsFeedback *QgsRenderContext::feedback() const { return mFeedback; }
+QgsFeedback *QgsRenderContext::feedback() const
+{
+  return mFeedback;
+}
 
 void QgsRenderContext::setFlags( Qgis::RenderContextFlags flags )
 {
@@ -359,9 +365,15 @@ void QgsRenderContext::setFlag( Qgis::RenderContextFlag flag, bool on )
   matchRasterizedRenderingPolicyToFlags();
 }
 
-Qgis::RenderContextFlags QgsRenderContext::flags() const { return mFlags; }
+Qgis::RenderContextFlags QgsRenderContext::flags() const
+{
+  return mFlags;
+}
 
-bool QgsRenderContext::testFlag( Qgis::RenderContextFlag flag ) const { return mFlags.testFlag( flag ); }
+bool QgsRenderContext::testFlag( Qgis::RenderContextFlag flag ) const
+{
+  return mFlags.testFlag( flag );
+}
 
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
@@ -435,9 +447,15 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   return ctx;
 }
 
-bool QgsRenderContext::forceVectorOutput() const { return mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::Default; }
+bool QgsRenderContext::forceVectorOutput() const
+{
+  return mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::Default;
+}
 
-bool QgsRenderContext::useAdvancedEffects() const { return mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::ForceVector; }
+bool QgsRenderContext::useAdvancedEffects() const
+{
+  return mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::ForceVector;
+}
 
 void QgsRenderContext::setUseAdvancedEffects( bool enabled )
 {
@@ -453,13 +471,25 @@ void QgsRenderContext::setUseAdvancedEffects( bool enabled )
   }
 }
 
-bool QgsRenderContext::drawEditingInformation() const { return mFlags.testFlag( Qgis::RenderContextFlag::DrawEditingInfo ); }
+bool QgsRenderContext::drawEditingInformation() const
+{
+  return mFlags.testFlag( Qgis::RenderContextFlag::DrawEditingInfo );
+}
 
-bool QgsRenderContext::showSelection() const { return mFlags.testFlag( Qgis::RenderContextFlag::DrawSelection ); }
+bool QgsRenderContext::showSelection() const
+{
+  return mFlags.testFlag( Qgis::RenderContextFlag::DrawSelection );
+}
 
-void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform &t ) { mCoordTransform = t; }
+void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform &t )
+{
+  mCoordTransform = t;
+}
 
-void QgsRenderContext::setDrawEditingInformation( bool b ) { setFlag( Qgis::RenderContextFlag::DrawEditingInfo, b ); }
+void QgsRenderContext::setDrawEditingInformation( bool b )
+{
+  setFlag( Qgis::RenderContextFlag::DrawEditingInfo, b );
+}
 
 void QgsRenderContext::setForceVectorOutput( bool force )
 {
@@ -483,11 +513,20 @@ void QgsRenderContext::setForceVectorOutput( bool force )
   }
 }
 
-void QgsRenderContext::setShowSelection( const bool showSelection ) { setFlag( Qgis::RenderContextFlag::DrawSelection, showSelection ); }
+void QgsRenderContext::setShowSelection( const bool showSelection )
+{
+  setFlag( Qgis::RenderContextFlag::DrawSelection, showSelection );
+}
 
-bool QgsRenderContext::useRenderingOptimization() const { return mFlags.testFlag( Qgis::RenderContextFlag::UseRenderingOptimization ); }
+bool QgsRenderContext::useRenderingOptimization() const
+{
+  return mFlags.testFlag( Qgis::RenderContextFlag::UseRenderingOptimization );
+}
 
-void QgsRenderContext::setUseRenderingOptimization( bool enabled ) { setFlag( Qgis::RenderContextFlag::UseRenderingOptimization, enabled ); }
+void QgsRenderContext::setUseRenderingOptimization( bool enabled )
+{
+  setFlag( Qgis::RenderContextFlag::UseRenderingOptimization, enabled );
+}
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp )
 {
@@ -501,7 +540,10 @@ void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider 
   }
 }
 
-const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const { return mFeatureFilterProvider.get(); }
+const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const
+{
+  return mFeatureFilterProvider.get();
+}
 
 double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale, Qgis::RenderSubcomponentProperty property ) const
 {
@@ -868,35 +910,80 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
   return meters;
 }
 
-QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const { return mRenderedFeatureHandlers; }
+QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
+}
 
-QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const { return mClippingRegions; }
+QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const
+{
+  return mClippingRegions;
+}
 
-QgsGeometry QgsRenderContext::featureClipGeometry() const { return mFeatureClipGeometry; }
+QgsGeometry QgsRenderContext::featureClipGeometry() const
+{
+  return mFeatureClipGeometry;
+}
 
-void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry ) { mFeatureClipGeometry = geometry; }
+void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry )
+{
+  mFeatureClipGeometry = geometry;
+}
 
-QPointF QgsRenderContext::textureOrigin() const { return mTextureOrigin; }
+QPointF QgsRenderContext::textureOrigin() const
+{
+  return mTextureOrigin;
+}
 
-void QgsRenderContext::setTextureOrigin( const QPointF &origin ) { mTextureOrigin = origin; }
+void QgsRenderContext::setTextureOrigin( const QPointF &origin )
+{
+  mTextureOrigin = origin;
+}
 
-void QgsRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings ) { mMaskRenderSettings = settings; }
+void QgsRenderContext::setMaskSettings( const QgsMaskRenderSettings &settings )
+{
+  mMaskRenderSettings = settings;
+}
 
-QgsDoubleRange QgsRenderContext::zRange() const { return mZRange; }
+QgsDoubleRange QgsRenderContext::zRange() const
+{
+  return mZRange;
+}
 
-void QgsRenderContext::setZRange( const QgsDoubleRange &range ) { mZRange = range; }
+void QgsRenderContext::setZRange( const QgsDoubleRange &range )
+{
+  mZRange = range;
+}
 
-QSize QgsRenderContext::outputSize() const { return mSize; }
+QSize QgsRenderContext::outputSize() const
+{
+  return mSize;
+}
 
-void QgsRenderContext::setOutputSize( QSize size ) { mSize = size; }
+void QgsRenderContext::setOutputSize( QSize size )
+{
+  mSize = size;
+}
 
-float QgsRenderContext::devicePixelRatio() const { return mDevicePixelRatio; }
+float QgsRenderContext::devicePixelRatio() const
+{
+  return mDevicePixelRatio;
+}
 
-void QgsRenderContext::setDevicePixelRatio( float ratio ) { mDevicePixelRatio = ratio; }
+void QgsRenderContext::setDevicePixelRatio( float ratio )
+{
+  mDevicePixelRatio = ratio;
+}
 
-QSize QgsRenderContext::deviceOutputSize() const { return outputSize() * mDevicePixelRatio; }
+QSize QgsRenderContext::deviceOutputSize() const
+{
+  return outputSize() * mDevicePixelRatio;
+}
 
-Qgis::RasterizedRenderingPolicy QgsRenderContext::rasterizedRenderingPolicy() const { return mRasterizedRenderingPolicy; }
+Qgis::RasterizedRenderingPolicy QgsRenderContext::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
 
 void QgsRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
 {
@@ -918,17 +1005,35 @@ void QgsRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPo
   }
 }
 
-double QgsRenderContext::frameRate() const { return mFrameRate; }
+double QgsRenderContext::frameRate() const
+{
+  return mFrameRate;
+}
 
-void QgsRenderContext::setFrameRate( double rate ) { mFrameRate = rate; }
+void QgsRenderContext::setFrameRate( double rate )
+{
+  mFrameRate = rate;
+}
 
-long long QgsRenderContext::currentFrame() const { return mCurrentFrame; }
+long long QgsRenderContext::currentFrame() const
+{
+  return mCurrentFrame;
+}
 
-void QgsRenderContext::setCurrentFrame( long long frame ) { mCurrentFrame = frame; }
+void QgsRenderContext::setCurrentFrame( long long frame )
+{
+  mCurrentFrame = frame;
+}
 
-QgsElevationMap *QgsRenderContext::elevationMap() const { return mElevationMap; }
+QgsElevationMap *QgsRenderContext::elevationMap() const
+{
+  return mElevationMap;
+}
 
-void QgsRenderContext::setElevationMap( QgsElevationMap *map ) { mElevationMap = map; }
+void QgsRenderContext::setElevationMap( QgsElevationMap *map )
+{
+  mElevationMap = map;
+}
 
 void QgsRenderContext::matchRasterizedRenderingPolicyToFlags()
 {
@@ -979,7 +1084,10 @@ bool QgsRenderContext::symbolLayerHasClipGeometries( const QString &symbolLayerI
   return !it.value().isEmpty();
 }
 
-QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const { return mSymbolLayerClippingGeometries[symbolLayerId]; }
+QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const
+{
+  return mSymbolLayerClippingGeometries[symbolLayerId];
+}
 
 void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers )
 {
@@ -988,10 +1096,22 @@ void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer 
     mDisabledSymbolLayers << symbolLayer->id();
 }
 
-void QgsRenderContext::setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers ) { mDisabledSymbolLayers = symbolLayers; }
+void QgsRenderContext::setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers )
+{
+  mDisabledSymbolLayers = symbolLayers;
+}
 
-QSet<const QgsSymbolLayer *> QgsRenderContext::disabledSymbolLayers() const { return QSet<const QgsSymbolLayer *>(); }
+QSet<const QgsSymbolLayer *> QgsRenderContext::disabledSymbolLayers() const
+{
+  return QSet<const QgsSymbolLayer *>();
+}
 
-QSet<QString> QgsRenderContext::disabledSymbolLayersV2() const { return mDisabledSymbolLayers; }
+QSet<QString> QgsRenderContext::disabledSymbolLayersV2() const
+{
+  return mDisabledSymbolLayers;
+}
 
-bool QgsRenderContext::isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const { return !mDisabledSymbolLayers.contains( layer->id() ); }
+bool QgsRenderContext::isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const
+{
+  return !mDisabledSymbolLayers.contains( layer->id() );
+}

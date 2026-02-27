@@ -133,7 +133,10 @@ int QgsMeshVertexCirculator::turnClockwise() const
   return mCurrentFace;
 }
 
-int QgsMeshVertexCirculator::currentFaceIndex() const { return mCurrentFace; }
+int QgsMeshVertexCirculator::currentFaceIndex() const
+{
+  return mCurrentFace;
+}
 
 QgsMeshFace QgsMeshVertexCirculator::currentFace() const
 {
@@ -217,7 +220,10 @@ int QgsMeshVertexCirculator::oppositeVertexCounterClockwise() const
   return face.at( ( vertexPosition - 1 + face.count() ) % face.count() );
 }
 
-bool QgsMeshVertexCirculator::isValid() const { return mIsValid; }
+bool QgsMeshVertexCirculator::isValid() const
+{
+  return mIsValid;
+}
 
 QList<int> QgsMeshVertexCirculator::facesAround() const
 {
@@ -497,7 +503,10 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
   }
 }
 
-QgsMeshVertexCirculator QgsTopologicalMesh::vertexCirculator( int vertexIndex ) const { return QgsMeshVertexCirculator( *this, vertexIndex ); }
+QgsMeshVertexCirculator QgsTopologicalMesh::vertexCirculator( int vertexIndex ) const
+{
+  return QgsMeshVertexCirculator( *this, vertexIndex );
+}
 
 QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> &faceIndexes ) const
 {
@@ -514,7 +523,10 @@ QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> &faceIndexes ) 
   return faces;
 }
 
-void QgsTopologicalMesh::dereferenceAsFreeVertex( int vertexIndex ) { mFreeVertices.remove( vertexIndex ); }
+void QgsTopologicalMesh::dereferenceAsFreeVertex( int vertexIndex )
+{
+  mFreeVertices.remove( vertexIndex );
+}
 
 void QgsTopologicalMesh::referenceAsFreeVertex( int vertexIndex )
 {
@@ -576,7 +588,10 @@ QgsMeshEditingError QgsTopologicalMesh::checkTopology( const QgsMesh &mesh, int 
   return error;
 }
 
-QgsMesh *QgsTopologicalMesh::mesh() const { return mMesh; }
+QgsMesh *QgsTopologicalMesh::mesh() const
+{
+  return mMesh;
+}
 
 int QgsTopologicalMesh::firstFaceLinked( int vertexIndex ) const
 {
@@ -606,7 +621,10 @@ bool QgsTopologicalMesh::isVertexFree( int vertexIndex ) const
   return mVertexToFace.at( vertexIndex ) == -1;
 }
 
-QList<int> QgsTopologicalMesh::freeVerticesIndexes() const { return QList<int>( mFreeVertices.begin(), mFreeVertices.end() ); }
+QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
+{
+  return QList<int>( mFreeVertices.begin(), mFreeVertices.end() );
+}
 
 QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise )
 {
@@ -989,23 +1007,50 @@ bool QgsTopologicalMesh::renumberFaces( QVector<int> &oldToNewIndex ) const
   return true;
 }
 
-QVector<QgsMeshFace> QgsTopologicalMesh::Changes::addedFaces() const { return mFacesToAdd; }
+QVector<QgsMeshFace> QgsTopologicalMesh::Changes::addedFaces() const
+{
+  return mFacesToAdd;
+}
 
-QVector<QgsMeshFace> QgsTopologicalMesh::Changes::removedFaces() const { return mFacesToRemove; }
+QVector<QgsMeshFace> QgsTopologicalMesh::Changes::removedFaces() const
+{
+  return mFacesToRemove;
+}
 
-QList<int> QgsTopologicalMesh::Changes::removedFaceIndexes() const { return mFaceIndexesToRemove; }
+QList<int> QgsTopologicalMesh::Changes::removedFaceIndexes() const
+{
+  return mFaceIndexesToRemove;
+}
 
-QVector<QgsMeshVertex> QgsTopologicalMesh::Changes::addedVertices() const { return mVerticesToAdd; }
+QVector<QgsMeshVertex> QgsTopologicalMesh::Changes::addedVertices() const
+{
+  return mVerticesToAdd;
+}
 
-QList<int> QgsTopologicalMesh::Changes::changedCoordinatesVerticesIndexes() const { return mChangeCoordinateVerticesIndexes; }
+QList<int> QgsTopologicalMesh::Changes::changedCoordinatesVerticesIndexes() const
+{
+  return mChangeCoordinateVerticesIndexes;
+}
 
-QList<double> QgsTopologicalMesh::Changes::newVerticesZValues() const { return mNewZValues; }
+QList<double> QgsTopologicalMesh::Changes::newVerticesZValues() const
+{
+  return mNewZValues;
+}
 
-QList<QgsPointXY> QgsTopologicalMesh::Changes::newVerticesXYValues() const { return mNewXYValues; }
+QList<QgsPointXY> QgsTopologicalMesh::Changes::newVerticesXYValues() const
+{
+  return mNewXYValues;
+}
 
-QList<QgsPointXY> QgsTopologicalMesh::Changes::oldVerticesXYValues() const { return mOldXYValues; }
+QList<QgsPointXY> QgsTopologicalMesh::Changes::oldVerticesXYValues() const
+{
+  return mOldXYValues;
+}
 
-QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() const { return mNativeFacesIndexesGeometryChanged; }
+QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() const
+{
+  return mNativeFacesIndexesGeometryChanged;
+}
 
 bool QgsTopologicalMesh::Changes::isEmpty() const
 {
@@ -1017,7 +1062,10 @@ bool QgsTopologicalMesh::Changes::isEmpty() const
   );
 }
 
-QList<int> QgsTopologicalMesh::Changes::verticesToRemoveIndexes() const { return mVerticesToRemoveIndexes; }
+QList<int> QgsTopologicalMesh::Changes::verticesToRemoveIndexes() const
+{
+  return mVerticesToRemoveIndexes;
+}
 
 int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
 {
@@ -1569,7 +1617,10 @@ void QgsTopologicalMesh::TopologicalFaces::clear()
   mBoundaries.clear();
 }
 
-QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces::facesNeighborhood() const { return mFacesNeighborhood; }
+QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces::facesNeighborhood() const
+{
+  return mFacesNeighborhood;
+}
 
 int QgsTopologicalMesh::TopologicalFaces::vertexToFace( int vertexIndex ) const
 {
@@ -1713,7 +1764,10 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
   return ret;
 }
 
-QVector<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const { return mFacesNeighborhood.at( faceIndex ); }
+QVector<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const
+{
+  return mFacesNeighborhood.at( faceIndex );
+}
 
 QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
 {

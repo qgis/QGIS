@@ -917,7 +917,11 @@ bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 QStringList QgsGdalUtils::vsiArchiveFileExtensions()
 {
   QStringList res {
-    u".zip"_s, u".tar"_s, u".tar.gz"_s, u".tgz"_s, u".gz"_s,
+    u".zip"_s,
+    u".tar"_s,
+    u".tar.gz"_s,
+    u".tgz"_s,
+    u".gz"_s,
   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   res.append( { u".7z"_s, u".lpk"_s, u".lpkx"_s, u".mpk"_s, u".mpkx"_s, u".rar"_s } );

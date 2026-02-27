@@ -42,7 +42,13 @@ This method calls the addFeature method of the backend
     virtual bool saveEdits( QgsVectorLayer *layer ) const;
 
      virtual bool copyMoveFeatures(
-      QgsVectorLayer *layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0,
+      QgsVectorLayer *layer,
+      QgsFeatureRequest &request,
+      double dx = 0,
+      double dy = 0,
+      QString *errorMsg = 0,
+      const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = 0,
       QString *childrenInfoMsg = 0
     ) const;
 

@@ -40,9 +40,15 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataPro
   setTransformContext( other.transformContext() );
 }
 
-Qgis::VectorTileProviderFlags QgsVectorTileDataProvider::providerFlags() const { return Qgis::VectorTileProviderFlags(); }
+Qgis::VectorTileProviderFlags QgsVectorTileDataProvider::providerFlags() const
+{
+  return Qgis::VectorTileProviderFlags();
+}
 
-Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const { return Qgis::VectorTileProviderCapabilities(); }
+Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
+{
+  return Qgis::VectorTileProviderCapabilities();
+}
 
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
@@ -104,7 +110,10 @@ QImage QgsVectorTileDataProvider::spriteImage() const
 }
 
 
-QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData() { mTileCache.setMaxCost( 200 ); }
+QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData()
+{
+  mTileCache.setMaxCost( 200 );
+}
 
 bool QgsVectorTileDataProviderSharedData::getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ tile )
 {

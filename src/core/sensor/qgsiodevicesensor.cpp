@@ -30,7 +30,8 @@ using namespace Qt::StringLiterals;
 #include <sys/socket.h>
 #endif
 
-QgsIODeviceSensor::~QgsIODeviceSensor() {}
+QgsIODeviceSensor::~QgsIODeviceSensor()
+{}
 
 void QgsIODeviceSensor::initIODevice( QIODevice *device )
 {
@@ -42,7 +43,10 @@ void QgsIODeviceSensor::initIODevice( QIODevice *device )
   }
 }
 
-QIODevice *QgsIODeviceSensor::iODevice() const { return mIODevice.get(); }
+QIODevice *QgsIODeviceSensor::iODevice() const
+{
+  return mIODevice.get();
+}
 
 void QgsIODeviceSensor::parseData()
 {
@@ -64,11 +68,20 @@ QgsTcpSocketSensor::QgsTcpSocketSensor( QObject *parent )
   initIODevice( mTcpSocket );
 }
 
-QgsTcpSocketSensor *QgsTcpSocketSensor::create( QObject *parent ) { return new QgsTcpSocketSensor( parent ); }
+QgsTcpSocketSensor *QgsTcpSocketSensor::create( QObject *parent )
+{
+  return new QgsTcpSocketSensor( parent );
+}
 
-QString QgsTcpSocketSensor::type() const { return "tcp_socket"_L1; }
+QString QgsTcpSocketSensor::type() const
+{
+  return "tcp_socket"_L1;
+}
 
-QString QgsTcpSocketSensor::hostName() const { return mHostName; }
+QString QgsTcpSocketSensor::hostName() const
+{
+  return mHostName;
+}
 
 void QgsTcpSocketSensor::setHostName( const QString &hostName )
 {
@@ -78,7 +91,10 @@ void QgsTcpSocketSensor::setHostName( const QString &hostName )
   mHostName = hostName;
 }
 
-int QgsTcpSocketSensor::port() const { return mPort; }
+int QgsTcpSocketSensor::port() const
+{
+  return mPort;
+}
 
 void QgsTcpSocketSensor::setPort( int port )
 {
@@ -99,7 +115,10 @@ void QgsTcpSocketSensor::handleConnect()
   mTcpSocket->connectToHost( mHostName, mPort, QTcpSocket::ReadOnly );
 }
 
-void QgsTcpSocketSensor::handleDisconnect() { mTcpSocket->close(); }
+void QgsTcpSocketSensor::handleDisconnect()
+{
+  mTcpSocket->close();
+}
 
 void QgsTcpSocketSensor::handleError( QAbstractSocket::SocketError error )
 {
@@ -191,11 +210,20 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
   initIODevice( mBuffer );
 }
 
-QgsUdpSocketSensor *QgsUdpSocketSensor::create( QObject *parent ) { return new QgsUdpSocketSensor( parent ); }
+QgsUdpSocketSensor *QgsUdpSocketSensor::create( QObject *parent )
+{
+  return new QgsUdpSocketSensor( parent );
+}
 
-QString QgsUdpSocketSensor::type() const { return "udp_socket"_L1; }
+QString QgsUdpSocketSensor::type() const
+{
+  return "udp_socket"_L1;
+}
 
-QString QgsUdpSocketSensor::hostName() const { return mHostName; }
+QString QgsUdpSocketSensor::hostName() const
+{
+  return mHostName;
+}
 
 void QgsUdpSocketSensor::setHostName( const QString &hostName )
 {
@@ -205,7 +233,10 @@ void QgsUdpSocketSensor::setHostName( const QString &hostName )
   mHostName = hostName;
 }
 
-int QgsUdpSocketSensor::port() const { return mPort; }
+int QgsUdpSocketSensor::port() const
+{
+  return mPort;
+}
 
 void QgsUdpSocketSensor::setPort( int port )
 {
@@ -310,11 +341,20 @@ QgsSerialPortSensor::QgsSerialPortSensor( QObject *parent )
   initIODevice( mSerialPort );
 }
 
-QgsSerialPortSensor *QgsSerialPortSensor::create( QObject *parent ) { return new QgsSerialPortSensor( parent ); }
+QgsSerialPortSensor *QgsSerialPortSensor::create( QObject *parent )
+{
+  return new QgsSerialPortSensor( parent );
+}
 
-QString QgsSerialPortSensor::type() const { return "serial_port"_L1; }
+QString QgsSerialPortSensor::type() const
+{
+  return "serial_port"_L1;
+}
 
-QString QgsSerialPortSensor::portName() const { return mPortName; }
+QString QgsSerialPortSensor::portName() const
+{
+  return mPortName;
+}
 
 void QgsSerialPortSensor::setPortName( const QString &portName )
 {
@@ -324,7 +364,10 @@ void QgsSerialPortSensor::setPortName( const QString &portName )
   mPortName = portName;
 }
 
-QSerialPort::BaudRate QgsSerialPortSensor::baudRate() const { return mBaudRate; }
+QSerialPort::BaudRate QgsSerialPortSensor::baudRate() const
+{
+  return mBaudRate;
+}
 
 void QgsSerialPortSensor::setBaudRate( const QSerialPort::BaudRate &baudRate )
 {
@@ -334,7 +377,10 @@ void QgsSerialPortSensor::setBaudRate( const QSerialPort::BaudRate &baudRate )
   mBaudRate = baudRate;
 }
 
-QByteArray QgsSerialPortSensor::delimiter() const { return mDelimiter; }
+QByteArray QgsSerialPortSensor::delimiter() const
+{
+  return mDelimiter;
+}
 
 void QgsSerialPortSensor::setDelimiter( const QByteArray &delimiter )
 {
@@ -398,7 +444,10 @@ void QgsSerialPortSensor::handleConnect()
   }
 }
 
-void QgsSerialPortSensor::handleDisconnect() { mSerialPort->close(); }
+void QgsSerialPortSensor::handleDisconnect()
+{
+  mSerialPort->close();
+}
 
 void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
 {

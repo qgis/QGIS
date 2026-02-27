@@ -59,7 +59,10 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   mDeferLegendInvalidationTimer.setSingleShot( true );
 }
 
-QgsLayerTreeModel::~QgsLayerTreeModel() { legendCleanup(); }
+QgsLayerTreeModel::~QgsLayerTreeModel()
+{
+  legendCleanup();
+}
 
 QgsLayerTreeNode *QgsLayerTreeModel::index2node( const QModelIndex &index ) const
 {
@@ -515,7 +518,10 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
   return nodesFinal;
 }
 
-QgsLayerTree *QgsLayerTreeModel::rootGroup() const { return mRootNode; }
+QgsLayerTree *QgsLayerTreeModel::rootGroup() const
+{
+  return mRootNode;
+}
 
 void QgsLayerTreeModel::setRootGroup( QgsLayerTree *newRootGroup )
 {
@@ -555,9 +561,15 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer *nodeLayer )
     nodeLayer->setExpanded( false );
 }
 
-QModelIndex QgsLayerTreeModel::currentIndex() const { return mCurrentIndex; }
+QModelIndex QgsLayerTreeModel::currentIndex() const
+{
+  return mCurrentIndex;
+}
 
-void QgsLayerTreeModel::setCurrentIndex( const QModelIndex &currentIndex ) { mCurrentIndex = currentIndex; }
+void QgsLayerTreeModel::setCurrentIndex( const QModelIndex &currentIndex )
+{
+  mCurrentIndex = currentIndex;
+}
 
 
 void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont &font )
@@ -644,7 +656,10 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
   }
 }
 
-const QgsMapSettings *QgsLayerTreeModel::legendFilterMapSettings() const { return mFilterSettings ? &mFilterSettings->mapSettings() : nullptr; }
+const QgsMapSettings *QgsLayerTreeModel::legendFilterMapSettings() const
+{
+  return mFilterSettings ? &mFilterSettings->mapSettings() : nullptr;
+}
 
 void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *settings )
 {
@@ -691,7 +706,10 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
   }
 }
 
-const QgsLayerTreeFilterSettings *QgsLayerTreeModel::filterSettings() const { return mFilterSettings.get(); }
+const QgsLayerTreeFilterSettings *QgsLayerTreeModel::filterSettings() const
+{
+  return mFilterSettings.get();
+}
 
 void QgsLayerTreeModel::handleHitTestResults()
 {
@@ -760,9 +778,15 @@ void QgsLayerTreeModel::legendMapViewData( double *mapUnitsPerPixel, int *dpi, d
     *scale = mLegendMapViewScale;
 }
 
-QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const { return mLayerStyleOverrides; }
+QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const
+{
+  return mLayerStyleOverrides;
+}
 
-void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &overrides ) { mLayerStyleOverrides = overrides; }
+void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
+{
+  mLayerStyleOverrides = overrides;
+}
 
 void QgsLayerTreeModel::addTargetScreenProperties( const QgsScreenProperties &properties )
 {
@@ -772,9 +796,15 @@ void QgsLayerTreeModel::addTargetScreenProperties( const QgsScreenProperties &pr
   mTargetScreenProperties.insert( properties );
 }
 
-QSet<QgsScreenProperties> QgsLayerTreeModel::targetScreenProperties() const { return mTargetScreenProperties; }
+QSet<QgsScreenProperties> QgsLayerTreeModel::targetScreenProperties() const
+{
+  return mTargetScreenProperties;
+}
 
-int QgsLayerTreeModel::scaleIconSize( int standardSize ) { return QgsApplication::scaleIconSize( standardSize, true ); }
+int QgsLayerTreeModel::scaleIconSize( int standardSize )
+{
+  return QgsApplication::scaleIconSize( standardSize, true );
+}
 
 void QgsLayerTreeModel::waitForHitTestBlocking()
 {
@@ -782,9 +812,15 @@ void QgsLayerTreeModel::waitForHitTestBlocking()
     mHitTestTask->waitForFinished();
 }
 
-bool QgsLayerTreeModel::hitTestInProgress() const { return static_cast< bool >( mHitTestTask ); }
+bool QgsLayerTreeModel::hitTestInProgress() const
+{
+  return static_cast< bool >( mHitTestTask );
+}
 
-void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo ) { beginInsertRows( node2index( node ), indexFrom, indexTo ); }
+void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
+{
+  beginInsertRows( node2index( node ), indexFrom, indexTo );
+}
 
 static QList<QgsLayerTreeLayer *> _layerNodesInSubtree( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
@@ -824,7 +860,10 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode *node, int inde
     disconnectFromLayer( nodeLayer );
 }
 
-void QgsLayerTreeModel::nodeRemovedChildren() { endRemoveRows(); }
+void QgsLayerTreeModel::nodeRemovedChildren()
+{
+  endRemoveRows();
+}
 
 void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode *node )
 {
@@ -1132,7 +1171,10 @@ void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex &idx, double 
     refreshScaleBasedLayers( index( i, 0, idx ), previousScale );
 }
 
-Qt::DropActions QgsLayerTreeModel::supportedDropActions() const { return Qt::CopyAction | Qt::MoveAction; }
+Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
+{
+  return Qt::CopyAction | Qt::MoveAction;
+}
 
 QStringList QgsLayerTreeModel::mimeTypes() const
 {
@@ -1262,7 +1304,10 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex &paren
   return false;
 }
 
-void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f ) { mFlags = f; }
+void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f )
+{
+  mFlags = f;
+}
 
 void QgsLayerTreeModel::setFlag( QgsLayerTreeModel::Flag f, bool on )
 {
@@ -1272,11 +1317,20 @@ void QgsLayerTreeModel::setFlag( QgsLayerTreeModel::Flag f, bool on )
     mFlags &= ~f;
 }
 
-QgsLayerTreeModel::Flags QgsLayerTreeModel::flags() const { return mFlags; }
+QgsLayerTreeModel::Flags QgsLayerTreeModel::flags() const
+{
+  return mFlags;
+}
 
-bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const { return mFlags.testFlag( f ); }
+bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
+{
+  return mFlags.testFlag( f );
+}
 
-QIcon QgsLayerTreeModel::iconGroup() { return QgsApplication::getThemeIcon( u"/mActionFolder.svg"_s ); }
+QIcon QgsLayerTreeModel::iconGroup()
+{
+  return QgsApplication::getThemeIcon( u"/mActionFolder.svg"_s );
+}
 
 QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
@@ -1659,9 +1713,15 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode *n
 }
 
 
-bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const { return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent ); }
+bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
+{
+  return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent );
+}
 
-QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const { return mLegend[nodeLayer].embeddedNodeInParent; }
+QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
+{
+  return mLegend[nodeLayer].embeddedNodeInParent;
+}
 
 
 QIcon QgsLayerTreeModel::legendIconEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
@@ -1685,7 +1745,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::layerLegendNodes( QgsLay
   return lst;
 }
 
-QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer ) { return mLegend.value( nodeLayer ).originalNodes; }
+QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  return mLegend.value( nodeLayer ).originalNodes;
+}
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::findLegendNode( const QString &layerId, const QString &ruleKey ) const
 {

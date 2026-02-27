@@ -44,7 +44,10 @@ QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer 
   mFlags |= DrawLabels;
 }
 
-QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider() { qDeleteAll( mLabels ); }
+QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider()
+{
+  qDeleteAll( mLabels );
+}
 
 void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QString &text, QgsRenderContext &context )
 {
@@ -80,17 +83,35 @@ void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QStr
   mLabels.append( feature.release() );
 }
 
-void QgsRasterLayerLabelProvider::setTextFormat( const QgsTextFormat &format ) { mFormat = format; }
+void QgsRasterLayerLabelProvider::setTextFormat( const QgsTextFormat &format )
+{
+  mFormat = format;
+}
 
-void QgsRasterLayerLabelProvider::setNumericFormat( std::unique_ptr<QgsNumericFormat> format ) { mNumericFormat = std::move( format ); }
+void QgsRasterLayerLabelProvider::setNumericFormat( std::unique_ptr<QgsNumericFormat> format )
+{
+  mNumericFormat = std::move( format );
+}
 
-QgsNumericFormat *QgsRasterLayerLabelProvider::numericFormat() { return mNumericFormat.get(); }
+QgsNumericFormat *QgsRasterLayerLabelProvider::numericFormat()
+{
+  return mNumericFormat.get();
+}
 
-void QgsRasterLayerLabelProvider::setResampleMethod( Qgis::RasterResamplingMethod method ) { mResampleMethod = method; }
+void QgsRasterLayerLabelProvider::setResampleMethod( Qgis::RasterResamplingMethod method )
+{
+  mResampleMethod = method;
+}
 
-void QgsRasterLayerLabelProvider::setResampleOver( int pixels ) { mResampleOver = pixels; }
+void QgsRasterLayerLabelProvider::setResampleOver( int pixels )
+{
+  mResampleOver = pixels;
+}
 
-QList<QgsLabelFeature *> QgsRasterLayerLabelProvider::labelFeatures( QgsRenderContext & ) { return mLabels; }
+QList<QgsLabelFeature *> QgsRasterLayerLabelProvider::labelFeatures( QgsRenderContext & )
+{
+  return mLabels;
+}
 
 void QgsRasterLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
@@ -279,9 +300,13 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 // QgsAbstractRasterLayerLabeling
 //
 
-void QgsAbstractRasterLayerLabeling::multiplyOpacity( double ) {}
+void QgsAbstractRasterLayerLabeling::multiplyOpacity( double )
+{}
 
-bool QgsAbstractRasterLayerLabeling::isInScaleRange( double ) const { return true; }
+bool QgsAbstractRasterLayerLabeling::isInScaleRange( double ) const
+{
+  return true;
+}
 
 QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -304,7 +329,10 @@ void QgsAbstractRasterLayerLabeling::toSld( QDomNode &parent, const QVariantMap 
   parent.appendChild( doc.createComment( u"SE Export for %1 not implemented yet"_s.arg( type() ) ) );
 }
 
-bool QgsAbstractRasterLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
+bool QgsAbstractRasterLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
 
 //
 // QgsRasterLayerSimpleLabeling
@@ -321,7 +349,10 @@ QgsRasterLayerSimpleLabeling::QgsRasterLayerSimpleLabeling()
 
 QgsRasterLayerSimpleLabeling::~QgsRasterLayerSimpleLabeling() = default;
 
-QString QgsRasterLayerSimpleLabeling::type() const { return u"simple"_s; }
+QString QgsRasterLayerSimpleLabeling::type() const
+{
+  return u"simple"_s;
+}
 
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::clone() const
 {
@@ -424,9 +455,15 @@ bool QgsRasterLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visit
   return true;
 }
 
-bool QgsRasterLayerSimpleLabeling::requiresAdvancedEffects() const { return mTextFormat.containsAdvancedEffects(); }
+bool QgsRasterLayerSimpleLabeling::requiresAdvancedEffects() const
+{
+  return mTextFormat.containsAdvancedEffects();
+}
 
-bool QgsRasterLayerSimpleLabeling::hasNonDefaultCompositionMode() const { return mTextFormat.hasNonDefaultCompositionMode(); }
+bool QgsRasterLayerSimpleLabeling::hasNonDefaultCompositionMode() const
+{
+  return mTextFormat.hasNonDefaultCompositionMode();
+}
 
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -471,11 +508,20 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomEl
   return res.release();
 }
 
-QgsTextFormat QgsRasterLayerSimpleLabeling::textFormat() const { return mTextFormat; }
+QgsTextFormat QgsRasterLayerSimpleLabeling::textFormat() const
+{
+  return mTextFormat;
+}
 
-void QgsRasterLayerSimpleLabeling::setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+void QgsRasterLayerSimpleLabeling::setTextFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
+}
 
-const QgsNumericFormat *QgsRasterLayerSimpleLabeling::numericFormat() const { return mNumericFormat.get(); }
+const QgsNumericFormat *QgsRasterLayerSimpleLabeling::numericFormat() const
+{
+  return mNumericFormat.get();
+}
 
 void QgsRasterLayerSimpleLabeling::setNumericFormat( QgsNumericFormat *format )
 {
@@ -483,19 +529,40 @@ void QgsRasterLayerSimpleLabeling::setNumericFormat( QgsNumericFormat *format )
     mNumericFormat.reset( format );
 }
 
-double QgsRasterLayerSimpleLabeling::zIndex() const { return mZIndex; }
+double QgsRasterLayerSimpleLabeling::zIndex() const
+{
+  return mZIndex;
+}
 
-void QgsRasterLayerSimpleLabeling::setZIndex( double index ) { mZIndex = index; }
+void QgsRasterLayerSimpleLabeling::setZIndex( double index )
+{
+  mZIndex = index;
+}
 
-double QgsRasterLayerSimpleLabeling::maximumScale() const { return mMaximumScale; }
+double QgsRasterLayerSimpleLabeling::maximumScale() const
+{
+  return mMaximumScale;
+}
 
-void QgsRasterLayerSimpleLabeling::setMaximumScale( double scale ) { mMaximumScale = scale; }
+void QgsRasterLayerSimpleLabeling::setMaximumScale( double scale )
+{
+  mMaximumScale = scale;
+}
 
-double QgsRasterLayerSimpleLabeling::minimumScale() const { return mMinimumScale; }
+double QgsRasterLayerSimpleLabeling::minimumScale() const
+{
+  return mMinimumScale;
+}
 
-void QgsRasterLayerSimpleLabeling::setMinimumScale( double scale ) { mMinimumScale = scale; }
+void QgsRasterLayerSimpleLabeling::setMinimumScale( double scale )
+{
+  mMinimumScale = scale;
+}
 
-bool QgsRasterLayerSimpleLabeling::hasScaleBasedVisibility() const { return mScaleVisibility; }
+bool QgsRasterLayerSimpleLabeling::hasScaleBasedVisibility() const
+{
+  return mScaleVisibility;
+}
 
 bool QgsRasterLayerSimpleLabeling::isInScaleRange( double scale ) const
 {
@@ -505,17 +572,35 @@ bool QgsRasterLayerSimpleLabeling::isInScaleRange( double scale ) const
          || ( ( mMinimumScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinimumScale ) ) && ( mMaximumScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaximumScale ) ) );
 }
 
-Qgis::RasterResamplingMethod QgsRasterLayerSimpleLabeling::resampleMethod() const { return mResampleMethod; }
+Qgis::RasterResamplingMethod QgsRasterLayerSimpleLabeling::resampleMethod() const
+{
+  return mResampleMethod;
+}
 
-void QgsRasterLayerSimpleLabeling::setResampleMethod( Qgis::RasterResamplingMethod method ) { mResampleMethod = method; }
+void QgsRasterLayerSimpleLabeling::setResampleMethod( Qgis::RasterResamplingMethod method )
+{
+  mResampleMethod = method;
+}
 
-int QgsRasterLayerSimpleLabeling::resampleOver() const { return mResampleOver; }
+int QgsRasterLayerSimpleLabeling::resampleOver() const
+{
+  return mResampleOver;
+}
 
-void QgsRasterLayerSimpleLabeling::setResampleOver( int pixels ) { mResampleOver = pixels; }
+void QgsRasterLayerSimpleLabeling::setResampleOver( int pixels )
+{
+  mResampleOver = pixels;
+}
 
-void QgsRasterLayerSimpleLabeling::setScaleBasedVisibility( bool enabled ) { mScaleVisibility = enabled; }
+void QgsRasterLayerSimpleLabeling::setScaleBasedVisibility( bool enabled )
+{
+  mScaleVisibility = enabled;
+}
 
-void QgsRasterLayerSimpleLabeling::multiplyOpacity( double opacityFactor ) { mTextFormat.multiplyOpacity( opacityFactor ); }
+void QgsRasterLayerSimpleLabeling::multiplyOpacity( double opacityFactor )
+{
+  mTextFormat.multiplyOpacity( opacityFactor );
+}
 
 QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( QgsRasterLayer *layer )
 {

@@ -37,9 +37,15 @@ QgsSelectiveMaskingSourceSetManager::QgsSelectiveMaskingSourceSetManager( QgsPro
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsSelectiveMaskingSourceSetManager::setAboutToBeRemoved );
 }
 
-QgsSelectiveMaskingSourceSetManager::~QgsSelectiveMaskingSourceSetManager() { clearObjects(); }
+QgsSelectiveMaskingSourceSetManager::~QgsSelectiveMaskingSourceSetManager()
+{
+  clearObjects();
+}
 
-bool QgsSelectiveMaskingSourceSetManager::addSet( const QgsSelectiveMaskingSourceSet &set ) { return addObject( new QgsSelectiveMaskingSourceSet( set ) ); }
+bool QgsSelectiveMaskingSourceSetManager::addSet( const QgsSelectiveMaskingSourceSet &set )
+{
+  return addObject( new QgsSelectiveMaskingSourceSet( set ) );
+}
 
 bool QgsSelectiveMaskingSourceSetManager::updateSet( const QgsSelectiveMaskingSourceSet &set )
 {
@@ -67,7 +73,10 @@ bool QgsSelectiveMaskingSourceSetManager::removeSet( const QString &name )
   return removeObject( set );
 }
 
-void QgsSelectiveMaskingSourceSetManager::clear() { clearObjects(); }
+void QgsSelectiveMaskingSourceSetManager::clear()
+{
+  clearObjects();
+}
 
 bool QgsSelectiveMaskingSourceSetManager::renameSet( const QString &oldName, const QString &newName )
 {

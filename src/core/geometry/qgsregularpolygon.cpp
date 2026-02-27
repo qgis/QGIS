@@ -99,11 +99,20 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, 
   }
 }
 
-bool QgsRegularPolygon::operator==( const QgsRegularPolygon &rp ) const { return ( ( mCenter == rp.mCenter ) && ( mFirstVertex == rp.mFirstVertex ) && ( mNumberSides == rp.mNumberSides ) ); }
+bool QgsRegularPolygon::operator==( const QgsRegularPolygon &rp ) const
+{
+  return ( ( mCenter == rp.mCenter ) && ( mFirstVertex == rp.mFirstVertex ) && ( mNumberSides == rp.mNumberSides ) );
+}
 
-bool QgsRegularPolygon::operator!=( const QgsRegularPolygon &rp ) const { return !operator==( rp ); }
+bool QgsRegularPolygon::operator!=( const QgsRegularPolygon &rp ) const
+{
+  return !operator==( rp );
+}
 
-bool QgsRegularPolygon::isEmpty() const { return ( ( mNumberSides < 3 ) || ( mCenter.isEmpty() ) || ( mFirstVertex.isEmpty() ) || ( mCenter == mFirstVertex ) ); }
+bool QgsRegularPolygon::isEmpty() const
+{
+  return ( ( mNumberSides < 3 ) || ( mCenter.isEmpty() ) || ( mFirstVertex.isEmpty() ) || ( mCenter == mFirstVertex ) );
+}
 
 void QgsRegularPolygon::setCenter( const QgsPoint &center )
 {
@@ -288,12 +297,27 @@ double QgsRegularPolygon::length() const
   return mRadius * 2 * std::sin( M_PI / mNumberSides );
 }
 
-double QgsRegularPolygon::apothemToRadius( const double apothem, const unsigned int numSides ) const { return apothem / std::cos( M_PI / numSides ); }
+double QgsRegularPolygon::apothemToRadius( const double apothem, const unsigned int numSides ) const
+{
+  return apothem / std::cos( M_PI / numSides );
+}
 
-double QgsRegularPolygon::interiorAngle( const unsigned int nbSides ) const { return ( nbSides - 2 ) * 180 / nbSides; }
+double QgsRegularPolygon::interiorAngle( const unsigned int nbSides ) const
+{
+  return ( nbSides - 2 ) * 180 / nbSides;
+}
 
-double QgsRegularPolygon::centralAngle( const unsigned int nbSides ) const { return 360.0 / nbSides; }
+double QgsRegularPolygon::centralAngle( const unsigned int nbSides ) const
+{
+  return 360.0 / nbSides;
+}
 
-double QgsRegularPolygon::interiorAngle() const { return interiorAngle( mNumberSides ); }
+double QgsRegularPolygon::interiorAngle() const
+{
+  return interiorAngle( mNumberSides );
+}
 
-double QgsRegularPolygon::centralAngle() const { return centralAngle( mNumberSides ); }
+double QgsRegularPolygon::centralAngle() const
+{
+  return centralAngle( mNumberSides );
+}

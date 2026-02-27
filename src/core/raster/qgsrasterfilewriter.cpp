@@ -69,7 +69,8 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
   : mOutputUrl( outputUrl )
 {}
 
-QgsRasterFileWriter::QgsRasterFileWriter() {}
+QgsRasterFileWriter::QgsRasterFileWriter()
+{}
 
 
 // Deprecated!
@@ -81,8 +82,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster(
 }
 
 Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster(
-  const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
-  QgsRasterBlockFeedback *feedback
+  const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback
 )
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
@@ -160,8 +160,14 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster(
 }
 
 Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster(
-  const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs,
-  const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback
+  const QgsRasterPipe *pipe,
+  QgsRasterIterator *iter,
+  int nCols,
+  int nRows,
+  const QgsRectangle &outputExtent,
+  const QgsCoordinateReferenceSystem &crs,
+  const QgsCoordinateTransformContext &transformContext,
+  QgsRasterBlockFeedback *feedback
 )
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
@@ -392,11 +398,23 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster(
   return error;
 }
 
-static int qgsDivRoundUp( int a, int b ) { return a / b + ( ( ( a % b ) != 0 ) ? 1 : 0 ); }
+static int qgsDivRoundUp( int a, int b )
+{
+  return a / b + ( ( ( a % b ) != 0 ) ? 1 : 0 );
+}
 
 Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster(
-  const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, Qgis::DataType destDataType,
-  const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList, std::unique_ptr<QgsRasterDataProvider> &destProvider, QgsRasterBlockFeedback *feedback
+  const QgsRasterPipe *pipe,
+  QgsRasterIterator *iter,
+  int nCols,
+  int nRows,
+  const QgsRectangle &outputExtent,
+  const QgsCoordinateReferenceSystem &crs,
+  Qgis::DataType destDataType,
+  const QList<bool> &destHasNoDataValueList,
+  const QList<double> &destNoDataValueList,
+  std::unique_ptr<QgsRasterDataProvider> &destProvider,
+  QgsRasterBlockFeedback *feedback
 )
 {
   Q_UNUSED( pipe )
@@ -1019,8 +1037,7 @@ bool QgsRasterFileWriter::writeVRT( const QString &file )
 }
 
 QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider(
-  const QgsRectangle &extent, int nCols, int iterCols, int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
-  const QgsCoordinateReferenceSystem &crs
+  const QgsRectangle &extent, int nCols, int iterCols, int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type, const QgsCoordinateReferenceSystem &crs
 )
 {
   const double mup = extent.width() / nCols;

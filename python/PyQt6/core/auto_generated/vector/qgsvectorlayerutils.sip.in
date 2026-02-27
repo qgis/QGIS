@@ -201,8 +201,12 @@ Returns ``True`` if a feature attribute has active constraints.
 %End
 
     static bool validateAttribute(
-      const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
-      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet, QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
+      const QgsVectorLayer *layer,
+      const QgsFeature &feature,
+      int attributeIndex,
+      QStringList &errors /Out/,
+      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
+      QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
     );
 %Docstring
 Tests a feature attribute value to check whether it passes all
@@ -391,7 +395,10 @@ The definition is taken from the ``displayExpression`` property of
 
 
     static bool impactsCascadeFeatures(
-      const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/,
+      const QgsVectorLayer *layer,
+      const QgsFeatureIds &fids,
+      const QgsProject *project,
+      QgsDuplicateFeatureContext &context /Out/,
       QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags()
     );
 %Docstring

@@ -29,13 +29,25 @@ QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
   setShowTrailingZeros( true );
 }
 
-QString QgsCurrencyNumericFormat::id() const { return u"currency"_s; }
+QString QgsCurrencyNumericFormat::id() const
+{
+  return u"currency"_s;
+}
 
-QString QgsCurrencyNumericFormat::visibleName() const { return QObject::tr( "Currency" ); }
+QString QgsCurrencyNumericFormat::visibleName() const
+{
+  return QObject::tr( "Currency" );
+}
 
-int QgsCurrencyNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
+int QgsCurrencyNumericFormat::sortKey()
+{
+  return DEFAULT_SORT_KEY;
+}
 
-double QgsCurrencyNumericFormat::suggestSampleValue() const { return 1234.56; }
+double QgsCurrencyNumericFormat::suggestSampleValue() const
+{
+  return 1234.56;
+}
 
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -46,7 +58,10 @@ QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFo
     return mPrefix + res + mSuffix;
 }
 
-QgsNumericFormat *QgsCurrencyNumericFormat::clone() const { return new QgsCurrencyNumericFormat( *this ); }
+QgsNumericFormat *QgsCurrencyNumericFormat::clone() const
+{
+  return new QgsCurrencyNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -71,10 +86,22 @@ QVariantMap QgsCurrencyNumericFormat::configuration( const QgsReadWriteContext &
   return res;
 }
 
-QString QgsCurrencyNumericFormat::prefix() const { return mPrefix; }
+QString QgsCurrencyNumericFormat::prefix() const
+{
+  return mPrefix;
+}
 
-void QgsCurrencyNumericFormat::setPrefix( const QString &prefix ) { mPrefix = prefix; }
+void QgsCurrencyNumericFormat::setPrefix( const QString &prefix )
+{
+  mPrefix = prefix;
+}
 
-QString QgsCurrencyNumericFormat::suffix() const { return mSuffix; }
+QString QgsCurrencyNumericFormat::suffix() const
+{
+  return mSuffix;
+}
 
-void QgsCurrencyNumericFormat::setSuffix( const QString &suffix ) { mSuffix = suffix; }
+void QgsCurrencyNumericFormat::setSuffix( const QString &suffix )
+{
+  mSuffix = suffix;
+}

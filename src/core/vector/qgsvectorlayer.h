@@ -2333,8 +2333,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \returns calculated aggregate value
      */
     QVariant aggregate(
-      Qgis::Aggregate aggregate, const QString &fieldOrExpression, const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
-      QgsExpressionContext *context = nullptr, bool *ok = nullptr, QgsFeatureIds *fids = nullptr, QgsFeedback *feedback = nullptr, QString *error SIP_PYARGREMOVE = nullptr
+      Qgis::Aggregate aggregate,
+      const QString &fieldOrExpression,
+      const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
+      QgsExpressionContext *context = nullptr,
+      bool *ok = nullptr,
+      QgsFeatureIds *fids = nullptr,
+      QgsFeedback *feedback = nullptr,
+      QString *error SIP_PYARGREMOVE = nullptr
     ) const;
 
     //! Sets the blending mode used for rendering each feature

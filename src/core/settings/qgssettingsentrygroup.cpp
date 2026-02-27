@@ -97,7 +97,10 @@ void QgsSettingsEntryGroup::removeAllSettingsAtBaseKey( const QStringList &dynam
   settings.remove( key );
 }
 
-void QgsSettingsEntryGroup::removeAllChildrenSettings( const QString &dynamicKeyPart ) const { removeAllChildrenSettings( QgsSettingsEntryBase::dynamicKeyPartToList( dynamicKeyPart ) ); }
+void QgsSettingsEntryGroup::removeAllChildrenSettings( const QString &dynamicKeyPart ) const
+{
+  removeAllChildrenSettings( QgsSettingsEntryBase::dynamicKeyPartToList( dynamicKeyPart ) );
+}
 
 void QgsSettingsEntryGroup::removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const
 {

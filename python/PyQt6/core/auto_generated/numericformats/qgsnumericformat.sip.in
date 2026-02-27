@@ -206,7 +206,7 @@ This is an abstract base class and will always need to be subclassed.
 #include "qgsnumericformat.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
+    if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBearingNumericFormat;
     else if ( dynamic_cast< QgsGeographicCoordinateNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsGeographicCoordinateNumericFormat;

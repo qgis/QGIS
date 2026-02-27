@@ -29,9 +29,15 @@ QgsSensorThingsFeatureSource::QgsSensorThingsFeatureSource( const std::shared_pt
   : mSharedData( sharedData )
 {}
 
-QgsFeatureIterator QgsSensorThingsFeatureSource::getFeatures( const QgsFeatureRequest &request ) { return QgsFeatureIterator( new QgsSensorThingsFeatureIterator( this, false, request ) ); }
+QgsFeatureIterator QgsSensorThingsFeatureSource::getFeatures( const QgsFeatureRequest &request )
+{
+  return QgsFeatureIterator( new QgsSensorThingsFeatureIterator( this, false, request ) );
+}
 
-QgsSensorThingsSharedData *QgsSensorThingsFeatureSource::sharedData() const { return mSharedData.get(); }
+QgsSensorThingsSharedData *QgsSensorThingsFeatureSource::sharedData() const
+{
+  return mSharedData.get();
+}
 
 
 //
@@ -104,7 +110,10 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
   mGeometryTestFilterRect = mFilterRect;
 }
 
-QgsSensorThingsFeatureIterator::~QgsSensorThingsFeatureIterator() { QgsSensorThingsFeatureIterator::close(); }
+QgsSensorThingsFeatureIterator::~QgsSensorThingsFeatureIterator()
+{
+  QgsSensorThingsFeatureIterator::close();
+}
 
 bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 {
@@ -296,6 +305,9 @@ bool QgsSensorThingsFeatureIterator::close()
   return true;
 }
 
-void QgsSensorThingsFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker ) { mInterruptionChecker = interruptionChecker; }
+void QgsSensorThingsFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
+{
+  mInterruptionChecker = interruptionChecker;
+}
 
 ///@endcond PRIVATE

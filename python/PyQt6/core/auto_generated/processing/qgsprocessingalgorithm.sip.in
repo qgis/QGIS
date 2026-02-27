@@ -25,7 +25,7 @@ Abstract base class for processing algorithms.
 #include "qgsprocessingalgorithm.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
       sipType = sipType_QgsProcessingModelAlgorithm;
     else if ( dynamic_cast< QgsProcessingFeatureBasedAlgorithm * >( sipCpp ) != NULL )
       sipType = sipType_QgsProcessingFeatureBasedAlgorithm;

@@ -536,4 +536,7 @@ QString QgsTiledSceneLayer::htmlMetadata() const
   return myMetadata;
 }
 
-bool QgsTiledSceneLayer::isReadOnly() const { return true; }
+bool QgsTiledSceneLayer::isReadOnly() const
+{
+  return true;
+}

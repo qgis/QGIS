@@ -398,7 +398,10 @@ inline QgsFeatureIterator::~QgsFeatureIterator()
     mIter->deref();
 }
 
-inline bool QgsFeatureIterator::nextFeature( QgsFeature &f ) { return mIter ? mIter->nextFeature( f ) : false; }
+inline bool QgsFeatureIterator::nextFeature( QgsFeature &f )
+{
+  return mIter ? mIter->nextFeature( f ) : false;
+}
 
 inline bool QgsFeatureIterator::rewind()
 {
@@ -416,11 +419,20 @@ inline bool QgsFeatureIterator::close()
   return mIter ? mIter->close() : false;
 }
 
-inline bool QgsFeatureIterator::isClosed() const { return mIter ? mIter->mClosed && !mIter->mZombie : true; }
+inline bool QgsFeatureIterator::isClosed() const
+{
+  return mIter ? mIter->mClosed && !mIter->mZombie : true;
+}
 
-inline bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) { return fi1.mIter == fi2.mIter; }
+inline bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+{
+  return fi1.mIter == fi2.mIter;
+}
 
-inline bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) { return !( fi1 == fi2 ); }
+inline bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+{
+  return !( fi1 == fi2 );
+}
 
 inline void QgsFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {

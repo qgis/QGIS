@@ -70,9 +70,15 @@ QgsOgrProviderResultIterator::~QgsOgrProviderResultIterator()
   }
 }
 
-void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName ) { mPrimaryKeyColumnName = primaryKeyColumnName; }
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
+{
+  mPrimaryKeyColumnName = primaryKeyColumnName;
+}
 
-void QgsOgrProviderResultIterator::setPrimaryKeyColumnIndex( int primaryKeyColumnIndex ) { mPrimaryKeyColumnIndex = primaryKeyColumnIndex; }
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnIndex( int primaryKeyColumnIndex )
+{
+  mPrimaryKeyColumnIndex = primaryKeyColumnIndex;
+}
 
 QVariantList QgsOgrProviderResultIterator::nextRowPrivate()
 {
@@ -170,13 +176,25 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
   return row;
 }
 
-bool QgsOgrProviderResultIterator::hasNextRowPrivate() const { return !mNextRow.isEmpty(); }
+bool QgsOgrProviderResultIterator::hasNextRowPrivate() const
+{
+  return !mNextRow.isEmpty();
+}
 
-long long QgsOgrProviderResultIterator::rowCountPrivate() const { return mRowCount; }
+long long QgsOgrProviderResultIterator::rowCountPrivate() const
+{
+  return mRowCount;
+}
 
-void QgsOgrProviderResultIterator::setFields( const QgsFields &fields ) { mFields = fields; }
+void QgsOgrProviderResultIterator::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
 
-void QgsOgrProviderResultIterator::addGeometryColumn( const QString &geometryColumnName, int index ) { mGeometryColumns[index] = geometryColumnName; }
+void QgsOgrProviderResultIterator::addGeometryColumn( const QString &geometryColumnName, int index )
+{
+  mGeometryColumns[index] = geometryColumnName;
+}
 
 //
 // QgsOgrProviderConnection
@@ -209,9 +227,11 @@ QgsOgrProviderConnection::QgsOgrProviderConnection( const QString &uri, const QV
   setDefaultCapabilities();
 }
 
-void QgsOgrProviderConnection::store( const QString & ) const {}
+void QgsOgrProviderConnection::store( const QString & ) const
+{}
 
-void QgsOgrProviderConnection::remove( const QString & ) const {}
+void QgsOgrProviderConnection::remove( const QString & ) const
+{}
 
 QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name ) const
 {
@@ -672,7 +692,10 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 #endif
 }
 
-QString QgsOgrProviderConnection::databaseQueryLogIdentifier() const { return u"QgsOgrProviderConnection"_s; }
+QString QgsOgrProviderConnection::databaseQueryLogIdentifier() const
+{
+  return u"QgsOgrProviderConnection"_s;
+}
 
 QString QgsOgrProviderConnection::primaryKeyColumnName( const QString &table ) const
 {
@@ -1299,13 +1322,25 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
   return options;
 }
 
-QList<Qgis::RelationshipCardinality> QgsOgrProviderConnection::supportedRelationshipCardinalities() const { return mSupportedRelationshipCardinality; }
+QList<Qgis::RelationshipCardinality> QgsOgrProviderConnection::supportedRelationshipCardinalities() const
+{
+  return mSupportedRelationshipCardinality;
+}
 
-QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshipStrengths() const { return mSupportedRelationshipStrength; }
+QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshipStrengths() const
+{
+  return mSupportedRelationshipStrength;
+}
 
-Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const { return mRelationshipCapabilities; }
+Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const
+{
+  return mRelationshipCapabilities;
+}
 
-QStringList QgsOgrProviderConnection::relatedTableTypes() const { return mRelatedTableTypes; }
+QStringList QgsOgrProviderConnection::relatedTableTypes() const
+{
+  return mRelatedTableTypes;
+}
 
 QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &schema, const QString &tableName ) const
 {
@@ -1484,6 +1519,9 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
 #endif
 }
 
-Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const { return Qgis::DatabaseProviderTableImportCapabilities(); }
+Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapabilities();
+}
 
 ///@endcond

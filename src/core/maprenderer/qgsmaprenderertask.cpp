@@ -112,8 +112,7 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 ///@endcond
 
 QgsMapRendererTask::QgsMapRendererTask(
-  const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags, const bool geoPDF,
-  const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails
+  const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags, const bool geoPDF, const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails
 )
   : QgsTask( fileFormat == "PDF"_L1 ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
   , mMapSettings( ms )
@@ -154,7 +153,10 @@ void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotat
   }
 }
 
-void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations ) { mDecorations = decorations; }
+void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations )
+{
+  mDecorations = decorations;
+}
 
 
 void QgsMapRendererTask::cancel()

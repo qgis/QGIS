@@ -95,7 +95,8 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
     const QString lengthPrecision = u"(%1,%2)"_s.arg( field.length() ).arg( field.precision() );
     parts << u"field=%1:%2%3%4"_s.arg(
       QString( QUrl::toPercentEncoding( field.name() ) ),
-      memoryLayerFieldType( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? field.subType() : field.type(), field.typeName() ), lengthPrecision,
+      memoryLayerFieldType( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? field.subType() : field.type(), field.typeName() ),
+      lengthPrecision,
       field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? u"[]"_s : QString()
     );
   }

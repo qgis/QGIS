@@ -118,8 +118,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator(
-      QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(), const QgsRectangle *extent = nullptr
+      QgsVectorLayer *layer,
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+      const QgsRectangle *extent = nullptr
     );
 
     ~QgsPointLocator() override;

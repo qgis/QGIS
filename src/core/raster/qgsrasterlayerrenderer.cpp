@@ -631,7 +631,10 @@ bool QgsRasterLayerRenderer::render()
   return !mFeedback->isCanceled();
 }
 
-QgsFeedback *QgsRasterLayerRenderer::feedback() const { return mFeedback; }
+QgsFeedback *QgsRasterLayerRenderer::feedback() const
+{
+  return mFeedback;
+}
 
 bool QgsRasterLayerRenderer::forceRasterRender() const
 {
@@ -762,7 +765,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
         int sourceWidth = viewWidth + 4;
         int sourceHeight = viewHeight + 4;
         viewExtentInLayerCoordinate = QgsRectangle(
-          viewExtentInLayerCoordinate.xMinimum() - xLayerResol * 2, viewExtentInLayerCoordinate.yMinimum() - yLayerResol * 2, viewExtentInLayerCoordinate.xMaximum() + xLayerResol * 2,
+          viewExtentInLayerCoordinate.xMinimum() - xLayerResol * 2,
+          viewExtentInLayerCoordinate.yMinimum() - yLayerResol * 2,
+          viewExtentInLayerCoordinate.xMaximum() + xLayerResol * 2,
           viewExtentInLayerCoordinate.yMaximum() + yLayerResol * 2
         );
 

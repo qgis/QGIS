@@ -58,8 +58,13 @@ class CORE_EXPORT QgsRasterTransparency
       * \since QGIS 3.38
       */
         TransparentThreeValuePixel(
-          double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon(),
-          double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon()
+          double red = 0,
+          double green = 0,
+          double blue = 0,
+          double opacity = 0,
+          double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon(),
+          double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon(),
+          double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon()
         )
           : red( red )
           , green( green )

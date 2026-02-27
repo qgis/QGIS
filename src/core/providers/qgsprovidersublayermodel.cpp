@@ -105,7 +105,10 @@ QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::childAt( int index 
   return nullptr;
 }
 
-void QgsProviderSublayerModelGroup::removeChildAt( int index ) { mChildren.erase( mChildren.begin() + index ); }
+void QgsProviderSublayerModelGroup::removeChildAt( int index )
+{
+  mChildren.erase( mChildren.begin() + index );
+}
 
 QgsProviderSublayerModelGroup *QgsProviderSublayerModelGroup::findGroup( const QString &name ) const
 {
@@ -389,7 +392,10 @@ void QgsProviderSublayerModel::setSublayerDetails( const QList<QgsProviderSublay
   }
 }
 
-QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() const { return mSublayers; }
+QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() const
+{
+  return mSublayers;
+}
 
 QgsProviderSublayerDetails QgsProviderSublayerModel::indexToSublayer( const QModelIndex &index ) const
 {
@@ -560,32 +566,65 @@ QModelIndex QgsProviderSublayerModel::node2index( QgsProviderSublayerModelNode *
 // QgsProviderSublayerModel::NonLayerItem
 //
 
-QString QgsProviderSublayerModel::NonLayerItem::type() const { return mType; }
+QString QgsProviderSublayerModel::NonLayerItem::type() const
+{
+  return mType;
+}
 
-void QgsProviderSublayerModel::NonLayerItem::setType( const QString &type ) { mType = type; }
+void QgsProviderSublayerModel::NonLayerItem::setType( const QString &type )
+{
+  mType = type;
+}
 
-QString QgsProviderSublayerModel::NonLayerItem::name() const { return mName; }
+QString QgsProviderSublayerModel::NonLayerItem::name() const
+{
+  return mName;
+}
 
-void QgsProviderSublayerModel::NonLayerItem::setName( const QString &name ) { mName = name; }
+void QgsProviderSublayerModel::NonLayerItem::setName( const QString &name )
+{
+  mName = name;
+}
 
-QString QgsProviderSublayerModel::NonLayerItem::description() const { return mDescription; }
+QString QgsProviderSublayerModel::NonLayerItem::description() const
+{
+  return mDescription;
+}
 
-void QgsProviderSublayerModel::NonLayerItem::setDescription( const QString &description ) { mDescription = description; }
+void QgsProviderSublayerModel::NonLayerItem::setDescription( const QString &description )
+{
+  mDescription = description;
+}
 
-QString QgsProviderSublayerModel::NonLayerItem::uri() const { return mUri; }
+QString QgsProviderSublayerModel::NonLayerItem::uri() const
+{
+  return mUri;
+}
 
-void QgsProviderSublayerModel::NonLayerItem::setUri( const QString &uri ) { mUri = uri; }
+void QgsProviderSublayerModel::NonLayerItem::setUri( const QString &uri )
+{
+  mUri = uri;
+}
 
-QIcon QgsProviderSublayerModel::NonLayerItem::icon() const { return mIcon; }
+QIcon QgsProviderSublayerModel::NonLayerItem::icon() const
+{
+  return mIcon;
+}
 
-void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon ) { mIcon = icon; }
+void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
+{
+  mIcon = icon;
+}
 
 bool QgsProviderSublayerModel::NonLayerItem::operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const
 {
   return mType == other.mType && mName == other.mName && mDescription == other.mDescription && mUri == other.mUri;
 }
 
-bool QgsProviderSublayerModel::NonLayerItem::operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const { return !( *this == other ); }
+bool QgsProviderSublayerModel::NonLayerItem::operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const
+{
+  return !( *this == other );
+}
 
 //
 // QgsProviderSublayerProxyModel
@@ -648,7 +687,10 @@ bool QgsProviderSublayerProxyModel::lessThan( const QModelIndex &source_left, co
   return QString::localeAwareCompare( leftName, rightName ) < 0;
 }
 
-bool QgsProviderSublayerProxyModel::includeSystemTables() const { return mIncludeSystemTables; }
+bool QgsProviderSublayerProxyModel::includeSystemTables() const
+{
+  return mIncludeSystemTables;
+}
 
 void QgsProviderSublayerProxyModel::setIncludeSystemTables( bool include )
 {
@@ -656,7 +698,10 @@ void QgsProviderSublayerProxyModel::setIncludeSystemTables( bool include )
   invalidateFilter();
 }
 
-bool QgsProviderSublayerProxyModel::includeEmptyLayers() const { return mIncludeEmptyLayers; }
+bool QgsProviderSublayerProxyModel::includeEmptyLayers() const
+{
+  return mIncludeEmptyLayers;
+}
 
 void QgsProviderSublayerProxyModel::setIncludeEmptyLayers( bool include )
 {
@@ -664,7 +709,10 @@ void QgsProviderSublayerProxyModel::setIncludeEmptyLayers( bool include )
   invalidateFilter();
 }
 
-QString QgsProviderSublayerProxyModel::filterString() const { return mFilterString; }
+QString QgsProviderSublayerProxyModel::filterString() const
+{
+  return mFilterString;
+}
 
 void QgsProviderSublayerProxyModel::setFilterString( const QString &filter )
 {

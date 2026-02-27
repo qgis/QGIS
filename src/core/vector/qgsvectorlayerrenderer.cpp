@@ -210,11 +210,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer() = default;
 
-void QgsVectorLayerRenderer::setLayerRenderingTimeHint( int time ) { mRenderTimeHint = time; }
+void QgsVectorLayerRenderer::setLayerRenderingTimeHint( int time )
+{
+  mRenderTimeHint = time;
+}
 
-QgsFeedback *QgsVectorLayerRenderer::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsVectorLayerRenderer::feedback() const
+{
+  return mFeedback.get();
+}
 
-bool QgsVectorLayerRenderer::forceRasterRender() const { return mForceRasterRender; }
+bool QgsVectorLayerRenderer::forceRasterRender() const
+{
+  return mForceRasterRender;
+}
 
 Qgis::MapLayerRendererFlags QgsVectorLayerRenderer::flags() const
 {

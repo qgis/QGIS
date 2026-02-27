@@ -79,7 +79,10 @@ QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
          | Flag::FlagUsesSubdivisionsHeight;
 }
 
-QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const { return new QgsTicksScaleBarRenderer( *this ); }
+QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const
+{
+  return new QgsTicksScaleBarRenderer( *this );
+}
 
 void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {

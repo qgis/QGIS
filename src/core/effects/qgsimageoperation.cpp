@@ -953,7 +953,10 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   return QRect( xmin, ymin, xmax - xmin, ymax - ymin );
 }
 
-QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center ) { return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) ); }
+QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center )
+{
+  return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
+}
 
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine ) const
 {

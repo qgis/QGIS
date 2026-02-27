@@ -90,7 +90,10 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * supported by an authentication method.
      * \note These should directly correlate to existing 'update*()' member functions
      */
-    QgsAuthMethod::Expansions supportedExpansions() const { return mExpansions; }
+    QgsAuthMethod::Expansions supportedExpansions() const
+    {
+      return mExpansions;
+    }
 
     /**
      * The data providers that the method supports, allowing for filtering out authcfgs that are not

@@ -63,7 +63,10 @@ QgsPageSizeRegistry::QgsPageSizeRegistry()
   add( QgsPageSize( u"1024x768"_s, QgsLayoutSize( 768, 1024, Qgis::LayoutUnit::Pixels ), QObject::tr( "1024×768 (4:3)" ) ) );
 }
 
-void QgsPageSizeRegistry::add( const QgsPageSize &size ) { mPageSizes.append( size ); }
+void QgsPageSizeRegistry::add( const QgsPageSize &size )
+{
+  mPageSizes.append( size );
+}
 
 QList<QgsPageSize> QgsPageSizeRegistry::entries() const
 {
@@ -139,6 +142,12 @@ QgsPageSize::QgsPageSize( const QgsLayoutSize &pageSize )
   : size( pageSize )
 {}
 
-bool QgsPageSize::operator==( const QgsPageSize &other ) const { return ( name == other.name && size == other.size ); }
+bool QgsPageSize::operator==( const QgsPageSize &other ) const
+{
+  return ( name == other.name && size == other.size );
+}
 
-bool QgsPageSize::operator!=( const QgsPageSize &other ) const { return ( !operator==( other ) ); }
+bool QgsPageSize::operator!=( const QgsPageSize &other ) const
+{
+  return ( !operator==( other ) );
+}

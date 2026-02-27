@@ -47,7 +47,10 @@ QgsFeaturePickerModelBase::~QgsFeaturePickerModelBase()
 }
 
 
-QgsVectorLayer *QgsFeaturePickerModelBase::sourceLayer() const { return mSourceLayer; }
+QgsVectorLayer *QgsFeaturePickerModelBase::sourceLayer() const
+{
+  return mSourceLayer;
+}
 
 
 void QgsFeaturePickerModelBase::setSourceLayer( QgsVectorLayer *sourceLayer )
@@ -67,7 +70,10 @@ void QgsFeaturePickerModelBase::setSourceLayer( QgsVectorLayer *sourceLayer )
 }
 
 
-QString QgsFeaturePickerModelBase::displayExpression() const { return mDisplayExpression.expression(); }
+QString QgsFeaturePickerModelBase::displayExpression() const
+{
+  return mDisplayExpression.expression();
+}
 
 
 void QgsFeaturePickerModelBase::setDisplayExpression( const QString &displayExpression )
@@ -81,7 +87,10 @@ void QgsFeaturePickerModelBase::setDisplayExpression( const QString &displayExpr
 }
 
 
-QString QgsFeaturePickerModelBase::filterValue() const { return mFilterValue; }
+QString QgsFeaturePickerModelBase::filterValue() const
+{
+  return mFilterValue;
+}
 
 
 void QgsFeaturePickerModelBase::setFilterValue( const QString &filterValue )
@@ -95,7 +104,10 @@ void QgsFeaturePickerModelBase::setFilterValue( const QString &filterValue )
 }
 
 
-QString QgsFeaturePickerModelBase::filterExpression() const { return mFilterExpression; }
+QString QgsFeaturePickerModelBase::filterExpression() const
+{
+  return mFilterExpression;
+}
 
 
 void QgsFeaturePickerModelBase::setFilterExpression( const QString &filterExpression )
@@ -108,7 +120,10 @@ void QgsFeaturePickerModelBase::setFilterExpression( const QString &filterExpres
   emit filterExpressionChanged();
 }
 
-QgsFeature QgsFeaturePickerModelBase::formFeature() const { return mFormFeature; }
+QgsFeature QgsFeaturePickerModelBase::formFeature() const
+{
+  return mFormFeature;
+}
 
 void QgsFeaturePickerModelBase::setFormFeature( const QgsFeature &feature )
 {
@@ -123,7 +138,10 @@ void QgsFeaturePickerModelBase::setFormFeature( const QgsFeature &feature )
   emit formFeatureChanged();
 }
 
-QgsFeature QgsFeaturePickerModelBase::parentFormFeature() const { return mParentFormFeature; }
+QgsFeature QgsFeaturePickerModelBase::parentFormFeature() const
+{
+  return mParentFormFeature;
+}
 
 void QgsFeaturePickerModelBase::setParentFormFeature( const QgsFeature &feature )
 {
@@ -138,9 +156,15 @@ void QgsFeaturePickerModelBase::setParentFormFeature( const QgsFeature &feature 
   emit parentFormFeatureChanged();
 }
 
-bool QgsFeaturePickerModelBase::isLoading() const { return mGatherer; }
+bool QgsFeaturePickerModelBase::isLoading() const
+{
+  return mGatherer;
+}
 
-QVariant QgsFeaturePickerModelBase::extraIdentifierValue() const { return mExtraIdentifierValue; }
+QVariant QgsFeaturePickerModelBase::extraIdentifierValue() const
+{
+  return mExtraIdentifierValue;
+}
 
 
 QModelIndex QgsFeaturePickerModelBase::index( int row, int column, const QModelIndex &parent ) const
@@ -601,7 +625,10 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
 }
 
 
-bool QgsFeaturePickerModelBase::allowNull() const { return mAllowNull; }
+bool QgsFeaturePickerModelBase::allowNull() const
+{
+  return mAllowNull;
+}
 
 
 void QgsFeaturePickerModelBase::setAllowNull( bool allowNull )
@@ -615,7 +642,10 @@ void QgsFeaturePickerModelBase::setAllowNull( bool allowNull )
   reload();
 }
 
-bool QgsFeaturePickerModelBase::fetchGeometry() const { return mFetchGeometry; }
+bool QgsFeaturePickerModelBase::fetchGeometry() const
+{
+  return mFetchGeometry;
+}
 
 void QgsFeaturePickerModelBase::setFetchGeometry( bool fetchGeometry )
 {
@@ -626,7 +656,10 @@ void QgsFeaturePickerModelBase::setFetchGeometry( bool fetchGeometry )
   reload();
 }
 
-int QgsFeaturePickerModelBase::fetchLimit() const { return mFetchLimit; }
+int QgsFeaturePickerModelBase::fetchLimit() const
+{
+  return mFetchLimit;
+}
 
 void QgsFeaturePickerModelBase::setFetchLimit( int fetchLimit )
 {
@@ -640,7 +673,10 @@ void QgsFeaturePickerModelBase::setFetchLimit( int fetchLimit )
 }
 
 
-bool QgsFeaturePickerModelBase::extraValueDoesNotExist() const { return mExtraValueDoesNotExist; }
+bool QgsFeaturePickerModelBase::extraValueDoesNotExist() const
+{
+  return mExtraValueDoesNotExist;
+}
 
 
 void QgsFeaturePickerModelBase::setExtraValueDoesNotExist( bool extraValueDoesNotExist )
@@ -653,10 +689,16 @@ void QgsFeaturePickerModelBase::setExtraValueDoesNotExist( bool extraValueDoesNo
 }
 
 
-int QgsFeaturePickerModelBase::extraIdentifierValueIndex() const { return mExtraValueIndex; }
+int QgsFeaturePickerModelBase::extraIdentifierValueIndex() const
+{
+  return mExtraValueIndex;
+}
 
 
-void QgsFeaturePickerModelBase::reload() { mReloadTimer.start(); }
+void QgsFeaturePickerModelBase::reload()
+{
+  mReloadTimer.start();
+}
 
 
 void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
@@ -679,7 +721,10 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraId
 }
 
 
-QString QgsFeaturePickerModelBase::orderExpression() const { return mOrderExpression.expression(); }
+QString QgsFeaturePickerModelBase::orderExpression() const
+{
+  return mOrderExpression.expression();
+}
 
 
 void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpression )
@@ -693,7 +738,10 @@ void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpressi
 }
 
 
-Qt::SortOrder QgsFeaturePickerModelBase::sortOrder() const { return mSortOrder; }
+Qt::SortOrder QgsFeaturePickerModelBase::sortOrder() const
+{
+  return mSortOrder;
+}
 
 
 void QgsFeaturePickerModelBase::setSortOrder( const Qt::SortOrder sortOrder )

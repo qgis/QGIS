@@ -69,11 +69,20 @@ void QgsColorRampLegendNode::init( QgsLayerTreeLayer *nodeLayer )
   connect( nodeLayer, &QObject::destroyed, this, [this]() { mLayerNode = nullptr; } );
 }
 
-const QgsColorRamp *QgsColorRampLegendNode::ramp() const { return mRamp.get(); }
+const QgsColorRamp *QgsColorRampLegendNode::ramp() const
+{
+  return mRamp.get();
+}
 
-QgsColorRampLegendNodeSettings QgsColorRampLegendNode::settings() const { return mSettings; }
+QgsColorRampLegendNodeSettings QgsColorRampLegendNode::settings() const
+{
+  return mSettings;
+}
 
-void QgsColorRampLegendNode::setSettings( const QgsColorRampLegendNodeSettings &settings ) { mSettings = settings; }
+void QgsColorRampLegendNode::setSettings( const QgsColorRampLegendNodeSettings &settings )
+{
+  mSettings = settings;
+}
 
 QString QgsColorRampLegendNode::labelForMinimum() const
 {
@@ -147,7 +156,10 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       if ( mRamp )
       {
         pix = QgsSymbolLayerUtils::colorRampPreviewPixmap(
-          mRamp.get(), rampSize, 0, mSettings.orientation(),
+          mRamp.get(),
+          rampSize,
+          0,
+          mSettings.orientation(),
           mSettings.orientation() == Qt::Vertical ? mSettings.direction() != QgsColorRampLegendNodeSettings::MaximumToMinimum : mSettings.direction() != QgsColorRampLegendNodeSettings::MinimumToMaximum,
           false
         );
@@ -465,12 +477,24 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
 
     const QRectF textRect( labelXMin * dotsPerMM, currentYCoord * dotsPerMM, ( labelXMax - labelXMin ) * dotsPerMM, rampHeight * dotsPerMM );
     QgsTextRenderer::drawText(
-      textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
-      QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? maxLabel : minLabel ), *context, format, true, Qgis::TextVerticalAlignment::Top
+      textRect,
+      0,
+      QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
+      QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? maxLabel : minLabel ),
+      *context,
+      format,
+      true,
+      Qgis::TextVerticalAlignment::Top
     );
     QgsTextRenderer::drawText(
-      textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
-      QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? minLabel : maxLabel ), *context, format, true, Qgis::TextVerticalAlignment::Bottom
+      textRect,
+      0,
+      QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
+      QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? minLabel : maxLabel ),
+      *context,
+      format,
+      true,
+      Qgis::TextVerticalAlignment::Bottom
     );
   }
   else

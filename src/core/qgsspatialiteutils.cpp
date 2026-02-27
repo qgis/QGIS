@@ -65,7 +65,10 @@ int spatialite_database_unique_ptr::open( const QString &path )
   return result;
 }
 
-void spatialite_database_unique_ptr::reset() { std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset(); }
+void spatialite_database_unique_ptr::reset()
+{
+  std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset();
+}
 
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
@@ -91,7 +94,10 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
   return result;
 }
 
-QString spatialite_database_unique_ptr::errorMessage() const { return QString( sqlite3_errmsg( get() ) ); }
+QString spatialite_database_unique_ptr::errorMessage() const
+{
+  return QString( sqlite3_errmsg( get() ) );
+}
 
 sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QString &sql, int &resultCode )
 {

@@ -420,7 +420,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   rewind();
 }
 
-QgsOgrFeatureIterator::~QgsOgrFeatureIterator() { close(); }
+QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
+{
+  close();
+}
 
 bool QgsOgrFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
@@ -814,8 +817,14 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   mCanDriverShareSameDatasetAmongLayers = QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mDriverName );
 }
 
-QgsOgrFeatureSource::~QgsOgrFeatureSource() { QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( mDataSource, mShareSameDatasetAmongLayers ) ); }
+QgsOgrFeatureSource::~QgsOgrFeatureSource()
+{
+  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( mDataSource, mShareSameDatasetAmongLayers ) );
+}
 
-QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest &request ) { return QgsFeatureIterator( new QgsOgrFeatureIterator( this, false, request, mTransaction ) ); }
+QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest &request )
+{
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, false, request, mTransaction ) );
+}
 
 ///@endcond

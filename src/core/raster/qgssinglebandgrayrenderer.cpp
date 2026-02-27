@@ -56,7 +56,10 @@ QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsSingleBandGrayRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsSingleBandGrayRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
 QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -89,7 +92,10 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
   return r;
 }
 
-void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement *ce ) { mContrastEnhancement.reset( ce ); }
+void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement *ce )
+{
+  mContrastEnhancement.reset( ce );
+}
 
 QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
@@ -189,9 +195,15 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
   return outputBlock.release();
 }
 
-void QgsSingleBandGrayRenderer::setGrayBand( int band ) { setInputBand( band ); }
+void QgsSingleBandGrayRenderer::setGrayBand( int band )
+{
+  setInputBand( band );
+}
 
-int QgsSingleBandGrayRenderer::inputBand() const { return mGrayBand; }
+int QgsSingleBandGrayRenderer::inputBand() const
+{
+  return mGrayBand;
+}
 
 bool QgsSingleBandGrayRenderer::setInputBand( int band )
 {
@@ -271,7 +283,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNode
     const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
     const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
     res << new QgsColorRampLegendNode(
-      nodeLayer, new QgsGradientColorRamp( minColor, maxColor ), mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(), mContrastEnhancement->minimumValue(),
+      nodeLayer,
+      new QgsGradientColorRamp( minColor, maxColor ),
+      mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(),
+      mContrastEnhancement->minimumValue(),
       mContrastEnhancement->maximumValue()
     );
   }
@@ -446,7 +461,10 @@ bool QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   return true;
 }
 
-const QgsColorRampLegendNodeSettings *QgsSingleBandGrayRenderer::legendSettings() const { return mLegendSettings.get(); }
+const QgsColorRampLegendNodeSettings *QgsSingleBandGrayRenderer::legendSettings() const
+{
+  return mLegendSettings.get();
+}
 
 void QgsSingleBandGrayRenderer::setLegendSettings( QgsColorRampLegendNodeSettings *settings )
 {

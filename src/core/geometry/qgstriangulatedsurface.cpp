@@ -30,9 +30,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTriangulatedSurface::QgsTriangulatedSurface() { mWkbType = Qgis::WkbType::TIN; }
+QgsTriangulatedSurface::QgsTriangulatedSurface()
+{
+  mWkbType = Qgis::WkbType::TIN;
+}
 
-QgsTriangulatedSurface::~QgsTriangulatedSurface() { QgsTriangulatedSurface::clear(); }
+QgsTriangulatedSurface::~QgsTriangulatedSurface()
+{
+  QgsTriangulatedSurface::clear();
+}
 
 QgsTriangulatedSurface *QgsTriangulatedSurface::createEmptyWithSameType() const
 {
@@ -41,7 +47,10 @@ QgsTriangulatedSurface *QgsTriangulatedSurface::createEmptyWithSameType() const
   return result.release();
 }
 
-QString QgsTriangulatedSurface::geometryType() const { return u"TIN"_s; }
+QString QgsTriangulatedSurface::geometryType() const
+{
+  return u"TIN"_s;
+}
 
 QgsTriangulatedSurface::QgsTriangulatedSurface( const QgsTriangulatedSurface &p )
   : QgsPolyhedralSurface( p )
@@ -60,7 +69,10 @@ QgsTriangulatedSurface &QgsTriangulatedSurface::operator=( const QgsTriangulated
   return *this;
 }
 
-QgsTriangulatedSurface *QgsTriangulatedSurface::clone() const { return new QgsTriangulatedSurface( *this ); }
+QgsTriangulatedSurface *QgsTriangulatedSurface::clone() const
+{
+  return new QgsTriangulatedSurface( *this );
+}
 
 void QgsTriangulatedSurface::clear()
 {
@@ -272,11 +284,20 @@ void QgsTriangulatedSurface::addPatch( QgsPolygon *patch )
   clearCache();
 }
 
-void QgsTriangulatedSurface::addTriangle( QgsTriangle *triangle ) { addPatch( triangle ); }
+void QgsTriangulatedSurface::addTriangle( QgsTriangle *triangle )
+{
+  addPatch( triangle );
+}
 
-QgsTriangle *QgsTriangulatedSurface::triangleN( int index ) { return qgsgeometry_cast< QgsTriangle * >( patchN( index ) ); }
+QgsTriangle *QgsTriangulatedSurface::triangleN( int index )
+{
+  return qgsgeometry_cast< QgsTriangle * >( patchN( index ) );
+}
 
-const QgsTriangle *QgsTriangulatedSurface::triangleN( int index ) const { return qgsgeometry_cast< const QgsTriangle * >( patchN( index ) ); }
+const QgsTriangle *QgsTriangulatedSurface::triangleN( int index ) const
+{
+  return qgsgeometry_cast< const QgsTriangle * >( patchN( index ) );
+}
 
 bool QgsTriangulatedSurface::insertVertex( QgsVertexId vId, const QgsPoint &vertex )
 {

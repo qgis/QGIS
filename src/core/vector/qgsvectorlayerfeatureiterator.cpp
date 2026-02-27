@@ -123,11 +123,20 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, false, request ) );
 }
 
-QgsFields QgsVectorLayerFeatureSource::fields() const { return mFields; }
+QgsFields QgsVectorLayerFeatureSource::fields() const
+{
+  return mFields;
+}
 
-QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
+{
+  return mCrs;
+}
 
-QString QgsVectorLayerFeatureSource::id() const { return mId; }
+QString QgsVectorLayerFeatureSource::id() const
+{
+  return mId;
+}
 
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
@@ -611,7 +620,10 @@ void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsFeedback *interru
   mInterruptionChecker = interruptionChecker;
 }
 
-bool QgsVectorLayerFeatureIterator::isValid() const { return mChangedFeaturesIterator.isValid() || mProviderIterator.isValid(); }
+bool QgsVectorLayerFeatureIterator::isValid() const
+{
+  return mChangedFeaturesIterator.isValid() || mProviderIterator.isValid();
+}
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
 {
@@ -1368,15 +1380,30 @@ QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFe
   return QgsFeatureIterator( new QgsVectorLayerSelectedFeatureIterator( mSelectedFeatureIds, req, mSource ) );
 }
 
-QgsCoordinateReferenceSystem QgsVectorLayerSelectedFeatureSource::sourceCrs() const { return mSource.crs(); }
+QgsCoordinateReferenceSystem QgsVectorLayerSelectedFeatureSource::sourceCrs() const
+{
+  return mSource.crs();
+}
 
-QgsFields QgsVectorLayerSelectedFeatureSource::fields() const { return mSource.fields(); }
+QgsFields QgsVectorLayerSelectedFeatureSource::fields() const
+{
+  return mSource.fields();
+}
 
-Qgis::WkbType QgsVectorLayerSelectedFeatureSource::wkbType() const { return mWkbType; }
+Qgis::WkbType QgsVectorLayerSelectedFeatureSource::wkbType() const
+{
+  return mWkbType;
+}
 
-long long QgsVectorLayerSelectedFeatureSource::featureCount() const { return mSelectedFeatureIds.count(); }
+long long QgsVectorLayerSelectedFeatureSource::featureCount() const
+{
+  return mSelectedFeatureIds.count();
+}
 
-QString QgsVectorLayerSelectedFeatureSource::sourceName() const { return mName; }
+QString QgsVectorLayerSelectedFeatureSource::sourceName() const
+{
+  return mName;
+}
 
 QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpressionContextScope() const
 {
@@ -1414,9 +1441,15 @@ QgsVectorLayerSelectedFeatureIterator::QgsVectorLayerSelectedFeatureIterator( co
   mIterator = source.getFeatures( sourceRequest );
 }
 
-bool QgsVectorLayerSelectedFeatureIterator::rewind() { return mIterator.rewind(); }
+bool QgsVectorLayerSelectedFeatureIterator::rewind()
+{
+  return mIterator.rewind();
+}
 
-bool QgsVectorLayerSelectedFeatureIterator::close() { return mIterator.close(); }
+bool QgsVectorLayerSelectedFeatureIterator::close()
+{
+  return mIterator.close();
+}
 
 bool QgsVectorLayerSelectedFeatureIterator::fetchFeature( QgsFeature &f )
 {

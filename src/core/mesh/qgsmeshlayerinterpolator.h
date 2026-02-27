@@ -48,7 +48,11 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
   public:
     //! Ctor
     QgsMeshLayerInterpolator(
-      const QgsTriangularMesh &m, const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues, QgsMeshDatasetGroupMetadata::DataType dataType, const QgsRenderContext &context,
+      const QgsTriangularMesh &m,
+      const QVector<double> &datasetValues,
+      const QgsMeshDataBlock &activeFaceFlagValues,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsRenderContext &context,
       const QSize &size
     );
     ~QgsMeshLayerInterpolator() override;

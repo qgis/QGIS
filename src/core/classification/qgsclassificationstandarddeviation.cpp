@@ -28,8 +28,7 @@ const QString QgsClassificationStandardDeviation::METHOD_ID = u"StdDev"_s;
 
 QgsClassificationStandardDeviation::QgsClassificationStandardDeviation()
   : QgsClassificationMethod( SymmetricModeAvailable )
-{
-}
+{}
 
 QString QgsClassificationStandardDeviation::name() const
 {

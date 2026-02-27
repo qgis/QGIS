@@ -30,11 +30,20 @@ QgsAnimatedIcon::QgsAnimatedIcon( const QString &iconPath, QObject *parent )
   connect( mMovie, &QMovie::frameChanged, this, &QgsAnimatedIcon::onFrameChanged );
 }
 
-QString QgsAnimatedIcon::iconPath() const { return mMovie->fileName(); }
+QString QgsAnimatedIcon::iconPath() const
+{
+  return mMovie->fileName();
+}
 
-void QgsAnimatedIcon::setIconPath( const QString &iconPath ) { mMovie->setFileName( iconPath ); }
+void QgsAnimatedIcon::setIconPath( const QString &iconPath )
+{
+  mMovie->setFileName( iconPath );
+}
 
-QIcon QgsAnimatedIcon::icon() const { return mIcon; }
+QIcon QgsAnimatedIcon::icon() const
+{
+  return mIcon;
+}
 
 bool QgsAnimatedIcon::connectFrameChanged( const QObject *receiver, const char *method )
 {
@@ -47,11 +56,20 @@ bool QgsAnimatedIcon::connectFrameChanged( const QObject *receiver, const char *
     return false;
 }
 
-bool QgsAnimatedIcon::disconnectFrameChanged( const QObject *receiver, const char *method ) { return disconnect( this, SIGNAL( frameChanged() ), receiver, method ); }
+bool QgsAnimatedIcon::disconnectFrameChanged( const QObject *receiver, const char *method )
+{
+  return disconnect( this, SIGNAL( frameChanged() ), receiver, method );
+}
 
-int QgsAnimatedIcon::width() const { return mMovie->currentPixmap().width(); }
+int QgsAnimatedIcon::width() const
+{
+  return mMovie->currentPixmap().width();
+}
 
-int QgsAnimatedIcon::height() const { return mMovie->currentPixmap().height(); }
+int QgsAnimatedIcon::height() const
+{
+  return mMovie->currentPixmap().height();
+}
 void QgsAnimatedIcon::onFrameChanged()
 {
   if ( !isSignalConnected( QMetaMethod::fromSignal( &QgsAnimatedIcon::frameChanged ) ) )

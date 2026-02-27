@@ -47,8 +47,11 @@ int QgisEvent = QEvent::User + 1;
 #ifndef SIP_RUN
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
-#define QHASH_FOR_CLASS_ENUM( T ) \
-  inline uint qHash( const T &t, uint seed ) { return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); }
+#define QHASH_FOR_CLASS_ENUM( T )                                                     \
+  inline uint qHash( const T &t, uint seed )                                          \
+  {                                                                                   \
+    return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); \
+  }
 #endif
 
   /**
@@ -6874,7 +6877,10 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP { return QgsSignalBlocker<Object>( object ); }
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
+{
+  return QgsSignalBlocker<Object>( object );
+}
 
 //! Hash for QVariant
 CORE_EXPORT uint qHash( const QVariant &variant );
@@ -6966,7 +6972,10 @@ template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numer
  * \param b second double
  * \param epsilon maximum difference allowable between doubles
  */
-inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) { return qgsNumberNear<double>( a, b, epsilon ); }
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
+{
+  return qgsNumberNear<double>( a, b, epsilon );
+}
 
 /**
  * Compare two floats (but allow some difference)
@@ -6974,7 +6983,10 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  * \param b second float
  * \param epsilon maximum difference allowable between floats
  */
-inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON ) { return qgsNumberNear<float>( a, b, epsilon ); }
+inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
+{
+  return qgsNumberNear<float>( a, b, epsilon );
+}
 
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
@@ -7090,9 +7102,15 @@ namespace qgis
     return static_cast<To>( f );
   }
 
-  template<class T> QSet<T> listToSet( const QList<T> &list ) { return QSet<T>( list.begin(), list.end() ); }
+  template<class T> QSet<T> listToSet( const QList<T> &list )
+  {
+    return QSet<T>( list.begin(), list.end() );
+  }
 
-  template<class T> QList<T> setToList( const QSet<T> &set ) { return QList<T>( set.begin(), set.end() ); }
+  template<class T> QList<T> setToList( const QSet<T> &set )
+  {
+    return QList<T>( set.begin(), set.end() );
+  }
 } //namespace qgis
 
 ///@endcond
@@ -7359,7 +7377,10 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
-inline bool operator>( const QVariant &v1, const QVariant &v2 ) { return qgsVariantCompare( v1, v2, true ) > 0; }
+inline bool operator>( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantCompare( v1, v2, true ) > 0;
+}
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
@@ -7372,7 +7393,10 @@ inline bool operator>( const QVariant &v1, const QVariant &v2 ) { return qgsVari
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
-inline bool operator<( const QVariant &v1, const QVariant &v2 ) { return qgsVariantCompare( v1, v2, true ) < 0; }
+inline bool operator<( const QVariant &v1, const QVariant &v2 )
+{
+  return qgsVariantCompare( v1, v2, true ) < 0;
+}
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty

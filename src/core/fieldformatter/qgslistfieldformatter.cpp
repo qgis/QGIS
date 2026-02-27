@@ -23,7 +23,10 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsListFieldFormatter::id() const { return u"List"_s; }
+QString QgsListFieldFormatter::id() const
+{
+  return u"List"_s;
+}
 
 QString QgsListFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {

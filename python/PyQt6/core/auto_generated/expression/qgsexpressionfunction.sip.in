@@ -82,7 +82,12 @@ Constructor for function which uses unnamed parameters and group list
 %End
 
     QgsExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QString &group, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool lazyEval = false,
+      bool handlesNull = false,
       bool isContextual = false
     );
 %Docstring
@@ -90,7 +95,12 @@ Constructor for function which uses named parameter list.
 %End
 
     QgsExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QStringList &groups, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QStringList &groups,
+      const QString &helpText = QString(),
+      bool lazyEval = false,
+      bool handlesNull = false,
       bool isContextual = false
     );
 %Docstring

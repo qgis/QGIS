@@ -40,9 +40,15 @@ QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInt
   , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
 {}
 
-void QgsSingleBandPseudoColorRenderer::setBand( int bandNo ) { setInputBand( bandNo ); }
+void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
+{
+  setInputBand( bandNo );
+}
 
-int QgsSingleBandPseudoColorRenderer::inputBand() const { return mBand; }
+int QgsSingleBandPseudoColorRenderer::inputBand() const
+{
+  return mBand;
+}
 
 bool QgsSingleBandPseudoColorRenderer::setInputBand( int band )
 {
@@ -108,9 +114,15 @@ QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() cons
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsSingleBandPseudoColorRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
+Qgis::RasterRendererFlags QgsSingleBandPseudoColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
 
-void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader ) { mShader.reset( shader ); }
+void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
+{
+  mShader.reset( shader );
+}
 
 void QgsSingleBandPseudoColorRenderer::createShader(
   QgsColorRamp *colorRamp, Qgis::ShaderInterpolationMethod colorRampType, Qgis::ShaderClassificationMethod classificationMode, int classes, bool clip, const QgsRectangle &extent
@@ -468,8 +480,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
         if ( !rampShader->colorRampItemList().isEmpty() )
         {
           res << new QgsColorRampLegendNode(
-            nodeLayer, rampShader->createColorRamp(), rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(), rampShader->minimumValue(),
-            rampShader->maximumValue()
+            nodeLayer, rampShader->createColorRamp(), rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(), rampShader->minimumValue(), rampShader->maximumValue()
           );
         }
         break;
@@ -491,7 +502,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
   return res;
 }
 
-bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const { return true; }
+bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
+{
+  return true;
+}
 
 bool QgsSingleBandPseudoColorRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool force )
 {

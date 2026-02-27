@@ -78,11 +78,20 @@ QgsField &QgsField::operator=( const QgsField &other ) //NOLINT
   return *this;
 }
 
-bool QgsField::operator==( const QgsField &other ) const { return *( other.d ) == *d; }
+bool QgsField::operator==( const QgsField &other ) const
+{
+  return *( other.d ) == *d;
+}
 
-bool QgsField::operator!=( const QgsField &other ) const { return !( *this == other ); }
+bool QgsField::operator!=( const QgsField &other ) const
+{
+  return !( *this == other );
+}
 
-QString QgsField::name() const { return d->name; }
+QString QgsField::name() const
+{
+  return d->name;
+}
 
 QString QgsField::displayName() const
 {
@@ -136,36 +145,75 @@ QString QgsField::friendlyTypeString() const
   return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
 }
 
-QMetaType::Type QgsField::type() const { return d->type; }
+QMetaType::Type QgsField::type() const
+{
+  return d->type;
+}
 
-QMetaType::Type QgsField::subType() const { return d->subType; }
+QMetaType::Type QgsField::subType() const
+{
+  return d->subType;
+}
 
-QString QgsField::typeName() const { return d->typeName; }
+QString QgsField::typeName() const
+{
+  return d->typeName;
+}
 
-int QgsField::length() const { return d->length; }
+int QgsField::length() const
+{
+  return d->length;
+}
 
-int QgsField::precision() const { return d->precision; }
+int QgsField::precision() const
+{
+  return d->precision;
+}
 
-QString QgsField::comment() const { return d->comment; }
+QString QgsField::comment() const
+{
+  return d->comment;
+}
 
-QVariant QgsField::metadata( int property ) const { return d->metadata.value( property ); }
+QVariant QgsField::metadata( int property ) const
+{
+  return d->metadata.value( property );
+}
 
-QMap<int, QVariant> QgsField::metadata() const { return d->metadata; }
+QMap<int, QVariant> QgsField::metadata() const
+{
+  return d->metadata;
+}
 
-QVariant QgsField::metadata( Qgis::FieldMetadataProperty property ) const { return d->metadata.value( static_cast< int >( property ) ); }
+QVariant QgsField::metadata( Qgis::FieldMetadataProperty property ) const
+{
+  return d->metadata.value( static_cast< int >( property ) );
+}
 
-void QgsField::setMetadata( const QMap<int, QVariant> metadata ) { d->metadata = metadata; }
+void QgsField::setMetadata( const QMap<int, QVariant> metadata )
+{
+  d->metadata = metadata;
+}
 
-void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value ) { d->metadata[static_cast< int >( property )] = value; }
+void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value )
+{
+  d->metadata[static_cast< int >( property )] = value;
+}
 
-void QgsField::setMetadata( int property, const QVariant &value ) { d->metadata[property] = value; }
+void QgsField::setMetadata( int property, const QVariant &value )
+{
+  d->metadata[property] = value;
+}
 
 bool QgsField::isNumeric() const
 {
   return d->type == QMetaType::Type::Double || d->type == QMetaType::Type::Int || d->type == QMetaType::Type::UInt || d->type == QMetaType::Type::LongLong || d->type == QMetaType::Type::ULongLong;
 }
 
-bool QgsField::isDateOrTime() const { return d->type == QMetaType::Type::QDate || d->type == QMetaType::Type::QTime || d->type == QMetaType::Type::QDateTime; }
+bool QgsField::isDateOrTime() const
+{
+  return d->type == QMetaType::Type::QDate || d->type == QMetaType::Type::QTime || d->type == QMetaType::Type::QDateTime;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -173,38 +221,89 @@ bool QgsField::isDateOrTime() const { return d->type == QMetaType::Type::QDate |
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsField::setName( const QString &name ) { d->name = name; }
+void QgsField::setName( const QString &name )
+{
+  d->name = name;
+}
 
-void QgsField::setType( QMetaType::Type type ) { d->type = type; }
+void QgsField::setType( QMetaType::Type type )
+{
+  d->type = type;
+}
 
-void QgsField::setType( QVariant::Type type ) { setType( QgsVariantUtils::variantTypeToMetaType( type ) ); }
+void QgsField::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
-void QgsField::setSubType( QMetaType::Type subType ) { d->subType = subType; }
+void QgsField::setSubType( QMetaType::Type subType )
+{
+  d->subType = subType;
+}
 
-void QgsField::setSubType( QVariant::Type subType ) { setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ); }
+void QgsField::setSubType( QVariant::Type subType )
+{
+  setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) );
+}
 
-void QgsField::setTypeName( const QString &typeName ) { d->typeName = typeName; }
+void QgsField::setTypeName( const QString &typeName )
+{
+  d->typeName = typeName;
+}
 
-void QgsField::setLength( int len ) { d->length = len; }
-void QgsField::setPrecision( int precision ) { d->precision = precision; }
+void QgsField::setLength( int len )
+{
+  d->length = len;
+}
+void QgsField::setPrecision( int precision )
+{
+  d->precision = precision;
+}
 
-void QgsField::setComment( const QString &comment ) { d->comment = comment; }
+void QgsField::setComment( const QString &comment )
+{
+  d->comment = comment;
+}
 
-QgsDefaultValue QgsField::defaultValueDefinition() const { return d->defaultValueDefinition; }
+QgsDefaultValue QgsField::defaultValueDefinition() const
+{
+  return d->defaultValueDefinition;
+}
 
-void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) { d->defaultValueDefinition = defaultValueDefinition; }
+void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition )
+{
+  d->defaultValueDefinition = defaultValueDefinition;
+}
 
-void QgsField::setConstraints( const QgsFieldConstraints &constraints ) { d->constraints = constraints; }
+void QgsField::setConstraints( const QgsFieldConstraints &constraints )
+{
+  d->constraints = constraints;
+}
 
-const QgsFieldConstraints &QgsField::constraints() const { return d->constraints; }
+const QgsFieldConstraints &QgsField::constraints() const
+{
+  return d->constraints;
+}
 
-QString QgsField::alias() const { return d->alias; }
+QString QgsField::alias() const
+{
+  return d->alias;
+}
 
-void QgsField::setAlias( const QString &alias ) { d->alias = alias; }
+void QgsField::setAlias( const QString &alias )
+{
+  d->alias = alias;
+}
 
-Qgis::FieldConfigurationFlags QgsField::configurationFlags() const { return d->flags; }
+Qgis::FieldConfigurationFlags QgsField::configurationFlags() const
+{
+  return d->flags;
+}
 
-void QgsField::setConfigurationFlags( Qgis::FieldConfigurationFlags flags ) { d->flags = flags; }
+void QgsField::setConfigurationFlags( Qgis::FieldConfigurationFlags flags )
+{
+  d->flags = flags;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -627,27 +726,60 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   return true;
 }
 
-QgsField::operator QVariant() const { return QVariant::fromValue( *this ); }
+QgsField::operator QVariant() const
+{
+  return QVariant::fromValue( *this );
+}
 
-void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v ) { d->editorWidgetSetup = v; }
+void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v )
+{
+  d->editorWidgetSetup = v;
+}
 
-QgsEditorWidgetSetup QgsField::editorWidgetSetup() const { return d->editorWidgetSetup; }
+QgsEditorWidgetSetup QgsField::editorWidgetSetup() const
+{
+  return d->editorWidgetSetup;
+}
 
-void QgsField::setReadOnly( bool readOnly ) { d->isReadOnly = readOnly; }
+void QgsField::setReadOnly( bool readOnly )
+{
+  d->isReadOnly = readOnly;
+}
 
-bool QgsField::isReadOnly() const { return d->isReadOnly; }
+bool QgsField::isReadOnly() const
+{
+  return d->isReadOnly;
+}
 
-Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const { return d->splitPolicy; }
+Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const
+{
+  return d->splitPolicy;
+}
 
-void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy ) { d->splitPolicy = policy; }
+void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
+{
+  d->splitPolicy = policy;
+}
 
-Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const { return d->duplicatePolicy; }
+Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const
+{
+  return d->duplicatePolicy;
+}
 
-void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) { d->duplicatePolicy = policy; }
+void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
+{
+  d->duplicatePolicy = policy;
+}
 
-Qgis::FieldDomainMergePolicy QgsField::mergePolicy() const { return d->mergePolicy; }
+Qgis::FieldDomainMergePolicy QgsField::mergePolicy() const
+{
+  return d->mergePolicy;
+}
 
-void QgsField::setMergePolicy( Qgis::FieldDomainMergePolicy policy ) { d->mergePolicy = policy; }
+void QgsField::setMergePolicy( Qgis::FieldDomainMergePolicy policy )
+{
+  d->mergePolicy = policy;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

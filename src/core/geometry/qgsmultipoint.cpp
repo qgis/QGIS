@@ -27,7 +27,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsMultiPoint::QgsMultiPoint() { mWkbType = Qgis::WkbType::MultiPoint; }
+QgsMultiPoint::QgsMultiPoint()
+{
+  mWkbType = Qgis::WkbType::MultiPoint;
+}
 
 QgsMultiPoint::QgsMultiPoint( const QVector<QgsPoint> &points )
 {
@@ -108,11 +111,20 @@ QgsMultiPoint::QgsMultiPoint( const QVector<double> &x, const QVector<double> &y
   }
 }
 
-QgsPoint *QgsMultiPoint::pointN( int index ) { return qgsgeometry_cast< QgsPoint * >( geometryN( index ) ); }
+QgsPoint *QgsMultiPoint::pointN( int index )
+{
+  return qgsgeometry_cast< QgsPoint * >( geometryN( index ) );
+}
 
-const QgsPoint *QgsMultiPoint::pointN( int index ) const { return qgsgeometry_cast< const QgsPoint * >( geometryN( index ) ); }
+const QgsPoint *QgsMultiPoint::pointN( int index ) const
+{
+  return qgsgeometry_cast< const QgsPoint * >( geometryN( index ) );
+}
 
-QString QgsMultiPoint::geometryType() const { return u"MultiPoint"_s; }
+QString QgsMultiPoint::geometryType() const
+{
+  return u"MultiPoint"_s;
+}
 
 QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
 {
@@ -121,9 +133,15 @@ QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsMultiPoint *QgsMultiPoint::clone() const { return new QgsMultiPoint( *this ); }
+QgsMultiPoint *QgsMultiPoint::clone() const
+{
+  return new QgsMultiPoint( *this );
+}
 
-QgsMultiPoint *QgsMultiPoint::toCurveType() const { return clone(); }
+QgsMultiPoint *QgsMultiPoint::toCurveType() const
+{
+  return clone();
+}
 
 bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
@@ -204,7 +222,10 @@ json QgsMultiPoint::asJsonObject( int precision ) const
 }
 
 
-int QgsMultiPoint::nCoordinates() const { return mGeometries.size(); }
+int QgsMultiPoint::nCoordinates() const
+{
+  return mGeometries.size();
+}
 
 bool QgsMultiPoint::addGeometry( QgsAbstractGeometry *g )
 {
@@ -273,7 +294,10 @@ bool QgsMultiPoint::insertGeometry( QgsAbstractGeometry *g, int index )
   return QgsGeometryCollection::insertGeometry( g, index );
 }
 
-QgsAbstractGeometry *QgsMultiPoint::boundary() const { return nullptr; }
+QgsAbstractGeometry *QgsMultiPoint::boundary() const
+{
+  return nullptr;
+}
 
 int QgsMultiPoint::vertexNumberFromVertexId( QgsVertexId id ) const
 {
@@ -283,17 +307,27 @@ int QgsMultiPoint::vertexNumberFromVertexId( QgsVertexId id ) const
   return id.part; // can shortcut the calculation, since each part will have 1 vertex
 }
 
-double QgsMultiPoint::segmentLength( QgsVertexId ) const { return 0.0; }
+double QgsMultiPoint::segmentLength( QgsVertexId ) const
+{
+  return 0.0;
+}
 
-bool QgsMultiPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const { return true; }
+bool QgsMultiPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
+{
+  return true;
+}
 
-QgsMultiPoint *QgsMultiPoint::simplifyByDistance( double ) const { return clone(); }
+QgsMultiPoint *QgsMultiPoint::simplifyByDistance( double ) const
+{
+  return clone();
+}
 
 void QgsMultiPoint::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   mGeometries.erase(
     std::remove_if(
-      mGeometries.begin(), mGeometries.end(), // clazy:exclude=detaching-member
+      mGeometries.begin(),
+      mGeometries.end(), // clazy:exclude=detaching-member
       [&filter]( const QgsAbstractGeometry *part ) {
         if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
         {
@@ -318,4 +352,7 @@ void QgsMultiPoint::filterVertices( const std::function<bool( const QgsPoint & )
   ); // clazy:exclude=detaching-member
 }
 
-bool QgsMultiPoint::wktOmitChildType() const { return true; }
+bool QgsMultiPoint::wktOmitChildType() const
+{
+  return true;
+}

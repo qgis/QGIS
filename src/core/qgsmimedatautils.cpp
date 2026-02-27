@@ -186,7 +186,10 @@ QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer() const
 
 // -----
 
-bool QgsMimeDataUtils::isUriList( const QMimeData *data ) { return data->hasFormat( QGIS_URILIST_MIMETYPE ); }
+bool QgsMimeDataUtils::isUriList( const QMimeData *data )
+{
+  return data->hasFormat( QGIS_URILIST_MIMETYPE );
+}
 
 QMimeData *QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList &layers )
 {

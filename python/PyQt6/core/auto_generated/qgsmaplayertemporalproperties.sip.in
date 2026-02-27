@@ -31,7 +31,7 @@ behaves in a temporal context, e.g. while animating a map object.
 #include "qgsvectorlayertemporalproperties.h"
 %End
 %ConvertToSubClassCode
-if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
+    if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsRasterLayerTemporalProperties;
     }

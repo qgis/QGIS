@@ -70,7 +70,10 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
   return QgsGradientColorRamp();
 }
 
-QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent ) { return getMapLayerPrivate( value, context, parent ); }
+QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  return getMapLayerPrivate( value, context, parent );
+}
 
 QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * )
 {
@@ -337,7 +340,9 @@ QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe(
   foundLayer = false;
 
   executeLambdaForMapLayer(
-    value, context, expression,
+    value,
+    context,
+    expression,
     [&res, function]( QgsMapLayer *layer ) {
       if ( layer )
         res = function( layer );
@@ -353,7 +358,9 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
   executeLambdaForMapLayer(
-    value, context, e,
+    value,
+    context,
+    e,
     [&featureSource]( QgsMapLayer *layer ) {
       if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
       {

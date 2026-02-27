@@ -404,7 +404,9 @@ bool decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         break;
       case QgsLazDecoder::LazAttribute::ScanAngleRank:
         lazStoreToStream_<float>(
-          dataBuffer, outputOffset, requestedAttribute.type,
+          dataBuffer,
+          outputOffset,
+          requestedAttribute.type,
           isLas14
             // Formats from LAS 1.4 spec store the angle in 0.006 degree increments
             ? p14.scanAngle() * 0.006f
@@ -737,7 +739,10 @@ std::wstring QgsLazDecoder::toNativePath( const QString &filename )
   return converter.from_bytes( filename.toStdString() );
 }
 #else
-std::string QgsLazDecoder::toNativePath( const QString &filename ) { return filename.toStdString(); }
+std::string QgsLazDecoder::toNativePath( const QString &filename )
+{
+  return filename.toStdString();
+}
 #endif
 
 ///@endcond

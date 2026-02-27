@@ -56,8 +56,12 @@ class CORE_EXPORT QgsLayerDefinition
      * \return true in case of success
     */
     static bool loadLayerDefinition(
-      const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT,
-      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr
+      const QString &path,
+      QgsProject *project,
+      QgsLayerTreeGroup *rootGroup,
+      QString &errorMessage SIP_OUT,
+      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup,
+      const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr
     );
 
     /**
@@ -72,8 +76,13 @@ class CORE_EXPORT QgsLayerDefinition
      *  \return true in case of success
      */
     static bool loadLayerDefinition(
-      QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context,
-      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr
+      QDomDocument doc,
+      QgsProject *project,
+      QgsLayerTreeGroup *rootGroup,
+      QString &errorMessage SIP_OUT,
+      QgsReadWriteContext &context,
+      Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup,
+      const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr
     );
 
     /**

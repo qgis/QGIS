@@ -20,7 +20,7 @@ An abstract vector layer plot data gatherer base class.
 #include "qgsvectorlayerplotdatagatherer.h"
 %End
 %ConvertToSubClassCode
-if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
+    if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
     {
       if ( dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( item ) != NULL )
       {

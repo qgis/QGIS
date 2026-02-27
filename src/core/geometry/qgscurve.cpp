@@ -34,7 +34,10 @@ bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
   return equals( *otherCurve );
 }
 
-bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const { return !operator==( other ); }
+bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const
+{
+  return !operator==( other );
+}
 
 bool QgsCurve::isClosed2D() const
 {
@@ -59,7 +62,10 @@ bool QgsCurve::isClosed() const
   return closed;
 }
 
-bool QgsCurve::isRing() const { return ( isClosed() && numPoints() >= 4 ); }
+bool QgsCurve::isRing() const
+{
+  return ( isClosed() && numPoints() >= 4 );
+}
 
 QPainterPath QgsCurve::asQPainterPath() const
 {
@@ -166,7 +172,10 @@ QString QgsCurve::asKml( int precision ) const
   return kml;
 }
 
-QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const { return curveToLine( tolerance, toleranceType ); }
+QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  return curveToLine( tolerance, toleranceType );
+}
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
@@ -181,7 +190,10 @@ int QgsCurve::ringCount( int part ) const
   return numPoints() > 0 ? 1 : 0;
 }
 
-int QgsCurve::partCount() const { return numPoints() > 0 ? 1 : 0; }
+int QgsCurve::partCount() const
+{
+  return numPoints() > 0 ? 1 : 0;
+}
 
 QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
 {
@@ -191,7 +203,10 @@ QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
   return v;
 }
 
-QgsCurve *QgsCurve::toCurveType() const { return clone(); }
+QgsCurve *QgsCurve::toCurveType() const
+{
+  return clone();
+}
 
 void QgsCurve::normalize()
 {
@@ -254,7 +269,10 @@ QPolygonF QgsCurve::asQPolygonF() const
   return segmentized->asQPolygonF();
 }
 
-double QgsCurve::straightDistance2d() const { return startPoint().distance( endPoint() ); }
+double QgsCurve::straightDistance2d() const
+{
+  return startPoint().distance( endPoint() );
+}
 
 double QgsCurve::sinuosity() const
 {
@@ -282,7 +300,10 @@ void QgsCurve::clearCache() const
   QgsAbstractGeometry::clearCache();
 }
 
-int QgsCurve::childCount() const { return numPoints(); }
+int QgsCurve::childCount() const
+{
+  return numPoints();
+}
 
 QgsPoint QgsCurve::childPoint( int index ) const
 {
@@ -295,8 +316,19 @@ QgsPoint QgsCurve::childPoint( int index ) const
 }
 
 bool QgsCurve::snapToGridPrivate(
-  double hSpacing, double vSpacing, double dSpacing, double mSpacing, const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
-  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM, bool removeRedundantPoints
+  double hSpacing,
+  double vSpacing,
+  double dSpacing,
+  double mSpacing,
+  const QVector<double> &srcX,
+  const QVector<double> &srcY,
+  const QVector<double> &srcZ,
+  const QVector<double> &srcM,
+  QVector<double> &outX,
+  QVector<double> &outY,
+  QVector<double> &outZ,
+  QVector<double> &outM,
+  bool removeRedundantPoints
 ) const
 {
   const int length = numPoints();

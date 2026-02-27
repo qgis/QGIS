@@ -161,7 +161,10 @@ void QgsPointCloudAttributeCollection::extend( const QgsPointCloudAttributeColle
   }
 }
 
-QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() const { return mAttributes; }
+QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() const
+{
+  return mAttributes;
+}
 
 const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
@@ -253,8 +256,20 @@ double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const
 }
 
 void QgsPointCloudAttribute::getPointXYZ(
-  const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType, int yOffset, QgsPointCloudAttribute::DataType yType, int zOffset,
-  QgsPointCloudAttribute::DataType zType, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z
+  const char *ptr,
+  int i,
+  std::size_t pointRecordSize,
+  int xOffset,
+  QgsPointCloudAttribute::DataType xType,
+  int yOffset,
+  QgsPointCloudAttribute::DataType yType,
+  int zOffset,
+  QgsPointCloudAttribute::DataType zType,
+  const QgsVector3D &indexScale,
+  const QgsVector3D &indexOffset,
+  double &x,
+  double &y,
+  double &z
 )
 {
   _attribute( ptr, i * pointRecordSize + xOffset, xType, x );

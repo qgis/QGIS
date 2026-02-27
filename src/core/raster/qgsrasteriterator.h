@@ -90,8 +90,15 @@ class CORE_EXPORT QgsRasterIterator
      * \since QGIS 3.26
      */
     static QgsRectangle subRegion(
-      const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth SIP_OUT, int &subRegionHeight SIP_OUT, int &subRegionLeft SIP_OUT,
-      int &subRegionTop SIP_OUT, int resamplingFactor = 1
+      const QgsRectangle &rasterExtent,
+      int rasterWidth,
+      int rasterHeight,
+      const QgsRectangle &subRegion,
+      int &subRegionWidth SIP_OUT,
+      int &subRegionHeight SIP_OUT,
+      int &subRegionLeft SIP_OUT,
+      int &subRegionTop SIP_OUT,
+      int resamplingFactor = 1
     );
 
     /**
@@ -156,8 +163,17 @@ class CORE_EXPORT QgsRasterIterator
      * \since QGIS 3.2
     */
     bool readNextRasterPart(
-      int bandNumber, int &nCols, int &nRows, std::unique_ptr< QgsRasterBlock > &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent = nullptr, int *tileColumns = nullptr,
-      int *tileRows = nullptr, int *tileTopLeftColumn = nullptr, int *tileTopLeftRow = nullptr
+      int bandNumber,
+      int &nCols,
+      int &nRows,
+      std::unique_ptr< QgsRasterBlock > &block,
+      int &topLeftCol,
+      int &topLeftRow,
+      QgsRectangle *blockExtent = nullptr,
+      int *tileColumns = nullptr,
+      int *tileRows = nullptr,
+      int *tileTopLeftColumn = nullptr,
+      int *tileTopLeftRow = nullptr
     ) SIP_SKIP;
 
     /**
@@ -270,8 +286,17 @@ class CORE_EXPORT QgsRasterIterator
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
     bool readNextRasterPartInternal(
-      int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows,
-      int &tileTopLeftColumn, int &tileTopLeftRow
+      int bandNumber,
+      int &nCols,
+      int &nRows,
+      std::unique_ptr<QgsRasterBlock> *block,
+      int &topLeftCol,
+      int &topLeftRow,
+      QgsRectangle *blockExtent,
+      int &tileColumns,
+      int &tileRows,
+      int &tileTopLeftColumn,
+      int &tileTopLeftRow
     );
 };
 

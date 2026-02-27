@@ -29,8 +29,7 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxf
   : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
   , mPaintDevice( dxfDevice )
   , mDxf( dxf )
-{
-}
+{}
 
 bool QgsDxfPaintEngine::begin( QPaintDevice *pdev )
 {

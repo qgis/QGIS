@@ -97,9 +97,15 @@ QString QgsCoordinateFormatter::asPair( double x, double y, int precision, Qgis:
   BUILTIN_UNREACHABLE
 }
 
-QChar QgsCoordinateFormatter::separator() { return QLocale().decimalPoint() == ','_L1 ? ' '_L1 : ','_L1; }
+QChar QgsCoordinateFormatter::separator()
+{
+  return QLocale().decimalPoint() == ','_L1 ? ' '_L1 : ','_L1;
+}
 
-QString QgsCoordinateFormatter::formatAsPair( double val, int precision ) { return std::isfinite( val ) ? QLocale().toString( val, 'f', precision ) : QObject::tr( "infinite" ); }
+QString QgsCoordinateFormatter::formatAsPair( double val, int precision )
+{
+  return std::isfinite( val ) ? QLocale().toString( val, 'f', precision ) : QObject::tr( "infinite" );
+}
 
 QString QgsCoordinateFormatter::formatXAsDegreesMinutesSeconds( double val, int precision, FormatFlags flags )
 {

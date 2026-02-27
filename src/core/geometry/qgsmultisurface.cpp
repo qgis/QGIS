@@ -30,13 +30,25 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsMultiSurface::QgsMultiSurface() { mWkbType = Qgis::WkbType::MultiSurface; }
+QgsMultiSurface::QgsMultiSurface()
+{
+  mWkbType = Qgis::WkbType::MultiSurface;
+}
 
-QgsSurface *QgsMultiSurface::surfaceN( int index ) { return qgsgeometry_cast< QgsSurface * >( geometryN( index ) ); }
+QgsSurface *QgsMultiSurface::surfaceN( int index )
+{
+  return qgsgeometry_cast< QgsSurface * >( geometryN( index ) );
+}
 
-const QgsSurface *QgsMultiSurface::surfaceN( int index ) const { return qgsgeometry_cast< const QgsSurface * >( geometryN( index ) ); }
+const QgsSurface *QgsMultiSurface::surfaceN( int index ) const
+{
+  return qgsgeometry_cast< const QgsSurface * >( geometryN( index ) );
+}
 
-QString QgsMultiSurface::geometryType() const { return u"MultiSurface"_s; }
+QString QgsMultiSurface::geometryType() const
+{
+  return u"MultiSurface"_s;
+}
 
 void QgsMultiSurface::clear()
 {
@@ -51,11 +63,20 @@ QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsMultiSurface *QgsMultiSurface::clone() const { return new QgsMultiSurface( *this ); }
+QgsMultiSurface *QgsMultiSurface::clone() const
+{
+  return new QgsMultiSurface( *this );
+}
 
-QgsMultiSurface *QgsMultiSurface::toCurveType() const { return clone(); }
+QgsMultiSurface *QgsMultiSurface::toCurveType() const
+{
+  return clone();
+}
 
-bool QgsMultiSurface::fromWkt( const QString &wkt ) { return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon }, u"Polygon"_s ); }
+bool QgsMultiSurface::fromWkt( const QString &wkt )
+{
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon }, u"Polygon"_s );
+}
 
 QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {

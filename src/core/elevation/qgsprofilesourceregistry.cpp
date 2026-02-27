@@ -23,11 +23,18 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProfileSourceRegistry::QgsProfileSourceRegistry() {}
+QgsProfileSourceRegistry::QgsProfileSourceRegistry()
+{}
 
-QgsProfileSourceRegistry::~QgsProfileSourceRegistry() { qDeleteAll( mSources ); }
+QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
+{
+  qDeleteAll( mSources );
+}
 
-QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() const { return mSources; }
+QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() const
+{
+  return mSources;
+}
 
 bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {

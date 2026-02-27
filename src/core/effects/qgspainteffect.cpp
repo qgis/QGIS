@@ -38,11 +38,20 @@ QgsPaintEffect::~QgsPaintEffect()
   mEffectPainter.reset();
 }
 
-Qgis::PaintEffectFlags QgsPaintEffect::flags() const { return Qgis::PaintEffectFlags(); }
+Qgis::PaintEffectFlags QgsPaintEffect::flags() const
+{
+  return Qgis::PaintEffectFlags();
+}
 
-void QgsPaintEffect::setEnabled( const bool enabled ) { mEnabled = enabled; }
+void QgsPaintEffect::setEnabled( const bool enabled )
+{
+  mEnabled = enabled;
+}
 
-void QgsPaintEffect::setDrawMode( const QgsPaintEffect::DrawMode drawMode ) { mDrawMode = drawMode; }
+void QgsPaintEffect::setDrawMode( const QgsPaintEffect::DrawMode drawMode )
+{
+  mDrawMode = drawMode;
+}
 
 bool QgsPaintEffect::saveProperties( QDomDocument &doc, QDomElement &element ) const
 {
@@ -152,7 +161,10 @@ QImage QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
   return mSourceImage;
 }
 
-QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const { return imageBoundingRect( context ).topLeft(); }
+QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const
+{
+  return imageBoundingRect( context ).topLeft();
+}
 
 QRectF QgsPaintEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
@@ -160,9 +172,15 @@ QRectF QgsPaintEffect::boundingRect( const QRectF &rect, const QgsRenderContext 
   return rect;
 }
 
-void QgsPaintEffect::fixQPictureDpi( QPainter *painter ) const { QgsPainting::applyScaleFixForQPictureDpi( painter ); }
+void QgsPaintEffect::fixQPictureDpi( QPainter *painter ) const
+{
+  QgsPainting::applyScaleFixForQPictureDpi( painter );
+}
 
-QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) const { return boundingRect( mPicture.boundingRect(), context ); }
+QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) const
+{
+  return boundingRect( mPicture.boundingRect(), context );
+}
 
 
 //
@@ -209,7 +227,10 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsDrawSourceEffect *QgsDrawSourceEffect::clone() const { return new QgsDrawSourceEffect( *this ); }
+QgsDrawSourceEffect *QgsDrawSourceEffect::clone() const
+{
+  return new QgsDrawSourceEffect( *this );
+}
 
 QVariantMap QgsDrawSourceEffect::properties() const
 {

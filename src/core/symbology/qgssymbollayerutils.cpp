@@ -68,7 +68,10 @@ using namespace Qt::StringLiterals;
 
 #define POINTS_TO_MM 2.83464567
 
-QString QgsSymbolLayerUtils::encodeColor( const QColor &color ) { return u"%1,%2,%3,%4"_s.arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() ); }
+QString QgsSymbolLayerUtils::encodeColor( const QColor &color )
+{
+  return u"%1,%2,%3,%4"_s.arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
+}
 
 QColor QgsSymbolLayerUtils::decodeColor( const QString &str )
 {
@@ -89,7 +92,10 @@ QColor QgsSymbolLayerUtils::decodeColor( const QString &str )
   return QColor( red, green, blue, alpha );
 }
 
-QString QgsSymbolLayerUtils::encodeSldAlpha( int alpha ) { return QString::number( alpha / 255.0, 'g', 2 ); }
+QString QgsSymbolLayerUtils::encodeSldAlpha( int alpha )
+{
+  return QString::number( alpha / 255.0, 'g', 2 );
+}
 
 int QgsSymbolLayerUtils::decodeSldAlpha( const QString &str )
 {
@@ -629,7 +635,10 @@ QString QgsSymbolLayerUtils::encodeLineClipMode( Qgis::LineClipMode mode )
   return QString(); // no warnings
 }
 
-QString QgsSymbolLayerUtils::encodePoint( QPointF point ) { return u"%1,%2"_s.arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) ); }
+QString QgsSymbolLayerUtils::encodePoint( QPointF point )
+{
+  return u"%1,%2"_s.arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );
+}
 
 QPointF QgsSymbolLayerUtils::decodePoint( const QString &str )
 {
@@ -690,7 +699,10 @@ QPointF QgsSymbolLayerUtils::toPoint( const QVariant &value, bool *ok )
   }
 }
 
-QString QgsSymbolLayerUtils::encodeSize( QSizeF size ) { return u"%1,%2"_s.arg( qgsDoubleToString( size.width() ), qgsDoubleToString( size.height() ) ); }
+QString QgsSymbolLayerUtils::encodeSize( QSizeF size )
+{
+  return u"%1,%2"_s.arg( qgsDoubleToString( size.width() ), qgsDoubleToString( size.height() ) );
+}
 
 QSizeF QgsSymbolLayerUtils::decodeSize( const QString &string )
 {
@@ -973,8 +985,7 @@ QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize siz
 }
 
 QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap(
-  const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape,
-  const QgsScreenProperties &screen
+  const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape, const QgsScreenProperties &screen
 )
 {
   Q_ASSERT( symbol );
@@ -1133,7 +1144,10 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon(
   return QIcon( pixmap );
 }
 
-QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding ) { return QIcon( colorRampPreviewPixmap( ramp, size, padding ) ); }
+QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding )
+{
+  return QIcon( colorRampPreviewPixmap( ramp, size, padding ) );
+}
 
 QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding, Qt::Orientation direction, bool flipDirection, bool drawTransparentBackground )
 {
@@ -1837,7 +1851,10 @@ std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::createMarkerLayerFromSld(
   return l;
 }
 
-bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element ) { return hasExternalGraphicV2( element, u"image/svg+xml"_s ); }
+bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
+{
+  return hasExternalGraphicV2( element, u"image/svg+xml"_s );
+}
 
 bool QgsSymbolLayerUtils::hasExternalGraphicV2( const QDomElement &element, const QString format )
 {
@@ -1935,7 +1952,10 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
   return false;
 }
 
-bool QgsSymbolLayerUtils::needSvgMarker( const QDomElement &element ) { return hasExternalGraphicV2( element, u"image/svg+xml"_s ); }
+bool QgsSymbolLayerUtils::needSvgMarker( const QDomElement &element )
+{
+  return hasExternalGraphicV2( element, u"image/svg+xml"_s );
+}
 
 bool QgsSymbolLayerUtils::needRasterMarker( const QDomElement &element )
 {
@@ -2423,8 +2443,16 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
 }
 
 void QgsSymbolLayerUtils::lineToSld(
-  QDomDocument &doc, QDomElement &element, Qt::PenStyle penStyle, const QColor &color, QgsSldExportContext &context, double width, const Qt::PenJoinStyle *penJoinStyle,
-  const Qt::PenCapStyle *penCapStyle, const QVector<qreal> *customDashPattern, double dashOffset
+  QDomDocument &doc,
+  QDomElement &element,
+  Qt::PenStyle penStyle,
+  const QColor &color,
+  QgsSldExportContext &context,
+  double width,
+  const Qt::PenJoinStyle *penJoinStyle,
+  const Qt::PenCapStyle *penCapStyle,
+  const QVector<qreal> *customDashPattern,
+  double dashOffset
 )
 {
   QVector<qreal> dashPattern;
@@ -3405,7 +3433,10 @@ QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 }
 
 
-void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element ) { element.appendChild( QgsXmlUtils::writeVariant( props, doc ) ); }
+void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
+{
+  element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
+}
 
 QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -4634,7 +4665,10 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
   }
 }
 
-QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type ) { return toQPolygonF( geometry.constGet(), type ); }
+QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type )
+{
+  return toQPolygonF( geometry.constGet(), type );
+}
 
 QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type )
 {
@@ -5598,9 +5632,18 @@ QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
   // Optimized "good" angles list, it produces small tiles but
   // it has approximately 10 degrees steps
   static const QList<rationalTangent> rationalTangents {
-    { 1, 10, qDegreesToRadians( 5.71059 ) }, { 1, 5, qDegreesToRadians( 11.3099 ) }, { 1, 4, qDegreesToRadians( 14.0362 ) }, { 1, 4, qDegreesToRadians( 18.4349 ) },
-    { 1, 2, qDegreesToRadians( 26.5651 ) },  { 2, 3, qDegreesToRadians( 33.6901 ) }, { 1, 1, qDegreesToRadians( 45.0 ) },    { 3, 2, qDegreesToRadians( 56.3099 ) },
-    { 2, 1, qDegreesToRadians( 63.4349 ) },  { 3, 1, qDegreesToRadians( 71.5651 ) }, { 4, 1, qDegreesToRadians( 75.9638 ) }, { 10, 1, qDegreesToRadians( 84.2894 ) },
+    { 1, 10, qDegreesToRadians( 5.71059 ) },
+    { 1, 5, qDegreesToRadians( 11.3099 ) },
+    { 1, 4, qDegreesToRadians( 14.0362 ) },
+    { 1, 4, qDegreesToRadians( 18.4349 ) },
+    { 1, 2, qDegreesToRadians( 26.5651 ) },
+    { 2, 3, qDegreesToRadians( 33.6901 ) },
+    { 1, 1, qDegreesToRadians( 45.0 ) },
+    { 3, 2, qDegreesToRadians( 56.3099 ) },
+    { 2, 1, qDegreesToRadians( 63.4349 ) },
+    { 3, 1, qDegreesToRadians( 71.5651 ) },
+    { 4, 1, qDegreesToRadians( 75.9638 ) },
+    { 10, 1, qDegreesToRadians( 84.2894 ) },
   };
 
   const int quadrant { static_cast<int>( angleRad / M_PI_2 ) };

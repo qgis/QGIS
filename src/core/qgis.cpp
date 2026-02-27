@@ -131,7 +131,10 @@ void *qgsMalloc( size_t size )
   return p;
 }
 
-void qgsFree( void *ptr ) { free( ptr ); }
+void qgsFree( void *ptr )
+{
+  free( ptr );
+}
 
 int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck )
 {
@@ -590,11 +593,20 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
   return std::clamp( QString::localeAwareCompare( lhs.toString(), rhs.toString() ), -1, 1 );
 }
 
-bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs ) { return qgsVariantCompare( lhs, rhs ) < 0; }
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
+{
+  return qgsVariantCompare( lhs, rhs ) < 0;
+}
 
-bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs ) { return qgsVariantCompare( lhs, rhs ) > 0; }
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
+{
+  return qgsVariantCompare( lhs, rhs ) > 0;
+}
 
-QString qgsVsiPrefix( const QString &path ) { return QgsGdalUtils::vsiPrefixForPath( path ); }
+QString qgsVsiPrefix( const QString &path )
+{
+  return QgsGdalUtils::vsiPrefixForPath( path );
+}
 
 uint qHash( const QVariant &variant )
 {
@@ -667,7 +679,10 @@ QString Qgis::defaultProjectScales()
   );
 }
 
-QString Qgis::version() { return QString::fromUtf8( VERSION ); }
+QString Qgis::version()
+{
+  return QString::fromUtf8( VERSION );
+}
 
 int Qgis::versionInt()
 {
@@ -676,11 +691,20 @@ int Qgis::versionInt()
   return VERSION_INT;
 }
 
-QString Qgis::releaseName() { return QString::fromUtf8( RELEASE_NAME ); }
+QString Qgis::releaseName()
+{
+  return QString::fromUtf8( RELEASE_NAME );
+}
 
-QString Qgis::devVersion() { return QString::fromUtf8( QGIS_DEV_VERSION ); }
+QString Qgis::devVersion()
+{
+  return QString::fromUtf8( QGIS_DEV_VERSION );
+}
 
-QString Qgis::geosVersion() { return GEOSversion(); }
+QString Qgis::geosVersion()
+{
+  return GEOSversion();
+}
 
 bool Qgis::hasSfcgal()
 {
@@ -718,7 +742,10 @@ int Qgis::geographicLibVersion()
 #endif
 }
 
-bool Qgis::hasQtWebkit() { return false; }
+bool Qgis::hasQtWebkit()
+{
+  return false;
+}
 
 int Qgis::geosVersionInt()
 {
@@ -726,9 +753,15 @@ int Qgis::geosVersionInt()
   return version;
 }
 
-int Qgis::geosVersionMajor() { return GEOS_VERSION_MAJOR; }
+int Qgis::geosVersionMajor()
+{
+  return GEOS_VERSION_MAJOR;
+}
 
-int Qgis::geosVersionMinor() { return GEOS_VERSION_MINOR; }
+int Qgis::geosVersionMinor()
+{
+  return GEOS_VERSION_MINOR;
+}
 
 int Qgis::geosVersionPatch()
 {

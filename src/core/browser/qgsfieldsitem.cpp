@@ -60,8 +60,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent, const QString &path, const QS
 }
 
 QgsFieldsItem::~QgsFieldsItem()
-{
-}
+{}
 
 QVector<QgsDataItem *> QgsFieldsItem::createChildren()
 {
@@ -171,8 +170,7 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
 }
 
 QgsFieldItem::~QgsFieldItem()
-{
-}
+{}
 
 QIcon QgsFieldItem::icon()
 {

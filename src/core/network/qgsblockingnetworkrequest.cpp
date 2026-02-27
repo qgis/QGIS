@@ -43,7 +43,10 @@ QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags 
   connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply * >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
 }
 
-QgsBlockingNetworkRequest::~QgsBlockingNetworkRequest() { abort(); }
+QgsBlockingNetworkRequest::~QgsBlockingNetworkRequest()
+{
+  abort();
+}
 
 void QgsBlockingNetworkRequest::requestTimedOut( QNetworkReply *reply )
 {
@@ -51,9 +54,15 @@ void QgsBlockingNetworkRequest::requestTimedOut( QNetworkReply *reply )
     mTimedout = true;
 }
 
-QString QgsBlockingNetworkRequest::authCfg() const { return mAuthCfg; }
+QString QgsBlockingNetworkRequest::authCfg() const
+{
+  return mAuthCfg;
+}
 
-void QgsBlockingNetworkRequest::setAuthCfg( const QString &authCfg ) { mAuthCfg = authCfg; }
+void QgsBlockingNetworkRequest::setAuthCfg( const QString &authCfg )
+{
+  mAuthCfg = authCfg;
+}
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
 {
@@ -507,7 +516,10 @@ void QgsBlockingNetworkRequest::replyFinished()
   Q_NOWARN_DEPRECATED_POP
 }
 
-QString QgsBlockingNetworkRequest::errorMessageFailedAuth() { return tr( "network request update failed for authentication config" ); }
+QString QgsBlockingNetworkRequest::errorMessageFailedAuth()
+{
+  return tr( "network request update failed for authentication config" );
+}
 
 void QgsBlockingNetworkRequest::abortIfNotPartialContentReturned()
 {

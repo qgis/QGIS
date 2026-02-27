@@ -66,7 +66,10 @@ void QgsFieldConstraints::setConstraint( QgsFieldConstraints::Constraint constra
   }
 }
 
-QString QgsFieldConstraints::constraintExpression() const { return ( mConstraints & QgsFieldConstraints::ConstraintExpression ) ? mExpressionConstraint : QString(); }
+QString QgsFieldConstraints::constraintExpression() const
+{
+  return ( mConstraints & QgsFieldConstraints::ConstraintExpression ) ? mExpressionConstraint : QString();
+}
 
 void QgsFieldConstraints::setConstraintExpression( const QString &expression, const QString &description )
 {

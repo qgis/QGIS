@@ -73,12 +73,12 @@ class CORE_EXPORT QgsDataItem : public QObject
       sipType = sipType_QgsProjectItem;
     else
       sipType = 0;
-  SIP_END
+    SIP_END
 #endif
 
-  Q_OBJECT
+    Q_OBJECT
 
-    public :
+  public:
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
      *

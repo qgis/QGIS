@@ -97,7 +97,10 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName, bool useUnsafeSignals )
   connect( mTimeoutTimer, &QTimer::timeout, this, &QgsGpsDetector::connectionTimeout );
 }
 
-QgsGpsDetector::~QgsGpsDetector() { QgsDebugMsgLevel( u"Destroying GPS detector"_s, 2 ); }
+QgsGpsDetector::~QgsGpsDetector()
+{
+  QgsDebugMsgLevel( u"Destroying GPS detector"_s, 2 );
+}
 
 QgsGpsConnection *QgsGpsDetector::takeConnection()
 {

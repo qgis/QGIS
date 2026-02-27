@@ -271,7 +271,10 @@ QgsProjectPropertyKey::QgsProjectPropertyKey( const QString &name )
   : mName( name )
 {}
 
-QgsProjectPropertyKey::~QgsProjectPropertyKey() { clearKeys(); }
+QgsProjectPropertyKey::~QgsProjectPropertyKey()
+{
+  clearKeys();
+}
 
 QVariant QgsProjectPropertyKey::value() const
 {
@@ -469,4 +472,7 @@ bool QgsProjectPropertyKey::isLeaf() const
   return false;
 }
 
-void QgsProjectPropertyKey::setName( const QString &name ) { mName = name; }
+void QgsProjectPropertyKey::setName( const QString &name )
+{
+  mName = name;
+}

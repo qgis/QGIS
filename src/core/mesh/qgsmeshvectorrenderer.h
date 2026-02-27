@@ -50,9 +50,18 @@ class QgsMeshVectorRenderer
 
     //! Vector renderer factory. The returned renderer type depend on the settings
     static QgsMeshVectorRenderer *makeVectorRenderer(
-      const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QVector<double> &datasetValuesMag,
-      double datasetMagMaximumValue, double datasetMagMinimumValue, QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context,
-      const QgsRectangle &layerExtent, QgsMeshLayerRendererFeedback *feedBack, const QSize &size
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      const QSize &size
     );
 };
 
@@ -69,8 +78,15 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
   public:
     //! Ctor
     QgsMeshVectorArrowRenderer(
-      const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetValues, const QVector<double> &datasetValuesMag, double datasetMagMaximumValue, double datasetMagMinimumValue,
-      QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context, QSize size
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      QSize size
     );
     ~QgsMeshVectorArrowRenderer() override;
 
@@ -94,9 +110,13 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     virtual void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
     //! Calculates the end point of the arrow based on start point and vector data
     bool calcVectorLineEnd(
-      QgsPointXY &lineEnd, double &vectorLength, double &cosAlpha,
+      QgsPointXY &lineEnd,
+      double &vectorLength,
+      double &cosAlpha,
       double &sinAlpha, //out
-      const QgsPointXY &lineStart, double xVal, double yVal,
+      const QgsPointXY &lineStart,
+      double xVal,
+      double yVal,
       double magnitude //in
     );
 
@@ -137,8 +157,15 @@ class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
   public:
     //! Ctor
     QgsMeshVectorWindBarbRenderer(
-      const QgsTriangularMesh &m, const QgsMeshDataBlock &datasetValues, const QVector<double> &datasetValuesMag, double datasetMagMaximumValue, double datasetMagMinimumValue,
-      QgsMeshDatasetGroupMetadata::DataType dataType, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &context, QSize size
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      QSize size
     );
     ~QgsMeshVectorWindBarbRenderer() override;
 

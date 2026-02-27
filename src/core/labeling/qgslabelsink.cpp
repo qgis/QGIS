@@ -45,7 +45,10 @@ QgsRuleBasedLabelSinkProvider::QgsRuleBasedLabelSinkProvider( const QgsRuleBased
   mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
-void QgsRuleBasedLabelSinkProvider::reinit( QgsVectorLayer *layer ) { mRules->rootRule()->createSubProviders( layer, mSubProviders, this ); }
+void QgsRuleBasedLabelSinkProvider::reinit( QgsVectorLayer *layer )
+{
+  mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
+}
 
 QgsVectorLayerLabelProvider *QgsRuleBasedLabelSinkProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {

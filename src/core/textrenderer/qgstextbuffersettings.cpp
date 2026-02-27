@@ -31,7 +31,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTextBufferSettings::QgsTextBufferSettings() { d = new QgsTextBufferSettingsPrivate(); }
+QgsTextBufferSettings::QgsTextBufferSettings()
+{
+  d = new QgsTextBufferSettingsPrivate();
+}
 
 QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other ) //NOLINT
   : d( other.d )
@@ -73,47 +76,110 @@ bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) con
   return true;
 }
 
-bool QgsTextBufferSettings::operator!=( const QgsTextBufferSettings &other ) const { return !( *this == other ); }
+bool QgsTextBufferSettings::operator!=( const QgsTextBufferSettings &other ) const
+{
+  return !( *this == other );
+}
 
-bool QgsTextBufferSettings::enabled() const { return d->enabled; }
+bool QgsTextBufferSettings::enabled() const
+{
+  return d->enabled;
+}
 
-void QgsTextBufferSettings::setEnabled( bool enabled ) { d->enabled = enabled; }
+void QgsTextBufferSettings::setEnabled( bool enabled )
+{
+  d->enabled = enabled;
+}
 
-double QgsTextBufferSettings::size() const { return d->size; }
+double QgsTextBufferSettings::size() const
+{
+  return d->size;
+}
 
-void QgsTextBufferSettings::setSize( double size ) { d->size = size; }
+void QgsTextBufferSettings::setSize( double size )
+{
+  d->size = size;
+}
 
-Qgis::RenderUnit QgsTextBufferSettings::sizeUnit() const { return d->sizeUnit; }
+Qgis::RenderUnit QgsTextBufferSettings::sizeUnit() const
+{
+  return d->sizeUnit;
+}
 
-void QgsTextBufferSettings::setSizeUnit( Qgis::RenderUnit unit ) { d->sizeUnit = unit; }
+void QgsTextBufferSettings::setSizeUnit( Qgis::RenderUnit unit )
+{
+  d->sizeUnit = unit;
+}
 
-QgsMapUnitScale QgsTextBufferSettings::sizeMapUnitScale() const { return d->sizeMapUnitScale; }
+QgsMapUnitScale QgsTextBufferSettings::sizeMapUnitScale() const
+{
+  return d->sizeMapUnitScale;
+}
 
-void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale ) { d->sizeMapUnitScale = scale; }
+void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+{
+  d->sizeMapUnitScale = scale;
+}
 
-QColor QgsTextBufferSettings::color() const { return d->color; }
+QColor QgsTextBufferSettings::color() const
+{
+  return d->color;
+}
 
-void QgsTextBufferSettings::setColor( const QColor &color ) { d->color = color; }
+void QgsTextBufferSettings::setColor( const QColor &color )
+{
+  d->color = color;
+}
 
-bool QgsTextBufferSettings::fillBufferInterior() const { return d->fillBufferInterior; }
+bool QgsTextBufferSettings::fillBufferInterior() const
+{
+  return d->fillBufferInterior;
+}
 
-void QgsTextBufferSettings::setFillBufferInterior( bool fill ) { d->fillBufferInterior = fill; }
+void QgsTextBufferSettings::setFillBufferInterior( bool fill )
+{
+  d->fillBufferInterior = fill;
+}
 
-double QgsTextBufferSettings::opacity() const { return d->opacity; }
+double QgsTextBufferSettings::opacity() const
+{
+  return d->opacity;
+}
 
-void QgsTextBufferSettings::setOpacity( double opacity ) { d->opacity = opacity; }
+void QgsTextBufferSettings::setOpacity( double opacity )
+{
+  d->opacity = opacity;
+}
 
-Qt::PenJoinStyle QgsTextBufferSettings::joinStyle() const { return d->joinStyle; }
+Qt::PenJoinStyle QgsTextBufferSettings::joinStyle() const
+{
+  return d->joinStyle;
+}
 
-void QgsTextBufferSettings::setJoinStyle( Qt::PenJoinStyle style ) { d->joinStyle = style; }
+void QgsTextBufferSettings::setJoinStyle( Qt::PenJoinStyle style )
+{
+  d->joinStyle = style;
+}
 
-QPainter::CompositionMode QgsTextBufferSettings::blendMode() const { return d->blendMode; }
+QPainter::CompositionMode QgsTextBufferSettings::blendMode() const
+{
+  return d->blendMode;
+}
 
-void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode ) { d->blendMode = mode; }
+void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
+{
+  d->blendMode = mode;
+}
 
-const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const { return d->paintEffect.get(); }
+const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
+{
+  return d->paintEffect.get();
+}
 
-void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect ) { d->paintEffect.reset( effect ); }
+void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  d->paintEffect.reset( effect );
+}
 
 void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {

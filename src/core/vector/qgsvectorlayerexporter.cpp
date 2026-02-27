@@ -42,7 +42,13 @@
 using namespace Qt::StringLiterals;
 
 typedef Qgis::VectorExportResult createEmptyLayer_t(
-  const QString &uri, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &destCRS, bool overwrite, QMap<int, int> *oldToNewAttrIdx, QString *errorMessage,
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem &destCRS,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdx,
+  QString *errorMessage,
   const QMap<QString, QVariant> *options
 );
 
@@ -51,29 +57,65 @@ typedef Qgis::VectorExportResult createEmptyLayer_t(
 // QgsVectorLayerExporter::ExportOptions
 //
 
-void QgsVectorLayerExporter::ExportOptions::setTransformContext( const QgsCoordinateTransformContext &context ) { mTransformContext = context; }
+void QgsVectorLayerExporter::ExportOptions::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+}
 
-QgsCoordinateTransformContext QgsVectorLayerExporter::ExportOptions::transformContext() const { return mTransformContext; }
+QgsCoordinateTransformContext QgsVectorLayerExporter::ExportOptions::transformContext() const
+{
+  return mTransformContext;
+}
 
-void QgsVectorLayerExporter::ExportOptions::setDestinationCrs( const QgsCoordinateReferenceSystem &crs ) { mDestinationCrs = crs; }
+void QgsVectorLayerExporter::ExportOptions::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mDestinationCrs = crs;
+}
 
-QgsCoordinateReferenceSystem QgsVectorLayerExporter::ExportOptions::destinationCrs() const { return mDestinationCrs; }
+QgsCoordinateReferenceSystem QgsVectorLayerExporter::ExportOptions::destinationCrs() const
+{
+  return mDestinationCrs;
+}
 
-void QgsVectorLayerExporter::ExportOptions::setExtent( const QgsReferencedRectangle &extent ) { mExtent = extent; }
+void QgsVectorLayerExporter::ExportOptions::setExtent( const QgsReferencedRectangle &extent )
+{
+  mExtent = extent;
+}
 
-QgsReferencedRectangle QgsVectorLayerExporter::ExportOptions::extent() const { return mExtent; }
+QgsReferencedRectangle QgsVectorLayerExporter::ExportOptions::extent() const
+{
+  return mExtent;
+}
 
-void QgsVectorLayerExporter::ExportOptions::setFilterExpression( const QString &expression ) { mFilterExpression = expression; }
+void QgsVectorLayerExporter::ExportOptions::setFilterExpression( const QString &expression )
+{
+  mFilterExpression = expression;
+}
 
-QString QgsVectorLayerExporter::ExportOptions::filterExpression() const { return mFilterExpression; }
+QString QgsVectorLayerExporter::ExportOptions::filterExpression() const
+{
+  return mFilterExpression;
+}
 
-void QgsVectorLayerExporter::ExportOptions::setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+void QgsVectorLayerExporter::ExportOptions::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
 
-const QgsExpressionContext &QgsVectorLayerExporter::ExportOptions::expressionContext() const { return mExpressionContext; }
+const QgsExpressionContext &QgsVectorLayerExporter::ExportOptions::expressionContext() const
+{
+  return mExpressionContext;
+}
 
-QList<QgsVectorLayerExporter::OutputField> QgsVectorLayerExporter::ExportOptions::outputFields() const { return mOutputFields; }
+QList<QgsVectorLayerExporter::OutputField> QgsVectorLayerExporter::ExportOptions::outputFields() const
+{
+  return mOutputFields;
+}
 
-void QgsVectorLayerExporter::ExportOptions::setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields ) { mOutputFields = fields; }
+void QgsVectorLayerExporter::ExportOptions::setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields )
+{
+  mOutputFields = fields;
+}
 
 
 //
@@ -81,7 +123,13 @@ void QgsVectorLayerExporter::ExportOptions::setOutputFields( const QList<QgsVect
 //
 
 QgsVectorLayerExporter::QgsVectorLayerExporter(
-  const QString &uri, const QString &providerKey, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, bool overwrite, const QMap<QString, QVariant> &options,
+  const QString &uri,
+  const QString &providerKey,
+  const QgsFields &fields,
+  Qgis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem &crs,
+  bool overwrite,
+  const QMap<QString, QVariant> &options,
   QgsFeatureSink::SinkFlags sinkFlags
 )
 {
@@ -197,9 +245,15 @@ QgsVectorLayerExporter::~QgsVectorLayerExporter()
   delete mProvider;
 }
 
-Qgis::VectorExportResult QgsVectorLayerExporter::errorCode() const { return mError; }
+Qgis::VectorExportResult QgsVectorLayerExporter::errorCode() const
+{
+  return mError;
+}
 
-QString QgsVectorLayerExporter::errorMessage() const { return mErrorMessage; }
+QString QgsVectorLayerExporter::errorMessage() const
+{
+  return mErrorMessage;
+}
 
 Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorLayerExporter::attributeEditCapabilities() const
 {
@@ -250,7 +304,10 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   return true;
 }
 
-QString QgsVectorLayerExporter::lastError() const { return mErrorMessage; }
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
+}
 
 bool QgsVectorLayerExporter::flushBuffer()
 {
@@ -294,7 +351,13 @@ bool QgsVectorLayerExporter::createSpatialIndex()
 }
 
 Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer(
-  QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destCRS, bool onlySelected, QString *errorMessage, const QMap<QString, QVariant> &options,
+  QgsVectorLayer *layer,
+  const QString &uri,
+  const QString &providerKey,
+  const QgsCoordinateReferenceSystem &destCRS,
+  bool onlySelected,
+  QString *errorMessage,
+  const QMap<QString, QVariant> &options,
   QgsFeedback *feedback
 )
 {

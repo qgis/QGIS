@@ -66,15 +66,30 @@ QDir QgsRenderChecker::testReportDir()
     return QDir( QDir::temp().filePath( u"qgis_test_report"_s ) );
 }
 
-bool QgsRenderChecker::shouldGenerateReport() { return true; }
+bool QgsRenderChecker::shouldGenerateReport()
+{
+  return true;
+}
 
-QString QgsRenderChecker::controlImagePath() const { return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : u"/"_s ) + mControlPathPrefix; }
+QString QgsRenderChecker::controlImagePath() const
+{
+  return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : u"/"_s ) + mControlPathPrefix;
+}
 
-void QgsRenderChecker::setControlImagePath( const QString &path ) { mBasePath = path; }
+void QgsRenderChecker::setControlImagePath( const QString &path )
+{
+  mBasePath = path;
+}
 
-QString QgsRenderChecker::report( bool ignoreSuccess ) const { return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mReport; }
+QString QgsRenderChecker::report( bool ignoreSuccess ) const
+{
+  return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mReport;
+}
 
-QString QgsRenderChecker::markdownReport( bool ignoreSuccess ) const { return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mMarkdownReport; }
+QString QgsRenderChecker::markdownReport( bool ignoreSuccess ) const
+{
+  return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mMarkdownReport;
+}
 
 void QgsRenderChecker::setControlName( const QString &name )
 {
@@ -103,7 +118,10 @@ QString QgsRenderChecker::imageToHash( const QString &imageFile )
   return myHash.result().toHex().constData();
 }
 
-void QgsRenderChecker::setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
+void QgsRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
+{
+  mMapSettings = mapSettings;
+}
 
 void QgsRenderChecker::drawBackground( QImage *image )
 {
@@ -145,7 +163,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
                + myFile + " is a known anomaly.";
     mReport += "</td></tr>"_L1;
     const QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + '/' + myFile );
-    QString myHashMessage = QStringLiteral( "Checking if anomaly %1 (hash %2)<br>" ).arg( myFile, myAnomalyHash );
+    QString myHashMessage = u"Checking if anomaly %1 (hash %2)<br>"_s.arg( myFile, myAnomalyHash );
     myHashMessage += u"&nbsp; matches %1 (hash %2)"_s.arg( diffImageFile, myImageHash );
     //foo CDash
     emitDashMessage( u"Anomaly check"_s, QgsDartMeasurement::Text, myHashMessage );
@@ -177,7 +195,10 @@ void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
     dashMessage.send();
 }
 
-void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value ) { emitDashMessage( QgsDartMeasurement( name, type, value ) ); }
+void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value )
+{
+  emitDashMessage( QgsDartMeasurement( name, type, value ) );
+}
 
 #if DUMP_BASE64_IMAGES
 void QgsRenderChecker::dumpRenderedImageAsBase64()
@@ -320,7 +341,9 @@ bool QgsRenderChecker::runTest( const QString &testName, unsigned int mismatchCo
 
       QTextStream stream( &wldFile );
       stream << u"%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n"_s.arg(
-        qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ), qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ), qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+        qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+        qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+        qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
         qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 )
       );
     }
@@ -711,7 +734,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
   mReport += "<tr><td colspan=3></td></tr>"_L1;
   emitDashMessage(
-    u"Image mismatch"_s, QgsDartMeasurement::Text,
+    u"Image mismatch"_s,
+    QgsDartMeasurement::Text,
     "Difference image did not match any known anomaly or mask."
     " If you feel the difference image should be considered an anomaly "
     "you can do something like this\n"

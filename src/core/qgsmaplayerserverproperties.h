@@ -173,8 +173,13 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
        * Constructor for WmsDimensionInfo.
        */
         explicit WmsDimensionInfo(
-          const QString &dimName, const QString &dimFieldName, const QString &dimEndFieldName = QString(), const QString &dimUnits = QString(), const QString &dimUnitSymbol = QString(),
-          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues, const QVariant &dimReferenceValue = QVariant()
+          const QString &dimName,
+          const QString &dimFieldName,
+          const QString &dimEndFieldName = QString(),
+          const QString &dimUnits = QString(),
+          const QString &dimUnitSymbol = QString(),
+          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          const QVariant &dimReferenceValue = QVariant()
         )
           : name( dimName )
           , fieldName( dimFieldName )

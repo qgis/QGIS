@@ -24,7 +24,10 @@ in a ramp.
 %End
   public:
     QgsColorRampShader(
-      double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp /Transfer/ = 0, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
+      double minimumValue = 0.0,
+      double maximumValue = 255.0,
+      QgsColorRamp *colorRamp /Transfer/ = 0,
+      Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous
     );
 %Docstring

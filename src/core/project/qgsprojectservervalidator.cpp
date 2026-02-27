@@ -89,7 +89,10 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
   }
 }
 
-bool QgsProjectServerValidator::isOnlyMaptipEnabled( QgsProject *project ) { return project->readBoolEntry( u"WMSHTMLFeatureInfoUseOnlyMaptip"_s, QString(), false ); }
+bool QgsProjectServerValidator::isOnlyMaptipEnabled( QgsProject *project )
+{
+  return project->readBoolEntry( u"WMSHTMLFeatureInfoUseOnlyMaptip"_s, QString(), false );
+}
 
 bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectServerValidator::ValidationResult> &results )
 {

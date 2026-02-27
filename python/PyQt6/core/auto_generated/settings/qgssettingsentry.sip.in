@@ -32,7 +32,7 @@ settings description for the gui.
 #include "qgssettingsentry.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
+    if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryVariant;
     else if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;

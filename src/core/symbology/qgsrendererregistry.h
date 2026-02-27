@@ -157,7 +157,11 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
      * \note not available in Python bindings
      */
     QgsRendererMetadata(
-      const QString &name, const QString &visibleName, QgsRendererCreateFunc pfCreate, const QIcon &icon = QIcon(), QgsRendererWidgetFunc pfWidget = nullptr,
+      const QString &name,
+      const QString &visibleName,
+      QgsRendererCreateFunc pfCreate,
+      const QIcon &icon = QIcon(),
+      QgsRendererWidgetFunc pfWidget = nullptr,
       QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All
     ) SIP_SKIP : QgsRendererAbstractMetadata( name, visibleName, icon ),
                  mCreateFunc( pfCreate ),
@@ -168,8 +172,13 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 
     //! \note not available in Python bindings
     QgsRendererMetadata(
-      const QString &name, const QString &visibleName, QgsRendererCreateFunc pfCreate, QgsRendererCreateFromSldFunc pfCreateFromSld, const QIcon &icon = QIcon(),
-      QgsRendererWidgetFunc pfWidget = nullptr, QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All
+      const QString &name,
+      const QString &visibleName,
+      QgsRendererCreateFunc pfCreate,
+      QgsRendererCreateFromSldFunc pfCreateFromSld,
+      const QIcon &icon = QIcon(),
+      QgsRendererWidgetFunc pfWidget = nullptr,
+      QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All
     ) SIP_SKIP : QgsRendererAbstractMetadata( name, visibleName, icon ),
                  mCreateFunc( pfCreate ),
                  mWidgetFunc( pfWidget ),

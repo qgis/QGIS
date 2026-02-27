@@ -172,25 +172,55 @@ template<class T> class QObjectUniquePtr
 };
 template<class T> Q_DECLARE_TYPEINFO_BODY( QObjectUniquePtr<T>, Q_MOVABLE_TYPE );
 
-template<class T> inline bool operator==( const T *o, const QObjectUniquePtr<T> &p ) { return o == p.operator->(); }
+template<class T> inline bool operator==( const T *o, const QObjectUniquePtr<T> &p )
+{
+  return o == p.operator->();
+}
 
-template<class T> inline bool operator==( const QObjectUniquePtr<T> &p, const T *o ) { return p.operator->() == o; }
+template<class T> inline bool operator==( const QObjectUniquePtr<T> &p, const T *o )
+{
+  return p.operator->() == o;
+}
 
-template<class T> inline bool operator==( T *o, const QObjectUniquePtr<T> &p ) { return o == p.operator->(); }
+template<class T> inline bool operator==( T *o, const QObjectUniquePtr<T> &p )
+{
+  return o == p.operator->();
+}
 
-template<class T> inline bool operator==( const QObjectUniquePtr<T> &p, T *o ) { return p.operator->() == o; }
+template<class T> inline bool operator==( const QObjectUniquePtr<T> &p, T *o )
+{
+  return p.operator->() == o;
+}
 
-template<class T> inline bool operator==( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 ) { return p1.operator->() == p2.operator->(); }
+template<class T> inline bool operator==( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
+{
+  return p1.operator->() == p2.operator->();
+}
 
-template<class T> inline bool operator!=( const T *o, const QObjectUniquePtr<T> &p ) { return o != p.operator->(); }
+template<class T> inline bool operator!=( const T *o, const QObjectUniquePtr<T> &p )
+{
+  return o != p.operator->();
+}
 
-template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p, const T *o ) { return p.operator->() != o; }
+template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p, const T *o )
+{
+  return p.operator->() != o;
+}
 
-template<class T> inline bool operator!=( T *o, const QObjectUniquePtr<T> &p ) { return o != p.operator->(); }
+template<class T> inline bool operator!=( T *o, const QObjectUniquePtr<T> &p )
+{
+  return o != p.operator->();
+}
 
-template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p, T *o ) { return p.operator->() != o; }
+template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p, T *o )
+{
+  return p.operator->() != o;
+}
 
-template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 ) { return p1.operator->() != p2.operator->(); }
+template<class T> inline bool operator!=( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
+{
+  return p1.operator->() != p2.operator->();
+}
 
 template<typename T> QObjectUniquePtr<T> QObjectUniquePtrFromVariant( const QVariant &variant )
 {
@@ -365,25 +395,55 @@ template<class T> class QObjectParentUniquePtr
     }
 };
 
-template<class T> inline bool operator==( const T *o, const QObjectParentUniquePtr<T> &p ) { return o == p.operator->(); }
+template<class T> inline bool operator==( const T *o, const QObjectParentUniquePtr<T> &p )
+{
+  return o == p.operator->();
+}
 
-template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p, const T *o ) { return p.operator->() == o; }
+template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p, const T *o )
+{
+  return p.operator->() == o;
+}
 
-template<class T> inline bool operator==( T *o, const QObjectParentUniquePtr<T> &p ) { return o == p.operator->(); }
+template<class T> inline bool operator==( T *o, const QObjectParentUniquePtr<T> &p )
+{
+  return o == p.operator->();
+}
 
-template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p, T *o ) { return p.operator->() == o; }
+template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p, T *o )
+{
+  return p.operator->() == o;
+}
 
-template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 ) { return p1.operator->() == p2.operator->(); }
+template<class T> inline bool operator==( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 )
+{
+  return p1.operator->() == p2.operator->();
+}
 
-template<class T> inline bool operator!=( const T *o, const QObjectParentUniquePtr<T> &p ) { return o != p.operator->(); }
+template<class T> inline bool operator!=( const T *o, const QObjectParentUniquePtr<T> &p )
+{
+  return o != p.operator->();
+}
 
-template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p, const T *o ) { return p.operator->() != o; }
+template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p, const T *o )
+{
+  return p.operator->() != o;
+}
 
-template<class T> inline bool operator!=( T *o, const QObjectParentUniquePtr<T> &p ) { return o != p.operator->(); }
+template<class T> inline bool operator!=( T *o, const QObjectParentUniquePtr<T> &p )
+{
+  return o != p.operator->();
+}
 
-template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p, T *o ) { return p.operator->() != o; }
+template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p, T *o )
+{
+  return p.operator->() != o;
+}
 
-template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 ) { return p1.operator->() != p2.operator->(); }
+template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 )
+{
+  return p1.operator->() != p2.operator->();
+}
 
 
 #endif // QOBJECTUNIQUEPTR_H

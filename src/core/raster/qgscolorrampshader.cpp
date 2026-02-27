@@ -112,9 +112,15 @@ void QgsColorRampShader::setColorRampItemList( const QList<QgsColorRampShader::C
   mLUT.clear();
 }
 
-void QgsColorRampShader::setColorRampType( Qgis::ShaderInterpolationMethod colorRampType ) { mColorRampType = colorRampType; }
+void QgsColorRampShader::setColorRampType( Qgis::ShaderInterpolationMethod colorRampType )
+{
+  mColorRampType = colorRampType;
+}
 
-bool QgsColorRampShader::isEmpty() const { return mColorRampItemList.isEmpty(); }
+bool QgsColorRampShader::isEmpty() const
+{
+  return mColorRampItemList.isEmpty();
+}
 
 void QgsColorRampShader::setColorRampType( const QString &type )
 {
@@ -132,7 +138,10 @@ void QgsColorRampShader::setColorRampType( const QString &type )
   }
 }
 
-QgsColorRamp *QgsColorRampShader::sourceColorRamp() const { return mSourceColorRamp.get(); }
+QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
+{
+  return mSourceColorRamp.get();
+}
 
 QgsColorRamp *QgsColorRampShader::createColorRamp() const
 {
@@ -178,7 +187,10 @@ QgsColorRamp *QgsColorRampShader::createColorRamp() const
   return ramp.release();
 }
 
-void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp ) { mSourceColorRamp.reset( colorramp ); }
+void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp )
+{
+  mSourceColorRamp.reset( colorramp );
+}
 
 void QgsColorRampShader::classifyColorRamp( const int classes, const int band, const QgsRectangle &extent, QgsRasterInterface *input )
 {
@@ -369,7 +381,10 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   setColorRampItemList( colorRampItems );
 }
 
-void QgsColorRampShader::classifyColorRamp( const int band, const QgsRectangle &extent, QgsRasterInterface *input ) { classifyColorRamp( colorRampItemList().count(), band, extent, input ); }
+void QgsColorRampShader::classifyColorRamp( const int band, const QgsRectangle &extent, QgsRasterInterface *input )
+{
+  classifyColorRamp( colorRampItemList().count(), band, extent, input );
+}
 
 bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
@@ -633,7 +648,10 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   mLegendSettings->readXml( colorRampShaderElem, context );
 }
 
-const QgsColorRampLegendNodeSettings *QgsColorRampShader::legendSettings() const { return mLegendSettings.get(); }
+const QgsColorRampLegendNodeSettings *QgsColorRampShader::legendSettings() const
+{
+  return mLegendSettings.get();
+}
 
 void QgsColorRampShader::setLegendSettings( QgsColorRampLegendNodeSettings *settings )
 {

@@ -545,7 +545,10 @@ void QgsProviderRegistry::clean()
   mProviders.clear();
 }
 
-bool QgsProviderRegistry::exists() { return static_cast< bool >( sInstance ); }
+bool QgsProviderRegistry::exists()
+{
+  return static_cast< bool >( sInstance );
+}
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
@@ -610,7 +613,10 @@ void QgsProviderRegistry::setLibraryDirectory( QDir const &path )
   init();
 }
 
-QDir QgsProviderRegistry::libraryDirectory() const { return mLibraryDirectory; }
+QDir QgsProviderRegistry::libraryDirectory() const
+{
+  return mLibraryDirectory;
+}
 
 
 /* Copied from QgsVectorLayer::setDataProvider
@@ -684,8 +690,16 @@ QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, 
 }
 
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer(
-  const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
-  QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName
+  const QString &providerKey,
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem &srs,
+  bool overwrite,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
+  const QMap<QString, QVariant> *options,
+  QString &createdLayerName
 )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
@@ -699,7 +713,15 @@ Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer(
 }
 
 QgsRasterDataProvider *QgsProviderRegistry::createRasterDataProvider(
-  const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+  const QString &providerKey,
+  const QString &uri,
+  const QString &format,
+  int nBands,
+  Qgis::DataType type,
+  int width,
+  int height,
+  double *geoTransform,
+  const QgsCoordinateReferenceSystem &crs,
   const QStringList &creationOptions
 )
 {
@@ -788,8 +810,15 @@ bool QgsProviderRegistry::deleteStyleById( const QString &providerKey, const QSt
 }
 
 bool QgsProviderRegistry::saveStyle(
-  const QString &providerKey, const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent,
-  bool useAsDefault, QString &errCause
+  const QString &providerKey,
+  const QString &uri,
+  const QString &qmlStyle,
+  const QString &sldStyle,
+  const QString &styleName,
+  const QString &styleDescription,
+  const QString &uiFileContent,
+  bool useAsDefault,
+  QString &errCause
 )
 {
   bool ret( false );
@@ -914,7 +943,10 @@ QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey
   return nullptr;
 }
 
-void QgsProviderRegistry::registerGuis( QWidget * ) { QgsDebugError( "deprecated - use QgsGui::providerGuiRegistry() instead." ); }
+void QgsProviderRegistry::registerGuis( QWidget * )
+{
+  QgsDebugError( "deprecated - use QgsGui::providerGuiRegistry() instead." );
+}
 
 bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )
 {
@@ -939,25 +971,55 @@ bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadat
   return false;
 }
 
-QString QgsProviderRegistry::fileVectorFilters() const { return mVectorFileFilters; }
+QString QgsProviderRegistry::fileVectorFilters() const
+{
+  return mVectorFileFilters;
+}
 
-QString QgsProviderRegistry::fileRasterFilters() const { return mRasterFileFilters; }
+QString QgsProviderRegistry::fileRasterFilters() const
+{
+  return mRasterFileFilters;
+}
 
-QString QgsProviderRegistry::fileMeshFilters() const { return mMeshFileFilters; }
+QString QgsProviderRegistry::fileMeshFilters() const
+{
+  return mMeshFileFilters;
+}
 
-QString QgsProviderRegistry::fileMeshDatasetFilters() const { return mMeshDatasetFileFilters; }
+QString QgsProviderRegistry::fileMeshDatasetFilters() const
+{
+  return mMeshDatasetFileFilters;
+}
 
-QString QgsProviderRegistry::filePointCloudFilters() const { return mPointCloudFileFilters; }
+QString QgsProviderRegistry::filePointCloudFilters() const
+{
+  return mPointCloudFileFilters;
+}
 
-QString QgsProviderRegistry::fileVectorTileFilters() const { return mVectorTileFileFilters; }
+QString QgsProviderRegistry::fileVectorTileFilters() const
+{
+  return mVectorTileFileFilters;
+}
 
-QString QgsProviderRegistry::fileTiledSceneFilters() const { return mTiledSceneFileFilters; }
+QString QgsProviderRegistry::fileTiledSceneFilters() const
+{
+  return mTiledSceneFileFilters;
+}
 
-QString QgsProviderRegistry::databaseDrivers() const { return mDatabaseDrivers; }
+QString QgsProviderRegistry::databaseDrivers() const
+{
+  return mDatabaseDrivers;
+}
 
-QString QgsProviderRegistry::directoryDrivers() const { return mDirectoryDrivers; }
+QString QgsProviderRegistry::directoryDrivers() const
+{
+  return mDirectoryDrivers;
+}
 
-QString QgsProviderRegistry::protocolDrivers() const { return mProtocolDrivers; }
+QString QgsProviderRegistry::protocolDrivers() const
+{
+  return mProtocolDrivers;
+}
 
 QStringList QgsProviderRegistry::providerList() const
 {
@@ -969,7 +1031,10 @@ QStringList QgsProviderRegistry::providerList() const
   return lst;
 }
 
-QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const { return findMetadata_( mProviders, providerKey ); }
+QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
+{
+  return findMetadata_( mProviders, providerKey );
+}
 
 QSet<QString> QgsProviderRegistry::providersForLayerType( Qgis::LayerType type ) const
 {

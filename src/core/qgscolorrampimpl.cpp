@@ -389,7 +389,10 @@ QColor QgsGradientColorRamp::color( double value ) const
   }
 }
 
-QString QgsGradientColorRamp::type() const { return QgsGradientColorRamp::typeString(); }
+QString QgsGradientColorRamp::type() const
+{
+  return QgsGradientColorRamp::typeString();
+}
 
 void QgsGradientColorRamp::invert()
 {
@@ -551,7 +554,10 @@ void QgsGradientColorRamp::convertToDiscrete( bool discrete )
   mDiscrete = discrete;
 }
 
-bool stopLessThan( const QgsGradientStop &s1, const QgsGradientStop &s2 ) { return s1.offset < s2.offset; }
+bool stopLessThan( const QgsGradientStop &s1, const QgsGradientStop &s2 )
+{
+  return s1.offset < s2.offset;
+}
 
 void QgsGradientColorRamp::setStops( const QgsGradientStopsList &stops )
 {
@@ -699,9 +705,15 @@ QColor QgsLimitedRandomColorRamp::color( double value ) const
   return QColor();
 }
 
-QString QgsLimitedRandomColorRamp::type() const { return QgsLimitedRandomColorRamp::typeString(); }
+QString QgsLimitedRandomColorRamp::type() const
+{
+  return QgsLimitedRandomColorRamp::typeString();
+}
 
-QgsLimitedRandomColorRamp *QgsLimitedRandomColorRamp::clone() const { return new QgsLimitedRandomColorRamp( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax ); }
+QgsLimitedRandomColorRamp *QgsLimitedRandomColorRamp::clone() const
+{
+  return new QgsLimitedRandomColorRamp( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax );
+}
 
 QVariantMap QgsLimitedRandomColorRamp::properties() const
 {
@@ -749,11 +761,17 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count, int hueMax, in
   return colors;
 }
 
-void QgsLimitedRandomColorRamp::updateColors() { mColors = QgsLimitedRandomColorRamp::randomColors( mCount, mHueMax, mHueMin, mSatMax, mSatMin, mValMax, mValMin ); }
+void QgsLimitedRandomColorRamp::updateColors()
+{
+  mColors = QgsLimitedRandomColorRamp::randomColors( mCount, mHueMax, mHueMin, mSatMax, mSatMin, mValMax, mValMin );
+}
 
 /////////////
 
-int QgsRandomColorRamp::count() const { return -1; }
+int QgsRandomColorRamp::count() const
+{
+  return -1;
+}
 
 double QgsRandomColorRamp::value( int index ) const
 {
@@ -821,11 +839,20 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   std::shuffle( mPrecalculatedColors.begin(), mPrecalculatedColors.end(), g );
 }
 
-QString QgsRandomColorRamp::type() const { return QgsRandomColorRamp::typeString(); }
+QString QgsRandomColorRamp::type() const
+{
+  return QgsRandomColorRamp::typeString();
+}
 
-QgsRandomColorRamp *QgsRandomColorRamp::clone() const { return new QgsRandomColorRamp(); }
+QgsRandomColorRamp *QgsRandomColorRamp::clone() const
+{
+  return new QgsRandomColorRamp();
+}
 
-QVariantMap QgsRandomColorRamp::properties() const { return QVariantMap(); }
+QVariantMap QgsRandomColorRamp::properties() const
+{
+  return QVariantMap();
+}
 
 ////////////
 
@@ -869,9 +896,15 @@ void QgsColorBrewerColorRamp::loadPalette()
   }
 }
 
-QStringList QgsColorBrewerColorRamp::listSchemeNames() { return QgsColorBrewerPalette::listSchemes(); }
+QStringList QgsColorBrewerColorRamp::listSchemeNames()
+{
+  return QgsColorBrewerPalette::listSchemes();
+}
 
-QList<int> QgsColorBrewerColorRamp::listSchemeVariants( const QString &schemeName ) { return QgsColorBrewerPalette::listSchemeVariants( schemeName ); }
+QList<int> QgsColorBrewerColorRamp::listSchemeVariants( const QString &schemeName )
+{
+  return QgsColorBrewerPalette::listSchemeVariants( schemeName );
+}
 
 double QgsColorBrewerColorRamp::value( int index ) const
 {
@@ -897,7 +930,10 @@ void QgsColorBrewerColorRamp::invert()
   loadPalette();
 }
 
-QgsColorBrewerColorRamp *QgsColorBrewerColorRamp::clone() const { return new QgsColorBrewerColorRamp( mSchemeName, mColors, mInverted ); }
+QgsColorBrewerColorRamp *QgsColorBrewerColorRamp::clone() const
+{
+  return new QgsColorBrewerColorRamp( mSchemeName, mColors, mInverted );
+}
 
 QVariantMap QgsColorBrewerColorRamp::properties() const
 {
@@ -956,7 +992,10 @@ QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppchec
   return new QgsCptCityColorRamp( schemeName, variantName, inverted );
 }
 
-QString QgsCptCityColorRamp::type() const { return QgsCptCityColorRamp::typeString(); }
+QString QgsCptCityColorRamp::type() const
+{
+  return QgsCptCityColorRamp::typeString();
+}
 
 void QgsCptCityColorRamp::invert()
 {
@@ -1011,7 +1050,10 @@ QVariantMap QgsCptCityColorRamp::properties() const
   return map;
 }
 
-QString QgsCptCityColorRamp::fileNameForVariant( const QString &schema, const QString &variant ) { return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + schema + variant + ".svg"; }
+QString QgsCptCityColorRamp::fileNameForVariant( const QString &schema, const QString &variant )
+{
+  return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + schema + variant + ".svg";
+}
 
 QString QgsCptCityColorRamp::fileName() const
 {
@@ -1023,11 +1065,20 @@ QString QgsCptCityColorRamp::fileName() const
   }
 }
 
-QString QgsCptCityColorRamp::copyingFileName() const { return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() ); }
+QString QgsCptCityColorRamp::copyingFileName() const
+{
+  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() );
+}
 
-QString QgsCptCityColorRamp::descFileName() const { return QgsCptCityArchive::findFileName( u"DESC.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() ); }
+QString QgsCptCityColorRamp::descFileName() const
+{
+  return QgsCptCityArchive::findFileName( u"DESC.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() );
+}
 
-QgsStringMap QgsCptCityColorRamp::copyingInfo() const { return QgsCptCityArchive::copyingInfo( copyingFileName() ); }
+QgsStringMap QgsCptCityColorRamp::copyingInfo() const
+{
+  return QgsCptCityArchive::copyingInfo( copyingFileName() );
+}
 
 bool QgsCptCityColorRamp::loadFile()
 {
@@ -1191,7 +1242,10 @@ QColor QgsPresetSchemeColorRamp::color( double value ) const
   return QColor();
 }
 
-QString QgsPresetSchemeColorRamp::type() const { return QgsPresetSchemeColorRamp::typeString(); }
+QString QgsPresetSchemeColorRamp::type() const
+{
+  return QgsPresetSchemeColorRamp::typeString();
+}
 
 void QgsPresetSchemeColorRamp::invert()
 {
@@ -1204,7 +1258,10 @@ void QgsPresetSchemeColorRamp::invert()
   mColors = tmpColors;
 }
 
-QgsPresetSchemeColorRamp *QgsPresetSchemeColorRamp::clone() const { return new QgsPresetSchemeColorRamp( *this ); }
+QgsPresetSchemeColorRamp *QgsPresetSchemeColorRamp::clone() const
+{
+  return new QgsPresetSchemeColorRamp( *this );
+}
 
 QVariantMap QgsPresetSchemeColorRamp::properties() const
 {
@@ -1218,6 +1275,12 @@ QVariantMap QgsPresetSchemeColorRamp::properties() const
   return props;
 }
 
-int QgsPresetSchemeColorRamp::count() const { return mColors.count(); }
+int QgsPresetSchemeColorRamp::count() const
+{
+  return mColors.count();
+}
 
-QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString &, const QColor & ) { return mColors; }
+QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString &, const QColor & )
+{
+  return mColors;
+}

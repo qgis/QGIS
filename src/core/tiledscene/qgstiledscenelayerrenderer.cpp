@@ -149,7 +149,10 @@ Qgis::MapLayerRendererFlags QgsTiledSceneLayerRenderer::flags() const
   return Qgis::MapLayerRendererFlag::RenderPartialOutputs | Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage;
 }
 
-bool QgsTiledSceneLayerRenderer::forceRasterRender() const { return mRenderer ? ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::ForceRasterRender ) : false; }
+bool QgsTiledSceneLayerRenderer::forceRasterRender() const
+{
+  return mRenderer ? ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::ForceRasterRender ) : false;
+}
 
 QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
 {
@@ -505,8 +508,13 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
 }
 
 void QgsTiledSceneLayerRenderer::renderPrimitive(
-  const tinygltf::Model &model, const tinygltf::Primitive &primitive, const QgsTiledSceneTile &tile, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *gltfLocalTransform,
-  const QString &contentUri, QgsTiledSceneRenderContext &context
+  const tinygltf::Model &model,
+  const tinygltf::Primitive &primitive,
+  const QgsTiledSceneTile &tile,
+  const QgsVector3D &tileTranslationEcef,
+  const QMatrix4x4 *gltfLocalTransform,
+  const QString &contentUri,
+  QgsTiledSceneRenderContext &context
 )
 {
   switch ( primitive.mode )
@@ -572,8 +580,13 @@ void QgsTiledSceneLayerRenderer::renderPrimitive(
 }
 
 void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
-  const tinygltf::Model &model, const tinygltf::Primitive &primitive, const QgsTiledSceneTile &tile, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *gltfLocalTransform,
-  const QString &contentUri, QgsTiledSceneRenderContext &context
+  const tinygltf::Model &model,
+  const tinygltf::Primitive &primitive,
+  const QgsTiledSceneTile &tile,
+  const QgsVector3D &tileTranslationEcef,
+  const QMatrix4x4 *gltfLocalTransform,
+  const QString &contentUri,
+  QgsTiledSceneRenderContext &context
 )
 {
   auto posIt = primitive.attributes.find( "POSITION" );
@@ -588,8 +601,16 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
   QVector< double > y;
   QVector< double > z;
   QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, tile.transform() ? *tile.transform() : QgsMatrix4x4(), &mSceneToMapTransform, tileTranslationEcef, gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ), x, y, z
+    model,
+    positionAccessorIndex,
+    tile.transform() ? *tile.transform() : QgsMatrix4x4(),
+    &mSceneToMapTransform,
+    tileTranslationEcef,
+    gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
+    x,
+    y,
+    z
   );
 
   renderContext()->mapToPixel().transformInPlace( x, y );
@@ -817,7 +838,12 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
 }
 
 void QgsTiledSceneLayerRenderer::renderLinePrimitive(
-  const tinygltf::Model &model, const tinygltf::Primitive &primitive, const QgsTiledSceneTile &tile, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *gltfLocalTransform, const QString &,
+  const tinygltf::Model &model,
+  const tinygltf::Primitive &primitive,
+  const QgsTiledSceneTile &tile,
+  const QgsVector3D &tileTranslationEcef,
+  const QMatrix4x4 *gltfLocalTransform,
+  const QString &,
   QgsTiledSceneRenderContext &context
 )
 {
@@ -833,8 +859,16 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive(
   QVector< double > y;
   QVector< double > z;
   QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, tile.transform() ? *tile.transform() : QgsMatrix4x4(), &mSceneToMapTransform, tileTranslationEcef, gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ), x, y, z
+    model,
+    positionAccessorIndex,
+    tile.transform() ? *tile.transform() : QgsMatrix4x4(),
+    &mSceneToMapTransform,
+    tileTranslationEcef,
+    gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
+    x,
+    y,
+    z
   );
 
   renderContext()->mapToPixel().transformInPlace( x, y );

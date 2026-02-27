@@ -46,11 +46,20 @@ QgsReadWriteContext::~QgsReadWriteContext()
   Q_ASSERT( mCategories.isEmpty() );
 }
 
-const QgsPathResolver &QgsReadWriteContext::pathResolver() const { return mPathResolver; }
+const QgsPathResolver &QgsReadWriteContext::pathResolver() const
+{
+  return mPathResolver;
+}
 
-void QgsReadWriteContext::setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
+void QgsReadWriteContext::setPathResolver( const QgsPathResolver &resolver )
+{
+  mPathResolver = resolver;
+}
 
-void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLevel level ) const { mMessages.append( ReadWriteMessage( message, level, mCategories ) ); }
+void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLevel level ) const
+{
+  mMessages.append( ReadWriteMessage( message, level, mCategories ) );
+}
 
 QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QString &category, const QString &details ) const
 {
@@ -67,9 +76,15 @@ void QgsReadWriteContext::leaveCategory() const
     mCategories.pop_back();
 }
 
-QgsCoordinateTransformContext QgsReadWriteContext::transformContext() const { return mCoordinateTransformContext; }
+QgsCoordinateTransformContext QgsReadWriteContext::transformContext() const
+{
+  return mCoordinateTransformContext;
+}
 
-void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformContext &transformContext ) { mCoordinateTransformContext = transformContext; }
+void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  mCoordinateTransformContext = transformContext;
+}
 
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
 {

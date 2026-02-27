@@ -57,7 +57,10 @@ void QgsAttributeEditorAction::setAction( const QgsAction &newAction )
   mAction = newAction;
 }
 
-QString QgsAttributeEditorAction::typeIdentifier() const { return u"attributeEditorAction"_s; }
+QString QgsAttributeEditorAction::typeIdentifier() const
+{
+  return u"attributeEditorAction"_s;
+}
 
 void QgsAttributeEditorAction::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {

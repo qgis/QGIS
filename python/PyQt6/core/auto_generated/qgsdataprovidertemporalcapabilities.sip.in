@@ -23,7 +23,7 @@ temporal capabilities.
 #include "qgsdataprovidertemporalcapabilities.h"
 %End
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsRasterDataProviderTemporalCapabilities *>( sipCpp ) )
+    if ( dynamic_cast<QgsRasterDataProviderTemporalCapabilities *>( sipCpp ) )
     {
       sipType = sipType_QgsRasterDataProviderTemporalCapabilities;
     }

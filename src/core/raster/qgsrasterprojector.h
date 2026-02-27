@@ -135,8 +135,7 @@ class ProjectorData
   public:
     //! Initialize reprojector and calculate matrix
     ProjectorData(
-      const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision,
-      QgsRasterBlockFeedback *feedback = nullptr
+      const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback = nullptr
     );
     ~ProjectorData();
 

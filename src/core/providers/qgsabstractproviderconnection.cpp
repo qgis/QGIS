@@ -29,12 +29,27 @@ QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &uri
   , mConfiguration( configuration )
 {}
 
-QIcon QgsAbstractProviderConnection::icon() const { return QIcon(); }
+QIcon QgsAbstractProviderConnection::icon() const
+{
+  return QIcon();
+}
 
-QString QgsAbstractProviderConnection::uri() const { return mUri; }
+QString QgsAbstractProviderConnection::uri() const
+{
+  return mUri;
+}
 
-void QgsAbstractProviderConnection::setUri( const QString &uri ) { mUri = uri; }
+void QgsAbstractProviderConnection::setUri( const QString &uri )
+{
+  mUri = uri;
+}
 
-QVariantMap QgsAbstractProviderConnection::configuration() const { return mConfiguration; }
+QVariantMap QgsAbstractProviderConnection::configuration() const
+{
+  return mConfiguration;
+}
 
-void QgsAbstractProviderConnection::setConfiguration( const QVariantMap &configuration ) { mConfiguration = configuration; }
+void QgsAbstractProviderConnection::setConfiguration( const QVariantMap &configuration )
+{
+  mConfiguration = configuration;
+}

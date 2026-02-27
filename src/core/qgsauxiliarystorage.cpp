@@ -42,7 +42,8 @@ typedef QVector<int> PalPropertyList;
 typedef QVector<int> SymbolPropertyList;
 
 Q_GLOBAL_STATIC_WITH_ARGS(
-  PalPropertyList, palHiddenProperties,
+  PalPropertyList,
+  palHiddenProperties,
   (
     { static_cast< int >( QgsPalLayerSettings::Property::PositionX ),
       static_cast< int >( QgsPalLayerSettings::Property::PositionY ),
@@ -139,9 +140,15 @@ QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
   return layer;
 }
 
-QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const { return mJoinInfo; }
+QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
+{
+  return mJoinInfo;
+}
 
-bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const { return ( indexOfPropertyDefinition( definition ) >= 0 ); }
+bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
+{
+  return ( indexOfPropertyDefinition( definition ) >= 0 );
+}
 
 bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
 {
@@ -440,9 +447,15 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
   return p;
 }
 
-QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromIndex( int index ) const { return propertyDefinitionFromField( fields().field( index ) ); }
+QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromIndex( int index ) const
+{
+  return propertyDefinitionFromField( fields().field( index ) );
+}
 
-int QgsAuxiliaryLayer::indexOfPropertyDefinition( const QgsPropertyDefinition &def ) const { return fields().indexOf( nameFromProperty( def ) ); }
+int QgsAuxiliaryLayer::indexOfPropertyDefinition( const QgsPropertyDefinition &def ) const
+{
+  return fields().indexOf( nameFromProperty( def ) );
+}
 
 QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
 {
@@ -624,9 +637,15 @@ QgsAuxiliaryStorage::~QgsAuxiliaryStorage()
     QFile::remove( mTmpFileName );
 }
 
-bool QgsAuxiliaryStorage::isValid() const { return mValid; }
+bool QgsAuxiliaryStorage::isValid() const
+{
+  return mValid;
+}
 
-QString QgsAuxiliaryStorage::fileName() const { return mFileName; }
+QString QgsAuxiliaryStorage::fileName() const
+{
+  return mFileName;
+}
 
 bool QgsAuxiliaryStorage::save() const
 {
@@ -719,7 +738,10 @@ bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const 
   return rc;
 }
 
-QString QgsAuxiliaryStorage::errorString() const { return mErrorString; }
+QString QgsAuxiliaryStorage::errorString() const
+{
+  return mErrorString;
+}
 
 bool QgsAuxiliaryStorage::saveAs( const QString &filename )
 {
@@ -742,9 +764,15 @@ bool QgsAuxiliaryStorage::saveAs( const QString &filename )
   return true;
 }
 
-bool QgsAuxiliaryStorage::saveAs( const QgsProject &project ) { return saveAs( filenameForProject( project ) ); }
+bool QgsAuxiliaryStorage::saveAs( const QgsProject &project )
+{
+  return saveAs( filenameForProject( project ) );
+}
 
-QString QgsAuxiliaryStorage::extension() { return AS_EXTENSION; }
+QString QgsAuxiliaryStorage::extension()
+{
+  return AS_EXTENSION;
+}
 
 bool QgsAuxiliaryStorage::exists( const QgsProject &project )
 {
@@ -867,7 +895,10 @@ sqlite3_database_unique_ptr QgsAuxiliaryStorage::open( const QString &filename )
   return database;
 }
 
-sqlite3_database_unique_ptr QgsAuxiliaryStorage::open( const QgsProject &project ) { return open( filenameForProject( project ) ); }
+sqlite3_database_unique_ptr QgsAuxiliaryStorage::open( const QgsProject &project )
+{
+  return open( filenameForProject( project ) );
+}
 
 QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 {

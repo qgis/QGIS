@@ -59,8 +59,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
      * \param data If the request is POST, some data can be added, since QGIS 3.22
      */
     QgsFileDownloader(
-      const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get,
-      const QByteArray &data = QByteArray()
+      const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get, const QByteArray &data = QByteArray()
     );
 
   signals:

@@ -64,8 +64,15 @@ Returns the current "snap to pixel" factor in pixels.
 %End
 
     static QgsRectangle subRegion(
-      const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/,
-      int &subRegionTop /Out/, int resamplingFactor = 1
+      const QgsRectangle &rasterExtent,
+      int rasterWidth,
+      int rasterHeight,
+      const QgsRectangle &subRegion,
+      int &subRegionWidth /Out/,
+      int &subRegionHeight /Out/,
+      int &subRegionLeft /Out/,
+      int &subRegionTop /Out/,
+      int resamplingFactor = 1
     );
 %Docstring
 Given an overall raster extent and width and height in pixels,

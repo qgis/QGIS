@@ -89,7 +89,8 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
   }
 }
 
-QgsRunProcess::~QgsRunProcess() {}
+QgsRunProcess::~QgsRunProcess()
+{}
 
 void QgsRunProcess::die()
 {
@@ -171,7 +172,10 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
   }
 }
 
-QStringList QgsRunProcess::splitCommand( const QString &command ) { return QProcess::splitCommand( command ); }
+QStringList QgsRunProcess::splitCommand( const QString &command )
+{
+  return QProcess::splitCommand( command );
+}
 #else
 QgsRunProcess::QgsRunProcess( const QString &action, bool )
 {
@@ -179,9 +183,13 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool )
   QgsDebugError( "Skipping command: " + action );
 }
 
-QgsRunProcess::~QgsRunProcess() {}
+QgsRunProcess::~QgsRunProcess()
+{}
 
-QStringList QgsRunProcess::splitCommand( const QString & ) { return QStringList(); }
+QStringList QgsRunProcess::splitCommand( const QString & )
+{
+  return QStringList();
+}
 #endif
 
 
@@ -231,7 +239,9 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 #endif
       } );
     connect(
-      &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this,
+      &p,
+      qOverload< int, QProcess::ExitStatus >( &QProcess::finished ),
+      this,
       [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st ) {
         result = res;
         exitStatus = st;
@@ -281,7 +291,13 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   return result;
 }
 
-QProcess::ExitStatus QgsBlockingProcess::exitStatus() const { return mExitStatus; };
+QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
+{
+  return mExitStatus;
+};
 
-QProcess::ProcessError QgsBlockingProcess::processError() const { return mProcessError; };
+QProcess::ProcessError QgsBlockingProcess::processError() const
+{
+  return mProcessError;
+};
 #endif // QT_CONFIG(process)

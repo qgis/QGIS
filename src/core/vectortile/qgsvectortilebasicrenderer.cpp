@@ -36,7 +36,10 @@ QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString 
   , mGeometryType( geomType )
 {}
 
-QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other ) { operator=( other ); }
+QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other )
+{
+  operator=( other );
+}
 
 QgsVectorTileBasicRendererStyle &QgsVectorTileBasicRendererStyle::operator=( const QgsVectorTileBasicRendererStyle &other )
 {
@@ -56,7 +59,10 @@ QgsVectorTileBasicRendererStyle &QgsVectorTileBasicRendererStyle::operator=( con
 
 QgsVectorTileBasicRendererStyle::~QgsVectorTileBasicRendererStyle() = default;
 
-void QgsVectorTileBasicRendererStyle::setSymbol( QgsSymbol *sym ) { mSymbol.reset( sym ); }
+void QgsVectorTileBasicRendererStyle::setSymbol( QgsSymbol *sym )
+{
+  mSymbol.reset( sym );
+}
 
 void QgsVectorTileBasicRendererStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
@@ -100,9 +106,13 @@ void QgsVectorTileBasicRendererStyle::readXml( const QDomElement &elem, const Qg
 ////////
 
 
-QgsVectorTileBasicRenderer::QgsVectorTileBasicRenderer() {}
+QgsVectorTileBasicRenderer::QgsVectorTileBasicRenderer()
+{}
 
-QString QgsVectorTileBasicRenderer::type() const { return u"basic"_s; }
+QString QgsVectorTileBasicRenderer::type() const
+{
+  return u"basic"_s;
+}
 
 QgsVectorTileBasicRenderer *QgsVectorTileBasicRenderer::clone() const
 {
@@ -134,7 +144,10 @@ void QgsVectorTileBasicRenderer::startRender( QgsRenderContext &context, int til
   }
 }
 
-QMap<QString, QSet<QString> > QgsVectorTileBasicRenderer::usedAttributes( const QgsRenderContext & ) { return mRequiredFields; }
+QMap<QString, QSet<QString> > QgsVectorTileBasicRenderer::usedAttributes( const QgsRenderContext & )
+{
+  return mRequiredFields;
+}
 
 QSet<QString> QgsVectorTileBasicRenderer::requiredLayers( QgsRenderContext &, int tileZoom ) const
 {
@@ -149,7 +162,10 @@ QSet<QString> QgsVectorTileBasicRenderer::requiredLayers( QgsRenderContext &, in
   return res;
 }
 
-void QgsVectorTileBasicRenderer::stopRender( QgsRenderContext &context ) { Q_UNUSED( context ) }
+void QgsVectorTileBasicRenderer::stopRender( QgsRenderContext &context )
+{
+  Q_UNUSED( context )
+}
 
 void QgsVectorTileBasicRenderer::renderBackground( QgsRenderContext &context )
 {
@@ -411,9 +427,15 @@ void QgsVectorTileBasicRenderer::readXml( const QDomElement &elem, const QgsRead
   }
 }
 
-void QgsVectorTileBasicRenderer::setStyles( const QList<QgsVectorTileBasicRendererStyle> &styles ) { mStyles = styles; }
+void QgsVectorTileBasicRenderer::setStyles( const QList<QgsVectorTileBasicRendererStyle> &styles )
+{
+  mStyles = styles;
+}
 
-QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::styles() const { return mStyles; }
+QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::styles() const
+{
+  return mStyles;
+}
 
 QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyleWithRandomColors()
 {
@@ -434,8 +456,14 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyleWi
 }
 
 QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
-  const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth, const QColor &lineStrokeColor, double lineStrokeWidth, const QColor &pointFillColor,
-  const QColor &pointStrokeColor, double pointSize
+  const QColor &polygonFillColor,
+  const QColor &polygonStrokeColor,
+  double polygonStrokeWidth,
+  const QColor &lineStrokeColor,
+  double lineStrokeWidth,
+  const QColor &pointFillColor,
+  const QColor &pointStrokeColor,
+  double pointSize
 )
 {
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer();

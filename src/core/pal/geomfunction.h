@@ -76,8 +76,14 @@ namespace pal
        * Returns TRUE if the two segments intersect.
        */
       static bool isSegIntersects(
-        double x1, double y1, double x2, double y2, // 1st segment
-        double x3, double y3, double x4, double y4
+        double x1,
+        double y1,
+        double x2,
+        double y2, // 1st segment
+        double x3,
+        double y3,
+        double x4,
+        double y4
       ); // 2nd segment
 
       /**
@@ -85,9 +91,16 @@ namespace pal
        * \returns TRUE if the lines intersect, or FALSE if the lines are parallel
        */
       static bool computeLineIntersection(
-        double x1, double y1, double x2, double y2, // 1st line (segment)
-        double x3, double y3, double x4, double y4, // 2nd line segment
-        double *x, double *y
+        double x1,
+        double y1,
+        double x2,
+        double y2, // 1st line (segment)
+        double x3,
+        double y3,
+        double x4,
+        double y4, // 2nd line segment
+        double *x,
+        double *y
       );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside

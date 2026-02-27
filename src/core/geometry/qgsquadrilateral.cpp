@@ -25,7 +25,10 @@ using namespace Qt::StringLiterals;
 
 QgsQuadrilateral::QgsQuadrilateral() = default;
 
-QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ) { setPoints( p1, p2, p3, p4 ); }
+QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+{
+  setPoints( p1, p2, p3, p4 );
+}
 
 QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 )
 {
@@ -91,7 +94,8 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
     case Projected:
     {
       const QgsVector3D v3 = QgsVector3D::perpendicularPoint(
-        QgsVector3D( point1.x(), point1.y(), std::isnan( point1.z() ) ? z : point1.z() ), QgsVector3D( point2.x(), point2.y(), std::isnan( point2.z() ) ? z : point2.z() ),
+        QgsVector3D( point1.x(), point1.y(), std::isnan( point1.z() ) ? z : point1.z() ),
+        QgsVector3D( point2.x(), point2.y(), std::isnan( point2.z() ) ? z : point2.z() ),
         QgsVector3D( point3.x(), point3.y(), std::isnan( point3.z() ) ? z : point3.z() )
       );
       const QgsPoint pV3( pType, v3.x(), v3.y(), v3.z() );
@@ -207,8 +211,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &cen
   const double yOffset = std::fabs( point.y() - center.y() );
 
   return QgsQuadrilateral(
-    QgsPoint( center.wkbType(), center.x() - xOffset, center.y() - yOffset, center.z(), center.m() ), QgsPoint( center.wkbType(), center.x() - xOffset, center.y() + yOffset, center.z(), center.m() ),
-    QgsPoint( center.wkbType(), center.x() + xOffset, center.y() + yOffset, center.z(), center.m() ), QgsPoint( center.wkbType(), center.x() + xOffset, center.y() - yOffset, center.z(), center.m() )
+    QgsPoint( center.wkbType(), center.x() - xOffset, center.y() - yOffset, center.z(), center.m() ),
+    QgsPoint( center.wkbType(), center.x() - xOffset, center.y() + yOffset, center.z(), center.m() ),
+    QgsPoint( center.wkbType(), center.x() + xOffset, center.y() + yOffset, center.z(), center.m() ),
+    QgsPoint( center.wkbType(), center.x() + xOffset, center.y() - yOffset, center.z(), center.m() )
   );
 }
 
@@ -216,7 +222,9 @@ QgsQuadrilateral QgsQuadrilateral::fromRectangle( const QgsRectangle &rectangle 
 {
   QgsQuadrilateral quad;
   quad.setPoints(
-    QgsPoint( rectangle.xMinimum(), rectangle.yMinimum() ), QgsPoint( rectangle.xMinimum(), rectangle.yMaximum() ), QgsPoint( rectangle.xMaximum(), rectangle.yMaximum() ),
+    QgsPoint( rectangle.xMinimum(), rectangle.yMinimum() ),
+    QgsPoint( rectangle.xMinimum(), rectangle.yMaximum() ),
+    QgsPoint( rectangle.xMaximum(), rectangle.yMaximum() ),
     QgsPoint( rectangle.xMaximum(), rectangle.yMinimum() )
   );
   return quad;
@@ -253,9 +261,15 @@ bool QgsQuadrilateral::equals( const QgsQuadrilateral &other, double epsilon ) c
   );
 }
 
-bool QgsQuadrilateral::operator==( const QgsQuadrilateral &other ) const { return equals( other ); }
+bool QgsQuadrilateral::operator==( const QgsQuadrilateral &other ) const
+{
+  return equals( other );
+}
 
-bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const { return !operator==( other ); }
+bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const
+{
+  return !operator==( other );
+}
 
 // Returns true if segments are not self-intersected ( [2-3] / [4-1] or [1-2] /
 // [3-4] )
@@ -303,7 +317,10 @@ static bool validate( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3
   return ( haveSameType( p1, p2, p3, p4 ) && notHaveDoublePoints( p1, p2, p3, p4 ) && isNotAntiParallelogram( p1, p2, p3, p4 ) && isNotCollinear( p1, p2, p3, p4 ) );
 }
 
-bool QgsQuadrilateral::isValid() const { return validate( mPoint1, mPoint2, mPoint3, mPoint4 ); }
+bool QgsQuadrilateral::isValid() const
+{
+  return validate( mPoint1, mPoint2, mPoint3, mPoint4 );
+}
 
 bool QgsQuadrilateral::setPoint( const QgsPoint &newPoint, Point index )
 {

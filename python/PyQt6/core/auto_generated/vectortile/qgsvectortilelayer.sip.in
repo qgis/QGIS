@@ -274,8 +274,12 @@ Returns the number of features that are selected in this layer.
 %End
 
     void selectByGeometry(
-      const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
-      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect, Qgis::SelectionFlags flags = Qgis::SelectionFlags(), QgsRenderContext *renderContext = 0
+      const QgsGeometry &geometry,
+      const QgsSelectionContext &context,
+      Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+      Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+      QgsRenderContext *renderContext = 0
     );
 %Docstring
 Selects features found within the search ``geometry`` (in layer's

@@ -23,7 +23,10 @@
 
 using namespace Qt::StringLiterals;
 
-Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const { return Qgis::SettingsType::Variant; }
+Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
+{
+  return Qgis::SettingsType::Variant;
+}
 
 
 bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
@@ -43,23 +46,47 @@ bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
   return true;
 }
 
-QString QgsSettingsEntryString::convertFromVariant( const QVariant &value ) const { return value.toString(); }
+QString QgsSettingsEntryString::convertFromVariant( const QVariant &value ) const
+{
+  return value.toString();
+}
 
-Qgis::SettingsType QgsSettingsEntryString::settingsType() const { return Qgis::SettingsType::String; }
+Qgis::SettingsType QgsSettingsEntryString::settingsType() const
+{
+  return Qgis::SettingsType::String;
+}
 
-int QgsSettingsEntryString::minLength() const { return mMinLength; }
+int QgsSettingsEntryString::minLength() const
+{
+  return mMinLength;
+}
 
-int QgsSettingsEntryString::maxLength() const { return mMaxLength; }
+int QgsSettingsEntryString::maxLength() const
+{
+  return mMaxLength;
+}
 
-QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const { return value.toStringList(); }
+QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const
+{
+  return value.toStringList();
+}
 
-Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const { return Qgis::SettingsType::StringList; }
+Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const
+{
+  return Qgis::SettingsType::StringList;
+}
 
 
-bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const { return value.toBool(); }
+bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const
+{
+  return value.toBool();
+}
 
 
-Qgis::SettingsType QgsSettingsEntryBool::settingsType() const { return Qgis::SettingsType::Bool; }
+Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
+{
+  return Qgis::SettingsType::Bool;
+}
 
 
 bool QgsSettingsEntryInteger::checkValuePrivate( const int &value ) const
@@ -79,13 +106,25 @@ bool QgsSettingsEntryInteger::checkValuePrivate( const int &value ) const
   return true;
 }
 
-int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const { return value.toLongLong(); }
+int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
+{
+  return value.toLongLong();
+}
 
-Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const { return Qgis::SettingsType::Integer; }
+Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const
+{
+  return Qgis::SettingsType::Integer;
+}
 
-int QgsSettingsEntryInteger::maxValue() const { return mMaxValue; }
+int QgsSettingsEntryInteger::maxValue() const
+{
+  return mMaxValue;
+}
 
-int QgsSettingsEntryInteger::minValue() const { return mMaxValue; }
+int QgsSettingsEntryInteger::minValue() const
+{
+  return mMaxValue;
+}
 
 bool QgsSettingsEntryInteger64::checkValuePrivate( const qlonglong &value ) const
 {
@@ -104,13 +143,25 @@ bool QgsSettingsEntryInteger64::checkValuePrivate( const qlonglong &value ) cons
   return true;
 }
 
-qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const { return value.toLongLong(); }
+qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const
+{
+  return value.toLongLong();
+}
 
-Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const { return Qgis::SettingsType::Integer; }
+Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const
+{
+  return Qgis::SettingsType::Integer;
+}
 
-qlonglong QgsSettingsEntryInteger64::maxValue() const { return mMaxValue; }
+qlonglong QgsSettingsEntryInteger64::maxValue() const
+{
+  return mMaxValue;
+}
 
-qlonglong QgsSettingsEntryInteger64::minValue() const { return mMaxValue; }
+qlonglong QgsSettingsEntryInteger64::minValue() const
+{
+  return mMaxValue;
+}
 
 
 bool QgsSettingsEntryDouble::checkValuePrivate( const double &value ) const
@@ -130,21 +181,45 @@ bool QgsSettingsEntryDouble::checkValuePrivate( const double &value ) const
   return true;
 }
 
-double QgsSettingsEntryDouble::convertFromVariant( const QVariant &value ) const { return value.toDouble(); }
+double QgsSettingsEntryDouble::convertFromVariant( const QVariant &value ) const
+{
+  return value.toDouble();
+}
 
-Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const { return Qgis::SettingsType::Double; }
+Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const
+{
+  return Qgis::SettingsType::Double;
+}
 
-double QgsSettingsEntryDouble::minValue() const { return mMinValue; }
+double QgsSettingsEntryDouble::minValue() const
+{
+  return mMinValue;
+}
 
-double QgsSettingsEntryDouble::maxValue() const { return mMaxValue; }
+double QgsSettingsEntryDouble::maxValue() const
+{
+  return mMaxValue;
+}
 
-void QgsSettingsEntryDouble::setDisplayHintDecimals( int displayHintDecimals ) { mDisplayHintDecimals = displayHintDecimals; }
+void QgsSettingsEntryDouble::setDisplayHintDecimals( int displayHintDecimals )
+{
+  mDisplayHintDecimals = displayHintDecimals;
+}
 
-int QgsSettingsEntryDouble::displayHintDecimals() const { return mDisplayHintDecimals; }
+int QgsSettingsEntryDouble::displayHintDecimals() const
+{
+  return mDisplayHintDecimals;
+}
 
-QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const { return value.value<QColor>(); }
+QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const
+{
+  return value.value<QColor>();
+}
 
-Qgis::SettingsType QgsSettingsEntryColor::settingsType() const { return Qgis::SettingsType::Color; }
+Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
+{
+  return Qgis::SettingsType::Color;
+}
 
 bool QgsSettingsEntryColor::checkValuePrivate( const QColor &value ) const
 {
@@ -194,6 +269,12 @@ void QgsSettingsEntryColor::copyValueToKeys( const QString &redKey, const QStrin
     settings->setValue( alphaKey, color.alpha() );
 }
 
-QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const { return value.value<QVariantMap>(); }
+QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const
+{
+  return value.value<QVariantMap>();
+}
 
-Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const { return Qgis::SettingsType::VariantMap; }
+Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const
+{
+  return Qgis::SettingsType::VariantMap;
+}

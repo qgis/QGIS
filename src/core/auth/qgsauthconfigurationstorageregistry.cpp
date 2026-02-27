@@ -29,12 +29,10 @@
 using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
-{
-}
+{}
 
 QgsAuthConfigurationStorageRegistry::~QgsAuthConfigurationStorageRegistry()
-{
-}
+{}
 
 bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorage *storage )
 {

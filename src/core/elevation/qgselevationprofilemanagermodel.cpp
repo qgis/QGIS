@@ -31,9 +31,15 @@ QgsElevationProfileManagerModel::QgsElevationProfileManagerModel( QgsElevationPr
   connect( manager, &QgsElevationProfileManager::profileRenamed, this, &QgsElevationProfileManagerModel::objectRenamedInternal );
 }
 
-QgsElevationProfile *QgsElevationProfileManagerModel::profileFromIndex( const QModelIndex &index ) const { return objectFromIndex( index ); }
+QgsElevationProfile *QgsElevationProfileManagerModel::profileFromIndex( const QModelIndex &index ) const
+{
+  return objectFromIndex( index );
+}
 
-QModelIndex QgsElevationProfileManagerModel::indexFromProfile( QgsElevationProfile *layout ) const { return indexFromObject( layout ); }
+QModelIndex QgsElevationProfileManagerModel::indexFromProfile( QgsElevationProfile *layout ) const
+{
+  return indexFromObject( layout );
+}
 
 
 //

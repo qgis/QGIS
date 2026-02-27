@@ -58,9 +58,13 @@ void QgsVectorTileBasicLabelingStyle::readXml( const QDomElement &elem, const Qg
 //
 
 
-QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling() {}
+QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling()
+{}
 
-QString QgsVectorTileBasicLabeling::type() const { return u"basic"_s; }
+QString QgsVectorTileBasicLabeling::type() const
+{
+  return u"basic"_s;
+}
 
 QgsVectorTileLabeling *QgsVectorTileBasicLabeling::clone() const
 {
@@ -69,7 +73,10 @@ QgsVectorTileLabeling *QgsVectorTileBasicLabeling::clone() const
   return l;
 }
 
-QgsVectorTileLabelProvider *QgsVectorTileBasicLabeling::provider( QgsVectorTileLayer *layer ) const { return new QgsVectorTileBasicLabelProvider( layer, mStyles ); }
+QgsVectorTileLabelProvider *QgsVectorTileBasicLabeling::provider( QgsVectorTileLayer *layer ) const
+{
+  return new QgsVectorTileBasicLabelProvider( layer, mStyles );
+}
 
 void QgsVectorTileBasicLabeling::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
@@ -149,7 +156,10 @@ QSet<QString> QgsVectorTileBasicLabelProvider::requiredLayers( QgsRenderContext 
   return res;
 }
 
-void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields ) { mPerLayerFields = perLayerFields; }
+void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields )
+{
+  mPerLayerFields = perLayerFields;
+}
 
 QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders()
 {

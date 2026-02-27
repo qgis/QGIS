@@ -28,17 +28,35 @@
 
 using namespace Qt::StringLiterals;
 
-void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth ) { mStrokeWidth = strokeWidth; }
+void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
+{
+  mStrokeWidth = strokeWidth;
+}
 
-QgsInterpolatedLineWidth QgsInterpolatedLineRenderer::interpolatedLineWidth() const { return mStrokeWidth; }
+QgsInterpolatedLineWidth QgsInterpolatedLineRenderer::interpolatedLineWidth() const
+{
+  return mStrokeWidth;
+}
 
-void QgsInterpolatedLineRenderer::setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring ) { mStrokeColoring = strokeColoring; }
+void QgsInterpolatedLineRenderer::setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring )
+{
+  mStrokeColoring = strokeColoring;
+}
 
-QgsInterpolatedLineColor QgsInterpolatedLineRenderer::interpolatedColor() const { return mStrokeColoring; }
+QgsInterpolatedLineColor QgsInterpolatedLineRenderer::interpolatedColor() const
+{
+  return mStrokeColoring;
+}
 
-void QgsInterpolatedLineRenderer::setWidthUnit( Qgis::RenderUnit strokeWidthUnit ) { mStrokeWidthUnit = strokeWidthUnit; }
+void QgsInterpolatedLineRenderer::setWidthUnit( Qgis::RenderUnit strokeWidthUnit )
+{
+  mStrokeWidthUnit = strokeWidthUnit;
+}
 
-Qgis::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const { return mStrokeWidthUnit; }
+Qgis::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const
+{
+  return mStrokeWidthUnit;
+}
 
 void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, QPointF p1, QPointF p2, QgsRenderContext &context ) const
 {
@@ -250,7 +268,10 @@ void QgsInterpolatedLineRenderer::render( double valueColor1, double valueColor2
   renderInDeviceCoordinates( valueColor1, valueColor2, valueWidth1, valueWidth2, p1, p2, context );
 }
 
-void QgsInterpolatedLineRenderer::setSelected( bool selected ) { mSelected = selected; }
+void QgsInterpolatedLineRenderer::setSelected( bool selected )
+{
+  mSelected = selected;
+}
 
 void QgsInterpolatedLineRenderer::adjustLine( const double value, const double value1, const double value2, double &width, double &adjusting ) const
 {
@@ -266,7 +287,10 @@ void QgsInterpolatedLineRenderer::adjustLine( const double value, const double v
   }
 }
 
-double QgsInterpolatedLineWidth::minimumValue() const { return mMinimumValue; }
+double QgsInterpolatedLineWidth::minimumValue() const
+{
+  return mMinimumValue;
+}
 
 void QgsInterpolatedLineWidth::setMinimumValue( double minimumValue )
 {
@@ -274,7 +298,10 @@ void QgsInterpolatedLineWidth::setMinimumValue( double minimumValue )
   mNeedUpdateFormula = true;
 }
 
-double QgsInterpolatedLineWidth::maximumValue() const { return mMaximumValue; }
+double QgsInterpolatedLineWidth::maximumValue() const
+{
+  return mMaximumValue;
+}
 
 void QgsInterpolatedLineWidth::setMaximumValue( double maximumValue )
 {
@@ -282,7 +309,10 @@ void QgsInterpolatedLineWidth::setMaximumValue( double maximumValue )
   mNeedUpdateFormula = true;
 }
 
-double QgsInterpolatedLineWidth::minimumWidth() const { return mMinimumWidth; }
+double QgsInterpolatedLineWidth::minimumWidth() const
+{
+  return mMinimumWidth;
+}
 
 void QgsInterpolatedLineWidth::setMinimumWidth( double minimumWidth )
 {
@@ -290,7 +320,10 @@ void QgsInterpolatedLineWidth::setMinimumWidth( double minimumWidth )
   mNeedUpdateFormula = true;
 }
 
-double QgsInterpolatedLineWidth::maximumWidth() const { return mMaximumWidth; }
+double QgsInterpolatedLineWidth::maximumWidth() const
+{
+  return mMaximumWidth;
+}
 
 void QgsInterpolatedLineWidth::setMaximumWidth( double maximumWidth )
 {
@@ -358,21 +391,45 @@ void QgsInterpolatedLineWidth::readXml( const QDomElement &elem, const QgsReadWr
   mUseAbsoluteValue = elem.attribute( u"use-absolute-value"_s ).toInt();
 }
 
-bool QgsInterpolatedLineWidth::useAbsoluteValue() const { return mUseAbsoluteValue; }
+bool QgsInterpolatedLineWidth::useAbsoluteValue() const
+{
+  return mUseAbsoluteValue;
+}
 
-void QgsInterpolatedLineWidth::setUseAbsoluteValue( bool useAbsoluteValue ) { mUseAbsoluteValue = useAbsoluteValue; }
+void QgsInterpolatedLineWidth::setUseAbsoluteValue( bool useAbsoluteValue )
+{
+  mUseAbsoluteValue = useAbsoluteValue;
+}
 
-double QgsInterpolatedLineWidth::fixedStrokeWidth() const { return mFixedWidth; }
+double QgsInterpolatedLineWidth::fixedStrokeWidth() const
+{
+  return mFixedWidth;
+}
 
-bool QgsInterpolatedLineWidth::ignoreOutOfRange() const { return mIgnoreOutOfRange; }
+bool QgsInterpolatedLineWidth::ignoreOutOfRange() const
+{
+  return mIgnoreOutOfRange;
+}
 
-void QgsInterpolatedLineWidth::setIgnoreOutOfRange( bool ignoreOutOfRange ) { mIgnoreOutOfRange = ignoreOutOfRange; }
+void QgsInterpolatedLineWidth::setIgnoreOutOfRange( bool ignoreOutOfRange )
+{
+  mIgnoreOutOfRange = ignoreOutOfRange;
+}
 
-bool QgsInterpolatedLineWidth::isVariableWidth() const { return mIsWidthVariable; }
+bool QgsInterpolatedLineWidth::isVariableWidth() const
+{
+  return mIsWidthVariable;
+}
 
-void QgsInterpolatedLineWidth::setIsVariableWidth( bool isWidthVarying ) { mIsWidthVariable = isWidthVarying; }
+void QgsInterpolatedLineWidth::setIsVariableWidth( bool isWidthVarying )
+{
+  mIsWidthVariable = isWidthVarying;
+}
 
-void QgsInterpolatedLineWidth::setFixedStrokeWidth( double fixedWidth ) { mFixedWidth = fixedWidth; }
+void QgsInterpolatedLineWidth::setFixedStrokeWidth( double fixedWidth )
+{
+  mFixedWidth = fixedWidth;
+}
 
 void QgsInterpolatedLineWidth::updateLinearFormula() const
 {
@@ -389,7 +446,10 @@ QgsInterpolatedLineColor::QgsInterpolatedLineColor()
   mColorRampShader.setMaximumValue( std::numeric_limits<double>::quiet_NaN() );
 }
 
-QgsInterpolatedLineColor::QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader ) { setColor( colorRampShader ); }
+QgsInterpolatedLineColor::QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader )
+{
+  setColor( colorRampShader );
+}
 
 QgsInterpolatedLineColor::QgsInterpolatedLineColor( const QColor &color )
 {
@@ -408,7 +468,10 @@ void QgsInterpolatedLineColor::setColor( const QgsColorRampShader &colorRampShad
     mColoringMethod = SingleColor;
 }
 
-void QgsInterpolatedLineColor::setColor( const QColor &color ) { mSingleColor = color; }
+void QgsInterpolatedLineColor::setColor( const QColor &color )
+{
+  mSingleColor = color;
+}
 
 QColor QgsInterpolatedLineColor::color( double magnitude ) const
 {
@@ -430,11 +493,20 @@ QColor QgsInterpolatedLineColor::color( double magnitude ) const
   }
 }
 
-QgsInterpolatedLineColor::ColoringMethod QgsInterpolatedLineColor::coloringMethod() const { return mColoringMethod; }
+QgsInterpolatedLineColor::ColoringMethod QgsInterpolatedLineColor::coloringMethod() const
+{
+  return mColoringMethod;
+}
 
-QgsColorRampShader QgsInterpolatedLineColor::colorRampShader() const { return mColorRampShader; }
+QgsColorRampShader QgsInterpolatedLineColor::colorRampShader() const
+{
+  return mColorRampShader;
+}
 
-QColor QgsInterpolatedLineColor::singleColor() const { return mSingleColor; }
+QColor QgsInterpolatedLineColor::singleColor() const
+{
+  return mSingleColor;
+}
 
 QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
@@ -481,7 +553,10 @@ void QgsInterpolatedLineColor::graduatedColors( double value1, double value2, QL
   }
 }
 
-void QgsInterpolatedLineColor::setColoringMethod( QgsInterpolatedLineColor::ColoringMethod coloringMethod ) { mColoringMethod = coloringMethod; }
+void QgsInterpolatedLineColor::setColoringMethod( QgsInterpolatedLineColor::ColoringMethod coloringMethod )
+{
+  mColoringMethod = coloringMethod;
+}
 
 QLinearGradient QgsInterpolatedLineColor::makeSimpleLinearGradient( const QColor &color1, const QColor &color2 ) const
 {
@@ -729,11 +804,16 @@ void QgsInterpolatedLineColor::graduatedColorsDiscrete( double value1, double va
   gradients.append( makeSimpleLinearGradient( lastColor, lastColor ) );
 }
 
-QString QgsInterpolatedLineSymbolLayer::layerType() const { return u"InterpolatedLine"_s; }
+QString QgsInterpolatedLineSymbolLayer::layerType() const
+{
+  return u"InterpolatedLine"_s;
+}
 
-void QgsInterpolatedLineSymbolLayer::startRender( QgsSymbolRenderContext & ) {}
+void QgsInterpolatedLineSymbolLayer::startRender( QgsSymbolRenderContext & )
+{}
 
-void QgsInterpolatedLineSymbolLayer::stopRender( QgsSymbolRenderContext & ) {}
+void QgsInterpolatedLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
+{}
 
 QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 {
@@ -871,20 +951,35 @@ void QgsInterpolatedLineSymbolLayer::setExpressionsStringForWidth( const QString
     mDataDefinedProperties.setProperty( QgsSymbolLayer::Property::LineEndWidthValue, QgsProperty::fromExpression( end ) );
 }
 
-QString QgsInterpolatedLineSymbolLayer::startValueExpressionForWidth() const { return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineStartWidthValue ).asExpression(); }
+QString QgsInterpolatedLineSymbolLayer::startValueExpressionForWidth() const
+{
+  return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineStartWidthValue ).asExpression();
+}
 
-QString QgsInterpolatedLineSymbolLayer::endValueExpressionForWidth() const { return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineEndWidthValue ).asExpression(); }
+QString QgsInterpolatedLineSymbolLayer::endValueExpressionForWidth() const
+{
+  return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineEndWidthValue ).asExpression();
+}
 
 void QgsInterpolatedLineSymbolLayer::setWidthUnit( Qgis::RenderUnit strokeWidthUnit ) // cppcheck-suppress duplInheritedMember
 {
   mLineRender.mStrokeWidthUnit = strokeWidthUnit;
 }
 
-Qgis::RenderUnit QgsInterpolatedLineSymbolLayer::widthUnit() const { return mLineRender.widthUnit(); } // cppcheck-suppress duplInheritedMember
+Qgis::RenderUnit QgsInterpolatedLineSymbolLayer::widthUnit() const
+{
+  return mLineRender.widthUnit();
+} // cppcheck-suppress duplInheritedMember
 
-void QgsInterpolatedLineSymbolLayer::setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth ) { mLineRender.mStrokeWidth = interpolatedLineWidth; }
+void QgsInterpolatedLineSymbolLayer::setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth )
+{
+  mLineRender.mStrokeWidth = interpolatedLineWidth;
+}
 
-QgsInterpolatedLineWidth QgsInterpolatedLineSymbolLayer::interpolatedWidth() const { return mLineRender.interpolatedLineWidth(); }
+QgsInterpolatedLineWidth QgsInterpolatedLineSymbolLayer::interpolatedWidth() const
+{
+  return mLineRender.interpolatedLineWidth();
+}
 
 void QgsInterpolatedLineSymbolLayer::setExpressionsStringForColor( const QString &start, const QString &end )
 {
@@ -899,13 +994,25 @@ void QgsInterpolatedLineSymbolLayer::setExpressionsStringForColor( const QString
     mDataDefinedProperties.setProperty( QgsSymbolLayer::Property::LineEndColorValue, QgsProperty::fromExpression( end ) );
 }
 
-QString QgsInterpolatedLineSymbolLayer::startValueExpressionForColor() const { return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineStartColorValue ).asExpression(); }
+QString QgsInterpolatedLineSymbolLayer::startValueExpressionForColor() const
+{
+  return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineStartColorValue ).asExpression();
+}
 
-QString QgsInterpolatedLineSymbolLayer::endValueExpressionForColor() const { return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineEndColorValue ).asExpression(); }
+QString QgsInterpolatedLineSymbolLayer::endValueExpressionForColor() const
+{
+  return mDataDefinedProperties.property( QgsSymbolLayer::Property::LineEndColorValue ).asExpression();
+}
 
-void QgsInterpolatedLineSymbolLayer::setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor ) { mLineRender.setInterpolatedColor( interpolatedLineColor ); }
+void QgsInterpolatedLineSymbolLayer::setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor )
+{
+  mLineRender.setInterpolatedColor( interpolatedLineColor );
+}
 
-QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayer::interpolatedColor() const { return mLineRender.interpolatedColor(); }
+QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayer::interpolatedColor() const
+{
+  return mLineRender.interpolatedColor();
+}
 
 QVariant QgsInterpolatedLineSymbolLayer::colorRampShaderProperties() const
 {
@@ -1112,4 +1219,7 @@ void QgsInterpolatedLineSymbolLayer::renderPolyline( const QPolygonF &points, Qg
   }
 }
 
-bool QgsInterpolatedLineSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const { return true; }
+bool QgsInterpolatedLineSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
+}

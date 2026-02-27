@@ -27,7 +27,7 @@ Base class for detailed information about a rendered item.
 %End
   public:
 %ConvertToSubClassCode
-if ( dynamic_cast<QgsRenderedAnnotationItemDetails *>( sipCpp ) )
+    if ( dynamic_cast<QgsRenderedAnnotationItemDetails *>( sipCpp ) )
       sipType = sipType_QgsRenderedAnnotationItemDetails;
     else
       sipType = 0;

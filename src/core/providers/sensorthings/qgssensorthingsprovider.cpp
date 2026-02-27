@@ -232,9 +232,15 @@ bool QgsSensorThingsProvider::supportsSubsetString() const
   return true;
 }
 
-QString QgsSensorThingsProvider::subsetStringDialect() const { return tr( "OGC SensorThings filter" ); }
+QString QgsSensorThingsProvider::subsetStringDialect() const
+{
+  return tr( "OGC SensorThings filter" );
+}
 
-QString QgsSensorThingsProvider::subsetStringHelpUrl() const { return u"https://docs.ogc.org/is/18-088/18-088.html#filter"_s; }
+QString QgsSensorThingsProvider::subsetStringHelpUrl() const
+{
+  return u"https://docs.ogc.org/is/18-088/18-088.html#filter"_s;
+}
 
 QString QgsSensorThingsProvider::subsetString() const
 {
@@ -295,11 +301,20 @@ QString QgsSensorThingsProvider::name() const
   return SENSORTHINGS_PROVIDER_KEY;
 }
 
-QString QgsSensorThingsProvider::providerKey() { return SENSORTHINGS_PROVIDER_KEY; }
+QString QgsSensorThingsProvider::providerKey()
+{
+  return SENSORTHINGS_PROVIDER_KEY;
+}
 
-void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *source ) { mSharedData = qobject_cast<QgsSensorThingsProvider *>( source )->mSharedData; }
+void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  mSharedData = qobject_cast<QgsSensorThingsProvider *>( source )->mSharedData;
+}
 
-QString QgsSensorThingsProvider::description() const { return SENSORTHINGS_PROVIDER_DESCRIPTION; }
+QString QgsSensorThingsProvider::description() const
+{
+  return SENSORTHINGS_PROVIDER_DESCRIPTION;
+}
 
 bool QgsSensorThingsProvider::renderInPreview( const PreviewContext & )
 {
@@ -322,9 +337,15 @@ QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata()
   : QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
 {}
 
-QIcon QgsSensorThingsProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconSensorThings.svg"_s ); }
+QIcon QgsSensorThingsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconSensorThings.svg"_s );
+}
 
-QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const { return { new QgsSensorThingsDataItemProvider() }; }
+QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const
+{
+  return { new QgsSensorThingsDataItemProvider() };
+}
 
 QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) const
 {
@@ -540,17 +561,29 @@ QgsSensorThingsProvider *QgsSensorThingsProviderMetadata::createProvider( const 
   return new QgsSensorThingsProvider( uri, options, flags );
 }
 
-QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Vector }; }
+QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
 
 QMap<QString, QgsAbstractProviderConnection *> QgsSensorThingsProviderMetadata::connections( bool cached )
 {
   return connectionsProtected<QgsSensorThingsProviderConnection, QgsSensorThingsProviderConnection>( cached );
 }
 
-QgsAbstractProviderConnection *QgsSensorThingsProviderMetadata::createConnection( const QString &name ) { return new QgsSensorThingsProviderConnection( name ); }
+QgsAbstractProviderConnection *QgsSensorThingsProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsSensorThingsProviderConnection( name );
+}
 
-void QgsSensorThingsProviderMetadata::deleteConnection( const QString &name ) { deleteConnectionProtected<QgsSensorThingsProviderConnection>( name ); }
+void QgsSensorThingsProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsSensorThingsProviderConnection>( name );
+}
 
-void QgsSensorThingsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) { saveConnectionProtected( connection, name ); }
+void QgsSensorThingsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
+{
+  saveConnectionProtected( connection, name );
+}
 
 ///@endcond

@@ -61,13 +61,25 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
 QgsLayoutItemPage::~QgsLayoutItemPage() = default;
 
-QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout ) { return new QgsLayoutItemPage( layout ); }
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemPage( layout );
+}
 
-int QgsLayoutItemPage::type() const { return QgsLayoutItemRegistry::LayoutPage; }
+int QgsLayoutItemPage::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPage;
+}
 
-QString QgsLayoutItemPage::displayName() const { return QObject::tr( "Page" ); }
+QString QgsLayoutItemPage::displayName() const
+{
+  return QObject::tr( "Page" );
+}
 
-void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size ) { attemptResize( size ); }
+void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
+{
+  attemptResize( size );
+}
 
 bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientation )
 {
@@ -119,7 +131,10 @@ QPageLayout QgsLayoutItemPage::pageLayout() const
   return pageLayout;
 }
 
-QgsLayoutSize QgsLayoutItemPage::pageSize() const { return sizeWithUnits(); }
+QgsLayoutSize QgsLayoutItemPage::pageSize() const
+{
+  return sizeWithUnits();
+}
 
 QgsLayoutItemPage::Orientation QgsLayoutItemPage::orientation() const
 {
@@ -211,9 +226,15 @@ class QgsLayoutItemPageUndoCommand : public QgsLayoutItemUndoCommand
 };
 ///@endcond
 
-QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutItemPageUndoCommand( this, text, id, parent ); }
+QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
+}
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
 
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -293,9 +314,11 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
   }
 }
 
-void QgsLayoutItemPage::drawFrame( QgsRenderContext & ) {}
+void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
+{}
 
-void QgsLayoutItemPage::drawBackground( QgsRenderContext & ) {}
+void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
+{}
 
 bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {

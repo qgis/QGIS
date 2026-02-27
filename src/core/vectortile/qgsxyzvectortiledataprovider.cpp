@@ -61,7 +61,10 @@ QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QgsXyz
   mHeaders = other.mHeaders;
 }
 
-bool QgsXyzVectorTileDataProviderBase::supportsAsync() const { return true; }
+bool QgsXyzVectorTileDataProviderBase::supportsAsync() const
+{
+  return true;
+}
 
 QgsVectorTileRawData QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
@@ -205,9 +208,15 @@ QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvid
   return new QgsXyzVectorTileDataProvider( uri, options, flags );
 }
 
-QIcon QgsXyzVectorTileDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
+QIcon QgsXyzVectorTileDataProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
+}
 
-QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const { return FileBasedUris; }
+QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
 QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
@@ -338,7 +347,10 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   return uri;
 }
 
-QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
+QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
 
 
 //
@@ -381,7 +393,10 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QgsXyzVectorTi
   mMatrixSet = other.mMatrixSet;
 }
 
-Qgis::DataProviderFlags QgsXyzVectorTileDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
+Qgis::DataProviderFlags QgsXyzVectorTileDataProvider::flags() const
+{
+  return Qgis::DataProviderFlag::FastExtent2D;
+}
 
 QString QgsXyzVectorTileDataProvider::name() const
 {

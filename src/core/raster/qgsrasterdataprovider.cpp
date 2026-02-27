@@ -454,7 +454,15 @@ const QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevation
 }
 
 QgsRasterDataProvider *QgsRasterDataProvider::create(
-  const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+  const QString &providerKey,
+  const QString &uri,
+  const QString &format,
+  int nBands,
+  Qgis::DataType type,
+  int width,
+  int height,
+  double *geoTransform,
+  const QgsCoordinateReferenceSystem &crs,
   const QStringList &creationOptions
 )
 {
@@ -1052,9 +1060,15 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
 
-bool QgsRasterDataProvider::hasReportsDuringClose() const { return false; }
+bool QgsRasterDataProvider::hasReportsDuringClose() const
+{
+  return false;
+}
 
-bool QgsRasterDataProvider::closeWithProgress( QgsFeedback * /* feedback */ ) { return false; }
+bool QgsRasterDataProvider::closeWithProgress( QgsFeedback * /* feedback */ )
+{
+  return false;
+}
 
 
 #undef ERR

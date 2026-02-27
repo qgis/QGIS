@@ -33,7 +33,10 @@ QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvis
   , mEnableSnappingForInvisibleFeature( enableSnappingForInvisibleFeature )
 {}
 
-QgsSnappingUtils::~QgsSnappingUtils() { clearAllLocators(); }
+QgsSnappingUtils::~QgsSnappingUtils()
+{
+  clearAllLocators();
+}
 
 
 QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
@@ -254,14 +257,20 @@ static void _updateBestMatch(
 }
 
 
-static QgsPointLocator::Types _snappingTypeToPointLocatorType( Qgis::SnappingTypes type ) { return QgsPointLocator::Types( static_cast<int>( type ) ); }
+static QgsPointLocator::Types _snappingTypeToPointLocatorType( Qgis::SnappingTypes type )
+{
+  return QgsPointLocator::Types( static_cast<int>( type ) );
+}
 
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter, relaxed );
 }
 
-inline QgsRectangle _areaOfInterest( const QgsPointXY &point, double tolerance ) { return QgsRectangle( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance ); }
+inline QgsRectangle _areaOfInterest( const QgsPointXY &point, double tolerance )
+{
+  return QgsRectangle( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+}
 
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
@@ -533,9 +542,15 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
   }
 }
 
-QgsSnappingConfig QgsSnappingUtils::config() const { return mSnappingConfig; }
+QgsSnappingConfig QgsSnappingUtils::config() const
+{
+  return mSnappingConfig;
+}
 
-void QgsSnappingUtils::setEnableSnappingForInvisibleFeature( bool enable ) { mEnableSnappingForInvisibleFeature = enable; }
+void QgsSnappingUtils::setEnableSnappingForInvisibleFeature( bool enable )
+{
+  mEnableSnappingForInvisibleFeature = enable;
+}
 
 void QgsSnappingUtils::setConfig( const QgsSnappingConfig &config )
 {
@@ -583,7 +598,10 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings &settings )
     clearAllLocators();
 }
 
-void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer *layer ) { mCurrentLayer = layer; }
+void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer *layer )
+{
+  mCurrentLayer = layer;
+}
 
 QString QgsSnappingUtils::dump()
 {
@@ -672,7 +690,10 @@ QString QgsSnappingUtils::dump()
   return msg;
 }
 
-QgsCoordinateReferenceSystem QgsSnappingUtils::destinationCrs() const { return mMapSettings.destinationCrs(); }
+QgsCoordinateReferenceSystem QgsSnappingUtils::destinationCrs() const
+{
+  return mMapSettings.destinationCrs();
+}
 
 void QgsSnappingUtils::onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings )
 {

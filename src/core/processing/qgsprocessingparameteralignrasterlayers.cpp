@@ -26,9 +26,15 @@ QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterAlignRasterLayers::clone() const { return new QgsProcessingParameterAlignRasterLayers( *this ); }
+QgsProcessingParameterDefinition *QgsProcessingParameterAlignRasterLayers::clone() const
+{
+  return new QgsProcessingParameterAlignRasterLayers( *this );
+}
 
-QString QgsProcessingParameterAlignRasterLayers::type() const { return typeName(); }
+QString QgsProcessingParameterAlignRasterLayers::type() const
+{
+  return typeName();
+}
 
 bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {

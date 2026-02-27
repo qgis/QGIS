@@ -26,7 +26,7 @@ implementations may offer additional interactivity and customized look.
 #include "qgscolorramplegendnode.h"
 %End
 %ConvertToSubClassCode
-if ( qobject_cast<QgsSymbolLegendNode *>( sipCpp ) )
+    if ( qobject_cast<QgsSymbolLegendNode *>( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
     else if ( qobject_cast<QgsDataDefinedSizeLegendNode *>( sipCpp ) )
       sipType = sipType_QgsDataDefinedSizeLegendNode;
@@ -601,7 +601,12 @@ entries.
 %End
   public:
     QgsRasterSymbolLegendNode(
-      QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0, bool isCheckable = false, const QString &ruleKey = QString(),
+      QgsLayerTreeLayer *nodeLayer,
+      const QColor &color,
+      const QString &label,
+      QObject *parent /TransferThis/ = 0,
+      bool isCheckable = false,
+      const QString &ruleKey = QString(),
       const QString &parentRuleKey = QString()
     );
 %Docstring

@@ -102,9 +102,15 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   mPerNodeData = QtConcurrent::blockingMappedReduced<QMap<int, QHash<QgsPointCloudNodeId, PerNodeData>>>( processData, std::move( mapFn ), std::move( reduceFn ) );
 }
 
-void QgsPointCloudLayerUndoCommandChangeAttribute::undo() { undoRedoPrivate( true ); }
+void QgsPointCloudLayerUndoCommandChangeAttribute::undo()
+{
+  undoRedoPrivate( true );
+}
 
-void QgsPointCloudLayerUndoCommandChangeAttribute::redo() { undoRedoPrivate( false ); }
+void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
+{
+  undoRedoPrivate( false );
+}
 
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {

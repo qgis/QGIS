@@ -148,7 +148,10 @@ QStringList QgsOgrExpressionCompiler::sqlArgumentsFromFunctionName( const QStrin
   return args;
 }
 
-QString QgsOgrExpressionCompiler::quotedIdentifier( const QString &identifier ) { return QgsOgrProviderUtils::quotedIdentifier( identifier.toUtf8(), mSource->mDriverName ); }
+QString QgsOgrExpressionCompiler::quotedIdentifier( const QString &identifier )
+{
+  return QgsOgrProviderUtils::quotedIdentifier( identifier.toUtf8(), mSource->mDriverName );
+}
 
 QString QgsOgrExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
@@ -163,8 +166,14 @@ QString QgsOgrExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
   return QgsOgrProviderUtils::quotedValue( value );
 }
 
-QString QgsOgrExpressionCompiler::castToReal( const QString &value ) const { return u"CAST((%1) AS float)"_s.arg( value ); }
+QString QgsOgrExpressionCompiler::castToReal( const QString &value ) const
+{
+  return u"CAST((%1) AS float)"_s.arg( value );
+}
 
-QString QgsOgrExpressionCompiler::castToInt( const QString &value ) const { return u"CAST((%1) AS integer)"_s.arg( value ); }
+QString QgsOgrExpressionCompiler::castToInt( const QString &value ) const
+{
+  return u"CAST((%1) AS integer)"_s.arg( value );
+}
 
 ///@endcond

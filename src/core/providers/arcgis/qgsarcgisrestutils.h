@@ -136,7 +136,9 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \returns converted geometry
      */
-    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr );
+    static std::unique_ptr< QgsAbstractGeometry > convertGeometry(
+      const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr
+    );
 
     /**
      * Converts a spatial reference JSON definition to a QgsCoordinateReferenceSystem value.
@@ -242,12 +244,14 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    // clang-format off
-    static QVariantMap featureToJson( const QgsFeature &feature,
-                                      const QgsArcGisRestContext &context,
-                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
-    // clang-format on
+    static QVariantMap featureToJson(
+      const QgsFeature &feature,
+      const QgsArcGisRestContext &context,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
+        static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
+      )
+    );
 
     /**
      * Converts a variant to a REST attribute value.

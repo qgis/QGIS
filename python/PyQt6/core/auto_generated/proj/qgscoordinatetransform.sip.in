@@ -54,7 +54,9 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
     explicit QgsCoordinateTransform(
-      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context,
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsCoordinateTransformContext &context,
       Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
     );
 %Docstring
@@ -88,7 +90,9 @@ flags which dictate the behavior of the transformation.
 %End
 
     explicit QgsCoordinateTransform(
-      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project,
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsProject *project,
       Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
     );
 %Docstring

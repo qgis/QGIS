@@ -508,8 +508,16 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.34
      */
     static bool saveStyle(
-      GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription,
-      const QString &uiFileContent, bool useAsDefault, QString &errCause
+      GDALDatasetH hDS,
+      const QString &layerName,
+      const QString &geomColumn,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
     );
 
     /**

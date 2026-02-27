@@ -24,43 +24,100 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsAbstractMetadataBase::identifier() const { return mIdentifier; }
+QString QgsAbstractMetadataBase::identifier() const
+{
+  return mIdentifier;
+}
 
-void QgsAbstractMetadataBase::setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
+void QgsAbstractMetadataBase::setIdentifier( const QString &identifier )
+{
+  mIdentifier = identifier;
+}
 
-QString QgsAbstractMetadataBase::parentIdentifier() const { return mParentIdentifier; }
+QString QgsAbstractMetadataBase::parentIdentifier() const
+{
+  return mParentIdentifier;
+}
 
-void QgsAbstractMetadataBase::setParentIdentifier( const QString &parentIdentifier ) { mParentIdentifier = parentIdentifier; }
+void QgsAbstractMetadataBase::setParentIdentifier( const QString &parentIdentifier )
+{
+  mParentIdentifier = parentIdentifier;
+}
 
-QString QgsAbstractMetadataBase::type() const { return mType; }
+QString QgsAbstractMetadataBase::type() const
+{
+  return mType;
+}
 
-void QgsAbstractMetadataBase::setType( const QString &type ) { mType = type; }
+void QgsAbstractMetadataBase::setType( const QString &type )
+{
+  mType = type;
+}
 
-QString QgsAbstractMetadataBase::title() const { return mTitle; }
+QString QgsAbstractMetadataBase::title() const
+{
+  return mTitle;
+}
 
-void QgsAbstractMetadataBase::setTitle( const QString &title ) { mTitle = title; }
+void QgsAbstractMetadataBase::setTitle( const QString &title )
+{
+  mTitle = title;
+}
 
-QString QgsAbstractMetadataBase::abstract() const { return mAbstract; }
+QString QgsAbstractMetadataBase::abstract() const
+{
+  return mAbstract;
+}
 
-void QgsAbstractMetadataBase::setAbstract( const QString &abstract ) { mAbstract = abstract; }
+void QgsAbstractMetadataBase::setAbstract( const QString &abstract )
+{
+  mAbstract = abstract;
+}
 
-QStringList QgsAbstractMetadataBase::history() const { return mHistory; }
+QStringList QgsAbstractMetadataBase::history() const
+{
+  return mHistory;
+}
 
-void QgsAbstractMetadataBase::setHistory( const QStringList &history ) { mHistory = history; }
+void QgsAbstractMetadataBase::setHistory( const QStringList &history )
+{
+  mHistory = history;
+}
 
-void QgsAbstractMetadataBase::addHistoryItem( const QString &text ) { mHistory << text; }
+void QgsAbstractMetadataBase::addHistoryItem( const QString &text )
+{
+  mHistory << text;
+}
 
-QMap<QString, QStringList> QgsAbstractMetadataBase::keywords() const { return mKeywords; }
+QMap<QString, QStringList> QgsAbstractMetadataBase::keywords() const
+{
+  return mKeywords;
+}
 
-void QgsAbstractMetadataBase::setKeywords( const QMap<QString, QStringList> &keywords ) { mKeywords = keywords; }
+void QgsAbstractMetadataBase::setKeywords( const QMap<QString, QStringList> &keywords )
+{
+  mKeywords = keywords;
+}
 
-void QgsAbstractMetadataBase::addKeywords( const QString &vocabulary, const QStringList &keywords ) { mKeywords.insert( vocabulary, keywords ); }
+void QgsAbstractMetadataBase::addKeywords( const QString &vocabulary, const QStringList &keywords )
+{
+  mKeywords.insert( vocabulary, keywords );
+}
 
-bool QgsAbstractMetadataBase::removeKeywords( const QString &vocabulary ) { return mKeywords.remove( vocabulary ); }
+bool QgsAbstractMetadataBase::removeKeywords( const QString &vocabulary )
+{
+  return mKeywords.remove( vocabulary );
+}
 
-QStringList QgsAbstractMetadataBase::keywordVocabularies() const { return mKeywords.keys(); }
+QStringList QgsAbstractMetadataBase::keywordVocabularies() const
+{
+  return mKeywords.keys();
+}
 
-QStringList QgsAbstractMetadataBase::keywords( const QString &vocabulary ) const { return mKeywords.value( vocabulary ); }
+QStringList QgsAbstractMetadataBase::keywords( const QString &vocabulary ) const
+{
+  return mKeywords.value( vocabulary );
+}
 
 QStringList QgsAbstractMetadataBase::categories() const
 {
@@ -74,21 +131,45 @@ QStringList QgsAbstractMetadataBase::categories() const
   }
 }
 
-void QgsAbstractMetadataBase::setCategories( const QStringList &category ) { mKeywords.insert( u"gmd:topicCategory"_s, category ); }
+void QgsAbstractMetadataBase::setCategories( const QStringList &category )
+{
+  mKeywords.insert( u"gmd:topicCategory"_s, category );
+}
 
-QList<QgsAbstractMetadataBase::Contact> QgsAbstractMetadataBase::contacts() const { return mContacts; }
+QList<QgsAbstractMetadataBase::Contact> QgsAbstractMetadataBase::contacts() const
+{
+  return mContacts;
+}
 
-void QgsAbstractMetadataBase::setContacts( const QList<QgsAbstractMetadataBase::Contact> &contacts ) { mContacts = contacts; }
+void QgsAbstractMetadataBase::setContacts( const QList<QgsAbstractMetadataBase::Contact> &contacts )
+{
+  mContacts = contacts;
+}
 
-void QgsAbstractMetadataBase::addContact( const QgsAbstractMetadataBase::Contact &contact ) { mContacts << contact; }
+void QgsAbstractMetadataBase::addContact( const QgsAbstractMetadataBase::Contact &contact )
+{
+  mContacts << contact;
+}
 
-QList<QgsAbstractMetadataBase::Link> QgsAbstractMetadataBase::links() const { return mLinks; }
+QList<QgsAbstractMetadataBase::Link> QgsAbstractMetadataBase::links() const
+{
+  return mLinks;
+}
 
-void QgsAbstractMetadataBase::setLinks( const QList<QgsAbstractMetadataBase::Link> &links ) { mLinks = links; }
+void QgsAbstractMetadataBase::setLinks( const QList<QgsAbstractMetadataBase::Link> &links )
+{
+  mLinks = links;
+}
 
-void QgsAbstractMetadataBase::addLink( const QgsAbstractMetadataBase::Link &link ) { mLinks << link; }
+void QgsAbstractMetadataBase::addLink( const QgsAbstractMetadataBase::Link &link )
+{
+  mLinks << link;
+}
 
-QDateTime QgsAbstractMetadataBase::dateTime( Qgis::MetadataDateType type ) const { return mDates.value( type ); }
+QDateTime QgsAbstractMetadataBase::dateTime( Qgis::MetadataDateType type ) const
+{
+  return mDates.value( type );
+}
 
 void QgsAbstractMetadataBase::setDateTime( Qgis::MetadataDateType type, QDateTime date )
 {
@@ -98,9 +179,15 @@ void QgsAbstractMetadataBase::setDateTime( Qgis::MetadataDateType type, QDateTim
     mDates[type] = date;
 }
 
-QString QgsAbstractMetadataBase::language() const { return mLanguage; }
+QString QgsAbstractMetadataBase::language() const
+{
+  return mLanguage;
+}
 
-void QgsAbstractMetadataBase::setLanguage( const QString &language ) { mLanguage = language; }
+void QgsAbstractMetadataBase::setLanguage( const QString &language )
+{
+  mLanguage = language;
+}
 
 bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {

@@ -153,7 +153,7 @@ or color from a gradient.
 #include "qgspropertytransformer.h"
 %End
 %ConvertToSubClassCode
-if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
+    if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
       sipType = sipType_QgsGenericNumericTransformer;
     else if ( sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer )
       sipType = sipType_QgsSizeScaleTransformer;

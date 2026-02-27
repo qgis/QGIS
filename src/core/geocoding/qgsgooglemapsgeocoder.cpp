@@ -46,7 +46,10 @@ QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QStri
   , mEndpoint( u"https://maps.googleapis.com/maps/api/geocode/json"_s )
 {}
 
-QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const { return QgsGeocoderInterface::Flag::GeocodesStrings; }
+QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const
+{
+  return QgsGeocoderInterface::Flag::GeocodesStrings;
+}
 
 QgsFields QgsGoogleMapsGeocoder::appendedFields() const
 {
@@ -66,7 +69,10 @@ QgsFields QgsGoogleMapsGeocoder::appendedFields() const
   return fields;
 }
 
-Qgis::WkbType QgsGoogleMapsGeocoder::wkbType() const { return Qgis::WkbType::Point; }
+Qgis::WkbType QgsGoogleMapsGeocoder::wkbType() const
+{
+  return Qgis::WkbType::Point;
+}
 
 QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const
 {
@@ -265,12 +271,27 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
   return res;
 }
 
-void QgsGoogleMapsGeocoder::setEndpoint( const QString &endpoint ) { mEndpoint = endpoint; }
+void QgsGoogleMapsGeocoder::setEndpoint( const QString &endpoint )
+{
+  mEndpoint = endpoint;
+}
 
-QString QgsGoogleMapsGeocoder::apiKey() const { return mApiKey; }
+QString QgsGoogleMapsGeocoder::apiKey() const
+{
+  return mApiKey;
+}
 
-void QgsGoogleMapsGeocoder::setApiKey( const QString &apiKey ) { mApiKey = apiKey; }
+void QgsGoogleMapsGeocoder::setApiKey( const QString &apiKey )
+{
+  mApiKey = apiKey;
+}
 
-QString QgsGoogleMapsGeocoder::region() const { return mRegion; }
+QString QgsGoogleMapsGeocoder::region() const
+{
+  return mRegion;
+}
 
-void QgsGoogleMapsGeocoder::setRegion( const QString &region ) { mRegion = region; }
+void QgsGoogleMapsGeocoder::setRegion( const QString &region )
+{
+  mRegion = region;
+}

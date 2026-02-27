@@ -82,7 +82,10 @@ bool QgsVtpkTiles::open()
   }
 }
 
-bool QgsVtpkTiles::isOpen() const { return static_cast< bool >( mZip ); }
+bool QgsVtpkTiles::isOpen() const
+{
+  return static_cast< bool >( mZip );
+}
 
 QVariantMap QgsVtpkTiles::metadata() const
 {
@@ -393,7 +396,10 @@ QgsVectorTileMatrixSet QgsVtpkTiles::matrixSet() const
   return mMatrixSet;
 }
 
-QgsCoordinateReferenceSystem QgsVtpkTiles::crs() const { return matrixSet().crs(); }
+QgsCoordinateReferenceSystem QgsVtpkTiles::crs() const
+{
+  return matrixSet().crs();
+}
 
 QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context ) const
 {

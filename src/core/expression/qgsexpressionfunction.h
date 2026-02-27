@@ -122,7 +122,12 @@ class CORE_EXPORT QgsExpressionFunction
      * Constructor for function which uses named parameter list.
      */
     QgsExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QString &group, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool lazyEval = false,
+      bool handlesNull = false,
       bool isContextual = false
     )
       : mName( fnname )
@@ -139,7 +144,12 @@ class CORE_EXPORT QgsExpressionFunction
      * Constructor for function which uses named parameter list and group list.
      */
     QgsExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QStringList &groups, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QStringList &groups,
+      const QString &helpText = QString(),
+      bool lazyEval = false,
+      bool handlesNull = false,
       bool isContextual = false
     )
       : mName( fnname )
@@ -311,8 +321,16 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
      */
     QgsStaticExpressionFunction(
-      const QString &fnname, int params, FcnEval fcn, const QString &group, const QString &helpText = QString(), bool usesGeometry = false, const QSet<QString> &referencedColumns = QSet<QString>(),
-      bool lazyEval = false, const QStringList &aliases = QStringList(), bool handlesNull = false
+      const QString &fnname,
+      int params,
+      FcnEval fcn,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      const QStringList &aliases = QStringList(),
+      bool handlesNull = false
     )
       : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
@@ -326,8 +344,16 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * of groups.
      */
     QgsStaticExpressionFunction(
-      const QString &fnname, int params, FcnEval fcn, const QStringList &groups, const QString &helpText = QString(), bool usesGeometry = false,
-      const QSet<QString> &referencedColumns = QSet<QString>(), bool lazyEval = false, const QStringList &aliases = QStringList(), bool handlesNull = false
+      const QString &fnname,
+      int params,
+      FcnEval fcn,
+      const QStringList &groups,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      const QStringList &aliases = QStringList(),
+      bool handlesNull = false
     )
       : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
@@ -340,8 +366,16 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
      */
     QgsStaticExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, FcnEval fcn, const QString &group, const QString &helpText = QString(), bool usesGeometry = false,
-      const QSet<QString> &referencedColumns = QSet<QString>(), bool lazyEval = false, const QStringList &aliases = QStringList(), bool handlesNull = false
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      FcnEval fcn,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      const QStringList &aliases = QStringList(),
+      bool handlesNull = false
     )
       : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
@@ -362,9 +396,16 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * could potentially require a geometry or columns.
      */
     QgsStaticExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, FcnEval fcn, const QString &group, const QString &helpText,
-      const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry, const std::function< QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
-      bool lazyEval = false, const QStringList &aliases = QStringList(), bool handlesNull = false
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      FcnEval fcn,
+      const QString &group,
+      const QString &helpText,
+      const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry,
+      const std::function< QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
+      bool lazyEval = false,
+      const QStringList &aliases = QStringList(),
+      bool handlesNull = false
     );
 
     /**
@@ -372,8 +413,16 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * of groups.
      */
     QgsStaticExpressionFunction(
-      const QString &fnname, const QgsExpressionFunction::ParameterList &params, FcnEval fcn, const QStringList &groups, const QString &helpText = QString(), bool usesGeometry = false,
-      const QSet<QString> &referencedColumns = QSet<QString>(), bool lazyEval = false, const QStringList &aliases = QStringList(), bool handlesNull = false
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      FcnEval fcn,
+      const QStringList &groups,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      const QStringList &aliases = QStringList(),
+      bool handlesNull = false
     )
       : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull )
       , mFnc( fcn )

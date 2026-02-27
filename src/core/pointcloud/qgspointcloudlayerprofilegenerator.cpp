@@ -42,7 +42,10 @@ using namespace Qt::StringLiterals;
 // QgsPointCloudLayerProfileGenerator
 //
 
-QgsPointCloudLayerProfileResults::QgsPointCloudLayerProfileResults() { mPointIndex = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t ) 10 ); }
+QgsPointCloudLayerProfileResults::QgsPointCloudLayerProfileResults()
+{
+  mPointIndex = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t ) 10 );
+}
 
 QgsPointCloudLayerProfileResults::~QgsPointCloudLayerProfileResults()
 {
@@ -68,7 +71,10 @@ void QgsPointCloudLayerProfileResults::finalize( QgsFeedback *feedback )
   }
 }
 
-QString QgsPointCloudLayerProfileResults::type() const { return u"pointcloud"_s; }
+QString QgsPointCloudLayerProfileResults::type() const
+{
+  return u"pointcloud"_s;
+}
 
 QMap<double, double> QgsPointCloudLayerProfileResults::distanceToHeightMap() const
 {
@@ -159,7 +165,10 @@ QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::as
   return res;
 }
 
-QgsDoubleRange QgsPointCloudLayerProfileResults::zRange() const { return QgsDoubleRange( minZ, maxZ ); }
+QgsDoubleRange QgsPointCloudLayerProfileResults::zRange() const
+{
+  return QgsDoubleRange( minZ, maxZ );
+}
 
 void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &context )
 {
@@ -271,7 +280,8 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
 {
   return identify(
     QgsDoubleRange( point.distance() - context.maximumPointDistanceDelta, point.distance() + context.maximumPointDistanceDelta ),
-    QgsDoubleRange( point.elevation() - context.maximumPointElevationDelta, point.elevation() + context.maximumPointElevationDelta ), context
+    QgsDoubleRange( point.elevation() - context.maximumPointElevationDelta, point.elevation() + context.maximumPointElevationDelta ),
+    context
   );
 }
 
@@ -636,11 +646,20 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
 {}
 
-QString QgsPointCloudLayerProfileGenerator::sourceId() const { return mId; }
+QString QgsPointCloudLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
-QString QgsPointCloudLayerProfileGenerator::type() const { return u"pointcloud"_s; }
+QString QgsPointCloudLayerProfileGenerator::type() const
+{
+  return u"pointcloud"_s;
+}
 
-Qgis::ProfileGeneratorFlags QgsPointCloudLayerProfileGenerator::flags() const { return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit; }
+Qgis::ProfileGeneratorFlags QgsPointCloudLayerProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;
+}
 
 QgsPointCloudLayerProfileGenerator::~QgsPointCloudLayerProfileGenerator() = default;
 
@@ -725,9 +744,15 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   return true;
 }
 
-QgsAbstractProfileResults *QgsPointCloudLayerProfileGenerator::takeResults() { return mResults.release(); }
+QgsAbstractProfileResults *QgsPointCloudLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
+}
 
-QgsFeedback *QgsPointCloudLayerProfileGenerator::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsPointCloudLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}
 
 void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange )
 {
@@ -874,9 +899,15 @@ void QgsTriangulatedPointCloudLayerProfileGenerator::visitBlock( const QgsPointC
   }
 }
 
-QString QgsTriangulatedPointCloudLayerProfileGenerator::sourceId() const { return mId; }
+QString QgsTriangulatedPointCloudLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
-QString QgsTriangulatedPointCloudLayerProfileGenerator::type() const { return u"triangulatedpointcloud"_s; }
+QString QgsTriangulatedPointCloudLayerProfileGenerator::type() const
+{
+  return u"triangulatedpointcloud"_s;
+}
 
 QgsTriangulatedPointCloudLayerProfileGenerator::~QgsTriangulatedPointCloudLayerProfileGenerator() = default;
 
@@ -1000,11 +1031,20 @@ bool QgsTriangulatedPointCloudLayerProfileGenerator::generateProfile( const QgsP
   return true;
 }
 
-QgsAbstractProfileResults *QgsTriangulatedPointCloudLayerProfileGenerator::takeResults() { return mResults.release(); }
+QgsAbstractProfileResults *QgsTriangulatedPointCloudLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
+}
 
-QgsFeedback *QgsTriangulatedPointCloudLayerProfileGenerator::feedback() const { return mFeedback.get(); }
+QgsFeedback *QgsTriangulatedPointCloudLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}
 
-QString QgsTriangulatedPointCloudLayerProfileResults::type() const { return u"triangulatedpointcloud"_s; }
+QString QgsTriangulatedPointCloudLayerProfileResults::type() const
+{
+  return u"triangulatedpointcloud"_s;
+}
 
 QVector<QgsProfileIdentifyResults> QgsTriangulatedPointCloudLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
 {
@@ -1039,4 +1079,7 @@ void QgsTriangulatedPointCloudLayerProfileResults::copyPropertiesFromGenerator( 
   mZScale = pcGenerator->mZScale;
 }
 
-void QgsTriangulatedPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &context ) { QgsAbstractProfileSurfaceResults::renderResults( context ); }
+void QgsTriangulatedPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+  QgsAbstractProfileSurfaceResults::renderResults( context );
+}

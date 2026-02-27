@@ -37,8 +37,7 @@ using namespace Qt::StringLiterals;
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
-{
-}
+{}
 
 QgsAnnotationManager::~QgsAnnotationManager()
 {
@@ -103,7 +102,9 @@ bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWri
   return readXmlPrivate( element, context, nullptr, QgsCoordinateTransformContext() );
 }
 
-bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
+bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems(
+  const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext
+)
 {
   return readXmlPrivate( element, context, layer, transformContext );
 }

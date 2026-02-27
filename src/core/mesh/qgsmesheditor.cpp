@@ -155,7 +155,10 @@ bool QgsMeshEditor::fixError( const QgsMeshEditingError &error )
   return false;
 }
 
-void QgsMeshEditor::resetTriangularMesh( QgsTriangularMesh *triangularMesh ) { mTriangularMesh = triangularMesh; }
+void QgsMeshEditor::resetTriangularMesh( QgsTriangularMesh *triangularMesh )
+{
+  mTriangularMesh = triangularMesh;
+}
 
 
 bool QgsMeshEditor::isFaceGeometricallyCompatible( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &vertices ) const
@@ -592,11 +595,20 @@ bool QgsMeshEditor::edgeIsClose( QgsPointXY point, double tolerance, int &faceIn
   return false;
 }
 
-int QgsMeshEditor::validFacesCount() const { return mValidFacesCount; }
+int QgsMeshEditor::validFacesCount() const
+{
+  return mValidFacesCount;
+}
 
-int QgsMeshEditor::validVerticesCount() const { return mValidVerticesCount; }
+int QgsMeshEditor::validVerticesCount() const
+{
+  return mValidVerticesCount;
+}
 
-int QgsMeshEditor::maximumVerticesPerFace() const { return mMaximumVerticesPerFace; }
+int QgsMeshEditor::maximumVerticesPerFace() const
+{
+  return mMaximumVerticesPerFace;
+}
 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
 {
@@ -618,7 +630,10 @@ void QgsMeshEditor::addVertexWithDelaunayRefinement( const QgsMeshVertex &vertex
   mUndoStack->push( new QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement( this, vertex, tolerance ) );
 }
 
-bool QgsMeshEditor::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const { return mTopologicalMesh.edgeCanBeFlipped( vertexIndex1, vertexIndex2 ); }
+bool QgsMeshEditor::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const
+{
+  return mTopologicalMesh.edgeCanBeFlipped( vertexIndex1, vertexIndex2 );
+}
 
 void QgsMeshEditor::flipEdge( int vertexIndex1, int vertexIndex2 )
 {
@@ -628,7 +643,10 @@ void QgsMeshEditor::flipEdge( int vertexIndex1, int vertexIndex2 )
   mUndoStack->push( new QgsMeshLayerUndoCommandFlipEdge( this, vertexIndex1, vertexIndex2 ) );
 }
 
-bool QgsMeshEditor::canBeMerged( int vertexIndex1, int vertexIndex2 ) const { return mTopologicalMesh.canBeMerged( vertexIndex1, vertexIndex2 ); }
+bool QgsMeshEditor::canBeMerged( int vertexIndex1, int vertexIndex2 ) const
+{
+  return mTopologicalMesh.canBeMerged( vertexIndex1, vertexIndex2 );
+}
 
 void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
 {
@@ -638,7 +656,10 @@ void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
   mUndoStack->push( new QgsMeshLayerUndoCommandMerge( this, vertexIndex1, vertexIndex2 ) );
 }
 
-bool QgsMeshEditor::faceCanBeSplit( int faceIndex ) const { return mTopologicalMesh.canBeSplit( faceIndex ); }
+bool QgsMeshEditor::faceCanBeSplit( int faceIndex ) const
+{
+  return mTopologicalMesh.canBeSplit( faceIndex );
+}
 
 int QgsMeshEditor::splitFaces( const QList<int> &faceIndexes )
 {
@@ -756,7 +777,10 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
   return error;
 }
 
-QgsMeshEditingError QgsMeshEditor::addFace( const QVector<int> &vertexIndexes ) { return addFaces( { vertexIndexes } ); }
+QgsMeshEditingError QgsMeshEditor::addFace( const QVector<int> &vertexIndexes )
+{
+  return addFaces( { vertexIndexes } );
+}
 
 QgsMeshEditingError QgsMeshEditor::addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices )
 {
@@ -822,7 +846,10 @@ int QgsMeshEditor::addVertices( const QVector<QgsMeshVertex> &vertices, double t
   return effectivlyAddedVertex;
 }
 
-int QgsMeshEditor::addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance ) { return addVertices( point, tolerance ); }
+int QgsMeshEditor::addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance )
+{
+  return addVertices( point, tolerance );
+}
 
 QgsMeshEditingError QgsMeshEditor::removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes )
 {
@@ -984,7 +1011,10 @@ void QgsMeshEditor::changeCoordinates( const QList<int> &verticesIndexes, const 
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeCoordinates( this, verticesIndexes, newCoordinates ) );
 }
 
-void QgsMeshEditor::advancedEdit( QgsMeshAdvancedEditing *editing ) { mUndoStack->push( new QgsMeshLayerUndoCommandAdvancedEditing( this, editing ) ); }
+void QgsMeshEditor::advancedEdit( QgsMeshAdvancedEditing *editing )
+{
+  mUndoStack->push( new QgsMeshLayerUndoCommandAdvancedEditing( this, editing ) );
+}
 
 void QgsMeshEditor::stopEditing()
 {
@@ -1167,14 +1197,18 @@ void QgsMeshLayerUndoCommandRemoveFaces::redo()
   }
 }
 
-QgsMeshEditingError::QgsMeshEditingError() {}
+QgsMeshEditingError::QgsMeshEditingError()
+{}
 
 QgsMeshEditingError::QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex )
   : errorType( type )
   , elementIndex( elementIndex )
 {}
 
-QgsRectangle QgsMeshEditor::extent() const { return mTriangularMesh->nativeExtent(); }
+QgsRectangle QgsMeshEditor::extent() const
+{
+  return mTriangularMesh->nativeExtent();
+}
 
 bool QgsMeshEditor::isModified() const
 {
@@ -1210,17 +1244,35 @@ bool QgsMeshEditor::reindex( bool renumbering )
     return true;
 }
 
-QList<int> QgsMeshEditor::freeVerticesIndexes() const { return mTopologicalMesh.freeVerticesIndexes(); }
+QList<int> QgsMeshEditor::freeVerticesIndexes() const
+{
+  return mTopologicalMesh.freeVerticesIndexes();
+}
 
-bool QgsMeshEditor::isVertexOnBoundary( int vertexIndex ) const { return mTopologicalMesh.isVertexOnBoundary( vertexIndex ); }
+bool QgsMeshEditor::isVertexOnBoundary( int vertexIndex ) const
+{
+  return mTopologicalMesh.isVertexOnBoundary( vertexIndex );
+}
 
-bool QgsMeshEditor::isVertexFree( int vertexIndex ) const { return mTopologicalMesh.isVertexFree( vertexIndex ); }
+bool QgsMeshEditor::isVertexFree( int vertexIndex ) const
+{
+  return mTopologicalMesh.isVertexFree( vertexIndex );
+}
 
-QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const { return mTopologicalMesh.vertexCirculator( vertexIndex ); }
+QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const
+{
+  return mTopologicalMesh.vertexCirculator( vertexIndex );
+}
 
-QgsTopologicalMesh &QgsMeshEditor::topologicalMesh() { return mTopologicalMesh; }
+QgsTopologicalMesh &QgsMeshEditor::topologicalMesh()
+{
+  return mTopologicalMesh;
+}
 
-QgsTriangularMesh *QgsMeshEditor::triangularMesh() { return mTriangularMesh; }
+QgsTriangularMesh *QgsMeshEditor::triangularMesh()
+{
+  return mTriangularMesh;
+}
 
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )

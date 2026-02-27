@@ -391,4 +391,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
 }
 
 
-QByteArray QgsVectorTileMVTEncoder::encode() const { return QByteArray::fromStdString( tile.SerializeAsString() ); }
+QByteArray QgsVectorTileMVTEncoder::encode() const
+{
+  return QByteArray::fromStdString( tile.SerializeAsString() );
+}

@@ -142,7 +142,9 @@ class CORE_EXPORT QgsProviderRegistry
      * \see createRasterDataProvider()
      */
     QgsDataProvider *createProvider(
-      const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+      const QString &providerKey,
+      const QString &dataSource,
+      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
       Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
     ) SIP_TRANSFERBACK;
 
@@ -159,8 +161,16 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.10
      */
     SIP_SKIP Qgis::VectorExportResult createEmptyLayer(
-      const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerName
     );
 
     // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
@@ -172,7 +182,15 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.10
      */
     QgsRasterDataProvider *createRasterDataProvider(
-      const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QString &providerKey,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions = QStringList()
     ) SIP_FACTORY;
 
@@ -289,8 +307,15 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.10
      */
     bool saveStyle(
-      const QString &providerKey, const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent,
-      bool useAsDefault, QString &errCause
+      const QString &providerKey,
+      const QString &uri,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
     );
 
     /**

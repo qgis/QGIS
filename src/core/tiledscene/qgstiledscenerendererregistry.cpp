@@ -31,7 +31,10 @@ QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
   addRenderer( new QgsTiledSceneRendererMetadata( u"wireframe"_s, QObject::tr( "Wireframe" ), QgsTiledSceneWireframeRenderer::create ) );
 }
 
-QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry() { qDeleteAll( mRenderers ); }
+QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()
+{
+  qDeleteAll( mRenderers );
+}
 
 bool QgsTiledSceneRendererRegistry::addRenderer( QgsTiledSceneRendererAbstractMetadata *metadata )
 {
@@ -54,7 +57,10 @@ bool QgsTiledSceneRendererRegistry::removeRenderer( const QString &rendererName 
   return true;
 }
 
-QgsTiledSceneRendererAbstractMetadata *QgsTiledSceneRendererRegistry::rendererMetadata( const QString &rendererName ) { return mRenderers.value( rendererName ); }
+QgsTiledSceneRendererAbstractMetadata *QgsTiledSceneRendererRegistry::rendererMetadata( const QString &rendererName )
+{
+  return mRenderers.value( rendererName );
+}
 
 QStringList QgsTiledSceneRendererRegistry::renderersList() const
 {
@@ -68,4 +74,7 @@ QStringList QgsTiledSceneRendererRegistry::renderersList() const
   return renderers;
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const QgsTiledSceneLayer * ) { return new QgsTiledSceneTextureRenderer(); }
+QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const QgsTiledSceneLayer * )
+{
+  return new QgsTiledSceneTextureRenderer();
+}

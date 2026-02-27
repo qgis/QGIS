@@ -149,7 +149,10 @@ QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat 
   return 0;
 }
 
-QgsInterval QgsDateTimeStatisticalSummary::range() const { return QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 ); }
+QgsInterval QgsDateTimeStatisticalSummary::range() const
+{
+  return QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 );
+}
 
 QString QgsDateTimeStatisticalSummary::displayName( Qgis::DateTimeStatistic statistic )
 {

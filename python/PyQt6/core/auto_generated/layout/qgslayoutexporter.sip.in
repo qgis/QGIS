@@ -169,8 +169,7 @@ filename for the export which encountered the error.
 
 
     static ExportResult exportToImage(
-      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error /Out/,
-      QgsFeedback *feedback = 0
+      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0
     );
 %Docstring
 Exports a layout ``iterator`` to raster images, with the specified

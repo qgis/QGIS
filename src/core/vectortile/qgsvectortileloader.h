@@ -83,7 +83,12 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
   public:
     //! Returns raw tile data for the specified range of tiles. Blocks the caller until all tiles are fetched.
     static QList<QgsVectorTileRawData> blockingFetchTileRawData(
-      const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback = nullptr,
+      const QgsVectorTileDataProvider *provider,
+      const QgsTileMatrixSet &tileMatrixSet,
+      const QPointF &viewCenter,
+      const QgsTileRange &range,
+      int zoomLevel,
+      QgsFeedback *feedback = nullptr,
       Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown
     );
 

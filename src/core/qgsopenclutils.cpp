@@ -72,7 +72,8 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
       {
         QgsMessageLog::logMessage(
           QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" ).arg( errorText( e.err() ), QString::fromStdString( e.what() ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
-          LOGMESSAGE_TAG, Qgis::MessageLevel::Warning
+          LOGMESSAGE_TAG,
+          Qgis::MessageLevel::Warning
         );
       }
       if ( _devices.size() > 0 )
@@ -136,7 +137,8 @@ void QgsOpenClUtils::init()
                     .arg( lpFFI->dwProductVersionMS & 0xffff )
                     .arg( lpFFI->dwProductVersionLS >> 16 )
                     .arg( lpFFI->dwProductVersionLS & 0xffff ),
-                  LOGMESSAGE_TAG, Qgis::MessageLevel::Info
+                  LOGMESSAGE_TAG,
+                  Qgis::MessageLevel::Info
                 );
               }
 
@@ -166,7 +168,8 @@ void QgsOpenClUtils::init()
 #else
                                           subBlock.toUtf8(),
 #endif
-                    ( LPVOID * ) &lpBuffer, ( UINT * ) &dwUseless
+                    ( LPVOID * ) &lpBuffer,
+                    ( UINT * ) &dwUseless
                   );
 
                   if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
@@ -179,7 +182,8 @@ void QgsOpenClUtils::init()
 #else
                                                .arg( QString::fromLocal8Bit( lpBuffer ) ),
 #endif
-                      LOGMESSAGE_TAG, Qgis::MessageLevel::Info
+                      LOGMESSAGE_TAG,
+                      Qgis::MessageLevel::Info
                     );
                   }
                 }
@@ -212,11 +216,20 @@ void QgsOpenClUtils::init()
   } );
 }
 
-QString QgsOpenClUtils::sourcePath() { return *sSourcePath(); }
+QString QgsOpenClUtils::sourcePath()
+{
+  return *sSourcePath();
+}
 
-void QgsOpenClUtils::setSourcePath( const QString &value ) { *sSourcePath() = value; }
+void QgsOpenClUtils::setSourcePath( const QString &value )
+{
+  *sSourcePath() = value;
+}
 
-QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType ) { return deviceInfo( infoType, activeDevice() ); }
+QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType )
+{
+  return deviceInfo( infoType, activeDevice() );
+}
 
 QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
 {
@@ -270,9 +283,15 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
 }
 
 
-bool QgsOpenClUtils::enabled() { return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool(); }
+bool QgsOpenClUtils::enabled()
+{
+  return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool();
+}
 
-cl::Device QgsOpenClUtils::activeDevice() { return cl::Device::getDefault(); }
+cl::Device QgsOpenClUtils::activeDevice()
+{
+  return cl::Device::getDefault();
+}
 
 QString QgsOpenClUtils::activePlatformVersion()
 {
@@ -288,9 +307,15 @@ QString QgsOpenClUtils::activePlatformVersion()
   return version;
 }
 
-void QgsOpenClUtils::storePreferredDevice( const QString deviceId ) { QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core ); }
+void QgsOpenClUtils::storePreferredDevice( const QString deviceId )
+{
+  QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core );
+}
 
-QString QgsOpenClUtils::preferredDevice() { return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString(), QgsSettings::Section::Core ).toString(); }
+QString QgsOpenClUtils::preferredDevice()
+{
+  return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString(), QgsSettings::Section::Core ).toString();
+}
 
 QString QgsOpenClUtils::deviceId( const cl::Device device )
 {
@@ -303,7 +328,8 @@ static void emitLogMessageForSEHException( int exceptionCode )
 {
   QgsMessageLog::logMessage(
     QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
-    QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning
+    QgsOpenClUtils::LOGMESSAGE_TAG,
+    Qgis::MessageLevel::Warning
   );
 }
 #endif
@@ -458,10 +484,14 @@ QString QgsOpenClUtils::deviceDescription( const cl::Device device )
            "Max mem alloc size: <b>%8</b><br>"
   )
     .arg(
-      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
-      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version, device ),
-      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
-      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ),
       QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, device )
     );
 }
@@ -482,7 +512,10 @@ bool QgsOpenClUtils::available()
   return sAvailable;
 }
 
-void QgsOpenClUtils::setEnabled( bool enabled ) { QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core ); }
+void QgsOpenClUtils::setEnabled( bool enabled )
+{
+  QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core );
+}
 
 
 QString QgsOpenClUtils::sourceFromPath( const QString &path )

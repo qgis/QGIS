@@ -68,7 +68,10 @@ bool QgsEventTracing::stopTracing()
   return false;
 }
 
-bool QgsEventTracing::isTracingEnabled() { return sIsTracing; }
+bool QgsEventTracing::isTracingEnabled()
+{
+  return sIsTracing;
+}
 
 static char _eventTypeToChar( QgsEventTracing::EventType type )
 {

@@ -112,9 +112,15 @@ bool QgsEllipse::operator==( const QgsEllipse &elp ) const
   );
 }
 
-bool QgsEllipse::operator!=( const QgsEllipse &elp ) const { return !operator==( elp ); }
+bool QgsEllipse::operator!=( const QgsEllipse &elp ) const
+{
+  return !operator==( elp );
+}
 
-bool QgsEllipse::isEmpty() const { return ( qgsDoubleNear( mSemiMajorAxis, 0.0, 1E-8 ) || qgsDoubleNear( mSemiMinorAxis, 0.0, 1E-8 ) ); }
+bool QgsEllipse::isEmpty() const
+{
+  return ( qgsDoubleNear( mSemiMajorAxis, 0.0, 1E-8 ) || qgsDoubleNear( mSemiMinorAxis, 0.0, 1E-8 ) );
+}
 
 void QgsEllipse::setSemiMajorAxis( const double axis_a )
 {
@@ -127,9 +133,15 @@ void QgsEllipse::setSemiMinorAxis( const double axis_b )
   normalizeAxis();
 }
 
-void QgsEllipse::setAzimuth( const double azimuth ) { mAzimuth = 180.0 / M_PI * QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * azimuth ); }
+void QgsEllipse::setAzimuth( const double azimuth )
+{
+  mAzimuth = 180.0 / M_PI * QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * azimuth );
+}
 
-double QgsEllipse::focusDistance() const { return std::sqrt( mSemiMajorAxis * mSemiMajorAxis - mSemiMinorAxis * mSemiMinorAxis ); }
+double QgsEllipse::focusDistance() const
+{
+  return std::sqrt( mSemiMajorAxis * mSemiMajorAxis - mSemiMinorAxis * mSemiMinorAxis );
+}
 
 QVector<QgsPoint> QgsEllipse::foci() const
 {
@@ -149,7 +161,10 @@ double QgsEllipse::eccentricity() const
   return focusDistance() / mSemiMajorAxis;
 }
 
-double QgsEllipse::area() const { return M_PI * mSemiMajorAxis * mSemiMinorAxis; }
+double QgsEllipse::area() const
+{
+  return M_PI * mSemiMajorAxis * mSemiMinorAxis;
+}
 
 double QgsEllipse::perimeter() const
 {

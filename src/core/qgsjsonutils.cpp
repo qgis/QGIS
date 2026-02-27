@@ -70,7 +70,10 @@ void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
   }
 }
 
-QgsVectorLayer *QgsJsonExporter::vectorLayer() const { return mLayer.data(); }
+QgsVectorLayer *QgsJsonExporter::vectorLayer() const
+{
+  return mLayer.data();
+}
 
 void QgsJsonExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -78,7 +81,10 @@ void QgsJsonExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
   mTransform.setSourceCrs( mCrs );
 }
 
-QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const { return mCrs; }
+QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
+{
+  return mCrs;
+}
 
 QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent ) const
 {
@@ -236,7 +242,10 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   return featureJson;
 }
 
-QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const { return QString::fromStdString( exportFeaturesToJsonObject( features ).dump( indent ) ); }
+QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const
+{
+  return QString::fromStdString( exportFeaturesToJsonObject( features ).dump( indent ) );
+}
 
 json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
 {
@@ -401,7 +410,10 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
   return result;
 }
 
-QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type ) { return parseArray( json, QgsVariantUtils::variantTypeToMetaType( type ) ); }
+QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
+{
+  return parseArray( json, QgsVariantUtils::variantTypeToMetaType( type ) );
+}
 
 std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords )
 {
@@ -880,7 +892,10 @@ QVariant QgsJsonUtils::jsonToVariant( const json &value )
   return _parser( value );
 }
 
-QVariant QgsJsonUtils::parseJson( const QString &jsonString ) { return jsonString.isEmpty() ? QVariant() : parseJson( jsonString.toStdString() ); }
+QVariant QgsJsonUtils::parseJson( const QString &jsonString )
+{
+  return jsonString.isEmpty() ? QVariant() : parseJson( jsonString.toStdString() );
+}
 
 json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches, bool useFieldFormatters )
 {

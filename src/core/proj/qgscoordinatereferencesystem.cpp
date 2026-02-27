@@ -221,7 +221,10 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromEpsgId( long epsg
   return QgsCoordinateReferenceSystem();
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString &proj4 ) { return fromProj( proj4 ); }
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString &proj4 )
+{
+  return fromProj( proj4 );
+}
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj( const QString &proj )
 {
@@ -930,7 +933,10 @@ QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
   return res;
 }
 
-bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt ) { return createFromWktInternal( wkt, QString() ); }
+bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
+{
+  return createFromWktInternal( wkt, QString() );
+}
 
 bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, const QString &description )
 {
@@ -1005,9 +1011,15 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
   //setMapunits will be called by createfromproj above
 }
 
-bool QgsCoordinateReferenceSystem::isValid() const { return d->mIsValid; }
+bool QgsCoordinateReferenceSystem::isValid() const
+{
+  return d->mIsValid;
+}
 
-bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String ) { return createFromProj( proj4String ); }
+bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
+{
+  return createFromProj( proj4String );
+}
 
 bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, const bool identify )
 {
@@ -1207,11 +1219,20 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
 // Accessors -----------------------------------
 
-long QgsCoordinateReferenceSystem::srsid() const { return d->mSrsId; }
+long QgsCoordinateReferenceSystem::srsid() const
+{
+  return d->mSrsId;
+}
 
-long QgsCoordinateReferenceSystem::postgisSrid() const { return d->mSRID; }
+long QgsCoordinateReferenceSystem::postgisSrid() const
+{
+  return d->mSRID;
+}
 
-QString QgsCoordinateReferenceSystem::authid() const { return d->mAuthId; }
+QString QgsCoordinateReferenceSystem::authid() const
+{
+  return d->mAuthId;
+}
 
 QString QgsCoordinateReferenceSystem::description() const
 {
@@ -1298,7 +1319,10 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
   }
 }
 
-QString QgsCoordinateReferenceSystem::toProj4() const { return toProj(); }
+QString QgsCoordinateReferenceSystem::toProj4() const
+{
+  return toProj();
+}
 
 QString QgsCoordinateReferenceSystem::toProj() const
 {
@@ -1408,7 +1432,10 @@ bool QgsCoordinateReferenceSystem::isDeprecated() const
   return proj_is_deprecated( pj );
 }
 
-bool QgsCoordinateReferenceSystem::isGeographic() const { return d->mIsGeographic; }
+bool QgsCoordinateReferenceSystem::isGeographic() const
+{
+  return d->mIsGeographic;
+}
 
 bool QgsCoordinateReferenceSystem::isDynamic() const
 {
@@ -1442,7 +1469,10 @@ void QgsCoordinateReferenceSystem::setCoordinateEpoch( double epoch )
   d->setPj( std::move( clone ) );
 }
 
-double QgsCoordinateReferenceSystem::coordinateEpoch() const { return d->mCoordinateEpoch; }
+double QgsCoordinateReferenceSystem::coordinateEpoch() const
+{
+  return d->mCoordinateEpoch;
+}
 
 QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
 {
@@ -2020,7 +2050,10 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   return toWkt( Qgis::CrsWktVariant::Preferred ) == srs.toWkt( Qgis::CrsWktVariant::Preferred );
 }
 
-bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &srs ) const { return !( *this == srs ); }
+bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &srs ) const
+{
+  return !( *this == srs );
+}
 
 QString QgsCoordinateReferenceSystem::toWkt( Qgis::CrsWktVariant variant, bool multiline, int indentationWidth ) const
 {
@@ -2326,9 +2359,15 @@ int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3_dat
   return myResult;
 }
 
-void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f ) { sCustomSrsValidation = f; }
+void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f )
+{
+  sCustomSrsValidation = f;
+}
 
-CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation() { return sCustomSrsValidation; }
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
+{
+  return sCustomSrsValidation;
+}
 
 void QgsCoordinateReferenceSystem::debugPrint()
 {
@@ -2352,18 +2391,30 @@ void QgsCoordinateReferenceSystem::debugPrint()
   }
 }
 
-void QgsCoordinateReferenceSystem::setValidationHint( const QString &html ) { mValidationHint = html; }
+void QgsCoordinateReferenceSystem::setValidationHint( const QString &html )
+{
+  mValidationHint = html;
+}
 
-QString QgsCoordinateReferenceSystem::validationHint() const { return mValidationHint; }
+QString QgsCoordinateReferenceSystem::validationHint() const
+{
+  return mValidationHint;
+}
 
 long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat )
 {
   return QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( *this, name, nativeFormat );
 }
 
-void QgsCoordinateReferenceSystem::setNativeFormat( Qgis::CrsDefinitionFormat format ) { mNativeFormat = format; }
+void QgsCoordinateReferenceSystem::setNativeFormat( Qgis::CrsDefinitionFormat format )
+{
+  mNativeFormat = format;
+}
 
-Qgis::CrsDefinitionFormat QgsCoordinateReferenceSystem::nativeFormat() const { return mNativeFormat; }
+Qgis::CrsDefinitionFormat QgsCoordinateReferenceSystem::nativeFormat() const
+{
+  return mNativeFormat;
+}
 
 long QgsCoordinateReferenceSystem::getRecordCount()
 {
@@ -2951,17 +3002,35 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return updated + inserted;
 }
 
-const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::stringCache() { return *sStringCache(); }
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::stringCache()
+{
+  return *sStringCache();
+}
 
-const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::projCache() { return *sProj4Cache(); }
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::projCache()
+{
+  return *sProj4Cache();
+}
 
-const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::ogcCache() { return *sOgcCache(); }
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::ogcCache()
+{
+  return *sOgcCache();
+}
 
-const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::wktCache() { return *sWktCache(); }
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::wktCache()
+{
+  return *sWktCache();
+}
 
-const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srIdCache() { return *sSrIdCache(); }
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srIdCache()
+{
+  return *sSrIdCache();
+}
 
-const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srsIdCache() { return *sSrsIdCache(); }
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srsIdCache()
+{
+  return *sSrsIdCache();
+}
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() const
 {
@@ -3136,7 +3205,10 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   }
 }
 
-PJ *QgsCoordinateReferenceSystem::projObject() const { return d->threadLocalProjObject(); }
+PJ *QgsCoordinateReferenceSystem::projObject() const
+{
+  return d->threadLocalProjObject();
+}
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProjObject( PJ *object )
 {
@@ -3217,13 +3289,25 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
   return projections;
 }
 
-QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems() { return QgsApplication::coordinateReferenceSystemRegistry()->recentCrs(); }
+QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems()
+{
+  return QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
+}
 
-void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) { QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( crs ); }
+void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs )
+{
+  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( crs );
+}
 
-void QgsCoordinateReferenceSystem::removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) { QgsApplication::coordinateReferenceSystemRegistry()->removeRecent( crs ); }
+void QgsCoordinateReferenceSystem::removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs )
+{
+  QgsApplication::coordinateReferenceSystemRegistry()->removeRecent( crs );
+}
 
-void QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems() { QgsApplication::coordinateReferenceSystemRegistry()->clearRecent(); }
+void QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems()
+{
+  QgsApplication::coordinateReferenceSystemRegistry()->clearRecent();
+}
 
 void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
 {
@@ -3381,5 +3465,11 @@ bool operator<( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefer
   return c1.d->mCoordinateEpoch < c2.d->mCoordinateEpoch;
 }
 
-bool operator>=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 ) { return !( c1 < c2 ); }
-bool operator<=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 ) { return !( c1 > c2 ); }
+bool operator>=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return !( c1 < c2 );
+}
+bool operator<=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
+{
+  return !( c1 > c2 );
+}

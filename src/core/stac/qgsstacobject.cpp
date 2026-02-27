@@ -25,21 +25,45 @@ QgsStacObject::QgsStacObject( const QString &id, const QString &version, const Q
   , mLinks( links )
 {}
 
-QString QgsStacObject::stacVersion() const { return mStacVersion; }
+QString QgsStacObject::stacVersion() const
+{
+  return mStacVersion;
+}
 
-void QgsStacObject::setStacVersion( const QString &version ) { mStacVersion = version; }
+void QgsStacObject::setStacVersion( const QString &version )
+{
+  mStacVersion = version;
+}
 
-QStringList QgsStacObject::stacExtensions() const { return mStacExtensions; }
+QStringList QgsStacObject::stacExtensions() const
+{
+  return mStacExtensions;
+}
 
-void QgsStacObject::setStacExtensions( const QStringList &extensions ) { mStacExtensions = extensions; }
+void QgsStacObject::setStacExtensions( const QStringList &extensions )
+{
+  mStacExtensions = extensions;
+}
 
-QString QgsStacObject::id() const { return mId; }
+QString QgsStacObject::id() const
+{
+  return mId;
+}
 
-void QgsStacObject::setId( const QString &id ) { mId = id; }
+void QgsStacObject::setId( const QString &id )
+{
+  mId = id;
+}
 
-QVector< QgsStacLink > QgsStacObject::links() const { return mLinks; }
+QVector< QgsStacLink > QgsStacObject::links() const
+{
+  return mLinks;
+}
 
-void QgsStacObject::setLinks( const QVector< QgsStacLink > &links ) { mLinks = links; }
+void QgsStacObject::setLinks( const QVector< QgsStacLink > &links )
+{
+  mLinks = links;
+}
 
 QString QgsStacObject::url() const
 {

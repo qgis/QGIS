@@ -32,11 +32,20 @@ QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
   , mDatasetIndex( dataset )
 {}
 
-int QgsMeshDatasetIndex::group() const { return mGroupIndex; }
+int QgsMeshDatasetIndex::group() const
+{
+  return mGroupIndex;
+}
 
-int QgsMeshDatasetIndex::dataset() const { return mDatasetIndex; }
+int QgsMeshDatasetIndex::dataset() const
+{
+  return mDatasetIndex;
+}
 
-bool QgsMeshDatasetIndex::isValid() const { return ( group() > -1 ) && ( dataset() > -1 ); }
+bool QgsMeshDatasetIndex::isValid() const
+{
+  return ( group() > -1 ) && ( dataset() > -1 );
+}
 
 bool QgsMeshDatasetIndex::operator==( QgsMeshDatasetIndex other ) const
 {
@@ -46,7 +55,10 @@ bool QgsMeshDatasetIndex::operator==( QgsMeshDatasetIndex other ) const
     return isValid() == other.isValid();
 }
 
-bool QgsMeshDatasetIndex::operator!=( QgsMeshDatasetIndex other ) const { return !( operator==( other ) ); }
+bool QgsMeshDatasetIndex::operator!=( QgsMeshDatasetIndex other ) const
+{
+  return !( operator==( other ) );
+}
 
 QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
   : mX( x )
@@ -73,15 +85,30 @@ double QgsMeshDatasetValue::scalar() const
   }
 }
 
-void QgsMeshDatasetValue::set( double scalar ) { setX( scalar ); }
+void QgsMeshDatasetValue::set( double scalar )
+{
+  setX( scalar );
+}
 
-void QgsMeshDatasetValue::setX( double x ) { mX = x; }
+void QgsMeshDatasetValue::setX( double x )
+{
+  mX = x;
+}
 
-void QgsMeshDatasetValue::setY( double y ) { mY = y; }
+void QgsMeshDatasetValue::setY( double y )
+{
+  mY = y;
+}
 
-double QgsMeshDatasetValue::x() const { return mX; }
+double QgsMeshDatasetValue::x() const
+{
+  return mX;
+}
 
-double QgsMeshDatasetValue::y() const { return mY; }
+double QgsMeshDatasetValue::y() const
+{
+  return mY;
+}
 
 bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue other ) const
 {
@@ -104,7 +131,15 @@ bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue other ) const
 }
 
 QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata(
-  const QString &name, const QString uri, bool isScalar, DataType dataType, double minimum, double maximum, int maximumVerticalLevels, const QDateTime &referenceTime, bool isTemporal,
+  const QString &name,
+  const QString uri,
+  bool isScalar,
+  DataType dataType,
+  double minimum,
+  double maximum,
+  int maximumVerticalLevels,
+  const QDateTime &referenceTime,
+  bool isTemporal,
   const QMap<QString, QString> &extraOptions
 )
   : mName( name )
@@ -128,29 +163,65 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata(
   }
 }
 
-QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const { return mExtraOptions; }
+QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const
+{
+  return mExtraOptions;
+}
 
-bool QgsMeshDatasetGroupMetadata::isVector() const { return !mIsScalar; }
+bool QgsMeshDatasetGroupMetadata::isVector() const
+{
+  return !mIsScalar;
+}
 
-bool QgsMeshDatasetGroupMetadata::isScalar() const { return mIsScalar; }
+bool QgsMeshDatasetGroupMetadata::isScalar() const
+{
+  return mIsScalar;
+}
 
-bool QgsMeshDatasetGroupMetadata::isTemporal() const { return mIsTemporal; }
+bool QgsMeshDatasetGroupMetadata::isTemporal() const
+{
+  return mIsTemporal;
+}
 
-QString QgsMeshDatasetGroupMetadata::name() const { return mName; }
+QString QgsMeshDatasetGroupMetadata::name() const
+{
+  return mName;
+}
 
-QString QgsMeshDatasetGroupMetadata::parentQuantityName() const { return mParentQuantityName; }
+QString QgsMeshDatasetGroupMetadata::parentQuantityName() const
+{
+  return mParentQuantityName;
+}
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const { return mDataType; }
+QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
+{
+  return mDataType;
+}
 
-double QgsMeshDatasetGroupMetadata::minimum() const { return mMinimumValue; }
+double QgsMeshDatasetGroupMetadata::minimum() const
+{
+  return mMinimumValue;
+}
 
-double QgsMeshDatasetGroupMetadata::maximum() const { return mMaximumValue; }
+double QgsMeshDatasetGroupMetadata::maximum() const
+{
+  return mMaximumValue;
+}
 
-int QgsMeshDatasetGroupMetadata::maximumVerticalLevelsCount() const { return mMaximumVerticalLevelsCount; }
+int QgsMeshDatasetGroupMetadata::maximumVerticalLevelsCount() const
+{
+  return mMaximumVerticalLevelsCount;
+}
 
-QDateTime QgsMeshDatasetGroupMetadata::referenceTime() const { return mReferenceTime; }
+QDateTime QgsMeshDatasetGroupMetadata::referenceTime() const
+{
+  return mReferenceTime;
+}
 
-QString QgsMeshDatasetGroupMetadata::uri() const { return mUri; }
+QString QgsMeshDatasetGroupMetadata::uri() const
+{
+  return mUri;
+}
 
 QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time, bool isValid, double minimum, double maximum, int maximumVerticalLevels )
   : mTime( time )
@@ -160,15 +231,30 @@ QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time, bool isValid, doubl
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
 {}
 
-double QgsMeshDatasetMetadata::time() const { return mTime; }
+double QgsMeshDatasetMetadata::time() const
+{
+  return mTime;
+}
 
-bool QgsMeshDatasetMetadata::isValid() const { return mIsValid; }
+bool QgsMeshDatasetMetadata::isValid() const
+{
+  return mIsValid;
+}
 
-double QgsMeshDatasetMetadata::minimum() const { return mMinimumValue; }
+double QgsMeshDatasetMetadata::minimum() const
+{
+  return mMinimumValue;
+}
 
-double QgsMeshDatasetMetadata::maximum() const { return mMaximumValue; }
+double QgsMeshDatasetMetadata::maximum() const
+{
+  return mMaximumValue;
+}
 
-int QgsMeshDatasetMetadata::maximumVerticalLevelsCount() const { return mMaximumVerticalLevelsCount; }
+int QgsMeshDatasetMetadata::maximumVerticalLevelsCount() const
+{
+  return mMaximumVerticalLevelsCount;
+}
 
 QgsMeshDataBlock::QgsMeshDataBlock()
   : mType( ActiveFlagInteger )
@@ -179,11 +265,20 @@ QgsMeshDataBlock::QgsMeshDataBlock( QgsMeshDataBlock::DataType type, int count )
   , mSize( count )
 {}
 
-QgsMeshDataBlock::DataType QgsMeshDataBlock::type() const { return mType; }
+QgsMeshDataBlock::DataType QgsMeshDataBlock::type() const
+{
+  return mType;
+}
 
-int QgsMeshDataBlock::count() const { return mSize; }
+int QgsMeshDataBlock::count() const
+{
+  return mSize;
+}
 
-bool QgsMeshDataBlock::isValid() const { return ( count() > 0 ) && ( mIsValid ); }
+bool QgsMeshDataBlock::isValid() const
+{
+  return ( count() > 0 ) && ( mIsValid );
+}
 
 QgsMeshDatasetValue QgsMeshDataBlock::value( int index ) const
 {
@@ -242,11 +337,15 @@ void QgsMeshDataBlock::setValues( const QVector<double> &vals )
   setValid( true );
 }
 
-void QgsMeshDataBlock::setValid( bool valid ) { mIsValid = valid; }
+void QgsMeshDataBlock::setValid( bool valid )
+{
+  mIsValid = valid;
+}
 
 QgsMesh3DDataBlock::QgsMesh3DDataBlock() = default;
 
-QgsMesh3DDataBlock::~QgsMesh3DDataBlock() {}
+QgsMesh3DDataBlock::~QgsMesh3DDataBlock()
+{}
 
 QgsMesh3DDataBlock::QgsMesh3DDataBlock( const QgsMesh3DDataBlock &other )
   : mSize( other.mSize )
@@ -303,11 +402,20 @@ QgsMesh3DDataBlock::QgsMesh3DDataBlock( int count, bool isVector )
   , mIsVector( isVector )
 {}
 
-bool QgsMesh3DDataBlock::isValid() const { return mIsValid; }
+bool QgsMesh3DDataBlock::isValid() const
+{
+  return mIsValid;
+}
 
-bool QgsMesh3DDataBlock::isVector() const { return mIsVector; }
+bool QgsMesh3DDataBlock::isVector() const
+{
+  return mIsVector;
+}
 
-int QgsMesh3DDataBlock::count() const { return mSize; }
+int QgsMesh3DDataBlock::count() const
+{
+  return mSize;
+}
 
 int QgsMesh3DDataBlock::firstVolumeIndex() const
 {
@@ -325,7 +433,10 @@ int QgsMesh3DDataBlock::lastVolumeIndex() const
   return lastVolumeStartIndex + volumesCountInLastRow;
 }
 
-int QgsMesh3DDataBlock::volumesCount() const { return lastVolumeIndex() - firstVolumeIndex(); }
+int QgsMesh3DDataBlock::volumesCount() const
+{
+  return lastVolumeIndex() - firstVolumeIndex();
+}
 
 QVector<int> QgsMesh3DDataBlock::verticalLevelsCount() const
 {
@@ -386,7 +497,10 @@ void QgsMesh3DDataBlock::setValues( const QVector<double> &doubleBuffer )
   mDoubleBuffer = doubleBuffer;
 }
 
-void QgsMesh3DDataBlock::setValid( bool valid ) { mIsValid = valid; }
+void QgsMesh3DDataBlock::setValid( bool valid )
+{
+  mIsValid = valid;
+}
 
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem() = default;
 
@@ -483,7 +597,10 @@ void QgsMeshDatasetGroupTreeItem::appendChild( QgsMeshDatasetGroupTreeItem *item
   mDatasetGroupIndexToChild[item->datasetGroupIndex()] = item;
 }
 
-void QgsMeshDatasetGroupTreeItem::removeChild( QgsMeshDatasetGroupTreeItem *item ) { delete item; }
+void QgsMeshDatasetGroupTreeItem::removeChild( QgsMeshDatasetGroupTreeItem *item )
+{
+  delete item;
+}
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::child( int row ) const
 {
@@ -515,7 +632,10 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::childFromDatasetGroupI
   }
 }
 
-int QgsMeshDatasetGroupTreeItem::childCount() const { return mChildren.count(); }
+int QgsMeshDatasetGroupTreeItem::childCount() const
+{
+  return mChildren.count();
+}
 
 int QgsMeshDatasetGroupTreeItem::totalChildCount() const
 {
@@ -542,7 +662,10 @@ QList<int> QgsMeshDatasetGroupTreeItem::enabledDatasetGroupIndexes() const
   return indexesList;
 }
 
-QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::parentItem() const { return mParent; }
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::parentItem() const
+{
+  return mParent;
+}
 
 int QgsMeshDatasetGroupTreeItem::row() const
 {
@@ -560,19 +683,40 @@ QString QgsMeshDatasetGroupTreeItem::name() const
     return mUserName;
 }
 
-bool QgsMeshDatasetGroupTreeItem::isVector() const { return mIsVector; }
+bool QgsMeshDatasetGroupTreeItem::isVector() const
+{
+  return mIsVector;
+}
 
-int QgsMeshDatasetGroupTreeItem::datasetGroupIndex() const { return mDatasetGroupIndex; }
+int QgsMeshDatasetGroupTreeItem::datasetGroupIndex() const
+{
+  return mDatasetGroupIndex;
+}
 
-bool QgsMeshDatasetGroupTreeItem::isEnabled() const { return mIsEnabled; }
+bool QgsMeshDatasetGroupTreeItem::isEnabled() const
+{
+  return mIsEnabled;
+}
 
-void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool enabled ) { mIsEnabled = enabled; }
+void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool enabled )
+{
+  mIsEnabled = enabled;
+}
 
-QString QgsMeshDatasetGroupTreeItem::defaultName() const { return mOriginalName; }
+QString QgsMeshDatasetGroupTreeItem::defaultName() const
+{
+  return mOriginalName;
+}
 
-QgsMeshDatasetGroup::Type QgsMeshDatasetGroupTreeItem::datasetGroupType() const { return mDatasetGroupType; }
+QgsMeshDatasetGroup::Type QgsMeshDatasetGroupTreeItem::datasetGroupType() const
+{
+  return mDatasetGroupType;
+}
 
-QString QgsMeshDatasetGroupTreeItem::description() const { return mDescription; }
+QString QgsMeshDatasetGroupTreeItem::description() const
+{
+  return mDescription;
+}
 
 void QgsMeshDatasetGroupTreeItem::setDatasetGroup( QgsMeshDatasetGroup *datasetGroup )
 {
@@ -709,9 +853,15 @@ void QgsMeshDatasetGroupTreeItem::freeFromDependencies()
   }
 }
 
-QString QgsMeshDatasetGroupTreeItem::providerName() const { return mSourceName; }
+QString QgsMeshDatasetGroupTreeItem::providerName() const
+{
+  return mSourceName;
+}
 
-void QgsMeshDatasetGroupTreeItem::setName( const QString &name ) { mUserName = name; }
+void QgsMeshDatasetGroupTreeItem::setName( const QString &name )
+{
+  mUserName = name;
+}
 
 
 QgsMeshDatasetValue QgsMeshMemoryDataset::datasetValue( int valueIndex ) const
@@ -755,7 +905,10 @@ QgsMeshDataBlock QgsMeshMemoryDataset::areFacesActive( int faceIndex, int count 
   return ret;
 }
 
-QgsMeshDatasetMetadata QgsMeshMemoryDataset::metadata() const { return QgsMeshDatasetMetadata( time, valid, minimum, maximum, 0 ); }
+QgsMeshDatasetMetadata QgsMeshMemoryDataset::metadata() const
+{
+  return QgsMeshDatasetMetadata( time, valid, minimum, maximum, 0 );
+}
 
 void QgsMeshMemoryDataset::calculateMinMax()
 {
@@ -800,7 +953,10 @@ bool QgsMeshMemoryDataset::isActive( int faceIndex ) const
     return active.at( faceIndex );
 }
 
-int QgsMeshMemoryDataset::valuesCount() const { return values.count(); }
+int QgsMeshMemoryDataset::valuesCount() const
+{
+  return values.count();
+}
 
 QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType )
   : QgsMeshDatasetGroup( name, dataType )
@@ -815,7 +971,10 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetGroup::groupMetadata() const
   return QgsMeshDatasetGroupMetadata( name(), QString(), isScalar(), dataType(), minimum(), maximum(), 0, mReferenceTime, datasetCount() > 1, extraMetadata() );
 }
 
-int QgsMeshMemoryDatasetGroup::datasetCount() const { return memoryDatasets.size(); }
+int QgsMeshMemoryDatasetGroup::datasetCount() const
+{
+  return memoryDatasets.size();
+}
 
 QgsMeshDatasetMetadata QgsMeshMemoryDatasetGroup::datasetMetadata( int datasetIndex ) const
 {
@@ -825,7 +984,10 @@ QgsMeshDatasetMetadata QgsMeshMemoryDatasetGroup::datasetMetadata( int datasetIn
     return QgsMeshDatasetMetadata();
 }
 
-QgsMeshDataset *QgsMeshMemoryDatasetGroup::dataset( int index ) const { return memoryDatasets[index].get(); }
+QgsMeshDataset *QgsMeshMemoryDatasetGroup::dataset( int index ) const
+{
+  return memoryDatasets[index].get();
+}
 
 void QgsMeshMemoryDatasetGroup::addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset )
 {
@@ -833,11 +995,20 @@ void QgsMeshMemoryDatasetGroup::addDataset( std::shared_ptr<QgsMeshMemoryDataset
   memoryDatasets.push_back( dataset );
 }
 
-void QgsMeshMemoryDatasetGroup::clearDatasets() { memoryDatasets.clear(); }
+void QgsMeshMemoryDatasetGroup::clearDatasets()
+{
+  memoryDatasets.clear();
+}
 
-void QgsMeshMemoryDatasetGroup::initialize() { calculateStatistic(); }
+void QgsMeshMemoryDatasetGroup::initialize()
+{
+  calculateStatistic();
+}
 
-std::shared_ptr<const QgsMeshMemoryDataset> QgsMeshMemoryDatasetGroup::constDataset( int index ) const { return memoryDatasets[index]; }
+std::shared_ptr<const QgsMeshMemoryDataset> QgsMeshMemoryDatasetGroup::constDataset( int index ) const
+{
+  return memoryDatasets[index];
+}
 
 QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -846,15 +1017,30 @@ QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
   return QDomElement();
 }
 
-void QgsMeshDatasetGroup::calculateStatistic() const { updateStatistic(); }
+void QgsMeshDatasetGroup::calculateStatistic() const
+{
+  updateStatistic();
+}
 
-void QgsMeshDatasetGroup::setStatisticObsolete() const { mIsStatisticObsolete = true; }
+void QgsMeshDatasetGroup::setStatisticObsolete() const
+{
+  mIsStatisticObsolete = true;
+}
 
-QStringList QgsMeshDatasetGroup::datasetGroupNamesDependentOn() const { return QStringList(); }
+QStringList QgsMeshDatasetGroup::datasetGroupNamesDependentOn() const
+{
+  return QStringList();
+}
 
-QString QgsMeshDatasetGroup::description() const { return QString(); }
+QString QgsMeshDatasetGroup::description() const
+{
+  return QString();
+}
 
-void QgsMeshDatasetGroup::setReferenceTime( const QDateTime &referenceTime ) { mReferenceTime = referenceTime; }
+void QgsMeshDatasetGroup::setReferenceTime( const QDateTime &referenceTime )
+{
+  mReferenceTime = referenceTime;
+}
 
 void QgsMeshDatasetGroup::updateStatistic() const
 {
@@ -914,21 +1100,45 @@ void QgsMeshDatasetGroup::setMinimumMaximum( double min, double max ) const
   mMaximum = max;
 }
 
-QString QgsMeshDatasetGroup::name() const { return mName; }
+QString QgsMeshDatasetGroup::name() const
+{
+  return mName;
+}
 
-void QgsMeshDatasetGroup::setName( const QString &name ) { mName = name; }
+void QgsMeshDatasetGroup::setName( const QString &name )
+{
+  mName = name;
+}
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroup::dataType() const { return mDataType; }
+QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroup::dataType() const
+{
+  return mDataType;
+}
 
-void QgsMeshDatasetGroup::setDataType( const QgsMeshDatasetGroupMetadata::DataType &type ) { mDataType = type; }
+void QgsMeshDatasetGroup::setDataType( const QgsMeshDatasetGroupMetadata::DataType &type )
+{
+  mDataType = type;
+}
 
-void QgsMeshDatasetGroup::addExtraMetadata( QString key, QString value ) { mMetadata.insert( key, value ); }
+void QgsMeshDatasetGroup::addExtraMetadata( QString key, QString value )
+{
+  mMetadata.insert( key, value );
+}
 
-QMap<QString, QString> QgsMeshDatasetGroup::extraMetadata() const { return mMetadata; }
+QMap<QString, QString> QgsMeshDatasetGroup::extraMetadata() const
+{
+  return mMetadata;
+}
 
-bool QgsMeshDatasetGroup::isScalar() const { return mIsScalar; }
+bool QgsMeshDatasetGroup::isScalar() const
+{
+  return mIsScalar;
+}
 
-void QgsMeshDatasetGroup::setIsScalar( bool isScalar ) { mIsScalar = isScalar; }
+void QgsMeshDatasetGroup::setIsScalar( bool isScalar )
+{
+  mIsScalar = isScalar;
+}
 
 
 QgsMeshVerticesElevationDataset::QgsMeshVerticesElevationDataset( QgsMesh *mesh )
@@ -997,7 +1207,10 @@ QgsMeshVerticesElevationDatasetGroup::QgsMeshVerticesElevationDatasetGroup( QStr
   initialize();
 }
 
-void QgsMeshVerticesElevationDatasetGroup::initialize() { calculateStatistic(); }
+void QgsMeshVerticesElevationDatasetGroup::initialize()
+{
+  calculateStatistic();
+}
 
 QgsMeshDatasetMetadata QgsMeshVerticesElevationDatasetGroup::datasetMetadata( int datasetIndex ) const
 {
@@ -1007,7 +1220,10 @@ QgsMeshDatasetMetadata QgsMeshVerticesElevationDatasetGroup::datasetMetadata( in
   return mDataset->metadata();
 }
 
-int QgsMeshVerticesElevationDatasetGroup::datasetCount() const { return 1; }
+int QgsMeshVerticesElevationDatasetGroup::datasetCount() const
+{
+  return 1;
+}
 
 QgsMeshDataset *QgsMeshVerticesElevationDatasetGroup::dataset( int index ) const
 {

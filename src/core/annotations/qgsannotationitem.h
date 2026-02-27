@@ -80,7 +80,7 @@ class CORE_EXPORT QgsAnnotationItem
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

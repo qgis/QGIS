@@ -50,7 +50,10 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
    * Since QGIS 3.38, the \a capabilities argument can be used to specify renderer capabilities.
    */
     QgsRasterRendererRegistryEntry(
-      const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction, QgsRasterRendererWidgetCreateFunc widgetFunction,
+      const QString &name,
+      const QString &visibleName,
+      QgsRasterRendererCreateFunc rendererFunction,
+      QgsRasterRendererWidgetCreateFunc widgetFunction,
       Qgis::RasterRendererCapabilities capabilities = Qgis::RasterRendererCapabilities()
     );
 

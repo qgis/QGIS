@@ -60,7 +60,10 @@ double QgsHistogram::optimalBinWidth() const
   return 2.0 * mIQR * std::pow( mValues.count(), -1 / 3.0 );
 }
 
-int QgsHistogram::optimalNumberBins() const { return std::ceil( ( mMax - mMin ) / optimalBinWidth() ); }
+int QgsHistogram::optimalNumberBins() const
+{
+  return std::ceil( ( mMax - mMin ) / optimalBinWidth() );
+}
 
 QList<double> QgsHistogram::binEdges( int bins ) const
 {

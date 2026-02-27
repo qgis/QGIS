@@ -46,11 +46,20 @@ QgsHttpHeaders::QgsHttpHeaders( const QVariantMap &headers )
   mHeaders.detach(); // clone like
 }
 
-QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key ) { setFromSettings( settings, key ); }
+QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key )
+{
+  setFromSettings( settings, key );
+}
 
-QgsHttpHeaders::QgsHttpHeaders( const QString &key ) { setFromSettings( QgsSettings(), key ); }
+QgsHttpHeaders::QgsHttpHeaders( const QString &key )
+{
+  setFromSettings( QgsSettings(), key );
+}
 
-QgsHttpHeaders::QgsHttpHeaders( const QDomElement &element ) { setFromDomElement( element ); }
+QgsHttpHeaders::QgsHttpHeaders( const QDomElement &element )
+{
+  setFromDomElement( element );
+}
 
 QgsHttpHeaders::~QgsHttpHeaders() = default;
 
@@ -258,9 +267,15 @@ QString QgsHttpHeaders::sanitizeKey( const QString &key ) const
 }
 
 
-QVariant &QgsHttpHeaders::operator[]( const QString &key ) { return mHeaders[sanitizeKey( key )]; }
+QVariant &QgsHttpHeaders::operator[]( const QString &key )
+{
+  return mHeaders[sanitizeKey( key )];
+}
 
-const QVariant QgsHttpHeaders::operator[]( const QString &key ) const { return mHeaders[sanitizeKey( key )]; }
+const QVariant QgsHttpHeaders::operator[]( const QString &key ) const
+{
+  return mHeaders[sanitizeKey( key )];
+}
 
 QgsHttpHeaders &QgsHttpHeaders::operator=( const QMap<QString, QVariant> &headers )
 {
@@ -268,7 +283,10 @@ QgsHttpHeaders &QgsHttpHeaders::operator=( const QMap<QString, QVariant> &header
   return *this;
 }
 
-QList<QString> QgsHttpHeaders::keys() const { return mHeaders.keys(); }
+QList<QString> QgsHttpHeaders::keys() const
+{
+  return mHeaders.keys();
+}
 
 
 void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
@@ -282,6 +300,12 @@ void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
   mHeaders.insert( k2, val );
 }
 
-bool QgsHttpHeaders::operator==( const QgsHttpHeaders &other ) const { return mHeaders == other.mHeaders; }
+bool QgsHttpHeaders::operator==( const QgsHttpHeaders &other ) const
+{
+  return mHeaders == other.mHeaders;
+}
 
-bool QgsHttpHeaders::operator!=( const QgsHttpHeaders &other ) const { return !( *this == other ); }
+bool QgsHttpHeaders::operator!=( const QgsHttpHeaders &other ) const
+{
+  return !( *this == other );
+}

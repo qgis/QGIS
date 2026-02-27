@@ -70,7 +70,17 @@ class CORE_EXPORT QgsAction
      * \param notificationMessage  A particular message which reception will trigger the action
      * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
-    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
+    QgsAction(
+      Qgis::AttributeActionType type,
+      const QString &description,
+      const QString &action,
+      const QString &icon,
+      bool capture,
+      const QString &shortTitle = QString(),
+      const QSet<QString> &actionScopes = QSet<QString>(),
+      const QString &notificationMessage = QString(),
+      bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false
+    )
       : mType( type )
       , mDescription( description )
       , mShortTitle( shortTitle )
@@ -97,7 +107,18 @@ class CORE_EXPORT QgsAction
      * \param notificationMessage  A particular message which reception will trigger the action
      * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
-    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
+    QgsAction(
+      const QUuid &id,
+      Qgis::AttributeActionType type,
+      const QString &description,
+      const QString &action,
+      const QString &icon,
+      bool capture,
+      const QString &shortTitle = QString(),
+      const QSet<QString> &actionScopes = QSet<QString>(),
+      const QString &notificationMessage = QString(),
+      bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false
+    )
       : mType( type )
       , mDescription( description )
       , mShortTitle( shortTitle )

@@ -190,7 +190,10 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   setTextureRotation( textureRotation );
 }
 
-void QgsTessellator::setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
+void QgsTessellator::setOrigin( const QgsVector3D &origin )
+{
+  mOrigin = origin;
+}
 
 void QgsTessellator::setBounds( const QgsRectangle &bounds )
 {
@@ -198,9 +201,15 @@ void QgsTessellator::setBounds( const QgsRectangle &bounds )
   mScale = bounds.isNull() ? 1.0 : std::max( 10000.0 / bounds.width(), 10000.0 / bounds.height() );
 }
 
-void QgsTessellator::setInputZValueIgnored( bool ignore ) { mInputZValueIgnored = ignore; }
+void QgsTessellator::setInputZValueIgnored( bool ignore )
+{
+  mInputZValueIgnored = ignore;
+}
 
-void QgsTessellator::setExtrusionFaces( Qgis::ExtrusionFaces faces ) { mExtrusionFaces = faces; }
+void QgsTessellator::setExtrusionFaces( Qgis::ExtrusionFaces faces )
+{
+  mExtrusionFaces = faces;
+}
 
 void QgsTessellator::setExtrusionFacesLegacy( int facade )
 {
@@ -226,11 +235,20 @@ void QgsTessellator::setExtrusionFacesLegacy( int facade )
   }
 }
 
-void QgsTessellator::setTextureRotation( float rotation ) { mTextureRotation = rotation; }
+void QgsTessellator::setTextureRotation( float rotation )
+{
+  mTextureRotation = rotation;
+}
 
-void QgsTessellator::setBackFacesEnabled( bool addBackFaces ) { mAddBackFaces = addBackFaces; }
+void QgsTessellator::setBackFacesEnabled( bool addBackFaces )
+{
+  mAddBackFaces = addBackFaces;
+}
 
-void QgsTessellator::setInvertNormals( bool invertNormals ) { mInvertNormals = invertNormals; }
+void QgsTessellator::setInvertNormals( bool invertNormals )
+{
+  mInvertNormals = invertNormals;
+}
 
 void QgsTessellator::setAddNormals( bool addNormals )
 {
@@ -244,7 +262,10 @@ void QgsTessellator::setAddTextureUVs( bool addTextureUVs )
   updateStride();
 }
 
-void QgsTessellator::setTriangulationAlgorithm( Qgis::TriangulationAlgorithm algorithm ) { mTriangulationAlgorithm = algorithm; }
+void QgsTessellator::setTriangulationAlgorithm( Qgis::TriangulationAlgorithm algorithm )
+{
+  mTriangulationAlgorithm = algorithm;
+}
 
 void QgsTessellator::updateStride()
 {
@@ -507,9 +528,15 @@ double minimumDistanceBetweenCoordinates( const QgsPolygon &polygon )
   return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
-QByteArray QgsTessellator::vertexBuffer() const { return QByteArray( reinterpret_cast<const char *>( mData.constData() ), sizeof( float ) * mData.size() ); }
+QByteArray QgsTessellator::vertexBuffer() const
+{
+  return QByteArray( reinterpret_cast<const char *>( mData.constData() ), sizeof( float ) * mData.size() );
+}
 
-QByteArray QgsTessellator::indexBuffer() const { return QByteArray( reinterpret_cast<const char *>( mIndexBuffer.constData() ), sizeof( uint32_t ) * mIndexBuffer.size() ); }
+QByteArray QgsTessellator::indexBuffer() const
+{
+  return QByteArray( reinterpret_cast<const char *>( mIndexBuffer.constData() ), sizeof( uint32_t ) * mIndexBuffer.size() );
+}
 
 void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const
 {
@@ -671,8 +698,7 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
 }
 
 void QgsTessellator::addVertex(
-  const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer,
-  const size_t &vertexBufferOffset
+  const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer, const size_t &vertexBufferOffset
 )
 {
   const QVector3D pt = applyTransformWithExtrusion( point, extrusionHeight, transformMatrix, originOffset );
@@ -909,7 +935,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   }
 }
 
-int QgsTessellator::dataVerticesCount() const { return mIndexBuffer.size(); }
+int QgsTessellator::dataVerticesCount() const
+{
+  return mIndexBuffer.size();
+}
 
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {

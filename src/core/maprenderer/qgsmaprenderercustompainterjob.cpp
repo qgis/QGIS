@@ -186,9 +186,15 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
   futureFinished();
 }
 
-bool QgsMapRendererCustomPainterJob::isActive() const { return mActive; }
+bool QgsMapRendererCustomPainterJob::isActive() const
+{
+  return mActive;
+}
 
-bool QgsMapRendererCustomPainterJob::usedCachedLabels() const { return mLabelJob.cached; }
+bool QgsMapRendererCustomPainterJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
 
 QgsLabelingResults *QgsMapRendererCustomPainterJob::takeLabelingResults()
 {

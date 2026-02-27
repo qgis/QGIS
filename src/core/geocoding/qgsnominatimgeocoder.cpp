@@ -47,7 +47,10 @@ QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const Q
     mEndpoint = endpoint;
 }
 
-QgsGeocoderInterface::Flags QgsNominatimGeocoder::flags() const { return QgsGeocoderInterface::Flag::GeocodesStrings; }
+QgsGeocoderInterface::Flags QgsNominatimGeocoder::flags() const
+{
+  return QgsGeocoderInterface::Flag::GeocodesStrings;
+}
 
 QgsFields QgsNominatimGeocoder::appendedFields() const
 {
@@ -68,7 +71,10 @@ QgsFields QgsNominatimGeocoder::appendedFields() const
   return fields;
 }
 
-Qgis::WkbType QgsNominatimGeocoder::wkbType() const { return Qgis::WkbType::Point; }
+Qgis::WkbType QgsNominatimGeocoder::wkbType() const
+{
+  return Qgis::WkbType::Point;
+}
 
 QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const
 {
@@ -221,10 +227,22 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
   return res;
 }
 
-QString QgsNominatimGeocoder::endpoint() const { return mEndpoint; }
+QString QgsNominatimGeocoder::endpoint() const
+{
+  return mEndpoint;
+}
 
-void QgsNominatimGeocoder::setEndpoint( const QString &endpoint ) { mEndpoint = endpoint; }
+void QgsNominatimGeocoder::setEndpoint( const QString &endpoint )
+{
+  mEndpoint = endpoint;
+}
 
-QString QgsNominatimGeocoder::countryCodes() const { return mCountryCodes; }
+QString QgsNominatimGeocoder::countryCodes() const
+{
+  return mCountryCodes;
+}
 
-void QgsNominatimGeocoder::setCountryCodes( const QString &countryCodes ) { mCountryCodes = countryCodes; }
+void QgsNominatimGeocoder::setCountryCodes( const QString &countryCodes )
+{
+  mCountryCodes = countryCodes;
+}

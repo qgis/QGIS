@@ -523,8 +523,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
     */
     static void parseSymbolLayer(
-      const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT, bool &hasRenderer SIP_OUT, QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
-      bool &hasLabeling SIP_OUT, QgsMapBoxGlStyleConversionContext &context
+      const QVariantMap &jsonLayer,
+      QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
+      bool &hasRenderer SIP_OUT,
+      QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
+      bool &hasLabeling SIP_OUT,
+      QgsMapBoxGlStyleConversionContext &context
     );
 
     /**
@@ -650,7 +654,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseValueList(
-      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr,
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
       double *defaultNumber SIP_OUT = nullptr
     );
 
@@ -661,7 +670,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseMatchList(
-      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr,
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
       double *defaultNumber SIP_OUT = nullptr
     );
 
@@ -671,7 +685,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseStepList(
-      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr,
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
       double *defaultNumber SIP_OUT = nullptr
     );
 
@@ -683,7 +702,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \since QGIS 3.40
      */
     static QgsProperty parseInterpolateListByZoom(
-      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr,
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
       double *defaultNumber SIP_OUT = nullptr
     );
 

@@ -246,7 +246,8 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // - they violate a labeling rule
       candidates.erase(
         std::remove_if(
-          candidates.begin(), candidates.end(),
+          candidates.begin(),
+          candidates.end(),
           [&mapBoundaryPrepared, &labelContext, this]( std::unique_ptr< LabelPosition > &candidate ) {
             if ( showPartialLabels() )
             {
@@ -490,7 +491,8 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
             // note, we start this at the SECOND candidate (you'll see why after this loop)
             feat->candidates.erase(
               std::remove_if(
-                feat->candidates.begin() + 1, feat->candidates.end(),
+                feat->candidates.begin() + 1,
+                feat->candidates.end(),
                 [&]( std::unique_ptr< LabelPosition > &candidate ) {
                   if ( candidate->hasHardObstacleConflict() )
                   {
@@ -737,17 +739,35 @@ void Pal::setPopmusicR( int r )
     mPopmusicR = r;
 }
 
-void Pal::setEjChainDeg( int degree ) { this->mEjChainDeg = degree; }
+void Pal::setEjChainDeg( int degree )
+{
+  this->mEjChainDeg = degree;
+}
 
-void Pal::setTenure( int tenure ) { this->mTenure = tenure; }
+void Pal::setTenure( int tenure )
+{
+  this->mTenure = tenure;
+}
 
-void Pal::setCandListSize( double fact ) { this->mCandListSize = fact; }
+void Pal::setCandListSize( double fact )
+{
+  this->mCandListSize = fact;
+}
 
-void Pal::setShowPartialLabels( bool show ) { this->mShowPartialLabels = show; }
+void Pal::setShowPartialLabels( bool show )
+{
+  this->mShowPartialLabels = show;
+}
 
-Qgis::LabelPlacementEngineVersion Pal::placementVersion() const { return mPlacementVersion; }
+Qgis::LabelPlacementEngineVersion Pal::placementVersion() const
+{
+  return mPlacementVersion;
+}
 
-void Pal::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion ) { mPlacementVersion = placementVersion; }
+void Pal::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
+{
+  mPlacementVersion = placementVersion;
+}
 
 bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
 {
@@ -805,10 +825,22 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
   return res;
 }
 
-void Pal::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules ) { mRules = rules; }
+void Pal::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
+{
+  mRules = rules;
+}
 
-int Pal::getMinIt() const { return mTabuMaxIt; }
+int Pal::getMinIt() const
+{
+  return mTabuMaxIt;
+}
 
-int Pal::getMaxIt() const { return mTabuMinIt; }
+int Pal::getMaxIt() const
+{
+  return mTabuMinIt;
+}
 
-bool Pal::showPartialLabels() const { return mShowPartialLabels; }
+bool Pal::showPartialLabels() const
+{
+  return mShowPartialLabels;
+}

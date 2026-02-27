@@ -95,7 +95,10 @@ void QgsMeshVirtualDatasetGroup::initialize()
   calculateStatistic();
 }
 
-int QgsMeshVirtualDatasetGroup::datasetCount() const { return mDatasetTimes.count(); }
+int QgsMeshVirtualDatasetGroup::datasetCount() const
+{
+  return mDatasetTimes.count();
+}
 
 QgsMeshDataset *QgsMeshVirtualDatasetGroup::dataset( int index ) const
 {
@@ -119,7 +122,10 @@ QgsMeshDatasetMetadata QgsMeshVirtualDatasetGroup::datasetMetadata( int datasetI
   return mDatasetMetaData.at( datasetIndex );
 }
 
-QStringList QgsMeshVirtualDatasetGroup::datasetGroupNamesDependentOn() const { return mDatasetGroupNameUsed; }
+QStringList QgsMeshVirtualDatasetGroup::datasetGroupNamesDependentOn() const
+{
+  return mDatasetGroupNameUsed;
+}
 
 QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -134,7 +140,10 @@ QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsRe
   return elemDataset;
 }
 
-QString QgsMeshVirtualDatasetGroup::description() const { return mFormula; }
+QString QgsMeshVirtualDatasetGroup::description() const
+{
+  return mFormula;
+}
 
 bool QgsMeshVirtualDatasetGroup::calculateDataset() const
 {

@@ -321,8 +321,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap(
-      const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
-      const QgsLegendPatchShape *shape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties()
+      const QgsSymbol *symbol,
+      QSize size,
+      int padding = 0,
+      QgsRenderContext *customContext = nullptr,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = nullptr,
+      const QgsLegendPatchShape *shape = nullptr,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 
     /**
@@ -352,8 +358,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolLayerPreviewPicture()
      */
     static QIcon symbolLayerPreviewIcon(
-      const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
-      QgsMapLayer *mapLayer = nullptr, const QgsScreenProperties &screen = QgsScreenProperties()
+      const QgsSymbolLayer *layer,
+      Qgis::RenderUnit u,
+      QSize size,
+      const QgsMapUnitScale &scale = QgsMapUnitScale(),
+      Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
+      QgsMapLayer *mapLayer = nullptr,
+      const QgsScreenProperties &screen = QgsScreenProperties()
     );
 
     /**
@@ -527,12 +538,26 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! \note not available in Python bindings
     static void lineToSld(
-      QDomDocument &doc, QDomElement &element, Qt::PenStyle penStyle, const QColor &color, QgsSldExportContext &context, double width = -1, const Qt::PenJoinStyle *penJoinStyle = nullptr,
-      const Qt::PenCapStyle *penCapStyle = nullptr, const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0
+      QDomDocument &doc,
+      QDomElement &element,
+      Qt::PenStyle penStyle,
+      const QColor &color,
+      QgsSldExportContext &context,
+      double width = -1,
+      const Qt::PenJoinStyle *penJoinStyle = nullptr,
+      const Qt::PenCapStyle *penCapStyle = nullptr,
+      const QVector<qreal> *customDashPattern = nullptr,
+      double dashOffset = 0.0
     ) SIP_SKIP;
     static bool lineFromSld(
-      QDomElement &element, Qt::PenStyle &penStyle, QColor &color, double &width, Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,
-      QVector<qreal> *customDashPattern = nullptr, double *dashOffset = nullptr
+      QDomElement &element,
+      Qt::PenStyle &penStyle,
+      QColor &color,
+      double &width,
+      Qt::PenJoinStyle *penJoinStyle = nullptr,
+      Qt::PenCapStyle *penCapStyle = nullptr,
+      QVector<qreal> *customDashPattern = nullptr,
+      double *dashOffset = nullptr
     );
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element, const QString &path, const QString &mime, const QColor &color, double size = -1 );
@@ -551,7 +576,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.44
      */
     static void wellKnownMarkerToSld(
-      QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, QgsSldExportContext &context, double strokeWidth = -1,
+      QDomDocument &doc,
+      QDomElement &element,
+      const QString &name,
+      const QColor &color,
+      const QColor &strokeColor,
+      Qt::PenStyle strokeStyle,
+      QgsSldExportContext &context,
+      double strokeWidth = -1,
       double size = -1
     );
 
@@ -598,7 +630,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! Create ogr feature style string for pen
     static QString ogrFeatureStylePen(
-      double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor &c, Qt::PenJoinStyle joinStyle = Qt::MiterJoin, Qt::PenCapStyle capStyle = Qt::FlatCap, double offset = 0.0,
+      double width,
+      double mmScaleFactor,
+      double mapUnitsScaleFactor,
+      const QColor &c,
+      Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+      Qt::PenCapStyle capStyle = Qt::FlatCap,
+      double offset = 0.0,
       const QVector<qreal> *dashPattern = nullptr
     );
 

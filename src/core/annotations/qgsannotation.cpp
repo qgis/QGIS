@@ -160,13 +160,20 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
   }
   if ( mHasFixedMapPosition )
   {
-    painter->translate( context.convertToPainterUnits( mOffsetFromReferencePoint.x(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.left(), Qgis::RenderUnit::Millimeters ), context.convertToPainterUnits( mOffsetFromReferencePoint.y(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.top(), Qgis::RenderUnit::Millimeters ) );
+    painter->translate(
+      context.convertToPainterUnits( mOffsetFromReferencePoint.x(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.left(), Qgis::RenderUnit::Millimeters ),
+      context.convertToPainterUnits( mOffsetFromReferencePoint.y(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.top(), Qgis::RenderUnit::Millimeters )
+    );
   }
   else
   {
     painter->translate( context.convertToPainterUnits( mContentsMargins.left(), Qgis::RenderUnit::Millimeters ), context.convertToPainterUnits( mContentsMargins.top(), Qgis::RenderUnit::Millimeters ) );
   }
-  const QSizeF size( context.convertToPainterUnits( mFrameSize.width(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), Qgis::RenderUnit::Millimeters ), context.convertToPainterUnits( mFrameSize.height(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), Qgis::RenderUnit::Millimeters ) );
+  const QSizeF size(
+    context.convertToPainterUnits( mFrameSize.width(), Qgis::RenderUnit::Millimeters )
+      - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), Qgis::RenderUnit::Millimeters ),
+    context.convertToPainterUnits( mFrameSize.height(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), Qgis::RenderUnit::Millimeters )
+  );
 
   // scale back from painter dpi to 96 dpi --
   // double dotsPerMM = context.painter()->device()->logicalDpiX() / ( 25.4 * 3.78 );
@@ -228,11 +235,14 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
   if ( !mFillSymbol )
     return;
 
-  auto scaleSize = [&context]( double size ) -> double {
-    return context.convertToPainterUnits( size, Qgis::RenderUnit::Millimeters );
-  };
+  auto scaleSize = [&context]( double size ) -> double { return context.convertToPainterUnits( size, Qgis::RenderUnit::Millimeters ); };
 
-  const QRectF frameRect( mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.x() ) : 0, mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.y() ) : 0, scaleSize( mFrameSize.width() ), scaleSize( mFrameSize.height() ) );
+  const QRectF frameRect(
+    mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.x() ) : 0,
+    mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.y() ) : 0,
+    scaleSize( mFrameSize.width() ),
+    scaleSize( mFrameSize.height() )
+  );
   const QgsPointXY origin = mHasFixedMapPosition ? QgsPointXY( 0, 0 ) : QgsPointXY( frameRect.center().x(), frameRect.center().y() );
 
   const QPolygonF poly = QgsShapeGenerator::createBalloon( origin, frameRect, context.convertToPainterUnits( mSegmentPointWidthMm, Qgis::RenderUnit::Millimeters ) );

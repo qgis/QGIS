@@ -36,15 +36,30 @@ QgsGeometryPaintEngine::QgsGeometryPaintEngine( bool usePathStroker )
   , mUsePathStroker( usePathStroker )
 {}
 
-void QgsGeometryPaintEngine::setStrokedPathSegments( int segments ) { mStrokedPathsSegments = segments; }
+void QgsGeometryPaintEngine::setStrokedPathSegments( int segments )
+{
+  mStrokedPathsSegments = segments;
+}
 
-void QgsGeometryPaintEngine::setSimplificationTolerance( double tolerance ) { mSimplifyTolerance = tolerance; }
+void QgsGeometryPaintEngine::setSimplificationTolerance( double tolerance )
+{
+  mSimplifyTolerance = tolerance;
+}
 
-bool QgsGeometryPaintEngine::begin( QPaintDevice * ) { return true; }
+bool QgsGeometryPaintEngine::begin( QPaintDevice * )
+{
+  return true;
+}
 
-bool QgsGeometryPaintEngine::end() { return true; }
+bool QgsGeometryPaintEngine::end()
+{
+  return true;
+}
 
-QPaintEngine::Type QgsGeometryPaintEngine::type() const { return QPaintEngine::User; }
+QPaintEngine::Type QgsGeometryPaintEngine::type() const
+{
+  return QPaintEngine::User;
+}
 
 void QgsGeometryPaintEngine::updateState( const QPaintEngineState &state )
 {
@@ -176,11 +191,17 @@ template<typename T> void drawRectsImp( const QTransform &transform, QgsGeometry
     {
       QgsLineString *exterior = new QgsLineString(
         QVector<double> {
-          static_cast< double >( rects->left() ), static_cast< double >( rects->right() ), static_cast< double >( rects->right() ), static_cast< double >( rects->left() ),
+          static_cast< double >( rects->left() ),
+          static_cast< double >( rects->right() ),
+          static_cast< double >( rects->right() ),
+          static_cast< double >( rects->left() ),
           static_cast< double>( rects->left() )
         },
         QVector<double> {
-          static_cast< double >( rects->bottom() ), static_cast< double >( rects->bottom() ), static_cast< double >( rects->top() ), static_cast< double >( rects->top() ),
+          static_cast< double >( rects->bottom() ),
+          static_cast< double >( rects->bottom() ),
+          static_cast< double >( rects->top() ),
+          static_cast< double >( rects->top() ),
           static_cast< double >( rects->bottom() )
         }
       );
@@ -554,7 +575,10 @@ void QgsGeometryPaintEngine::drawPath( const QPainterPath &path )
 // QgsGeometryPaintDevice
 //
 
-QgsGeometryPaintDevice::QgsGeometryPaintDevice( bool usePathStroker ) { mPaintEngine = std::make_unique<QgsGeometryPaintEngine>( usePathStroker ); }
+QgsGeometryPaintDevice::QgsGeometryPaintDevice( bool usePathStroker )
+{
+  mPaintEngine = std::make_unique<QgsGeometryPaintEngine>( usePathStroker );
+}
 
 void QgsGeometryPaintDevice::setStrokedPathSegments( int segments )
 {
@@ -568,7 +592,10 @@ void QgsGeometryPaintDevice::setSimplificationTolerance( double tolerance )
     mPaintEngine->setSimplificationTolerance( tolerance );
 }
 
-QPaintEngine *QgsGeometryPaintDevice::paintEngine() const { return mPaintEngine.get(); }
+QPaintEngine *QgsGeometryPaintDevice::paintEngine() const
+{
+  return mPaintEngine.get();
+}
 
 int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
 {
@@ -616,7 +643,10 @@ int QgsGeometryPaintDevice::metric( PaintDeviceMetric m ) const
   return val;
 }
 
-const QgsAbstractGeometry &QgsGeometryPaintDevice::geometry() const { return mPaintEngine->geometry(); }
+const QgsAbstractGeometry &QgsGeometryPaintDevice::geometry() const
+{
+  return mPaintEngine->geometry();
+}
 
 QgsGeometry QgsGeometryPaintDevice::painterPathToGeometry( const QPainterPath &path )
 {

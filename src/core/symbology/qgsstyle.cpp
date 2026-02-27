@@ -102,9 +102,15 @@ QgsStyle::~QgsStyle()
   clear();
 }
 
-void QgsStyle::setName( const QString &name ) { mName = name; }
+void QgsStyle::setName( const QString &name )
+{
+  mName = name;
+}
 
-QString QgsStyle::name() const { return mName; }
+QString QgsStyle::name() const
+{
+  return mName;
+}
 
 bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update )
 {
@@ -274,7 +280,10 @@ bool QgsStyle::saveSymbol( const QString &name, const QgsSymbol *symbol, bool fa
   return true;
 }
 
-bool QgsStyle::removeSymbol( const QString &name ) { return removeEntityByName( SymbolEntity, name ); }
+bool QgsStyle::removeSymbol( const QString &name )
+{
+  return removeEntityByName( SymbolEntity, name );
+}
 
 bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
 {
@@ -317,11 +326,20 @@ QgsSymbol *QgsStyle::symbol( const QString &name )
   return newSymbol;
 }
 
-const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const { return mSymbols.value( name ); }
+const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const
+{
+  return mSymbols.value( name );
+}
 
-int QgsStyle::symbolCount() { return mSymbols.count(); }
+int QgsStyle::symbolCount()
+{
+  return mSymbols.count();
+}
 
-QStringList QgsStyle::symbolNames() const { return mSymbols.keys(); }
+QStringList QgsStyle::symbolNames() const
+{
+  return mSymbols.keys();
+}
 
 
 bool QgsStyle::addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool update )
@@ -469,7 +487,10 @@ bool QgsStyle::saveColorRamp( const QString &name, const QgsColorRamp *ramp, boo
   return true;
 }
 
-bool QgsStyle::removeColorRamp( const QString &name ) { return removeEntityByName( ColorrampEntity, name ); }
+bool QgsStyle::removeColorRamp( const QString &name )
+{
+  return removeEntityByName( ColorrampEntity, name );
+}
 
 QgsColorRamp *QgsStyle::colorRamp( const QString &name ) const
 {
@@ -477,11 +498,20 @@ QgsColorRamp *QgsStyle::colorRamp( const QString &name ) const
   return ramp ? ramp->clone() : nullptr;
 }
 
-const QgsColorRamp *QgsStyle::colorRampRef( const QString &name ) const { return mColorRamps.value( name ); }
+const QgsColorRamp *QgsStyle::colorRampRef( const QString &name ) const
+{
+  return mColorRamps.value( name );
+}
 
-int QgsStyle::colorRampCount() { return mColorRamps.count(); }
+int QgsStyle::colorRampCount()
+{
+  return mColorRamps.count();
+}
 
-QStringList QgsStyle::colorRampNames() const { return mColorRamps.keys(); }
+QStringList QgsStyle::colorRampNames() const
+{
+  return mColorRamps.keys();
+}
 
 void QgsStyle::handleDeferred3DSymbolCreation()
 {
@@ -872,7 +902,10 @@ bool QgsStyle::save( const QString &filename )
   return true;
 }
 
-void QgsStyle::setFileName( const QString &filename ) { mFileName = filename; }
+void QgsStyle::setFileName( const QString &filename )
+{
+  mFileName = filename;
+}
 
 bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
 {
@@ -981,7 +1014,10 @@ bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format,
   return true;
 }
 
-bool QgsStyle::removeTextFormat( const QString &name ) { return removeEntityByName( TextFormatEntity, name ); }
+bool QgsStyle::removeTextFormat( const QString &name )
+{
+  return removeEntityByName( TextFormatEntity, name );
+}
 
 bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName )
 {
@@ -1050,7 +1086,10 @@ bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings
   return true;
 }
 
-bool QgsStyle::removeLabelSettings( const QString &name ) { return removeEntityByName( LabelSettingsEntity, name ); }
+bool QgsStyle::removeLabelSettings( const QString &name )
+{
+  return removeEntityByName( LabelSettingsEntity, name );
+}
 
 bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newName )
 {
@@ -1206,7 +1245,10 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType typ
   return res;
 }
 
-QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const { return textFormat( u"Default"_s ); }
+QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
+{
+  return textFormat( u"Default"_s );
+}
 
 QgsTextFormat QgsStyle::defaultTextFormatForProject( QgsProject *project, TextFormatContext context )
 {
@@ -1283,7 +1325,10 @@ bool QgsStyle::renameSymbol3D( const QString &oldName, const QString &newName )
   return result;
 }
 
-QStringList QgsStyle::symbol3DNames() const { return m3dSymbols.keys(); }
+QStringList QgsStyle::symbol3DNames() const
+{
+  return m3dSymbols.keys();
+}
 
 QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 {
@@ -2093,25 +2138,55 @@ QString QgsStyle::getName( const QString &table, int id ) const
   return name;
 }
 
-int QgsStyle::symbolId( const QString &name ) { return getId( u"symbol"_s, name ); }
+int QgsStyle::symbolId( const QString &name )
+{
+  return getId( u"symbol"_s, name );
+}
 
-int QgsStyle::entityId( QgsStyle::StyleEntity type, const QString &name ) { return getId( entityTableName( type ), name ); }
+int QgsStyle::entityId( QgsStyle::StyleEntity type, const QString &name )
+{
+  return getId( entityTableName( type ), name );
+}
 
-int QgsStyle::colorrampId( const QString &name ) { return getId( u"colorramp"_s, name ); }
+int QgsStyle::colorrampId( const QString &name )
+{
+  return getId( u"colorramp"_s, name );
+}
 
-QgsTextFormat QgsStyle::textFormat( const QString &name ) const { return mTextFormats.value( name ); }
+QgsTextFormat QgsStyle::textFormat( const QString &name ) const
+{
+  return mTextFormats.value( name );
+}
 
-int QgsStyle::textFormatCount() const { return mTextFormats.count(); }
+int QgsStyle::textFormatCount() const
+{
+  return mTextFormats.count();
+}
 
-QStringList QgsStyle::textFormatNames() const { return mTextFormats.keys(); }
+QStringList QgsStyle::textFormatNames() const
+{
+  return mTextFormats.keys();
+}
 
-int QgsStyle::textFormatId( const QString &name ) { return getId( u"textformat"_s, name ); }
+int QgsStyle::textFormatId( const QString &name )
+{
+  return getId( u"textformat"_s, name );
+}
 
-QgsPalLayerSettings QgsStyle::labelSettings( const QString &name ) const { return mLabelSettings.value( name ); }
+QgsPalLayerSettings QgsStyle::labelSettings( const QString &name ) const
+{
+  return mLabelSettings.value( name );
+}
 
-QgsLegendPatchShape QgsStyle::legendPatchShape( const QString &name ) const { return mLegendPatchShapes.value( name ); }
+QgsLegendPatchShape QgsStyle::legendPatchShape( const QString &name ) const
+{
+  return mLegendPatchShapes.value( name );
+}
 
-int QgsStyle::legendPatchShapesCount() const { return mLegendPatchShapes.count(); }
+int QgsStyle::legendPatchShapesCount() const
+{
+  return mLegendPatchShapes.count();
+}
 
 Qgis::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name ) const
 {
@@ -2130,7 +2205,10 @@ QgsAbstract3DSymbol *QgsStyle::symbol3D( const QString &name ) const
   return nullptr;
 }
 
-int QgsStyle::symbol3DCount() const { return m3dSymbols.count(); }
+int QgsStyle::symbol3DCount() const
+{
+  return m3dSymbols.count();
+}
 
 QList<Qgis::GeometryType> QgsStyle::symbol3DCompatibleGeometryTypes( const QString &name ) const
 {
@@ -2150,13 +2228,25 @@ Qgis::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
   return it.value().layerType;
 }
 
-int QgsStyle::labelSettingsCount() const { return mLabelSettings.count(); }
+int QgsStyle::labelSettingsCount() const
+{
+  return mLabelSettings.count();
+}
 
-QStringList QgsStyle::labelSettingsNames() const { return mLabelSettings.keys(); }
+QStringList QgsStyle::labelSettingsNames() const
+{
+  return mLabelSettings.keys();
+}
 
-int QgsStyle::labelSettingsId( const QString &name ) { return getId( u"labelsettings"_s, name ); }
+int QgsStyle::labelSettingsId( const QString &name )
+{
+  return getId( u"labelsettings"_s, name );
+}
 
-QStringList QgsStyle::legendPatchShapeNames() const { return mLegendPatchShapes.keys(); }
+QStringList QgsStyle::legendPatchShapeNames() const
+{
+  return mLegendPatchShapes.keys();
+}
 
 const QgsSymbol *QgsStyle::previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const
 {
@@ -2177,9 +2267,15 @@ const QgsSymbol *QgsStyle::previewSymbolForPatchShape( const QgsLegendPatchShape
   return nullptr;
 }
 
-int QgsStyle::tagId( const QString &name ) { return getId( u"tag"_s, name ); }
+int QgsStyle::tagId( const QString &name )
+{
+  return getId( u"tag"_s, name );
+}
 
-int QgsStyle::smartgroupId( const QString &name ) { return getId( u"smartgroup"_s, name ); }
+int QgsStyle::smartgroupId( const QString &name )
+{
+  return getId( u"smartgroup"_s, name );
+}
 
 QStringList QgsStyle::allNames( QgsStyle::StyleEntity type ) const
 {
@@ -2631,7 +2727,10 @@ bool QgsStyle::exportXml( const QString &filename )
   return true;
 }
 
-bool QgsStyle::importXml( const QString &filename ) { return importXml( filename, -1 ); }
+bool QgsStyle::importXml( const QString &filename )
+{
+  return importXml( filename, -1 );
+}
 
 bool QgsStyle::importXml( const QString &filename, int sinceVersion )
 {
@@ -2987,11 +3086,20 @@ bool QgsStyle::isXmlStyleFile( const QString &path )
   return line == "<!DOCTYPE qgis_style>"_L1;
 }
 
-void QgsStyle::triggerIconRebuild() { emit rebuildIconPreviews(); }
+void QgsStyle::triggerIconRebuild()
+{
+  emit rebuildIconPreviews();
+}
 
-bool QgsStyle::isReadOnly() const { return mReadOnly; }
+bool QgsStyle::isReadOnly() const
+{
+  return mReadOnly;
+}
 
-void QgsStyle::setReadOnly( bool readOnly ) { mReadOnly = readOnly; }
+void QgsStyle::setReadOnly( bool readOnly )
+{
+  mReadOnly = readOnly;
+}
 
 bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 {
@@ -3169,7 +3277,10 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
   return true;
 }
 
-void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name ) { mCachedTags[type].remove( name ); }
+void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name )
+{
+  mCachedTags[type].remove( name );
+}
 
 bool QgsStyle::createStyleMetadataTableIfNeeded()
 {
@@ -3314,14 +3425,32 @@ QString QgsStyle::tagmapEntityIdFieldName( QgsStyle::StyleEntity type )
   return QString();
 }
 
-QgsStyle::StyleEntity QgsStyleSymbolEntity::type() const { return QgsStyle::SymbolEntity; }
+QgsStyle::StyleEntity QgsStyleSymbolEntity::type() const
+{
+  return QgsStyle::SymbolEntity;
+}
 
-QgsStyle::StyleEntity QgsStyleColorRampEntity::type() const { return QgsStyle::ColorrampEntity; }
+QgsStyle::StyleEntity QgsStyleColorRampEntity::type() const
+{
+  return QgsStyle::ColorrampEntity;
+}
 
-QgsStyle::StyleEntity QgsStyleTextFormatEntity::type() const { return QgsStyle::TextFormatEntity; }
+QgsStyle::StyleEntity QgsStyleTextFormatEntity::type() const
+{
+  return QgsStyle::TextFormatEntity;
+}
 
-QgsStyle::StyleEntity QgsStyleLabelSettingsEntity::type() const { return QgsStyle::LabelSettingsEntity; }
+QgsStyle::StyleEntity QgsStyleLabelSettingsEntity::type() const
+{
+  return QgsStyle::LabelSettingsEntity;
+}
 
-QgsStyle::StyleEntity QgsStyleLegendPatchShapeEntity::type() const { return QgsStyle::LegendPatchShapeEntity; }
+QgsStyle::StyleEntity QgsStyleLegendPatchShapeEntity::type() const
+{
+  return QgsStyle::LegendPatchShapeEntity;
+}
 
-QgsStyle::StyleEntity QgsStyleSymbol3DEntity::type() const { return QgsStyle::Symbol3DEntity; }
+QgsStyle::StyleEntity QgsStyleSymbol3DEntity::type() const
+{
+  return QgsStyle::Symbol3DEntity;
+}

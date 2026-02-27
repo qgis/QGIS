@@ -24,7 +24,10 @@
 // QgsAbstractTiledSceneIndex
 //
 
-QgsAbstractTiledSceneIndex::QgsAbstractTiledSceneIndex() { mContentCache.setMaxCost( 10000 ); }
+QgsAbstractTiledSceneIndex::QgsAbstractTiledSceneIndex()
+{
+  mContentCache.setMaxCost( 10000 );
+}
 
 QgsAbstractTiledSceneIndex::~QgsAbstractTiledSceneIndex() = default;
 
@@ -82,7 +85,10 @@ QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( QgsTiledSceneIndex &&other )
   return *this;
 }
 
-bool QgsTiledSceneIndex::isValid() const { return static_cast< bool >( mIndex.get() ); }
+bool QgsTiledSceneIndex::isValid() const
+{
+  return static_cast< bool >( mIndex.get() );
+}
 
 QgsTiledSceneTile QgsTiledSceneIndex::rootTile() const
 {

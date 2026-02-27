@@ -37,7 +37,10 @@ void QgsProjectTimeSettings::reset()
   emit temporalRangeChanged();
 }
 
-QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const { return mRange; }
+QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
+{
+  return mRange;
+}
 
 void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 {
@@ -103,22 +106,52 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   return element;
 }
 
-Qgis::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const { return mTimeStepUnit; }
+Qgis::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const
+{
+  return mTimeStepUnit;
+}
 
-void QgsProjectTimeSettings::setTimeStepUnit( Qgis::TemporalUnit unit ) { mTimeStepUnit = unit; }
+void QgsProjectTimeSettings::setTimeStepUnit( Qgis::TemporalUnit unit )
+{
+  mTimeStepUnit = unit;
+}
 
-double QgsProjectTimeSettings::timeStep() const { return mTimeStep; }
+double QgsProjectTimeSettings::timeStep() const
+{
+  return mTimeStep;
+}
 
-void QgsProjectTimeSettings::setTimeStep( double timeStep ) { mTimeStep = timeStep; }
+void QgsProjectTimeSettings::setTimeStep( double timeStep )
+{
+  mTimeStep = timeStep;
+}
 
-void QgsProjectTimeSettings::setFramesPerSecond( double rate ) { mFrameRate = rate; }
+void QgsProjectTimeSettings::setFramesPerSecond( double rate )
+{
+  mFrameRate = rate;
+}
 
-double QgsProjectTimeSettings::framesPerSecond() const { return mFrameRate; }
+double QgsProjectTimeSettings::framesPerSecond() const
+{
+  return mFrameRate;
+}
 
-void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state ) { mCumulativeTemporalRange = state; }
+void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state )
+{
+  mCumulativeTemporalRange = state;
+}
 
-bool QgsProjectTimeSettings::isTemporalRangeCumulative() const { return mCumulativeTemporalRange; }
+bool QgsProjectTimeSettings::isTemporalRangeCumulative() const
+{
+  return mCumulativeTemporalRange;
+}
 
-long long QgsProjectTimeSettings::totalMovieFrames() const { return mTotalMovieFrames; }
+long long QgsProjectTimeSettings::totalMovieFrames() const
+{
+  return mTotalMovieFrames;
+}
 
-void QgsProjectTimeSettings::setTotalMovieFrames( long long frames ) { mTotalMovieFrames = frames; }
+void QgsProjectTimeSettings::setTotalMovieFrames( long long frames )
+{
+  mTotalMovieFrames = frames;
+}

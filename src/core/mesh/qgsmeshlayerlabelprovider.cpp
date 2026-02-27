@@ -88,7 +88,10 @@ void QgsMeshLayerLabelProvider::init()
 }
 
 
-QgsMeshLayerLabelProvider::~QgsMeshLayerLabelProvider() { qDeleteAll( mLabels ); }
+QgsMeshLayerLabelProvider::~QgsMeshLayerLabelProvider()
+{
+  qDeleteAll( mLabels );
+}
 
 bool QgsMeshLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
@@ -132,6 +135,12 @@ QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const Qgs
   return res;
 }
 
-const QgsPalLayerSettings &QgsMeshLayerLabelProvider::settings() const { return mSettings; }
+const QgsPalLayerSettings &QgsMeshLayerLabelProvider::settings() const
+{
+  return mSettings;
+}
 
-void QgsMeshLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const { mVectorLabelProvider->drawLabel( context, label ); }
+void QgsMeshLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
+{
+  mVectorLabelProvider->drawLabel( context, label );
+}

@@ -360,7 +360,10 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Qgis::E
 }
 
 
-bool QgsElevationMap::isValid() const { return !mElevationImage.isNull(); }
+bool QgsElevationMap::isValid() const
+{
+  return !mElevationImage.isNull();
+}
 
 void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int left, double zScale, double offset )
 {

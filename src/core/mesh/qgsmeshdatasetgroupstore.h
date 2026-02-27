@@ -76,8 +76,12 @@ class QgsMeshExtraDatasetStore : public QgsMeshDatasetSourceInterface
     using QgsMeshDatasetSourceInterface::persistDatasetGroup;
     //! Not implemented, always returns true
     bool persistDatasetGroup(
-      const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues,
-      const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
+      const QString &outputFilePath,
+      const QString &outputDriver,
+      const QgsMeshDatasetGroupMetadata &meta,
+      const QVector<QgsMeshDataBlock> &datasetValues,
+      const QVector<QgsMeshDataBlock> &datasetActive,
+      const QVector<double> &times
     ) override;
 
     //! Not implemented, always returns true

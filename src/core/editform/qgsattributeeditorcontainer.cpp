@@ -20,9 +20,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAttributeEditorContainer::~QgsAttributeEditorContainer() { qDeleteAll( mChildren ); }
+QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
+{
+  qDeleteAll( mChildren );
+}
 
-void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget ) { mChildren.append( widget ); }
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
+{
+  mChildren.append( widget );
+}
 
 void QgsAttributeEditorContainer::setIsGroupBox( bool isGroupBox )
 {
@@ -32,11 +38,20 @@ void QgsAttributeEditorContainer::setIsGroupBox( bool isGroupBox )
     setType( Qgis::AttributeEditorContainerType::Tab );
 }
 
-bool QgsAttributeEditorContainer::isGroupBox() const { return mType == Qgis::AttributeEditorContainerType::GroupBox; }
+bool QgsAttributeEditorContainer::isGroupBox() const
+{
+  return mType == Qgis::AttributeEditorContainerType::GroupBox;
+}
 
-void QgsAttributeEditorContainer::setName( const QString &name ) { mName = name; }
+void QgsAttributeEditorContainer::setName( const QString &name )
+{
+  mName = name;
+}
 
-QgsOptionalExpression QgsAttributeEditorContainer::visibilityExpression() const { return mVisibilityExpression; }
+QgsOptionalExpression QgsAttributeEditorContainer::visibilityExpression() const
+{
+  return mVisibilityExpression;
+}
 
 void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
 {
@@ -46,7 +61,10 @@ void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpr
   mVisibilityExpression = visibilityExpression;
 }
 
-QgsOptionalExpression QgsAttributeEditorContainer::collapsedExpression() const { return mCollapsedExpression; }
+QgsOptionalExpression QgsAttributeEditorContainer::collapsedExpression() const
+{
+  return mCollapsedExpression;
+}
 
 void QgsAttributeEditorContainer::setCollapsedExpression( const QgsOptionalExpression &collapsedExpression )
 {
@@ -56,9 +74,15 @@ void QgsAttributeEditorContainer::setCollapsedExpression( const QgsOptionalExpre
   mCollapsedExpression = collapsedExpression;
 }
 
-QColor QgsAttributeEditorContainer::backgroundColor() const { return mBackgroundColor; }
+QColor QgsAttributeEditorContainer::backgroundColor() const
+{
+  return mBackgroundColor;
+}
 
-void QgsAttributeEditorContainer::setBackgroundColor( const QColor &backgroundColor ) { mBackgroundColor = backgroundColor; }
+void QgsAttributeEditorContainer::setBackgroundColor( const QColor &backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
+}
 
 QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( Qgis::AttributeEditorType type ) const
 {
@@ -89,9 +113,15 @@ void QgsAttributeEditorContainer::clear()
   mChildren.clear();
 }
 
-int QgsAttributeEditorContainer::columnCount() const { return mColumnCount; }
+int QgsAttributeEditorContainer::columnCount() const
+{
+  return mColumnCount;
+}
 
-void QgsAttributeEditorContainer::setColumnCount( int columnCount ) { mColumnCount = columnCount; }
+void QgsAttributeEditorContainer::setColumnCount( int columnCount )
+{
+  mColumnCount = columnCount;
+}
 
 QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEditorElement *parent ) const
 {
@@ -193,4 +223,7 @@ void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element,
   }
 }
 
-QString QgsAttributeEditorContainer::typeIdentifier() const { return u"attributeEditorContainer"_s; }
+QString QgsAttributeEditorContainer::typeIdentifier() const
+{
+  return u"attributeEditorContainer"_s;
+}

@@ -111,8 +111,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * Constructor - creates a point cloud layer
      */
     explicit QgsPointCloudLayer(
-      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = u"pointcloud"_s,
-      const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = u"pointcloud"_s, const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
     );
 
     ~QgsPointCloudLayer() override;

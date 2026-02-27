@@ -29,19 +29,40 @@ QgsLegendPatchShape::QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeomet
   , mPreserveAspectRatio( preserveAspectRatio )
 {}
 
-bool QgsLegendPatchShape::isNull() const { return mGeometry.isNull() || mGeometry.isEmpty(); }
+bool QgsLegendPatchShape::isNull() const
+{
+  return mGeometry.isNull() || mGeometry.isEmpty();
+}
 
-QgsGeometry QgsLegendPatchShape::geometry() const { return mGeometry; }
+QgsGeometry QgsLegendPatchShape::geometry() const
+{
+  return mGeometry;
+}
 
-void QgsLegendPatchShape::setGeometry( const QgsGeometry &geometry ) { mGeometry = geometry; }
+void QgsLegendPatchShape::setGeometry( const QgsGeometry &geometry )
+{
+  mGeometry = geometry;
+}
 
-bool QgsLegendPatchShape::preserveAspectRatio() const { return mPreserveAspectRatio; }
+bool QgsLegendPatchShape::preserveAspectRatio() const
+{
+  return mPreserveAspectRatio;
+}
 
-void QgsLegendPatchShape::setPreserveAspectRatio( bool preserveAspectRatio ) { mPreserveAspectRatio = preserveAspectRatio; }
+void QgsLegendPatchShape::setPreserveAspectRatio( bool preserveAspectRatio )
+{
+  mPreserveAspectRatio = preserveAspectRatio;
+}
 
-bool QgsLegendPatchShape::scaleToOutputSize() const { return mScaleToTargetSize; }
+bool QgsLegendPatchShape::scaleToOutputSize() const
+{
+  return mScaleToTargetSize;
+}
 
-void QgsLegendPatchShape::setScaleToOutputSize( bool scale ) { mScaleToTargetSize = scale; }
+void QgsLegendPatchShape::setScaleToOutputSize( bool scale )
+{
+  mScaleToTargetSize = scale;
+}
 
 QgsGeometry QgsLegendPatchShape::scaledGeometry( QSizeF size ) const
 {
@@ -119,6 +140,12 @@ void QgsLegendPatchShape::writeXml( QDomElement &element, QDomDocument &, const 
   element.setAttribute( u"type"_s, QString::number( static_cast< int >( mSymbolType ) ) );
 }
 
-Qgis::SymbolType QgsLegendPatchShape::symbolType() const { return mSymbolType; }
+Qgis::SymbolType QgsLegendPatchShape::symbolType() const
+{
+  return mSymbolType;
+}
 
-void QgsLegendPatchShape::setSymbolType( Qgis::SymbolType type ) { mSymbolType = type; }
+void QgsLegendPatchShape::setSymbolType( Qgis::SymbolType type )
+{
+  mSymbolType = type;
+}

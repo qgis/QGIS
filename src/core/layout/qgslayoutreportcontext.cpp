@@ -66,7 +66,10 @@ QgsGeometry QgsLayoutReportContext::currentGeometry( const QgsCoordinateReferenc
   return transformed;
 }
 
-QgsVectorLayer *QgsLayoutReportContext::layer() const { return mLayer; }
+QgsVectorLayer *QgsLayoutReportContext::layer() const
+{
+  return mLayer;
+}
 
 void QgsLayoutReportContext::setLayer( QgsVectorLayer *layer )
 {

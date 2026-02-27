@@ -43,9 +43,15 @@ QgsNumericFormatRegistry::QgsNumericFormatRegistry()
   addFormat( new QgsExpressionBasedNumericFormat() );
 }
 
-QgsNumericFormatRegistry::~QgsNumericFormatRegistry() { qDeleteAll( mFormats ); }
+QgsNumericFormatRegistry::~QgsNumericFormatRegistry()
+{
+  qDeleteAll( mFormats );
+}
 
-QStringList QgsNumericFormatRegistry::formats() const { return mFormats.keys(); }
+QStringList QgsNumericFormatRegistry::formats() const
+{
+  return mFormats.keys();
+}
 
 void QgsNumericFormatRegistry::addFormat( QgsNumericFormat *format )
 {
@@ -90,7 +96,10 @@ QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &el
   return new QgsFallbackNumericFormat();
 }
 
-QgsNumericFormat *QgsNumericFormatRegistry::fallbackFormat() const { return new QgsFallbackNumericFormat(); }
+QgsNumericFormat *QgsNumericFormatRegistry::fallbackFormat() const
+{
+  return new QgsFallbackNumericFormat();
+}
 
 QString QgsNumericFormatRegistry::visibleName( const QString &id ) const
 {

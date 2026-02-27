@@ -29,13 +29,25 @@ QgsVectorLayerEditBufferGroup::QgsVectorLayerEditBufferGroup( QObject *parent )
   : QObject( parent )
 {}
 
-void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer ) { mLayers.insert( layer ); }
+void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer )
+{
+  mLayers.insert( layer );
+}
 
-void QgsVectorLayerEditBufferGroup::removeLayer( QgsVectorLayer *layer ) { mLayers.remove( layer ); }
+void QgsVectorLayerEditBufferGroup::removeLayer( QgsVectorLayer *layer )
+{
+  mLayers.remove( layer );
+}
 
-void QgsVectorLayerEditBufferGroup::clear() { mLayers.clear(); }
+void QgsVectorLayerEditBufferGroup::clear()
+{
+  mLayers.clear();
+}
 
-QSet<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::layers() const { return mLayers; }
+QSet<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::layers() const
+{
+  return mLayers;
+}
 
 QSet<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::modifiedLayers() const
 {
@@ -373,7 +385,10 @@ bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool 
   return true;
 }
 
-bool QgsVectorLayerEditBufferGroup::isEditing() const { return mIsEditing; }
+bool QgsVectorLayerEditBufferGroup::isEditing() const
+{
+  return mIsEditing;
+}
 
 QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QSet<QgsVectorLayer *> layers )
 {

@@ -48,9 +48,15 @@ bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) c
   return true;
 }
 
-int QgsSourceCacheEntry::dataSize() const { return filePath.size(); }
+int QgsSourceCacheEntry::dataSize() const
+{
+  return filePath.size();
+}
 
-void QgsSourceCacheEntry::dump() const { QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 ); }
+void QgsSourceCacheEntry::dump() const
+{
+  QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 );
+}
 
 ///@endcond
 

@@ -75,8 +75,13 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 
   private slots:
     void requestFinished(
-      QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers,
-      const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString
+      QByteArray data,
+      QUrl url,
+      const QMap<QNetworkRequest::Attribute, QVariant> &attributes,
+      const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers,
+      const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs,
+      QNetworkReply::NetworkError error,
+      const QString &errorString
     );
     void cachedRangeRequestFinished();
 
@@ -121,8 +126,13 @@ class QgsTileDownloadManagerReplyWorkerObject : public QObject
 
   signals:
     void finished(
-      QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers,
-      const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString
+      QByteArray data,
+      QUrl url,
+      const QMap<QNetworkRequest::Attribute, QVariant> &attributes,
+      const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers,
+      const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs,
+      QNetworkReply::NetworkError error,
+      const QString &errorString
     );
 
   private:

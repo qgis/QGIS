@@ -22,15 +22,28 @@
 
 using namespace Qt::StringLiterals;
 
-QgsBearingNumericFormat::QgsBearingNumericFormat() {}
+QgsBearingNumericFormat::QgsBearingNumericFormat()
+{}
 
-QString QgsBearingNumericFormat::id() const { return u"bearing"_s; }
+QString QgsBearingNumericFormat::id() const
+{
+  return u"bearing"_s;
+}
 
-QString QgsBearingNumericFormat::visibleName() const { return QObject::tr( "Bearing" ); }
+QString QgsBearingNumericFormat::visibleName() const
+{
+  return QObject::tr( "Bearing" );
+}
 
-int QgsBearingNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
+int QgsBearingNumericFormat::sortKey()
+{
+  return DEFAULT_SORT_KEY;
+}
 
-double QgsBearingNumericFormat::suggestSampleValue() const { return 270.123; }
+double QgsBearingNumericFormat::suggestSampleValue() const
+{
+  return 270.123;
+}
 
 QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -74,7 +87,10 @@ QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFor
   return QgsBasicNumericFormat::formatDouble( value, context );
 }
 
-QgsBearingNumericFormat *QgsBearingNumericFormat::clone() const { return new QgsBearingNumericFormat( *this ); }
+QgsBearingNumericFormat *QgsBearingNumericFormat::clone() const
+{
+  return new QgsBearingNumericFormat( *this );
+}
 
 QgsNumericFormat *QgsBearingNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -91,9 +107,15 @@ QVariantMap QgsBearingNumericFormat::configuration( const QgsReadWriteContext &c
   return res;
 }
 
-QgsBearingNumericFormat::FormatDirectionOption QgsBearingNumericFormat::directionFormat() const { return mDirectionFormat; }
+QgsBearingNumericFormat::FormatDirectionOption QgsBearingNumericFormat::directionFormat() const
+{
+  return mDirectionFormat;
+}
 
-void QgsBearingNumericFormat::setDirectionFormat( FormatDirectionOption directionFormat ) { mDirectionFormat = directionFormat; }
+void QgsBearingNumericFormat::setDirectionFormat( FormatDirectionOption directionFormat )
+{
+  mDirectionFormat = directionFormat;
+}
 
 void QgsBearingNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
 {

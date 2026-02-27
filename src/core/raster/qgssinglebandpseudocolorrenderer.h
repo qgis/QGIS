@@ -69,8 +69,12 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer : public QgsRasterRenderer
      * \param extent extent used in classification (only used in quantile mode)
      */
     void createShader(
-      QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
-      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle()
+      QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
+      Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
+      int classes = 0,
+      bool clip = false,
+      const QgsRectangle &extent = QgsRectangle()
     );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;

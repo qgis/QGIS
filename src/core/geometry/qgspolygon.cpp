@@ -27,7 +27,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPolygon::QgsPolygon() { mWkbType = Qgis::WkbType::Polygon; }
+QgsPolygon::QgsPolygon()
+{
+  mWkbType = Qgis::WkbType::Polygon;
+}
 
 ///@cond DOXYGEN_SHUTTUP
 QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
@@ -41,7 +44,10 @@ QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &r
 }
 ///@endcond
 
-QString QgsPolygon::geometryType() const { return u"Polygon"_s; }
+QString QgsPolygon::geometryType() const
+{
+  return u"Polygon"_s;
+}
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 {
@@ -50,7 +56,10 @@ QgsPolygon *QgsPolygon::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsPolygon *QgsPolygon::clone() const { return new QgsPolygon( *this ); }
+QgsPolygon *QgsPolygon::clone() const
+{
+  return new QgsPolygon( *this );
+}
 
 void QgsPolygon::clear()
 {
@@ -350,7 +359,10 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
   return ( inside ? 1 : -1 ) * std::sqrt( minimumDistance );
 }
 
-QgsPolygon *QgsPolygon::surfaceToPolygon() const { return clone(); }
+QgsPolygon *QgsPolygon::surfaceToPolygon() const
+{
+  return clone();
+}
 
 QgsCurvePolygon *QgsPolygon::toCurveType() const
 {
