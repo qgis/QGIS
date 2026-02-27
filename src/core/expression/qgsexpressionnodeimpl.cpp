@@ -20,6 +20,7 @@
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
+#include <QColor>
 #include <QDate>
 #include <QDateTime>
 #include <QRegularExpression>
@@ -476,6 +477,72 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
         return QgsInterval( datetime1 - datetime2 );
+      }
+      else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv ) &&
+                ( ( ( vL.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vR ) ) ||
+                  ( ( vR.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vL ) ) ) )
+      {
+        const bool colorLeft = vL.userType() == QMetaType::Type::QColor;
+        bool isQColor = false;
+        const QColor color = QgsExpressionUtils::getColorValue( colorLeft ? vL : vR, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+
+        const double value = QgsExpressionUtils::getDoubleValue( colorLeft ? vR : vL, parent );
+        ENSURE_NO_EVAL_ERROR
+
+        if ( mOp == boDiv && value == 0.0 )
+        {
+          return QVariant();
+        }
+
+        // it doesn't make sense to support these operations with color element on the right
+        if ( !colorLeft && ( mOp == boPlus || mOp == boMinus || mOp == boDiv ) )
+        {
+          parent->setEvalErrorString( tr( "Can't perform /, +, - with Color on the right" ) );
+          return QVariant();
+        }
+
+        switch ( color.spec() )
+        {
+          case QColor::Cmyk:
+          {
+            float c, m, y, k, a;
+            color.getCmykF( &c, &m, &y, &k, &a );
+            return QColor::fromCmykF(
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( c ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( m ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( y ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( k ), value ), 0.0, 1.0 ) ),
+                     a
+                   );
+          }
+          case QColor::Hsl:
+          case QColor::Hsv:
+          case QColor::Rgb:
+          case QColor::ExtendedRgb:  // color_rgbf constructor clamps it to 0-1, so we do the same here
+          {
+            QColor::Spec originSpec = color.spec();
+            float r, g, b, a;
+            color.getRgbF( &r, &g, &b, &a );
+            QColor result = QColor::fromRgbF(
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( r ), value ), 0.0, 1.0 ) ),
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( g ), value ), 0.0, 1.0 ) ),
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( b ), value ), 0.0, 1.0 ) ),
+                              a
+                            );
+            switch ( originSpec )
+            {
+              case QColor::Hsl:
+                return result.toHsl();
+              case QColor::Hsv:
+                return result.toHsv();
+              default:
+                return result;
+            }
+          }
+          default:
+            return QVariant();
+        }
       }
       else
       {
