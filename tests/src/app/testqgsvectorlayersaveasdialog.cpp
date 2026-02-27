@@ -46,6 +46,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void cleanup() {}       // will be called after every testfunction.
 
     void testAttributesAsDisplayedValues();
+    void testFieldSelectionPreservedOnFormatChange();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -141,6 +142,87 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QCOMPARE( d.crs(), crs );
 
   //d.exec();
+}
+
+void TestQgsVectorLayerSaveAsDialog::testFieldSelectionPreservedOnFormatChange()
+{
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326&field=id:int&field=name:string&field=descr:string"_s, u"vl"_s, u"memory"_s );
+  QVERIFY( tempLayer->isValid() );
+
+  // Set a widget on the first and last fields to check that the ExportAsDisplayedValue column state is preserved
+  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueRelation"_s, QVariantMap() ) );
+  tempLayer->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( u"ValueMap"_s, QVariantMap() ) );
+
+  const QgsVectorLayerSaveAsDialog d( tempLayer.get() );
+
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( u"mAttributeTable"_s );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( u"mReplaceRawFieldValues"_s );
+  QComboBox *mFormatComboBox = d.findChild<QComboBox *>( u"mFormatComboBox"_s );
+
+  // Initially all fields are checked and ExportAsDisplayedValue is disabled
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
+
+  // Switch format to CSV, ExportAsDisplayedValue should be checked for first and last field
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"CSV"_s ) );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Checked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Checked );
+
+  // Disable ExportAsDisplayedValue for the third field
+  mAttributeTable->item( 2, 3 )->setCheckState( Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::PartiallyChecked );
+
+  // Switch format to GeoPackage, field selection should be preserved
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"GeoPackage"_s ) );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::PartiallyChecked );
+
+  // Switch back to CSV, field selection should be preserved
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"Comma Separated Values [CSV]"_s ) );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::PartiallyChecked );
+
+  // Disable ExportAsDisplayedValue for the first field
+  mAttributeTable->item( 0, 3 )->setCheckState( Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
+
+  // Switch format to GeoPackage, field selection should be preserved
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"GeoPackage"_s ) );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
+
+  // Switch back to CSV, field selection should be preserved
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"Comma Separated Values [CSV]"_s ) );
+  QCOMPARE( mAttributeTable->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 0, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mAttributeTable->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( mAttributeTable->item( 2, 3 )->checkState(), Qt::Unchecked );
+  QCOMPARE( mReplaceRawFieldValues->checkState(), Qt::Unchecked );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
