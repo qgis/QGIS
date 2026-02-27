@@ -183,7 +183,7 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 3 );
   QCOMPARE( mPolygonLayer->getFeature( newFid ).geometry().asWkt(), u"Polygon Z ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))"_s );
-  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 0 0 10))"_s );
+  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 4 5 24, 10 5 30, 0 0 10))"_s );
 
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
   QCOMPARE( mMultiLineStringLayer->getFeature( 2 ).geometry().asWkt(), u"MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))"_s );
@@ -281,10 +281,10 @@ void TestQgsMapToolSplitFeatures::testLargestGeometryToOriginalFeaturePolygon()
   QgsFeature newFeat = mPolygonLayer->getFeature( newFid );
 
   //larger
-  QCOMPARE( oldFeat.geometry().asWkt(), u"Polygon Z ((1 5 10, 1 10 21, 10 10 30, 10 5 20, 1 5 10))"_s );
+  QCOMPARE( oldFeat.geometry().asWkt( 1 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
 
   //smaller
-  QCOMPARE( newFeat.geometry().asWkt(), u"Polygon Z ((1 10 21, 1 5 10, 0 5 10, 0 10 20, 1 10 21))"_s );
+  QCOMPARE( newFeat.geometry().asWkt( 1 ), u"Polygon Z ((1 10 21, 1 5 11, 0 5 10, 0 10 20, 1 10 21))"_s );
 }
 
 void TestQgsMapToolSplitFeatures::testLargestGeometryToOriginalFeatureLine()

@@ -894,7 +894,19 @@ bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTol
   if ( sqrDistVertexSnap < sqrSnappingTolerance )
     return false;  // the vertex already exists - do not insert it
 
-  if ( !insertVertex( point, segmentAfterVertex ) )
+  // Let's ignore the Z and M values of the supplied topological point and calculate
+  // interpolated values instead, using the previous and next geometry vertices.
+  // This should make sure that the geometry's Z and M values are preserved when adding
+  // topological points and splitting
+  QgsPoint interpolatedPoint( point );
+  if ( d->geometry.get()->is3D() || d->geometry.get()->isMeasure() )
+  {
+    const QgsPoint vertexBefore = vertexAt( segmentAfterVertex - 1 );
+    const QgsPoint vertexAfter = vertexAt( segmentAfterVertex );
+    interpolatedPoint = QgsGeometryUtils::interpolatePointOnSegment( point.x(), point.y(), vertexBefore, vertexAfter );
+  }
+
+  if ( !insertVertex( interpolatedPoint, segmentAfterVertex ) )
   {
     QgsDebugError( u"failed to insert topo point"_s );
     return false;
@@ -1222,6 +1234,27 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
   return Qgis::GeometryOperationResult::Success;
 }
 
+static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
+{
+  for ( const QgsPoint &pt : points )
+  {
+    QgsVertexId vertexId, prevVertexId, nextVertexId;
+    const QgsPoint closestPt = QgsGeometryUtils::closestVertex( *geom, pt, vertexId );
+    geom->adjacentVertices( vertexId, prevVertexId, nextVertexId );
+    const double dist = QgsGeometryUtils::sqrDistance2D( pt, closestPt );
+    if ( dist == 0 )
+    {
+      // make sure the geometry is snapped (z) to the topo point
+      ( void ) geom->moveVertex( vertexId, pt );
+      // remove adjacent vertices which are duplicates on the XY plane
+      if ( const QgsPoint v = geom->vertexAt( prevVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( prevVertexId );
+      else if ( const QgsPoint v = geom->vertexAt( nextVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( nextVertexId );
+    }
+  }
+}
+
 Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
 {
   QgsPointSequence split, topology;
@@ -1241,13 +1274,34 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
   // We're trying adding the split line's vertices to the geometry so that
   // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
   QgsGeometry tmpGeom( *this );
+  QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : splitLine )
   {
-    tmpGeom.addTopologicalPoint( v );
+    if ( tmpGeom.addTopologicalPoint( v ) )
+    {
+      // POLYGON Z geometries need special handling to cater for GEOS limitations.
+      // Splitting of polygons relies on GEOS extracting lines, unioning with the split line and then polygonizing.
+      // The problem is that during the union operation GEOS will interpolate new Z values where the split line intersects
+      // the polygon rings, even though we have added topological points with the correct Z values at that location.
+      // This results in duplicate vertices and/or wrong Z values on the split geometry.
+      // Our solution for that is:
+      // 1. Collect the topo points that were added (these have the desired interpolated Z values).
+      // 2. Visit the split geometries at the XY location of those topo points and make sure they still have the desired Z value.
+      // 3. Remove the adjacent vertex to the topo point if it has same XY coordinates. Any vertex with XY coordinates same as a
+      //    topo point was introduced by GEOS and is not wanted.
+      if ( tmpGeom.constGet()->is3D() && tmpGeom.constGet()->dimension() == 2 )
+      {
+        QgsVertexId vId;
+        const QgsPoint topoPoint = QgsGeometryUtils::closestVertex( *tmpGeom.constGet(), v, vId );
+        addedTopologicalPoints.append( topoPoint );
+      }
+    }
   }
 
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
+  splitLineString.dropZValue();
+  splitLineString.dropMValue();
 
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
@@ -1255,6 +1309,14 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
 
   if ( result == QgsGeometryEngine::Success )
   {
+    if ( !addedTopologicalPoints.isEmpty() )
+    {
+      for ( int i = 0; i < newGeoms.size(); ++i )
+      {
+        QgsAbstractGeometry *geom = newGeoms[i].get();
+        removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
+      }
+    }
     if ( splitFeature )
       *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
@@ -1316,9 +1378,22 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   QgsPointSequence reshapePoints;
   reshapeLineString.points( reshapePoints );
   QgsGeometry tmpGeom( *this );
+  QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : std::as_const( reshapePoints ) )
   {
-    tmpGeom.addTopologicalPoint( v );
+    if ( tmpGeom.addTopologicalPoint( v ) )
+    {
+      // When reshaping 3D lines or polygons we want to make sure that any topological points added
+      // are preserved in the final geometry. GEOS will interpolate between geometry and reshapeLineString
+      // and may create duplicate vertices with different Z values. We will manually snap Z to those topo
+      // points later and remove any duplicated vertices.
+      if ( tmpGeom.constGet()->is3D() )
+      {
+        QgsVertexId vId;
+        const QgsPoint topoPoint = QgsGeometryUtils::closestVertex( *tmpGeom.constGet(), v, vId );
+        addedTopologicalPoints.append( topoPoint );
+      }
+    }
   }
 
   QgsGeos geos( tmpGeom.get() );
@@ -1327,6 +1402,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
+    removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
     reset( std::move( geom ) );
     return Qgis::GeometryOperationResult::Success;
   }
