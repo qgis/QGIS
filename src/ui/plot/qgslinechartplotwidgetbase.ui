@@ -38,7 +38,7 @@
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-127</y>
+        <y>0</y>
         <width>548</width>
-        <height>1515</height>
+        <height>1215</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -178,9 +178,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="symbolsListGroupBox">
-         <property name="title">
-          <string>Symbols list</string>
-         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -192,6 +189,9 @@
            <width>16777215</width>
            <height>320</height>
           </size>
+         </property>
+         <property name="title">
+          <string>Symbols list</string>
          </property>
          <layout class="QVBoxLayout" name="verticalBoxLayout">
           <item>
@@ -251,44 +251,62 @@
           <string>X Axis</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,0,2,0">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>Axis type</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" colspan="2">
-           <widget class="QComboBox" name="mXAxisTypeCombo"/>
-          </item>
-          <item row="5" column="3">
+          <item row="6" column="3">
            <widget class="QgsPropertyOverrideButton" name="mDDBtnXAxisLabelInterval">
             <property name="text">
              <string>…</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2" colspan="2">
-           <widget class="QgsSymbolButton" name="mXAxisMajorLinesSymbolButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Change…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2" colspan="2">
+          <item row="7" column="2" colspan="2">
            <widget class="QPushButton" name="mXAxisLabelFormatButton">
             <property name="text">
              <string>Customize</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Major interval</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Major grid lines</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="2" colspan="2">
+           <widget class="QComboBox" name="mXAxisLabelsCombo"/>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Label interval</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnXAxisMinorInterval">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Label format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="2">
+           <widget class="QComboBox" name="mXAxisTypeCombo"/>
+          </item>
+          <item row="2" column="2">
            <widget class="QgsDoubleSpinBox" name="mXAxisMajorIntervalSpin">
             <property name="decimals">
              <number>6</number>
@@ -301,54 +319,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Label interval</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Label font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Minor grid lines</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="2" colspan="2">
-           <widget class="QgsFontButton" name="mXAxisLabelFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2" colspan="2">
-           <widget class="QgsSymbolButton" name="mXAxisMinorLinesSymbolButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Change…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
+          <item row="4" column="2">
            <widget class="QgsDoubleSpinBox" name="mXAxisMinorIntervalSpin">
             <property name="decimals">
              <number>6</number>
@@ -361,28 +332,75 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Major interval</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
+          <item row="2" column="3">
            <widget class="QgsPropertyOverrideButton" name="mDDBtnXAxisMajorInterval">
             <property name="text">
              <string>…</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Axis type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_28">
+            <property name="text">
+             <string>Label placement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Label font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Minor grid lines</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2" colspan="2">
+           <widget class="QgsSymbolButton" name="mXAxisMinorLinesSymbolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Change…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" colspan="2">
+           <widget class="QgsSymbolButton" name="mXAxisMajorLinesSymbolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Change…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Minor interval</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
+          <item row="6" column="2">
            <widget class="QgsDoubleSpinBox" name="mXAxisLabelIntervalSpin">
             <property name="decimals">
              <number>6</number>
@@ -395,36 +413,28 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Label format</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QgsPropertyOverrideButton" name="mDDBtnXAxisMinorInterval">
-            <property name="text">
-             <string>…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Major grid lines</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="label_28">
-            <property name="text">
-             <string>Label placement</string>
-            </property>
-           </widget>
-          </item>
           <item row="8" column="2" colspan="2">
-           <widget class="QComboBox" name="mXAxisLabelsCombo"/>
+           <widget class="QgsFontButton" name="mXAxisLabelFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mXAxisLabelSuffixLabel">
+            <property name="text">
+             <string>Axis label suffix</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <widget class="QLineEdit" name="mXAxisLabelSuffixEdit"/>
           </item>
          </layout>
         </widget>
@@ -795,6 +805,11 @@
   <tabstop>mDDBtnMinYAxis</tabstop>
   <tabstop>mSpinMaxYAxis</tabstop>
   <tabstop>mDDBtnMaxYAxis</tabstop>
+  <tabstop>mAddSymbolPushButton</tabstop>
+  <tabstop>mRemoveSymbolPushButton</tabstop>
+  <tabstop>mSymbolsList</tabstop>
+  <tabstop>mXAxisTypeCombo</tabstop>
+  <tabstop>mXAxisLabelSuffixEdit</tabstop>
   <tabstop>mXAxisMajorIntervalSpin</tabstop>
   <tabstop>mDDBtnXAxisMajorInterval</tabstop>
   <tabstop>mXAxisMajorLinesSymbolButton</tabstop>

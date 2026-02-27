@@ -298,7 +298,14 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
   mXAxisTypeCombo->addItem( tr( "Categorical" ), QVariant::fromValue( Qgis::PlotAxisType::Categorical ) );
+  connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsBarChartPlotWidget::updateXAxisProperties );
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
+  connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
     emit widgetChanged();
@@ -379,6 +386,14 @@ void QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked()
   emit widgetChanged();
 }
 
+void QgsBarChartPlotWidget::updateXAxisProperties()
+{
+  const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
+
+  mXAxisLabelSuffixLabel->setEnabled( enable );
+  mXAxisLabelSuffixEdit->setEnabled( enable );
+}
+
 void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
 {
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
@@ -433,6 +448,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisNumericFormat.reset( chartPlot->yAxis().numericFormat()->clone() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffixEdit->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -513,6 +529,7 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   chartPlot->yAxis().setNumericFormat( mYAxisNumericFormat.get()->clone() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffixEdit->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
@@ -740,7 +757,14 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
   mXAxisTypeCombo->addItem( tr( "Categorical" ), QVariant::fromValue( Qgis::PlotAxisType::Categorical ) );
+  connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLineChartPlotWidget::updateXAxisProperties );
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
+  connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
     emit widgetChanged();
@@ -836,6 +860,14 @@ void QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked()
   emit widgetChanged();
 }
 
+void QgsLineChartPlotWidget::updateXAxisProperties()
+{
+  const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
+
+  mXAxisLabelSuffixLabel->setEnabled( enable );
+  mXAxisLabelSuffixEdit->setEnabled( enable );
+}
+
 void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 {
   QgsLineChartPlot *chartPlot = dynamic_cast<QgsLineChartPlot *>( plot );
@@ -903,6 +935,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisLabelFontButton->setTextFormat( chartPlot->yAxis().textFormat() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffixEdit->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -987,6 +1020,7 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   chartPlot->yAxis().setTextFormat( mYAxisLabelFontButton->textFormat() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffixEdit->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
