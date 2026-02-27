@@ -77,6 +77,28 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
         return "py-enumflag"
 
+    def value_to_key(self, value: int) -> str:
+        """
+        Returns the enum key name for the specified value
+
+        :raises: IndexError if value is invalid
+        """
+        return [e.name for e in self.setting.__enum_class if value == e.value][0]
+
+    def key_for_index(self, index: int):
+        """
+        Returns the enum value at the specified index
+
+        :raises: IndexError if value is invalid
+        """
+        return [e for e in self.__enum_class][index]
+
+    def enum_key_count(self) -> int:
+        """
+        Returns the number of values in the associated enum
+        """
+        return len(self.__enum_class)
+
     def value(self, dynamicKeyPart=None):
         """
         Get settings value.

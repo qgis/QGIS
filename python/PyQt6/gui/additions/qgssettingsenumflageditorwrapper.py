@@ -67,7 +67,10 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
     def setWidgetFromVariant(self, value):
         if self.editor and value is not None:
             if isinstance(value, int):
-                value = self.setting.metaEnum().valueToKey(value)
+                try:
+                    value = self.setting.value_to_key(value)
+                except IndexError:
+                    return False
             idx = self.editor.findData(value)
             self.editor.setCurrentIndex(idx)
             return idx >= 0
@@ -80,9 +83,10 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
         self.setting = setting
         if isinstance(editor, QComboBox):
             self.editor = editor
-            for i in range(self.setting.metaEnum().keyCount()):
-                value = self.setting.metaEnum().value(i)
-                key = self.setting.metaEnum().key(i)
+            for i in range(self.setting.enum_key_count()):
+                enum_value = self.setting.key_for_index(i)
+                key = enum_value.name
+                value = enum_value.value
                 text = self.displayStrings.get(value, key)
                 self.editor.addItem(text, key)
             return True
