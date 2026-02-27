@@ -29,13 +29,6 @@
    <property name="spacing">
     <number>3</number>
    </property>
-   <item row="6" column="0">
-    <widget class="QgsDualView" name="mMainView">
-     <property name="currentIndex">
-      <number>-1</number>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0">
     <widget class="QFrame" name="mUpdateExpressionBox">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -79,7 +72,7 @@
          </sizepolicy>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
+         <enum>Qt::FocusPolicy::StrongFocus</enum>
         </property>
        </widget>
       </item>
@@ -98,6 +91,53 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QgsDualView" name="mMainView">
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QToolBar" name="mToolbar">
+     <property name="iconSize">
+      <size>
+       <width>18</width>
+       <height>18</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionToggleEditing"/>
+     <addaction name="mActionToggleMultiEdit"/>
+     <addaction name="mActionSaveEdits"/>
+     <addaction name="mActionReload"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAddFeature"/>
+     <addaction name="mActionDeleteSelected"/>
+     <addaction name="mActionCutSelectedRows"/>
+     <addaction name="mActionCopySelectedRows"/>
+     <addaction name="mActionPasteFeatures"/>
+     <addaction name="separator"/>
+     <addaction name="mActionExpressionSelect"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
+     <addaction name="mActionRemoveSelection"/>
+     <addaction name="mActionSearchForm"/>
+     <addaction name="mActionSelectedToTop"/>
+     <addaction name="mActionPanMapToSelectedRows"/>
+     <addaction name="mActionZoomMapToSelectedRows"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAddAttribute"/>
+     <addaction name="mActionRemoveAttribute"/>
+     <addaction name="mActionOrganizeColumns"/>
+     <addaction name="mActionOpenFieldCalculator"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSetStyles"/>
+     <addaction name="separator"/>
     </widget>
    </item>
    <item row="8" column="0">
@@ -174,46 +214,6 @@
       </layout>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0">
-    <widget class="QToolBar" name="mToolbar">
-     <property name="iconSize">
-      <size>
-       <width>18</width>
-       <height>18</height>
-      </size>
-     </property>
-     <property name="floatable">
-      <bool>false</bool>
-     </property>
-     <addaction name="mActionToggleEditing"/>
-     <addaction name="mActionToggleMultiEdit"/>
-     <addaction name="mActionSaveEdits"/>
-     <addaction name="mActionReload"/>
-     <addaction name="separator"/>
-     <addaction name="mActionAddFeature"/>
-     <addaction name="mActionDeleteSelected"/>
-     <addaction name="mActionCutSelectedRows"/>
-     <addaction name="mActionCopySelectedRows"/>
-     <addaction name="mActionPasteFeatures"/>
-     <addaction name="separator"/>
-     <addaction name="mActionExpressionSelect"/>
-     <addaction name="mActionSelectAll"/>
-     <addaction name="mActionInvertSelection"/>
-     <addaction name="mActionRemoveSelection"/>
-     <addaction name="mActionSearchForm"/>
-     <addaction name="mActionSelectedToTop"/>
-     <addaction name="mActionPanMapToSelectedRows"/>
-     <addaction name="mActionZoomMapToSelectedRows"/>
-     <addaction name="separator"/>
-     <addaction name="mActionAddAttribute"/>
-     <addaction name="mActionRemoveAttribute"/>
-     <addaction name="mActionOrganizeColumns"/>
-     <addaction name="mActionOpenFieldCalculator"/>
-     <addaction name="separator"/>
-     <addaction name="mActionSetStyles"/>
-     <addaction name="separator"/>
-    </widget>
    </item>
   </layout>
   <action name="mActionSearchForm">
@@ -297,7 +297,7 @@
      <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
    </property>
    <property name="text">
-    <string>Add feature</string>
+    <string>Add feature via attribute table</string>
    </property>
   </action>
   <action name="mActionDeleteSelected">
@@ -516,15 +516,6 @@
     <string>Organize Columns</string>
    </property>
   </action>
-  <action name="mActionAddFeatureViaAttributeTable">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add feature via attribute table</string>
-   </property>
-  </action>
   <action name="mActionAddFeatureViaAttributeForm">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -572,7 +563,6 @@
   <tabstop>mTableViewButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
