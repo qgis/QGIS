@@ -3454,6 +3454,16 @@ void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
   sCrsStringLock()->unlock();
 }
 
+bool QgsCoordinateReferenceSystem::isEarthCrs() const
+{
+  return celestialBodyName() == "Earth"_L1;
+}
+
+bool QgsCoordinateReferenceSystem::isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const
+{
+  return celestialBodyName() == other.celestialBodyName();
+}
+
 // invalid < regular < user
 bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {

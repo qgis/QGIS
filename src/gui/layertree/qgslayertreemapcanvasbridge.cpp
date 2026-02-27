@@ -94,12 +94,6 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   if ( mOverviewCanvas )
     mOverviewCanvas->setLayers( overviewLayers );
 
-  if ( firstValidLayers )
-  {
-    // if we are moving from zero to non-zero layers, let's zoom to those data (only consider valid layers here!)
-    mCanvas->zoomToProjectExtent();
-  }
-
   if ( !mFirstCRS.isValid() )
   {
     // find out what is the first used CRS in case we may need to turn on OTF projections later
@@ -134,6 +128,12 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       case QgsGui::UsePresetCrs:
         break;
     }
+  }
+
+  if ( firstValidLayers )
+  {
+    // if we are moving from zero to non-zero layers, let's zoom to those data (only consider valid layers here!)
+    mCanvas->zoomToProjectExtent();
   }
 
   mHasLayersLoaded = currentSpatialLayerCount;

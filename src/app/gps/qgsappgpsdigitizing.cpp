@@ -131,11 +131,21 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+    if ( mEarthCrs )
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    else
+      mCanvasToWgs84Transform = QgsCoordinateTransform();
   } );
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
-    setTransformContext( QgsProject::instance()->transformContext() );
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, transformContext() );
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+    if ( mEarthCrs )
+    {
+      setTransformContext( QgsProject::instance()->transformContext() );
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, transformContext() );
+    }
+    else
+      mCanvasToWgs84Transform = QgsCoordinateTransform();
   } );
   setTransformContext( QgsProject::instance()->transformContext() );
 
@@ -220,6 +230,9 @@ void QgsAppGpsDigitizing::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
 
 void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
 {
+  if ( !mEarthCrs )
+    return;
+
   if ( !mRubberBand )
   {
     createRubberBand();
@@ -256,6 +269,9 @@ void QgsAppGpsDigitizing::onTrackReset()
 
 void QgsAppGpsDigitizing::createFeature()
 {
+  if ( !mEarthCrs )
+    return;
+
   QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer();
   if ( !vlayer )
     return;

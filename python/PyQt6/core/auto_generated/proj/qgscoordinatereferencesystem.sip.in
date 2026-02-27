@@ -1322,6 +1322,27 @@ Returns auth id of related geographic CRS
 %End
 
 
+    bool isEarthCrs() const;
+%Docstring
+Returns ``True`` if the CRS is associated with the Earth.
+
+.. seealso:: :py:func:`celestialBodyName`
+
+.. seealso:: :py:func:`isSameCelestialBody`
+
+.. versionadded:: 4.2
+%End
+
+    bool isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const;
+%Docstring
+Returns ``True`` if ``other`` crs is associated with the same celestial
+body.
+
+.. seealso:: :py:func:`celestialBodyName`
+
+.. versionadded:: 4.2
+%End
+
  static QStringList recentProjections() /Deprecated="Since 3.10. Use QgsApplication.coordinateReferenceSystemRegistry()->recentCrs() instead."/;
 %Docstring
 Returns a list of recently used projections

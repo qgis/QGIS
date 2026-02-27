@@ -433,7 +433,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
     return;
   }
 
-  if ( mLastCoordinate.isEmpty() )
+  if ( mLastCoordinate.isEmpty() || !QgsProject::instance()->crs().isSameCelestialBody( mLastCoordinateCrs ) )
     mLineEdit->clear();
   else
     mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );

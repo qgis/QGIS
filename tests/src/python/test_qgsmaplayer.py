@@ -574,6 +574,23 @@ class TestQgsMapLayer(QgisTestCase):
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.error().summary(), "")
 
+    def test_wgs84Extent(self):
+        moon_layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "non_earth_crs", "moon_crs.gpkg"),
+            "moon_data",
+            "memory",
+        )
+        self.assertTrue(moon_layer.wgs84Extent().isEmpty())
+
+        layer = QgsVectorLayer(
+            self.get_test_data_path("points_gpkg.gpkg").as_posix()
+            + "|layername=points_gpkg",
+            "test",
+            "ogr",
+        )
+
+        self.assertFalse(layer.wgs84Extent(True).isEmpty())
+
 
 if __name__ == "__main__":
     unittest.main()
