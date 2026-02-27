@@ -1668,6 +1668,20 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
     ++i;
     QString turl( url );
 
+    // Add bbox placeholder resolution for WMS services using XYZ tiling with bbox parameters
+    static const QRegularExpression bboxRegex( R"(\{bbox-epsg-\d+\})", QRegularExpression::CaseInsensitiveOption );
+    if ( turl.contains( bboxRegex ) )
+    {
+      QgsRectangle tileRect = tm->tileRect( tile.col, tile.row );
+      QString bboxStr = QString( "%1,%2,%3,%4" )
+                          .arg( tileRect.xMinimum(), 0, 'f', 6 )
+                          .arg( tileRect.yMinimum(), 0, 'f', 6 )
+                          .arg( tileRect.xMaximum(), 0, 'f', 6 )
+                          .arg( tileRect.yMaximum(), 0, 'f', 6 );
+
+      turl.replace( bboxRegex, bboxStr );
+    }
+
     if ( turl.contains( "{q}"_L1 ) ) // used in Bing maps
       turl.replace( "{q}"_L1, _tile2quadkey( tile.col, tile.row, z ) );
 

@@ -81,6 +81,8 @@ class TestQgsWmsProvider : public QgsTest
 
     void absoluteRelativeUri();
 
+    void testBboxPlaceholderReplacement();
+
     void testXyzIsBasemap();
 
     void testOsmMetadata();
@@ -494,6 +496,40 @@ void TestQgsWmsProvider::absoluteRelativeUri()
     QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
     QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
   }
+}
+
+void TestQgsWmsProvider::testBboxPlaceholderReplacement()
+{
+  QString uri = "type=xyz&url=http://example.com/{bbox-epsg-3857}/{z}/{x}/{y}.png&zmin=0&zmax=18";
+
+  QgsWmsProvider provider( uri, QgsDataProvider::ProviderOptions() );
+  QVERIFY( provider.isValid() );
+
+  QgsWmtsTileMatrix tm;
+  tm.topLeft = QgsPointXY( -20037508.34, 20037508.34 );
+  tm.tileWidth = 256;
+  tm.tileHeight = 256;
+  tm.matrixWidth = 2;
+  tm.matrixHeight = 2;
+  tm.tres = 156543.03;
+  tm.identifier = "0";
+
+  QgsWmsProvider::TilePositions tiles;
+  tiles << QgsWmsProvider::TilePosition( 0, 0 );
+
+  QgsWmsProvider::TileRequests requests;
+  provider.createTileRequestsXYZ( &tm, tiles, requests, nullptr );
+
+  // Verify the bbox placeholder was replaced
+  QCOMPARE( requests.size(), 1 );
+  QString tileUrl = requests[0].url.toString();
+
+  // Should NOT contain the placeholder anymore
+  QVERIFY( !tileUrl.contains( "{bbox-epsg-3857}" ) );
+
+  // Should contain actual bbox coordinates
+  QVERIFY( tileUrl.contains( "-20037508" ) );
+  QVERIFY( tileUrl.contains( "20037508" ) );
 }
 
 void TestQgsWmsProvider::testXyzIsBasemap()
