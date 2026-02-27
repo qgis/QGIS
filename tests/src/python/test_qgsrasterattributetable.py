@@ -1602,8 +1602,8 @@ class TestQgsRasterAttributeTable(QgisTestCase):
     def test_COG_layout(self):
         # Create a 2x2 cog raster using GDAL
         tif_path = os.path.join(self.temp_path, "cog_layout.tif")
-        driver = gdal.GetDriverByName("COG")
-        dataset = driver.Create(tif_path, 2, 2, 1, gdal.GDT_Byte)
+        driver = gdal.GetDriverByName("MEM")
+        dataset = driver.Create("cog_layout.tif", 2, 2, 1, gdal.GDT_Byte)
         # Set CRS and geotransform to avoid warnings when opening the raster in QGIS
         dataset.SetGeoTransform((0, 1, 0, 0, 0, -1))
         srs = osr.SpatialReference()
@@ -1612,6 +1612,12 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         dataset.GetRasterBand(1).Fill(0)
         dataset.GetRasterBand(1).FlushCache()
         dataset.FlushCache()
+
+        gdal.GetDriverByName("COG").CreateCopy(
+            tif_path,
+            dataset,
+        )
+
         dataset = None
 
         raster = QgsRasterLayer(tif_path)
