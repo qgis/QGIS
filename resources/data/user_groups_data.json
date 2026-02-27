@@ -71,6 +71,17 @@
     {
       "type": "Feature",
       "properties": {
+        "country": "IN",
+        "name": "QGIS India User Group",
+        "logo_url": "https://in.qgis.org/img/qgis_in.png",
+        "website": "https://in.qgis.org/",
+        "year": 2026
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "country": "IT",
         "name": "Gruppo degli utenti italiani di QGIS (Italy)",
         "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1214617887761207301\/SRkxH22U_400x400.jpg",
