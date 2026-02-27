@@ -390,7 +390,7 @@ void QgsColorWidget::setComponent( const QgsColorWidget::ColorComponent componen
 
 void QgsColorWidget::setComponentValue( const int value )
 {
-  setComponentValueF( static_cast<float>( value ) );
+  setComponentValueF( static_cast<float>( value ) / componentRange( mComponent ) );
 }
 
 void QgsColorWidget::setComponentValueF( const float value )
