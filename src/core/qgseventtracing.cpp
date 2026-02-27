@@ -24,6 +24,8 @@ using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
+using namespace Qt::StringLiterals;
+
 struct TraceItem
 {
   QgsEventTracing::EventType type;
