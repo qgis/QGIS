@@ -172,7 +172,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      * \see setFrameSymbol()
      * \note not available in Python bindings
      */
-    const QgsFillSymbol *frameSymbol() const; SIP_SKIP
+    const QgsFillSymbol *frameSymbol() const SIP_SKIP;
 
     /**
      * Retrieves the blending mode used for drawing the overview.
