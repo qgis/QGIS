@@ -435,19 +435,19 @@ bool QgsServerSettings::logProfile() const
 QString QgsServerSettings::serviceUrl( const QString &service ) const
 {
   QString result;
-  if ( service.compare( QLatin1String( "WMS" ) ) )
+  if ( service.compare( QLatin1String( "WMS" ) ) == 0 )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WMS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QLatin1String( "WFS" ) ) )
+  else if ( service.compare( QLatin1String( "WFS" ) ) == 0 )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WFS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QLatin1String( "WCS" ) ) )
+  else if ( service.compare( QLatin1String( "WCS" ) ) == 0 )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WCS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QLatin1String( "WMTS" ) ) )
+  else if ( service.compare( QLatin1String( "WMTS" ) ) == 0 )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WMTS_SERVICE_URL ).toString();
   }
