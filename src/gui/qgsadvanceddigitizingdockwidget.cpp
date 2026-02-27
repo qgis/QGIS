@@ -2005,7 +2005,6 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     case Qt::Key_X:
     {
       // modifier+x ONLY caught for ShortcutOverride events...
-      // Use Alt+X only (not Ctrl+X) to avoid conflict with the standard "Cut" shortcut
       if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::AltModifier )
       {
         mXConstraint->toggleLocked();
@@ -2036,7 +2035,6 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     case Qt::Key_Y:
     {
       // modifier+y ONLY caught for ShortcutOverride events...
-      // Use Alt+Y only (not Ctrl+Y) to avoid conflict with the standard "Redo" shortcut
       if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::AltModifier )
       {
         mYConstraint->toggleLocked();
