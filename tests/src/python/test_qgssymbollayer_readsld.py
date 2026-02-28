@@ -505,6 +505,19 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(settings.yOffset, 0)
         self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderUnit.RenderPixels)
 
+    def test_read_font_decimal(self):
+        layer = createLayerWithOnePoint()
+        mFilePath = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/external_sld/decimal_font_size.sld"
+        )
+        layer.loadSldStyle(mFilePath)
+
+        settings = layer.labeling().settings()
+        format = settings.format()
+
+        self.assertEqual(format.size(), 13.5)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
+
     def test_read_circle(self):
         """Test wellknown name circle polygon fill"""
 

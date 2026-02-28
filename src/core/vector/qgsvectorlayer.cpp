@@ -5634,7 +5634,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   }
 
   QString fontFamily = u"Sans-Serif"_s;
-  int fontPointSize = 10;
+  double fontPointSize = 10;
   Qgis::RenderUnit fontUnitSize = Qgis::RenderUnit::Points;
   int fontWeight = -1;
   bool fontItalic = false;
@@ -5660,7 +5660,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       else if ( it.key() == "font-size"_L1 )
       {
         bool ok;
-        int fontSize = it.value().toInt( &ok );
+        double fontSize = it.value().toDouble( &ok );
         if ( ok )
         {
           fontPointSize = fontSize;
@@ -5680,7 +5680,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   }
 
   QgsTextFormat format;
-  QFont font( fontFamily, fontPointSize, fontWeight, fontItalic );
+  QFont font( fontFamily, 1, fontWeight, fontItalic );
   font.setUnderline( fontUnderline );
   format.setFont( font );
   format.setSize( fontPointSize );
