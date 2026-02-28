@@ -33,6 +33,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsfileutils.h"
 
 #include <QString>
 
@@ -872,6 +873,39 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                          : QFileInfo( uriParts.value( u"vsiSuffix"_s ).toString() ).suffix().toLower();
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
   const Qgis::VsiHandlerType vsiHandlerType = QgsGdalUtils::vsiHandlerType( uriParts.value( u"vsiPrefix"_s ).toString() );
+
+  if ( pathInfo.isDir() && !isOgrSupportedDirectory
+       && uriParts.value( u"vsiPrefix"_s ).toString().isEmpty()
+       && uriParts.value( u"vsiSuffix"_s ).toString().isEmpty() )
+  {
+    QDir dir( path );
+    const QFileInfoList files = dir.entryInfoList( QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+
+    QSet< QString > sidecarFiles;
+    for ( const QFileInfo &info : files )
+    {
+      sidecarFiles.unite( QgsFileUtils::sidecarFilesForPath( info.filePath() ) );
+    }
+
+    QList<QgsProviderSublayerDetails> res;
+    for ( const QFileInfo &info : files )
+    {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      // avoid duplicate layers from dataset sidecar files (e.g. .dbf for .shp)
+      if ( sidecarFiles.contains( info.filePath() ) )
+        continue;
+
+      QVariantMap fileParts = uriParts;
+      fileParts.insert( u"path"_s, info.filePath() );
+      fileParts.remove( u"layerName"_s );
+      fileParts.remove( u"layerId"_s );
+      fileParts.remove( u"geometryType"_s );
+      res << querySublayers( encodeUri( fileParts ), flags, feedback );
+    }
+    return res;
+  }
 
   bool forceDeepScanDir = false;
   if ( pathInfo.isDir() && !isOgrSupportedDirectory )
