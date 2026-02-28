@@ -15,6 +15,8 @@
 
 #include "qgsdemterraingenerator.h"
 
+#include <limits>
+
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdemterraintileloader_p.h"
@@ -79,7 +81,7 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else
-    return 0;
+    return std::numeric_limits<float>::quiet_NaN();
 }
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
