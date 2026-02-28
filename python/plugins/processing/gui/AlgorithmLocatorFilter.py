@@ -258,5 +258,13 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         else:
             feedback = MessageBarProgress(algname=alg.displayName())
             parameters = {}
-            execute_in_place(alg, parameters, feedback=feedback)
+            ok, results = execute_in_place(alg, parameters, feedback=feedback)
+            if ok:
+                iface.messageBar().pushSuccess(
+                    "",
+                    self.tr(
+                        "{algname} completed. %n feature(s) processed.",
+                        n=results["__count"],
+                    ).format(algname=alg.displayName()),
+                )
             feedback.close()
