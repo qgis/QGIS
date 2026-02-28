@@ -802,6 +802,7 @@ set(QGIS_CORE_SRCS
   raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
+  raster/qgsrastercontourlabeling.cpp
   raster/qgsrastercontourrenderer.cpp
   raster/qgsrasterdataprovider.cpp
   raster/qgsrasterdataproviderelevationproperties.cpp
@@ -1964,6 +1965,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasterbandstats.h
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
+  raster/qgsrastercontourlabeling.h
   raster/qgsrastercontourrenderer.h
   raster/qgsrasterdataprovider.h
   raster/qgsrasterdataproviderelevationproperties.h

@@ -42,7 +42,7 @@ class QgsRasterLayerRendererFeedback;
  *
  * \since QGIS 3.42
  */
-class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelProvider
+class CORE_EXPORT QgsRasterLayerLabelProvider : public QgsAbstractLabelProvider
 {
   public:
 
@@ -51,15 +51,15 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
      */
     explicit QgsRasterLayerLabelProvider( QgsRasterLayer *layer );
 
-    ~QgsRasterLayerLabelProvider() final;
-    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext & ) final;
-    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const final;
-    void startRender( QgsRenderContext &context ) final;
+    ~QgsRasterLayerLabelProvider() override;
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext & ) override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void startRender( QgsRenderContext &context ) override;
 
     /**
      * Generates the labels, given a render context and input pipe.
      */
-    void generateLabels( QgsRenderContext &context, QgsRasterPipe *pipe, QgsRasterViewPort *rasterViewPort, QgsRasterLayerRendererFeedback *feedback );
+    virtual void generateLabels( QgsRenderContext &context, QgsRasterPipe *pipe, QgsRasterViewPort *rasterViewPort, QgsRasterLayerRendererFeedback *feedback );
 
     /**
      * Adds a label at the specified point in map coordinates.
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
      */
     void setResampleOver( int pixels );
 
-  private:
+  protected:
     QgsTextFormat mFormat;
     int mBandNumber = 1;
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
@@ -173,6 +173,8 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == "simple" )
       sipType = sipType_QgsRasterLayerSimpleLabeling;
+    else if ( sipCpp->type() == "contour" )
+      sipType = sipType_QgsRasterLayerContourLabeling;
     else
       sipType = 0;
     SIP_END

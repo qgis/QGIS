@@ -18,6 +18,8 @@
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
 #include "qgsproject.h"
+#include "qgsrastercontourlabeling.h"
+#include "qgsrastercontourlabelsettingswidget.h"
 #include "qgsrasterlabelsettingswidget.h"
 #include "qgsrasterlayer.h"
 
@@ -37,6 +39,7 @@ QgsRasterLabelingWidget::QgsRasterLabelingWidget( QgsRasterLayer *layer, QgsMapC
 
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingNone.svg"_s ), tr( "No Labels" ), u"none"_s );
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Label with Pixel Values" ), u"simple"_s );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Label with Contour Lines" ), u"contour"_s );
 
   connect( mLabelModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterLabelingWidget::labelModeChanged );
   setLayer( layer );
@@ -54,6 +57,10 @@ void QgsRasterLabelingWidget::setDockMode( bool dockMode )
   QgsPanelWidget::setDockMode( dockMode );
 
   if ( QgsRasterLabelSettingsWidget *l = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
+  {
+    l->setDockMode( dockMode );
+  }
+  else if ( QgsRasterContourLabelSettingsWidget *l = qobject_cast<QgsRasterContourLabelSettingsWidget *>( mWidget ) )
   {
     l->setDockMode( dockMode );
   }
@@ -92,6 +99,11 @@ void QgsRasterLabelingWidget::adaptToLayer()
       settingsWidget->setLayer( mLayer );
       settingsWidget->setLabeling( labeling );
     }
+    else if ( QgsRasterContourLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterContourLabelSettingsWidget *>( mWidget ) )
+    {
+      settingsWidget->setLayer( mLayer );
+      settingsWidget->setLabeling( labeling );
+    }
   }
   else
   {
@@ -111,6 +123,16 @@ void QgsRasterLabelingWidget::writeSettingsToLayer()
   {
     auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
     if ( QgsRasterLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
+    {
+      settingsWidget->updateLabeling( labeling.get() );
+    }
+    mLayer->setLabeling( labeling.release() );
+    mLayer->setLabelsEnabled( true );
+  }
+  else if ( mode == "contour"_L1 )
+  {
+    auto labeling = std::make_unique<QgsRasterLayerContourLabeling>();
+    if ( QgsRasterContourLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterContourLabelSettingsWidget *>( mWidget ) )
     {
       settingsWidget->updateLabeling( labeling.get() );
     }
@@ -160,6 +182,34 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     if ( !dynamic_cast<QgsRasterLayerSimpleLabeling *>( mLayer->labeling() ) )
     {
       auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
+      settingsWidget->setLabeling( labeling.get() );
+      mLayer->setLabeling( labeling.release() );
+    }
+    else
+    {
+      settingsWidget->setLabeling( mLayer->labeling() );
+    }
+
+    mStackedWidget->addWidget( mWidget );
+    mStackedWidget->setCurrentWidget( mWidget );
+  }
+  else if ( mode == "contour"_L1 )
+  {
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( mMapCanvas );
+    context.setMessageBar( mMessageBar );
+
+    QgsRasterContourLabelSettingsWidget *settingsWidget = new QgsRasterContourLabelSettingsWidget( mLayer, mCanvas, this );
+    settingsWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+    settingsWidget->setContext( context );
+
+    settingsWidget->setDockMode( dockMode() );
+    connect( settingsWidget, &QgsLabelingGui::widgetChanged, this, &QgsRasterLabelingWidget::widgetChanged );
+
+    mWidget = settingsWidget;
+    if ( !dynamic_cast<QgsRasterLayerContourLabeling *>( mLayer->labeling() ) )
+    {
+      auto labeling = std::make_unique<QgsRasterLayerContourLabeling>();
       settingsWidget->setLabeling( labeling.get() );
       mLayer->setLabeling( labeling.release() );
     }

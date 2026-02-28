@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastercontourlabeling.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterLayerContourLabeling : QgsAbstractRasterLayerLabeling
+{
+%Docstring(signature="appended")
+Labeling configuration for raster contour lines.
+
+Produces labels placed along contour lines generated on-the-fly from
+raster data.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsrastercontourlabeling.h"
+%End
+  public:
+
+    QgsRasterLayerContourLabeling();
+    ~QgsRasterLayerContourLabeling();
+
+    virtual QString type() const;
+
+    virtual QgsRasterLayerContourLabeling *clone() const /Factory/;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual bool requiresAdvancedEffects() const;
+
+    virtual bool hasNonDefaultCompositionMode() const;
+
+    virtual void multiplyOpacity( double opacityFactor );
+
+    virtual bool isInScaleRange( double scale ) const;
+
+
+    static QgsRasterLayerContourLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a QgsRasterLayerContourLabeling from a DOM element with saved
+configuration
+%End
+
+    QgsTextFormat textFormat() const;
+    void setTextFormat( const QgsTextFormat &format );
+
+    const QgsNumericFormat *numericFormat() const;
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+
+    bool labelIndexOnly() const;
+    void setLabelIndexOnly( bool indexOnly );
+
+    double priority() const;
+    void setPriority( double priority );
+
+    QgsLabelPlacementSettings &placementSettings();
+    void setPlacementSettings( const QgsLabelPlacementSettings &settings );
+
+    QgsLabelThinningSettings &thinningSettings();
+    void setThinningSettings( const QgsLabelThinningSettings &settings );
+
+    double zIndex() const;
+    void setZIndex( double index );
+
+    double maximumScale() const;
+    void setMaximumScale( double scale );
+
+    double minimumScale() const;
+    void setMinimumScale( double scale );
+
+    void setScaleBasedVisibility( bool enabled );
+    bool hasScaleBasedVisibility() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastercontourlabeling.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

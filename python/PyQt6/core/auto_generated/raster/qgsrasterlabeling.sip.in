@@ -30,6 +30,8 @@ Abstract base class for labeling settings for raster layers.
 %ConvertToSubClassCode
     if ( sipCpp->type() == "simple" )
       sipType = sipType_QgsRasterLayerSimpleLabeling;
+    else if ( sipCpp->type() == "contour" )
+      sipType = sipType_QgsRasterLayerContourLabeling;
     else
       sipType = 0;
 %End

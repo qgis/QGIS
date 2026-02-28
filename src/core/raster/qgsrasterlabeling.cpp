@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlabeling.h"
+#include "qgsrastercontourlabeling.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -332,6 +333,10 @@ QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::createFromElemen
   if ( type == "simple"_L1 )
   {
     return QgsRasterLayerSimpleLabeling::create( element, context );
+  }
+  else if ( type == "contour"_L1 )
+  {
+    return QgsRasterLayerContourLabeling::create( element, context );
   }
   else
   {

@@ -19,6 +19,7 @@ set(QGIS_GUI_SRCS
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterlabelingwidget.cpp
+  raster/qgsrastercontourlabelsettingswidget.cpp
   raster/qgsrasterlabelsettingswidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
@@ -1564,6 +1565,7 @@ set(QGIS_GUI_HDRS
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
   raster/qgsrasterlabelingwidget.h
+  raster/qgsrastercontourlabelsettingswidget.h
   raster/qgsrasterlabelsettingswidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h

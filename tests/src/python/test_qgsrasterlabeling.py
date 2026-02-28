@@ -20,6 +20,7 @@ from qgis.core import (
     QgsPercentageNumericFormat,
     QgsProperty,
     QgsRasterLayer,
+    QgsRasterLayerContourLabeling,
     QgsRasterLayerSimpleLabeling,
     QgsReadWriteContext,
     QgsRectangle,
@@ -416,6 +417,166 @@ class TestQgsRasterLabeling(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check("resampling", "resampling", mapsettings)
         )
+
+
+    def test_contour_labeling(self):
+        labeling = QgsRasterLayerContourLabeling()
+        self.assertEqual(labeling.type(), "contour")
+
+        labeling.setBand(2)
+        text_format = QgsTextFormat()
+        text_format.setSize(14)
+        labeling.setTextFormat(text_format)
+        labeling.setNumericFormat(QgsCurrencyNumericFormat())
+        labeling.setContourInterval(25)
+        labeling.setContourIndexInterval(100)
+        labeling.setDownscale(8)
+        labeling.setLabelIndexOnly(True)
+        labeling.setPriority(0.3)
+        labeling.placementSettings().setOverlapHandling(
+            Qgis.LabelOverlapHandling.AllowOverlapIfRequired
+        )
+        labeling.thinningSettings().setLimitNumberLabelsEnabled(True)
+        labeling.thinningSettings().setMaximumNumberLabels(500)
+        labeling.setZIndex(5)
+        labeling.setMaximumScale(5000)
+        labeling.setMinimumScale(50000)
+        labeling.setScaleBasedVisibility(True)
+
+        self.assertEqual(labeling.band(), 2)
+        self.assertEqual(labeling.textFormat().size(), 14)
+        self.assertIsInstance(labeling.numericFormat(), QgsCurrencyNumericFormat)
+        self.assertEqual(labeling.contourInterval(), 25)
+        self.assertEqual(labeling.contourIndexInterval(), 100)
+        self.assertEqual(labeling.downscale(), 8)
+        self.assertTrue(labeling.labelIndexOnly())
+        self.assertEqual(labeling.priority(), 0.3)
+        self.assertEqual(
+            labeling.placementSettings().overlapHandling(),
+            Qgis.LabelOverlapHandling.AllowOverlapIfRequired,
+        )
+        self.assertTrue(labeling.thinningSettings().limitNumberOfLabelsEnabled())
+        self.assertEqual(labeling.thinningSettings().maximumNumberLabels(), 500)
+        self.assertEqual(labeling.zIndex(), 5)
+        self.assertEqual(labeling.maximumScale(), 5000)
+        self.assertEqual(labeling.minimumScale(), 50000)
+        self.assertTrue(labeling.hasScaleBasedVisibility())
+
+        labeling_clone = labeling.clone()
+        self.assertIsInstance(labeling_clone, QgsRasterLayerContourLabeling)
+        self.assertEqual(labeling_clone.band(), 2)
+        self.assertEqual(labeling_clone.textFormat().size(), 14)
+        self.assertIsInstance(labeling_clone.numericFormat(), QgsCurrencyNumericFormat)
+        self.assertEqual(labeling_clone.contourInterval(), 25)
+        self.assertEqual(labeling_clone.contourIndexInterval(), 100)
+        self.assertEqual(labeling_clone.downscale(), 8)
+        self.assertTrue(labeling_clone.labelIndexOnly())
+        self.assertEqual(labeling_clone.priority(), 0.3)
+        self.assertEqual(
+            labeling_clone.placementSettings().overlapHandling(),
+            Qgis.LabelOverlapHandling.AllowOverlapIfRequired,
+        )
+        self.assertTrue(labeling_clone.thinningSettings().limitNumberOfLabelsEnabled())
+        self.assertEqual(labeling_clone.thinningSettings().maximumNumberLabels(), 500)
+        self.assertEqual(labeling_clone.zIndex(), 5)
+        self.assertEqual(labeling_clone.maximumScale(), 5000)
+        self.assertEqual(labeling_clone.minimumScale(), 50000)
+        self.assertTrue(labeling_clone.hasScaleBasedVisibility())
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = labeling.save(doc, context)
+
+        labeling_from_xml = QgsAbstractRasterLayerLabeling.createFromElement(
+            element, context
+        )
+        self.assertIsInstance(labeling_from_xml, QgsRasterLayerContourLabeling)
+        self.assertEqual(labeling_from_xml.band(), 2)
+        self.assertEqual(labeling_from_xml.textFormat().size(), 14)
+        self.assertIsInstance(
+            labeling_from_xml.numericFormat(), QgsCurrencyNumericFormat
+        )
+        self.assertEqual(labeling_from_xml.contourInterval(), 25)
+        self.assertEqual(labeling_from_xml.contourIndexInterval(), 100)
+        self.assertEqual(labeling_from_xml.downscale(), 8)
+        self.assertTrue(labeling_from_xml.labelIndexOnly())
+        self.assertEqual(labeling_from_xml.priority(), 0.3)
+        self.assertEqual(
+            labeling_from_xml.placementSettings().overlapHandling(),
+            Qgis.LabelOverlapHandling.AllowOverlapIfRequired,
+        )
+        self.assertTrue(
+            labeling_from_xml.thinningSettings().limitNumberOfLabelsEnabled()
+        )
+        self.assertEqual(
+            labeling_from_xml.thinningSettings().maximumNumberLabels(), 500
+        )
+        self.assertEqual(labeling_from_xml.zIndex(), 5)
+        self.assertEqual(labeling_from_xml.maximumScale(), 5000)
+        self.assertEqual(labeling_from_xml.minimumScale(), 50000)
+        self.assertTrue(labeling_from_xml.hasScaleBasedVisibility())
+
+    def test_contour_labeling_defaults(self):
+        labeling = QgsRasterLayerContourLabeling()
+        self.assertEqual(labeling.band(), 1)
+        self.assertEqual(labeling.contourInterval(), 100)
+        self.assertEqual(labeling.contourIndexInterval(), 0)
+        self.assertEqual(labeling.downscale(), 4)
+        self.assertFalse(labeling.labelIndexOnly())
+        self.assertEqual(labeling.priority(), 0.5)
+        self.assertEqual(labeling.zIndex(), 0)
+        self.assertFalse(labeling.hasScaleBasedVisibility())
+        self.assertIsNotNone(labeling.numericFormat())
+        self.assertIsInstance(labeling.numericFormat(), QgsBasicNumericFormat)
+        self.assertTrue(labeling.thinningSettings().limitNumberOfLabelsEnabled())
+        self.assertEqual(labeling.thinningSettings().maximumNumberLabels(), 2000)
+
+    def test_contour_labeling_scale_range(self):
+        labeling = QgsRasterLayerContourLabeling()
+        self.assertTrue(labeling.isInScaleRange(1000))
+        self.assertTrue(labeling.isInScaleRange(100000))
+
+        labeling.setScaleBasedVisibility(True)
+        labeling.setMaximumScale(10000)
+        labeling.setMinimumScale(50000)
+        self.assertFalse(labeling.isInScaleRange(5000))
+        self.assertTrue(labeling.isInScaleRange(25000))
+        self.assertFalse(labeling.isInScaleRange(100000))
+
+    def test_contour_labeling_layer_roundtrip(self):
+        raster_layer = QgsRasterLayer(
+            self.get_test_data_path("raster/dem.tif").as_posix()
+        )
+        self.assertTrue(raster_layer.isValid())
+
+        labeling = QgsRasterLayerContourLabeling()
+        labeling.setContourInterval(50)
+        labeling.setBand(1)
+        raster_layer.setLabeling(labeling)
+        raster_layer.setLabelsEnabled(True)
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = doc.createElement("maplayer")
+        raster_layer.writeLayerXml(element, doc, context)
+
+        raster_layer2 = QgsRasterLayer(
+            self.get_test_data_path("raster/dem.tif").as_posix()
+        )
+        raster_layer2.readLayerXml(element, context)
+
+        self.assertIsInstance(raster_layer2.labeling(), QgsRasterLayerContourLabeling)
+        self.assertTrue(raster_layer2.labelsEnabled())
+        self.assertEqual(raster_layer2.labeling().contourInterval(), 50)
+
+    def testHasNonDefaultCompositionModeContour(self):
+        labeling = QgsRasterLayerContourLabeling()
+        self.assertFalse(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
 
 
 if __name__ == "__main__":
