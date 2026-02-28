@@ -4274,6 +4274,7 @@ QgsExpressionNodeBetweenOperator.evalNode: src/core/expression/qgsexpressionnode
 QgsExpressionNodeBetweenOperator.higherBound: src/core/expression/qgsexpressionnodeimpl.h#L351
 QgsExpressionNodeBetweenOperator.isStatic: src/core/expression/qgsexpressionnodeimpl.h#L341
 QgsExpressionNodeBetweenOperator.lowerBound: src/core/expression/qgsexpressionnodeimpl.h#L346
+QgsExpressionNodeBetweenOperator.needsGeometry: src/core/expression/qgsexpressionnodeimpl.h#L339
 QgsExpressionNodeBetweenOperator.negate: src/core/expression/qgsexpressionnodeimpl.h#L356
 QgsExpressionNodeBetweenOperator.node: src/core/expression/qgsexpressionnodeimpl.h#L327
 QgsExpressionNodeBetweenOperator.nodeType: src/core/expression/qgsexpressionnodeimpl.h#L330
@@ -4325,6 +4326,7 @@ QgsExpressionNodeFunction.dump: src/core/expression/qgsexpressionnodeimpl.h#L482
 QgsExpressionNodeFunction.evalNode: src/core/expression/qgsexpressionnodeimpl.h#L481
 QgsExpressionNodeFunction.fnIndex: src/core/expression/qgsexpressionnodeimpl.h#L472
 QgsExpressionNodeFunction.isStatic: src/core/expression/qgsexpressionnodeimpl.h#L491
+QgsExpressionNodeFunction.needsGeometry: src/core/expression/qgsexpressionnodeimpl.h#L489
 QgsExpressionNodeFunction.nodeType: src/core/expression/qgsexpressionnodeimpl.h#L479
 QgsExpressionNodeFunction.prepareNode: src/core/expression/qgsexpressionnodeimpl.h#L480
 QgsExpressionNodeFunction.validateParams: src/core/expression/qgsexpressionnodeimpl.h#L494
@@ -4335,6 +4337,7 @@ QgsExpressionNodeInOperator.evalNode: src/core/expression/qgsexpressionnodeimpl.
 QgsExpressionNodeInOperator.isNotIn: src/core/expression/qgsexpressionnodeimpl.h#L401
 QgsExpressionNodeInOperator.isStatic: src/core/expression/qgsexpressionnodeimpl.h#L419
 QgsExpressionNodeInOperator.list: src/core/expression/qgsexpressionnodeimpl.h#L406
+QgsExpressionNodeInOperator.needsGeometry: src/core/expression/qgsexpressionnodeimpl.h#L417
 QgsExpressionNodeInOperator.node: src/core/expression/qgsexpressionnodeimpl.h#L396
 QgsExpressionNodeInOperator.nodeType: src/core/expression/qgsexpressionnodeimpl.h#L408
 QgsExpressionNodeInOperator.prepareNode: src/core/expression/qgsexpressionnodeimpl.h#L409
@@ -4354,6 +4357,7 @@ QgsExpressionNodeLiteral.clone: src/core/expression/qgsexpressionnodeimpl.h#L548
 QgsExpressionNodeLiteral.dump: src/core/expression/qgsexpressionnodeimpl.h#L540
 QgsExpressionNodeLiteral.evalNode: src/core/expression/qgsexpressionnodeimpl.h#L539
 QgsExpressionNodeLiteral.isStatic: src/core/expression/qgsexpressionnodeimpl.h#L549
+QgsExpressionNodeLiteral.needsGeometry: src/core/expression/qgsexpressionnodeimpl.h#L547
 QgsExpressionNodeLiteral.nodeType: src/core/expression/qgsexpressionnodeimpl.h#L537
 QgsExpressionNodeLiteral.prepareNode: src/core/expression/qgsexpressionnodeimpl.h#L538
 QgsExpressionNodeLiteral.value: src/core/expression/qgsexpressionnodeimpl.h#L535
@@ -4364,6 +4368,7 @@ QgsExpressionNodeUnaryOperator.clone: src/core/expression/qgsexpressionnodeimpl.
 QgsExpressionNodeUnaryOperator.dump: src/core/expression/qgsexpressionnodeimpl.h#L74
 QgsExpressionNodeUnaryOperator.evalNode: src/core/expression/qgsexpressionnodeimpl.h#L73
 QgsExpressionNodeUnaryOperator.isStatic: src/core/expression/qgsexpressionnodeimpl.h#L83
+QgsExpressionNodeUnaryOperator.needsGeometry: src/core/expression/qgsexpressionnodeimpl.h#L80
 QgsExpressionNodeUnaryOperator.nodeType: src/core/expression/qgsexpressionnodeimpl.h#L71
 QgsExpressionNodeUnaryOperator.op: src/core/expression/qgsexpressionnodeimpl.h#L64
 QgsExpressionNodeUnaryOperator.operand: src/core/expression/qgsexpressionnodeimpl.h#L69
