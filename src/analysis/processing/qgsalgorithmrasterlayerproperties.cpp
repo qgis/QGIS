@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmrasterlayerproperties.h"
 
+#include "qgsreferencedgeometry.h"
 #include "qgsstringutils.h"
 
 #include <QString>
@@ -118,7 +119,7 @@ bool QgsRasterLayerPropertiesAlgorithm::prepareAlgorithm( const QVariantMap &par
 QVariantMap QgsRasterLayerPropertiesAlgorithm::processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QVariantMap outputs;
-  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"EXTENT"_s, QgsReferencedRectangle( mExtent, mCrs ).toString() );
   outputs.insert( u"X_MIN"_s, mExtent.xMinimum() );
   outputs.insert( u"X_MAX"_s, mExtent.xMaximum() );
   outputs.insert( u"Y_MIN"_s, mExtent.yMinimum() );

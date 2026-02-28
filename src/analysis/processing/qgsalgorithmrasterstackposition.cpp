@@ -20,6 +20,7 @@
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterprojector.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QString>
 
@@ -228,7 +229,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
   }
 
   QVariantMap outputs;
-  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"EXTENT"_s, QgsReferencedRectangle( mExtent, mCrs ).toString() );
   outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
   outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
   outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );

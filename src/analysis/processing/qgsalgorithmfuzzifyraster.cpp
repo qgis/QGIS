@@ -18,6 +18,7 @@
 #include "qgsalgorithmfuzzifyraster.h"
 
 #include "qgsrasterfilewriter.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsstringutils.h"
 
 #include <QString>
@@ -141,7 +142,7 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
   }
 
   QVariantMap outputs;
-  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"EXTENT"_s, QgsReferencedRectangle( mExtent, mCrs ).toString() );
   outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
   outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
   outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );
