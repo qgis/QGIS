@@ -333,14 +333,6 @@ double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  if ( mMap.projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
-  {
-    QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
-    const float viewWidthFromCenter = mCameraController->distance();
-    const float viewHeightFromCenter = viewportRect.height() * viewWidthFromCenter / viewportRect.width();
-    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
-  }
-
   updateScene( true );
   updateCameraNearFarPlanes();
 
