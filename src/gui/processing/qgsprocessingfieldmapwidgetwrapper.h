@@ -48,6 +48,14 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
+    /**
+     * Set the processing mode type for the widget
+     * Used to change the behavior of the widget when set to Qgis::ProcessingMode::Modeler.
+     *
+     * \since QGIS 3.44.8
+     */
+    void setProcessingModeType( Qgis::ProcessingMode type );
+
   signals:
 
     void changed();
@@ -59,6 +67,9 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
 
   private:
     QgsFieldMappingModel *mModel = nullptr;
+
+
+    Qgis::ProcessingMode mType = Qgis::ProcessingMode::Standard;
 
     QgsVectorLayer *mLayer = nullptr;
     bool mSkipConfirmDialog = false;
