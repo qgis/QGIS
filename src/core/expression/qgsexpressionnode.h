@@ -258,7 +258,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    virtual QList<const QgsExpressionNode *> nodes( ) const = 0; SIP_SKIP
+    virtual QList<const QgsExpressionNode *> nodes( ) const SIP_SKIP = 0;
 
     /**
      * Abstract virtual method which returns if the geometry is required to evaluate

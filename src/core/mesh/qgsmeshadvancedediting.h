@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : public QgsTopologicalMesh::Changes SI
      *
      * The method has to be implemented in the derived class to provide the changes of the advanced editing
      */
-    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0; SIP_SKIP
+    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) SIP_SKIP = 0;
 
     friend class QgsMeshEditor;
 };

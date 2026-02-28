@@ -182,6 +182,7 @@ Returns the fill symbol used for drawing the overview extent.
 .. seealso:: :py:func:`setFrameSymbol`
 %End
 
+
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Retrieves the blending mode used for drawing the overview.
