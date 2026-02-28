@@ -149,6 +149,11 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( request );
+  if ( QThread::currentThread() != thread() )
+  {
+    // Move the network content fetcher task to the content cache thread
+    task->moveToThread( thread() );
+  }
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task, path, missingContent]
   {
     const QMutexLocker locker( &mMutex );
