@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
+#include "qgs3dcameracontrolswidget.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
@@ -81,7 +82,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
   actionCameraControl->setCheckable( true );
@@ -286,6 +286,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
       connect( sc, &QShortcut::activated, this, slot );
   };
   createShortcuts( u"m3DSetSceneExtent"_s, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+
+  mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera controls" ), this );
+  connect( mActionOpenCameraControlsWidget, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configureCamera );
+  mCameraMenu->addAction( mActionOpenCameraControlsWidget );
 
   mCrossSectionMenu = new QMenu( this );
   mActionCrossSection = new QAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section" ), this );
@@ -817,6 +821,30 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 void Qgs3DMapCanvasWidget::resetView()
 {
   mCanvas->resetView();
+}
+
+void Qgs3DMapCanvasWidget::configureCamera()
+{
+  if ( mCameraControlsDialog )
+  {
+    mCameraControlsDialog->raise();
+    return;
+  }
+
+  mCameraControlsDialog = new QDialog( this );
+  mCameraControlsDialog->setAttribute( Qt::WA_DeleteOnClose );
+  mCameraControlsDialog->setWindowTitle( tr( "Camera controls" ) );
+  mCameraControlsDialog->setObjectName( u"3DCameraControlsDialog"_s );
+  mCameraControlsDialog->setMinimumSize( 300, 200 );
+  QgsGui::enableAutoGeometryRestore( mCameraControlsDialog );
+
+  Qgs3DCameraControlsWidget *w = new Qgs3DCameraControlsWidget( mCanvas, mCameraControlsDialog );
+  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, w, &Qgs3DCameraControlsWidget::updateFromCamera );
+
+  QVBoxLayout *layout = new QVBoxLayout( mCameraControlsDialog );
+  layout->addWidget( w );
+
+  mCameraControlsDialog->show();
 }
 
 void Qgs3DMapCanvasWidget::configure()
