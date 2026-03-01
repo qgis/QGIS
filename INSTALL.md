@@ -1373,4 +1373,4 @@ The following people have contributed to this document:
 * MXE/Mingw64 section
   * Alessandro Pasotti (2018-2021)
 
-NOTE:  The window build instructions may change over time. Please refer to the latest ms-windows/mingw folder for current build scripts.
+NOTE:  The Windows build instructions may change over time. Please refer to the latest `ms-windows/mingw` folder for current build scripts.
