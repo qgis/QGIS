@@ -9,7 +9,6 @@
 
 
 
-
 class QgsScaleCalculator
 {
 %Docstring(signature="appended")
@@ -81,6 +80,25 @@ Set the map units.
 Returns current map units.
 
 .. seealso:: :py:func:`setMapUnits`
+%End
+
+    void setEllipsoid( const QString &ellipsoid );
+%Docstring
+Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
+
+.. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 4.2
+%End
+
+    QString ellipsoid() const;
+%Docstring
+Returns ellipsoid's acronym.
+
+.. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 4.2
 %End
 
     double calculate( const QgsRectangle &mapExtent, double canvasWidth ) const;

@@ -1178,13 +1178,13 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertAlmostEqual(map.scale(), 52333363, -4)
         ms = map.mapSettings(map.extent(), map.rect().size(), 300, False)
         self.assertEqual(ms.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop)
-        self.assertAlmostEqual(ms.scale(), 618110591, -4)
+        self.assertAlmostEqual(ms.scale(), 618060295, -4)
 
         p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalBottom)
         self.assertAlmostEqual(map.scale(), 8924266, -4)
         ms = map.mapSettings(map.extent(), map.rect().size(), 300, False)
         self.assertEqual(ms.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalBottom)
-        self.assertAlmostEqual(ms.scale(), 105404726, -4)
+        self.assertAlmostEqual(ms.scale(), 105412516, -4)
 
 
 if __name__ == "__main__":
