@@ -731,7 +731,6 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) const
 {
 #ifdef WITH_BINDINGS
-  bool supportsQgis4 = true;
   const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, u"supportsQt6"_s ).trimmed();
   if ( supportsQt6.compare( "YES"_L1, Qt::CaseInsensitive ) != 0 && supportsQt6.compare( "TRUE"_L1, Qt::CaseInsensitive ) != 0 )
   {
@@ -739,15 +738,10 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
     {
       return false;
     }
-    supportsQgis4 = false;
   }
   const QString minVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMinimumVersion"_s );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
-  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
-  if ( maxVersion == "__error__"_L1 && minVersion.startsWith( "3."_L1 ) && supportsQgis4 )
-  {
-    maxVersion = "4.99.0"_L1;
-  }
+  const QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
   return minVersion != "__error__"_L1 && checkQgisVersion( minVersion, maxVersion );
 #else
   Q_UNUSED( packageName )
