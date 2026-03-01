@@ -137,6 +137,14 @@
       "roles": [
         "data"
       ]
+    },
+    "tiledb-array": {
+      "href": "az://some-url.com/tiledb_array",
+      "title": "Example TileDB array",
+      "type": "application/tiledb",
+      "roles": [
+        "data"
+      ]
     }
   }
 }
