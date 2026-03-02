@@ -357,6 +357,7 @@ class TestQgsTaskManager : public QObject
     void scopedProxyTask();
     void hiddenTask();
     void testQgsTaskWithSerialSubTasks();
+    void taskCreatedInBackgroundThread();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -1788,6 +1789,49 @@ void TestQgsTaskManager::testQgsTaskWithSerialSubTasks()
   QVERIFY( task->runCalled );
 
   taskWithSerialSubTasks->cancel();
+}
+
+class BackgroundTaskCreator : public QRunnable
+{
+  public:
+    BackgroundTaskCreator( QgsTaskManager *manager, std::atomic<QgsTask *> *createdTask )
+      : mManager( manager )
+      , mCreatedTask( createdTask )
+    {
+    }
+
+    void run() override
+    {
+      // force creation of a task in a thread WITHOUT an event loop
+      SuccessTask *task = new SuccessTask( u"background_created_task"_s );
+      mCreatedTask->store( task );
+      mManager->addTask( task );
+    }
+
+  private:
+    QgsTaskManager *mManager = nullptr;
+    std::atomic<QgsTask *> *mCreatedTask = nullptr;
+};
+
+void TestQgsTaskManager::taskCreatedInBackgroundThread()
+{
+  QgsTaskManager manager;
+  std::atomic<QgsTask *> task = nullptr;
+  BackgroundTaskCreator *creator = new BackgroundTaskCreator( &manager, &task );
+
+  // wait for task to be created and added to our manager
+  QSignalSpy spy( &manager, &QgsTaskManager::taskAdded );
+  QThreadPool::globalInstance()->start( creator );
+  spy.wait();
+
+  QElapsedTimer timer;
+  timer.start();
+  while ( task.load()->status() != QgsTask::Complete && timer.elapsed() < 5000 )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  QCOMPARE( task.load()->status(), QgsTask::Complete );
 }
 
 QGSTEST_MAIN( TestQgsTaskManager )
