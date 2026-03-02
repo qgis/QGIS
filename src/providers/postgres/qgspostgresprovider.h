@@ -507,6 +507,7 @@ class QgsPostgresProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsPostgresProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
@@ -530,6 +531,7 @@ class QgsPostgresProviderMetadata final : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };

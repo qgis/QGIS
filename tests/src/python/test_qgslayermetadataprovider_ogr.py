@@ -1,4 +1,4 @@
-""""Test for ogr layer metadata provider
+""" "Test for ogr layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,10 +14,9 @@ __copyright__ = "Copyright 2022, ItOpen"
 import os
 import shutil
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import QgsProviderRegistry, QgsVectorLayer
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from qgslayermetadataprovidertestbase import (
     TEST_DATA_DIR,
     LayerMetadataProviderTestBase,
@@ -27,7 +26,6 @@ from qgslayermetadataprovidertestbase import (
 class TestPostgresLayerMetadataProvider(
     unittest.TestCase, LayerMetadataProviderTestBase
 ):
-
     def getMetadataProviderId(self) -> str:
 
         return "ogr"

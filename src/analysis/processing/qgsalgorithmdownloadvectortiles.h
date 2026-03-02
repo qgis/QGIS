@@ -18,12 +18,13 @@
 #ifndef QGSALGORITHMDOWNLOADVECTORTILES_H
 #define QGSALGORITHMDOWNLOADVECTORTILES_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsvectortilematrixset.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

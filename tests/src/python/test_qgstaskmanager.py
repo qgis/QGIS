@@ -11,13 +11,13 @@ __date__ = "26/04/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
+import unittest
 from time import sleep
 
+from qgis.core import QgsApplication, QgsTask
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import QgsApplication, QgsTask
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -69,7 +69,6 @@ def run_multiple_val_result(task):
 
 
 class TestQgsTaskManager(QgisTestCase):
-
     def testTaskFromFunction(self):
         """test creating task from function"""
 

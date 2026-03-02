@@ -20,11 +20,11 @@
 #include "qgscustomization.h"
 #include "qgscustomizationdialog.h"
 #include "qgslayertreeview.h"
-#include "qgsstatusbar.h"
 #include "qgstest.h"
 
 #include <QAbstractItemModelTester>
 #include <QDockWidget>
+#include <QMenu>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -75,6 +75,7 @@ class TestQgsCustomization : public QgsTest
 
     static QAction *findQAction( const QString &path );
     static long long qactionPosition( const QString &path );
+    static QList<QAction *> findQActions( const QWidget *widget, const QString &actionText );
 
     std::unique_ptr<QgisApp> mQgisApp;
     std::unique_ptr<QTemporaryFile> mCustomizationFile;
@@ -93,6 +94,18 @@ QWidget *TestQgsCustomization::findQWidget( const QString &path )
 QAction *TestQgsCustomization::findQAction( const QString &path )
 {
   return QgsCustomization::findQAction( path );
+}
+
+QList<QAction *> TestQgsCustomization::findQActions( const QWidget *widget, const QString &actionText )
+{
+  QList<QAction *> actions;
+  const QList<QAction *> allActions = widget->actions();
+  for ( QAction *action : std::as_const( allActions ) )
+  {
+    if ( action->text() == actionText )
+      actions << action;
+  }
+  return actions;
 }
 
 long long TestQgsCustomization::qactionPosition( const QString &path )
@@ -121,6 +134,9 @@ void TestQgsCustomization::init()
 {
   mQgisApp = std::make_unique<QgisApp>();
   mQgisApp->createStatusBar();
+
+  mQgisApp->mToolbarMenu = new QMenu( u"Toolbars"_s, mQgisApp.get() );
+  mQgisApp->mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   QgsBrowserGuiModel *browserModel = new QgsBrowserGuiModel( this );
   mQgisApp->mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), browserModel, mQgisApp.get() );
@@ -226,7 +242,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() ); // not visible by default
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 
@@ -544,7 +560,7 @@ void TestQgsCustomization::testClone()
   QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 
@@ -730,7 +746,7 @@ void TestQgsCustomization::testModel()
   // the action is no longer visible
   QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
 
-  // test add/delete
+  // test add/setVisible/setHidden/delete for user menu
   {
     const QModelIndex menusIndex = model.index( 2, 0 );
     QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
@@ -742,11 +758,59 @@ void TestQgsCustomization::testModel()
     QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
 
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole ) );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( !findQWidget( "Menus/UserMenu_1" ) );
+
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Checked, Qt::ItemDataRole::CheckStateRole ) );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
+
     model.deleteUserItems( QList<QModelIndex>() << newItemIndex );
 
     model.apply();
     QVERIFY( !getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( !findQWidget( "Menus/UserMenu_1" ) );
+  }
+
+  // test add/setVisible/setHidden/delete for user toolbar
+  {
+    const QModelIndex toolbarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolbarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
+
+    const QModelIndex newItemIndex = model.addUserItem( toolbarsIndex );
+    QCOMPARE( model.data( newItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserToolBar_1"_s );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
+
+    QList<QAction *> actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
+    QCOMPARE( actions.count(), 1 );
+
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole ) );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QVERIFY( !findQWidget( "ToolBars/UserToolBar_1" ) );
+    actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
+    QCOMPARE( actions.count(), 0 );
+
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Checked, Qt::ItemDataRole::CheckStateRole ) );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
+    actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
+    QCOMPARE( actions.count(), 1 );
+
+    model.deleteUserItems( QList<QModelIndex>() << newItemIndex );
+
+    model.apply();
+    QVERIFY( !getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QVERIFY( !findQWidget( "ToolBars/UserToolBar_1" ) );
+    actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
+    QCOMPARE( actions.count(), 0 );
   }
 }
 

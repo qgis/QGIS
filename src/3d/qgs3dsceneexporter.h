@@ -16,6 +16,7 @@
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
 
+#include "qgis_3d.h"
 #include "qgs3dexportobject.h"
 #include "qgsfeatureid.h"
 
@@ -27,6 +28,8 @@
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
+
+#define SIP_NO_FILE
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -45,7 +48,6 @@ class QgsPoint3DSymbol;
 class QgsMeshEntity;
 class TestQgs3DExporter;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Entity that handles the exporting of 3D scenes.

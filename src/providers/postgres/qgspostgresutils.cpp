@@ -750,6 +750,9 @@ BEGIN
         WHERE name = OLD.NAME;
 
     ELSIF TG_OP = 'UPDATE' THEN
+      IF NEW.name IS DISTINCT FROM OLD.name THEN
+        UPDATE %1.qgis_projects_versions SET name = NEW.name WHERE name = OLD.name;
+      END IF;
       IF NEW.content IS DISTINCT FROM OLD.content THEN
           INSERT INTO %1.qgis_projects_versions ( name, metadata, content, comment, date_saved )
             VALUES (OLD.name, OLD.metadata, OLD.content, OLD.comment,
@@ -832,6 +835,22 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
   QgsPostgresResult resDelete( conn->PQexec( sqlDelete ) );
 
   if ( resDelete.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsPostgresUtils::renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName )
+{
+  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                        .arg( QgsPostgresConn::quotedValue( newProjectName ) )
+                        .arg( QgsPostgresConn::quotedValue( oldProjectName ) );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     return false;
   }

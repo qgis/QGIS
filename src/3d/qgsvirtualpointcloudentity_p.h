@@ -16,7 +16,6 @@
 #ifndef QGSVIRTUALPOINTCLOUDENTITY_P_H
 #define QGSVIRTUALPOINTCLOUDENTITY_P_H
 
-#define SIP_NO_FILE
 ///@cond PRIVATE
 
 //
@@ -33,6 +32,8 @@
 #include "qgschunkedentity.h"
 #include "qgscoordinatetransform.h"
 #include "qgspointcloudlayerchunkloader_p.h"
+
+#define SIP_NO_FILE
 
 class QgsAABB;
 class QgsChunkBoundsEntity;

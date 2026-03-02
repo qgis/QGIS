@@ -21,26 +21,26 @@ __copyright__ = "(C) 2017, Nyall Dawson"
 
 from qgis.core import (
     QgsApplication,
-    QgsProcessingAlgorithm,
-    QgsProcessingFeatureBasedAlgorithm,
+    QgsFields,
     QgsLocatorFilter,
     QgsLocatorResult,
-    QgsProcessing,
-    QgsWkbTypes,
     QgsMapLayerType,
-    QgsFields,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingFeatureBasedAlgorithm,
     QgsStringUtils,
+    QgsWkbTypes,
 )
-from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
+from qgis.utils import iface
+
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmExecutor import execute_in_place
-from qgis.utils import iface
-from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.MessageDialog import MessageDialog
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -143,7 +143,6 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
 
 
 class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -259,5 +258,13 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         else:
             feedback = MessageBarProgress(algname=alg.displayName())
             parameters = {}
-            execute_in_place(alg, parameters, feedback=feedback)
+            ok, results = execute_in_place(alg, parameters, feedback=feedback)
+            if ok:
+                iface.messageBar().pushSuccess(
+                    "",
+                    self.tr(
+                        "{algname} completed. %n feature(s) processed.",
+                        n=results["__count"],
+                    ).format(algname=alg.displayName()),
+                )
             feedback.close()

@@ -52,8 +52,6 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStream
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingNurbsDegree = new QgsSettingsEntryInteger( u"nurbs-degree"_s, QgsSettingsTree::sTreeDigitizing, 3 );
 
-const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *QgsSettingsRegistryCore::settingsDigitizingNurbsMode = new QgsSettingsEntryEnumFlag<Qgis::NurbsMode>( u"nurbs-mode"_s, QgsSettingsTree::sTreeDigitizing, Qgis::NurbsMode::ControlPoints );
-
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( u"line-width"_s, QgsSettingsTree::sTreeDigitizing, 1 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( u"line-color"_s, QgsSettingsTree::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
@@ -126,8 +124,6 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerParallelLoadin
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirectory = new QgsSettingsEntryString( u"directory"_s, QgsSettingsTree::sTreeNetworkCache, QString(), u"Network disk cache directory"_s );
 
 const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( u"size-bytes"_s, QgsSettingsTree::sTreeNetworkCache, 0, u"Network disk cache size in bytes (0 = automatic size)"_s );
-
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
 
 const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode>( u"code-execution-behavior-undetermined-projects"_s, QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, u"Behavior for embedded scripts within projects of undetermined trust"_s );
 

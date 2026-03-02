@@ -14,15 +14,15 @@ test_versioncompare.py
  ***************************************************************************/
 """
 
-from pyplugin_installer.version_compare import compareVersions
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from pyplugin_installer.version_compare import compareVersions
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestVersionCompare(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         pass

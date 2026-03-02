@@ -193,6 +193,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       LayerTypesForUri = 1 << 1, //!< Indicates that the metadata can determine valid layer types for a URI
       QuerySublayers = 1 << 2, //!< Indicates that the metadata can query sublayers for a URI \since QGIS 3.22
       CreateDatabase = 1 << 3, //!< Indicates that the metadata can create new empty databases \since QGIS 3.28
+      UrisReferToSame = 1 << 4, //!< Indicates that the metadata can check whether layer URIs refer to the same object \since QGIS 4.0
     };
     Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
 
@@ -629,6 +630,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.42
      */
     virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
+
+    /**
+     * Returns TRUE if the URI \a uri1 and \a uri2 point to the same resource at the specified hierarchy \a level.
+     *
+     * This method parses the underlying connection parameters of \a uri1 and \a uri2
+     * to check if they share the same scope defined by \a level.
+     *
+     * \note This method is only valid for URIs from the same data provider.
+     *
+     * \warning Not all providers implement this functionality. Check whether capabilities() returns the
+     * ProviderMetadataCapability::UrisReferToSame to determine whether a specific provider metadata object
+     * supports this method.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const;
 
     /**
      * Returns data item providers. Caller is responsible for ownership of the item providers

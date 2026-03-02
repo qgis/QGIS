@@ -19,29 +19,29 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingModelOutput,
-    QgsProcessingModelAlgorithm,
-    QgsProject,
     Qgis,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingModelOutput,
+    QgsProcessingParameterDefinition,
+    QgsProject,
 )
 from qgis.gui import (
-    QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
-    QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
     QgsModelOutputGraphicItem,
+    QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
+    QgsProcessingParameterDefinitionDialog,
+    QgsProcessingParameterWidgetContext,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
+
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
-from qgis.utils import iface
 
 
 class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
@@ -58,7 +58,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context

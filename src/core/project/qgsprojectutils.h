@@ -44,6 +44,13 @@ class CORE_EXPORT QgsProjectUtils
     static QList< QgsMapLayer * > layersMatchingPath( const QgsProject *project, const QString &path );
 
     /**
+     * Returns a list of all layers in the specified \a project point to the same \a uri resource at the specified hierarchy \a level.
+     *
+     * \since QGIS 4.0
+     */
+    static QList< QgsMapLayer * > layersMatchingUri( const QgsProject *project, const QString &provider, const QString &uri, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object );
+
+    /**
      * Updates a \a project, replacing the data source for all layers which match the given \a oldPath
      * with sources which point to \a newPath.
      *

@@ -76,6 +76,8 @@ class TestQgsNurbsCurve : public QObject
     void isValidTests();
     void weightAccessTests();
     void evaluateInvalidNurbs();
+    void generateKnotsForBezierConversion();
+    void isAnchorVertex();
 };
 
 void TestQgsNurbsCurve::emptyConstructor()
@@ -845,6 +847,78 @@ void TestQgsNurbsCurve::evaluateInvalidNurbs()
 
   QgsPoint result = invalidCurve.evaluate( 0.5 );
   QVERIFY( result.isEmpty() );
+}
+
+void TestQgsNurbsCurve::generateKnotsForBezierConversion()
+{
+  // Test with insufficient anchors
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( 1 );
+  QVERIFY( knots.isEmpty() );
+
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 0 );
+  QVERIFY( knots.isEmpty() );
+
+  // Test with 2 anchors (1 cubic Bézier segment)
+  // Expected: [0,0,0,0, 1,1,1,1] (8 knots total: 4 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 2 );
+  QCOMPARE( knots.size(), 8 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 8; ++i )
+    QCOMPARE( knots[i], 1.0 );
+
+  // Test with 3 anchors (2 cubic Bézier segments)
+  // Expected: [0,0,0,0, 1,1,1, 2,2,2,2] (11 knots total: 4 + 3 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 3 );
+  QCOMPARE( knots.size(), 11 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 7; ++i )
+    QCOMPARE( knots[i], 1.0 );
+  for ( int i = 7; i < 11; ++i )
+    QCOMPARE( knots[i], 2.0 );
+
+  // Test with 4 anchors (3 cubic Bézier segments)
+  // Expected: [0,0,0,0, 1,1,1, 2,2,2, 3,3,3,3] (14 knots total: 4 + 3 + 3 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 4 );
+  QCOMPARE( knots.size(), 14 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 7; ++i )
+    QCOMPARE( knots[i], 1.0 );
+  for ( int i = 7; i < 10; ++i )
+    QCOMPARE( knots[i], 2.0 );
+  for ( int i = 10; i < 14; ++i )
+    QCOMPARE( knots[i], 3.0 );
+}
+
+void TestQgsNurbsCurve::isAnchorVertex()
+{
+  // Test with degree 3 (cubic) - segments of 4 points (3 intervals), anchors every 3 points (0, 3, 6, ...)
+  QgsNurbsCurve cubic;
+  cubic.setDegree( 3 );
+  cubic.setControlPoints( { QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 1 ), QgsPoint( 3, 0 ), QgsPoint( 4, -1 ), QgsPoint( 5, -1 ), QgsPoint( 6, 0 ) } );
+  cubic.setKnots( { 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 } );
+
+  QVERIFY( cubic.isAnchorVertex( 0 ) );
+  QVERIFY( !cubic.isAnchorVertex( 1 ) );
+  QVERIFY( !cubic.isAnchorVertex( 2 ) );
+  QVERIFY( cubic.isAnchorVertex( 3 ) );
+  QVERIFY( !cubic.isAnchorVertex( 4 ) );
+  QVERIFY( !cubic.isAnchorVertex( 5 ) );
+  QVERIFY( cubic.isAnchorVertex( 6 ) );
+
+  // Out of bounds
+  QVERIFY( !cubic.isAnchorVertex( 7 ) );
+  QVERIFY( !cubic.isAnchorVertex( -1 ) );
+
+  // Test with a curve that is NOT a Poly-Bezier
+  QgsNurbsCurve standard;
+  standard.setDegree( 2 );
+  standard.setControlPoints( { QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ) } );
+  // Invalid knots for Poly-Bezier (must have multiplicity degree at internal knots)
+  standard.setKnots( { 0, 0, 0.5, 1, 1 } );
+  QVERIFY( !standard.isAnchorVertex( 0 ) );
 }
 
 QGSTEST_MAIN( TestQgsNurbsCurve )

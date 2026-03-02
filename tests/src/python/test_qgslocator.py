@@ -10,10 +10,9 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "6/05/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
+import unittest
 from time import sleep
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsLocator,
     QgsLocatorAutomaticModel,
@@ -24,14 +23,14 @@ from qgis.core import (
     QgsLocatorResult,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class test_filter(QgsLocatorFilter):
-
     def __init__(
         self,
         identifier,
@@ -105,7 +104,6 @@ class test_filter(QgsLocatorFilter):
 
 
 class TestQgsLocator(QgisTestCase):
-
     def testRegisteringFilters(self):
         l = QgsLocator()
         filter_a = test_filter("a")

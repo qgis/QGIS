@@ -1115,7 +1115,10 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
       if ( uri.param( "type"_L1 ) == "wmst"_L1 )
       {
         uri.setParam( "temporalSource"_L1, "provider"_L1 );
-        uri.setParam( "allowTemporalUpdates"_L1, "true"_L1 );
+        if ( uri.param( "allowTemporalUpdates"_L1 ) != "true"_L1 )
+        {
+          uri.setParam( "allowTemporalUpdates"_L1, "true"_L1 );
+        }
       }
     }
   }

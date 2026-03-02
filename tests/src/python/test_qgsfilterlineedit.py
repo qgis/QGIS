@@ -11,18 +11,16 @@ __date__ = "20/08/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
-from qgis.gui import QgsFilterLineEdit
-
-from qgis.PyQt.QtTest import QSignalSpy
-
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsFilterLineEdit
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsFilterLineEdit(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsFilterLineEdit()

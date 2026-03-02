@@ -433,6 +433,7 @@ styles. Ownership of ``symbol`` is transferred to the grid.
 .. seealso:: :py:func:`setStyle`
 %End
 
+
     QgsLineSymbol *lineSymbol();
 %Docstring
 Returns the line symbol used for drawing grid lines. This is only used
@@ -458,6 +459,7 @@ used for grids with a QgsLayoutItemMapGrid.Markers style. Ownership of
 
 .. seealso:: :py:func:`setStyle`
 %End
+
 
     QgsMarkerSymbol *markerSymbol();
 %Docstring

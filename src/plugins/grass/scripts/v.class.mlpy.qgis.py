@@ -200,7 +200,7 @@ def fatal_noEnoughColumns(mapName, ncols, required):
 
 def fatal_noClassColumn(mapName, columnName):
     grass.fatal(
-        _("Vector map <%(map)s> does not have" " the column <%(col)s> containing class")
+        _("Vector map <%(map)s> does not have the column <%(col)s> containing class")
         % {"map": mapName, "col": columnName}
     )
 

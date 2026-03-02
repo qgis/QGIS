@@ -30,13 +30,14 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
-#define SIP_NO_FILE
 
 
 #include <memory>
 #include <vector>
 
 #include <QVector>
+
+#define SIP_NO_FILE
 
 typedef struct GEOSGeom_t GEOSGeometry;
 

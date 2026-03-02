@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 #include "qgsvirtualpointcloudprovider.h"
 

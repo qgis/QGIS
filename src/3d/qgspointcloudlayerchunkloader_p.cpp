@@ -26,6 +26,7 @@
 #include "qgspointcloud3dsymbol_p.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudrequest.h"
 #include "qgsray3d.h"

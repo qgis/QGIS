@@ -610,8 +610,10 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     /**
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
+     *
+     * The optional \a plotData argument can be passed on to support calculation of label sizes when an axis' type is categorical.
      */
-    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 
     /**
      * Returns the margins of the plot area (in millimeters)
@@ -681,7 +683,7 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const override;
+    QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const override;
 
     /**
      * Automatically sets the grid and label intervals to optimal values
@@ -808,6 +810,16 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      */
     void setChartBorderSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns whether the X and Y axes are flipped.
+     */
+    bool flipAxes() const { return mFlipAxes; }
+
+    /**
+     * Sets whether the X and Y axes are flipped.
+     */
+    void setFlipAxes( bool flipAxes );
+
   protected:
 
     //! Applies 2D XY plot data-defined properties
@@ -829,6 +841,8 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
 
     QgsPlotAxis mXAxis;
     QgsPlotAxis mYAxis;
+
+    bool mFlipAxes = false;
 };
 
 /**

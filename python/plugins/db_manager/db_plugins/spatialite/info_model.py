@@ -20,12 +20,11 @@ email                : brush.tyler@gmail.com
 
 from qgis.PyQt.QtWidgets import QApplication
 
+from ..html_elems import HtmlParagraph, HtmlTable
 from ..info_model import DatabaseInfo
-from ..html_elems import HtmlTable, HtmlParagraph
 
 
 class SLDatabaseInfo(DatabaseInfo):
-
     def __init__(self, db):
         self.db = db
 

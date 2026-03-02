@@ -911,7 +911,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, Qgis:
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      std::unique_ptr<QgsAbstractGeometry> geometry( QgsArcGisRestUtils::convertGeometry( resultMap[u"geometry"_s].toMap(), resultMap[u"geometryType"_s].toString(), false, false, &crs ) );
+      std::unique_ptr<QgsAbstractGeometry> geometry( QgsArcGisRestUtils::convertGeometry( resultMap[u"geometry"_s].toMap(), resultMap[u"geometryType"_s].toString(), false, false, true, &crs ) );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );

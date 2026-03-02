@@ -18,13 +18,14 @@
 #ifndef QGSRECLASSIFYUTILS
 #define QGSRECLASSIFYUTILS
 
-#define SIP_NO_FILE
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgsrasterrange.h"
 
 #include <QVector>
+
+#define SIP_NO_FILE
 
 class QgsRasterInterface;
 class QgsProcessingFeedback;

@@ -19,25 +19,24 @@ __author__ = "Alexander Bruy"
 __date__ = "October 2016"
 __copyright__ = "(C) 2016, Alexander Bruy"
 
-import os
 import math
+import os
 
-from qgis.PyQt.QtGui import QIcon
-
+from qgis.analysis import QgsGridFileWriter, QgsInterpolator, QgsTinInterpolator
 from qgis.core import (
-    QgsProcessingUtils,
-    QgsProcessing,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterExtent,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterDestination,
-    QgsWkbTypes,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingException,
     QgsCoordinateReferenceSystem,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingUtils,
+    QgsWkbTypes,
 )
-from qgis.analysis import QgsInterpolator, QgsTinInterpolator, QgsGridFileWriter
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.algs.qgis.ui.InterpolationWidgets import (

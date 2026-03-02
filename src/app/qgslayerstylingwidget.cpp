@@ -489,6 +489,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mDiagramWidget = widget;
     }
+    else
+    {
+      delete current;
+      current = nullptr;
+    }
   }
 
   mWidgetStack->clear();
@@ -1024,13 +1029,13 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::TiledScene:
       return true;
 
-    case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledScene:
       return false;
   }
   return false; // no warnings

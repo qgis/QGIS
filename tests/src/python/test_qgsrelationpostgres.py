@@ -11,16 +11,15 @@ __date__ = "27/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import QgsProject, QgsVectorLayer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRelationPostgresql(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

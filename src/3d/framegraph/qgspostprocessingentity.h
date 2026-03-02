@@ -18,11 +18,18 @@
 
 #include "qgsrenderpassquad.h"
 
+#define SIP_NO_FILE
+
 class QgsFrameGraph;
 class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
 
-#define SIP_NO_FILE
+namespace Qt3DRender
+{
+  class QCamera;
+  class QParameter;
+} //namespace Qt3DRender
+
 
 /**
  * \ingroup qgis_3d

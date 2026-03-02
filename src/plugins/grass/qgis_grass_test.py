@@ -34,6 +34,7 @@
  - writes out report
 ***************************************************************************
 """
+
 __author__ = "Radim Blazek"
 __date__ = "December 2012"
 __copyright__ = "(C) 2012, Radim Blazek"
@@ -46,7 +47,6 @@ import time
 
 
 class Test:
-
     def __init__(self):
         if "GISBASE" not in os.environ or "GISRC" not in os.environ:
             print("This script must be run in GRASS shell.")
@@ -123,9 +123,7 @@ class Test:
                 if code != 0:
                     self.report("Native failed: %s" % " ".join(native_args))
                 # export
-                native_output_file = "{}/{}-{}-native.tif".format(
-                    files_dir, module_name, raster
-                )
+                native_output_file = f"{files_dir}/{module_name}-{raster}-native.tif"
                 self.srun(
                     [
                         "r.out.gdal",
@@ -137,9 +135,7 @@ class Test:
 
                 # --- direct ---
                 direct_input_file = f"{files_dir}/{raster}.tif"
-                direct_output_file = "{}/{}-{}-direct.tif".format(
-                    files_dir, module_name, raster
-                )
+                direct_output_file = f"{files_dir}/{module_name}-{raster}-direct.tif"
 
                 # substitute rasters
                 direct_args = (

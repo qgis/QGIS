@@ -23,28 +23,28 @@ import stat
 import subprocess
 import sys
 import tempfile
-import urllib
 import time
+import urllib
 from functools import partial
 
 __author__ = "Alessandro Pasotti"
 __date__ = "20/04/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
+import unittest
 from shutil import rmtree
 
 from qgis.core import (
     QgsApplication,
-    QgsProject,
     QgsAuthMethodConfig,
-    QgsRasterLayer,
-    QgsVectorLayer,
     QgsNetworkAccessManager,
+    QgsProject,
+    QgsRasterLayer,
     QgsSettings,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtNetwork import QSslCertificate
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath, waitServer
 
 TOKEN_TTL = 3  # seconds
@@ -113,7 +113,6 @@ def setup_oauth(
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
@@ -215,9 +214,9 @@ class TestAuthManager(QgisTestCase):
         assert cls.auth_config.isValid()
 
         # Wait for the server process to start
-        assert waitServer(
-            f"{cls.protocol}://{cls.hostname}:{cls.port}"
-        ), f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
+        assert waitServer(f"{cls.protocol}://{cls.hostname}:{cls.port}"), (
+            f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
+        )
 
     @classmethod
     def tearDownClass(cls):

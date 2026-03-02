@@ -17,8 +17,9 @@
 #ifndef QGSCOORDINATETRANSFORMPRIVATE_H
 #define QGSCOORDINATETRANSFORMPRIVATE_H
 
-#define SIP_NO_FILE
 #include "qgsconfig.h"
+
+#define SIP_NO_FILE
 
 /// @cond PRIVATE
 

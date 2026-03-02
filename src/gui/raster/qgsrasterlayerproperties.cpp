@@ -525,6 +525,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Source->setProperty( "helpPage", u"working_with_raster/raster_properties.html#source-properties"_s );
   mOptsPage_Style->setProperty( "helpPage", u"working_with_raster/raster_properties.html#symbology-properties"_s );
   mOptsPage_Transparency->setProperty( "helpPage", u"working_with_raster/raster_properties.html#transparency-properties"_s );
+  mOptsPage_Labeling->setProperty( "helpPage", u"working_with_raster/raster_properties.html#labels-properties"_s );
 
   if ( mOptsPage_Histogram )
     mOptsPage_Histogram->setProperty( "helpPage", u"working_with_raster/raster_properties.html#histogram-properties"_s );
@@ -540,6 +541,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mOptsPage_Metadata->setProperty( "helpPage", u"working_with_raster/raster_properties.html#metadata-properties"_s );
   mOptsPage_Legend->setProperty( "helpPage", u"working_with_raster/raster_properties.html#legend-properties"_s );
+  mOptsPage_RasterAttributeTable->setProperty( "helpPage", u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
   mOptsPage_Server->setProperty( "helpPage", u"working_with_raster/raster_properties.html#server-properties"_s );
 
   initialize();

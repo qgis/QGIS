@@ -20,8 +20,8 @@ __date__ = "March 2019"
 __copyright__ = "(C) 2019, Nyall Dawson"
 
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+import unittest
+
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
@@ -30,9 +30,9 @@ from qgis.core import (
     QgsRasterLineSymbolLayer,
     QgsRenderContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -40,7 +40,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterLineSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_rasterline"

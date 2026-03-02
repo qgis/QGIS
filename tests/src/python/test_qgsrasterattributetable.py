@@ -15,11 +15,10 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 import shutil
+import unittest
 
 import numpy as np
 from osgeo import gdal, osr
-from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant, QDateTime
-from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
     QgsPalettedRasterRenderer,
@@ -29,10 +28,10 @@ from qgis.core import (
     QgsRasterLayer,
     QgsSingleBandPseudoColorRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -151,7 +150,6 @@ def createTestRasters(cls, path):
 
 
 class TestQgsRasterAttributeTable(QgisTestCase):
-
     def setUp(self):
 
         self.iface = get_iface()

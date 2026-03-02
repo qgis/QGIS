@@ -391,7 +391,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsLineSymbol *lineSymbol() const; SIP_SKIP
+    const QgsLineSymbol *lineSymbol() const SIP_SKIP;
 
     /**
      * Returns the line symbol used for drawing grid lines. This is only used for grids with
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsMarkerSymbol *markerSymbol() const; SIP_SKIP
+    const QgsMarkerSymbol *markerSymbol() const SIP_SKIP;
 
     /**
      * Returns the marker symbol used for drawing grid points. This is only used for grids with a

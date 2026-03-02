@@ -26,7 +26,6 @@ start_app()
 
 
 class TestQgsPolyhedralSurface(QgisTestCase):
-
     def test_constructor(self):
         surface = QgsPolyhedralSurface()
         self.assertTrue(surface.isEmpty())

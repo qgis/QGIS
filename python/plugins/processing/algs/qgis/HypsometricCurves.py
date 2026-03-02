@@ -19,8 +19,8 @@ __author__ = "Alexander Bruy"
 __date__ = "November 2014"
 __copyright__ = "(C) 2014, Alexander Bruy"
 
-import os
 import csv
+import os
 
 from osgeo import gdal, ogr, osr
 
@@ -29,22 +29,21 @@ ogr.UseExceptions()
 osr.UseExceptions()
 
 from qgis.core import (
-    QgsRectangle,
-    QgsGeometry,
     QgsFeatureRequest,
-    QgsProcessingException,
+    QgsGeometry,
     QgsProcessing,
+    QgsProcessingException,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterLayer,
+    QgsRectangle,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class HypsometricCurves(QgisAlgorithm):
@@ -214,7 +213,7 @@ class HypsometricCurves(QgisAlgorithm):
 
             if srcOffset[2] == 0 or srcOffset[3] == 0:
                 feedback.pushInfo(
-                    self.tr("Feature {0} is smaller than raster " "cell size").format(
+                    self.tr("Feature {0} is smaller than raster cell size").format(
                         f.id()
                     )
                 )

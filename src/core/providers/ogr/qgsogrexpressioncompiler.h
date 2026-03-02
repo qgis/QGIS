@@ -20,8 +20,9 @@
 #include "qgsogrfeatureiterator.h"
 #include "qgssqlexpressioncompiler.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsExpressionNode;
 class QgsExpression;

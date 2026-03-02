@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir, QMetaType
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
@@ -28,15 +27,14 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType, QTemporaryDir
 from qgis.testing import unittest
-
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionPostgres(
     unittest.TestCase, TestPyQgsProviderConnectionBase
 ):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
@@ -447,7 +445,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         password = uri.password()
         service = uri.service()
 
-        foreign_table_definition = """
+        foreign_table_definition = f"""
         CREATE EXTENSION IF NOT EXISTS postgres_fdw;
         CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
         DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
@@ -456,14 +454,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         FROM SERVER postgres_fdw_test_server
         INTO foreign_schema;
-        """.format(
-            host=host,
-            user=user,
-            port=port,
-            dbname=dbname,
-            password=password,
-            service=service,
-        )
+        """
         conn.executeSql(foreign_table_definition)
         self.assertEqual(
             conn.tables(

@@ -25,10 +25,11 @@
 #include <QString>
 #include <QStringList>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /*!
  * \brief  Generic OGR DB Connections management

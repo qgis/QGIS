@@ -35,10 +35,11 @@
  * See details in QEP #17
  ****************************************************************************/
 
-#define SIP_NO_FILE
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransform.h"
+
+#define SIP_NO_FILE
 
 class QgsCoordinateTransformContextPrivate : public QSharedData
 {

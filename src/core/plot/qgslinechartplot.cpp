@@ -78,9 +78,22 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   double labelIntervalY = yAxis().labelInterval();
   Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
-  const double xScale = plotArea.width() / ( maxX - minX );
-  const double yScale = plotArea.height() / ( maxY - minY );
-  const double categoriesWidth = plotArea.width() / categories.size();
+  double xScale = 0.0;
+  double yScale = 0.0;
+  double categoriesWidth = 0.0;
+  if ( flipAxes() )
+  {
+    xScale = plotArea.height() / ( maxX - minX );
+    yScale = plotArea.width() / ( maxY - minY );
+    categoriesWidth = plotArea.height() / static_cast<double>( categories.size() );
+  }
+  else
+  {
+    xScale = plotArea.width() / ( maxX - minX );
+    yScale = plotArea.height() / ( maxY - minY );
+    categoriesWidth = plotArea.width() / static_cast<double>( categories.size() );
+  }
+
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
@@ -100,6 +113,8 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
     {
       mSymbol->startRender( context );
     }
+
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
@@ -127,7 +142,15 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
           }
           double y = ( pair.second - minY ) * yScale;
 
-          const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
+          QPointF point;
+          if ( flipAxes() )
+          {
+            point = QPointF( plotArea.x() + y, plotArea.bottom() - x );
+          }
+          else
+          {
+            point = QPointF( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
+          }
           points.replace( xAxis().type() == Qgis::PlotAxisType::Interval ? dataIndex : pair.first, point );
         }
         dataIndex++;

@@ -16,9 +16,10 @@
 #ifndef QGSVECTORTILELOADER_H
 #define QGSVECTORTILELOADER_H
 
-#define SIP_NO_FILE
 
 #include "qgstiles.h"
+
+#define SIP_NO_FILE
 
 class QgsFeedback;
 class QgsTileDownloadManagerReply;

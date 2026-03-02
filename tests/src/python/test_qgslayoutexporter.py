@@ -13,37 +13,26 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import os
 import subprocess
 import tempfile
+import unittest
 import xml.etree.ElementTree as etree
-from uuid import UUID
 from io import StringIO
-
 from typing import Optional
+from uuid import UUID
 
 from osgeo import gdal
-from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
-    QDir,
-    QRectF,
-    QSize,
-    Qt,
-    QTime,
-    QTimeZone,
-)
-from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (
     Qgis,
+    QgsColorRampLegendNode,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
+    QgsFontUtils,
     QgsGeometry,
     QgsLayout,
     QgsLayoutExporter,
     QgsLayoutGuide,
     QgsLayoutItemLabel,
+    QgsLayoutItemLegend,
     QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutItemScaleBar,
@@ -56,6 +45,7 @@ from qgis.core import (
     QgsPointXY,
     QgsPrintLayout,
     QgsProject,
+    QgsRasterLayer,
     QgsRectangle,
     QgsRenderContext,
     QgsReport,
@@ -64,14 +54,22 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsRasterLayer,
-    QgsLayoutItemLegend,
-    QgsColorRampLegendNode,
-    QgsFontUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QDir,
+    QPointF,
+    QRectF,
+    QSize,
+    Qt,
+    QTime,
+    QTimeZone,
+)
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.testing import QgisTestCase, start_app
 from utilities import getExecutablePath, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -92,7 +90,7 @@ for util in [
 # noinspection PyUnboundLocalVariable
 if not PDFUTIL:
     raise Exception(
-        "PDF-to-image utility not found on PATH: " "install Poppler (with Cairo)"
+        "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
     )
 
 
@@ -143,10 +141,7 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
         subprocess.check_call(call)
     except subprocess.CalledProcessError as e:
         assert False, (
-            "exportToPdf failed!\n"
-            "cmd: {}\n"
-            "returncode: {}\n"
-            "message: {}".format(e.cmd, e.returncode, e.message)
+            f"exportToPdf failed!\ncmd: {e.cmd}\nreturncode: {e.returncode}\nmessage: {e.message}"
         )
 
 
@@ -172,7 +167,6 @@ start_app()
 
 
 class TestQgsLayoutExporter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

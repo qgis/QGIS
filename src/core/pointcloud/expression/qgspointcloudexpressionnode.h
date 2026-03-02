@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSPOINTCLOUDEXPRESSIONNODE_H
 #define QGSPOINTCLOUDEXPRESSIONNODE_H
 
 #include "qgis.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudblock.h"
 
 #include <QCoreApplication>
 #include <QSet>
 #include <QVariant>
 
+#define SIP_NO_FILE
+
+class QgsPointCloudBlock;
 class QgsPointCloudExpression;
 class QgsExpressionNode;
 
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsPointCloudExpressionNode *node ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( std::unique_ptr<QgsPointCloudExpressionNode> node ) { mList.append( node.release() ); mNameList.append( QString() ); }
 
         /**
          * Returns the number of nodes in the list.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsPointCloudExpressionNode::NodeList *clone() const;
+        std::unique_ptr<QgsPointCloudExpressionNode::NodeList> clone() const;
 
         /**
          * Returns a string dump of the expression node.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
      *
      * \returns a deep copy of this node.
      */
-    virtual QgsPointCloudExpressionNode *clone() const = 0;
+    virtual std::unique_ptr<QgsPointCloudExpressionNode> clone() const = 0;
 
     /**
      * Abstract virtual method which returns a list of columns required to
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
      */
     double cachedStaticValue() const { return mCachedStaticValue; }
 
-    static QgsPointCloudExpressionNode *convert( const QgsExpressionNode *node, QString &error );
+    static std::unique_ptr<QgsPointCloudExpressionNode> convert( const QgsExpressionNode *node, QString &error );
 
   protected:
 

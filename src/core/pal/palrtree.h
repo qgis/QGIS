@@ -18,10 +18,11 @@
 #include "RTree.h"
 #include "qgsrectangle.h"
 
+#define SIP_NO_FILE
+
 #ifndef QGSPALRTREE_H
 #define QGSPALRTREE_H
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup core

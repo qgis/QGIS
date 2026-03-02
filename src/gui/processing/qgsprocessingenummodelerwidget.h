@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGENUMMODELERWIDGET_H
 #define QGSPROCESSINGENUMMODELERWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingenummodelerwidgetbase.h"
 
@@ -25,6 +24,8 @@
 
 #include <QStandardItem>
 #include <QStandardItemModel>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

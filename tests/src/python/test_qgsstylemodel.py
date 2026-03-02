@@ -10,10 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "10/09/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
 import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.PyQt.QtGui import QColor
+
 from qgis.core import (
     QgsAbstract3DSymbol,
     QgsFillSymbol,
@@ -31,12 +29,14 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class Dummy3dSymbol(QgsAbstract3DSymbol):
-
     def __init__(self):
         super().__init__()
         self.layer_types = [
@@ -82,7 +82,6 @@ def createFillSymbol():
 
 
 class TestQgsStyleModel(QgisTestCase):
-
     def test_style_with_symbols(self):
 
         style = QgsStyle()

@@ -24,10 +24,11 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 //! Stores information parsed from postgres project URI
 typedef struct

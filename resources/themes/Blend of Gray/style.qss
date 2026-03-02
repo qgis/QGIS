@@ -154,6 +154,7 @@ QAbstractSpinBox::drop-down:hover {
 }
 QAbstractSpinBox::drop-down:disabled {
     background-color: transparent !important;
+    border-color: @itemdarkbackground;
 }
 
 /* ==================================================================================== */
@@ -672,7 +673,7 @@ QTabBar::tab:disabled {
     color: @itemalternativebackground
 }
 
-QTabBar::tab:last, QTabBar::tab::only-one
+QTabBar::tab:last, QTabBar::tab:only-one
 {
     margin-right: 0;
 }
@@ -964,9 +965,14 @@ QAbstractItemView:disabled, QListView:disabled
     border-radius: 0.15em;
 }
 
-QAbstractItemView::selected, QListView::selected {
+QAbstractItemView:selected, QListView:selected {
     border: 0px;
     outline: none;
+}
+
+QAbstractItemView::item:selected:disabled, QListView::item:selected:disabled {
+    background-color: @itemalternativebackground;
+    color: @background;
 }
 
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
@@ -1063,9 +1069,15 @@ QTreeView#viewRules::indicator:unchecked
 QgsLayerTreeView::indicator:checked,
 QTreeView#viewGraduated::indicator:checked, 
 QTreeView#viewCategories::indicator:checked, 
-QTreeView#viewRules::indicator:checked 
+QTreeView#viewRules::indicator:checked,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate
 {
     image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+
+QgsCustomLayerOrderWidget QListView::indicator:checked:disabled,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */

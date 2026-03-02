@@ -75,6 +75,32 @@ Qgis.Critical = Qgis.MessageLevel.Critical
 Qgis.Success = Qgis.MessageLevel.Success
 Qgis.NoLevel = Qgis.MessageLevel.NoLevel
 Qgis.MessageLevel.baseClass = Qgis
+QgsMessageOutput.MessageType = Qgis.StringFormat
+# monkey patching scoped based enum
+QgsMessageOutput.MessageText = Qgis.StringFormat.PlainText
+QgsMessageOutput.MessageType.MessageText = Qgis.StringFormat.PlainText
+QgsMessageOutput.MessageText.is_monkey_patched = True
+QgsMessageOutput.MessageText.__doc__ = "Text message"
+QgsMessageOutput.MessageHtml = Qgis.StringFormat.Html
+QgsMessageOutput.MessageType.MessageHtml = Qgis.StringFormat.Html
+QgsMessageOutput.MessageHtml.is_monkey_patched = True
+QgsMessageOutput.MessageHtml.__doc__ = "HTML message"
+Qgis.StringFormat.__doc__ = """Format of log message
+
+.. versionadded:: 4.0.
+
+* ``PlainText``: Text message
+
+  Available as ``QgsMessageOutput.MessageText`` in older QGIS releases.
+
+* ``Html``: HTML message
+
+  Available as ``QgsMessageOutput.MessageHtml`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.StringFormat.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
 Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
@@ -743,7 +769,8 @@ Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture
 Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
 Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
 Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
-Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points. \n.. versionadded:: 4.0"
+Qgis.CaptureTechnique.PolyBezier.__doc__ = "Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points). \n.. versionadded:: 4.0"
+Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points). \n.. versionadded:: 4.0"
 Qgis.CaptureTechnique.__doc__ = """Capture technique.
 
 .. versionadded:: 3.26
@@ -752,7 +779,11 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 * ``CircularString``: Capture in circular strings
 * ``Streaming``: Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
 * ``Shape``: Digitize shapes.
-* ``NurbsCurve``: Digitizes NURBS curves with control points.
+* ``PolyBezier``: Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points).
+
+  .. versionadded:: 4.0
+
+* ``NurbsCurve``: Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points).
 
   .. versionadded:: 4.0
 
@@ -760,17 +791,6 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 """
 # --
 Qgis.CaptureTechnique.baseClass = Qgis
-# monkey patching scoped based enum
-Qgis.NurbsMode.ControlPoints.__doc__ = "Direct control points mode - the curve is attracted to control points but does not pass through them"
-Qgis.NurbsMode.__doc__ = """NURBS digitizing mode.
-
-.. versionadded:: 4.0
-
-* ``ControlPoints``: Direct control points mode - the curve is attracted to control points but does not pass through them
-
-"""
-# --
-Qgis.NurbsMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
@@ -2775,6 +2795,21 @@ Qgis.UriCleaningFlag.baseClass = Qgis
 Qgis.UriCleaningFlags = lambda flags=0: Qgis.UriCleaningFlag(flags)
 Qgis.UriCleaningFlags.baseClass = Qgis
 UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SourceHierarchyLevel.Connection.__doc__ = "The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases)."
+Qgis.SourceHierarchyLevel.Group.__doc__ = "An intermediate logical grouping, e.g. a database schema or layer group."
+Qgis.SourceHierarchyLevel.Object.__doc__ = "Represents a specific data entity, e.g. a table, view, or layer."
+Qgis.SourceHierarchyLevel.__doc__ = """Defines the structural levels within a data source hierarchy.
+
+.. versionadded:: 4.0
+
+* ``Connection``: The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases).
+* ``Group``: An intermediate logical grouping, e.g. a database schema or layer group.
+* ``Object``: Represents a specific data entity, e.g. a table, view, or layer.
+
+"""
+# --
+Qgis.SourceHierarchyLevel.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"

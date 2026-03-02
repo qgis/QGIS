@@ -19,22 +19,21 @@ __author__ = "Nyall Dawson"
 __date__ = "December 2016"
 __copyright__ = "(C) 2016, Nyall Dawson"
 
-from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
-from processing.tools import dataobjects
-
 import os
 from typing import Optional
 
-from qgis.PyQt import uic
+from qgis.core import QgsProcessingUtils, QgsRectangle
 from qgis.gui import QgsDoubleSpinBox
-from qgis.core import QgsRectangle, QgsProcessingUtils
+from qgis.PyQt import uic
+
+from processing.gui.wrappers import DIALOG_STANDARD, WidgetWrapper
+from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "RasterResolutionWidget.ui"))
 
 
 class HeatmapPixelSizeWidget(BASE, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)
@@ -163,7 +162,6 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
 
 
 class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
-
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         super().__init__(param, dialog, row, col, **kwargs)
         self.context = dataobjects.createContext()

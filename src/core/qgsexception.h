@@ -19,11 +19,12 @@
 
 #define SIP_NO_CREATION
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

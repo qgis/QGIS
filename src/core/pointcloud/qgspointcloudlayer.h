@@ -355,7 +355,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 4.0
      */
-    QVector<QgsPointCloudSubIndex> subIndexes() const SIP_SKIP;
+    QVector<QgsPointCloudSubIndex> subIndexes() const;
 
     /**
      * Returns whether the layer has a virtual point cloud data provider or not.

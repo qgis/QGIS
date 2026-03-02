@@ -17,6 +17,7 @@
 
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
@@ -133,7 +134,6 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
 {
   std::unique_ptr<QgsPolygon> polyClone( poly->clone() );
 
-  const uint oldVerticesCount = out.tessellator->dataVerticesCount();
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
@@ -221,6 +221,8 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
+
+  const size_t oldVertexCount = out.tessellator->uniqueVertexCount();
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
   if ( !out.tessellator->error().isEmpty() )
   {
@@ -228,7 +230,10 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   }
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
+  {
+    const uint newUniqueVertices = out.tessellator->uniqueVertexCount() - oldVertexCount;
+    processMaterialDatadefined( newUniqueVertices, context.expressionContext(), out );
+  }
 }
 
 void QgsPolygon3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsPolygon3DSymbolHandler::PolygonData &out )
@@ -356,18 +361,20 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   QgsMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
-  const int nVerts = data.count() / polyData.tessellator->stride();
+  const QByteArray vertexBuffer = polyData.tessellator->vertexBuffer();
+  const QByteArray indexBuffer = polyData.tessellator->indexBuffer();
+  const int vertexCount = polyData.tessellator->uniqueVertexCount();
+  const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
 
-  geometry->setData( data, nVerts, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+  geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+  geometry->setIndexBufferData( indexBuffer, indexCount );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, polyData.materialDataDefined );
-
+    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, vertexCount, polyData.materialDataDefined );
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 

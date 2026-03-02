@@ -18,7 +18,6 @@
 #ifndef QGSGROUPLAYERRENDERER_H
 #define QGSGROUPLAYERRENDERER_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 #include <tuple>
@@ -29,6 +28,8 @@
 #include "qgsmaplayerrenderer.h"
 
 #include <QPainter>
+
+#define SIP_NO_FILE
 
 class QgsGroupLayer;
 class QgsFeedback;

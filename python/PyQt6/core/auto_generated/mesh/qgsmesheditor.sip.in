@@ -60,6 +60,7 @@ Handles edit operations on a mesh layer.
 Constructor with a specified layer ``meshLayer``
 %End
 
+    ~QgsMeshEditor();
 
 
     std::unique_ptr< QgsMeshDatasetGroup > createZValueDatasetGroup();
@@ -96,6 +97,7 @@ the fix fails
 .. versionadded:: 3.28
 %End
 
+
     bool faceCanBeAdded( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if a ``face`` can be added to the mesh
@@ -105,6 +107,7 @@ Returns ``True`` if a ``face`` can be added to the mesh
    All vertices related to this face must be already in the mesh.
 %End
 
+
     bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if the face does not intersect or contains any other
@@ -112,12 +115,14 @@ elements (faces or vertices) The topological compatibility is not
 checked
 %End
 
+
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
 %Docstring
 Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``,
 returns topological errors if this operation fails (operation is not
 realized)
 %End
+
 
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
 %Docstring
@@ -159,6 +164,7 @@ Splits faces with index ``faceIndexes``. Only faces that can be split
 are split. Returns the count of faces effictively split
 %End
 
+
     int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 %Docstring
 Adds points as vertices in triangular mesh coordinate in the mesh.
@@ -198,6 +204,7 @@ execution). A list of the remaining vertex indexes is returned.
 Changes the Z values of the vertices with indexes in ``vertices``
 indexes with the values in ``newValues``
 %End
+
 
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
@@ -262,6 +269,9 @@ Returns whether the vertex with index ``vertexIndex`` is on a boundary
 %Docstring
 Returns whether the vertex with index ``vertexIndex`` is a free vertex
 %End
+
+
+
 
     bool checkConsistency( QgsMeshEditingError &error ) const;
 %Docstring

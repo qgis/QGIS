@@ -19,8 +19,9 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsprovidermetadata.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsLayerMetadataProviderResult;
 
@@ -50,6 +51,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

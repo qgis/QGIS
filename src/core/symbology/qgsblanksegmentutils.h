@@ -16,12 +16,13 @@
 #ifndef QGSBLANKSEGMENTUTILS_H
 #define QGSBLANKSEGMENTUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgis_core.h"
 
 #include <QPair>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 

@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 
     //! Constructor with a specific mesh \a nativeMesh and an associated triangular mesh \a triangularMesh
-    QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
+    QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ) SIP_SKIP;
     ~QgsMeshEditor() override;
 
     // TODO QGIS 5.0 -- fix this mess
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     bool fixError( const QgsMeshEditingError &error );
 
     //! Resets the triangular mesh
-    void resetTriangularMesh( QgsTriangularMesh *triangularMesh ); SIP_SKIP
+    void resetTriangularMesh( QgsTriangularMesh *triangularMesh ) SIP_SKIP;
 
     /**
      * Returns TRUE if a \a face can be added to the mesh
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.30
      */
-    bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const; SIP_SKIP
+    bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const SIP_SKIP;
 
     /**
      * Returns TRUE if the face does not intersect or contains any other elements (faces or vertices)
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
-    QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ); SIP_SKIP
+    QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ) SIP_SKIP;
 
     //! Adds a face \a face to the mesh with vertex indexes \a vertexIndexes, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.30
      */
-    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices ); SIP_SKIP
+    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices ) SIP_SKIP;
 
     //! Removes faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      * \note this operation remove including face if exists and replace it by new faces surrounding the vertex
      * if the mesh hasn't topological error before this operation, the toological operation always succeed.
      */
-    int addVertices( const QVector<QgsMeshVertex> &vertices, double tolerance ); SIP_SKIP
+    int addVertices( const QVector<QgsMeshVertex> &vertices, double tolerance ) SIP_SKIP;
 
     /**
      * Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      * all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
      * Moving free vertices of the mesh is also checked.
      */
-    bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
+    bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const SIP_SKIP;
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a verticesIndexes with the values in \a newValues.
@@ -284,13 +284,13 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *  It is recommended to destruct all circulator created before calling any edit methods or stopEditing() to save memory usage.
      *  Calling initialize() allows creation of new circulator after stopEditing() is called.
      */
-    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
+    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const SIP_SKIP;
 
     //! Returns a reference to the topological mesh
-    QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
+    QgsTopologicalMesh &topologicalMesh() SIP_SKIP;
 
     //! Returns a pointer to the triangular mesh
-    QgsTriangularMesh *triangularMesh(); SIP_SKIP
+    QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     //! Return TRUE if the edited mesh is consistent
     bool checkConsistency( QgsMeshEditingError &error ) const;

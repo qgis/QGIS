@@ -23,6 +23,9 @@ Utility functions for working with OGC SensorThings API services.
 %End
   public:
 
+
+
+
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 %Docstring
 Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.

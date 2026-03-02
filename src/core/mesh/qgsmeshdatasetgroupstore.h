@@ -18,10 +18,11 @@
 #ifndef QGSMESHDATASETGROUPSTORE_H
 #define QGSMESHDATASETGROUPSTORE_H
 
-#define SIP_NO_FILE
 
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataset.h"
+
+#define SIP_NO_FILE
 
 class QgsMeshLayer;
 

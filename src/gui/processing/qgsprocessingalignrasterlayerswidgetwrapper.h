@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGALIGNRASTERLAYERSWIDGETWRAPPER_H
 #define QGSPROCESSINGALIGNRASTERLAYERSWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingalignrasterlayerdetailswidgetbase.h"
 
@@ -24,6 +23,8 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingwidgetwrapper.h"
+
+#define SIP_NO_FILE
 
 class QLineEdit;
 class QToolButton;

@@ -38,14 +38,14 @@
 
 using namespace Qt::StringLiterals;
 
-QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
+QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, bool forceRefresh )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
   QUrlQuery query( queryUrl );
   query.addQueryItem( u"f"_s, u"json"_s );
   queryUrl.setQuery( query );
-  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, nullptr, urlPrefix );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, nullptr, urlPrefix, forceRefresh );
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
@@ -174,7 +174,7 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &lay
   return ids;
 }
 
-QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, QString *contentType, const QString &urlPrefix )
+QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, QString *contentType, const QString &urlPrefix, bool forceRefresh )
 {
   QUrl url = parseUrl( u );
 
@@ -187,7 +187,7 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authcfg );
-  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, forceRefresh, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return QByteArray();
@@ -217,9 +217,9 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
   return content.content();
 }
 
-QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix, bool forceRefresh )
 {
-  const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback, nullptr, urlPrefix );
+  const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback, nullptr, urlPrefix, forceRefresh );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();

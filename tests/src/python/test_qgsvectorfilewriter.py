@@ -10,22 +10,14 @@ __author__ = "Tim Sutton"
 __date__ = "20/08/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
+import json
 import os
 import tempfile
-import json
+import unittest
 from pathlib import Path
 
 import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QDate,
-    QDateTime,
-    QDir,
-    QTemporaryDir,
-    QTime,
-    QVariant,
-)
 from qgis.core import (
     NULL,
     Qgis,
@@ -36,6 +28,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeatureSink,
     QgsField,
+    QgsFieldConstraints,
     QgsFields,
     QgsGeometry,
     QgsLayerMetadata,
@@ -52,11 +45,17 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsFieldConstraints,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QDate,
+    QDateTime,
+    QDir,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath, writeShape
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -68,7 +67,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
-
     def __init__(self, layer):
         QgsVectorFileWriter.FieldValueConverter.__init__(self)
         self.layer = layer
@@ -498,9 +496,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         expWkt = "MultiPoint ((1 2))"
         self.assertTrue(
             compareWkt(expWkt, wkt),
-            "saving geometry with multi conversion failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                expWkt, wkt
-            ),
+            f"saving geometry with multi conversion failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
         )
 
     def testWriteShapefileWithAttributeSubsets(self):
@@ -587,9 +583,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         expWkt = "Point (1 2)"
         self.assertTrue(
             compareWkt(expWkt, wkt),
-            "geometry not saved correctly when saving without attributes : mismatch Expected:\n{}\nGot:\n{}\n".format(
-                expWkt, wkt
-            ),
+            f"geometry not saved correctly when saving without attributes : mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
         )
         self.assertEqual(f["FID"], 0)
 

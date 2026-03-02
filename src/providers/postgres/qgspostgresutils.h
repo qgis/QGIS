@@ -209,6 +209,13 @@ class QgsPostgresUtils
     static bool moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema );
 
     /**
+     * Renames a project in the specified schema.
+     *
+     * \since QGIS 4.0
+     */
+    static bool renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName );
+
+    /**
      * List projects in the specified \a schema
      *
      * \since QGIS 4.0

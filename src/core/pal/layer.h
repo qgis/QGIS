@@ -30,7 +30,6 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
-#define SIP_NO_FILE
 
 
 #include <fstream>
@@ -43,6 +42,8 @@
 
 #include <QHash>
 #include <QMutex>
+
+#define SIP_NO_FILE
 
 class QgsLabelFeature;
 

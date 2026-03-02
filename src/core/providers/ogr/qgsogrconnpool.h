@@ -22,6 +22,8 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -30,7 +32,6 @@ using namespace Qt::StringLiterals;
 #include <cpl_string.h>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 struct QgsOgrConn
 {

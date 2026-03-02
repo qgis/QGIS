@@ -16,9 +16,10 @@
 #ifndef LINE_P_H
 #define LINE_P_H
 
-#define SIP_NO_FILE
 
 #include "qgsgeometryutils_base.h"
+
+#define SIP_NO_FILE
 
 /////////
 

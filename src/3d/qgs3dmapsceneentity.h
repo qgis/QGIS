@@ -35,11 +35,11 @@
 #include <QVector3D>
 #include <Qt3DCore/QEntity>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 class Qgs3DMapSettings;
-
-#define SIP_NO_FILE
 
 
 /**

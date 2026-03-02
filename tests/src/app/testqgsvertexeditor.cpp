@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
+#include "qgsnurbscurve.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "vertextool/qgslockedfeature.h"
@@ -42,8 +43,8 @@ class TestQgsVertexEditor : public QgsTest
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
-    void testColumnZMR_data();
-    void testColumnZMR();
+    void testColumnZMRW_data();
+    void testColumnZMRW();
 
   private:
     std::unique_ptr<QgsMapCanvas> mCanvas;
@@ -52,6 +53,10 @@ class TestQgsVertexEditor : public QgsTest
     std::unique_ptr<QgsVectorLayer> mLayerLineZ;
     std::unique_ptr<QgsVectorLayer> mLayerLineM;
     std::unique_ptr<QgsVectorLayer> mLayerLineZM;
+    std::unique_ptr<QgsVectorLayer> mLayerNurbs;
+    std::unique_ptr<QgsVectorLayer> mLayerNurbsZ;
+    std::unique_ptr<QgsVectorLayer> mLayerNurbsM;
+    std::unique_ptr<QgsVectorLayer> mLayerNurbsZM;
     std::unique_ptr<QgsVertexEditorWidget> mVertexEditor;
 };
 
@@ -104,9 +109,18 @@ void TestQgsVertexEditor::initTestCase()
   line.setGeometry( QgsGeometry::fromWkt( "LineStringZM (5 5 1, 6 6 1, 7 5 1)" ) );
   mLayerLineZM->dataProvider()->addFeature( line );
   QCOMPARE( mLayerLineZM->featureCount(), 1 );
+
+  mLayerNurbs = std::make_unique<QgsVectorLayer>( u"NurbsCurve?crs=EPSG:27700"_s, u"layer nurbs"_s, u"memory"_s );
+  QVERIFY( mLayerNurbs->isValid() );
+  mLayerNurbsZ = std::make_unique<QgsVectorLayer>( u"NurbsCurveZ?crs=EPSG:27700"_s, u"layer nurbs Z"_s, u"memory"_s );
+  QVERIFY( mLayerNurbsZ->isValid() );
+  mLayerNurbsM = std::make_unique<QgsVectorLayer>( u"NurbsCurveM?crs=EPSG:27700"_s, u"layer nurbs M"_s, u"memory"_s );
+  QVERIFY( mLayerNurbsM->isValid() );
+  mLayerNurbsZM = std::make_unique<QgsVectorLayer>( u"NurbsCurveZM?crs=EPSG:27700"_s, u"layer nurbs ZM"_s, u"memory"_s );
+  QVERIFY( mLayerNurbsZM->isValid() );
 }
 
-void TestQgsVertexEditor::testColumnZMR_data()
+void TestQgsVertexEditor::testColumnZMRW_data()
 {
   QTest::addColumn<QgsVectorLayer *>( "layer" );
   QTest::addColumn<QStringList>( "headers" );
@@ -115,9 +129,13 @@ void TestQgsVertexEditor::testColumnZMR_data()
   QTest::newRow( "LineZ" ) << mLayerLineZ.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"r"_s );
   QTest::newRow( "LineM" ) << mLayerLineM.get() << ( QStringList() << u"x"_s << u"y"_s << u"m"_s << u"r"_s );
   QTest::newRow( "LineZM" ) << mLayerLineZM.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"m"_s << u"r"_s );
+  QTest::newRow( "Nurbs" ) << mLayerNurbs.get() << ( QStringList() << u"x"_s << u"y"_s << u"r"_s << u"w"_s );
+  QTest::newRow( "NurbsZ" ) << mLayerNurbsZ.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"r"_s << u"w"_s );
+  QTest::newRow( "NurbsM" ) << mLayerNurbsM.get() << ( QStringList() << u"x"_s << u"y"_s << u"m"_s << u"r"_s << u"w"_s );
+  QTest::newRow( "NurbsZM" ) << mLayerNurbsZM.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"m"_s << u"r"_s << u"w"_s );
 }
 
-void TestQgsVertexEditor::testColumnZMR()
+void TestQgsVertexEditor::testColumnZMRW()
 {
   QFETCH( QgsVectorLayer *, layer );
   QFETCH( QStringList, headers );

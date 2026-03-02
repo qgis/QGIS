@@ -77,7 +77,7 @@ class TestQgsMapSaveDialog : public QgsTest
       QgsRectangle canvasExtent( 1028930.8433, 5910111.234, 1031976.2192, 5912395.266 );
       canvas.setExtent( canvasExtent );
       dialog.mExtentGroupBox->setOutputExtentFromCurrent(); // Same as set extent from "Map Canvas Extent"
-      QCOMPARE( dialog.mExtentGroupBox->outputExtent(), canvasExtent );
+      QCOMPARE( dialog.mExtentGroupBox->outputExtent(), canvas.extent() );
       QCOMPARE( dialog.mScaleWidget->scale(), 14388 );
 
       // Check update extent locking the scale
@@ -87,7 +87,7 @@ class TestQgsMapSaveDialog : public QgsTest
 
       canvas.setExtent( canvasExtent );
       dialog.mExtentGroupBox->setOutputExtentFromCurrent(); // Same as set extent from "Map Canvas Extent"
-      QCOMPARE( dialog.mExtentGroupBox->outputExtent(), canvasExtent );
+      QCOMPARE( dialog.mExtentGroupBox->outputExtent(), canvas.extent() );
       QCOMPARE( dialog.mScaleWidget->scale(), 10000 ); // Our arbitrary scale is kept!
     }
 };

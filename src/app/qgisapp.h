@@ -1034,8 +1034,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void makeMemoryLayerPermanent( QgsVectorLayer *layer );
 
-    //! save qml style for the current layer
-    void saveStyleFile( QgsMapLayer *layer = nullptr );
     //! save qrl definition for the current layer
     void saveAsLayerDefinition();
     //! save current raster layer
@@ -2928,6 +2926,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
+    friend class QgsWelcomeScreenController;
 
     friend class TestQgisAppPython;
     friend class TestQgisApp;

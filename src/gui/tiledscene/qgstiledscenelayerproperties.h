@@ -18,17 +18,26 @@
 
 #include "ui_qgstiledscenelayerpropertiesbase.h"
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgslayerpropertiesdialog.h"
+
+#define SIP_NO_FILE
 
 class QgsTiledSceneLayer;
 class QgsMessageBar;
 class QgsMetadataWidget;
 
-class APP_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsTiledSceneLayerPropertiesBase
+/**
+ * \ingroup gui
+ * \class QgsTiledSceneLayerProperties
+ * \brief Layer properties dialog for tiled scene layers.
+ * \since QGIS 4.0 in the GUI API
+ */
+class GUI_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsTiledSceneLayerPropertiesBase
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   protected slots:

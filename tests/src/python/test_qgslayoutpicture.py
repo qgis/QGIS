@@ -14,10 +14,8 @@ import http.server
 import os
 import socketserver
 import threading
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLayout,
@@ -27,9 +25,10 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -38,7 +37,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "composer_picture"

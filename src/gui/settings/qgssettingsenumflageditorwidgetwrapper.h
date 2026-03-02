@@ -16,7 +16,6 @@
 #ifndef QGSSETTINGSENUMFLAGEDITORWIDGETWRAPPER_H
 #define QGSSETTINGSENUMFLAGEDITORWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -27,6 +26,8 @@
 #include <QComboBox>
 #include <QStandardItemModel>
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

@@ -11,8 +11,8 @@ __date__ = "28/02/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
     QgsProject,
@@ -20,16 +20,14 @@ from qgis.core import (
     QgsVirtualLayerDefinition,
     QgsVirtualLayerTask,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsVirtualLayerTask(QgisTestCase):
-
     def setUp(self):
         self.testDataDir = unitTestDataPath()
         self._success = False

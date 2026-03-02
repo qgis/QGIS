@@ -21,13 +21,14 @@ __copyright__ = "(C) 2015, Giovanni Manghi"
 
 from qgis.core import (
     QgsProcessingException,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterString,
-    QgsProcessingParameterBoolean,
     QgsProcessingParameterVectorDestination,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -182,9 +183,7 @@ class Dissolve(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.COMPUTE_AREA, context):
             tokens.append(
-                "SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(
-                    geometry
-                )
+                f"SUM(ST_Area({geometry})) AS area, ST_Perimeter(ST_Union({geometry})) AS perimeter"
             )
 
         statsField = self.parameterAsString(
@@ -194,9 +193,7 @@ class Dissolve(GdalAlgorithm):
             parameters, self.COMPUTE_STATISTICS, context
         ):
             tokens.append(
-                'SUM("{0}") AS sum, MIN("{0}") AS min, MAX("{0}") AS max, AVG("{0}") AS avg'.format(
-                    statsField
-                )
+                f'SUM("{statsField}") AS sum, MIN("{statsField}") AS min, MAX("{statsField}") AS max, AVG("{statsField}") AS avg'
             )
 
         params = ",".join(tokens)

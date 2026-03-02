@@ -15,7 +15,6 @@
 #ifndef QGSNETWORKLOGGERPANELWIDGET_H
 #define QGSNETWORKLOGGERPANELWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsnetworkloggerpanelbase.h"
 
@@ -23,6 +22,8 @@
 #include "qgsdevtoolwidget.h"
 
 #include <QTreeView>
+
+#define SIP_NO_FILE
 
 class QgsNetworkLogger;
 class QgsNetworkLoggerProxyModel;

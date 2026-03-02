@@ -18,9 +18,6 @@ import os
 import subprocess
 import sys
 
-from qgis.PyQt.QtCore import QRect, QRectF, QSize, qDebug
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtSvg import QSvgGenerator, QSvgRenderer
 from qgis.core import (
     QgsLabelingEngineSettings,
     QgsLayout,
@@ -32,7 +29,9 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayerSimpleLabeling,
 )
-
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, qDebug
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtSvg import QSvgGenerator, QSvgRenderer
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestLineBase, TestPointBase, suiteTests
 from utilities import getExecutablePath, getTempfilePath, mapSettingsString
@@ -53,7 +52,7 @@ for util in [
 # noinspection PyUnboundLocalVariable
 if not PDFUTIL:
     raise Exception(
-        "PDF-to-image utility not found on PATH: " "install Poppler (with Cairo)"
+        "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
     )
 
 
@@ -65,7 +64,6 @@ class OutputKind:
 
 # noinspection PyShadowingNames
 class TestLayoutBase(TestQgsPalLabeling):
-
     layer = None
     """:type: QgsVectorLayer"""
 
@@ -250,9 +248,9 @@ class TestLayoutBase(TestQgsPalLabeling):
         except subprocess.CalledProcessError as e:
             qDebug(
                 "_get_layout_pdf_image failed!\n"
-                "cmd: {}\n"
-                "returncode: {}\n"
-                "message: {}".format(e.cmd, e.returncode, e.message)
+                f"cmd: {e.cmd}\n"
+                f"returncode: {e.returncode}\n"
+                f"message: {e.message}"
             )
 
         if not res:
@@ -293,7 +291,6 @@ class TestLayoutBase(TestQgsPalLabeling):
 
 
 class TestLayoutPointBase(TestLayoutBase):
-
     @classmethod
     def setUpClass(cls):
         TestLayoutBase.setUpClass()
@@ -301,7 +298,6 @@ class TestLayoutPointBase(TestLayoutBase):
 
 
 class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -311,7 +307,6 @@ class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
 
 
 class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -321,7 +316,6 @@ class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
 
 
 class TestLayoutSvgPoint(TestLayoutPointBase, TestPointBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -344,7 +338,6 @@ class TestLayoutSvgVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
 
 class TestLayoutPdfPoint(TestLayoutPointBase, TestPointBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -367,7 +360,6 @@ class TestLayoutPdfVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
 
 class TestLayoutLineBase(TestLayoutBase):
-
     @classmethod
     def setUpClass(cls):
         TestLayoutBase.setUpClass()
@@ -375,7 +367,6 @@ class TestLayoutLineBase(TestLayoutBase):
 
 
 class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -385,7 +376,6 @@ class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
 
 
 class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -395,7 +385,6 @@ class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
 
 
 class TestLayoutSvgLine(TestLayoutLineBase, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -418,7 +407,6 @@ class TestLayoutSvgVsLayoutLine(TestLayoutLineBase, TestLineBase):
 
 
 class TestLayoutPdfLine(TestLayoutLineBase, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()

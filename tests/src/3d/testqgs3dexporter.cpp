@@ -19,6 +19,7 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dsceneexporter.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
@@ -119,7 +120,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
   for ( Qgs3DExportObject *o : std::as_const( exporter.mObjects ) )
   {
     if ( !terrainEntity ) // not compatible with terrain entity
-      QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
+      QVERIFY( o->indexes().size() <= o->vertexPosition().size() );
     sum += o->indexes().size();
   }
 

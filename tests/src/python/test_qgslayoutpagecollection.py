@@ -10,10 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "18/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QCoreApplication, QEvent, QPointF, QRectF, Qt
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsFillSymbol,
     QgsLayout,
@@ -31,14 +29,16 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QPointF, QRectF, Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayoutPageCollection(QgisTestCase):
-
     def testLayout(self):
         # test that layouts have a collection
         p = QgsProject()

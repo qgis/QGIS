@@ -26,21 +26,21 @@ import re
 import sys
 import traceback
 from functools import partial
-from typing import Optional, TYPE_CHECKING
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import TYPE_CHECKING, Optional
 
-from qgis.PyQt.Qsci import QsciScintilla
-from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QClipboard, QCursor
-from qgis.PyQt.QtWidgets import QShortcut, QApplication, QAction
 from qgis.core import (
-    QgsApplication,
     Qgis,
+    QgsApplication,
     QgsProcessingUtils,
     QgsSettingsTree,
 )
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditor, QgsCodeInterpreter
+from qgis.gui import QgsCodeEditor, QgsCodeEditorPython, QgsCodeInterpreter
+from qgis.PyQt.Qsci import QsciScintilla
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtGui import QClipboard, QCursor, QFontMetrics, QKeySequence
+from qgis.PyQt.QtWidgets import QAction, QApplication, QShortcut
 
 from .process_wrapper import ProcessWrapper
 
@@ -172,7 +172,6 @@ SUBPROCESS = 2  # Sending input to a subprocess
 
 
 class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
-
     def __init__(self, shell: ShellScintilla):
         super(QgsCodeInterpreter, self).__init__()
         code.InteractiveInterpreter.__init__(self, locals=None)
@@ -199,7 +198,6 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
             self.writeCMD(cmd)
 
         if self.currentState() == PS1:
-
             # This line makes single line commands with leading spaces work
             cmd = cmd.strip()
 
@@ -311,7 +309,6 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
 
 class ShellScintilla(QgsCodeEditorPython):
-
     def __init__(self, console_widget: PythonConsoleWidget):
         # We set the ImmediatelyUpdateHistory flag here, as users can easily
         # crash QGIS by entering a Python command, and we don't want the
@@ -347,6 +344,7 @@ class ShellScintilla(QgsCodeEditorPython):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("V") + ctrl)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCSS = QShortcut(
@@ -389,7 +387,6 @@ class ShellScintilla(QgsCodeEditorPython):
         self.console_widget.callWidgetMessageBar(msgText)
 
     def keyPressEvent(self, e):
-
         if (
             e.modifiers()
             & (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.MetaModifier)
@@ -401,6 +398,17 @@ class ShellScintilla(QgsCodeEditorPython):
                 self._interpreter.sub_process.kill()
                 self._interpreter.sub_process = None
                 self.updatePrompt()
+            return
+        elif (
+            e.modifiers()
+            & (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.MetaModifier)
+            and e.key() == Qt.Key.Key_V
+        ) or (
+            e.modifiers() & Qt.KeyboardModifier.ShiftModifier
+            and e.key() == Qt.Key.Key_Insert
+        ):
+            self.paste()
+            e.accept()
             return
 
         # update the live history
@@ -490,9 +498,7 @@ class ShellScintilla(QgsCodeEditorPython):
 
         # Append the directory of the file to the path and set __file__ to the filename
         self._interpreter.execCommandImpl(
-            "sys.path.append({})".format(
-                QgsProcessingUtils.stringToPythonLiteral(dirname)
-            ),
+            f"sys.path.append({QgsProcessingUtils.stringToPythonLiteral(dirname)})",
             False,
         )
         self._interpreter.execCommandImpl(
@@ -516,9 +522,7 @@ class ShellScintilla(QgsCodeEditorPython):
             # Remove the directory from the path and delete the __file__ variable
             self._interpreter.execCommandImpl("del __file__", False)
             self._interpreter.execCommandImpl(
-                "sys.path.remove({})".format(
-                    QgsProcessingUtils.stringToPythonLiteral(dirname)
-                ),
+                f"sys.path.remove({QgsProcessingUtils.stringToPythonLiteral(dirname)})",
                 False,
             )
 

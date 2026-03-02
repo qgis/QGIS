@@ -12,16 +12,15 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import unittest
 
-from qgis.PyQt.QtCore import Qt, QPoint
-from qgis.PyQt.QtWidgets import QWidget
 from qgis.gui import QgsOverlayWidgetLayout
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QPoint, Qt
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsOverlayWidgetLayout(QgisTestCase):
-
     def testLayout(self):
         parent = QWidget()
         parent.setFixedSize(600, 400)

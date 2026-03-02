@@ -16,9 +16,10 @@
 #ifndef QGSDXFEXPORTALGORITHM_H
 #define QGSDXFEXPORTALGORITHM_H
 
-#define SIP_NO_FILE
 
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

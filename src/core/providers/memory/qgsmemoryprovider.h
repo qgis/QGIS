@@ -16,12 +16,13 @@
 #ifndef QGSMEMORYPROVIDER_H
 #define QGSMEMORYPROVIDER_H
 
-#define SIP_NO_FILE
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectordataprovider.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;

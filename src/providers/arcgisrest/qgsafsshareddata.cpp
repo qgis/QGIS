@@ -283,7 +283,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
     // Set geometry
     const QVariantMap geometryData = featureData[u"geometry"_s].toMap();
-    std::unique_ptr<QgsAbstractGeometry> geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[u"geometryType"_s].toString(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
+    std::unique_ptr<QgsAbstractGeometry> geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[u"geometryType"_s].toString(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ), QgsWkbTypes::isCurvedType( mGeometryType ) ) );
     // Above might return 0, which is OK since in theory empty geometries are allowed
     if ( geometry )
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );

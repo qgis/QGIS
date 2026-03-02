@@ -169,7 +169,7 @@ void TestQgsOpenClUtils::testProgramSource()
 {
   QgsOpenClUtils::setSourcePath( QDir::tempPath() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/XXXXXX.cl" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.write( QByteArray::fromStdString( source() ) );
   tmpFile.flush();
   const QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );

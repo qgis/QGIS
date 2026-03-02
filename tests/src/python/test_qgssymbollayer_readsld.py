@@ -22,9 +22,8 @@ __copyright__ = "(C) 2017, Jorge Gustavo Rocha"
 import os
 import pathlib
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsEllipseSymbolLayer,
@@ -44,10 +43,10 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 start_app()

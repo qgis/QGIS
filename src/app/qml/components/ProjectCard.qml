@@ -10,6 +10,7 @@ Rectangle {
   implicitHeight: 120
   radius: 6
 
+  property color backgroundColor: "#ffffff"
   property string title: ""
   property string subtitle: ""
   property string crs: ""
@@ -17,13 +18,14 @@ Rectangle {
   property bool isPinned: false
   property bool isSelected: false
   property bool isPressed: false
+  property bool isEnabled: true
 
   signal clicked(MouseEvent mouse)
 
   Rectangle {
     id: imageContainer
     anchors.fill: parent
-    color: "#ffffff"
+    color: root.imageSource != "" ? "#ffffff" : root.backgroundColor
     radius: root.radius
 
     Image {
@@ -33,6 +35,7 @@ Rectangle {
       fillMode: Image.PreserveAspectCrop
       cache: false
       opacity: 0.75
+      visible: root.imageSource != ""
     }
 
     Rectangle {
@@ -78,6 +81,7 @@ Rectangle {
       color: "#2d3748"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
     
     Text {
@@ -89,6 +93,7 @@ Rectangle {
       color: "#4a5568"
       wrapMode: Text.NoWrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
 
     Text {
@@ -100,6 +105,7 @@ Rectangle {
       color: "#4a5568"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
   }
 

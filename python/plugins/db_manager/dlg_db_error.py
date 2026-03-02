@@ -23,14 +23,13 @@ The content of this file is based on
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog
 
-from .gui_utils import GuiUtils
 from .db_plugins.plugin import DbError
+from .gui_utils import GuiUtils
 
 Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgDbError.ui"))
 
 
 class DlgDbError(QDialog, Ui_Dialog):
-
     def __init__(self, e, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)

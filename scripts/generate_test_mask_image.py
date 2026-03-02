@@ -108,12 +108,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
         or not rendered_image.height() == control_image.height()
     ):
         print(
-            "Size mismatch - control image is {}x{}, rendered image is {}x{}".format(
-                control_image.width(),
-                control_image.height(),
-                rendered_image.width(),
-                rendered_image.height(),
-            )
+            f"Size mismatch - control image is {control_image.width()}x{control_image.height()}, rendered image is {rendered_image.width()}x{rendered_image.height()}"
         )
 
     max_width = min(rendered_image.width(), control_image.width())

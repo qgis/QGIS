@@ -27,7 +27,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
@@ -38,6 +37,8 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QMutex>
+
+#define SIP_NO_FILE
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;

@@ -19,19 +19,20 @@ __author__ = "Michael Minn"
 __date__ = "May 2010"
 __copyright__ = "(C) 2010, Michael Minn"
 
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsExpression,
-    QgsVectorLayer,
     QgsProcessing,
-    QgsProcessingException,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterField,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
+    QgsProcessingException,
     QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterField,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorLayer,
+    QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QMetaType
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

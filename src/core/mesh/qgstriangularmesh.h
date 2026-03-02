@@ -19,7 +19,6 @@
 #define QGSTRIANGULARMESH_H
 
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -34,6 +33,8 @@
 #include <QSet>
 #include <QVector>
 #include <QVector3D>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 class QgsRectangle;

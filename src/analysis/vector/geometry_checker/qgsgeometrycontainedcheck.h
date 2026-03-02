@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_COVER_CHECK_H
 #define QGS_GEOMETRY_COVER_CHECK_H
@@ -23,6 +22,8 @@
 #include "qgsvectorlayer.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

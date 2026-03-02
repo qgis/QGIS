@@ -16,7 +16,6 @@
 #ifndef QGSMAPLAYERREF_H
 #define QGSMAPLAYERREF_H
 
-#define SIP_NO_FILE
 
 #include <utility>
 
@@ -27,6 +26,8 @@
 #include <QDomElement>
 #include <QPointer>
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

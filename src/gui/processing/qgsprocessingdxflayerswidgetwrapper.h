@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGDXFLAYERSWIDGETWRAPPER_H
 #define QGSPROCESSINGDXFLAYERSWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingdxflayerdetailswidgetbase.h"
 
@@ -24,6 +23,8 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingwidgetwrapper.h"
+
+#define SIP_NO_FILE
 
 class QLineEdit;
 class QToolButton;

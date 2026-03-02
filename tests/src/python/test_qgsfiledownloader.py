@@ -12,12 +12,12 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
+import unittest
 from functools import partial
 
-from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.core import QgsFileDownloader
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QEventLoop, QUrl
+from qgis.testing import QgisTestCase, start_app
 
 __author__ = "Alessandro Pasotti"
 __date__ = "08/11/2016"

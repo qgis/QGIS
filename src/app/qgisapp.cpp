@@ -1952,7 +1952,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [detailsButton, licenseDetails] {
         QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
         dialog->setTitle( tr( "Font License" ) );
-        dialog->setMessage( licenseDetails, QgsMessageOutput::MessageText );
+        dialog->setMessage( licenseDetails, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -1975,7 +1975,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [error] {
         QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
-        dialog->setMessage( error, QgsMessageOutput::MessageText );
+        dialog->setMessage( error, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -2483,7 +2483,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( QgsMessageViewer *dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
       {
         dialog->setTitle( title );
-        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->setMessage( longMessage, Qgis::StringFormat::Html );
         dialog->showMessage();
       }
     } );
@@ -8429,50 +8429,6 @@ void QgisApp::saveAsLayerDefinition()
   settings.setValue( u"UI/lastQLRDir"_s, fi.path() );
 }
 
-void QgisApp::saveStyleFile( QgsMapLayer *layer )
-{
-  if ( !layer )
-  {
-    layer = activeLayer();
-  }
-
-  if ( !layer || !layer->dataProvider() )
-    return;
-
-  switch ( layer->type() )
-  {
-    case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).saveStyleAs();
-      break;
-
-    case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( layer, mMapCanvas ).saveStyleAs();
-      break;
-
-    case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::PointCloud:
-      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::TiledScene:
-      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    // Not available for these
-    case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Group:
-      break;
-  }
-}
-
 ///@cond PRIVATE
 
 /**
@@ -9059,15 +9015,18 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QString newTitle = QString( currentTitle );
 
   QString typeString;
+  QString conflictingNameWarning;
   QString helpPage;
   switch ( type )
   {
     case QgsMasterLayoutInterface::PrintLayout:
       typeString = tr( "print layout" );
+      conflictingNameWarning = tr( "A print layout with this title already exists." );
       helpPage = u"print_composer/index.html"_s;
       break;
     case QgsMasterLayoutInterface::Report:
       typeString = tr( "report" );
+      conflictingNameWarning = tr( "A report with this title already exists." );
       helpPage = u"print_composer/create_reports.html"_s;
       break;
   }
@@ -9096,7 +9055,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "A %1 with this title already exists." ).arg( typeString ) );
+    dlg.setConflictingNameWarning( conflictingNameWarning );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
@@ -17763,8 +17722,8 @@ void QgisApp::triggerCrashHandler()
 void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
 {
   QList<QDockWidget *> dockWidgetsInArea;
-  const auto dockWidgets = findChildren<QDockWidget *>();
-  for ( QDockWidget *w : dockWidgets )
+  const QList<QDockWidget *> allDockWidgets = findChildren<QDockWidget *>();
+  for ( QDockWidget *w : allDockWidgets )
   {
     if ( w->isVisible() && dockWidgetArea( w ) == area )
     {
@@ -17773,80 +17732,73 @@ void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockW
   }
 
   addDockWidget( area, dockWidget ); // First add the dock widget, then attempt to tabify
-  if ( dockWidgetsInArea.length() > 0 )
+  if ( dockWidgetsInArea.empty() )
+    return;
+
+  // Get the base dock widget that we'll use to tabify our new dockWidget
+  QDockWidget *tabifyWithDockWidget = nullptr;
+  for ( const QString &targetName : tabifyWith )
   {
-    // Get the base dock widget that we'll use to tabify our new dockWidget
-    QDockWidget *tabifyWithDockWidget = nullptr;
-    if ( !tabifyWith.isEmpty() )
+    auto it = std::find_if( dockWidgetsInArea.begin(), dockWidgetsInArea.end(), [&targetName]( QDockWidget *cw ) {
+      return cw->objectName() == targetName || cw->property( "dock_uuid" ).toString() == targetName;
+    } );
+
+    if ( it != dockWidgetsInArea.end() )
     {
-      // Iterate the list of object names looking for a
-      // dock widget to tabify the new one on top of it
-      bool objectNameFound = false;
-      for ( int i = 0; i < tabifyWith.size(); i++ )
+      tabifyWithDockWidget = *it;
+      break;
+    }
+  }
+
+  if ( !tabifyWithDockWidget )
+  {
+    // fallback to the first available dock widget if no matches were found, or if no tabifyWith names were specified
+    tabifyWithDockWidget = dockWidgetsInArea.at( 0 );
+  }
+  if ( tabifyWithDockWidget == dockWidget )
+    return;
+
+  // find the currently active dock widget so that we can restore that if we're not raising the new tab
+  QTabBar *existingTabBar = nullptr;
+  int currentTabIndex = -1;
+  if ( !raiseTab && dockWidgetsInArea.length() > 1 )
+  {
+    // Chances are we've already got a tabBar, if so, get
+    // currentTabIndex to restore status after inserting our new tab
+    const QList<QTabBar *> tabBars = findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
+    bool tabBarFound = false;
+    for ( QTabBar *tabBar : tabBars )
+    {
+      for ( int i = 0; i < tabBar->count(); i++ )
       {
-        for ( QDockWidget *cw : std::as_const( dockWidgetsInArea ) )
+        if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
         {
-          if ( cw->objectName() == tabifyWith.at( i ) || cw->property( "dock_uuid" ).toString() == tabifyWith.at( i ) )
-          {
-            tabifyWithDockWidget = cw;
-            objectNameFound = true; // Also exit the outer for loop
-            break;
-          }
-        }
-        if ( objectNameFound )
-        {
+          existingTabBar = tabBar;
+          currentTabIndex = tabBar->currentIndex();
+          tabBarFound = true;
           break;
         }
       }
-    }
-    if ( !tabifyWithDockWidget )
-    {
-      tabifyWithDockWidget = dockWidgetsInArea.at( 0 ); // Last resort
-    }
-    if ( tabifyWithDockWidget == dockWidget )
-      return;
-
-    QTabBar *existentTabBar = nullptr;
-    int currentIndex = -1;
-    if ( !raiseTab && dockWidgetsInArea.length() > 1 )
-    {
-      // Chances are we've already got a tabBar, if so, get
-      // currentIndex to restore status after inserting our new tab
-      const QList<QTabBar *> tabBars = findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
-      bool tabBarFound = false;
-      for ( QTabBar *tabBar : tabBars )
+      if ( tabBarFound )
       {
-        for ( int i = 0; i < tabBar->count(); i++ )
-        {
-          if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
-          {
-            existentTabBar = tabBar;
-            currentIndex = tabBar->currentIndex();
-            tabBarFound = true;
-            break;
-          }
-        }
-        if ( tabBarFound )
-        {
-          break;
-        }
+        break;
       }
     }
+  }
 
-    // Now we can put the new dockWidget on top of tabifyWith
-    tabifyDockWidget( tabifyWithDockWidget, dockWidget );
+  // Now we can put the new dockWidget on top of tabifyWith
+  tabifyDockWidget( tabifyWithDockWidget, dockWidget );
 
-    // Should we restore dock widgets status?
-    if ( !raiseTab )
+  // Should we restore dock widgets status?
+  if ( !raiseTab )
+  {
+    if ( existingTabBar )
     {
-      if ( existentTabBar )
-      {
-        existentTabBar->setCurrentIndex( currentIndex );
-      }
-      else
-      {
-        tabifyWithDockWidget->raise(); // Single base dock widget, we can just raise it
-      }
+      existingTabBar->setCurrentIndex( currentTabIndex );
+    }
+    else
+    {
+      tabifyWithDockWidget->raise(); // Single base dock widget, we can just raise it
     }
   }
 }

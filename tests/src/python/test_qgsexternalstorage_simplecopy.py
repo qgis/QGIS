@@ -12,14 +12,12 @@ __copyright__ = "Copyright 2021, The QGIS Project"
 
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from test_qgsexternalstorage_base import TestPyQgsExternalStorageBase
 
 
 class TestPyQgsExternalStorageSimpleCopy(
     TestPyQgsExternalStorageBase, unittest.TestCase
 ):
-
     storageType = "SimpleCopy"
     badUrl = "/nothing/here/"
 

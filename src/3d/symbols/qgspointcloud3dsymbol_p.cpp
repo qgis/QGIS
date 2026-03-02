@@ -18,13 +18,14 @@
 #include <memory>
 
 #include "delaunator.hpp"
-#include "qgsaabb.h"
 #include "qgsfeedback.h"
 #include "qgsgeotransform.h"
+#include "qgsmaterial.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudrequest.h"
 
 #include <QPointSize>

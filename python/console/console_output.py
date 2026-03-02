@@ -24,29 +24,29 @@ import sys
 from functools import partial
 from typing import TYPE_CHECKING
 
+from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt import sip
+from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import (
-    Qt,
-    QCoreApplication,
-    QThread,
-    QMetaObject,
     Q_ARG,
+    QCoreApplication,
+    QMetaObject,
     QObject,
+    Qt,
+    QThread,
     pyqtSlot,
 )
 from qgis.PyQt.QtGui import QColor, QKeySequence
 from qgis.PyQt.QtWidgets import (
     QAction,
-    QGridLayout,
-    QSpacerItem,
-    QSizePolicy,
-    QShortcut,
-    QMenu,
     QApplication,
+    QGridLayout,
+    QMenu,
+    QShortcut,
+    QSizePolicy,
+    QSpacerItem,
 )
-from qgis.PyQt.Qsci import QsciScintilla
-from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 
 if TYPE_CHECKING:
     from .console import PythonConsoleWidget
@@ -160,7 +160,6 @@ From the console, you can type the following special commands:
 
 
 class ShellOutputScintilla(QgsCodeEditorPython):
-
     def __init__(
         self, console_widget: PythonConsoleWidget, shell_editor: ShellScintilla
     ):

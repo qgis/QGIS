@@ -27,6 +27,7 @@ __author__ = "Alessandro Pasotti"
 __date__ = "25/10/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import unittest
 from shutil import rmtree
 
 from qgis.core import (
@@ -36,8 +37,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.PyQt.QtNetwork import QSslCertificate
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath, waitServer
 
 try:
@@ -53,7 +53,6 @@ qgis_app = start_app()
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
@@ -129,9 +128,9 @@ class TestAuthManager(QgisTestCase):
         cls.port = int(re.findall(rb":(\d+)", line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer(
-            f"{cls.protocol}://{cls.hostname}:{cls.port}"
-        ), f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
+        assert waitServer(f"{cls.protocol}://{cls.hostname}:{cls.port}"), (
+            f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
+        )
 
     @classmethod
     def tearDownClass(cls):

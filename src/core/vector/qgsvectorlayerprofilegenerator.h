@@ -30,6 +30,8 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsVectorLayer;
@@ -40,7 +42,6 @@ class QgsLineString;
 class QgsPolygon;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 
 /**

@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsOptional(unittest.TestCase):
-
     def testGetSet(self):
         margins = QgsMargins()
         margins.setLeft(1.1)

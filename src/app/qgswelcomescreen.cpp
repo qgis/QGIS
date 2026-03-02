@@ -70,6 +70,14 @@ void QgsWelcomeScreenController::clearRecentProjects()
   }
 }
 
+void QgsWelcomeScreenController::removeTemplateProject( int row )
+{
+  if ( mWelcomeScreen )
+  {
+    mWelcomeScreen->removeTemplateProject( row );
+  }
+}
+
 void QgsWelcomeScreenController::showPluginManager()
 {
   QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
@@ -81,6 +89,27 @@ void QgsWelcomeScreenController::hideScene()
   {
     mWelcomeScreen->hideScene();
   }
+}
+
+void QgsWelcomeScreenController::forwardDrop( const QString &text, const QStringList &urls, const QVariantMap &formatsData )
+{
+  QMimeData mimeData;
+  const QStringList formats = formatsData.keys();
+  for ( const QString &format : formats )
+  {
+    mimeData.setData( format, formatsData[format].toByteArray() );
+  }
+
+  QList<QUrl> mimeDataUrls;
+  for ( const QString &url : urls )
+  {
+    mimeDataUrls << QUrl( url );
+  }
+  mimeData.setUrls( mimeDataUrls );
+  mimeData.setText( text );
+
+  QDropEvent dropEvent( QPointF( 0, 0 ), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier );
+  QgisApp::instance()->dropEvent( &dropEvent );
 }
 
 
@@ -211,6 +240,33 @@ void QgsWelcomeScreen::clearRecentProjects()
     const bool clearPinned = ( answer == QMessageBox::YesToAll );
     mRecentProjectsModel->clear( clearPinned );
     emit projectsCleared( clearPinned );
+  }
+}
+
+void QgsWelcomeScreen::removeTemplateProject( int row )
+{
+  if ( row < 0 || row >= mTemplateProjectsModel->rowCount() )
+  {
+    return;
+  }
+
+  QStandardItem *templateItem = mTemplateProjectsModel->item( row );
+  const QFileInfo fileInfo( templateItem->data( static_cast<int>( QgsTemplateProjectsModel::CustomRole::NativePathRole ) ).toString() );
+  if ( fileInfo.isWritable() )
+  {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle( tr( "Delete Template" ) );
+    msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( templateItem->data( static_cast<int>( QgsTemplateProjectsModel::CustomRole::TitleRole ) ).toString() ) );
+    auto deleteButton = msgBox.addButton( tr( "Delete" ), QMessageBox::YesRole );
+    msgBox.addButton( QMessageBox::Cancel );
+    msgBox.setIcon( QMessageBox::Question );
+    msgBox.exec();
+    if ( msgBox.clickedButton() == deleteButton )
+    {
+      mTemplateProjectsModel->removeRow( row );
+      QFile file( fileInfo.filePath() );
+      file.remove();
+    }
   }
 }
 

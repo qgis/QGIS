@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QtEndian>
+
+#define SIP_NO_FILE
 
 // Mega ewwww. all this is taken from Qt's QUrl::addEncodedQueryItem compatibility helper.
 // (I can't see any way to port the below code to NOT require this without breaking

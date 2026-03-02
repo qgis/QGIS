@@ -20,7 +20,6 @@
  * if written, the SIP file will not be generated automatically
  * or can be also defined directly in the file (to avoid including this)
  */
-#define SIP_NO_FILE
 
 /*
  * the module will be included if the condition is met
@@ -295,5 +294,7 @@
  * Extra arguments can contain extra headers to include in the conversion code.
  */
 #define SIP_INSERT_QLIST_ENUM_CONVERSION_CODE(class_name, ...)
+
+#define SIP_NO_FILE
 
 #endif // QGIS_SIP_H

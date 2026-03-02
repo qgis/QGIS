@@ -203,10 +203,12 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
     QAbstractSpinBox::focusInEvent( event ); // clazy:exclude=skipped-base-method
 
     displayCurrentDate();
+    setSelectedSection( sectionAt( 0 ) );
   }
   else
   {
     QDateTimeEdit::focusInEvent( event );
+    setSelectedSection( sectionAt( 0 ) );
   }
 }
 

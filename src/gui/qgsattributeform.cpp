@@ -1853,6 +1853,18 @@ void QgsAttributeForm::init()
               layout->setRowStretch( row, widgDef->verticalStretch() );
               addSpacer = false;
             }
+            else
+            {
+              if ( widgetInfo.expandingNeeded )
+              {
+                addSpacer = false;
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+              }
+              else
+              {
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+              }
+            }
 
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
@@ -1871,6 +1883,18 @@ void QgsAttributeForm::init()
             {
               layout->setRowStretch( row, widgDef->verticalStretch() );
               addSpacer = false;
+            }
+            else
+            {
+              if ( widgetInfo.expandingNeeded )
+              {
+                addSpacer = false;
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+              }
+              else
+              {
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+              }
             }
             if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
             {
@@ -1895,7 +1919,6 @@ void QgsAttributeForm::init()
             }
 
             QWidget *tabPage = new QWidget( tabWidget );
-
             tabWidget->addTab( tabPage, widgDef->name() );
             tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
 
@@ -1907,6 +1930,11 @@ void QgsAttributeForm::init()
             tabPage->setLayout( tabPageLayout );
 
             WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
+            if ( widgetInfo.expandingNeeded )
+            {
+              addSpacer = false;
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+            }
             tabPageLayout->addWidget( widgetInfo.widget );
             break;
           }
@@ -2118,10 +2146,35 @@ void QgsAttributeForm::init()
 
     const QgsFields fields = mLayer->fields();
 
+    // Collect non-first fields of composite foreign keys — these should be
+    // hidden since the RelationReference widget on the first field manages
+    // all composite key values internally
+    QSet<int> compositeHiddenFields;
+    const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( mLayer );
+    for ( const QgsRelation &rel : referencingRelations )
+    {
+      if ( rel.type() != Qgis::RelationshipType::Normal )
+        continue;
+
+      const QList<QgsRelation::FieldPair> fieldPairs = rel.fieldPairs();
+      if ( fieldPairs.size() > 1 )
+      {
+        for ( int i = 1; i < fieldPairs.size(); i++ )
+        {
+          const int idx = fields.lookupField( fieldPairs.at( i ).referencingField() );
+          if ( idx >= 0 )
+            compositeHiddenFields.insert( idx );
+        }
+      }
+    }
+
     for ( const QgsField &field : fields )
     {
       int idx = fields.lookupField( field.name() );
       if ( idx < 0 )
+        continue;
+
+      if ( compositeHiddenFields.contains( idx ) )
         continue;
 
       //show attribute alias if available
@@ -2716,6 +2769,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           {
             registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
           }
+          if ( childDef->verticalStretch() == 0 )
+          {
+            if ( widgetInfo.expandingNeeded )
+            {
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+            }
+            else
+            {
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+            }
+          }
         }
 
         // column containing the actual widget, not the label
@@ -2838,6 +2902,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.expandingNeeded |= !addSpacer;
       break;
     }
 

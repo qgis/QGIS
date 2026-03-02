@@ -16,7 +16,6 @@
 #ifndef QGSVECTORTILEMVTDECODER_H
 #define QGSVECTORTILEMVTDECODER_H
 
-#define SIP_NO_FILE
 
 class QgsFeature;
 
@@ -26,6 +25,8 @@ class QgsFeature;
 
 #include <QMap>
 #include <QStringList>
+
+#define SIP_NO_FILE
 
 class QgsVectorTileRawData;
 

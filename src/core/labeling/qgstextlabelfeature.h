@@ -15,7 +15,6 @@
 #ifndef QGSTEXTLABELFEATURE_H
 #define QGSTEXTLABELFEATURE_H
 
-#define SIP_NO_FILE
 
 #include <optional>
 
@@ -24,6 +23,8 @@
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
 #include "qgstextmetrics.h"
+
+#define SIP_NO_FILE
 
 class QgsTextCharacterFormat;
 

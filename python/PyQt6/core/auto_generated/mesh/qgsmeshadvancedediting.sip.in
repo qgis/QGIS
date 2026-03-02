@@ -65,6 +65,7 @@ Default implementation return a void string.
 
   protected:
 
+
 };
 
 class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing

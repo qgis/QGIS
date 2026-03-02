@@ -33,7 +33,7 @@ using namespace Qt::StringLiterals;
 class QgsMessageLogConsole;
 
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser,
-                                const char *file, const char *function, int line )
+                                const char *file, const char *function, int line, Qgis::StringFormat format )
 {
 #ifndef QGISDEBUG
   Q_UNUSED( file )
@@ -56,12 +56,12 @@ void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis
       break;
   }
 
-  QgsApplication::messageLog()->emitMessage( message, tag, level, notifyUser );
+  QgsApplication::messageLog()->emitMessage( message, tag, level, notifyUser, format );
 }
 
-void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
+void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser, Qgis::StringFormat format )
 {
-  emit messageReceived( message, tag, level );
+  emit messageReceivedWithFormat( message, tag, level, format );
   if ( level != Qgis::MessageLevel::Info && notifyUser && mAdviseBlockCount == 0 )
   {
     emit messageReceived( true );
@@ -71,8 +71,8 @@ void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgi
 QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel ) >( &QgsMessageLog::messageReceived ),
-           this, &QgsMessageLogConsole::logMessage );
+  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithFormat ),
+           this, static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage ) );
 }
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
@@ -80,6 +80,12 @@ void QgsMessageLogConsole::logMessage( const QString &message, const QString &ta
   const QString formattedMessage = formatLogMessage( message, tag, level );
   QTextStream cerr( stderr );
   cerr << formattedMessage;
+}
+
+void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format )
+{
+  Q_UNUSED( format );
+  logMessage( message, tag, level );
 }
 
 QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) const

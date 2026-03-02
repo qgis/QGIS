@@ -26,8 +26,9 @@
 
 #include <QString>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 
 class QgsPointCloudExpression;

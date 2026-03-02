@@ -14,18 +14,17 @@ __date__ = "26/12/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
+from unittest import mock
 
 from qgis.core import QgsProject
-from qgis.server import QgsServerProjectUtils, QgsServerSettings, QgsBufferServerRequest
-from qgis.testing import unittest, start_app
-from unittest import mock
+from qgis.server import QgsBufferServerRequest, QgsServerProjectUtils, QgsServerSettings
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsServerProjectUtils(unittest.TestCase):
-
     def setUp(self):
         self.testdata_path = unitTestDataPath("qgis_server_project") + "/"
 
@@ -89,9 +88,6 @@ class TestQgsServerProjectUtils(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
-    @mock.patch.dict(
-        os.environ, {"QGIS_SERVER_WFS_SERVICE_URL": "http://localhost:8080"}
-    )
     def test_map_uppercase_replace(self):
         """Test issue GH #54533 MAP replacementin URL arg"""
 

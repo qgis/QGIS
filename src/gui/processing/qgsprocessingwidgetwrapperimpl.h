@@ -19,7 +19,6 @@
 #ifndef QGSPROCESSINGWIDGETWRAPPERIMPL_H
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
-#define SIP_NO_FILE
 #include "qgshighlightablelineedit.h"
 #include "qgsmaptool.h"
 #include "qgspointcloudattribute.h"
@@ -31,6 +30,8 @@
 #include "qobjectuniqueptr.h"
 
 #include <QAbstractButton>
+
+#define SIP_NO_FILE
 
 class QCheckBox;
 class QComboBox;

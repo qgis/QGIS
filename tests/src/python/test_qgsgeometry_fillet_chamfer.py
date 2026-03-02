@@ -10,23 +10,22 @@ __author__ = "Loïc Bartoletti"
 __date__ = "2025-07-09"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     Qgis,
-    QgsInvalidArgumentException,
-    QgsGeometryUtils,
     QgsCircularString,
     QgsCompoundCurve,
     QgsGeometry,
+    QgsGeometryUtils,
+    QgsInvalidArgumentException,
     QgsLineString,
     QgsMultiLineString,
     QgsPoint,
     QgsVertexId,
     QgsWkbTypes,
 )
-import unittest
-
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath, writeShape
 
 # Convenience instances in case you may need them not used in this test
@@ -36,7 +35,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(QgisTestCase):
-
     # CHAMFER TESTS - SEGMENT-BASED OVERLOAD
 
     def test_chamfer_segments_basic_right_angle_quadrant1(self):

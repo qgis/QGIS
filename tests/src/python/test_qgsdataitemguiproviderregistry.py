@@ -11,6 +11,8 @@ __date__ = "27/10/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
+import unittest
+
 from qgis.gui import (
     QgsDataItemGuiContext,
     QgsDataItemGuiProvider,
@@ -18,14 +20,12 @@ from qgis.gui import (
     QgsGui,
     QgsMessageBar,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestProvider(QgsDataItemGuiProvider):
-
     def __init__(self, name):
         super().__init__()
         self._name = name
@@ -35,7 +35,6 @@ class TestProvider(QgsDataItemGuiProvider):
 
 
 class TestQgsDataItemGuiContext(QgisTestCase):
-
     def testContext(self):
         context = QgsDataItemGuiContext()
         self.assertIsNone(context.messageBar())
@@ -46,7 +45,6 @@ class TestQgsDataItemGuiContext(QgisTestCase):
 
 
 class TestQgsDataItemGuiProviderRegistry(QgisTestCase):
-
     def testAppRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsGui.dataItemGuiProviderRegistry())

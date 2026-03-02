@@ -108,10 +108,19 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     bool isRational() const SIP_HOLDGIL;
 
+
     /**
-     * Returns TRUE if this curve represents a poly-Bézier curve.
-     * A poly-Bézier is a degree 3 NURBS with (n-1) divisible by 3,
-     * where n is the number of control points.
+     * Returns TRUE if this curve represents a poly-Bézier curve structure.
+     *
+     * A poly-Bézier is a piecewise Bézier curve with C0 continuity
+     * (positional continuity only) used for editing. It requires:
+     *
+     * - Control points: (controlPointCount - 1) % degree == 0
+     * - Knot vector with multiplicity 'degree' at internal junctions
+     * - Can have 1 or more segments (like MultiPolygon can have 1+ polygons)
+     *
+     * Works for any degree ≥ 1. Note that a single-segment poly-Bézier
+     * will also return TRUE for isBezier() (degree = n-1 condition).
      */
     bool isPolyBezier() const SIP_HOLDGIL;
 
@@ -338,6 +347,30 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \since QGIS 4.0
      */
     static QVector<double> generateUniformKnots( int numControlPoints, int degree );
+
+    /**
+     * Generates a knot vector for converting piecewise Bézier curves to NURBS.
+     *
+     * Creates a knot vector with multiplicity 'degree' at junctions for C0 continuity.
+     * Format: [0 repeated (degree+1), 1 repeated degree, ..., s repeated (degree+1)]
+     * where s = nAnchors - 1 (number of segments)
+     *
+     * \param nAnchors number of anchor points (must be >= 2)
+     * \param degree degree of the curve (must be >= 1), defaults to 3 (cubic)
+     * \returns the generated knot vector, or empty if invalid parameters
+     * \since QGIS 4.0
+     */
+    static QVector<double> generateKnotsForBezierConversion( int nAnchors, int degree = 3 );
+
+    /**
+     * Returns TRUE if the control point at localIndex is an anchor vertex
+     * in a poly-Bézier curve. Anchor vertices are at positions 0, degree, 2*degree, etc.
+     *
+     * \param localIndex the control point index to check
+     * \returns TRUE if this is an anchor vertex, FALSE otherwise
+     * \since QGIS 4.0
+     */
+    bool isAnchorVertex( int localIndex ) const SIP_HOLDGIL;
 
     /**
      * Cast the \a geom to a QgsNurbsCurve.

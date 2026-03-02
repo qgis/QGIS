@@ -19,10 +19,10 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
-#include "qgsmaterial.h"
 
 #include <QColor>
 
+class QgsMaterial;
 class QDomElement;
 
 /**

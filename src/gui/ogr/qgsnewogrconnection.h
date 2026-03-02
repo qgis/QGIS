@@ -18,12 +18,13 @@
 #ifndef QGSNEWOGRCONNECTION_H
 #define QGSNEWOGRCONNECTION_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsnewogrconnectionbase.h"
 
 #include "qgis_gui.h"
 #include "qgsguiutils.h"
+
+#define SIP_NO_FILE
 
 /**
  * \class QgsNewOgrConnection

@@ -29,6 +29,8 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgstextformat.h"
 
+#define SIP_NO_FILE
+
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;
 class QgsLineSymbol;
@@ -42,7 +44,6 @@ class QgsAnnotationPictureItem;
 class QgsAnnotationRectangleTextItem;
 class QgsTextFormatWidget;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

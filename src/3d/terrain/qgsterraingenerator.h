@@ -20,6 +20,8 @@
 #include "qgschunkloader.h"
 #include "qgstilingscheme.h"
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class Qgs3DMapSettings;
 class Qgs3DRenderContext;
@@ -31,7 +33,6 @@ class QDomElement;
 class QDomDocument;
 class QgsProject;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

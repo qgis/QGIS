@@ -26,7 +26,6 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
-#include "qgsvirtualpointcloudprovider.h"
 
 #include <QPointer>
 #include <QString>
@@ -284,6 +283,9 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   if ( mZoomOutBehavior != Qgis::PointCloudZoomOutRenderBehavior::RenderExtents )
   {
     element.setAttribute( u"zoomOutBehavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
+  }
+  if ( mOverviewSwitchingScale != 1.0 )
+  {
     element.setAttribute( u"overviewSwitchingScale"_s, qgsDoubleToString( mOverviewSwitchingScale ) );
   }
 }

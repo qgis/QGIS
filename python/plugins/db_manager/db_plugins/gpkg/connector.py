@@ -19,26 +19,23 @@ email                : even.rouault at spatialys.com
  ***************************************************************************/
 """
 
+import sqlite3
 from functools import cmp_to_key
 
-from qgis.PyQt.QtWidgets import QApplication
+from osgeo import gdal, ogr, osr
+from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
+    QgsApplication,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsWkbTypes,
+)
 from qgis.PyQt.QtCore import QThread
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.utils import spatialite_connect
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
-
-from qgis.utils import spatialite_connect
-from qgis.core import (
-    QgsApplication,
-    QgsProviderRegistry,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsWkbTypes,
-)
-
-import sqlite3
-
-from osgeo import gdal, ogr, osr
 
 gdal.UseExceptions()
 ogr.UseExceptions()
@@ -49,7 +46,6 @@ def classFactory():
 
 
 class GPKGDBConnector(DBConnector):
-
     def __init__(self, uri, connection):
         """Creates a new GPKG connector
 
@@ -270,7 +266,7 @@ class GPKGDBConnector(DBConnector):
             "TINYINT",
             "SMALLINT",
             "DOUBLE",
-            "FLOAT" "DATE",
+            "FLOATDATE",
             "DATETIME",
             "BOOLEAN",
         ]
@@ -477,14 +473,11 @@ class GPKGDBConnector(DBConnector):
         _, tablename = self.getSchemaTableName(table)
 
         if self.isRasterTable(table):
-
             md = self.gdal_ds.GetMetadata("SUBDATASETS")
             if md is None or len(md) == 0:
                 ds = self.gdal_ds
             else:
-                subdataset_name = "GPKG:{}:{}".format(
-                    self.gdal_ds.GetDescription(), tablename
-                )
+                subdataset_name = f"GPKG:{self.gdal_ds.GetDescription()}:{tablename}"
                 try:
                     ds = gdal.Open(subdataset_name)
                 except Exception:
@@ -543,9 +536,7 @@ class GPKGDBConnector(DBConnector):
                 ret = self._fetchOne(sql)
                 return ret != [] and ret[0][0] == 1
             else:
-                subdataset_name = "GPKG:{}:{}".format(
-                    self.gdal_ds.GetDescription(), tablename
-                )
+                subdataset_name = f"GPKG:{self.gdal_ds.GetDescription()}:{tablename}"
                 for key in md:
                     if md[key] == subdataset_name:
                         return True
@@ -846,17 +837,13 @@ class GPKGDBConnector(DBConnector):
 
     def addTablePrimaryKey(self, table, column):
         """Adds a primery key (with one column) to a table"""
-        sql = "ALTER TABLE {} ADD PRIMARY KEY ({})".format(
-            self.quoteId(table), self.quoteId(column)
-        )
+        sql = f"ALTER TABLE {self.quoteId(table)} ADD PRIMARY KEY ({self.quoteId(column)})"
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column, unique=False):
         """Creates index on one column using default options"""
         unique_str = "UNIQUE" if unique else ""
-        sql = "CREATE {} INDEX {} ON {} ({})".format(
-            unique_str, self.quoteId(name), self.quoteId(table), self.quoteId(column)
-        )
+        sql = f"CREATE {unique_str} INDEX {self.quoteId(name)} ON {self.quoteId(table)} ({self.quoteId(column)})"
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
@@ -868,9 +855,7 @@ class GPKGDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         _, tablename = self.getSchemaTableName(table)
-        sql = "SELECT CreateSpatialIndex({}, {})".format(
-            self.quoteId(tablename), self.quoteId(geom_column)
-        )
+        sql = f"SELECT CreateSpatialIndex({self.quoteId(tablename)}, {self.quoteId(geom_column)})"
         try:
             res = self._fetchOne(sql)
         except QgsProviderConnectionException:
@@ -881,9 +866,7 @@ class GPKGDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         _, tablename = self.getSchemaTableName(table)
-        sql = "SELECT DisableSpatialIndex({}, {})".format(
-            self.quoteId(tablename), self.quoteId(geom_column)
-        )
+        sql = f"SELECT DisableSpatialIndex({self.quoteId(tablename)}, {self.quoteId(geom_column)})"
         res = self._fetchOne(sql)
         return len(res) > 0 and len(res[0]) > 0 and res[0][0] == 1
 
@@ -893,9 +876,7 @@ class GPKGDBConnector(DBConnector):
         _, tablename = self.getSchemaTableName(table)
 
         # (only available in >= 2.1.2)
-        sql = "SELECT HasSpatialIndex({}, {})".format(
-            self.quoteString(tablename), self.quoteString(geom_column)
-        )
+        sql = f"SELECT HasSpatialIndex({self.quoteString(tablename)}, {self.quoteString(geom_column)})"
         gdal.PushErrorHandler()
         ret = self._fetchOne(sql)
         gdal.PopErrorHandler()

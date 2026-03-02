@@ -12,9 +12,9 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import re
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -35,10 +35,9 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
@@ -46,7 +45,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -661,9 +659,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             ignore_errors=True,
         )
         self.execSQLCommand(
-            """CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(
-                name
-            )
+            f"""CREATE INDEX {name}_spatial_idx ON QGIS.{name}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX"""
         )
 
     def testEditCurves(self):
@@ -2171,7 +2167,6 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         conn_wo_login_pwd = re.sub(pwd_pattern, "", conn_wo_login_pwd)
 
         class TestCredentials(QgsCredentials):
-
             def __init__(self, username, pwd):
                 super().__init__()
                 self.setInstance(self)
@@ -2208,6 +2203,100 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             transaction.begin()[0], True
         )  # test credentials always return valid credentials so it's valid, but we don't care
         self.assertEqual(credentials.nbCall, 2)
+
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("oracle")
+
+        uri1_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "service": "MY_SERVICE",
+            "port": "2222",
+            "dbworkspace": "MY_WORKSPACE",
+            "schema": "schema1",
+            "table": "table1",
+        }
+        uri2_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "service": "MY_SERVICE",
+            "port": "2222",
+            "dbworkspace": "MY_WORKSPACE",
+            "schema": "schema2",
+            "table": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["host"] = "MY_HOST2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["host"] = "MY_HOST"
+        uri2_parts["dbname"] = "MY_DB2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["dbname"] = "MY_DB"
+        uri2_parts["service"] = "MY_SERVICE2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["service"] = "MY_SERVICE"
+        uri2_parts["port"] = "3333"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["port"] = "2222"
+        uri2_parts["dbworkspace"] = "MY_WORKSPACE2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["dbworkspace"] = "MY_WORKSPACE"
+        uri2_parts["schema"] = "schema1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+        uri2_parts["table"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
 
 
 if __name__ == "__main__":

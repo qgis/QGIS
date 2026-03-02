@@ -203,7 +203,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
      *
      * \note not available in Python bindings
      */
-    virtual std::unique_ptr< QgsRasterLayerLabelProvider > provider( QgsRasterLayer *layer ) const = 0 SIP_SKIP;
+    virtual std::unique_ptr< QgsRasterLayerLabelProvider > provider( QgsRasterLayer *layer ) const SIP_SKIP = 0;
 
     /**
      * Saves the labeling configuration to an XML element.

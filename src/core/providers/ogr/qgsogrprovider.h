@@ -21,6 +21,8 @@ email                : sherman at mrcc.com
 #include "qgsogrproviderutils.h"
 #include "qgsvectordataprovider.h"
 
+#define SIP_NO_FILE
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
@@ -30,7 +32,6 @@ class QgsProviderSublayerDetails;
 class QgsDataProviderElevationProperties;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * \class QgsOgrProvider

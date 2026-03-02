@@ -88,6 +88,7 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
     case Qgis::CaptureTechnique::NurbsCurve:
       return true;
   }

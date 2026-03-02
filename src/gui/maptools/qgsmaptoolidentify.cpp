@@ -49,6 +49,7 @@
 #include "qgssettings.h"
 #include "qgssymbol.h"
 #include "qgstiles.h"
+#include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"

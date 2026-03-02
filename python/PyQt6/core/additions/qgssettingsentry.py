@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-from .metaenum import metaEnumFromValue
-from enum import IntFlag, Flag
-from qgis.core import (
-    QgsSettings,
-    QgsSettingsTree,
-    QgsSettingsEntryBase,
-    QgsLogger,
-    Qgis,
-)
+from enum import Flag, IntFlag
+
 import qgis  # required to get base class of enums
+from qgis.core import (
+    Qgis,
+    QgsLogger,
+    QgsSettings,
+    QgsSettingsEntryBase,
+    QgsSettingsTree,
+)
+
+from .metaenum import metaEnumFromValue
 
 
 class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
@@ -74,6 +76,28 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         Defines a custom id since this class has not the same API as the cpp implementation
         """
         return "py-enumflag"
+
+    def value_to_key(self, value: int) -> str:
+        """
+        Returns the enum key name for the specified value
+
+        :raises: IndexError if value is invalid
+        """
+        return [e.name for e in self.setting.__enum_class if value == e.value][0]
+
+    def key_for_index(self, index: int):
+        """
+        Returns the enum value at the specified index
+
+        :raises: IndexError if value is invalid
+        """
+        return [e for e in self.__enum_class][index]
+
+    def enum_key_count(self) -> int:
+        """
+        Returns the number of values in the associated enum
+        """
+        return len(self.__enum_class)
 
     def value(self, dynamicKeyPart=None):
         """

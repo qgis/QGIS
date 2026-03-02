@@ -81,8 +81,8 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
       if ( conn )
       {
         int i = 0;
-        const QgsFields constFields { conn->fields( mSchema, mTableName ) };
-        for ( const auto &f : constFields )
+        mFields = conn->fields( mSchema, mTableName );
+        for ( const QgsField &f : mFields )
         {
           QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
           fieldItem->setSortKey( i++ );
@@ -138,6 +138,11 @@ QgsVectorLayer *QgsFieldsItem::layer()
     QgsDebugError( u"Error getting metadata for provider %1"_s.arg( providerKey() ) );
   }
   return nullptr;
+}
+
+QgsFields QgsFieldsItem::fields() const
+{
+  return mFields;
 }
 
 QgsAbstractDatabaseProviderConnection::TableProperty *QgsFieldsItem::tableProperty() const

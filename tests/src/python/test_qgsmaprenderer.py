@@ -10,11 +10,9 @@ __author__ = "Nyall Dawson"
 __date__ = "1/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
+import unittest
 from random import uniform
 
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
@@ -30,14 +28,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsMapRenderer(QgisTestCase):
-
     def setUp(self):
         pass
 

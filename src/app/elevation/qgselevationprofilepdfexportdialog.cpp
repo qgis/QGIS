@@ -19,6 +19,7 @@
 
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayoutitempage.h"
 #include "qgspagesizeregistry.h"
 #include "qgsplot.h"
@@ -37,6 +38,10 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   mProfileSettingsWidget = new QgsElevationProfileExportSettingsWidget();
   scrollAreaLayout->addWidget( mProfileSettingsWidget );
   scrollAreaLayout->addStretch( 1 );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/elevation_profile.html#export-elevation-profile"_s );
+  } );
 
   QgsGui::enableAutoGeometryRestore( this );
 

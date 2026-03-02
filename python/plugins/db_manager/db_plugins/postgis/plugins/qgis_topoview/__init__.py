@@ -20,13 +20,13 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@kbt.io>
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtWidgets import QAction
+import os
+
+from qgis.core import Qgis, QgsLayerTreeGroup, QgsProject, QgsVectorLayer, QgsWkbTypes
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import Qgis, QgsProject, QgsVectorLayer, QgsWkbTypes, QgsLayerTreeGroup
-from qgis.gui import QgsMessageBar
-
-import os
+from qgis.PyQt.QtWidgets import QAction
 
 current_path = os.path.dirname(__file__)
 
@@ -87,9 +87,7 @@ def run(item, action, mainwindow):
     if not isTopoSchema:
         mainwindow.infoBar.pushMessage(
             "Invalid topology",
-            'Schema "{}" is not registered in topology.topology.'.format(
-                item.schema().name
-            ),
+            f'Schema "{item.schema().name}" is not registered in topology.topology.',
             Qgis.MessageLevel.Warning,
             mainwindow.iface.messageTimeout(),
         )
@@ -337,7 +335,6 @@ def run(item, action, mainwindow):
         layerTree.setCustomLayerOrder(order)
 
     finally:
-
         # Set canvas extent to topology extent, if not yet initialized
         canvas = iface.mapCanvas()
         if canvas.fullExtent().isNull():

@@ -11,15 +11,15 @@ __date__ = "20/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 
-from qgis.core import QgsScaleBarRenderer, QgsScaleBarRendererRegistry
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsScaleBarRenderer, QgsScaleBarRendererRegistry
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestRenderer(QgsScaleBarRenderer):
-
     def id(self):
         return "test"
 
@@ -34,7 +34,6 @@ class TestRenderer(QgsScaleBarRenderer):
 
 
 class TestQgsScaleBarRendererRegistry(QgisTestCase):
-
     def testRegistry(self):
         registry = QgsScaleBarRendererRegistry()
         self.assertTrue(registry.renderers())

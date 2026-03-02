@@ -47,6 +47,34 @@ QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *proj
   return layersList;
 }
 
+QList<QgsMapLayer *> QgsProjectUtils::layersMatchingUri( const QgsProject *project, const QString &provider, const QString &uri, Qgis::SourceHierarchyLevel level )
+{
+  QList<QgsMapLayer *> layersList;
+  if ( !project )
+    return layersList;
+
+  const QMap<QString, QgsMapLayer *> mapLayers( project->mapLayers() );
+  for ( QgsMapLayer *layer : mapLayers )
+  {
+    if ( layer->providerType() != provider )
+      continue;
+
+    try
+    {
+      if ( QgsMapLayerUtils::layerRefersToUri( layer, uri, level ) )
+      {
+        layersList << layer;
+      }
+    }
+    catch ( QgsNotSupportedException &e )
+    {
+      // expected
+      ( void )e;
+    }
+  }
+  return layersList;
+}
+
 bool QgsProjectUtils::updateLayerPath( QgsProject *project, const QString &oldPath, const QString &newPath )
 {
   if ( !project )

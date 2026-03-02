@@ -62,6 +62,11 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, true, u"If true, attribute tables will be docked by default."_s );
+
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
+
+
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
@@ -294,7 +299,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsDockableWidgetHelper::OpeningMode openingMode = QgsDockableWidgetHelper::OpeningMode::RespectSetting;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, true, Qt::BottomDockWidgetArea );
+  bool defaultDocked = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value();
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, defaultDocked, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
@@ -417,7 +423,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mMainView->setView( static_cast<QgsDualView::ViewMode>( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
 
-    if ( QgsSettingsRegistryCore::settingsAutosizeAttributeTable->value() )
+    if ( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() )
     {
       mMainView->tableView()->resizeColumnsToContents();
     }

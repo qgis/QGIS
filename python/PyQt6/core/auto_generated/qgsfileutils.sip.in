@@ -233,6 +233,30 @@ already exist is found.
 .. versionadded:: 3.30
 %End
 
+    static bool copyDirectory( const QString &source, const QString &destination );
+%Docstring
+Recursively copies a whole directory.
+
+Returns ``True`` if the copy was successful and all files and folders
+were copied.
+
+.. note::
+
+   If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+
+.. versionadded:: 4.0
+%End
+
+    static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
+%Docstring
+Replaces all occurrences of a given string in a file.
+
+Returns ``True`` if the replacement was successful and the file updated.
+
+Replacement is case-sensitive.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************

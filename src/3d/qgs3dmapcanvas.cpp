@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
 #include "qgsraycastcontext.h"
 #include "qgstemporalcontroller.h"

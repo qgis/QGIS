@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsMultiLineString(QgisTestCase):
-
     def testConstruct(self):
         # With list
         line = QgsLineString([QgsPoint(1, 2), QgsPoint(3, 4)])

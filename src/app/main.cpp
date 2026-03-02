@@ -229,6 +229,54 @@ void myPrint( const char *fmt, ... )
   va_end( ap );
 }
 
+void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
+{
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles"_s ) ) );
+  const QDir qgis4ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles"_s ) ) );
+  if ( !qgis3ProfilesRootPath.exists() )
+  {
+    QgsDebugMsgLevel( u"No QGIS3 profiles path exists at %1, nothing to migrate"_s.arg( qgis3ProfilesRootPath.path() ), 2 );
+    return;
+  }
+
+  QgsDebugMsgLevel( u"Syncing profile list from %1 to %2"_s.arg( qgis3ProfilesRootPath.path(), qgis4ProfilesRootPath.path() ), 2 );
+  const QStringList qgis3Profiles = QDir( qgis3ProfilesRootPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  if ( !qgis4ProfilesRootPath.exists() )
+  {
+    if ( !qgis4ProfilesRootPath.mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create QGIS4 settings path, migrating profiles from QGIS3 cannot be performed"_s );
+      return;
+    }
+  }
+
+  // create new (empty) profile folders for all existing QGIS 3 profiles
+  for ( const QString &profile : qgis3Profiles )
+  {
+    const QString profilePath = qgis4ProfilesRootPath.filePath( profile );
+    if ( QFile::exists( profilePath ) )
+      continue;
+
+    QgsDebugMsgLevel( u"Creating empty profile %1 at %2"_s.arg( profile, profilePath ), 2 );
+    if ( !QDir( profilePath ).mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create empty profile %1 at %2, skipping"_s.arg( profile, profilePath ) );
+      continue;
+    }
+  }
+
+  const QString qgis3ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/profiles.ini"_s ) );
+  const QString qgis4ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/profiles.ini"_s ) );
+  if ( QFile::exists( qgis3ProfilesIniPath ) && !QFile::exists( qgis4ProfilesIniPath ) )
+  {
+    if ( !QFile::copy( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) )
+    {
+      QgsDebugError( u"Could not copy profiles.ini from %1 to %2, skipping"_s.arg( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) );
+    }
+  }
+}
+
 static void dumpBacktrace( unsigned int depth )
 {
   if ( depth == 0 )
@@ -570,6 +618,7 @@ int main( int argc, char *argv[] )
   // save the image to disk and then exit
   QString mySnapshotFileName;
   QString configLocalStorageLocation;
+  bool preventSettingsMigration = false;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -693,6 +742,9 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == "--profiles-path"_L1 || arg == "-S"_L1 ) )
         {
           configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+          // If an explicit profiles-path was specified, we don't do ANY settings migration logic.
+          // We'll instead leave that up to the system administrator to do.
+          preventSettingsMigration = true;
         }
         else if ( i + 1 < argc && ( arg == "--snapshot"_L1 || arg == "-s"_L1 ) )
         {
@@ -966,6 +1018,9 @@ int main( int argc, char *argv[] )
   // unresponsive when editing an attribute form QML widget.
   QQuickWindow::setGraphicsApi( QSGRendererInterface::Software );
 
+  // Accelerate speed of wheel scrolling
+  qputenv( "QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "4500" );
+
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
@@ -1012,11 +1067,17 @@ int main( int argc, char *argv[] )
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      // If an explicit QGIS_CUSTOM_CONFIG_PATH was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
     else if ( globalSettings.contains( u"core/profilesPath"_s ) )
     {
       configLocalStorageLocation = globalSettings.value( u"core/profilesPath"_s, "" ).toString();
       QgsDebugMsgLevel( u"Loading profiles path from global config at %1"_s.arg( configLocalStorageLocation ), 1 );
+      // If an explicit profilesPath was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1041,6 +1102,13 @@ int main( int argc, char *argv[] )
   else
   {
     QgsApplication::setTranslation( QLocale().name() );
+  }
+
+  if ( !preventSettingsMigration )
+  {
+    // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
+    // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
+    copyProfileNamesFromQgis3( configLocalStorageLocation );
   }
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
@@ -1185,35 +1253,37 @@ int main( int argc, char *argv[] )
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
-  // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default"_L1 )
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
+  const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
+  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
   {
-    // Note: this flag is ka version number so that we can reset it once we change the version.
-    // Note2: Is this a good idea can we do it better.
-    // Note3: Updated to only show if we have a migration from QGIS 2 - see https://github.com/qgis/QGIS/pull/38616
-    QString path = QSettings( "QGIS", "QGIS2" ).fileName();
-    if ( QFile::exists( path ) )
+    QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
+    QgsSettings migSettings;
+    // don't show dialog for settings migration from 3->4
+#if 0
+    const int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
+    const bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
+#else
+    constexpr bool showWelcome = false;
+#endif
+    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 30000, Qgis::versionInt() ) );
+    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
-      QgsSettings migSettings;
-      int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
-      bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
-      std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
-      if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+      QgsDebugMsgLevel( u"Migration required!"_s, 2 );
+      bool runMigration = true;
+      if ( !settingsMigrationForce && showWelcome )
       {
-        bool runMigration = true;
-        if ( !settingsMigrationForce && showWelcome )
-        {
-          QgsFirstRunDialog dlg;
-          dlg.exec();
-          runMigration = dlg.migrateSettings();
-          migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
-        }
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
+      }
 
-        if ( runMigration )
-        {
-          QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
-          migration->runMigration();
-        }
+      if ( runMigration )
+      {
+        QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
+        migration->runMigration( qgis3ProfilePath.path(), qgis4ProfilePath.path() );
       }
     }
   }

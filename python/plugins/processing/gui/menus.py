@@ -20,25 +20,26 @@ __date__ = "February 2016"
 __copyright__ = "(C) 2016, Victor Olaya"
 
 import os
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QApplication
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.MessageDialog import MessageDialog
-from processing.gui.AlgorithmDialog import AlgorithmDialog
-from qgis.utils import iface
+
 from qgis.core import (
     QgsApplication,
     QgsMessageLog,
-    QgsStringUtils,
     QgsProcessingAlgorithm,
+    QgsStringUtils,
 )
 from qgis.gui import QgsGui
-from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.AlgorithmExecutor import execute
-from processing.gui.Postprocessing import handleAlgorithmResults
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QToolButton
+from qgis.utils import iface
+
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.AlgorithmExecutor import execute
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 algorithmsToolbar = None
@@ -376,7 +377,7 @@ def _executeAlgorithm(alg_id):
         dlg.setMessage(
             QCoreApplication.translate(
                 "ProcessingPlugin",
-                "<h3>Missing dependency. This algorithm cannot " "be run </h3>\n{0}",
+                "<h3>Missing dependency. This algorithm cannot be run </h3>\n{0}",
             ).format(message)
         )
         dlg.exec()

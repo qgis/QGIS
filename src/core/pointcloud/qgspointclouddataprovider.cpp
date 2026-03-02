@@ -20,7 +20,6 @@
 #include <mutex>
 
 #include "qgis.h"
-#include "qgscopcpointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgspointcloudindex.h"

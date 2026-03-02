@@ -20,6 +20,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgsphongmaterialsettings.h"

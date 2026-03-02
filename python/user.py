@@ -19,13 +19,13 @@ __author__ = "Nathan Woodrow"
 __date__ = "January 2015"
 __copyright__ = "(C) 2015, Nathan Woodrow"
 
+import glob
 import os
 import sys
-import glob
 import traceback
 
-from qgis.PyQt.QtCore import QCoreApplication, qDebug
 from qgis.core import Qgis, QgsApplication, QgsMessageLog
+from qgis.PyQt.QtCore import QCoreApplication, qDebug
 
 
 def load_user_expressions(path):

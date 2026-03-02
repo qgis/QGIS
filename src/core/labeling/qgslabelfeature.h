@@ -15,7 +15,6 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
-#define SIP_NO_FILE
 
 #include <geos_c.h>
 
@@ -27,6 +26,8 @@
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgsmargins.h"
+
+#define SIP_NO_FILE
 
 namespace pal
 {

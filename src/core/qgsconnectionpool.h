@@ -16,7 +16,6 @@
 #ifndef QGSCONNECTIONPOOL_H
 #define QGSCONNECTIONPOOL_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -33,6 +32,8 @@
 #include <QThread>
 #include <QTime>
 #include <QTimer>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

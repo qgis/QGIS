@@ -24,36 +24,36 @@ import re
 import sys
 from pathlib import Path
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDir,
-    QRectF,
-    QPoint,
-    QPointF,
-    pyqtSignal,
-    QUrl,
-    QFileInfo,
-)
-from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessing,
-    QgsProject,
-    QgsProcessingModelParameter,
-    QgsProcessingModelAlgorithm,
-    QgsSettings,
-    QgsProcessingContext,
     QgsFileUtils,
+    QgsProcessing,
+    QgsProcessingContext,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingModelParameter,
+    QgsProject,
+    QgsSettings,
 )
 from qgis.gui import (
-    QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
-    QgsModelGraphicsScene,
     QgsModelDesignerDialog,
+    QgsModelGraphicsScene,
     QgsProcessingContextGenerator,
+    QgsProcessingParameterDefinitionDialog,
     QgsProcessingParametersGenerator,
+    QgsProcessingParameterWidgetContext,
 )
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDir,
+    QFileInfo,
+    QPoint,
+    QPointF,
+    QRectF,
+    QUrl,
+    pyqtSignal,
+)
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -71,7 +71,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ModelerDialog(QgsModelDesignerDialog):
-
     update_model = pyqtSignal()
 
     dlgs = []
@@ -114,7 +113,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context

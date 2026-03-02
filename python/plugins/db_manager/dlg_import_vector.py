@@ -20,22 +20,21 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
-
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsMapLayerType,
+    QgsProject,
+    QgsProviderRegistry,
+    QgsSettings,
     QgsVectorDataProvider,
     QgsVectorLayer,
-    QgsMapLayerType,
-    QgsProviderRegistry,
-    QgsCoordinateReferenceSystem,
     QgsVectorLayerExporter,
-    QgsProject,
-    QgsSettings,
 )
 from qgis.gui import QgsMessageViewer
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 from qgis.utils import OverrideCursor, iface
 
 from .gui_utils import GuiUtils

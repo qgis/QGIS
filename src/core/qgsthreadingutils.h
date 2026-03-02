@@ -16,7 +16,6 @@
 #ifndef QGSTHREADINGUTILS_H
 #define QGSTHREADINGUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgsconfig.h"
 
@@ -25,6 +24,8 @@
 
 #include <QString>
 #include <QThread>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

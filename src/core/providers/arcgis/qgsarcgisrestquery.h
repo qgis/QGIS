@@ -15,7 +15,6 @@
 #ifndef QGSARCGISRESTQUERY_H
 #define QGSARCGISRESTQUERY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgshttpheaders.h"
@@ -23,6 +22,8 @@
 
 #include <QString>
 #include <QVariantMap>
+
+#define SIP_NO_FILE
 
 class QgsFeedback;
 class QNetworkReply;
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Retrieves JSON service info for the specified base URL.
      */
-    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString() );
+    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(), bool forceRefresh = false );
 
     /**
      * Retrieves JSON layer info for the specified layer URL.
@@ -109,12 +110,11 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
      */
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr, const QString &urlPrefix = QString() );
-
+    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr, const QString &urlPrefix = QString(), bool forceRefresh = false );
     /**
      * Performs a blocking request to a URL and returns the retrieved JSON content.
      */
-    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() );
+    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString(), bool forceRefresh = false );
 
     /**
      * Calls the specified \a visitor function on all folder items found within the given service data.

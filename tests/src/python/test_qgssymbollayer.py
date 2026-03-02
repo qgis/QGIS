@@ -23,26 +23,16 @@ __date__ = "October 2012"
 __copyright__ = "(C) 2012, Massimo Endrighi"
 
 import os
+import unittest
 
 import qgis.core
 from osgeo import ogr
-from qgis.PyQt.QtCore import (
-    QDir,
-    QFile,
-    QIODevice,
-    QObject,
-    QPointF,
-    QSize,
-    Qt,
-    QTemporaryDir,
-)
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsArrowSymbolLayer,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
+    QgsDropShadowEffect,
     QgsEllipseSymbolLayer,
     QgsFeature,
     QgsFilledMarkerSymbolLayer,
@@ -52,6 +42,7 @@ from qgis.core import (
     QgsGeometry,
     QgsGradientFillSymbolLayer,
     QgsImageFillSymbolLayer,
+    QgsInnerGlowEffect,
     QgsLinePatternFillSymbolLayer,
     QgsLineSymbol,
     QgsLineSymbolLayer,
@@ -77,16 +68,24 @@ from qgis.core import (
     QgsSvgMarkerSymbolLayer,
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
+    QgsSymbolRenderContext,
     QgsUnitTypes,
     QgsVectorFieldSymbolLayer,
     QgsVectorLayer,
-    QgsSymbolRenderContext,
-    QgsDropShadowEffect,
-    QgsInnerGlowEffect,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFile,
+    QIODevice,
+    QObject,
+    QPointF,
+    QSize,
+    Qt,
+    QTemporaryDir,
+)
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

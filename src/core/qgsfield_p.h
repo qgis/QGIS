@@ -27,7 +27,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsdefaultvalue.h"
@@ -38,6 +37,8 @@
 #include <QSharedData>
 #include <QString>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

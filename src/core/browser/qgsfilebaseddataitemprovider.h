@@ -27,9 +27,10 @@
 #include <QString>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class QgsProviderSublayerDetails;
 
-#define SIP_NO_FILE
 
 class QgsDataItem;
 

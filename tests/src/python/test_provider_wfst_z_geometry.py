@@ -12,19 +12,20 @@ __copyright__ = "Copyright 2025, Alessandro Pasotti"
 
 import hashlib
 import http.server
-from pathlib import Path
 import os
 import re
 import shutil
 import socketserver
 import tempfile
 import threading
+from pathlib import Path
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ["QT_HASH_SEED"] = "0"
 
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from utilities import compareWkt
+import unittest
+
+from osgeo import gdal
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -37,12 +38,9 @@ from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
     QCoreApplication,
 )
-
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
-
-from osgeo import gdal
 
 # Default value is 2 second, which is too short when run under Valgrind
 gdal.SetConfigOption("OGR_GMLAS_XERCES_MAX_TIME", "20")
@@ -61,15 +59,12 @@ def sanitize(endpoint, x):
         ">", "_"
     ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
         "/", "_"
-    ).replace(
-        "\n", "_"
-    )
+    ).replace("\n", "_")
     # print('Sanitize: ' + x)
     return ret
 
 
 class TestPyQgsWfsZGeometries(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

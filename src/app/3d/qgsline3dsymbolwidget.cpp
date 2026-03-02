@@ -16,7 +16,6 @@
 #include "qgsline3dsymbolwidget.h"
 
 #include "qgsline3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 
 #include <QString>
 

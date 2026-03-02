@@ -22,6 +22,7 @@
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
 #include "qgsmaplayer.h"
 #include "qgspoint.h"

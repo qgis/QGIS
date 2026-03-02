@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsMapClippingRegion(unittest.TestCase):
-
     def testGetSet(self):
         region = QgsMapClippingRegion(
             QgsGeometry.fromWkt("Polygon((0 0, 1 0, 1 1, 0 1, 0 0))")

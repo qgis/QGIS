@@ -19,13 +19,12 @@ Portions of this file contain code from Eric4 APIsManager module.
 """
 
 import os
-
 from pathlib import Path
 
 from qgis.PyQt import uic
 from qgis.PyQt.Qsci import QsciAPIs, QsciLexerPython
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 Ui_APIsDialogPythonConsole, _ = uic.loadUiType(
     Path(__file__).parent / "console_compile_apis.ui"
@@ -33,7 +32,6 @@ Ui_APIsDialogPythonConsole, _ = uic.loadUiType(
 
 
 class PrepareAPIDialog(QDialog):
-
     def __init__(self, api_lexer, api_files, pap_file, parent=None):
         QDialog.__init__(self, parent)
         self.ui = Ui_APIsDialogPythonConsole()

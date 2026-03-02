@@ -659,6 +659,11 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     return false;
   }
 
+  if ( qgsDoubleNear( maxdist, 0.0 ) )
+  {
+    return intersects( geom, errorMsg );
+  }
+
   geos::unique_ptr otherGeosGeom;
 
   // GEOSPreparedDistanceWithin_r GEOSPreparedDistance_r are not able to properly compute the distance if one

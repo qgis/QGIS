@@ -25,13 +25,12 @@
 
 from pathlib import Path
 
+from qgis.gui import QgsGui
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from .installer_data import repositories
-
-from qgis.gui import QgsGui
 
 Ui_QgsPluginInstallerFetchingDialogBase, _ = uic.loadUiType(
     Path(__file__).parent / "qgsplugininstallerfetchingbase.ui"

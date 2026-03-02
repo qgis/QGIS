@@ -186,7 +186,8 @@ QgsServerInterface.setFilters: src/server/qgsserverinterface.h#L105
 QgsServerInterface: src/server/qgsserverinterface.h#L60
 QgsServerLogger.instance: src/server/qgsserverlogger.h#L41
 QgsServerLogger.logLevel: src/server/qgsserverlogger.h#L47
-QgsServerLogger.logMessage: src/server/qgsserverlogger.h#L75
+QgsServerLogger.logMessage: src/server/qgsserverlogger.h#L68
+QgsServerLogger.logMessage: src/server/qgsserverlogger.h#L69
 QgsServerLogger.setLogFile: src/server/qgsserverlogger.h#L58
 QgsServerLogger.setLogLevel: src/server/qgsserverlogger.h#L53
 QgsServerLogger.setLogStderr: src/server/qgsserverlogger.h#L64

@@ -953,8 +953,8 @@ void TestQgsLineString::equality()
   QVERIFY( ls6 != QgsCircularString() );
 
   QgsPoint p1;
-  QVERIFY( !( ls6 == p1 ) );
-  QVERIFY( ls6 != p1 );
+  QVERIFY( !( *static_cast< QgsAbstractGeometry * >( &ls6 ) == p1 ) );
+  QVERIFY( *static_cast< QgsAbstractGeometry * >( &ls6 ) != p1 );
   QVERIFY( ls6 == ls6 );
 }
 

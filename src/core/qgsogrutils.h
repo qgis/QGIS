@@ -16,7 +16,6 @@
 #ifndef QGSOGRUTILS_H
 #define QGSOGRUTILS_H
 
-#define SIP_NO_FILE
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -27,6 +26,8 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+
+#define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;

@@ -97,7 +97,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      *
      * \since QGIS 3.22.2
      */
-    static void applyLocaleChange(); SIP_SKIP;
+    static void applyLocaleChange() SIP_SKIP;;
 };
 
 #endif // QGSDATETIMEFIELDKIT_H

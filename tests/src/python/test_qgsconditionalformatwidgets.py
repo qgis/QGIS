@@ -10,12 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "2019-09-25"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
+import unittest
+
 from qgis.core import QgsConditionalStyle, QgsMarkerSymbol
 from qgis.gui import QgsEditConditionalFormatRuleWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsConditionalFormatWidgets(QgisTestCase):
-
     def testEditorWidget(self):
         c = QgsConditionalStyle()
         c.setName("")

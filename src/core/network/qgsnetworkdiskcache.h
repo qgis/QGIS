@@ -18,12 +18,13 @@
 #ifndef QGSNETWORKDISKCACHE_H
 #define QGSNETWORKDISKCACHE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QMutex>
 #include <QNetworkDiskCache>
+
+#define SIP_NO_FILE
 
 class QNetworkDiskCache;
 

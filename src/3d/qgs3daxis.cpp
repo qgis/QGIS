@@ -15,12 +15,13 @@
 
 #include "qgs3daxis.h"
 
-#include <ctime>
-
+#include "qgs3daxisrenderview.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dwiredmesh_p.h"
-#include "qgsabstractterrainsettings.h"
+#include "qgsaabb.h"
+#include "qgscameracontroller.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgsframegraph.h"
 #include "qgsterrainentity.h"
@@ -29,16 +30,20 @@
 #include <QActionGroup>
 #include <QApplication>
 #include <QFontDatabase>
-#include <QScreen>
+#include <QMenu>
 #include <QString>
-#include <QWidget>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QConeMesh>
+#include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QText2DEntity>
+#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QScreenRayCaster>
 #include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/qcameralens.h>
 
 #include "moc_qgs3daxis.cpp"
 

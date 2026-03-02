@@ -26,9 +26,9 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from qgis.core import (
     Qgis,
+    QgsAttributeEditorField,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
@@ -36,19 +36,18 @@ from qgis.core import (
     QgsGeometry,
     QgsMapLayer,
     QgsMemoryProviderUtils,
+    QgsPointXY,
     QgsProject,
     QgsWkbTypes,
-    QgsPointXY,
-    QgsAttributeEditorField,
 )
-from qgis.PyQt.QtCore import QVariant, QUrl
+from qgis.PyQt.QtCore import QUrl, QVariant
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
     QgsServerRequest,
 )
-from qgis.testing import unittest, QgisTestCase
+from qgis.testing import QgisTestCase, unittest
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 
@@ -1530,7 +1529,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             "text/xml",
             "application/vnd.ogc.gml",
         ]:
-
             request.setUrl(
                 QUrl(
                     f"?SERVICE=WMS&REQUEST=GetFeatureInfo&LAYERS=points&QUERY_LAYERS=points&INFO_FORMAT={info_format}&FEATURE_COUNT=1&WIDTH={w}&HEIGHT={w}&CRS=EPSG:4326&STYLES=&BBOX=-1,-1,1,1&X={w2}&Y={w2}&VERSION=1.3.0"
@@ -1591,7 +1589,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         # Note: not implemented for , 'application/vnd.ogc.gml'
         for info_format in ["text/plain", "application/json", "text/xml"]:
-
             request.setUrl(
                 QUrl(
                     f"?SERVICE=WMS&REQUEST=GetFeatureInfo&LAYERS=points&QUERY_LAYERS=points&INFO_FORMAT={info_format}&FEATURE_COUNT=1&WIDTH={w}&HEIGHT={w}&CRS=EPSG:4326&STYLES=&WITH_DISPLAY_NAME=true&BBOX=-1,-1,1,1&X={w2}&Y={w2}&VERSION=1.3.0"

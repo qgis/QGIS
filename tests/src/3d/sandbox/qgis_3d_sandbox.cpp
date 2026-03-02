@@ -23,6 +23,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"

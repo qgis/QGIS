@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMEXTRACTBINARY_H
 #define QGSALGORITHMEXTRACTBINARY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

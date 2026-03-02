@@ -11,20 +11,20 @@ __date__ = "27/10/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsDataItemProvider,
     QgsDataItemProviderRegistry,
     QgsDataProvider,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestProvider(QgsDataItemProvider):
-
     def __init__(self, name):
         super().__init__()
         self._name = name
@@ -40,7 +40,6 @@ class TestProvider(QgsDataItemProvider):
 
 
 class TestQgsDataItemProviderRegistry(QgisTestCase):
-
     def testAppRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsApplication.dataItemProviderRegistry())

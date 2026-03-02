@@ -20,62 +20,61 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import webbrowser
-from typing import Optional, Dict
-
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QLabel,
-    QLineEdit,
-    QFrame,
-    QPushButton,
-    QSizePolicy,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
-    QTabWidget,
-    QTextEdit,
-)
-from qgis.PyQt.QtGui import QColor
+from typing import Optional
 
 from qgis.core import (
     Qgis,
-    QgsProject,
-    QgsProcessingParameterDefinition,
-    QgsProcessingModelOutput,
-    QgsProcessingModelChildAlgorithm,
-    QgsProcessingModelChildParameterSource,
-    QgsProcessingOutputDefinition,
     QgsProcessingAlgorithm,
     QgsProcessingModelAlgorithm,
+    QgsProcessingModelChildAlgorithm,
+    QgsProcessingModelChildParameterSource,
+    QgsProcessingModelOutput,
+    QgsProcessingOutputDefinition,
+    QgsProcessingParameterDefinition,
+    QgsProject,
 )
-
 from qgis.gui import (
-    QgsGui,
-    QgsMessageBar,
-    QgsScrollArea,
+    QgsColorButton,
     QgsFilterLineEdit,
+    QgsGui,
     QgsHelp,
-    QgsProcessingContextGenerator,
-    QgsProcessingModelerParameterWidget,
-    QgsProcessingParameterWidgetContext,
+    QgsMessageBar,
+    QgsModelChildDependenciesWidget,
     QgsPanelWidget,
     QgsPanelWidgetStack,
-    QgsColorButton,
-    QgsModelChildDependenciesWidget,
+    QgsProcessingContextGenerator,
     QgsProcessingModelConfigWidget,
+    QgsProcessingModelerParameterWidget,
+    QgsProcessingParameterWidgetContext,
+    QgsScrollArea,
+)
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QSizePolicy,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 from qgis.utils import iface
 
-from processing.gui.wrappers import WidgetWrapperFactory
-from processing.gui.wrappers import InvalidParameterValue
+from processing.gui.wrappers import (
+    InvalidParameterValue,
+    WidgetWrapper,
+    WidgetWrapperFactory,
+)
 from processing.tools.dataobjects import createContext
-from processing.gui.wrappers import WidgetWrapper
 
 
 class ModelerParametersDialog(QDialog):
-
     def __init__(
         self,
         alg: QgsProcessingAlgorithm,
@@ -224,7 +223,6 @@ class ModelerParametersDialog(QDialog):
 
 
 class ModelerParametersPanelWidget(QgsPanelWidget):
-
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
     ):
@@ -240,7 +238,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.block_changes_signal = 0
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context
@@ -605,7 +602,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
 
 class ModelerParametersWidget(QgsProcessingModelConfigWidget):
-
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
     ):
@@ -623,7 +619,6 @@ class ModelerParametersWidget(QgsProcessingModelConfigWidget):
         self.widget.widgetChanged.connect(self.widgetChanged)
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context

@@ -20,6 +20,8 @@
 
 #include <QSize>
 
+#define SIP_NO_FILE
+
 class QOffscreenSurface;
 
 namespace Qt3DCore
@@ -46,8 +48,6 @@ namespace Qt3DLogic
   class QLogicAspect;
 }
 
-
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

@@ -30,7 +30,6 @@
 //
 
 #include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgstaskmanager.h"
 

@@ -82,6 +82,15 @@ Creates and returns a (possibly ``None``) layer from the connection URI
 and schema/table information
 %End
 
+    QgsFields fields() const;
+%Docstring
+Returns the fields contained by the item.
+
+The fields are only populated after the item's children are created.
+
+.. versionadded:: 4.0
+%End
+
     QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 %Docstring
 Returns the (possibly ``None``) properties of the table this fields

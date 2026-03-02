@@ -10,17 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "12/12/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.gui import QgsCrsSelectionWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCrsSelectionWidget(QgisTestCase):
-
     def testWidget(self):
         """
         Test widget logic

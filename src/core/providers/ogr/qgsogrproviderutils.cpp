@@ -288,10 +288,8 @@ QString createFilters( const QString &type )
       else if ( driverName.startsWith( "PGeo"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
-#ifdef Q_OS_WIN
         sFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
         sExtensions << "mdb";
-#endif
       }
       else if ( driverName.startsWith( "SDE"_L1 ) )
       {
@@ -3167,6 +3165,16 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
       QByteArray layerName = OGR_L_GetName( hLayer );
       QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
       sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+      const char *pszAttrFilter = OGR_L_GetAttributeFilter( hLayer );
+      if ( pszAttrFilter && pszAttrFilter[0] != '\0' )
+      {
+        sql += " WHERE ";
+        sql += pszAttrFilter;
+      }
+#endif
+
       sql += " LIMIT ";
       sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
       sql += ")";

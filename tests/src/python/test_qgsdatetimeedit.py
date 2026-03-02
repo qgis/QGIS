@@ -10,10 +10,11 @@ __author__ = "Denis Rouzaud"
 __date__ = "2018-01-04"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QT_VERSION_STR
-from qgis.gui import QgsDateEdit, QgsDateTimeEdit, QgsTimeEdit
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsDateEdit, QgsDateTimeEdit, QgsTimeEdit
+from qgis.PyQt.QtCore import QT_VERSION_STR, QDate, QDateTime, Qt, QTime
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -23,7 +24,6 @@ DATE_OFFSET = QDateTime.fromString("2025-01-20T12:00:00+03:00", Qt.DateFormat.IS
 
 
 class TestQgsDateTimeEdit(QgisTestCase):
-
     def check_time_zone(self, widget, expected_date):
         if int(QT_VERSION_STR.split(".")[0]) > 6 or (
             int(QT_VERSION_STR.split(".")[0]) == 6
@@ -66,7 +66,6 @@ class TestQgsDateTimeEdit(QgisTestCase):
 
 
 class TestQgsDateEdit(QgisTestCase):
-
     def testSettersGetters(self):
         """test widget handling of null values"""
         w = QgsDateEdit()
@@ -97,7 +96,6 @@ class TestQgsDateEdit(QgisTestCase):
 
 
 class TestQgsTimeEdit(QgisTestCase):
-
     def testSettersGetters(self):
         """test widget handling of null values"""
         w = QgsTimeEdit()

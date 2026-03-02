@@ -11,6 +11,8 @@ __date__ = "03/12/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsAbstractValidityCheck,
     QgsApplication,
@@ -20,14 +22,12 @@ from qgis.core import (
     QgsValidityCheckResult,
     check,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestCheck(QgsAbstractValidityCheck):
-
     def __init__(self, id, name, type, results):
         super().__init__()
         self._name = name
@@ -49,7 +49,6 @@ class TestCheck(QgsAbstractValidityCheck):
 
 
 class TestContext(QgsValidityCheckContext):
-
     def type(self):
         return 0
 
@@ -70,7 +69,6 @@ def my_check2(context, feedback):
 
 
 class TestQgsValidityChecks(QgisTestCase):
-
     def testAppRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsApplication.validityCheckRegistry())

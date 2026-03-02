@@ -21,14 +21,14 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
     QgsProcessingAlgorithm,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterFile,
     QgsProcessingOutputRasterLayer,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterRasterLayer,
 )
+from qgis.PyQt.QtXml import QDomDocument
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

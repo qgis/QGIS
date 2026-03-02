@@ -11,7 +11,8 @@ __date__ = "12/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import Qt, QModelIndex
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -22,15 +23,13 @@ from qgis.gui import (
     QgsCoordinateReferenceSystemModel,
     QgsCoordinateReferenceSystemProxyModel,
 )
-
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
-
     def test_model(self):
         model = QgsCoordinateReferenceSystemModel()
         # top level items -- we expect to find Projected, Geographic (2D), Geographic (3D),

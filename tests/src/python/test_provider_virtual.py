@@ -12,8 +12,9 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant, QMetaType
+from providertestbase import ProviderTestCase
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -32,11 +33,9 @@ from qgis.core import (
     QgsVirtualLayerDefinitionUtils,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QMetaType, QTemporaryDir, QUrl, QVariant
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -49,7 +48,6 @@ def toPercent(s):
 
 
 class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1422,9 +1420,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
         self.assertEqual(
             df.query(),
-            'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
-                v1.id(), v2.id()
-            ),
+            f'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield" FROM "{v1.id()}" AS t LEFT JOIN "{v2.id()}" AS j1 ON t."b_id"=j1."id"',
         )
 
         # with a field subset
@@ -1435,9 +1431,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
         self.assertEqual(
             df.query(),
-            'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
-                v1.id(), v2.id()
-            ),
+            f'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname" FROM "{v1.id()}" AS t LEFT JOIN "{v2.id()}" AS j1 ON t."b_id"=j1."id"',
         )
         joinInfo.setJoinFieldNamesSubset(None)
 
@@ -1449,9 +1443,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
         self.assertEqual(
             df.query(),
-            'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "BB_bname", j1."bfield" AS "BB_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
-                v1.id(), v2.id()
-            ),
+            f'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "BB_bname", j1."bfield" AS "BB_bfield" FROM "{v1.id()}" AS t LEFT JOIN "{v2.id()}" AS j1 ON t."b_id"=j1."id"',
         )
         joinInfo.setPrefix("")
         v1.removeJoin(v2.id())
@@ -1484,9 +1476,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(tl1)
         self.assertEqual(
             df.query(),
-            'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."e_id"=j1."id"'.format(
-                tl1.id(), tl2.id()
-            ),
+            f'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{tl1.id()}" AS t LEFT JOIN "{tl2.id()}" AS j1 ON t."e_id"=j1."id"',
         )
 
         QgsProject.instance().removeMapLayers(

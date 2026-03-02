@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMDBSCANCLUSTERING_H
 #define QGSALGORITHMDBSCANCLUSTERING_H
 
-#define SIP_NO_FILE
 
 #include <unordered_map>
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 class QgsSpatialIndexKDBush;
 

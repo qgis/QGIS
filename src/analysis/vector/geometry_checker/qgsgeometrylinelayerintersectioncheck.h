@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSGEOMETRYLINELAYERINTERSECTIONCHECK_H
 #define QGSGEOMETRYLINELAYERINTERSECTIONCHECK_H
@@ -21,6 +20,8 @@
 #include "qgsgeometrycheck.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

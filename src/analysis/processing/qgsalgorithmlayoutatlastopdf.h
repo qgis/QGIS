@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMLAYOUTATLASTOPDF_H
 #define QGSALGORITHMLAYOUTATLASTOPDF_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgslayoutexporter.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 class QgsLayoutAtlas;
 

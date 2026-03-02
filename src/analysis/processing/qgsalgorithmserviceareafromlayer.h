@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMSERVICEAREAFROMLAYER_H
 #define QGSALGORITHMSERVICEAREAFROMLAYER_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsalgorithmnetworkanalysisbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

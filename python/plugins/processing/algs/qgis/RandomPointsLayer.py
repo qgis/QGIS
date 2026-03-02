@@ -22,28 +22,28 @@ __copyright__ = "(C) 2014, Alexander Bruy"
 import os
 import random
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsField,
-    QgsFeatureSink,
     QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
     QgsFields,
     QgsGeometry,
     QgsPointXY,
-    QgsWkbTypes,
-    QgsSpatialIndex,
-    QgsFeatureRequest,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterFeatureSink,
     QgsProcessingParameterDefinition,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterNumber,
+    QgsSpatialIndex,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector

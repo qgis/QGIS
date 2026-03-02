@@ -20,17 +20,16 @@
 
 #include <QSize>
 
+#define SIP_NO_FILE
+
 namespace Qt3DExtras
 {
   class QForwardRenderer;
 }
 
-
 class Qgs3DMapCanvas;
 class QWindow;
 
-
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

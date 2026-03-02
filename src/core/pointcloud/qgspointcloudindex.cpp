@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgspointcloudeditingindex.h"
 #include "qgspointcloudstatistics.h"
-#include "qgstiledownloadmanager.h"
 
 #include <QDir>
 #include <QFile>
@@ -34,7 +33,6 @@
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
-#include <qstringliteral.h>
 
 using namespace Qt::StringLiterals;
 

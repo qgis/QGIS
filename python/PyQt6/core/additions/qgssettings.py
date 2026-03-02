@@ -15,9 +15,10 @@
 ***************************************************************************
 """
 
-from .metaenum import metaEnumFromValue
-from qgis.core import QgsSettings
 import qgis  # required to get base class of enums
+from qgis.core import QgsSettings
+
+from .metaenum import metaEnumFromValue
 
 
 def _qgssettings_enum_value(
@@ -42,9 +43,7 @@ def _qgssettings_enum_value(
     if meta_enum is None or not meta_enum.isValid():
         # this should not happen
         raise ValueError(
-            "could not get the meta enum for given enum default value (type: {})".format(
-                enumDefaultValue.__class__
-            )
+            f"could not get the meta enum for given enum default value (type: {enumDefaultValue.__class__})"
         )
 
     str_val = self.value(key, meta_enum.valueToKey(enumDefaultValue), str, section)

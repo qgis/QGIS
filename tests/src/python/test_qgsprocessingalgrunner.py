@@ -10,29 +10,29 @@ __author__ = "Alessandro Pasotti"
 __date__ = "2019-02"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
+import unittest
+
 from processing.core.Processing import Processing
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
     QgsProcessingAlgorithm,
     QgsProcessingAlgRunnerTask,
     QgsProcessingContext,
+    QgsProcessingException,
     QgsProcessingFeedback,
     QgsProject,
     QgsSettings,
     QgsTask,
-    QgsProcessingException,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class ConsoleFeedBack(QgsProcessingFeedback):
-
     _error = ""
 
     def reportError(self, error, fatalError=False):
@@ -78,7 +78,6 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
 
 
 class TestAlgorithm(QgsProcessingAlgorithm):
-
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
@@ -111,7 +110,6 @@ class TestAlgorithm(QgsProcessingAlgorithm):
 
 
 class ExceptionAlgorithm(QgsProcessingAlgorithm):
-
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
@@ -144,7 +142,6 @@ class ExceptionAlgorithm(QgsProcessingAlgorithm):
 
 
 class TestQgsProcessingAlgRunner(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -6,17 +6,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QModelIndex, Qt
+import unittest
+
 from qgis.core import (
+    QgsProject,
+    QgsSelectiveMaskingSourceSet,
     QgsSelectiveMaskingSourceSetManager,
     QgsSelectiveMaskingSourceSetManagerModel,
     QgsSelectiveMaskingSourceSetManagerProxyModel,
-    QgsSelectiveMaskingSourceSet,
-    QgsProject,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSelectiveMaskingSourceSetManagerModel(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         self.manager = None

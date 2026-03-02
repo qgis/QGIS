@@ -11,16 +11,16 @@ __date__ = "30/05/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import QgsOpacityWidget
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsOpacityWidget
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsOpacityWidget(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsOpacityWidget()
