@@ -966,10 +966,11 @@ void QgsInterpolatedLineSymbolLayer::setWidthUnit( Qgis::RenderUnit strokeWidthU
   mLineRender.mStrokeWidthUnit = strokeWidthUnit;
 }
 
+// cppcheck-suppress duplInheritedMember
 Qgis::RenderUnit QgsInterpolatedLineSymbolLayer::widthUnit() const
 {
   return mLineRender.widthUnit();
-} // cppcheck-suppress duplInheritedMember
+}
 
 void QgsInterpolatedLineSymbolLayer::setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth )
 {
