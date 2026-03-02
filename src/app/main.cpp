@@ -1431,7 +1431,7 @@ int main( int argc, char *argv[] )
         if ( systemEnvVars.contains( envVarName ) && envVarApply == QLatin1String( "unset" ) )
         {
 #ifdef Q_OS_WIN
-          putenv( QString( "%1=" ).arg( envVarName ).toUtf8().constData() );
+          _wputenv_s( envVarName.toStdWString().c_str(), L"" );
 #else
           unsetenv( envVarName.toUtf8().constData() );
 #endif
@@ -1440,7 +1440,7 @@ int main( int argc, char *argv[] )
         {
 #ifdef Q_OS_WIN
           if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
-            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+            _wputenv_s( envVarName.toStdWString().c_str(), envVarValue.toStdWString().c_str() );
 #else
           setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == QLatin1String( "undefined" ) ? 0 : 1 );
 #endif
