@@ -42,7 +42,7 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   proj_operation_factory_context_set_grid_availability_use( pjContext, operationContext, PROJ_GRID_AVAILABILITY_IGNORED );
 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
-  proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
+  proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext, PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
   if ( includeSuperseded )
     proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
@@ -59,7 +59,6 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
       QgsDatumTransform::TransformDetails details = transformDetailsFromPj( op.get() );
       if ( !details.proj.isEmpty() )
         res.push_back( details );
-
     }
     proj_list_destroy( ops );
   }
@@ -96,17 +95,23 @@ QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformation
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( srcAuthCode ).arg( destAuthCode ),
-                        directTransforms );
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( srcAuthCode ).arg( destAuthCode ), directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( destAuthCode ).arg( srcAuthCode ),
-                        reverseDirectTransforms );
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( destAuthCode ).arg( srcAuthCode ), reverseDirectTransforms );
   QList<int> srcToWgs84;
-  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s.arg( srcAuthCode ).arg( 4326 ),
-                        srcToWgs84 );
+  searchDatumTransform(
+    u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s
+      .arg( srcAuthCode )
+      .arg( 4326 ),
+    srcToWgs84
+  );
   QList<int> destToWgs84;
-  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s.arg( destAuthCode ).arg( 4326 ),
-                        destToWgs84 );
+  searchDatumTransform(
+    u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s
+      .arg( destAuthCode )
+      .arg( 4326 ),
+    destToWgs84
+  );
 
   //add direct datum transformations
   for ( int transform : std::as_const( directTransforms ) )
@@ -200,7 +205,8 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
       }
       else //7 parameter transformation
       {
-        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s
+                             .arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
   }
@@ -251,7 +257,8 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
       }
       else //7 parameter transformation
       {
-        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s
+                             .arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
 

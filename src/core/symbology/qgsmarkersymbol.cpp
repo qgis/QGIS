@@ -175,8 +175,7 @@ void QgsMarkerSymbol::setSize( double s ) const
       }
       // also scale offset to maintain relative position
       if ( !qgsDoubleNear( origSize, 0.0 ) && ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) ) )
-        markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize,
-                                         markerLayer->offset().y() * s / origSize ) );
+        markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize, markerLayer->offset().y() * s / origSize ) );
     }
     else
     {
@@ -336,9 +335,8 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty &property ) const
 
       if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
-        markerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol(
-                                               markerLayer->offset().x() / symbolSize,
-                                               markerLayer->offset().y() / symbolSize, property ) );
+        markerLayer
+          ->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, property ) );
       }
     }
   }
@@ -451,7 +449,7 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
-                         : mOpacity;
+                                                                       : mOpacity;
 
   QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, renderHints(), f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );

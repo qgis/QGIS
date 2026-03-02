@@ -23,8 +23,7 @@
 QgsTemporalProperty::QgsTemporalProperty( QObject *parent, bool enabled )
   : QObject( parent )
   , mActive( enabled )
-{
-}
+{}
 
 void QgsTemporalProperty::setIsActive( bool active )
 {

@@ -24,8 +24,7 @@ QString QgsMargins::toString() const
   if ( isNull() )
     return QString();
   else
-    return u"%1,%2,%3,%4"_s.arg( qgsDoubleToString( mLeft ), qgsDoubleToString( mTop ),
-                                 qgsDoubleToString( mRight ), qgsDoubleToString( mBottom ) );
+    return u"%1,%2,%3,%4"_s.arg( qgsDoubleToString( mLeft ), qgsDoubleToString( mTop ), qgsDoubleToString( mRight ), qgsDoubleToString( mBottom ) );
 }
 
 QgsMargins QgsMargins::fromString( const QString &string )
@@ -34,8 +33,5 @@ QgsMargins QgsMargins::fromString( const QString &string )
   if ( margins.count() != 4 )
     return QgsMargins();
 
-  return QgsMargins( margins.at( 0 ).toDouble(),
-                     margins.at( 1 ).toDouble(),
-                     margins.at( 2 ).toDouble(),
-                     margins.at( 3 ).toDouble() );
+  return QgsMargins( margins.at( 0 ).toDouble(), margins.at( 1 ).toDouble(), margins.at( 2 ).toDouble(), margins.at( 3 ).toDouble() );
 }

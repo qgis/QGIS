@@ -35,15 +35,13 @@ QgsTextMaskSettings::~QgsTextMaskSettings() = default;
 
 QgsTextMaskSettings::QgsTextMaskSettings( const QgsTextMaskSettings &other ) //NOLINT
   : d( other.d )
-{
-}
+{}
 
 QgsTextMaskSettings::QgsTextMaskSettings( QgsTextMaskSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
-}
+{}
 
-QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other )  //NOLINT
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -52,7 +50,7 @@ QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &
   return *this;
 }
 
-QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other )  //NOLINT
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -63,18 +61,11 @@ QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other
 
 bool QgsTextMaskSettings::operator==( const QgsTextMaskSettings &other ) const
 {
-  if ( d->enabled != other.enabled()
-       || d->type != other.type()
-       || d->size != other.size()
-       || d->sizeUnit != other.sizeUnit()
-       || d->sizeMapUnitScale != other.sizeMapUnitScale()
-       || d->joinStyle != other.joinStyle()
-       || d->opacity != other.opacity()
-       || d->maskedSymbolLayers != other.maskedSymbolLayers() )
+  if ( d->enabled != other.enabled() || d->type != other.type() || d->size != other.size() || d->sizeUnit != other.sizeUnit() || d->sizeMapUnitScale != other.sizeMapUnitScale()
+       || d->joinStyle != other.joinStyle() || d->opacity != other.opacity() || d->maskedSymbolLayers != other.maskedSymbolLayers() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
-       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
   return true;

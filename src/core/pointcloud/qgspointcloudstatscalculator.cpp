@@ -40,16 +40,20 @@ struct StatsProcessor
     static QMutex sStatsProcessorFeedbackMutex;
 
     StatsProcessor( QgsPointCloudIndex index, QgsPointCloudRequest request, QgsFeedback *feedback, double progressValue )
-      : mIndex( std::move( index ) ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
-    {
-    }
+      : mIndex( std::move( index ) )
+      , mRequest( request )
+      , mFeedback( feedback )
+      , mProgressValue( progressValue )
+    {}
 
     StatsProcessor( const StatsProcessor &processor )
-      : mIndex( processor.mIndex ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback ), mProgressValue( processor.mProgressValue )
-    {
-    }
+      : mIndex( processor.mIndex )
+      , mRequest( processor.mRequest )
+      , mFeedback( processor.mFeedback )
+      , mProgressValue( processor.mProgressValue )
+    {}
 
-    StatsProcessor &operator =( const StatsProcessor &rhs )
+    StatsProcessor &operator=( const StatsProcessor &rhs )
     {
       mIndex = rhs.mIndex;
       mRequest = rhs.mRequest;
@@ -113,7 +117,7 @@ struct StatsProcessor
         summary.mean = 0;
         summary.stDev = std::numeric_limits<double>::quiet_NaN();
         summary.classCount.clear();
-        statsMap[ attribute.name() ] = std::move( summary );
+        statsMap[attribute.name()] = std::move( summary );
       }
 
       QVector<int> attributeOffsetVector;
@@ -123,17 +127,9 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == "ScannerChannel"_L1 ||
-             attribute.name() == "ReturnNumber"_L1 ||
-             attribute.name() == "NumberOfReturns"_L1 ||
-             attribute.name() == "ScanDirectionFlag"_L1 ||
-             attribute.name() == "Classification"_L1 ||
-             attribute.name() == "EdgeOfFlightLine"_L1 ||
-             attribute.name() == "PointSourceId"_L1 ||
-             attribute.name() == "Synthetic"_L1 ||
-             attribute.name() == "KeyPoint"_L1 ||
-             attribute.name() == "Withheld"_L1 ||
-             attribute.name() == "Overlap"_L1 )
+        if ( attribute.name() == "ScannerChannel"_L1 || attribute.name() == "ReturnNumber"_L1 || attribute.name() == "NumberOfReturns"_L1 || attribute.name() == "ScanDirectionFlag"_L1
+             || attribute.name() == "Classification"_L1 || attribute.name() == "EdgeOfFlightLine"_L1 || attribute.name() == "PointSourceId"_L1 || attribute.name() == "Synthetic"_L1
+             || attribute.name() == "KeyPoint"_L1 || attribute.name() == "Withheld"_L1 || attribute.name() == "Overlap"_L1 )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }
@@ -153,9 +149,9 @@ struct StatsProcessor
           QgsPointCloudAttribute::DataType attributeType = attributes.at( j ).type();
 
           double attributeValue = 0;
-          int attributeOffset = attributeOffsetVector[ j ];
+          int attributeOffset = attributeOffsetVector[j];
 
-          QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
+          QgsPointCloudAttributeStatistics &stats = statsMap[attributeName];
           QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
@@ -169,7 +165,7 @@ struct StatsProcessor
 
           if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
-            stats.classCount[( int )attributeValue ]++;
+            stats.classCount[( int ) attributeValue]++;
           }
         }
       }
@@ -177,13 +173,14 @@ struct StatsProcessor
       for ( int j = 0; j < attributes.size(); ++j )
       {
         const QString attributeName = attributes.at( j ).name();
-        QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
+        QgsPointCloudAttributeStatistics &stats = statsMap[attributeName];
         stats.stDev = std::sqrt( sumOfSquares[j] / ( stats.count - 1.0 ) );
       }
 
       updateFeedback();
       return QgsPointCloudStatistics( count, statsMap );
     }
+
   private:
     QgsPointCloudIndex mIndex;
     QgsPointCloudRequest mRequest;
@@ -201,9 +198,7 @@ QMutex StatsProcessor::sStatsProcessorFeedbackMutex;
 
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex index )
   : mIndex( std::move( index ) )
-{
-
-}
+{}
 
 bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
 {
@@ -239,7 +234,7 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
 
   feedback->setProgress( 0 );
 
-  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex, mRequest, feedback, 100.0 / ( double )nodes.size() ) );
+  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex, mRequest, feedback, 100.0 / ( double ) nodes.size() ) );
 
   for ( QgsPointCloudStatistics &s : list )
   {

@@ -115,15 +115,10 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
       return c.variablesToMap();
     }
 
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetLayoutItemVariables( mLayout );
-    }
+    QgsScopedExpressionFunction *clone() const override { return new GetLayoutItemVariables( mLayout ); }
 
   private:
-
     const QgsLayout *mLayout = nullptr;
-
 };
 
 
@@ -131,10 +126,12 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
 {
   public:
     GetLayoutMapLayerCredits( const QgsLayout *c )
-      : QgsScopedExpressionFunction( u"map_credits"_s,
-                                     QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"id"_s, true )
-                                     << QgsExpressionFunction::Parameter( u"include_layer_names"_s, true, false )
-                                     << QgsExpressionFunction::Parameter( u"layer_name_separator"_s, true, u": "_s ), u"Layout"_s )
+      : QgsScopedExpressionFunction(
+          u"map_credits"_s,
+          QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"id"_s, true ) << QgsExpressionFunction::Parameter( u"include_layer_names"_s, true, false )
+                                                 << QgsExpressionFunction::Parameter( u"layer_name_separator"_s, true, u": "_s ),
+          u"Layout"_s
+        )
       , mLayout( c )
     {}
 
@@ -186,8 +183,7 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
           if ( credit.trimmed().isEmpty() )
             continue;
 
-          const QString creditString = includeLayerNames ? layer->name() + layerNameSeparator + credit
-                                       : credit;
+          const QString creditString = includeLayerNames ? layer->name() + layerNameSeparator + credit : credit;
 
           if ( !res.contains( creditString ) )
             res << creditString;
@@ -197,21 +193,16 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
       return res;
     }
 
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetLayoutMapLayerCredits( mLayout );
-    }
+    QgsScopedExpressionFunction *clone() const override { return new GetLayoutMapLayerCredits( mLayout ); }
 
   private:
-
     const QgsLayout *mLayout = nullptr;
-
 };
 
 class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
 {
   public:
-    GetCurrentFormFieldValue( )
+    GetCurrentFormFieldValue()
       : QgsScopedExpressionFunction( u"current_value"_s, QgsExpressionFunction::ParameterList() << u"field_name"_s, u"Form"_s )
     {}
 
@@ -219,29 +210,22 @@ class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
     {
       const QString fieldName( values.at( 0 ).toString() );
       const QgsFeature feat( context->variable( u"current_feature"_s ).value<QgsFeature>() );
-      if ( fieldName.isEmpty() || ! feat.isValid( ) )
+      if ( fieldName.isEmpty() || !feat.isValid() )
       {
         return QVariant();
       }
-      return feat.attribute( fieldName ) ;
+      return feat.attribute( fieldName );
     }
 
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetCurrentFormFieldValue( );
-    }
+    QgsScopedExpressionFunction *clone() const override { return new GetCurrentFormFieldValue(); }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    };
-
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; };
 };
 
 class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
 {
   public:
-    GetCurrentParentFormFieldValue( )
+    GetCurrentParentFormFieldValue()
       : QgsScopedExpressionFunction( u"current_parent_value"_s, QgsExpressionFunction::ParameterList() << u"field_name"_s, u"Form"_s )
     {}
 
@@ -249,23 +233,16 @@ class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
     {
       const QString fieldName( values.at( 0 ).toString() );
       const QgsFeature feat( context->variable( u"current_parent_feature"_s ).value<QgsFeature>() );
-      if ( fieldName.isEmpty() || ! feat.isValid( ) )
+      if ( fieldName.isEmpty() || !feat.isValid() )
       {
         return QVariant();
       }
-      return feat.attribute( fieldName ) ;
+      return feat.attribute( fieldName );
     }
 
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetCurrentParentFormFieldValue( );
-    }
+    QgsScopedExpressionFunction *clone() const override { return new GetCurrentParentFormFieldValue(); }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    };
-
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; };
 };
 
 
@@ -277,20 +254,12 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
       , mParams( params )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-    {
-      return mParams.value( values.at( 0 ).toString() );
-    }
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return mParams.value( values.at( 0 ).toString() ); }
 
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetProcessingParameterValue( mParams );
-    }
+    QgsScopedExpressionFunction *clone() const override { return new GetProcessingParameterValue( mParams ); }
 
   private:
-
     const QVariantMap mParams;
-
 };
 
 ///@endcond
@@ -299,8 +268,8 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
 QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature, const QString &formMode )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Form" ) );
-  scope->addFunction( u"current_value"_s, new GetCurrentFormFieldValue( ) );
-  scope->setVariable( u"current_geometry"_s, formFeature.geometry( ), true );
+  scope->addFunction( u"current_value"_s, new GetCurrentFormFieldValue() );
+  scope->setVariable( u"current_geometry"_s, formFeature.geometry(), true );
   scope->setVariable( u"current_feature"_s, formFeature, true );
   scope->setVariable( u"form_mode"_s, formMode, true );
   return scope;
@@ -310,8 +279,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeatur
 QgsExpressionContextScope *QgsExpressionContextUtils::parentFormScope( const QgsFeature &parentFormFeature, const QString &parentFormMode )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Parent Form" ) );
-  scope->addFunction( u"current_parent_value"_s, new GetCurrentParentFormFieldValue( ) );
-  scope->setVariable( u"current_parent_geometry"_s, parentFormFeature.geometry( ), true );
+  scope->addFunction( u"current_parent_value"_s, new GetCurrentParentFormFieldValue() );
+  scope->setVariable( u"current_parent_geometry"_s, parentFormFeature.geometry(), true );
   scope->setVariable( u"current_parent_feature"_s, parentFormFeature, true );
   scope->setVariable( u"parent_form_mode"_s, parentFormMode, true );
   return scope;
@@ -442,7 +411,7 @@ void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer *layer, const QStr
   const int index = variableNames.indexOf( name );
   if ( index != -1 )
   {
-    variableValues[ index ] = value.toString();
+    variableValues[index] = value.toString();
   }
   // Otherwise, append it to the list
   else
@@ -548,7 +517,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"map_start_time"_s, mapSettings.isTemporal() ? mapSettings.temporalRange().begin() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"map_end_time"_s, mapSettings.isTemporal() ? mapSettings.temporalRange().end() : QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"map_interval"_s, mapSettings.isTemporal() ? QgsInterval( mapSettings.temporalRange().end() - mapSettings.temporalRange().begin() ) : QVariant(), true ) );
+  scope->addVariable(
+    QgsExpressionContextScope::StaticVariable( u"map_interval"_s, mapSettings.isTemporal() ? QgsInterval( mapSettings.temporalRange().end() - mapSettings.temporalRange().begin() ) : QVariant(), true )
+  );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
@@ -1006,14 +977,14 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
-  QgsExpression::registerFunction( new GetSensorData( ) );
+  QgsExpression::registerFunction( new GetSensorData() );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
   QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
   QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
-  QgsExpression::registerFunction( new GetCurrentFormFieldValue( ) );
-  QgsExpression::registerFunction( new GetCurrentParentFormFieldValue( ) );
-  QgsExpression::registerFunction( new LoadLayerFunction( ) );
+  QgsExpression::registerFunction( new GetCurrentFormFieldValue() );
+  QgsExpression::registerFunction( new GetCurrentParentFormFieldValue() );
+  QgsExpression::registerFunction( new LoadLayerFunction() );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
@@ -1046,7 +1017,7 @@ QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<Q
   {
     if ( layer->hasScaleBasedVisibility() )
     {
-      mScaleBasedVisibilityDetails[ layer ] = qMakePair( layer->minimumScale(), layer->maximumScale() );
+      mScaleBasedVisibilityDetails[layer] = qMakePair( layer->minimumScale(), layer->maximumScale() );
     }
   }
 }
@@ -1071,8 +1042,8 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
     isVisible = true;
     if ( mScaleBasedVisibilityDetails.contains( layer ) && !qgsDoubleNear( mScale, 0.0 ) )
     {
-      if ( ( !qgsDoubleNear( mScaleBasedVisibilityDetails[ layer ].first, 0.0 ) && mScale > mScaleBasedVisibilityDetails[ layer ].first ) ||
-           ( !qgsDoubleNear( mScaleBasedVisibilityDetails[ layer ].second, 0.0 ) && mScale < mScaleBasedVisibilityDetails[ layer ].second ) )
+      if ( ( !qgsDoubleNear( mScaleBasedVisibilityDetails[layer].first, 0.0 ) && mScale > mScaleBasedVisibilityDetails[layer].first )
+           || ( !qgsDoubleNear( mScaleBasedVisibilityDetails[layer].second, 0.0 ) && mScale < mScaleBasedVisibilityDetails[layer].second ) )
       {
         isVisible = false;
       }
@@ -1096,22 +1067,18 @@ QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clon
 //
 
 /// @cond PRIVATE
-class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
+class CurrentVertexZValueExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentVertexZValueExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_z",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentVertexZValueExpressionFunction()
+      : QgsScopedExpressionFunction( "$vertex_z", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexZValueExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentVertexZValueExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( context &&
-           context->hasVariable( u"_mesh_vertex_index"_s ) &&
-           context->hasVariable( u"_native_mesh"_s ) )
+      if ( context && context->hasVariable( u"_mesh_vertex_index"_s ) && context->hasVariable( u"_native_mesh"_s ) )
       {
         int vertexIndex = context->variable( u"_mesh_vertex_index"_s ).toInt();
         const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( u"_native_mesh"_s ) );
@@ -1123,28 +1090,21 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
       return QVariant();
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
+class CurrentVertexXValueExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentVertexXValueExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_x",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentVertexXValueExpressionFunction()
+      : QgsScopedExpressionFunction( "$vertex_x", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexXValueExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentVertexXValueExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( context &&
-           context->hasVariable( u"_mesh_vertex_index"_s ) &&
-           context->hasVariable( u"_native_mesh"_s ) )
+      if ( context && context->hasVariable( u"_mesh_vertex_index"_s ) && context->hasVariable( u"_native_mesh"_s ) )
       {
         int vertexIndex = context->variable( u"_mesh_vertex_index"_s ).toInt();
         const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( u"_native_mesh"_s ) );
@@ -1156,28 +1116,21 @@ class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
       return QVariant();
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
+class CurrentVertexYValueExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentVertexYValueExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_y",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentVertexYValueExpressionFunction()
+      : QgsScopedExpressionFunction( "$vertex_y", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexYValueExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentVertexYValueExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( context &&
-           context->hasVariable( u"_mesh_vertex_index"_s ) &&
-           context->hasVariable( u"_native_mesh"_s ) )
+      if ( context && context->hasVariable( u"_mesh_vertex_index"_s ) && context->hasVariable( u"_native_mesh"_s ) )
       {
         int vertexIndex = context->variable( u"_mesh_vertex_index"_s ).toInt();
         const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( u"_native_mesh"_s ) );
@@ -1189,28 +1142,21 @@ class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
       return QVariant();
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
+class CurrentVertexExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentVertexExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_as_point",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentVertexExpressionFunction()
+      : QgsScopedExpressionFunction( "$vertex_as_point", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentVertexExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( context &&
-           context->hasVariable( u"_mesh_vertex_index"_s ) &&
-           context->hasVariable( u"_native_mesh"_s ) )
+      if ( context && context->hasVariable( u"_mesh_vertex_index"_s ) && context->hasVariable( u"_native_mesh"_s ) )
       {
         int vertexIndex = context->variable( u"_mesh_vertex_index"_s ).toInt();
         const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( u"_native_mesh"_s ) );
@@ -1222,22 +1168,17 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
       return QVariant();
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentVertexIndexExpressionFunction: public QgsScopedExpressionFunction
+class CurrentVertexIndexExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentVertexIndexExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_index",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentVertexIndexExpressionFunction()
+      : QgsScopedExpressionFunction( "$vertex_index", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexIndexExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentVertexIndexExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1251,28 +1192,21 @@ class CurrentVertexIndexExpressionFunction: public QgsScopedExpressionFunction
     }
 
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
+class CurrentFaceAreaExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentFaceAreaExpressionFunction():
-      QgsScopedExpressionFunction( "$face_area",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentFaceAreaExpressionFunction()
+      : QgsScopedExpressionFunction( "$face_area", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceAreaExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentFaceAreaExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * ) override
     {
-      if ( context &&
-           context->hasVariable( u"_mesh_face_index"_s ) &&
-           context->hasVariable( u"_native_mesh"_s ) )
+      if ( context && context->hasVariable( u"_mesh_face_index"_s ) && context->hasVariable( u"_native_mesh"_s ) )
       {
         const int faceIndex = context->variable( u"_mesh_face_index"_s ).toInt();
         const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( u"_native_mesh"_s ) );
@@ -1305,22 +1239,17 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
       return QVariant();
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
 
-class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
+class CurrentFaceIndexExpressionFunction : public QgsScopedExpressionFunction
 {
   public:
-    CurrentFaceIndexExpressionFunction():
-      QgsScopedExpressionFunction( "$face_index",
-                                   0,
-                                   u"Meshes"_s )
+    CurrentFaceIndexExpressionFunction()
+      : QgsScopedExpressionFunction( "$face_index", 0, u"Meshes"_s )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceIndexExpressionFunction();}
+    QgsScopedExpressionFunction *clone() const override { return new CurrentFaceIndexExpressionFunction(); }
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1331,15 +1260,10 @@ class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
         return QVariant();
 
       return context->variable( u"_mesh_face_index"_s ).toInt();
-
     }
 
-    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
-    {
-      return false;
-    }
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override { return false; }
 };
-
 
 
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
@@ -1428,8 +1352,7 @@ bool LoadLayerFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpr
     const QgsCoordinateTransformContext transformContext = context->variable( u"_project_transform_context"_s ).value<QgsCoordinateTransformContext>();
 
     bool res = false;
-    auto loadLayer = [ uri, providerKey, store, node, parent, &res, &transformContext ]
-    {
+    auto loadLayer = [uri, providerKey, store, node, parent, &res, &transformContext] {
       QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerKey );
       if ( !metadata )
       {

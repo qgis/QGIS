@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsPluginLayerType::QgsPluginLayerType( const QString &name )
   : mName( name )
-{
-}
+{}
 
 QString QgsPluginLayerType::name() const
 {

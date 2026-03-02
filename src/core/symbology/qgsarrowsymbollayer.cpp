@@ -193,12 +193,10 @@ bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
 
 bool QgsArrowSymbolLayer::usesMapUnits() const
 {
-  return mArrowWidthUnit == Qgis::RenderUnit::MapUnits || mArrowWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mArrowStartWidthUnit == Qgis::RenderUnit::MapUnits || mArrowStartWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mHeadLengthUnit == Qgis::RenderUnit::MapUnits || mHeadLengthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mHeadThicknessUnit == Qgis::RenderUnit::MapUnits || mHeadThicknessUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mArrowWidthUnit == Qgis::RenderUnit::MapUnits || mArrowWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mArrowStartWidthUnit == Qgis::RenderUnit::MapUnits
+         || mArrowStartWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mHeadLengthUnit == Qgis::RenderUnit::MapUnits || mHeadLengthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeadThicknessUnit == Qgis::RenderUnit::MapUnits || mHeadThicknessUnit == Qgis::RenderUnit::MetersInMapUnits || mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsArrowSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
@@ -212,7 +210,7 @@ void QgsArrowSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mExpressionScope = std::make_unique<QgsExpressionContextScope>( );
+  mExpressionScope = std::make_unique<QgsExpressionContextScope>();
   mScaledArrowWidth = context.renderContext().convertToPainterUnits( arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
   mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
   mScaledHeadLength = context.renderContext().convertToPainterUnits( headLength(), headLengthUnit(), headLengthUnitScale() );
@@ -259,11 +257,9 @@ inline qreal euclidean_distance( QPointF po, QPointF pd )
   return QgsGeometryUtilsBase::distance2D( po.x(), po.y(), pd.x(), pd.y() );
 }
 
-QPolygonF straightArrow( QPointF po, QPointF pd,
-                         qreal startWidth, qreal width,
-                         qreal headWidth, qreal headHeight,
-                         QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType,
-                         qreal offset )
+QPolygonF straightArrow(
+  QPointF po, QPointF pd, qreal startWidth, qreal width, qreal headWidth, qreal headHeight, QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType, qreal offset
+)
 {
   QPolygonF polygon; // implicitly shared
   // vector length
@@ -309,24 +305,24 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << po;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
-      polygon << po + unitVec *headWidth + perpVec *headHeight;
-      polygon << po + unitVec *headWidth + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth + perpVec * headHeight;
+      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
 
-      polygon << po + unitVec *bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
 
       // second head
-      polygon << po + unitVec *bodyLength + perpVec *headHeight;
+      polygon << po + unitVec * bodyLength + perpVec * headHeight;
     }
     polygon << pd;
 
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
     {
-      polygon << po + unitVec *bodyLength - perpVec *headHeight;
-      polygon << po + unitVec *bodyLength - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength - perpVec * headHeight;
+      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
 
       // end of the first head
-      polygon << po + unitVec *headWidth - perpVec * ( width * 0.5 );
-      polygon << po + unitVec *headWidth - perpVec *headHeight;
+      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth - perpVec * headHeight;
     }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadSingle )
@@ -334,8 +330,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
       polygon << po + perpVec * ( startWidth * 0.5 );
-      polygon << po + unitVec *bodyLength + perpVec * ( width * 0.5 );
-      polygon << po + unitVec *bodyLength + perpVec *headHeight;
+      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength + perpVec * headHeight;
     }
     else
     {
@@ -344,8 +340,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << pd;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
     {
-      polygon << po + unitVec *bodyLength - perpVec *headHeight;
-      polygon << po + unitVec *bodyLength - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength - perpVec * headHeight;
+      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
       polygon << po - perpVec * ( startWidth * 0.5 );
     }
     else
@@ -358,8 +354,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << po;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
-      polygon << po + unitVec *headWidth + perpVec *headHeight;
-      polygon << po + unitVec *headWidth + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth + perpVec * headHeight;
+      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
 
       polygon << pd + perpVec * ( startWidth * 0.5 );
     }
@@ -371,8 +367,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     {
       polygon << pd - perpVec * ( startWidth * 0.5 );
 
-      polygon << po + unitVec *headWidth - perpVec * ( width * 0.5 );
-      polygon << po + unitVec *headWidth - perpVec *headHeight;
+      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth - perpVec * headHeight;
     }
     else
     {
@@ -460,7 +456,7 @@ void pathArcTo( QPainterPath &path, QPointF circleCenter, qreal circleRadius, qr
   else
   {
     if ( angle_o < angle_d )
-      path.arcTo( circleRect, angle_o / M_PI * 180.0, - ( 360.0 - ( angle_d - angle_o ) / M_PI * 180.0 ) );
+      path.arcTo( circleRect, angle_o / M_PI * 180.0, -( 360.0 - ( angle_d - angle_o ) / M_PI * 180.0 ) );
     else
       path.arcTo( circleRect, angle_o / M_PI * 180.0, ( angle_d - angle_o ) / M_PI * 180.0 );
   }
@@ -487,7 +483,7 @@ void spiralArcTo( QPainterPath &path, QPointF center, qreal startAngle, qreal st
   qreal cRadius;
   QPointF cCenter;
   // first circle arc
-  if ( ! pointsToCircle( A, I1, I2, cCenter, cRadius ) )
+  if ( !pointsToCircle( A, I1, I2, cCenter, cRadius ) )
   {
     // aligned points => draw a straight line
     path.lineTo( I2 );
@@ -501,7 +497,7 @@ void spiralArcTo( QPainterPath &path, QPointF center, qreal startAngle, qreal st
   }
 
   // second circle arc
-  if ( ! pointsToCircle( I2, I3, B, cCenter, cRadius ) )
+  if ( !pointsToCircle( I2, I3, B, cCenter, cRadius ) )
   {
     // aligned points => draw a straight line
     path.lineTo( B );
@@ -515,15 +511,13 @@ void spiralArcTo( QPainterPath &path, QPointF center, qreal startAngle, qreal st
   }
 }
 
-QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
-                       qreal startWidth, qreal width,
-                       qreal headWidth, qreal headHeight,
-                       QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType,
-                       qreal offset )
+QPolygonF curvedArrow(
+  QPointF po, QPointF pm, QPointF pd, qreal startWidth, qreal width, qreal headWidth, qreal headHeight, QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType, qreal offset
+)
 {
   qreal circleRadius;
   QPointF circleCenter;
-  if ( ! pointsToCircle( po, pm, pd, circleCenter, circleRadius ) )
+  if ( !pointsToCircle( po, pm, pd, circleCenter, circleRadius ) )
   {
     // aligned points => draw a straight arrow
     return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
@@ -550,9 +544,8 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
 
   const qreal length = euclidean_distance( po, pd );
   // for close points and deltaAngle < 180, draw a straight line
-  if ( std::fabs( deltaAngle ) < M_PI && ( ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) ||
-       ( ( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) ||
-       ( ( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headWidth ) ) ) )
+  if ( std::fabs( deltaAngle ) < M_PI
+       && ( ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) || ( ( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) || ( ( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headWidth ) ) ) )
   {
     return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
   }
@@ -649,7 +642,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
     {
       path.lineTo( circlePoint( circleCenter, circleRadius - direction * startWidth / 2, angle_d ) );
 
-      spiralArcTo( path, circleCenter, angle_d, circleRadius - direction * startWidth / 2, angle_o + headAngle, circleRadius - direction * width / 2, - direction );
+      spiralArcTo( path, circleCenter, angle_d, circleRadius - direction * startWidth / 2, angle_o + headAngle, circleRadius - direction * width / 2, -direction );
 
       path.lineTo( circlePoint( circleCenter, circleRadius - direction * headHeight, angle_o + headAngle ) );
       path.lineTo( po );
@@ -843,7 +836,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
   {
     _resolveDataDefined( context );
 
-    if ( ! isRepeated() )
+    if ( !isRepeated() )
     {
       if ( points.size() >= 3 )
       {
@@ -972,4 +965,3 @@ bool QgsArrowSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
 {
   return true;
 }
-

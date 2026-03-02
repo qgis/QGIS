@@ -50,17 +50,13 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other ) //NOLINT
   : d( other.d )
-{
-
-}
+{}
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings( QgsTextBackgroundSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
+{}
 
-}
-
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other )  //NOLINT
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -69,7 +65,7 @@ QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBa
   return *this;
 }
 
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( QgsTextBackgroundSettings &&other )  //NOLINT
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( QgsTextBackgroundSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -79,39 +75,19 @@ QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( QgsTextBackgrou
 }
 
 QgsTextBackgroundSettings::~QgsTextBackgroundSettings() //NOLINT
-{
-
-}
+{}
 
 bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &other ) const
 {
-  if ( d->enabled != other.enabled()
-       || d->type != other.type()
-       || d->svgFile != other.svgFile()
-       || d->sizeType != other.sizeType()
-       || d->size != other.size()
-       || d->sizeUnits != other.sizeUnit()
-       || d->sizeMapUnitScale != other.sizeMapUnitScale()
-       || d->rotationType != other.rotationType()
-       || d->rotation != other.rotation()
-       || d->offset != other.offset()
-       || d->offsetUnits != other.offsetUnit()
-       || d->offsetMapUnitScale != other.offsetMapUnitScale()
-       || d->radii != other.radii()
-       || d->radiiUnits != other.radiiUnit()
-       || d->radiiMapUnitScale != other.radiiMapUnitScale()
-       || d->blendMode != other.blendMode()
-       || d->fillColor != other.fillColor()
-       || d->strokeColor != other.strokeColor()
-       || d->opacity != other.opacity()
-       || d->strokeWidth != other.strokeWidth()
-       || d->strokeWidthUnits != other.strokeWidthUnit()
-       || d->strokeWidthMapUnitScale != other.strokeWidthMapUnitScale()
+  if ( d->enabled != other.enabled() || d->type != other.type() || d->svgFile != other.svgFile() || d->sizeType != other.sizeType() || d->size != other.size() || d->sizeUnits != other.sizeUnit()
+       || d->sizeMapUnitScale != other.sizeMapUnitScale() || d->rotationType != other.rotationType() || d->rotation != other.rotation() || d->offset != other.offset()
+       || d->offsetUnits != other.offsetUnit() || d->offsetMapUnitScale != other.offsetMapUnitScale() || d->radii != other.radii() || d->radiiUnits != other.radiiUnit()
+       || d->radiiMapUnitScale != other.radiiMapUnitScale() || d->blendMode != other.blendMode() || d->fillColor != other.fillColor() || d->strokeColor != other.strokeColor()
+       || d->opacity != other.opacity() || d->strokeWidth != other.strokeWidth() || d->strokeWidthUnits != other.strokeWidthUnit() || d->strokeWidthMapUnitScale != other.strokeWidthMapUnitScale()
        || d->joinStyle != other.joinStyle() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
-       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
   if ( static_cast< bool >( d->markerSymbol ) != static_cast< bool >( other.markerSymbol() )
@@ -450,8 +426,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   d->type = static_cast< ShapeType >( layer->customProperty( u"labeling/shapeType"_s, QVariant( ShapeRectangle ) ).toUInt() );
   d->svgFile = layer->customProperty( u"labeling/shapeSVGFile"_s, QVariant( "" ) ).toString();
   d->sizeType = static_cast< SizeType >( layer->customProperty( u"labeling/shapeSizeType"_s, QVariant( SizeBuffer ) ).toUInt() );
-  d->size = QSizeF( layer->customProperty( u"labeling/shapeSizeX"_s, QVariant( 0.0 ) ).toDouble(),
-                    layer->customProperty( u"labeling/shapeSizeY"_s, QVariant( 0.0 ) ).toDouble() );
+  d->size = QSizeF( layer->customProperty( u"labeling/shapeSizeX"_s, QVariant( 0.0 ) ).toDouble(), layer->customProperty( u"labeling/shapeSizeY"_s, QVariant( 0.0 ) ).toDouble() );
 
   if ( layer->customProperty( u"labeling/shapeSizeUnit"_s ).toString().isEmpty() )
   {
@@ -476,8 +451,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   }
   d->rotationType = static_cast< RotationType >( layer->customProperty( u"labeling/shapeRotationType"_s, QVariant( RotationSync ) ).toUInt() );
   d->rotation = layer->customProperty( u"labeling/shapeRotation"_s, QVariant( 0.0 ) ).toDouble();
-  d->offset = QPointF( layer->customProperty( u"labeling/shapeOffsetX"_s, QVariant( 0.0 ) ).toDouble(),
-                       layer->customProperty( u"labeling/shapeOffsetY"_s, QVariant( 0.0 ) ).toDouble() );
+  d->offset = QPointF( layer->customProperty( u"labeling/shapeOffsetX"_s, QVariant( 0.0 ) ).toDouble(), layer->customProperty( u"labeling/shapeOffsetY"_s, QVariant( 0.0 ) ).toDouble() );
 
   if ( layer->customProperty( u"labeling/shapeOffsetUnit"_s ).toString().isEmpty() )
   {
@@ -500,8 +474,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   {
     d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/shapeOffsetMapUnitScale"_s ).toString() );
   }
-  d->radii = QSizeF( layer->customProperty( u"labeling/shapeRadiiX"_s, QVariant( 0.0 ) ).toDouble(),
-                     layer->customProperty( u"labeling/shapeRadiiY"_s, QVariant( 0.0 ) ).toDouble() );
+  d->radii = QSizeF( layer->customProperty( u"labeling/shapeRadiiX"_s, QVariant( 0.0 ) ).toDouble(), layer->customProperty( u"labeling/shapeRadiiY"_s, QVariant( 0.0 ) ).toDouble() );
 
 
   if ( layer->customProperty( u"labeling/shapeRadiiUnit"_s ).toString().isEmpty() )
@@ -559,7 +532,8 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( u"labeling/shapeOpacity"_s ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/shapeBlendMode"_s, QVariant( static_cast< int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/shapeBlendMode"_s, QVariant( static_cast< int>( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
 
   if ( layer->customProperty( u"labeling/shapeEffect"_s ).isValid() )
   {
@@ -579,8 +553,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   d->type = static_cast< ShapeType >( backgroundElem.attribute( u"shapeType"_s, QString::number( ShapeRectangle ) ).toUInt() );
   d->svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( backgroundElem.attribute( u"shapeSVGFile"_s ), context.pathResolver() );
   d->sizeType = static_cast< SizeType >( backgroundElem.attribute( u"shapeSizeType"_s, QString::number( SizeBuffer ) ).toUInt() );
-  d->size = QSizeF( backgroundElem.attribute( u"shapeSizeX"_s, u"0"_s ).toDouble(),
-                    backgroundElem.attribute( u"shapeSizeY"_s, u"0"_s ).toDouble() );
+  d->size = QSizeF( backgroundElem.attribute( u"shapeSizeX"_s, u"0"_s ).toDouble(), backgroundElem.attribute( u"shapeSizeY"_s, u"0"_s ).toDouble() );
 
   if ( !backgroundElem.hasAttribute( u"shapeSizeUnit"_s ) )
   {
@@ -605,8 +578,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   }
   d->rotationType = static_cast< RotationType >( backgroundElem.attribute( u"shapeRotationType"_s, QString::number( RotationSync ) ).toUInt() );
   d->rotation = backgroundElem.attribute( u"shapeRotation"_s, u"0"_s ).toDouble();
-  d->offset = QPointF( backgroundElem.attribute( u"shapeOffsetX"_s, u"0"_s ).toDouble(),
-                       backgroundElem.attribute( u"shapeOffsetY"_s, u"0"_s ).toDouble() );
+  d->offset = QPointF( backgroundElem.attribute( u"shapeOffsetX"_s, u"0"_s ).toDouble(), backgroundElem.attribute( u"shapeOffsetY"_s, u"0"_s ).toDouble() );
 
   if ( !backgroundElem.hasAttribute( u"shapeOffsetUnit"_s ) )
   {
@@ -629,8 +601,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   {
     d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( u"shapeOffsetMapUnitScale"_s ) );
   }
-  d->radii = QSizeF( backgroundElem.attribute( u"shapeRadiiX"_s, u"0"_s ).toDouble(),
-                     backgroundElem.attribute( u"shapeRadiiY"_s, u"0"_s ).toDouble() );
+  d->radii = QSizeF( backgroundElem.attribute( u"shapeRadiiX"_s, u"0"_s ).toDouble(), backgroundElem.attribute( u"shapeRadiiY"_s, u"0"_s ).toDouble() );
 
   if ( !backgroundElem.hasAttribute( u"shapeRadiiUnit"_s ) )
   {
@@ -688,7 +659,8 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( backgroundElem.attribute( u"shapeBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( backgroundElem.attribute( u"shapeBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
 
   const QDomElement effectElem = backgroundElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
@@ -780,29 +752,25 @@ void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollect
 
   if ( d->type != QgsTextBackgroundSettings::ShapeSVG )
   {
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeFillColor ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::FillColor ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeFillColor ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::FillColor ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::FillColor, properties.property( QgsPalLayerSettings::Property::ShapeFillColor ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeFillColor, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeColor ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeColor ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeColor ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeColor ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::StrokeColor, properties.property( QgsPalLayerSettings::Property::ShapeStrokeColor ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeStrokeColor, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeWidth ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeWidth ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::StrokeWidth, properties.property( QgsPalLayerSettings::Property::ShapeStrokeWidth ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeJoinStyle ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::JoinStyle ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeJoinStyle ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::JoinStyle ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::JoinStyle, properties.property( QgsPalLayerSettings::Property::ShapeJoinStyle ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeJoinStyle, QgsProperty() );

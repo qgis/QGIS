@@ -36,9 +36,7 @@ QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 
 QgsColorEffect::QgsColorEffect()
   : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-{
-
-}
+{}
 
 Qgis::PaintEffectFlags QgsColorEffect::flags() const
 {

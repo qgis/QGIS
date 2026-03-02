@@ -61,7 +61,7 @@ void QgsTextAnnotation::setDocument( const QTextDocument *doc )
 void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   QPainter *painter = context.painter();
-  if ( !mDocument || ! painter || ( context.feedback() && context.feedback()->isCanceled() ) )
+  if ( !mDocument || !painter || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }
@@ -99,7 +99,7 @@ void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mDocument = std::make_unique<QTextDocument>( );
+  mDocument = std::make_unique<QTextDocument>();
   mDocument->setHtml( itemElem.attribute( u"document"_s, QString() ) );
   const QDomElement annotationElem = itemElem.firstChildElement( u"AnnotationItem"_s );
   if ( !annotationElem.isNull() )

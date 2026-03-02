@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 {

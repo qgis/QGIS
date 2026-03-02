@@ -53,11 +53,21 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
 }
 
-QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QgsTextDocument &document, const QgsTextDocumentMetrics & )
+QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics(
+  const QgsMapToPixel *xform,
+  const QgsRenderContext &context,
+  const QgsTextFormat &format,
+  const QFont &baseFont,
+  const QFontMetricsF &fontMetrics,
+  double letterSpacing,
+  double wordSpacing,
+  const QgsTextDocument &document,
+  const QgsTextDocumentMetrics &
+)
 {
   const double tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
-      ? format.tabStopDistance() * baseFont.pixelSize()
-      : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
+                                               ? format.tabStopDistance() * baseFont.pixelSize()
+                                               : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
 
   const QList< QgsTextFormat::Tab > tabPositions = format.tabPositions();
   QList< double > tabStopDistancesPainterUnits;
@@ -65,9 +75,8 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   for ( const QgsTextFormat::Tab &tab : tabPositions )
   {
     tabStopDistancesPainterUnits.append(
-      format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
-      ? tab.position() * baseFont.pixelSize()
-      : context.convertToPainterUnits( tab.position(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() )
+      format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage ? tab.position() * baseFont.pixelSize()
+                                                                   : context.convertToPainterUnits( tab.position(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() )
     );
   }
 
@@ -199,8 +208,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
 
     // this workaround only works for clusters with a single character. Not sure how it should be handled
     // with multi-character clusters.
-    if ( graphemes[i].length() == 1 &&
-         !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
+    if ( graphemes[i].length() == 1 && !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
     {
       // word spacing applied when it shouldn't be
       wordSpaceFix -= wordSpacing;

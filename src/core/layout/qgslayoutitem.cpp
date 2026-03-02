@@ -46,9 +46,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutItemRenderContext::QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor )
   : mRenderContext( context )
   , mViewScaleFactor( viewScaleFactor )
-{
-}
-
+{}
 
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
@@ -255,14 +253,10 @@ int QgsLayoutItem::numberExportLayers() const
 }
 
 void QgsLayoutItem::startLayeredExport()
-{
-
-}
+{}
 
 void QgsLayoutItem::stopLayeredExport()
-{
-
-}
+{}
 
 bool QgsLayoutItem::nextExportPart()
 {
@@ -357,8 +351,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       const double cacheScale = destinationDpi / mItemCacheDpi;
       painter->scale( cacheScale / context.scaleFactor(), cacheScale / context.scaleFactor() );
       painter->setCompositionMode( blendMode );
-      painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale,
-                          boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
+      painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale, boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
       return;
     }
     else
@@ -393,8 +386,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
       painter->setCompositionMode( blendMode );
-      painter->drawImage( boundingRect().x() * context.scaleFactor(),
-                          boundingRect().y() * context.scaleFactor(), image );
+      painter->drawImage( boundingRect().x() * context.scaleFactor(), boundingRect().y() * context.scaleFactor(), image );
 
       if ( previewRender )
       {
@@ -840,8 +832,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
 }
 
 void QgsLayoutItem::finalizeRestoreFromXml()
-{
-}
+{}
 
 QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
 {
@@ -948,8 +939,7 @@ bool QgsLayoutItem::containsAdvancedEffects() const
 
 bool QgsLayoutItem::requiresRasterization() const
 {
-  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) ||
-         blendMode() != QPainter::CompositionMode_SourceOver;
+  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) || blendMode() != QPainter::CompositionMode_SourceOver;
 }
 
 double QgsLayoutItem::estimatedFrameBleed() const
@@ -969,19 +959,13 @@ QRectF QgsLayoutItem::rectWithFrame() const
 }
 
 void QgsLayoutItem::moveContent( double, double )
-{
-
-}
+{}
 
 void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
-{
-
-}
+{}
 
 void QgsLayoutItem::zoomContent( double, QPointF )
-{
-
-}
+{}
 
 void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
 {
@@ -1054,10 +1038,8 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
-  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth )
+       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
     return size;
 
 
@@ -1114,13 +1096,11 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   //update data defined properties and update item to match
 
   //evaluate width and height first, since they may affect position if non-top-left reference point set
-  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemSize();
   }
-  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemPosition();
   }
@@ -1161,8 +1141,7 @@ void QgsLayoutItem::setItemRotation( double angle, const bool adjustPosition )
     angle = std::fmod( angle, 360.0 );
   }
 
-  const QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle )
-                        : pos();
+  const QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle ) : pos();
   const double rotationRequired = angle - rotation();
   rotateItem( rotationRequired, point );
 
@@ -1377,7 +1356,6 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, con
 
 bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-
   return true;
 }
 
@@ -1385,7 +1363,6 @@ void QgsLayoutItem::initConnectionsToLayout()
 {
   if ( !mLayout )
     return;
-
 }
 
 void QgsLayoutItem::preparePainter( QPainter *painter )
@@ -1586,4 +1563,3 @@ void QgsLayoutItem::refreshBlendMode()
 
   update();
 }
-

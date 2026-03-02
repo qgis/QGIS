@@ -65,7 +65,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -296,7 +296,7 @@ void QgsMapRendererParallelJob::renderingFinished()
     mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
   }
 #endif
-  if ( ! mSecondPassLayerJobs.empty() )
+  if ( !mSecondPassLayerJobs.empty() )
   {
     initSecondPassJobs( mSecondPassLayerJobs, mLabelJob );
 

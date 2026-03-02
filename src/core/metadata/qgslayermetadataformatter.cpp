@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata )
   : mMetadata( metadata )
-{
-}
+{}
 
 QString QgsLayerMetadataFormatter::accessSectionHtml() const
 {
@@ -62,14 +61,16 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
   else
   {
     myMetadata += "<table width=\"100%\" class=\"tabular-view\">\n"_L1;
-    myMetadata += "<tr><th>"_L1 + tr( "ID" ) + "</th><th>"_L1 + tr( "Name" ) + "</th><th>"_L1 + tr( "Position" ) + "</th><th>"_L1 + tr( "Organization" ) + "</th><th>"_L1 + tr( "Role" ) + "</th><th>"_L1 + tr( "Email" ) + "</th><th>"_L1 + tr( "Voice" ) + "</th><th>"_L1 + tr( "Fax" ) + "</th><th>"_L1 + tr( "Addresses" ) + "</th></tr>\n"_L1;
+    myMetadata += "<tr><th>"_L1 + tr( "ID" ) + "</th><th>"_L1 + tr( "Name" ) + "</th><th>"_L1 + tr( "Position" ) + "</th><th>"_L1 + tr( "Organization" ) + "</th><th>"_L1 + tr( "Role" )
+                  + "</th><th>"_L1 + tr( "Email" ) + "</th><th>"_L1 + tr( "Voice" ) + "</th><th>"_L1 + tr( "Fax" ) + "</th><th>"_L1 + tr( "Addresses" ) + "</th></tr>\n"_L1;
     int i = 1;
     for ( const QgsAbstractMetadataBase::Contact &contact : contacts )
     {
       QString rowClass;
       if ( i % 2 )
         rowClass = u"class=\"odd-row\""_s;
-      myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + QString::number( i ) + "</td><td>"_L1 + contact.name + "</td><td>"_L1 + contact.position + "</td><td>"_L1 + contact.organization + "</td><td>"_L1 + contact.role + u"</td><td><a href=\"mailto:%1\">%1</a></td><td>"_s.arg( contact.email ) + contact.voice + "</td><td>"_L1 + contact.fax + "</td><td>"_L1;
+      myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + QString::number( i ) + "</td><td>"_L1 + contact.name + "</td><td>"_L1 + contact.position + "</td><td>"_L1 + contact.organization
+                    + "</td><td>"_L1 + contact.role + u"</td><td><a href=\"mailto:%1\">%1</a></td><td>"_s.arg( contact.email ) + contact.voice + "</td><td>"_L1 + contact.fax + "</td><td>"_L1;
       bool notFirstRow = false;
       for ( const QgsAbstractMetadataBase::Address &oneAddress : contact.addresses )
       {
@@ -77,27 +78,27 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
         {
           myMetadata += "<br />\n"_L1;
         }
-        if ( ! oneAddress.type.isEmpty() )
+        if ( !oneAddress.type.isEmpty() )
         {
           myMetadata += oneAddress.type + u"<br />"_s;
         }
-        if ( ! oneAddress.address.isEmpty() )
+        if ( !oneAddress.address.isEmpty() )
         {
           myMetadata += oneAddress.address + u"<br />"_s;
         }
-        if ( ! oneAddress.postalCode.isEmpty() )
+        if ( !oneAddress.postalCode.isEmpty() )
         {
           myMetadata += oneAddress.postalCode + u"<br />"_s;
         }
-        if ( ! oneAddress.city.isEmpty() )
+        if ( !oneAddress.city.isEmpty() )
         {
           myMetadata += oneAddress.city + u"<br />"_s;
         }
-        if ( ! oneAddress.administrativeArea.isEmpty() )
+        if ( !oneAddress.administrativeArea.isEmpty() )
         {
           myMetadata += oneAddress.administrativeArea + u"<br />"_s;
         }
-        if ( ! oneAddress.country.isEmpty() )
+        if ( !oneAddress.country.isEmpty() )
         {
           myMetadata += oneAddress.country;
         }
@@ -146,14 +147,14 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
       else
         myMetadata += tr( "Projected" );
       myMetadata += "<br />"_L1;
-      myMetadata += u"<strong>"_s + tr( "X Minimum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + u"<br />"_s;
-      myMetadata += u"<strong>"_s + tr( "Y Minimum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + u"<br />"_s;
-      myMetadata += u"<strong>"_s + tr( "X Maximum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + u"<br />"_s;
-      myMetadata += u"<strong>"_s + tr( "Y Maximum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + u"<br />"_s;
+      myMetadata += u"<strong>"_s + tr( "X Minimum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + u"<br />"_s;
+      myMetadata += u"<strong>"_s + tr( "Y Minimum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + u"<br />"_s;
+      myMetadata += u"<strong>"_s + tr( "X Maximum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + u"<br />"_s;
+      myMetadata += u"<strong>"_s + tr( "Y Maximum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + u"<br />"_s;
       if ( spatialExtent.bounds.zMinimum() || spatialExtent.bounds.zMaximum() )
       {
-        myMetadata += u"<strong>"_s + tr( "Z Minimum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + u"<br />"_s;
-        myMetadata += u"<strong>"_s + tr( "Z Maximum:" ) + u" </strong>"_s +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
+        myMetadata += u"<strong>"_s + tr( "Z Minimum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + u"<br />"_s;
+        myMetadata += u"<strong>"_s + tr( "Z Maximum:" ) + u" </strong>"_s + qgsDoubleToString( spatialExtent.bounds.zMaximum() );
       }
       notFirstRow = true;
     }
@@ -229,7 +230,7 @@ QString QgsLayerMetadataFormatter::identificationSectionHtml() const
     myMetadata += "</table>\n"_L1; // End keywords table
   }
   myMetadata += "</td></tr>\n"_L1; // End of keywords row
-  myMetadata += "</table>\n"_L1; // End identification table
+  myMetadata += "</table>\n"_L1;   // End identification table
   return myMetadata;
 }
 
@@ -270,14 +271,16 @@ QString QgsLayerMetadataFormatter::linksSectionHtml() const
   else
   {
     myMetadata += "<table width=\"100%\" class=\"tabular-view\">\n"_L1;
-    myMetadata += "<tr><th>"_L1 + tr( "ID" ) + "</th><th>"_L1 + tr( "Name" ) + "</th><th>"_L1 + tr( "Type" ) + "</th><th>"_L1 + tr( "URL" ) + "</th><th>"_L1 + tr( "Description" ) + "</th><th>"_L1 + tr( "Format" ) + "</th><th>"_L1 + tr( "MIME Type" ) + "</th><th>"_L1 + tr( "Size" ) + "</th></tr>\n"_L1;
+    myMetadata += "<tr><th>"_L1 + tr( "ID" ) + "</th><th>"_L1 + tr( "Name" ) + "</th><th>"_L1 + tr( "Type" ) + "</th><th>"_L1 + tr( "URL" ) + "</th><th>"_L1 + tr( "Description" ) + "</th><th>"_L1
+                  + tr( "Format" ) + "</th><th>"_L1 + tr( "MIME Type" ) + "</th><th>"_L1 + tr( "Size" ) + "</th></tr>\n"_L1;
     int i = 1;
     for ( const QgsAbstractMetadataBase::Link &link : links )
     {
       QString rowClass;
       if ( i % 2 )
         rowClass = u"class=\"odd-row\""_s;
-      myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + QString::number( i ) + "</td><td>"_L1 + link.name + "</td><td>"_L1 + link.type + u"</td><td><a href=\"%1\">%1</a></td><td>"_s.arg( link.url ) + link.description + "</td><td>"_L1 + link.format + "</td><td>"_L1 + link.mimeType + "</td><td>"_L1 + link.size + "</td></tr>\n"_L1;
+      myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + QString::number( i ) + "</td><td>"_L1 + link.name + "</td><td>"_L1 + link.type + u"</td><td><a href=\"%1\">%1</a></td><td>"_s.arg( link.url )
+                    + link.description + "</td><td>"_L1 + link.format + "</td><td>"_L1 + link.mimeType + "</td><td>"_L1 + link.size + "</td></tr>\n"_L1;
       i++;
     }
     myMetadata += "</table>\n"_L1;

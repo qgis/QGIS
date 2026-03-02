@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsConditionalStyle QgsConditionalLayerStyles::constraintFailureStyles( QgsFieldConstraints::ConstraintStrength strength )
 {
@@ -182,7 +181,7 @@ QgsConditionalStyle::QgsConditionalStyle( const QString &rule )
 QgsConditionalStyle::~QgsConditionalStyle() = default;
 
 QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mValid( other.mValid )
   , mName( other.mName )
   , mRule( other.mRule )
@@ -190,7 +189,7 @@ QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
   , mBackColor( other.mBackColor )
   , mTextColor( other.mTextColor )
   , mIcon( other.mIcon )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   if ( other.mSymbol )
     mSymbol.reset( other.mSymbol->clone() );
@@ -205,9 +204,7 @@ QgsConditionalStyle::QgsConditionalStyle( QgsConditionalStyle &&other )
   , mBackColor( std::move( other.mBackColor ) )
   , mTextColor( std::move( other.mTextColor ) )
   , mIcon( std::move( other.mIcon ) )
-{
-
-}
+{}
 
 QgsConditionalStyle &QgsConditionalStyle::operator=( const QgsConditionalStyle &other )
 {
@@ -333,7 +330,7 @@ QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const
   return matchingstyles;
 }
 
-QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value,  QgsExpressionContext &context )
+QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context )
 {
   const auto constStyles = styles;
   for ( const QgsConditionalStyle &style : constStyles )
@@ -391,14 +388,9 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const Qgs
 
 bool QgsConditionalStyle::operator==( const QgsConditionalStyle &other ) const
 {
-  return mValid == other.mValid
-         && mName == other.mName
-         && mRule == other.mRule
-         && mFont == other.mFont
-         && mBackColor == other.mBackColor
-         && mTextColor == other.mTextColor
+  return mValid == other.mValid && mName == other.mName && mRule == other.mRule && mFont == other.mFont && mBackColor == other.mBackColor && mTextColor == other.mTextColor
          && static_cast< bool >( mSymbol ) == static_cast< bool >( other.mSymbol )
-         && ( ! mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
+         && ( !mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
 }
 
 bool QgsConditionalStyle::operator!=( const QgsConditionalStyle &other ) const
@@ -452,4 +444,3 @@ bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteConte
   }
   return true;
 }
-

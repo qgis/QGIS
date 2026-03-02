@@ -30,17 +30,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name ):
-  QgsAbstractProviderConnection( name )
-{
+QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name )
+  : QgsAbstractProviderConnection( name )
+{}
 
-}
-
-QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractProviderConnection( uri, configuration )
-{
-
-}
+QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsAbstractProviderConnection( uri, configuration )
+{}
 
 QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderConnection::capabilities() const
 {
@@ -78,7 +74,7 @@ QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, 
 ///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
-  if ( ! mCapabilities.testFlag( capability ) )
+  if ( !mCapabilities.testFlag( capability ) )
   {
     static QMetaEnum metaEnum = QMetaEnum::fromType<QgsAbstractDatabaseProviderConnection::Capability>();
     const QString capName { metaEnum.valueToKey( capability ) };
@@ -88,7 +84,7 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
 
 void QgsAbstractDatabaseProviderConnection::checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const
 {
-  if ( ! mCapabilities2.testFlag( capability ) )
+  if ( !mCapabilities2.testFlag( capability ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( qgsEnumValueToKey( capability ) ) );
   }
@@ -113,20 +109,17 @@ QString QgsAbstractDatabaseProviderConnection::providerKey() const
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
 {
-  return
-  {
+  return {
     // Common constants
-    {
-      Qgis::SqlKeywordCategory::Constant, {
+    { Qgis::SqlKeywordCategory::Constant,
+      {
         u"NULL"_s,
         u"FALSE"_s,
         u"TRUE"_s,
-      }
-    },
+      } },
     // Common SQL reserved words
     // From: GET https://en.wikipedia.org/wiki/SQL_reserved_words| grep 'style="background: #ececec; color: black; font-weight: bold;'| sed -e 's/.*>//'|sort
-    {
-      Qgis::SqlKeywordCategory::Keyword,
+    { Qgis::SqlKeywordCategory::Keyword,
       {
         u"ABORT "_s,
         u"ABORTSESSION"_s,
@@ -1044,8 +1037,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConn
         u"ZEROFILL"_s,
         u"ZEROIFNULL"_s,
         u"ZONE"_s,
-      }
-    }
+      } }
   };
 }
 
@@ -1094,14 +1086,9 @@ QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder(
   return new QgsProviderSqlQueryBuilder();
 }
 
-void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    Qgis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString, QVariant> *
-    options ) const
+void QgsAbstractDatabaseProviderConnection::createVectorTable(
+  const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+) const
 {
   Q_UNUSED( schema );
   Q_UNUSED( name );
@@ -1150,7 +1137,9 @@ bool QgsAbstractDatabaseProviderConnection::tableExists( const QString &schema, 
 }
 
 
-QList<QgsLayerMetadataProviderResult> QgsAbstractDatabaseProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QList<QgsLayerMetadataProviderResult> QgsAbstractDatabaseProviderConnection::searchLayerMetadata(
+  const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback
+) const
 {
   Q_UNUSED( feedback );
   Q_UNUSED( searchContext );
@@ -1232,21 +1221,17 @@ void QgsAbstractDatabaseProviderConnection::deleteField( const QString &fieldNam
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
   std::unique_ptr<QgsVectorLayer> vl { std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), u"temp_layer"_s, mProviderKey, options ) };
-  if ( ! vl->isValid() )
+  if ( !vl->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
-                                          .arg( tableName, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" ).arg( tableName, schema ) );
   }
   if ( vl->fields().lookupField( fieldName ) == -1 )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not find field '%1' in table '%2' in schema '%3'" )
-                                          .arg( fieldName, tableName, schema ) );
-
+    throw QgsProviderConnectionException( QObject::tr( "Could not find field '%1' in table '%2' in schema '%3'" ).arg( fieldName, tableName, schema ) );
   }
-  if ( ! vl->dataProvider()->deleteAttributes( { vl->fields().lookupField( fieldName ) } ) )
+  if ( !vl->dataProvider()->deleteAttributes( { vl->fields().lookupField( fieldName ) } ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Unknown error deleting field '%1' in table '%2' in schema '%3'" )
-                                          .arg( fieldName, tableName, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error deleting field '%1' in table '%2' in schema '%3'" ).arg( fieldName, tableName, schema ) );
   }
 }
 
@@ -1256,22 +1241,18 @@ void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, con
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), u"temp_layer"_s, mProviderKey, options ) ;
-  if ( ! vl->isValid() )
+  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), u"temp_layer"_s, mProviderKey, options );
+  if ( !vl->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
-                                          .arg( tableName, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" ).arg( tableName, schema ) );
   }
   if ( vl->fields().lookupField( field.name() ) != -1 )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in schema '%3' already exists" )
-                                          .arg( field.name(), tableName, schema ) );
-
+    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in schema '%3' already exists" ).arg( field.name(), tableName, schema ) );
   }
-  if ( ! vl->dataProvider()->addAttributes( { field  } ) )
+  if ( !vl->dataProvider()->addAttributes( { field } ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Unknown error adding field '%1' in table '%2' in schema '%3'" )
-                                          .arg( field.name(), tableName, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error adding field '%1' in table '%2' in schema '%3'" ).arg( field.name(), tableName, schema ) );
   }
 }
 
@@ -1281,29 +1262,23 @@ void QgsAbstractDatabaseProviderConnection::renameField( const QString &schema, 
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), u"temp_layer"_s, mProviderKey, options ) ;
-  if ( ! vl->isValid() )
+  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), u"temp_layer"_s, mProviderKey, options );
+  if ( !vl->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
-                                          .arg( tableName, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" ).arg( tableName, schema ) );
   }
   int existingIndex = vl->fields().lookupField( name );
   if ( existingIndex == -1 )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in does not exist" )
-                                          .arg( name, tableName ) );
-
+    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in does not exist" ).arg( name, tableName ) );
   }
   if ( vl->fields().lookupField( newName ) != -1 )
   {
-    throw QgsProviderConnectionException( QObject::tr( "A field with name '%1' already exists in table '%2'" )
-                                          .arg( newName, tableName ) );
-
+    throw QgsProviderConnectionException( QObject::tr( "A field with name '%1' already exists in table '%2'" ).arg( newName, tableName ) );
   }
-  if ( ! vl->dataProvider()->renameAttributes( {{existingIndex, newName}} ) )
+  if ( !vl->dataProvider()->renameAttributes( { { existingIndex, newName } } ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Unknown error renaming field '%1' in table '%2' to '%3'" )
-                                          .arg( name, tableName, newName ) );
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error renaming field '%1' in table '%2' to '%3'" ).arg( name, tableName, newName ) );
   }
 }
 
@@ -1325,8 +1300,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
       return t;
     }
   }
-  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                        .arg( name, schema ) );
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( name, schema ) );
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tablesInt( const QString &schema, const int flags ) const
@@ -1335,7 +1309,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseP
 }
 
 
-QStringList QgsAbstractDatabaseProviderConnection::schemas( ) const
+QStringList QgsAbstractDatabaseProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
   return QStringList();
@@ -1458,7 +1432,8 @@ void QgsAbstractDatabaseProviderConnection::deleteRelationship( const QgsWeakRel
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;
-  if ( mGeometryColumnCount > 1 ) n += '.' + mGeometryColumn;
+  if ( mGeometryColumnCount > 1 )
+    n += '.' + mGeometryColumn;
   return n;
 }
 
@@ -1476,7 +1451,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
 
   Q_ASSERT( index >= 0 && index < mGeometryColumnTypes.size() );
 
-  property.mGeometryColumnTypes << mGeometryColumnTypes[ index ];
+  property.mGeometryColumnTypes << mGeometryColumnTypes[index];
   property.mSchema = mSchema;
   property.mTableName = mTableName;
   property.mGeometryColumn = mGeometryColumn;
@@ -1505,14 +1480,8 @@ int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimension
 
 bool QgsAbstractDatabaseProviderConnection::TableProperty::operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const
 {
-  return mSchema == other.mSchema &&
-         mTableName == other.mTableName &&
-         mGeometryColumn == other.mGeometryColumn &&
-         mGeometryColumnCount == other.mGeometryColumnCount &&
-         mPkColumns == other.mPkColumns &&
-         mFlags == other.mFlags &&
-         mComment == other.mComment &&
-         mInfo == other.mInfo;
+  return mSchema == other.mSchema && mTableName == other.mTableName && mGeometryColumn == other.mGeometryColumn && mGeometryColumnCount == other.mGeometryColumnCount && mPkColumns == other.mPkColumns
+         && mFlags == other.mFlags && mComment == other.mComment && mInfo == other.mInfo;
 }
 
 
@@ -1611,12 +1580,9 @@ QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
 
 QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback *feedback )
 {
-
   QList<QList<QVariant> > rows;
 
-  while ( mResultIterator &&
-          mResultIterator->hasNextRow() &&
-          ( ! feedback || ! feedback->isCanceled() ) )
+  while ( mResultIterator && mResultIterator->hasNextRow() && ( !feedback || !feedback->isCanceled() ) )
   {
     const QVariantList row( mResultIterator->nextRow() );
     if ( row.isEmpty() )
@@ -1633,7 +1599,7 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
 
 QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() const
 {
-  if ( ! mResultIterator )
+  if ( !mResultIterator )
   {
     return QList<QVariant>();
   }
@@ -1643,7 +1609,7 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() co
 
 long long QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
 {
-  if ( ! mResultIterator )
+  if ( !mResultIterator )
   {
     return 0;
   }
@@ -1652,7 +1618,7 @@ long long QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() 
 
 long long QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
 {
-  if ( ! mResultIterator )
+  if ( !mResultIterator )
   {
     return static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
   }
@@ -1709,7 +1675,7 @@ bool QgsAbstractDatabaseProviderConnection::splitSimpleQuery( const QString &sql
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
 {
-  if ( ! mResultIterator )
+  if ( !mResultIterator )
   {
     return false;
   }
@@ -1740,7 +1706,7 @@ QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIter
 {
   QMutexLocker lock( &mMutex );
   const QVariantList row = nextRowPrivate();
-  if ( ! row.isEmpty() )
+  if ( !row.isEmpty() )
   {
     mFetchedRowCount++;
   }
@@ -1766,4 +1732,3 @@ long long QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterato
 }
 
 ///@endcond private
-

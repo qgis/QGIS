@@ -72,11 +72,7 @@ QDomElement QgsBookmark::writeXml( QDomDocument &doc ) const
 
 bool QgsBookmark::operator==( const QgsBookmark &other ) const
 {
-  return mId == other.mId
-         && mName == other.mName
-         && mExtent == other.mExtent
-         && mGroup == other.mGroup
-         && qgsDoubleNear( mRotation, other.mRotation );
+  return mId == other.mId && mName == other.mName && mExtent == other.mExtent && mGroup == other.mGroup && qgsDoubleNear( mRotation, other.mRotation );
 }
 
 bool QgsBookmark::operator!=( const QgsBookmark &other ) const
@@ -267,7 +263,7 @@ void QgsBookmarkManager::renameGroup( const QString &oldName, const QString &new
   {
     if ( mBookmarks.at( i ).group() == oldName )
     {
-      mBookmarks[ i ].setGroup( newName );
+      mBookmarks[i].setGroup( newName );
       emit bookmarkChanged( mBookmarks.at( i ).id() );
     }
   }
@@ -377,14 +373,7 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
   doc.appendChild( root );
 
   QList<QString> headerList;
-  headerList
-      << u"project"_s
-      << u"xmin"_s
-      << u"ymin"_s
-      << u"xmax"_s
-      << u"ymax"_s
-      << u"rotation"_s
-      << u"sr_id"_s;
+  headerList << u"project"_s << u"xmin"_s << u"ymin"_s << u"xmax"_s << u"ymax"_s << u"rotation"_s << u"sr_id"_s;
 
   for ( const QgsBookmarkManager *manager : managers )
   {
@@ -488,10 +477,7 @@ bool QgsBookmarkManager::importFromFile( const QString &path )
     b.setGroup( prjname.text() );
     QgsCoordinateReferenceSystem crs;
     crs.createFromSrsId( srid.text().toLongLong() );
-    b.setExtent( QgsReferencedRectangle( QgsRectangle( xmin.text().toDouble(),
-                                         ymin.text().toDouble(),
-                                         xmax.text().toDouble(),
-                                         ymax.text().toDouble() ), crs ) );
+    b.setExtent( QgsReferencedRectangle( QgsRectangle( xmin.text().toDouble(), ymin.text().toDouble(), xmax.text().toDouble(), ymax.text().toDouble() ), crs ) );
     b.setRotation( rotation.text().toDouble() );
     addBookmark( b, &ok );
     res = res && ok;

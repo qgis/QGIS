@@ -195,7 +195,7 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   // add provider node
   if ( mDataProvider )
   {
-    QDomElement provider  = doc.createElement( u"provider"_s );
+    QDomElement provider = doc.createElement( u"provider"_s );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     mapLayerNode.appendChild( provider );
@@ -323,7 +323,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -332,7 +332,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
+    QDomElement layerOpacityElem = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -397,7 +397,7 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringLi
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  QgsVectorTileDataProvider *vtProvider = qgis::down_cast< QgsVectorTileDataProvider *> ( mDataProvider.get() );
+  QgsVectorTileDataProvider *vtProvider = qgis::down_cast< QgsVectorTileDataProvider *>( mDataProvider.get() );
   if ( !vtProvider )
     return false;
 
@@ -531,8 +531,7 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
   info += generalHtmlMetadata();
 
-  info += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s %
-          u"<table class=\"list-view\">\n"_s;
+  info += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s % u"<table class=\"list-view\">\n"_s;
 
   info += u"<tr><td class=\"highlight\">"_s % tr( "Source type" ) % u"</td><td>"_s % sourceType() % u"</td></tr>\n"_s;
 
@@ -547,35 +546,23 @@ QString QgsVectorTileLayer::htmlMetadata() const
   info += crsHtmlMetadata();
 
   // Identification section
-  info += u"<h1>"_s % tr( "Identification" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.identificationSectionHtml() %
-          u"<br>\n"_s %
+  info += u"<h1>"_s % tr( "Identification" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.identificationSectionHtml() % u"<br>\n"_s %
 
           // extent section
-          u"<h1>"_s % tr( "Extent" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.extentSectionHtml( ) %
-          u"<br>\n"_s %
+          u"<h1>"_s % tr( "Extent" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.extentSectionHtml() % u"<br>\n"_s %
 
           // Start the Access section
-          u"<h1>"_s % tr( "Access" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.accessSectionHtml( ) %
-          u"<br>\n"_s %
+          u"<h1>"_s % tr( "Access" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.accessSectionHtml() % u"<br>\n"_s %
 
 
           // Start the contacts section
-          u"<h1>"_s % tr( "Contacts" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.contactsSectionHtml( ) %
-          u"<br><br>\n"_s %
+          u"<h1>"_s % tr( "Contacts" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.contactsSectionHtml() % u"<br><br>\n"_s %
 
           // Start the links section
-          u"<h1>"_s % tr( "References" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.linksSectionHtml( ) %
-          u"<br>\n"_s %
+          u"<h1>"_s % tr( "References" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.linksSectionHtml() % u"<br>\n"_s %
 
           // Start the history section
-          u"<h1>"_s % tr( "History" ) % u"</h1>\n<hr>\n"_s %
-          htmlFormatter.historySectionHtml( ) %
-          u"<br>\n"_s %
+          u"<h1>"_s % tr( "History" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.historySectionHtml() % u"<br>\n"_s %
 
           customPropertyHtmlMetadata() %
 
@@ -667,7 +654,9 @@ int QgsVectorTileLayer::selectedFeatureCount() const
   return mSelectedFeatures.size();
 }
 
-void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags, QgsRenderContext *renderContext )
+void QgsVectorTileLayer::selectByGeometry(
+  const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags, QgsRenderContext *renderContext
+)
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -713,8 +702,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
     isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
   }
 
-  auto addDerivedFields = []( QgsFeature & feature, const int tileZoom, const QString & layer )
-  {
+  auto addDerivedFields = []( QgsFeature &feature, const int tileZoom, const QString &layer ) {
     QgsFields fields = feature.fields();
     fields.append( QgsField( u"tile_zoom"_s, QMetaType::Type::Int ) );
     fields.append( QgsField( u"tile_layer"_s, QMetaType::Type::QString ) );
@@ -758,11 +746,11 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       {
         const QgsVectorTileRawData data = getRawTile( tileID );
         if ( data.data.isEmpty() )
-          continue;  // failed to get data
+          continue; // failed to get data
 
         QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
         if ( !decoder.decode( data ) )
-          continue;  // failed to decode
+          continue; // failed to decode
 
         QMap<QString, QgsFields> perLayerFields;
         const QStringList layerNames = decoder.layers();
@@ -853,8 +841,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
           singleSelectCandidates << it.value();
           it++;
         }
-        else if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection )
-                  || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
+        else if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection ) || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
         {
           it++;
         }

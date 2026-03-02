@@ -31,8 +31,7 @@ QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
   : QNetworkDiskCache( parent )
-{
-}
+{}
 
 QString QgsNetworkDiskCache::cacheDirectory() const
 {
@@ -128,8 +127,7 @@ void QgsNetworkDiskCache::clear()
 void determineSmartCacheSize( const QString &cacheDir, qint64 &cacheSize )
 {
   std::function<qint64( const QString & )> dirSize;
-  dirSize = [&dirSize]( const QString & dirPath ) -> qint64
-  {
+  dirSize = [&dirSize]( const QString &dirPath ) -> qint64 {
     qint64 size = 0;
     QDir dir( dirPath );
 
@@ -182,8 +180,8 @@ void determineSmartCacheSize( const QString &cacheDir, qint64 &cacheSize )
 
     // Add 16% of free space up to 500 MB
     cacheSize10MB += std::max( 2LL, static_cast<qint64>( available10MB * 0.16 ) );
-#else \
-  // Add 30% of free space up to 500 MB
+#else
+    // Add 30% of free space up to 500 MB
     cacheSize10MB += std::max( 5LL, static_cast<qint64>( available10MB * 0.30 ) );
 #endif
   }

@@ -86,8 +86,7 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
   return mCrs;
 }
 
-QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
-                                        const QVariant &id, int indent ) const
+QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent ) const
 {
   try
   {
@@ -107,9 +106,8 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
 
 json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
 {
-  json featureJson
-  {
-    {  "type",  "Feature" },
+  json featureJson {
+    { "type", "Feature" },
   };
   if ( id.isValid() )
   {
@@ -153,19 +151,13 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::Point )
     {
-      featureJson[ "bbox" ] =
-      {
-        qgsRound( box.xMinimum(), mPrecision ),
-        qgsRound( box.yMinimum(), mPrecision ),
-        qgsRound( box.xMaximum(), mPrecision ),
-        qgsRound( box.yMaximum(), mPrecision )
-      };
+      featureJson["bbox"] = { qgsRound( box.xMinimum(), mPrecision ), qgsRound( box.yMinimum(), mPrecision ), qgsRound( box.xMaximum(), mPrecision ), qgsRound( box.yMaximum(), mPrecision ) };
     }
-    featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
+    featureJson["geometry"] = geom.asJsonObject( mPrecision );
   }
   else
   {
-    featureJson[ "geometry"  ] = nullptr;
+    featureJson["geometry"] = nullptr;
   }
 
   // build up properties element
@@ -178,10 +170,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
       // List of formatters through we want to pass the values
       QStringList formattersAllowList;
-      formattersAllowList << u"KeyValue"_s
-                          << u"List"_s
-                          << u"ValueRelation"_s
-                          << u"ValueMap"_s;
+      formattersAllowList << u"KeyValue"_s << u"List"_s << u"ValueRelation"_s << u"ValueMap"_s;
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -203,7 +192,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
         {
           name = mLayer->attributeDisplayName( i );
         }
-        properties[ name.toStdString() ] = QgsJsonUtils::jsonFromVariant( val );
+        properties[name.toStdString()] = QgsJsonUtils::jsonFromVariant( val );
       }
     }
 
@@ -212,7 +201,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       QVariantMap::const_iterator it = extraProperties.constBegin();
       for ( ; it != extraProperties.constEnd(); ++it )
       {
-        properties[ it.key().toStdString() ] = QgsJsonUtils::jsonFromVariant( it.value() );
+        properties[it.key().toStdString()] = QgsJsonUtils::jsonFromVariant( it.value() );
       }
     }
 
@@ -245,11 +234,11 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
             relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches, mUseFieldFormatters );
           }
         }
-        properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
+        properties[relation.name().toStdString()] = relatedFeatureAttributes;
       }
     }
   }
-  featureJson[ "properties" ] = properties;
+  featureJson["properties"] = properties;
   return featureJson;
 }
 
@@ -260,11 +249,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
 
 json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
 {
-  json data
-  {
-    { "type", "FeatureCollection" },
-    { "features", json::array() }
-  };
+  json data { { "type", "FeatureCollection" }, { "features", json::array() } };
 
   QgsJsonUtils::addCrsInfo( data, mDestinationCrs );
 
@@ -325,14 +310,8 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
 
     default:
     case QMetaType::Type::QString:
-      QString v = value.toString()
-                  .replace( '\\', "\\\\"_L1 )
-                  .replace( '"', "\\\""_L1 )
-                  .replace( '\r', "\\r"_L1 )
-                  .replace( '\b', "\\b"_L1 )
-                  .replace( '\t', "\\t"_L1 )
-                  .replace( '/', "\\/"_L1 )
-                  .replace( '\n', "\\n"_L1 );
+      QString v
+        = value.toString().replace( '\\', "\\\\"_L1 ).replace( '"', "\\\""_L1 ).replace( '\r', "\\r"_L1 ).replace( '\b', "\\b"_L1 ).replace( '\t', "\\t"_L1 ).replace( '/', "\\/"_L1 ).replace( '\n', "\\n"_L1 );
 
       return v.prepend( '"' ).append( '"' );
   }
@@ -369,7 +348,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
   try
   {
     const auto jObj( json::parse( json.toStdString() ) );
-    if ( ! jObj.is_array() )
+    if ( !jObj.is_array() )
     {
       throw json::parse_error::create( 0, 0, u"JSON value must be an array"_s.toStdString(), &jObj );
     }
@@ -407,7 +386,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
       // If a destination type was specified (it's not invalid), try to convert
       if ( type != QMetaType::Type::UnknownType )
       {
-        if ( ! v.convert( static_cast<int>( type ) ) )
+        if ( !v.convert( static_cast<int>( type ) ) )
         {
           QgsLogger::warning( u"Cannot convert json array element to specified type, ignoring: %1"_s.arg( v.toString() ) );
         }
@@ -747,7 +726,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     json jMap = json::object();
     for ( auto it = vMap.constBegin(); it != vMap.constEnd(); it++ )
     {
-      jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
+      jMap[it.key().toStdString()] = jsonFromVariant( it.value() );
     }
     j = jMap;
   }
@@ -796,8 +775,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 
   if ( !error.isEmpty() )
   {
-    QgsLogger::warning( u"Cannot parse json (%1): %2"_s.arg( error,
-                        QString::fromStdString( jsonString ) ) );
+    QgsLogger::warning( u"Cannot parse json (%1): %2"_s.arg( error, QString::fromStdString( jsonString ) ) );
   }
   return res;
 }
@@ -826,91 +804,90 @@ QVariant QgsJsonUtils::jsonToVariant( const json &value )
   // tracks whether entire json string is a primitive
   bool isPrimitive = true;
 
-  std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
-      QVariant result;
-      if ( jObj.is_array() )
+  std::function<QVariant( json )> _parser { [&]( json jObj ) -> QVariant {
+    QVariant result;
+    if ( jObj.is_array() )
+    {
+      isPrimitive = false;
+      QVariantList results;
+      results.reserve( jObj.size() );
+      for ( const auto &item : jObj )
       {
-        isPrimitive = false;
-        QVariantList results;
-        results.reserve( jObj.size() );
-        for ( const auto &item : jObj )
-        {
-          results.push_back( _parser( item ) );
-        }
-        result = results;
+        results.push_back( _parser( item ) );
       }
-      else if ( jObj.is_object() )
-      {
-        isPrimitive = false;
-        QVariantMap results;
-        for ( const auto  &item : jObj.items() )
-        {
-          const auto key { QString::fromStdString( item.key() ) };
-          const auto value {  _parser( item.value() ) };
-          results[ key ] = value;
-        }
-        result = results;
-      }
-      else
-      {
-        if ( jObj.is_number_unsigned() )
-        {
-          // Try signed int and long long first, fall back
-          // onto unsigned long long
-          const qulonglong num { jObj.get<qulonglong>() };
-          if ( num <= std::numeric_limits<int>::max() )
-          {
-            result = static_cast<int>( num );
-          }
-          else if ( num <= std::numeric_limits<qlonglong>::max() )
-          {
-            result = static_cast<qlonglong>( num );
-          }
-          else
-          {
-            result = num;
-          }
-        }
-        else if ( jObj.is_number_integer() )
-        {
-          const qlonglong num { jObj.get<qlonglong>() };
-          if ( num <= std::numeric_limits<int>::max() && num >= std::numeric_limits<int>::lowest() )
-          {
-            result = static_cast<int>( num );
-          }
-          else
-          {
-            result = num;
-          }
-        }
-        else if ( jObj.is_boolean() )
-        {
-          result = jObj.get<bool>();
-        }
-        else if ( jObj.is_number_float() )
-        {
-          // Note: it's a double and not a float on purpose
-          result = jObj.get<double>();
-        }
-        else if ( jObj.is_string() )
-        {
-          if ( isPrimitive && jObj.get<std::string>().length() == 0 )
-          {
-            result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
-          }
-          else
-          {
-            result = QString::fromStdString( jObj.get<std::string>() );
-          }
-        }
-        else if ( jObj.is_null() )
-        {
-          // Do nothing (leave invalid)
-        }
-      }
-      return result;
+      result = results;
     }
-  };
+    else if ( jObj.is_object() )
+    {
+      isPrimitive = false;
+      QVariantMap results;
+      for ( const auto &item : jObj.items() )
+      {
+        const auto key { QString::fromStdString( item.key() ) };
+        const auto value { _parser( item.value() ) };
+        results[key] = value;
+      }
+      result = results;
+    }
+    else
+    {
+      if ( jObj.is_number_unsigned() )
+      {
+        // Try signed int and long long first, fall back
+        // onto unsigned long long
+        const qulonglong num { jObj.get<qulonglong>() };
+        if ( num <= std::numeric_limits<int>::max() )
+        {
+          result = static_cast<int>( num );
+        }
+        else if ( num <= std::numeric_limits<qlonglong>::max() )
+        {
+          result = static_cast<qlonglong>( num );
+        }
+        else
+        {
+          result = num;
+        }
+      }
+      else if ( jObj.is_number_integer() )
+      {
+        const qlonglong num { jObj.get<qlonglong>() };
+        if ( num <= std::numeric_limits<int>::max() && num >= std::numeric_limits<int>::lowest() )
+        {
+          result = static_cast<int>( num );
+        }
+        else
+        {
+          result = num;
+        }
+      }
+      else if ( jObj.is_boolean() )
+      {
+        result = jObj.get<bool>();
+      }
+      else if ( jObj.is_number_float() )
+      {
+        // Note: it's a double and not a float on purpose
+        result = jObj.get<double>();
+      }
+      else if ( jObj.is_string() )
+      {
+        if ( isPrimitive && jObj.get<std::string>().length() == 0 )
+        {
+          result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
+        }
+        else
+        {
+          result = QString::fromStdString( jObj.get<std::string>() );
+        }
+      }
+      else if ( jObj.is_null() )
+      {
+        // Do nothing (leave invalid)
+      }
+    }
+    return result;
+  } };
 
   return _parser( value );
 }

@@ -385,9 +385,9 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );
@@ -570,8 +570,7 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
       {
         if ( it.value().overlaps( range ) )
         {
-          if ( currentMatchingRange.isInfinite()
-               || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite() || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && it.value().upper() >= currentMatchingRange.upper() ) )
           {
             currentMatchingBand = it.key();
@@ -616,8 +615,7 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
           const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
           if ( bandRange.overlaps( range ) )
           {
-            if ( currentMatchingRange.isInfinite()
-                 || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+            if ( currentMatchingRange.isInfinite() || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
                  || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
             {
               currentMatchingBand = band;
@@ -721,25 +719,27 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // Check the layer's name for DEM-ish hints.
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static const QStringList sPartialCandidates{ u"dem"_s,
-      u"dtm"_s,
-      u"dsm"_s,
-      u"height"_s,
-      u"elev"_s,
-      u"srtm"_s,
-      u"dted"_s,
-      // French hints
-      u"mne"_s,
-      u"mnt"_s,
-      u"mns"_s,
-      u"rge"_s,
-      u"alti"_s,
-      // German hints
-      u"dhm"_s,
-      u"dgm"_s,
-      u"dom"_s,
-      u"Höhe"_s,
-      u"Hoehe"_s };
+  static const QStringList sPartialCandidates {
+    u"dem"_s,
+    u"dtm"_s,
+    u"dsm"_s,
+    u"height"_s,
+    u"elev"_s,
+    u"srtm"_s,
+    u"dted"_s,
+    // French hints
+    u"mne"_s,
+    u"mnt"_s,
+    u"mns"_s,
+    u"rge"_s,
+    u"alti"_s,
+    // German hints
+    u"dhm"_s,
+    u"dgm"_s,
+    u"dom"_s,
+    u"Höhe"_s,
+    u"Hoehe"_s
+  };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
   {
@@ -748,7 +748,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   }
 
   // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
-  static const QStringList sWordCandidates{ u"aster"_s };
+  static const QStringList sWordCandidates { u"aster"_s };
   for ( const QString &candidate : sWordCandidates )
   {
     const thread_local QRegularExpression re( u"\\b%1\\b"_s.arg( candidate ) );

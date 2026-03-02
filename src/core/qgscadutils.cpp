@@ -36,7 +36,7 @@ static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
 /// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
+    bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 /// @endcond
 
@@ -68,10 +68,14 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   }
 
   int numberOfHardLock = 0;
-  if ( ctx.xConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.yConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.angleConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.distanceConstraint.locked ) ++numberOfHardLock;
+  if ( ctx.xConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.yConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.angleConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.distanceConstraint.locked )
+    ++numberOfHardLock;
 
   QgsPointXY previousPt, penultimatePt;
   if ( ctx.cadPoints().count() >= 2 )
@@ -167,22 +171,20 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- Common Angle constraint
-  if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0
+  if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked
+       && ctx.commonAngleConstraint.value != 0
        // Skip common angle constraint if the snapping to features has priority
-       && ( ! snapMatch.isValid() || ! ctx.snappingToFeaturesOverridesCommonAngle )
-     )
+       && ( !snapMatch.isValid() || !ctx.snappingToFeaturesOverridesCommonAngle ) )
   {
     const double commonAngle = ctx.commonAngleConstraint.value * M_PI / 180;
     // see if soft common angle constraint should be performed
     // only if not in HardLock mode
-    double softAngle = std::atan2( point.y() - previousPt.y(),
-                                   point.x() - previousPt.x() );
+    double softAngle = std::atan2( point.y() - previousPt.y(), point.x() - previousPt.x() );
     double deltaAngle = 0;
     if ( ctx.commonAngleConstraint.relative && ctx.cadPoints().count() >= 3 )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
-      deltaAngle = std::atan2( previousPt.y() - penultimatePt.y(),
-                               previousPt.x() - penultimatePt.x() );
+      deltaAngle = std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
       softAngle -= deltaAngle;
     }
     const int quo = std::round( softAngle / commonAngle );
@@ -192,8 +194,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       softAngle = quo * commonAngle;
       // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
-      const double dist = std::fabs( std::cos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
-                                     - std::sin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
+      const double dist = std::fabs( std::cos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() ) - std::sin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
       if ( dist / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
       {
         res.softLockCommonAngle = 180.0 / M_PI * softAngle;
@@ -228,8 +229,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     if ( angleRelative && ctx.cadPoints().count() >= 3 )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
-      angleValue += std::atan2( previousPt.y() - penultimatePt.y(),
-                                previousPt.x() - penultimatePt.x() );
+      angleValue += std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
     }
 
     const double cosa = std::cos( angleValue );
@@ -316,26 +316,20 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
     if ( snap.layer() && !extensionPoint.isEmpty() )
     {
-      auto checkLineExtension = [&]( QgsPoint vertex )
-      {
+      auto checkLineExtension = [&]( QgsPoint vertex ) {
         if ( vertex.isEmpty() )
         {
           return false;
         }
 
-        const double distance = QgsGeometryUtils::distToInfiniteLine(
-                                  QgsPoint( point ), QgsPoint( extensionPoint ), vertex );
+        const double distance = QgsGeometryUtils::distToInfiniteLine( QgsPoint( point ), QgsPoint( extensionPoint ), vertex );
 
         if ( distance / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
         {
           if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
           {
             QgsPoint intersection;
-            const bool intersect = QgsGeometryUtils::lineIntersection(
-                                     QgsPoint( point ), QgsVector( 0, 1 ),
-                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-                                     intersection
-                                   );
+            const bool intersect = QgsGeometryUtils::lineIntersection( QgsPoint( point ), QgsVector( 0, 1 ), QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex, intersection );
             if ( intersect )
             {
               point = QgsPointXY( intersection );
@@ -344,11 +338,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
           else if ( ctx.yConstraint.locked || !std::isnan( res.softLockY ) )
           {
             QgsPoint intersection;
-            const bool intersect = QgsGeometryUtils::lineIntersection(
-                                     QgsPoint( point ), QgsVector( 1, 0 ),
-                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-                                     intersection
-                                   );
+            const bool intersect = QgsGeometryUtils::lineIntersection( QgsPoint( point ), QgsVector( 1, 0 ), QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex, intersection );
             if ( intersect )
             {
               point = QgsPointXY( intersection );
@@ -361,17 +351,12 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
             const double sina = std::sin( angleValue );
 
             QgsPoint intersection;
-            QgsGeometryUtils::lineIntersection(
-              QgsPoint( previousPt ), QgsVector( cosa, sina ),
-              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-              intersection
-            );
+            QgsGeometryUtils::lineIntersection( QgsPoint( previousPt ), QgsVector( cosa, sina ), QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex, intersection );
             point = QgsPointXY( intersection );
           }
           else
           {
-            double angleValue = std::atan2( extensionPoint.y() - vertex.y(),
-                                            extensionPoint.x() - vertex.x() );
+            double angleValue = std::atan2( extensionPoint.y() - vertex.y(), extensionPoint.x() - vertex.x() );
 
             const double cosa = std::cos( angleValue );
             const double sina = std::sin( angleValue );
@@ -428,8 +413,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // ---- Distance constraint
   if ( ctx.distanceConstraint.locked && ctx.cadPoints().count() >= 2 )
   {
-    if ( ctx.xConstraint.locked || ctx.yConstraint.locked
-         || !std::isnan( res.softLockX ) || !std::isnan( res.softLockY ) )
+    if ( ctx.xConstraint.locked || ctx.yConstraint.locked || !std::isnan( res.softLockX ) || !std::isnan( res.softLockY ) )
     {
       // perform both to detect errors in constraints
       if ( ctx.xConstraint.locked || !std::isnan( res.softLockX ) )
@@ -487,8 +471,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       else
       {
         const double vP = ctx.distanceConstraint.value / dist;
-        point.set( previousPt.x() + ( point.x() - previousPt.x() ) * vP,
-                   previousPt.y() + ( point.y() - previousPt.y() ) * vP );
+        point.set( previousPt.x() + ( point.x() - previousPt.x() ) * vP, previousPt.y() + ( point.y() - previousPt.y() ) * vP );
       }
 
       if ( snapMatch.hasEdge() && !ctx.angleConstraint.locked )

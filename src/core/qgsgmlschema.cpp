@@ -48,14 +48,14 @@ static const char NS_SEPARATOR = '?';
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )
   : mName( name )
   , mPath( path )
-{
-}
+{}
 
 int QgsGmlFeatureClass::fieldIndex( const QString &name )
 {
   for ( int i = 0; i < mFields.size(); i++ )
   {
-    if ( mFields[i].name() == name ) return i;
+    if ( mFields[i].name() == name )
+      return i;
   }
   return -1;
 }
@@ -64,9 +64,7 @@ int QgsGmlFeatureClass::fieldIndex( const QString &name )
 QgsGmlSchema::QgsGmlSchema()
   : mSkipLevel( std::numeric_limits<int>::max() )
 {
-  mGeometryTypes << u"Point"_s << u"MultiPoint"_s
-                 << u"LineString"_s << u"MultiLineString"_s
-                 << u"Polygon"_s << u"MultiPolygon"_s;
+  mGeometryTypes << u"Point"_s << u"MultiPoint"_s << u"LineString"_s << u"MultiLineString"_s << u"Polygon"_s << u"MultiPolygon"_s;
 }
 
 QString QgsGmlSchema::readAttribute( const QString &attributeName, const XML_Char **attr ) const
@@ -131,7 +129,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 {
   //QgsDebugMsgLevel("typeName = " + typeName, 2 );
   const QDomElement complexTypeElement = domElement( element, u"complexType"_s, u"name"_s, typeName );
-  if ( complexTypeElement.isNull() ) return false;
+  if ( complexTypeElement.isNull() )
+    return false;
 
   // extension or restriction
   QDomElement extrest = domElement( complexTypeElement, u"complexContent.extension"_s );
@@ -139,7 +138,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   {
     extrest = domElement( complexTypeElement, u"complexContent.restriction"_s );
   }
-  if ( extrest.isNull() ) return false;
+  if ( extrest.isNull() )
+    return false;
 
   const QString extrestName = extrest.attribute( u"base"_s );
   if ( extrestName == "gml:AbstractFeatureType"_L1 )
@@ -151,7 +151,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   else
   {
     // Get attributes from extrest
-    if ( !xsdFeatureClass( element, stripNS( extrestName ), featureClass ) ) return false;
+    if ( !xsdFeatureClass( element, stripNS( extrestName ), featureClass ) )
+      return false;
   }
 
   // Supported geometry types
@@ -163,10 +164,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   }
 
   QStringList geometryAliases;
-  geometryAliases << u"location"_s << u"centerOf"_s << u"position"_s << u"extentOf"_s
-                  << u"coverage"_s << u"edgeOf"_s << u"centerLineOf"_s << u"multiLocation"_s
-                  << u"multiCenterOf"_s << u"multiPosition"_s << u"multiCenterLineOf"_s
-                  << u"multiEdgeOf"_s << u"multiCoverage"_s << u"multiExtentOf"_s;
+  geometryAliases << u"location"_s << u"centerOf"_s << u"position"_s << u"extentOf"_s << u"coverage"_s << u"edgeOf"_s << u"centerLineOf"_s << u"multiLocation"_s << u"multiCenterOf"_s
+                  << u"multiPosition"_s << u"multiCenterLineOf"_s << u"multiEdgeOf"_s << u"multiCoverage"_s << u"multiExtentOf"_s;
 
   // Add attributes from current comple type
   const QList<QDomElement> sequenceElements = domElements( extrest, u"sequence.element"_s );
@@ -248,14 +247,16 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
 {
   //QgsDebugMsgLevel("name = " + name, 2 );
   const QDomElement complexTypeElement = domElement( element, u"complexType"_s, u"name"_s, name );
-  if ( complexTypeElement.isNull() ) return QString();
+  if ( complexTypeElement.isNull() )
+    return QString();
 
   QDomElement extrest = domElement( complexTypeElement, u"complexContent.extension"_s );
   if ( extrest.isNull() )
   {
     extrest = domElement( complexTypeElement, u"complexContent.restriction"_s );
   }
-  if ( extrest.isNull() ) return QString();
+  if ( extrest.isNull() )
+    return QString();
 
   const QString extrestName = extrest.attribute( u"base"_s );
   if ( extrestName.startsWith( "gml:"_L1 ) )
@@ -277,7 +278,8 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
   QList<QDomElement> list;
 
   QStringList names = path.split( '.' );
-  if ( names.isEmpty() ) return list;
+  if ( names.isEmpty() )
+    return list;
   const QString name = names.value( 0 );
   names.removeFirst();
 
@@ -405,10 +407,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
   // or featureMember children.
   // QGIS mapserver 2.2 GetFeatureInfo is using <Feature id="###"> for feature member,
   // without any feature class distinction.
-  else if ( elementName.endsWith( "_feature"_L1 )
-            || parseMode == QgsGmlSchema::FeatureMember
-            || parseMode == QgsGmlSchema::FeatureMembers
-            || localName.compare( "feature"_L1, Qt::CaseInsensitive ) == 0 )
+  else if ( elementName.endsWith( "_feature"_L1 ) || parseMode == QgsGmlSchema::FeatureMember || parseMode == QgsGmlSchema::FeatureMembers || localName.compare( "feature"_L1, Qt::CaseInsensitive ) == 0 )
   {
     QgsDebugMsgLevel( "is feature path = " + path, 2 );
     if ( mFeatureClassMap.count( localName ) == 0 )
@@ -439,8 +438,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
     // <Attribute value="My description" name="desc"/>
     const QString name = readAttribute( u"name"_s, attr );
     //QgsDebugMsg ( "attribute name = " + name );
-    if ( localName.compare( "attribute"_L1, Qt::CaseInsensitive ) == 0
-         && !name.isEmpty() )
+    if ( localName.compare( "attribute"_L1, Qt::CaseInsensitive ) == 0 && !name.isEmpty() )
     {
       const QString value = readAttribute( u"value"_s, attr );
       //QgsDebugMsg ( "attribute value = " + value );
@@ -552,8 +550,8 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   {
     QgsField &field = fields[fieldIndex];
     // check if type is sufficient
-    if ( ( field.type() == QMetaType::Type::Int && ( type == QMetaType::Type::QString || type == QMetaType::Type::Double ) ) ||
-         ( field.type() == QMetaType::Type::Double && type == QMetaType::Type::QString ) )
+    if ( ( field.type() == QMetaType::Type::Int && ( type == QMetaType::Type::QString || type == QMetaType::Type::Double ) )
+         || ( field.type() == QMetaType::Type::Double && type == QMetaType::Type::QString ) )
     {
       field.setType( type );
     }
@@ -567,12 +565,14 @@ QStringList QgsGmlSchema::typeNames() const
 
 QList<QgsField> QgsGmlSchema::fields( const QString &typeName )
 {
-  if ( mFeatureClassMap.count( typeName ) == 0 ) return QList<QgsField>();
+  if ( mFeatureClassMap.count( typeName ) == 0 )
+    return QList<QgsField>();
   return mFeatureClassMap[typeName].fields();
 }
 
 QStringList QgsGmlSchema::geometryAttributes( const QString &typeName )
 {
-  if ( mFeatureClassMap.count( typeName ) == 0 ) return QStringList();
+  if ( mFeatureClassMap.count( typeName ) == 0 )
+    return QStringList();
   return mFeatureClassMap[typeName].geometryAttributes();
 }

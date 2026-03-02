@@ -177,7 +177,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   {
     case QgsLayoutItemHtml::Url:
     {
-
       QString currentUrl = mUrl.toString();
 
       //data defined url set?
@@ -218,22 +217,26 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   bool loaded = false;
 
   QEventLoop loop;
-  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop] {
+    loaded = true;
+    loop.quit();
+  } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] {
+    loaded = true;
+    loop.quit();
+  } );
 
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToLayoutUnits, 0 ) );
 
   //set html, using the specified url as base if in Url mode or the project file if in manual mode
-  const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ?
-                       QUrl( mActualFetchedUrl ) :
-                       QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
+  const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
 
   mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
   QWebSettings *settings = mWebPage->settings();
-  if ( mEnableUserStylesheet && ! mUserStylesheet.isEmpty() )
+  if ( mEnableUserStylesheet && !mUserStylesheet.isEmpty() )
   {
     QByteArray ba;
     ba.append( mUserStylesheet.toUtf8() );
@@ -313,7 +316,10 @@ QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
   //pause until HTML fetch
   bool loaded = false;
   QEventLoop loop;
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] {
+    loaded = true;
+    loop.quit();
+  } );
   mFetcher->fetchContent( url );
 
   if ( !loaded )
@@ -339,11 +345,12 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       QPainter *painter = context.renderContext().painter();
 
       // painter is scaled to dots, so scale back to layout units
-      const QRectF painterRect = QRectF( currentFrame->rect().left() * context.renderContext().scaleFactor(),
-                                         currentFrame->rect().top() * context.renderContext().scaleFactor(),
-                                         currentFrame->rect().width() * context.renderContext().scaleFactor(),
-                                         currentFrame->rect().height() * context.renderContext().scaleFactor()
-                                       );
+      const QRectF painterRect = QRectF(
+        currentFrame->rect().left() * context.renderContext().scaleFactor(),
+        currentFrame->rect().top() * context.renderContext().scaleFactor(),
+        currentFrame->rect().width() * context.renderContext().scaleFactor(),
+        currentFrame->rect().height() * context.renderContext().scaleFactor()
+      );
 
       painter->setBrush( QBrush( QColor( 255, 125, 125, 125 ) ) );
       painter->setPen( Qt::NoPen );
@@ -353,9 +360,8 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( painterRect.width() );
-      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg(
-                    tr( "WebKit not available!" ),
-                    tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
+      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s
+                    .arg( tr( "WebKit not available!" ), tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
       painter->setClipRect( painterRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );

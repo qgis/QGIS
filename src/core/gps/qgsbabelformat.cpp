@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractBabelFormat::QgsAbstractBabelFormat( const QString &name )
   : mName( name )
-{
-}
+{}
 
 QString QgsAbstractBabelFormat::featureTypeToArgument( Qgis::GpsFeatureType type )
 {
@@ -66,8 +65,7 @@ Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
 // QgsSimpleBabelFormat
 //
 
-QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description,
-    Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
+QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
   : QgsAbstractBabelFormat( format )
   , mDescription( description )
   , mExtensions( extensions )
@@ -77,19 +75,16 @@ QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, c
   mCapabilities &= ~( static_cast< int >( Qgis::BabelFormatCapability::Export ) );
 }
 
-QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
-    Qgis::GpsFeatureType featureType,
-    const QString &input,
-    const QString &output,
-    Qgis::BabelCommandFlags flags ) const
+QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags ) const
 {
-  return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( babel ) : babel,
-           featureTypeToArgument( featureType ),
-           u"-i"_s,
-           name(),
-           u"-o"_s,
-           u"gpx"_s,
-           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( input ) : input,
-           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( output ) : output
-         };
+  return {
+    ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( babel ) : babel,
+    featureTypeToArgument( featureType ),
+    u"-i"_s,
+    name(),
+    u"-o"_s,
+    u"gpx"_s,
+    ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( input ) : input,
+    ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( output ) : output
+  };
 }

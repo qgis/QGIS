@@ -60,20 +60,14 @@ QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const b
   , opacity( opacity )
   , targetDpi( dpi )
   , frameNumber( frameNumber )
-{
-}
+{}
 
 bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
   const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherImage
-       || otherImage->keepAspectRatio != keepAspectRatio
-       || otherImage->frameNumber != frameNumber
-       || otherImage->size != size
-       || ( !size.isValid() && otherImage->targetDpi != targetDpi )
-       || otherImage->opacity != opacity
-       || otherImage->path != path )
+  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->frameNumber != frameNumber || otherImage->size != size || ( !size.isValid() && otherImage->targetDpi != targetDpi )
+       || otherImage->opacity != opacity || otherImage->path != path )
     return false;
 
   return true;
@@ -99,7 +93,7 @@ void QgsImageCacheEntry::dump() const
 QgsImageCache::QgsImageCache( QObject *parent )
   : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
 {
-  mTemporaryDir = std::make_unique<QTemporaryDir>( );
+  mTemporaryDir = std::make_unique<QTemporaryDir>();
 
   const int bytes = QgsSettings().value( u"/qgis/maxImageCacheSize"_s, 0 ).toInt();
   if ( bytes > 0 )
@@ -149,7 +143,9 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   return pathAsImagePrivate( f, size, keepAspectRatio, opacity, fitsInCache, blocking, targetDpi, frameNumber, isMissing, totalFrameCount, nextFrameDelayMs );
 }
 
-QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs )
+QImage QgsImageCache::pathAsImagePrivate(
+  const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs
+)
 {
   QString file = f.trimmed();
   if ( isMissing )
@@ -278,7 +274,7 @@ int QgsImageCache::totalFrameCount( const QString &path, bool blocking )
   int nextFrameDelayMs = 0;
   bool fitsInCache = false;
   bool isMissing = false;
-  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
+  ( void ) pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
 
   return res;
 }
@@ -341,7 +337,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
 
       buffer = std::make_unique< QBuffer >( &ba );
       buffer->open( QIODevice::ReadOnly );
-      reader = std::make_unique< QImageReader> ( buffer.get() );
+      reader = std::make_unique< QImageReader>( buffer.get() );
     }
   }
 
@@ -359,7 +355,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
     if ( frame.isNull() )
       break;
 
-    mImageDelays[ path ].append( reader->nextImageDelay() );
+    mImageDelays[path].append( reader->nextImageDelay() );
 
     const QString framePath = frameDirectory.filePath( u"frame_%1.png"_s.arg( frameNumber++ ) );
     frame.save( framePath, "PNG" );
@@ -368,7 +364,9 @@ void QgsImageCache::prepareAnimation( const QString &path )
   mTotalFrameCounts.insert( path, frameNumber );
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking ) const
+QImage QgsImageCache::renderImage(
+  const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking
+) const
 {
   QImage im;
   isBroken = false;
@@ -501,11 +499,12 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     }
   }
 
-  if ( !im.hasAlphaChannel()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-       && im.format() != QImage::Format_CMYK8888
+  if (
+    !im.hasAlphaChannel()
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+    && im.format() != QImage::Format_CMYK8888
 #endif
-     )
+  )
     im = im.convertToFormat( QImage::Format_ARGB32 );
 
   if ( opacity < 1.0 )
@@ -543,9 +542,7 @@ template class QgsAbstractContentCache<QgsImageCacheEntry>; // clazy:exclude=mis
 
 QgsImageSizeCacheEntry::QgsImageSizeCacheEntry( const QString &path )
   : QgsAbstractContentCacheEntry( path )
-{
-
-}
+{}
 
 int QgsImageSizeCacheEntry::dataSize() const
 {
@@ -560,8 +557,7 @@ void QgsImageSizeCacheEntry::dump() const
 bool QgsImageSizeCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
   const QgsImageSizeCacheEntry *otherImage = dynamic_cast< const QgsImageSizeCacheEntry * >( other );
-  if ( !otherImage
-       || otherImage->path != path )
+  if ( !otherImage || otherImage->path != path )
     return false;
 
   return true;

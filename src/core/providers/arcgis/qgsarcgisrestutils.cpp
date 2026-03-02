@@ -139,7 +139,7 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList
   const double z = hasZ && nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits< double >::quiet_NaN();
 
   // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
-  const double m = QgsWkbTypes::hasM( pointType ) && ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+  const double m = QgsWkbTypes::hasM( pointType ) && ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
   return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
@@ -169,7 +169,7 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
     points << *interiorPoint;
     points << *endPoint;
   }
-  auto curve = std::make_unique< QgsCircularString> ();
+  auto curve = std::make_unique< QgsCircularString>();
   curve->setPoints( points );
   return curve;
 }
@@ -229,7 +229,7 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
       if ( hasM )
       {
         // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
-        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
       }
     }
     else if ( curveData.userType() == QMetaType::Type::QVariantMap )
@@ -238,10 +238,8 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
       QgsPoint lastLineStringPoint;
       if ( actualLineSize > 0 )
       {
-        lastLineStringPoint = QgsPoint( lineX.at( actualLineSize - 1 ),
-                                        lineY.at( actualLineSize - 1 ),
-                                        hasZ ? lineZ.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN(),
-                                        hasM ? lineM.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN() );
+        lastLineStringPoint
+          = QgsPoint( lineX.at( actualLineSize - 1 ), lineY.at( actualLineSize - 1 ), hasZ ? lineZ.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN(), hasM ? lineM.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN() );
       }
       std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lastLineStringPoint ) );
       if ( !circularString )
@@ -294,9 +292,7 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
   {
     const QgsCurve *finalCurve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
     const QgsPoint finalCurveEndPoint = finalCurve->endPoint();
-    if ( qgsDoubleNear( finalCurveEndPoint.x(), lineX.at( 0 ) )
-         && qgsDoubleNear( finalCurveEndPoint.y(), lineY.at( 0 ) )
-         && ( !hasZ || qgsDoubleNear( finalCurveEndPoint.z(), lineZ.at( 0 ) ) )
+    if ( qgsDoubleNear( finalCurveEndPoint.x(), lineX.at( 0 ) ) && qgsDoubleNear( finalCurveEndPoint.y(), lineY.at( 0 ) ) && ( !hasZ || qgsDoubleNear( finalCurveEndPoint.z(), lineZ.at( 0 ) ) )
          && ( !hasM || qgsDoubleNear( finalCurveEndPoint.m(), lineM.at( 0 ) ) ) )
     {
       actualLineSize = 0; // redundant final curve containing a duplicate vertex
@@ -370,7 +366,7 @@ std::unique_ptr<QgsLineString> QgsArcGisRestUtils::convertLineString( const QVar
       if ( hasM )
       {
         // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
-        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
       }
     }
     else
@@ -495,7 +491,13 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
     return result;
   }
 
-  std::sort( curves.begin(), curves.end(), []( const QgsCurve * a, const QgsCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
+  std::sort( curves.begin(), curves.end(), []( const QgsCurve *a, const QgsCurve *b ) -> bool {
+    double a_area = 0.0;
+    double b_area = 0.0;
+    a->sumUpArea( a_area );
+    b->sumUpArea( b_area );
+    return std::abs( a_area ) > std::abs( b_area );
+  } );
   result->reserve( static_cast< int >( curves.size() ) );
   while ( !curves.isEmpty() )
   {
@@ -540,7 +542,7 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
   double ymax = geometryData[u"ymax"_s].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
-  auto ext = std::make_unique< QgsLineString> ();
+  auto ext = std::make_unique< QgsLineString>();
   ext->addVertex( QgsPoint( xmin, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymax ) );
@@ -551,7 +553,9 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
   return poly;
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsArcGisRestUtils::convertGeometry( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, bool allowCurves, QgsCoordinateReferenceSystem *crs )
+std::unique_ptr< QgsAbstractGeometry > QgsArcGisRestUtils::convertGeometry(
+  const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, bool allowCurves, QgsCoordinateReferenceSystem *crs
+)
 {
   Qgis::WkbType pointType = QgsWkbTypes::zmType( Qgis::WkbType::Point, readZ, readM );
   if ( crs )
@@ -976,23 +980,17 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
       settings->placement = Qgis::LabelPlacement::OverPoint;
       settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
     }
-    else if ( placement == "esriServerLinePlacementAboveAfter"_L1 ||
-              placement == "esriServerLinePlacementAboveStart"_L1 ||
-              placement == "esriServerLinePlacementAboveAlong"_L1 )
+    else if ( placement == "esriServerLinePlacementAboveAfter"_L1 || placement == "esriServerLinePlacementAboveStart"_L1 || placement == "esriServerLinePlacementAboveAlong"_L1 )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
     }
-    else if ( placement == "esriServerLinePlacementBelowAfter"_L1 ||
-              placement == "esriServerLinePlacementBelowStart"_L1 ||
-              placement == "esriServerLinePlacementBelowAlong"_L1 )
+    else if ( placement == "esriServerLinePlacementBelowAfter"_L1 || placement == "esriServerLinePlacementBelowStart"_L1 || placement == "esriServerLinePlacementBelowAlong"_L1 )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
     }
-    else if ( placement == "esriServerLinePlacementCenterAfter"_L1 ||
-              placement == "esriServerLinePlacementCenterStart"_L1 ||
-              placement == "esriServerLinePlacementCenterAlong"_L1 )
+    else if ( placement == "esriServerLinePlacementCenterAfter"_L1 || placement == "esriServerLinePlacementCenterStart"_L1 || placement == "esriServerLinePlacementCenterAlong"_L1 )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine | Qgis::LabelLinePlacementFlag::MapOrientation );
@@ -1174,20 +1172,16 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
           gradientStops.append( QgsGradientStop( scaledBreakpoint, fillColor ) );
         }
 
-        auto colorRamp = std::make_unique< QgsGradientColorRamp >(
-                           minColor, maxColor, false, gradientStops
-                         );
+        auto colorRamp = std::make_unique< QgsGradientColorRamp >( minColor, maxColor, false, gradientStops );
 
         QgsProperty colorProperty = QgsProperty::fromField( attrName );
-        colorProperty.setTransformer(
-          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() )
-        );
+        colorProperty.setTransformer( new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() ) );
         for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
         {
           symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
         }
 
-        return  std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+        return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
       }
       else
       {
@@ -1372,24 +1366,28 @@ QgsRectangle QgsArcGisRestUtils::convertRectangle( const QVariant &value )
     return QgsRectangle();
 
   const QVariantMap coords = value.toMap();
-  if ( coords.isEmpty() ) return QgsRectangle();
+  if ( coords.isEmpty() )
+    return QgsRectangle();
 
   bool ok;
 
   const double xmin = coords.value( u"xmin"_s ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double ymin = coords.value( u"ymin"_s ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double xmax = coords.value( u"xmax"_s ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double ymax = coords.value( u"ymax"_s ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   return QgsRectangle( xmin, ymin, xmax, ymax );
-
 }
 
 
@@ -1455,7 +1453,6 @@ QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, con
 
     default:
       return QVariantMap(); //unreachable
-
   }
 
   if ( crs.isValid() )
@@ -1478,10 +1475,10 @@ QVariantMap QgsArcGisRestUtils::pointToJson( const QgsPoint *point )
     data[u"y"_s] = point->y();
 
     if ( point->is3D() )
-      data[u"z"_s] = !std::isnan( point->z() ) ? QVariant( point->z() ) :  QVariant( u"NaN"_s );
+      data[u"z"_s] = !std::isnan( point->z() ) ? QVariant( point->z() ) : QVariant( u"NaN"_s );
 
     if ( point->isMeasure() )
-      data[u"m"_s] = !std::isnan( point->m() ) ? QVariant( point->m() ) :  QVariant( u"NaN"_s );
+      data[u"m"_s] = !std::isnan( point->m() ) ? QVariant( point->m() ) : QVariant( u"NaN"_s );
   }
   return data;
 }
@@ -1557,8 +1554,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
   const bool hasZ = curve->is3D();
   const bool hasM = curve->isMeasure();
 
-  auto pointToList = [hasZ, hasM]( const QgsPoint & point ) -> QVariantList
-  {
+  auto pointToList = [hasZ, hasM]( const QgsPoint &point ) -> QVariantList {
     QVariantList pointList;
 
     pointList.append( point.x() );
@@ -1878,12 +1874,7 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
   {
     const thread_local QRegularExpression rxAuthid( u"(\\w+):(\\d+)"_s );
     const QRegularExpressionMatch match = rxAuthid.match( authid );
-    if ( match.hasMatch()
-         && (
-           ( match.captured( 1 ).compare( "EPSG"_L1, Qt::CaseInsensitive ) == 0 )
-           || ( match.captured( 1 ).compare( "ESRI"_L1, Qt::CaseInsensitive ) == 0 )
-         )
-       )
+    if ( match.hasMatch() && ( ( match.captured( 1 ).compare( "EPSG"_L1, Qt::CaseInsensitive ) == 0 ) || ( match.captured( 1 ).compare( "ESRI"_L1, Qt::CaseInsensitive ) == 0 ) ) )
     {
       const QString wkid = match.captured( 2 );
       res.insert( u"wkid"_s, wkid );
@@ -2038,4 +2029,3 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
 
   return Qgis::ArcGisRestServiceType::Unknown;
 }
-

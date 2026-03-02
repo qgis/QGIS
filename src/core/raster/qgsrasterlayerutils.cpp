@@ -30,11 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
-  QgsRasterLayer *layer,
-  const QgsDateTimeRange &temporalRange,
-  const QgsDoubleRange &elevationRange,
-  bool &matched )
+int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &temporalRange, const QgsDoubleRange &elevationRange, bool &matched )
 {
   if ( !layer )
   {
@@ -47,8 +43,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
 
   // neither active
-  if ( ( !temporalProperties->isActive() || temporalRange.isInfinite() )
-       && ( !elevationProperties->hasElevation() || elevationRange.isInfinite() ) )
+  if ( ( !temporalProperties->isActive() || temporalRange.isInfinite() ) && ( !elevationProperties->hasElevation() || elevationRange.isInfinite() ) )
   {
     return -1;
   }
@@ -116,8 +111,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
         const QgsDoubleRange rangeForBand = rangePerBand.value( band );
         if ( rangeForBand.overlaps( elevationRange ) )
         {
-          if ( currentMatchingRange.isInfinite()
-               || ( rangeForBand.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite() || ( rangeForBand.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() ) )
           {
             matched = true;
@@ -162,8 +156,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
         const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
         if ( bandRange.overlaps( elevationRange ) )
         {
-          if ( currentMatchingRange.isInfinite()
-               || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite() || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
           {
             currentMatchingBand = band;
@@ -178,14 +171,9 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   BUILTIN_UNREACHABLE;
 }
 
-void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
-    int band,
-    const QgsRasterMinMaxOrigin &mmo,
-    Qgis::RasterRangeLimit limits,
-    const QgsRectangle &extent,
-    int sampleSize,
-    double &min SIP_OUT,
-    double &max SIP_OUT )
+void QgsRasterLayerUtils::computeMinMax(
+  QgsRasterDataProvider *provider, int band, const QgsRasterMinMaxOrigin &mmo, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, double &min SIP_OUT, double &max SIP_OUT
+)
 {
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
@@ -293,9 +281,9 @@ QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent,
   }
   // Y pixel size may be negative to indicate inverted NS axis: use absolute value for calculations
   const double absPixelSizeY { std::abs( pixelSizeY ) };
-  const double minX { origin.x() + std::floor( ( extent.xMinimum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
-  const double minY { origin.y() + std::floor( ( extent.yMinimum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
-  const double maxX { origin.x() + std::ceil( ( extent.xMaximum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
-  const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
+  const double minX { origin.x() + std::floor( ( extent.xMinimum() - origin.x() ) / pixelSizeX ) * pixelSizeX };
+  const double minY { origin.y() + std::floor( ( extent.yMinimum() - origin.y() ) / absPixelSizeY ) * absPixelSizeY };
+  const double maxX { origin.x() + std::ceil( ( extent.xMaximum() - origin.x() ) / pixelSizeX ) * pixelSizeX };
+  const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) * absPixelSizeY };
   return QgsRectangle( minX, minY, maxX, maxY );
 }

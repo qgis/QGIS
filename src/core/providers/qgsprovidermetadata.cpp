@@ -30,9 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProviderMetadata::QgsProviderMetadata( QString const &key,
-    QString const &description,
-    QString const &library )
+QgsProviderMetadata::QgsProviderMetadata( QString const &key, QString const &description, QString const &library )
   : mKey( key )
   , mDescription( description )
   , mLibrary( library )
@@ -95,14 +93,10 @@ QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunct
 }
 
 void QgsProviderMetadata::initProvider()
-{
-
-}
+{}
 
 void QgsProviderMetadata::cleanupProvider()
-{
-
-}
+{}
 
 QString QgsProviderMetadata::filters( Qgis::FileFilterType )
 {
@@ -139,9 +133,7 @@ QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QSt
   return QList<QgsProviderSublayerDetails>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
-    const QgsDataProvider::ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   if ( mCreateFunction )
   {
@@ -152,31 +144,26 @@ QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
 
 void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value )
 {
-  if ( value.toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
+  if ( value.toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
-    uri[ parameter ] = true;
+    uri[parameter] = true;
   }
-  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
+  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+            || value.toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
-    uri[ parameter ] = false;
+    uri[parameter] = false;
   }
 }
 
 bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue )
 {
-  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
+  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 || uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0
+       || uri.value( parameter, QString() ).toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
     return true;
   }
-  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
+  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 || uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+            || uri.value( parameter, QString() ).toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     return false;
   }
@@ -218,11 +205,9 @@ bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgi
   return false;
 }
 
-Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
-    Qgis::WkbType, const QgsCoordinateReferenceSystem &,
-    bool, QMap<int, int> &,
-    QString &errorMessage, const QMap<QString, QVariant> *,
-    QString & )
+Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
+  const QString &, const QgsFields &, Qgis::WkbType, const QgsCoordinateReferenceSystem &, bool, QMap<int, int> &, QString &errorMessage, const QMap<QString, QVariant> *, QString &
+)
 {
   errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createEmptyLayer"_s );
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
@@ -234,29 +219,17 @@ bool QgsProviderMetadata::createDatabase( const QString &, QString &errorMessage
   return false;
 }
 
-QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
-  const QString &, const QString &,
-  int, Qgis::DataType, int,
-  int, double *,
-  const QgsCoordinateReferenceSystem &,
-  const QStringList & )
+QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider( const QString &, const QString &, int, Qgis::DataType, int, int, double *, const QgsCoordinateReferenceSystem &, const QStringList & )
 {
   return nullptr;
 }
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &,
-    const QString &,
-    const QString &,
-    const QgsCoordinateReferenceSystem &,
-    const QMap<QString, QString> & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
 {
   return false;
 }
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &,
-    const QString &,
-    const QgsCoordinateReferenceSystem &,
-    const QMap<QString, QString> & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
 {
   return false;
 }
@@ -271,8 +244,7 @@ QList<QgsDataItemProvider *> QgsProviderMetadata::dataItemProviders() const
   return QList<QgsDataItemProvider *>();
 }
 
-int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &,
-                                     QStringList &, QString &errCause )
+int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &, QStringList &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"listStyles"_s );
   return -1;
@@ -297,8 +269,7 @@ bool QgsProviderMetadata::deleteStyleById( const QString &, const QString &, QSt
   return false;
 }
 
-bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QString &, const QString &,
-                                     const QString &, const QString &, bool, QString &errCause )
+bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QString &, const QString &, const QString &, const QString &, bool, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"saveStyle"_s );
   return false;
@@ -340,13 +311,13 @@ QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections(
 
 QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
 {
-  return connections<QgsAbstractDatabaseProviderConnection>( cached ) ;
+  return connections<QgsAbstractDatabaseProviderConnection>( cached );
 }
 
 QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
 {
   const QMap<QString, QgsAbstractProviderConnection *> constConns { connections( cached ) };
-  const QStringList constKeys { constConns.keys( ) };
+  const QStringList constKeys { constConns.keys() };
   for ( const QString &key : constKeys )
   {
     if ( key == name )
@@ -398,8 +369,7 @@ void QgsProviderMetadata::saveConnectionProtected( const QgsAbstractProviderConn
 }
 ///@endcond
 
-template<typename T>
-QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
+template<typename T> QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 {
   QMap<QString, T *> result;
   const auto constConns { connections( cached ) };
@@ -417,31 +387,23 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
-    const QString &description,
-    const MeshDriverCapabilities &capabilities,
-    const QString &writeDatasetOnfileSuffix )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
-{
-}
+{}
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
-    const QString &description,
-    const MeshDriverCapabilities &capabilities,
-    const QString &writeDatasetOnfileSuffix,
-    const QString &writeMeshFrameOnFileSuffix,
-    int maxVerticesPerface )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata(
+  const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix, const QString &writeMeshFrameOnFileSuffix, int maxVerticesPerface
+)
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
   , mWriteMeshFrameOnFileSuffix( ( writeMeshFrameOnFileSuffix ) )
   , mMaxVerticesPerFace( maxVerticesPerface )
-{
-}
+{}
 
 QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const
 {

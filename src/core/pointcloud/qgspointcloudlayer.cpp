@@ -54,10 +54,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
-                                        const QString &baseName,
-                                        const QString &providerLib,
-                                        const QgsPointCloudLayer::LayerOptions &options )
+QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri, const QString &baseName, const QString &providerLib, const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
   , mLayerOptions( options )
@@ -216,7 +213,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   }
   if ( mDataProvider )
   {
-    QDomElement provider  = doc.createElement( u"provider"_s );
+    QDomElement provider = doc.createElement( u"provider"_s );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -329,8 +326,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   return result;
 }
 
-bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -339,7 +335,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context, categories );
+  ( void ) writeStyle( node, doc, errorMessage, context, categories );
 
   if ( categories.testFlag( Legend ) && legend() )
   {
@@ -380,7 +376,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -410,8 +406,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
   invalidateWgs84Extent();
 }
 
-void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -473,18 +468,13 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     loadDefaultStyleFlag = true;
   }
 
-  if ( !mLayerOptions.skipIndexGeneration &&
-       mDataProvider &&
-       mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     mDataProvider->generateIndex();
   }
 
-  if ( !mLayerOptions.skipStatisticsCalculation &&
-       mDataProvider &&
-       mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed
+       && mDataProvider->pointCount() > 0 )
   {
     calculateStatistics();
   }
@@ -601,9 +591,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Point count" ) + u"</td><td>"_s
-                + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Point count" ) + u"</td><td>"_s + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
                 + u"</td></tr>\n"_s;
 
   if ( const QgsPointCloudDataProvider *provider = dataProvider() )
@@ -625,77 +613,44 @@ QString QgsPointCloudLayer::htmlMetadata() const
     QDate creationDate( originalMetadata.value( u"creation_year"_s ).toInt(), 1, 1 );
     creationDate = creationDate.addDays( originalMetadata.value( u"creation_doy"_s ).toInt() );
 
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Creation date" ) + u"</td><td>"_s
-                  + creationDate.toString( Qt::ISODate )
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Creation date" ) + u"</td><td>"_s + creationDate.toString( Qt::ISODate ) + u"</td></tr>\n"_s;
   }
   if ( originalMetadata.contains( u"major_version"_s ) && originalMetadata.contains( u"minor_version"_s ) )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Version" ) + u"</td><td>"_s
-                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(),
-                                    originalMetadata.value( u"minor_version"_s ).toString() )
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Version" ) + u"</td><td>"_s
+                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(), originalMetadata.value( u"minor_version"_s ).toString() ) + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"dataformat_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Data format" ) + u"</td><td>"_s
-                  + u"%1 (%2)"_s.arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ),
-                                      originalMetadata.value( u"dataformat_id"_s ).toString() ).trimmed()
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Data format" ) + u"</td><td>"_s
+                  + u"%1 (%2)"_s
+                      .arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ), originalMetadata.value( u"dataformat_id"_s ).toString() )
+                      .trimmed()
                   + u"</td></tr>\n"_s;
   }
 
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale X" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_x"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale Y" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_y"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale Z" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_z"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale X" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_x"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale Y" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_y"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale Z" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_z"_s ).toDouble() ) + u"</td></tr>\n"_s;
 
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset X" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_x"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset Y" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_y"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset Z" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_z"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset X" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_x"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset Y" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_y"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset Z" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_z"_s ).toDouble() ) + u"</td></tr>\n"_s;
 
   if ( !originalMetadata.value( u"project_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Project ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"project_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Project ID" ) + u"</td><td>"_s + originalMetadata.value( u"project_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"system_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "System ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"system_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "System ID" ) + u"</td><td>"_s + originalMetadata.value( u"system_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"software_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Software ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"software_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Software ID" ) + u"</td><td>"_s + originalMetadata.value( u"software_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   // End Provider section
@@ -703,7 +658,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // identification section
   myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // extent section
@@ -713,7 +668,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the Access section
   myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += htmlFormatter.accessSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Attributes section
@@ -742,17 +697,17 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the contacts section
   myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += htmlFormatter.contactsSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
   myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += htmlFormatter.linksSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
   myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += htmlFormatter.historySectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
@@ -916,15 +871,14 @@ void QgsPointCloudLayer::calculateStatistics()
   }
 
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
-  connect( task, &QgsTask::taskCompleted, this, [this, task, indexStats, indexStatsAttributes]()
-  {
+  connect( task, &QgsTask::taskCompleted, this, [this, task, indexStats, indexStatsAttributes]() {
     mStatistics = task->calculationResults();
 
     // Fetch what we can directly from the index
     QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
     for ( const QString &attribute : indexStatsAttributes )
     {
-      statsMap[ attribute ] = indexStats.statisticsOf( attribute );
+      statsMap[attribute] = indexStats.statisticsOf( attribute );
     }
     mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
 
@@ -941,8 +895,7 @@ void QgsPointCloudLayer::calculateStatistics()
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
-  connect( task, &QgsTask::taskTerminated, this, [this]()
-  {
+  connect( task, &QgsTask::taskTerminated, this, [this]() {
     if ( mStatsCalculationTask )
     {
       QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
@@ -998,12 +951,10 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
           continue;
 
         const double overviewSwitchingScale = mRenderer ? mRenderer->overviewSwitchingScale() : 1.0;
-        const double widthThreshold = vpcProvider->averageSubIndexWidth()  * overviewSwitchingScale;
+        const double widthThreshold = vpcProvider->averageSubIndexWidth() * overviewSwitchingScale;
         const double heightThreshold = vpcProvider->averageSubIndexHeight() * overviewSwitchingScale;
 
-        if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-             ( renderExtent.width() < widthThreshold ||
-               renderExtent.height() < heightThreshold ) )
+        if ( subIndex.at( i ).extent().intersects( renderExtent ) && ( renderExtent.width() < widthThreshold || renderExtent.height() < heightThreshold ) )
         {
           mDataProvider->loadSubIndex( i );
         }
@@ -1034,7 +985,7 @@ bool QgsPointCloudLayer::startEditing()
       }
 
       QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
-      mEditingIndexes[ i ] = editIndex;
+      mEditingIndexes[i] = editIndex;
     }
   }
   else
@@ -1231,9 +1182,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
     // NOLINTEND(bugprone-branch-clone)
 
     // Cannot allow x,y,z editing as points may get moved outside the node extents
-    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 ||
-         attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 ||
-         attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 || attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 || attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
       return false;
 
     const QgsPointCloudAttributeCollection attributeCollection = editIndex.attributes();
@@ -1241,9 +1190,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
     int attributeOffset;
     const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
 
-    if ( !at ||
-         at->size() != attribute.size() ||
-         at->type() != attribute.type() )
+    if ( !at || at->size() != attribute.size() || at->type() != attribute.type() )
     {
       return false;
     }
@@ -1323,9 +1270,9 @@ QVector<QgsPointCloudSubIndex> QgsPointCloudLayer::subIndexes() const
       if ( !mEditingIndexes.contains( i ) )
       {
         QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
-        mEditingIndexes[ i ] = editIndex;
+        mEditingIndexes[i] = editIndex;
       }
-      sub.setIndex( mEditingIndexes[ i ] );
+      sub.setIndex( mEditingIndexes[i] );
     }
     indexes.append( sub );
   }

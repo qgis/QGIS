@@ -33,7 +33,6 @@ static void getFeaturesForProvider( const QPair< std::shared_ptr< QgsAbstractFea
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-
   }
 }
 

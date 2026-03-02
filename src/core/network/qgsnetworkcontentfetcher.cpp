@@ -40,7 +40,6 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
     //cancel running request
     mReply->abort();
   }
-
 }
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg, const QgsHttpHeaders &headers )
@@ -85,8 +84,7 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
   connect( mReply.get(), &QNetworkReply::finished, this, [this] { contentLoaded(); } );
   connect( mReply.get(), &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 
-  auto onError = [this]( QNetworkReply::NetworkError code )
-  {
+  auto onError = [this]( QNetworkReply::NetworkError code ) {
     // could have been canceled in the meantime
     if ( mReply )
       emit errorOccurred( code, mReply->errorString() );

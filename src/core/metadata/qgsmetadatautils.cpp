@@ -44,7 +44,7 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   metadata.setTitle( title );
 
   // if no explicit identifier we use the title
-  if ( metadata.identifier().isEmpty()  && !title.isEmpty() )
+  if ( metadata.identifier().isEmpty() && !title.isEmpty() )
     metadata.setIdentifier( title );
 
   const QDomElement citationDatesElement = idCitation.firstChildElement( u"date"_s ).toElement();
@@ -256,7 +256,7 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
 
           if ( begin.isValid() || end.isValid() )
           {
-            extent.setTemporalExtents( {QgsDateTimeRange{ begin, end } } );
+            extent.setTemporalExtents( { QgsDateTimeRange { begin, end } } );
             break;
           }
         }

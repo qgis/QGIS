@@ -305,8 +305,8 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   if ( !dashPattern.isEmpty() )
   {
     // scale dash pattern -- sizes above expect a 1 pt width line
-    for ( int i = 0; i < dashPattern.size() ; ++i )
-      dashPattern[ i ] *= size;
+    for ( int i = 0; i < dashPattern.size(); ++i )
+      dashPattern[i] *= size;
 
     simpleLine->setCustomDashVector( dashPattern );
     simpleLine->setUseCustomDashPattern( true );
@@ -814,7 +814,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setWidth( 0 );
       symbol->symbolLayer( 0 )->setLocked( true );
 
-      if ( ( identifier >= 84 && identifier <= 85 ) || ( identifier >= 92 && identifier <= 93 ) || ( identifier >= 100 && identifier <= 101 )  || ( identifier >= 108 && identifier <= 109 ) )
+      if ( ( identifier >= 84 && identifier <= 85 ) || ( identifier >= 92 && identifier <= 93 ) || ( identifier >= 100 && identifier <= 101 ) || ( identifier >= 108 && identifier <= 109 ) )
       {
         std::unique_ptr<QgsSimpleLineSymbolLayer > secondRail( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
 
@@ -852,10 +852,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     subSimpleMarker->setPenJoinStyle( Qt::RoundJoin );
     subSimpleMarker->setPenCapStyle( Qt::RoundCap );
 
-    if ( shape == Qgis::MarkerShape::Octagon
-         || shape == Qgis::MarkerShape::Square
-         || shape == Qgis::MarkerShape::EquilateralTriangle
-         || shape == Qgis::MarkerShape::Diamond
+    if ( shape == Qgis::MarkerShape::Octagon || shape == Qgis::MarkerShape::Square || shape == Qgis::MarkerShape::EquilateralTriangle || shape == Qgis::MarkerShape::Diamond
          || shape == Qgis::MarkerShape::SemiCircle )
     {
       subSimpleMarker->setStrokeStyle( Qt::NoPen );
@@ -902,15 +899,15 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   {
     const int count = identifier - 40;
     QgsSimpleLineSymbolLayer *simpleLine = qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
-    simpleLine->setCustomDashVector( QVector< qreal >() <<  0 << 5.25 * size << 4 * size << ( 3.25 * size  + ( count - 1 ) * ( 7.25 * size ) ) );
+    simpleLine->setCustomDashVector( QVector< qreal >() << 0 << 5.25 * size << 4 * size << ( 3.25 * size + ( count - 1 ) * ( 7.25 * size ) ) );
     simpleLine->setCustomDashPatternUnit( sizeUnit );
     simpleLine->setUseCustomDashPattern( true );
 
-    for ( int i = 1 ; i < count; ++i )
+    for ( int i = 1; i < count; ++i )
     {
       std::unique_ptr< QgsSimpleLineSymbolLayer > dashLine( simpleLine->clone() );
 
-      dashLine->setCustomDashVector( QVector< qreal >() <<  0 << 5.25 * size + ( i * 7.25 * size ) << 4 * size << ( 3.25 * size  + ( count - 1 - i ) * ( 7.25 * size ) ) );
+      dashLine->setCustomDashVector( QVector< qreal >() << 0 << 5.25 * size + ( i * 7.25 * size ) << 4 * size << ( 3.25 * size + ( count - 1 - i ) * ( 7.25 * size ) ) );
       symbol->appendSymbolLayer( dashLine.release() );
     }
 
@@ -980,7 +977,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     std::unique_ptr< QgsSimpleLineSymbolLayer > upperLine( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
     upperLine->setUseCustomDashPattern( false );
 
-    if ( identifier < 65  || ( identifier >= 68 && identifier <= 69 ) || identifier == 73 )
+    if ( identifier < 65 || ( identifier >= 68 && identifier <= 69 ) || identifier == 73 )
     {
       upperLine->setColor( QColor( 255, 255, 255 ) );
       upperLine->setLocked( true );

@@ -120,9 +120,7 @@ QgsBox3D QgsFeatureSource::sourceExtent3D() const
 
 QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 {
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                        .setNoAttributes() );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
 
   QgsFeatureIds ids;
 
@@ -139,7 +137,8 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
 {
   const Qgis::WkbType outWkbType = ( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) ? Qgis::WkbType::NoGeometry : wkbType();
   const QgsCoordinateReferenceSystem crs = request.coordinateTransform().isValid() ? request.coordinateTransform().destinationCrs()
-      : request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
+                                           : request.destinationCrs().isValid()    ? request.destinationCrs()
+                                                                                   : sourceCrs();
 
   const QgsAttributeList requestedAttrs = request.subsetOfAttributes();
 
@@ -160,11 +159,7 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
     outFields = fields();
   }
 
-  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer(
-        sourceName(),
-        outFields,
-        outWkbType,
-        crs ) );
+  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( sourceName(), outFields, outWkbType, crs ) );
   QgsFeature f;
   QgsFeatureIterator it = getFeatures( request );
   const int fieldCount = fields().count();

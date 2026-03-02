@@ -214,8 +214,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
   }
 
   bool added = false;
-  if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiSurface
-       || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon )
+  if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiSurface || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
     QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
 
@@ -233,8 +232,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       poly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( part.release() ) );
       added = geomCollection->addGeometry( poly.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Polygon
-              || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Polygon || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::CurvePolygon )
     {
       if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( part.get() ) )
@@ -252,8 +250,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
         added = geomCollection->addGeometry( part.release() );
       }
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiPolygon
-              ||  QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiSurface )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiPolygon || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiSurface )
     {
       std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -278,11 +275,9 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     }
   }
-  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString
-            || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiCurve )
+  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiCurve )
   {
-    if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiLineString
-         ||  QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiCurve )
+    if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiLineString || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiCurve )
     {
       std::unique_ptr<QgsGeometryCollection> parts( qgsgeometry_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -376,13 +371,10 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
-    const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    bool &haveInvalidGeometry,
-    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures
-                                                                             )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections(
+  const QgsAbstractGeometry &geom, const QList<QgsVectorLayer *> &avoidIntersectionsLayers, bool &haveInvalidGeometry, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures
+)
 {
-
   haveInvalidGeometry = false;
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
@@ -411,9 +403,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     if ( ignoreIt != ignoreFeatures.constEnd() )
       ignoreIds = ignoreIt.value();
 
-    QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
-                            .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                            .setNoAttributes() );
+    QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
     QgsFeature f;
     while ( fi.nextFeature( f ) )
     {

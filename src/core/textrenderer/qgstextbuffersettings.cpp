@@ -38,14 +38,12 @@ QgsTextBufferSettings::QgsTextBufferSettings()
 
 QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other ) //NOLINT
   : d( other.d )
-{
-}
+{}
 QgsTextBufferSettings::QgsTextBufferSettings( QgsTextBufferSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
-}
+{}
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -54,7 +52,7 @@ QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSett
   return *this;
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other )  //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -64,25 +62,15 @@ QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &
 }
 
 QgsTextBufferSettings::~QgsTextBufferSettings() //NOLINT
-{
-
-}
+{}
 
 bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) const
 {
-  if ( d->enabled != other.enabled()
-       || d->size != other.size()
-       || d->sizeUnit != other.sizeUnit()
-       || d->sizeMapUnitScale != other.sizeMapUnitScale()
-       || d->color != other.color()
-       || d->opacity != other.opacity()
-       || d->fillBufferInterior != other.fillBufferInterior()
-       || d->joinStyle != other.joinStyle()
-       || d->blendMode != other.blendMode() )
+  if ( d->enabled != other.enabled() || d->size != other.size() || d->sizeUnit != other.sizeUnit() || d->sizeMapUnitScale != other.sizeMapUnitScale() || d->color != other.color()
+       || d->opacity != other.opacity() || d->fillBufferInterior != other.fillBufferInterior() || d->joinStyle != other.joinStyle() || d->blendMode != other.blendMode() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
-       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
   return true;
@@ -315,7 +303,8 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( u"labeling/bufferOpacity"_s ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/bufferBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/bufferBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( u"labeling/bufferJoinStyle"_s, QVariant( Qt::RoundJoin ) ).toUInt() );
 
   d->fillBufferInterior = !layer->customProperty( u"labeling/bufferNoFill"_s, QVariant( false ) ).toBool();
@@ -388,7 +377,8 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( u"bufferBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( textBufferElem.attribute( u"bufferBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( u"bufferJoinStyle"_s, QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( u"bufferNoFill"_s, u"0"_s ).toInt();
   const QDomElement effectElem = textBufferElem.firstChildElement( u"effect"_s );
