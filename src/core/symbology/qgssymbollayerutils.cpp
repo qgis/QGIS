@@ -250,8 +250,8 @@ Qt::PenJoinStyle QgsSymbolLayerUtils::decodeSldLineJoinStyle( const QString &str
 {
   if ( str == "bevel"_L1 )
     return Qt::BevelJoin;
-  if ( str == "mitre"_L1 )
-    return Qt::MiterJoin; //#spellok
+  if ( str == "mitre"_L1 ) //#spellok
+    return Qt::MiterJoin;
   if ( str == "round"_L1 )
     return Qt::RoundJoin;
   return Qt::BevelJoin;
