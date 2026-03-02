@@ -455,8 +455,8 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
     // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
     // cos that forces early creation of QgsProject
     connect(
-      QgsProject::instance(),
-      static_cast< void ( QgsProject::* )( const QList< QgsMapLayer * > & ) >( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
+      QgsProject::instance(), // skip-keyword-check
+      static_cast< void ( QgsProject::* )( const QList< QgsMapLayer * > & ) >( &QgsProject::layersWillBeRemoved ),
       this,
       &QgsTaskManager::layersWillBeRemoved
     );

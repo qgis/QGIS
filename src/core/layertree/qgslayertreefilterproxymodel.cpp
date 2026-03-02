@@ -26,11 +26,10 @@ QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
   connect(
-    QgsProject::instance(),
+    QgsProject::instance(), // skip-keyword-check
     &QgsProject::readProject,
     this,
-    [this] // skip-keyword-check
-    {
+    [this] {
       beginResetModel();
       endResetModel();
     }
