@@ -47,7 +47,6 @@ The following subclasses are available:
 #include "qgsmaprendererjob.h"
 %End
   public:
-
     QgsMapRendererJob( const QgsMapSettings &settings );
 
     ~QgsMapRendererJob();
@@ -135,10 +134,10 @@ Returns the feature filter provider used by the
 
     struct Error
     {
-      Error( const QString &lid, const QString &msg );
+        Error( const QString &lid, const QString &msg );
 
-      QString layerID;
-      QString message;
+        QString layerID;
+        QString message;
     };
 
     typedef QList<QgsMapRendererJob::Error> Errors;
@@ -227,7 +226,6 @@ emitted when asynchronous rendering is finished (or canceled).
 
 
 
-
     bool labelingHasNonDefaultCompositionModes() const;
 %Docstring
 Returns ``True`` if any component of the map labeling requires
@@ -280,7 +278,6 @@ to get intermediate result
 %Docstring
 Gets a preview/resulting image
 %End
-
 };
 
 

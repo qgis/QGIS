@@ -23,7 +23,6 @@ backends and registered in :py:class:`QgsExternalStorageRegistry`.
 #include "qgsexternalstorage.h"
 %End
   public:
-
     virtual ~QgsExternalStorage();
 
     virtual QString type() const = 0;
@@ -84,7 +83,6 @@ case its needed.
 %End
 
   protected:
-
     virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 /Factory/;
 %Docstring
 Stores file ``filePath`` to the ``url`` using ``authCfg`` authentication
@@ -115,7 +113,6 @@ content.
 #include "qgsexternalstorage.h"
 %End
   public:
-
     Qgis::ContentStatus status() const;
 %Docstring
 Returns content status
@@ -154,7 +151,6 @@ The signal is emitted when content fetching/storing has been canceled
 %End
 
   protected:
-
     void reportError( const QString &errorMsg );
 %Docstring
 Update content according to given ``errorMsg`` error message Inherited
@@ -182,7 +178,6 @@ Abstract base class for :py:class:`QgsExternalStorage` fetched content.
 #include "qgsexternalstorage.h"
 %End
   public:
-
     virtual QString filePath() const = 0;
 %Docstring
 Returns fetched resource file path
@@ -213,7 +208,6 @@ Abstract base class for :py:class:`QgsExternalStorage` stored content.
 #include "qgsexternalstorage.h"
 %End
   public:
-
     virtual QString url() const = 0;
 %Docstring
 Returns stored resource URL

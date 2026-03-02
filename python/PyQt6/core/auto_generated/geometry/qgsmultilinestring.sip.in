@@ -11,7 +11,7 @@
 
 
 
-class QgsMultiLineString: QgsMultiCurve
+class QgsMultiLineString : QgsMultiCurve
 {
 %Docstring(signature="appended")
 Multi line string geometry collection.
@@ -21,7 +21,6 @@ Multi line string geometry collection.
 #include "qgsmultilinestring.h"
 %End
   public:
-
     QgsMultiLineString() /HoldGIL/;
 %Docstring
 Constructor for an empty multilinestring geometry.

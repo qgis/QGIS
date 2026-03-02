@@ -22,7 +22,6 @@ layer].joinField
 #include "qgsvectorlayerjoininfo.h"
 %End
   public:
-
     QgsVectorLayerJoinInfo();
 
     void setJoinLayer( QgsVectorLayer *layer );
@@ -239,7 +238,6 @@ All fields will be used if ``None`` is returned.
 %End
 
   protected:
-
 
 
 

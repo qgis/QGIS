@@ -21,7 +21,6 @@ The drawing pipe for raster layers.
 #include "qgsrasterdrawer.h"
 %End
   public:
-
  QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget ) /Deprecated="Since 3.28. Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the draw() method which accepts a QgsRenderContext."/;
 %Docstring
 The QgsRasterDrawer constructor.
@@ -66,7 +65,6 @@ Draws raster data.
 %End
 
   protected:
-
 
 };
 

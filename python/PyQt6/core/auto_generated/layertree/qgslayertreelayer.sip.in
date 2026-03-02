@@ -45,7 +45,7 @@ Constructor for QgsLayerTreeLayer using weak references to layer ID,
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QString layerId() const;
+        QString layerId() const;
 %Docstring
 Returns the ID for the map layer associated with this node.
 
@@ -242,7 +242,6 @@ registry).
 Copies are not allowed
 %End
 };
-
 
 
 /************************************************************************

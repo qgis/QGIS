@@ -81,17 +81,14 @@ Currently supported decoders:
 #include "qgsvectortilelayer.h"
 %End
   public:
-
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions with optional ``transformContext``.
 %End
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
     };
 
     explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString(), const QgsVectorTileLayer::LayerOptions &options = QgsVectorTileLayer::LayerOptions() );
@@ -107,7 +104,7 @@ Constructs a new vector tile layer
 %End
 
 
-    virtual QgsVectorTileLayer *clone() const /Factory/;
+      virtual QgsVectorTileLayer *clone() const /Factory/;
 
     virtual QgsDataProvider *dataProvider();
 
@@ -117,10 +114,10 @@ Constructs a new vector tile layer
 
     virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
@@ -276,11 +273,14 @@ Returns the number of features that are selected in this layer.
 .. versionadded:: 3.28
 %End
 
-    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
-                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
-                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
-                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
-                           QgsRenderContext *renderContext = 0 );
+    void selectByGeometry(
+      const QgsGeometry &geometry,
+      const QgsSelectionContext &context,
+      Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+      Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+      QgsRenderContext *renderContext = 0
+    );
 %Docstring
 Selects features found within the search ``geometry`` (in layer's
 coordinates).

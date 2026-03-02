@@ -9,7 +9,7 @@
 
 
 
-class QgsSteppedLineScaleBarRenderer: QgsScaleBarRenderer
+class QgsSteppedLineScaleBarRenderer : QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
 Scalebar style that draws a stepped line representation of a scalebar.
@@ -21,7 +21,6 @@ Scalebar style that draws a stepped line representation of a scalebar.
 #include "qgssteppedlinescalebarrenderer.h"
 %End
   public:
-
     QgsSteppedLineScaleBarRenderer();
 
     virtual QString id() const;
@@ -35,9 +34,7 @@ Scalebar style that draws a stepped line representation of a scalebar.
     virtual QgsSteppedLineScaleBarRenderer *clone() const /Factory/;
 
 
-     virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
 };
 

@@ -22,13 +22,9 @@ Contains a collection of relationship items.
 #include "qgsrelationshipsitem.h"
 %End
   public:
-
-    QgsRelationshipsItem( QgsDataItem *parent /TransferThis/,
-                          const QString &path,
-                          const QString &connectionUri,
-                          const QString &providerKey,
-                          const QString &schema = QString(),
-                          const QString &tableName = QString() );
+    QgsRelationshipsItem(
+      QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString()
+    );
 %Docstring
 Constructor for QgsRelationshipsItem, with the specified ``parent``
 item.
@@ -55,7 +51,7 @@ table.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     virtual QIcon icon();
@@ -95,9 +91,7 @@ A browser item representing a relationship.
 #include "qgsrelationshipsitem.h"
 %End
   public:
-
-    QgsRelationshipItem( QgsDataItem *parent /TransferThis/,
-                         const QgsWeakRelation &relation );
+    QgsRelationshipItem( QgsDataItem *parent /TransferThis/, const QgsWeakRelation &relation );
 %Docstring
 Constructor for QgsRelationshipItem, with the specified ``parent`` item
 and ``relation``.
@@ -115,7 +109,7 @@ and ``relation``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QIcon icon();
+        virtual QIcon icon();
 
 
     const QgsWeakRelation &relation() const;
@@ -124,8 +118,6 @@ Returns the associated relationship.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

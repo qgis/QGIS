@@ -48,16 +48,17 @@ from the layer's coordinate system to the map canvas.
 #include "qgscoordinatetransform.h"
 %End
   public:
-
     QgsCoordinateTransform();
 %Docstring
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     const QgsCoordinateTransformContext &context,
-                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
+    explicit QgsCoordinateTransform(
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsCoordinateTransformContext &context,
+      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
+    );
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source`` to
 ``destination`` coordinate reference system.
@@ -88,10 +89,12 @@ flags which dictate the behavior of the transformation.
    accepts a :py:class:`QgsProject` argument instead.
 %End
 
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     const QgsProject *project,
-                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
+    explicit QgsCoordinateTransform(
+      const QgsCoordinateReferenceSystem &source,
+      const QgsCoordinateReferenceSystem &destination,
+      const QgsProject *project,
+      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
+    );
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source`` to
 ``destination`` coordinate reference system, when used with the given
@@ -121,10 +124,7 @@ flags which dictate the behavior of the transformation.
    however dynamic CRS to dynamic CRS transformations are not currently supported.
 %End
 
- explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination,
-        int sourceDatumTransformId,
-        int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
+ explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransformId, int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source`` to
 ``destination`` coordinate reference system, with the specified datum

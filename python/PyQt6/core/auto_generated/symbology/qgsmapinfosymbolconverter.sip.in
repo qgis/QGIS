@@ -26,7 +26,6 @@ Context for a MapInfo symbol conversion operation.
 #include "qgsmapinfosymbolconverter.h"
 %End
   public:
-
     void pushWarning( const QString &warning );
 %Docstring
 Pushes a ``warning`` message generated during the conversion.
@@ -56,7 +55,6 @@ Handles conversion of MapInfo symbols to QGIS symbology.
 #include "qgsmapinfosymbolconverter.h"
 %End
   public:
-
     static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) /Factory/;
 %Docstring
 Converts the MapInfo line symbol with the specified ``identifier`` to a
@@ -83,7 +81,6 @@ a specific ``identifier`` to a :py:class:`QgsMarkerSymbol`.
 
 The caller takes ownership of the returned symbol.
 %End
-
 };
 
 /************************************************************************

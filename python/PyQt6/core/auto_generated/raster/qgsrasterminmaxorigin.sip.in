@@ -22,7 +22,6 @@ It does not store by itself the min/max values.
 #include "qgsrasterminmaxorigin.h"
 %End
   public:
-
     static const double CUMULATIVE_CUT_LOWER;
 
     static const double CUMULATIVE_CUT_UPPER;
@@ -31,7 +30,7 @@ It does not store by itself the min/max values.
 
     QgsRasterMinMaxOrigin();
 
-    bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
+    bool operator==( const QgsRasterMinMaxOrigin &other ) const;
 
 
     Qgis::RasterRangeLimit limits() const;

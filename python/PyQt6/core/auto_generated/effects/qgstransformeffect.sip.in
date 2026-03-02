@@ -22,7 +22,6 @@ rotate) to a picture.
 #include "qgstransformeffect.h"
 %End
   public:
-
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsTransformEffect effect from a properties string map.
@@ -308,14 +307,12 @@ Returns whether transform will be reflected along the y-axis
 %End
 
   protected:
-
     virtual void draw( QgsRenderContext &context );
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

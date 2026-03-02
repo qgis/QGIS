@@ -27,7 +27,6 @@ methods only have an effect for
 #include "qgslayouttablecolumn.h"
 %End
   public:
-
     QgsLayoutTableColumn( const QString &heading = QString() );
 %Docstring
 Constructor for QgsLayoutTableColumn.

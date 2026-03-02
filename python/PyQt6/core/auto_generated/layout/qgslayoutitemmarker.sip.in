@@ -21,7 +21,6 @@ A layout item for showing marker symbols.
 #include "qgslayoutitemmarker.h"
 %End
   public:
-
     explicit QgsLayoutItemMarker( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemMarker, with the specified parent
@@ -131,7 +130,6 @@ Sets the ``offset`` added to the marker's rotation from a map's North.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
 

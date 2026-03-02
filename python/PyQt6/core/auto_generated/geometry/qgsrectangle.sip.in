@@ -33,7 +33,6 @@ extent of a map
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) /HoldGIL/;

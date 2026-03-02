@@ -11,7 +11,7 @@
 
 
 
-class QgsPolyhedralSurface: QgsSurface
+class QgsPolyhedralSurface : QgsSurface
 {
 %Docstring(signature="appended")
 Polyhedral surface geometry type.

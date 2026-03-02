@@ -37,7 +37,6 @@ range.
 #include "qgspropertytransformer.h"
 %End
   public:
-
     QgsCurveTransform();
 %Docstring
 Constructs a default QgsCurveTransform which linearly maps values
@@ -311,7 +310,6 @@ transformer.
 %End
 
   protected:
-
     double transformNumeric( double input ) const;
 %Docstring
 Applies base class numeric transformations. Derived classes should call
@@ -333,13 +331,7 @@ value into an output numeric value.
 #include "qgspropertytransformer.h"
 %End
   public:
-
-    QgsGenericNumericTransformer( double minValue = 0.0,
-                                  double maxValue = 1.0,
-                                  double minOutput = 0.0,
-                                  double maxOutput = 1.0,
-                                  double nullOutput = 0.0,
-                                  double exponent = 1.0 );
+    QgsGenericNumericTransformer( double minValue = 0.0, double maxValue = 1.0, double minOutput = 0.0, double maxOutput = 1.0, double nullOutput = 0.0, double exponent = 1.0 );
 %Docstring
 Constructor for QgsGenericNumericTransformer.
 
@@ -474,7 +466,6 @@ size according to various scaling methods.
 #include "qgspropertytransformer.h"
 %End
   public:
-
     enum ScaleType /BaseType=IntEnum/
     {
       Linear,
@@ -483,13 +474,7 @@ size according to various scaling methods.
       Exponential,
     };
 
-    QgsSizeScaleTransformer( ScaleType type = Linear,
-                             double minValue = 0.0,
-                             double maxValue = 1.0,
-                             double minSize = 0.0,
-                             double maxSize = 1.0,
-                             double nullSize = 0.0,
-                             double exponent = 1.0 );
+    QgsSizeScaleTransformer( ScaleType type = Linear, double minValue = 0.0, double maxValue = 1.0, double minSize = 0.0, double maxSize = 1.0, double nullSize = 0.0, double exponent = 1.0 );
 %Docstring
 Constructor for QgsSizeScaleTransformer.
 
@@ -646,12 +631,7 @@ value into a color from a color ramp.
 #include "qgspropertytransformer.h"
 %End
   public:
-
-    QgsColorRampTransformer( double minValue = 0.0,
-                             double maxValue = 1.0,
-                             QgsColorRamp *ramp /Transfer/ = 0,
-                             const QColor &nullColor = QColor( 0, 0, 0, 0 ),
-                             const QString &rampName = QString() );
+    QgsColorRampTransformer( double minValue = 0.0, double maxValue = 1.0, QgsColorRamp *ramp /Transfer/ = 0, const QColor &nullColor = QColor( 0, 0, 0, 0 ), const QString &rampName = QString() );
 %Docstring
 Constructor for QgsColorRampTransformer.
 

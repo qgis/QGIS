@@ -53,14 +53,12 @@ Abstract base class for spatial data provider implementations.
 
     struct ProviderOptions
     {
-
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
-    QgsDataProvider( const QString &uri = QString(),
-                     const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsDataProvider(
+      const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
@@ -579,7 +577,6 @@ Emitted when the datasource issues a notification.
 
 
   protected:
-
 
 
     void appendError( const QgsErrorMessage &message );

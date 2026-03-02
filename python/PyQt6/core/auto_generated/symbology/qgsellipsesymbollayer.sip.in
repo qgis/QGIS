@@ -10,7 +10,7 @@
 
 
 
-class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
+class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
 A symbol layer for rendering objects with major and minor axis (e.g.
@@ -21,7 +21,6 @@ ellipse, rectangle, etc).
 #include "qgsellipsesymbollayer.h"
 %End
   public:
-
     enum Shape /BaseType=IntEnum/
     {
       Circle,
@@ -305,8 +304,6 @@ Returns the units for the symbol's stroke width.
 
 
 };
-
-
 
 
 /************************************************************************

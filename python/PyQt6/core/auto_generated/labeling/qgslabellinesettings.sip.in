@@ -27,7 +27,6 @@ labels for line features (or polygon features which are labeled in a
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class DirectionSymbolPlacement /BaseType=IntEnum/
     {
       SymbolLeftRight,

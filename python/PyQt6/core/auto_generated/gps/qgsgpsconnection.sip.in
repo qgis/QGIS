@@ -17,7 +17,7 @@
 #include "qgsgpsconnection.h"
 %End
 
-class QgsGpsConnection : QObject
+  class QgsGpsConnection : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for connections to a GPS device.

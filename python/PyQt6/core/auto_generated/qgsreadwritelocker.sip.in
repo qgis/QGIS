@@ -35,7 +35,6 @@ You can unlock and relock the lock with :py:func:`~unlock` and
 #include "qgsreadwritelocker.h"
 %End
   public:
-
     enum Mode /BaseType=IntEnum/
     {
       Read,

@@ -10,7 +10,7 @@
 
 
 
-class QgsAuthConfigurationStorage: QObject
+class QgsAuthConfigurationStorage : QObject
 {
 %Docstring(signature="appended")
 Abstract class that defines the interface for all authentication
@@ -23,19 +23,18 @@ configuration storage implementations.
 #include "qgsauthconfigurationstorage.h"
 %End
   public:
-
     struct MasterPasswordConfig
     {
-      QString salt;
-      QString civ;
-      QString hash;
+        QString salt;
+        QString civ;
+        QString hash;
     };
 
     struct SettingParameter
     {
-      QString name;
-      QString description;
-      QVariant::Type type;
+        QString name;
+        QString description;
+        QVariant::Type type;
     };
 
     QgsAuthConfigurationStorage( const QMap<QString, QVariant> &settings );
@@ -166,7 +165,7 @@ storage.
                                   the storage.
 %End
 
-    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const  = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload() const  = 0;
 %Docstring
 Returns a mapping of authentication configurations available from this
 storage. The encrypted payload is added to the configuration as
@@ -533,7 +532,7 @@ trust policy.
                                   the storage.
 %End
 
-    virtual const  QList<QSslCertificate> caCerts() const  = 0;
+    virtual const QList<QSslCertificate> caCerts() const  = 0;
 %Docstring
 Returns the list of CA certificates in the storage
 
@@ -594,7 +593,7 @@ Check if certificate trust policy exists
 %End
 
 
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const  = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords() const  = 0;
 %Docstring
 Returns the list of (encrypted) master passwords stored in the database.
 
@@ -682,7 +681,7 @@ Emitted when the storage was updated.
    provided for specific changes on the individual tables.
 %End
 
-    void methodConfigChanged( );
+    void methodConfigChanged();
 %Docstring
 Emitted when the storage method config table was changed.
 %End
@@ -726,7 +725,6 @@ Emitted when the storage ssl cert trust policy table was changed.
 
 
   protected:
-
     void setCapabilities( Qgis::AuthConfigurationStorageCapabilities capabilities );
 %Docstring
 Set the capabilities of the storage to ``capabilities``.
@@ -743,7 +741,6 @@ Set the last error message to ``error`` with message level ``level``.
 Returns the logger tag for the storage. The default implementation
 returns the literal "Auth storage" followed by the storage name.
 %End
-
 
 
 

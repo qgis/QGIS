@@ -29,7 +29,6 @@ handles the GUI behavior of :py:class:`QgsAnnotationItems`.
 #include "qgsannotationitemregistry.h"
 %End
   public:
-
     QgsAnnotationItemAbstractMetadata( const QString &type, const QString &visibleName, const QString &visiblePluralName = QString() );
 %Docstring
 Constructor for QgsAnnotationItemAbstractMetadata with the specified
@@ -88,7 +87,6 @@ GUI behavior of annotation items.
 #include "qgsannotationitemregistry.h"
 %End
   public:
-
     QgsAnnotationItemRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item registry.
@@ -142,9 +140,6 @@ specified ``type`` and visible ``name``.
   private:
     QgsAnnotationItemRegistry( const QgsAnnotationItemRegistry &rh );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

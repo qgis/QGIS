@@ -20,7 +20,6 @@ Parses SQL statements.
 #include "qgssqlstatement.h"
 %End
   public:
-
     QgsSQLStatement( const QString &statement );
 %Docstring
 Creates a new statement based on the provided string.
@@ -192,20 +191,48 @@ Abstract node class for SQL statement nodes.
 %ConvertToSubClassCode
         switch ( sipCpp->nodeType() )
         {
-          case QgsSQLStatement::ntUnaryOperator:   sipType = sipType_QgsSQLStatement_NodeUnaryOperator; break;
-          case QgsSQLStatement::ntBinaryOperator:  sipType = sipType_QgsSQLStatement_NodeBinaryOperator; break;
-          case QgsSQLStatement::ntInOperator:      sipType = sipType_QgsSQLStatement_NodeInOperator; break;
-          case QgsSQLStatement::ntBetweenOperator: sipType = sipType_QgsSQLStatement_NodeBetweenOperator; break;
-          case QgsSQLStatement::ntFunction:        sipType = sipType_QgsSQLStatement_NodeFunction; break;
-          case QgsSQLStatement::ntLiteral:         sipType = sipType_QgsSQLStatement_NodeLiteral; break;
-          case QgsSQLStatement::ntColumnRef:       sipType = sipType_QgsSQLStatement_NodeColumnRef; break;
-          case QgsSQLStatement::ntSelectedColumn:  sipType = sipType_QgsSQLStatement_NodeSelectedColumn; break;
-          case QgsSQLStatement::ntSelect:          sipType = sipType_QgsSQLStatement_NodeSelect; break;
-          case QgsSQLStatement::ntTableDef:        sipType = sipType_QgsSQLStatement_NodeTableDef; break;
-          case QgsSQLStatement::ntJoin:            sipType = sipType_QgsSQLStatement_NodeJoin; break;
-          case QgsSQLStatement::ntColumnSorted:    sipType = sipType_QgsSQLStatement_NodeColumnSorted; break;
-          case QgsSQLStatement::ntCast:            sipType = sipType_QgsSQLStatement_NodeCast; break;
-          default:                               sipType = 0; break;
+          case QgsSQLStatement::ntUnaryOperator:
+            sipType = sipType_QgsSQLStatement_NodeUnaryOperator;
+            break;
+          case QgsSQLStatement::ntBinaryOperator:
+            sipType = sipType_QgsSQLStatement_NodeBinaryOperator;
+            break;
+          case QgsSQLStatement::ntInOperator:
+            sipType = sipType_QgsSQLStatement_NodeInOperator;
+            break;
+          case QgsSQLStatement::ntBetweenOperator:
+            sipType = sipType_QgsSQLStatement_NodeBetweenOperator;
+            break;
+          case QgsSQLStatement::ntFunction:
+            sipType = sipType_QgsSQLStatement_NodeFunction;
+            break;
+          case QgsSQLStatement::ntLiteral:
+            sipType = sipType_QgsSQLStatement_NodeLiteral;
+            break;
+          case QgsSQLStatement::ntColumnRef:
+            sipType = sipType_QgsSQLStatement_NodeColumnRef;
+            break;
+          case QgsSQLStatement::ntSelectedColumn:
+            sipType = sipType_QgsSQLStatement_NodeSelectedColumn;
+            break;
+          case QgsSQLStatement::ntSelect:
+            sipType = sipType_QgsSQLStatement_NodeSelect;
+            break;
+          case QgsSQLStatement::ntTableDef:
+            sipType = sipType_QgsSQLStatement_NodeTableDef;
+            break;
+          case QgsSQLStatement::ntJoin:
+            sipType = sipType_QgsSQLStatement_NodeJoin;
+            break;
+          case QgsSQLStatement::ntColumnSorted:
+            sipType = sipType_QgsSQLStatement_NodeColumnSorted;
+            break;
+          case QgsSQLStatement::ntCast:
+            sipType = sipType_QgsSQLStatement_NodeCast;
+            break;
+          default:
+            sipType = 0;
+            break;
         }
 %End
       public:
@@ -255,7 +282,6 @@ A list of nodes.
 %End
 
       public:
-
         NodeList();
         virtual ~NodeList();
 
@@ -375,7 +401,6 @@ Is left associative ?
       private:
         NodeBinaryOperator( const NodeBinaryOperator &other );
       protected:
-
     };
 
     class NodeInOperator : QgsSQLStatement::Node
@@ -429,6 +454,7 @@ An 'X BETWEEN y and z' operator.
 %Docstring
 Constructor
 %End
+
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of BETWEEN
@@ -469,7 +495,7 @@ Function with a name and arguments node.
 %End
 
       public:
-        NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  /Transfer/ );
+        NodeFunction( const QString &name, QgsSQLStatement::NodeList *args /Transfer/ );
 %Docstring
 Constructor
 %End
@@ -495,7 +521,6 @@ Returns arguments
       private:
         NodeFunction( const NodeFunction &other );
       protected:
-
     };
 
     class NodeLiteral : QgsSQLStatement::Node
@@ -941,14 +966,13 @@ Visit NodeCast
 %End
     };
 
-    class RecursiveVisitor: QgsSQLStatement::Visitor
+    class RecursiveVisitor : QgsSQLStatement::Visitor
     {
 %Docstring(signature="appended")
 A visitor that recursively explores all children.
 %End
 
       public:
-
         RecursiveVisitor();
 
         virtual void visit( const QgsSQLStatement::NodeUnaryOperator &n );
@@ -1000,12 +1024,10 @@ clause.
 #include "qgssqlstatement.h"
 %End
   public:
-
     QgsSQLStatementFragment( const QString &fragment );
 %Docstring
 Constructor for QgsSQLStatementFragment of the specified ``fragment``.
 %End
-
 };
 
 
