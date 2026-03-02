@@ -22,8 +22,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 typedef QVector<QVariant> QgsAttributes;
 
-%MappedType
-QgsAttributes
+%MappedType QgsAttributes
 {
 %TypeHeaderCode
 #include "qgsfeature.h"

@@ -103,8 +103,7 @@ Returns the map of optional parameters.
 
 typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 
-%MappedType
-QgsFeatureStoreList
+%MappedType QgsFeatureStoreList
 {
 %TypeHeaderCode
 #include "qgsfeaturestore.h"

@@ -2017,7 +2017,13 @@ def try_skip_sip_directives():
             write_output("HCE", "%End\n")
         directive_name = sip_directive_match.group(1)
         trailing_content = (sip_directive_match.group(2) or "").strip()
-        CONTEXT.current_line = f"%{directive_name}"
+        # Include trailing content on the directive line itself
+        # (e.g. %MappedType QgsAttributes — the type name must stay on the same line)
+        if trailing_content:
+            CONTEXT.current_line = f"%{directive_name} {trailing_content}"
+            trailing_content = None
+        else:
+            CONTEXT.current_line = f"%{directive_name}"
         CONTEXT.reset_method_state()
         dbg_info("do not process SIP code")
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
@@ -2039,8 +2045,12 @@ def try_skip_sip_directives():
                 CONTEXT.current_line,
             )
             if nested_match:
-                CONTEXT.current_line = f"%{nested_match.group(1)}"
-                trailing_content = (nested_match.group(2) or "").strip() or None
+                nested_trailing = (nested_match.group(2) or "").strip()
+                if nested_trailing:
+                    CONTEXT.current_line = f"%{nested_match.group(1)} {nested_trailing}"
+                else:
+                    CONTEXT.current_line = f"%{nested_match.group(1)}"
+                trailing_content = None
             CONTEXT.current_line = re.sub(
                 r"^\s*SIP_END(.*)$", r"%End\1", CONTEXT.current_line
             )
