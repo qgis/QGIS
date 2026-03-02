@@ -3045,7 +3045,8 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 
 QgsProject *QgsMapLayer::project() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // aggregate based tests aren't thread safe
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( QgsMapLayerStore *store = qobject_cast<QgsMapLayerStore *>( parent() ) )
   {
