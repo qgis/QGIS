@@ -447,6 +447,18 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   if ( !task )
     return 0;
 
+  // task MUST have affinity with task manager thread (by original design of QgsTaskManager). Otherwise
+  // there's potentially NO event loop associated with the thread the task is running in, and all qobject
+  // connections or invokeMethod related logic will fail (see https://github.com/qgis/QGIS/issues/65137)
+  if ( task->thread() != this->thread() )
+  {
+    QgsDebugMsgLevel( u"Task \"%1\" created in background thread, pushing to main thread"_s.arg( task->description() ), 1 );
+    if ( !task->moveToThread( this->thread() ) )
+    {
+      QgsDebugError( u"Failed to move task \"%1\" from background thread to task manager thread"_s.arg( task->description() ) );
+    }
+  }
+
   if ( !mInitialized )
   {
     mInitialized = true;
