@@ -253,7 +253,6 @@ void TestQgsVectorLayerSaveAsDialog::testSetCrsDependingOnFormat()
 
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"GeoPackage"_s ) );
   QCOMPARE( mCrsSelector->isEnabled(), true );
-  mCrsSelector->setCrs( pseudoMercator );
   QCOMPARE( mCrsSelector->crs(), pseudoMercator );
 
   // set format to GPX, CRS selector should be disabled and set to EPSG:4326
@@ -264,7 +263,6 @@ void TestQgsVectorLayerSaveAsDialog::testSetCrsDependingOnFormat()
 
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"GeoPackage"_s ) );
   QCOMPARE( mCrsSelector->isEnabled(), true );
-  mCrsSelector->setCrs( pseudoMercator );
   QCOMPARE( mCrsSelector->crs(), pseudoMercator );
 
   // set format to GeoJSON, CRS selector should be enabled
@@ -283,6 +281,8 @@ void TestQgsVectorLayerSaveAsDialog::testSetCrsDependingOnFormat()
 
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( u"GeoPackage"_s ) );
   QCOMPARE( mCrsSelector->isEnabled(), true );
+  QCOMPARE( mCrsSelector->crs(), pseudoMercator );
+  QCOMPARE( d.crs(), pseudoMercator );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerSaveAsDialog )

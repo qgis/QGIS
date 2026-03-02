@@ -181,6 +181,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     "Select the coordinate reference system for the vector file. "
     "The data points will be transformed from the layer coordinate reference system."
   ) );
+  mUserDefinedCrs = mSelectedCrs;
 
   mEncodingComboBox->setCurrentIndex( idx );
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
@@ -1001,7 +1002,15 @@ void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *
 
 void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( mCrsDefinedByFormat )
+  {
+    // this should never happen as CRS selector should be disabled, but let's be safe and
+    // avoid overwriting user defined CRS with the CRS required by the output format
+    return;
+  }
+
   mSelectedCrs = crs;
+  mUserDefinedCrs = crs;
   mExtentGroupBox->setOutputCrs( mSelectedCrs );
 }
 
@@ -1388,15 +1397,19 @@ void QgsVectorLayerSaveAsDialog::setCrsForFormat()
     }
   }
 
-  if ( force4326 )
+  if ( force4326 && !mCrsDefinedByFormat )
   {
+    mUserDefinedCrs = mCrsSelector->crs();
+    mCrsDefinedByFormat = true;
     mCrsSelector->setEnabled( false );
-    whileBlocking( mCrsSelector )->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
     mSelectedCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
+    whileBlocking( mCrsSelector )->setCrs( mSelectedCrs );
     mExtentGroupBox->setOutputCrs( mSelectedCrs );
   }
-  else
+  else if ( !force4326 && mCrsDefinedByFormat )
   {
+    mCrsDefinedByFormat = false;
     mCrsSelector->setEnabled( true );
+    mCrsSelector->setCrs( mUserDefinedCrs );
   }
 }

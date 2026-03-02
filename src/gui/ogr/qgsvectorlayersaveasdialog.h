@@ -283,6 +283,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
+    QgsCoordinateReferenceSystem mUserDefinedCrs;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
@@ -291,6 +292,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     bool mAddToCanvasStateOnOpenCompatibleDriver = true;
     QHash<QString, QPair<bool, std::optional<bool>>> mFieldsState;
     QString mPreviousFormat;
+    bool mCrsDefinedByFormat = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorLayerSaveAsDialog::Options )
