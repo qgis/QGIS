@@ -18,9 +18,14 @@
 // the implementation is partially based on Qt's QMatrix4x4 (simplified)
 
 
+// clang-format off
 QgsMatrix4x4::QgsMatrix4x4(
-  double m11, double m12, double m13, double m14, double m21, double m22, double m23, double m24, double m31, double m32, double m33, double m34, double m41, double m42, double m43, double m44
+  double m11, double m12, double m13, double m14,
+  double m21, double m22, double m23, double m24,
+  double m31, double m32, double m33, double m34,
+  double m41, double m42, double m43, double m44
 )
+// clang-format on
 {
   m[0][0] = m11;
   m[0][1] = m21;
