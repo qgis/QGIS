@@ -461,7 +461,7 @@ void QgsCameraController::resetGlobe( float distance, double lat, double lon )
 void QgsCameraController::updateOrthographicProjectionPlane()
 {
   // When using orthographic projection, reuse the distance to center (which
-  // ordinarlily woudln't do anythning) to set the viewport size in the world.
+  // ordinarily wouldn't do anything) to set the viewport size in the world.
   if ( mScene->mapSettings()->projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
   {
     const QSize viewportRect = mScene->engine()->size();
