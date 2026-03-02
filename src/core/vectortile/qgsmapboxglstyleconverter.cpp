@@ -2876,7 +2876,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseValueList( const QVariantList &json,
   }
   else
   {
-    return QgsProperty::fromExpression( parseExpression( json, context ) );
+    return QgsProperty::fromExpression( parseExpression( json, context, type == PropertyType::Color ) );
   }
 }
 
@@ -3503,10 +3503,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     for ( int i = 1; i < expression.size() - 2; i += 2 )
     {
       const QString condition = parseExpression( expression.value( i ).toList(), context );
-      const QString value = parseValue( expression.value( i + 1 ), context );
+      const QString value = parseValue( expression.value( i + 1 ), context, colorExpected );
       caseString += u" WHEN (%1) THEN %2"_s.arg( condition, value );
     }
-    const QString value = parseValue( expression.constLast(), context );
+    const QString value = parseValue( expression.constLast(), context, colorExpected );
     caseString += u" ELSE %1 END"_s.arg( value );
     return caseString;
   }
