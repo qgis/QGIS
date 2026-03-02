@@ -56,7 +56,6 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -76,7 +75,8 @@ class CORE_EXPORT QgsRelation
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
-          : QPair< QString, QString >( referencingField, referencedField ) {}
+          : QPair< QString, QString >( referencingField, referencedField )
+        {}
 
         //! Gets the name of the referencing (child) field
         QString referencingField() const { return first; }
@@ -311,6 +311,7 @@ class CORE_EXPORT QgsRelation
 #ifndef SIP_RUN
     QList< QgsRelation::FieldPair > fieldPairs() const;
 #else
+    // clang-format off
     QMap< QString, QString > fieldPairs() const;
     % MethodCode
     const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
@@ -320,6 +321,7 @@ class CORE_EXPORT QgsRelation
       sipRes->insert( pair.first, pair.second );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -431,7 +433,6 @@ class CORE_EXPORT QgsRelation
     static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
 
   private:
-
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 
     QgsRelationContext mContext;

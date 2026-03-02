@@ -45,7 +45,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor
      */
@@ -56,17 +55,19 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #endif
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsLayerTreeGroup: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns the group's name.
      */
-    QString name() const override;
+        QString name() const override;
 
     /**
      * Sets the group's name.
@@ -273,7 +274,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeGroup *readXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
+    static QgsLayerTreeGroup *readXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
@@ -402,7 +403,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
-
     /**
      * Set check state of children - if mutually exclusive
      */
@@ -427,7 +427,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void makeOrphan() override SIP_SKIP;
 
   private:
-
 #ifdef SIP_RUN
 
     /**
@@ -436,7 +435,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
 #endif
 
-    QgsLayerTreeGroup &operator= ( const QgsLayerTreeGroup & ) = delete;
+    QgsLayerTreeGroup &operator=( const QgsLayerTreeGroup & ) = delete;
 
     /**
      * Helper method to migrate project before 3.44 where shortName, title and abstract were

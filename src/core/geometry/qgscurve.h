@@ -32,10 +32,9 @@ class QgsLineString;
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type.
  */
-class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
+class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
-
     QgsCurve() = default;
 
     /**
@@ -60,12 +59,14 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      */
     virtual QgsPoint endPoint() const = 0;
 
+    // clang-format off
     /**
      * Returns TRUE if the curve is closed.
      *
      * \see isClosed2D()
      */
     virtual bool isClosed() const SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns true if the curve is closed.
@@ -117,6 +118,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     virtual int numPoints() const = 0;
 
 #ifdef SIP_RUN
+// clang-format off
     int __len__() const;
     % Docstring
     Returns the number of points in the curve.
@@ -130,6 +132,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
     /**

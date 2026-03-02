@@ -46,7 +46,6 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     Q_OBJECT
 
   public:
-
     Q_PROPERTY( bool useProjectLayerTree READ useProjectLayerTree WRITE setUseProjectLayerTree NOTIFY useProjectLayerTreeChanged )
 
     /**
@@ -257,7 +256,6 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     void dirtyProject();
 
   private:
-
     void setupLayerTreeConnections();
 
     QPointer< QgsProject > mProject;
@@ -270,7 +268,6 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
-
 };
 
 #endif // QGSELEVATIONPROFILE_H

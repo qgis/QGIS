@@ -41,22 +41,19 @@ class QgsSymbol;
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 {
   public:
-
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
-                                          const QString &providerId,
-                                          bool withFeatureLoop,
-                                          const QgsPalLayerSettings *settings,
-                                          const QString &layerName = QString() );
+    explicit QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName = QString() );
 
     //! Constructor to initialize the provider from any map layer (e.g. vector tile layer)
-    explicit QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType,
-                                          const QgsFields &fields,
-                                          const QgsCoordinateReferenceSystem &crs,
-                                          const QString &providerId,
-                                          const QgsPalLayerSettings *settings,
-                                          QgsMapLayer *layer,
-                                          const QString &layerName = QString() );
+    explicit QgsVectorLayerLabelProvider(
+      Qgis::GeometryType geometryType,
+      const QgsFields &fields,
+      const QgsCoordinateReferenceSystem &crs,
+      const QString &providerId,
+      const QgsPalLayerSettings *settings,
+      QgsMapLayer *layer,
+      const QString &layerName = QString()
+    );
 
     ~QgsVectorLayerLabelProvider() override;
 
@@ -145,7 +142,6 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     QList<QgsLabelFeature *> mLabels;
 
   private:
-
     friend class TestQgsLabelingEngine;
     friend class QgsVectorTileBasicLabelProvider;
 

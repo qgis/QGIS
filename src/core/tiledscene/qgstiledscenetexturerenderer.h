@@ -33,7 +33,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneTextureRenderer.
      */

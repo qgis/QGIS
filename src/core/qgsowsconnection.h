@@ -73,7 +73,8 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections->createNamedListNode( u"arcgisfeatureserver"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections
+                                                                          ->createNamedListNode( u"arcgisfeatureserver"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
@@ -95,7 +96,6 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettingsTree::sTreeConnections->createNamedListNode( u"ows"_s );
     static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListNode( u"connections"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
@@ -199,14 +199,12 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     QgsDataSourceUri mUri;
 
   private:
-
     QString mConnName;
     QString mService;
     QString mConnectionInfo;
 
     Q_DECL_DEPRECATED static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
     static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connectionName );
-
 };
 
 

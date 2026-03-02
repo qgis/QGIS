@@ -81,7 +81,6 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-
     /**
      * Returns a list of all table names for the geopackage
      */
@@ -107,7 +106,6 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 
   private:
-
     //! Store a casted pointer to the parent collection
     QgsGeoPackageCollectionItem *mCollection = nullptr;
 };
@@ -122,8 +120,7 @@ class CORE_EXPORT QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLay
 };
 
 
-
-class CORE_EXPORT QgsGeoPackageVectorLayerItem final: public QgsGeoPackageAbstractLayerItem
+class CORE_EXPORT QgsGeoPackageVectorLayerItem final : public QgsGeoPackageAbstractLayerItem
 {
     Q_OBJECT
 
@@ -139,7 +136,7 @@ class CORE_EXPORT QgsGeoPackageVectorLayerItem final: public QgsGeoPackageAbstra
  * \brief The QgsGeoPackageConnectionItem class adds the stored
  *        connection management to QgsGeoPackageCollectionItem
  */
-class CORE_EXPORT QgsGeoPackageConnectionItem final: public QgsGeoPackageCollectionItem
+class CORE_EXPORT QgsGeoPackageConnectionItem final : public QgsGeoPackageCollectionItem
 {
     Q_OBJECT
 
@@ -149,7 +146,7 @@ class CORE_EXPORT QgsGeoPackageConnectionItem final: public QgsGeoPackageCollect
 };
 
 
-class CORE_EXPORT QgsGeoPackageRootItem final: public QgsConnectionsRootItem
+class CORE_EXPORT QgsGeoPackageRootItem final : public QgsConnectionsRootItem
 {
     Q_OBJECT
 
@@ -167,7 +164,7 @@ class CORE_EXPORT QgsGeoPackageRootItem final: public QgsConnectionsRootItem
 
 
 //! Provider for geopackage data item
-class QgsGeoPackageDataItemProvider final: public QgsDataItemProvider
+class QgsGeoPackageDataItemProvider final : public QgsDataItemProvider
 {
   public:
     QString name() override;

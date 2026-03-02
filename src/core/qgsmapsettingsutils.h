@@ -31,9 +31,7 @@ class QgsMapSettings;
  */
 class CORE_EXPORT QgsMapSettingsUtils
 {
-
   public:
-
     /**
      * Flags for controlling the behavior of containsAdvancedEffects()
      * \since QGIS 3.14
@@ -70,7 +68,6 @@ class CORE_EXPORT QgsMapSettingsUtils
      * \note Uses 17 places of precision for all numbers output
      */
     static QString worldFileContent( const QgsMapSettings &mapSettings );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettingsUtils::EffectsCheckFlags )

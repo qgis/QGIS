@@ -36,7 +36,6 @@ class CORE_EXPORT QgsNumericFormatContext
     Q_GADGET
 
   public:
-
     /**
      * Constructor for QgsNumericFormatContext.
      *
@@ -49,140 +48,98 @@ class CORE_EXPORT QgsNumericFormatContext
      *
      * \see setThousandsSeparator()
      */
-    QChar thousandsSeparator() const
-    {
-      return mThousandsSep;
-    }
+    QChar thousandsSeparator() const { return mThousandsSep; }
 
     /**
      * Sets the thousands \a separator character.
      *
      * \see thousandsSeparator()
      */
-    void setThousandsSeparator( const QChar &separator )
-    {
-      mThousandsSep = separator;
-    }
+    void setThousandsSeparator( const QChar &separator ) { mThousandsSep = separator; }
 
     /**
      * Returns the decimal separator character.
      *
      * \see setDecimalSeparator()
      */
-    QChar decimalSeparator() const
-    {
-      return mDecimalSep;
-    }
+    QChar decimalSeparator() const { return mDecimalSep; }
 
     /**
      * Returns the decimal separator character.
      *
      * \see setDecimalSeparator()
      */
-    void setDecimalSeparator( const QChar &separator )
-    {
-      mDecimalSep = separator;
-    }
+    void setDecimalSeparator( const QChar &separator ) { mDecimalSep = separator; }
 
     /**
      * Returns the percent character.
      *
      * \see setPercent()
      */
-    QChar percent() const
-    {
-      return mPercent;
-    }
+    QChar percent() const { return mPercent; }
 
     /**
      * Sets the percent \a character.
      *
      * \see percent()
      */
-    void setPercent( const QChar &character )
-    {
-      mPercent = character;
-    }
+    void setPercent( const QChar &character ) { mPercent = character; }
 
     /**
      * Returns the zero digit character.
      *
      * \see setZeroDigit()
      */
-    QChar zeroDigit() const
-    {
-      return mZeroDigit;
-    }
+    QChar zeroDigit() const { return mZeroDigit; }
 
     /**
      * Returns the zero digit \a character.
      *
      * \see zeroDigit()
      */
-    void setZeroDigit( const QChar &character )
-    {
-      mZeroDigit = character;
-    }
+    void setZeroDigit( const QChar &character ) { mZeroDigit = character; }
 
     /**
      * Returns the negative sign character.
      *
      * \see setNegativeSign()
      */
-    QChar negativeSign() const
-    {
-      return mNegativeSign;
-    }
+    QChar negativeSign() const { return mNegativeSign; }
 
     /**
      * Sets the negative sign \a character.
      *
      * \see negativeSign()
      */
-    void setNegativeSign( const QChar &character )
-    {
-      mNegativeSign = character;
-    }
+    void setNegativeSign( const QChar &character ) { mNegativeSign = character; }
 
     /**
      * Returns the positive sign character.
      *
      * \see setPositiveSign()
      */
-    QChar positiveSign() const
-    {
-      return mPositiveSign;
-    }
+    QChar positiveSign() const { return mPositiveSign; }
 
     /**
      * Sets the positive sign \a character.
      *
      * \see positiveSign()
      */
-    void setPositiveSign( const QChar &character )
-    {
-      mPositiveSign = character;
-    }
+    void setPositiveSign( const QChar &character ) { mPositiveSign = character; }
 
     /**
      * Returns the exponential character.
      *
      * \see setExponential()
      */
-    QChar exponential() const
-    {
-      return mExponential;
-    }
+    QChar exponential() const { return mExponential; }
 
     /**
      * Sets the exponential \a character.
      *
      * \see exponential()
      */
-    void setExponential( const QChar &character )
-    {
-      mExponential = character;
-    }
+    void setExponential( const QChar &character ) { mExponential = character; }
 
     /**
      * Interpretation of numeric values.
@@ -191,8 +148,8 @@ class CORE_EXPORT QgsNumericFormatContext
      */
     enum class Interpretation
     {
-      Generic, //!< Generic
-      Latitude, //!< Latitude values
+      Generic,   //!< Generic
+      Latitude,  //!< Latitude values
       Longitude, //!< Longitude values
     };
     Q_ENUM( Interpretation )
@@ -204,10 +161,7 @@ class CORE_EXPORT QgsNumericFormatContext
      *
      * \since QGIS 3.26
      */
-    Interpretation interpretation() const
-    {
-      return mInterpretation;
-    }
+    Interpretation interpretation() const { return mInterpretation; }
 
     /**
      * Sets the \a interpretation of the numbers being converted.
@@ -216,10 +170,7 @@ class CORE_EXPORT QgsNumericFormatContext
      *
      * \since QGIS 3.26
      */
-    void setInterpretation( Interpretation interpretation )
-    {
-      mInterpretation = interpretation;
-    }
+    void setInterpretation( Interpretation interpretation ) { mInterpretation = interpretation; }
 
     /**
      * Returns the expression context to use when evaluating QgsExpressions.
@@ -252,6 +203,7 @@ class CORE_EXPORT QgsNumericFormatContext
 };
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsbasicnumericformat.h>
 #include <qgsbearingnumericformat.h>
@@ -262,9 +214,10 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgscoordinatenumericformat.h>
 #include <qgsexpressionbasednumericformat.h>
 % End
+// clang-format on
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Abstract base class for numeric formatters, which allow for formatting a numeric value for display.
  *
@@ -275,9 +228,8 @@ class CORE_EXPORT QgsNumericFormatContext
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsNumericFormat
+  class CORE_EXPORT QgsNumericFormat
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
@@ -300,7 +252,7 @@ class CORE_EXPORT QgsNumericFormat
       sipType = sipType_QgsExpressionBasedNumericFormat;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -368,7 +320,6 @@ class CORE_EXPORT QgsNumericFormat
     bool operator!=( const QgsNumericFormat &other ) const;
 
   protected:
-
     static constexpr int DEFAULT_SORT_KEY = 100;
 };
 

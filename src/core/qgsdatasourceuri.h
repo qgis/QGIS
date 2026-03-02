@@ -41,7 +41,6 @@ class CORE_EXPORT QgsDataSourceUri
 {
     Q_GADGET
   public:
-
     /**
      * Available SSL connection modes.
      */
@@ -138,23 +137,14 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Sets all connection related members at once.
      */
-    void setConnection( const QString &aHost,
-                        const QString &aPort,
-                        const QString &aDatabase,
-                        const QString &aUsername,
-                        const QString &aPassword,
-                        SslMode sslmode = SslPrefer,
-                        const QString &authConfigId = QString() );
+    void setConnection(
+      const QString &aHost, const QString &aPort, const QString &aDatabase, const QString &aUsername, const QString &aPassword, SslMode sslmode = SslPrefer, const QString &authConfigId = QString()
+    );
 
     /**
      * Sets all connection related members at once (for a service case).
      */
-    void setConnection( const QString &aService,
-                        const QString &aDatabase,
-                        const QString &aUsername,
-                        const QString &aPassword,
-                        SslMode sslmode = SslPrefer,
-                        const QString &authConfigId = QString() );
+    void setConnection( const QString &aService, const QString &aDatabase, const QString &aUsername, const QString &aPassword, SslMode sslmode = SslPrefer, const QString &authConfigId = QString() );
 
     /**
      * Sets the URI database name.
@@ -167,11 +157,7 @@ class CORE_EXPORT QgsDataSourceUri
      * The \a aSql argument represents a subset filter string to be applied to the source, and should take the
      * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
      */
-    void setDataSource( const QString &aSchema,
-                        const QString &aTable,
-                        const QString &aGeometryColumn,
-                        const QString &aSql = QString(),
-                        const QString &aKeyColumn = QString() );
+    void setDataSource( const QString &aSchema, const QString &aTable, const QString &aGeometryColumn, const QString &aSql = QString(), const QString &aKeyColumn = QString() );
 
     /**
      * Sets the authentication configuration ID for the URI.
@@ -405,14 +391,16 @@ class CORE_EXPORT QgsDataSourceUri
     void setHttpHeaders( const QgsHttpHeaders &headers ) { mHttpHeaders = headers; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsDataSourceUri: %1>"_s.arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    bool operator==( const QgsDataSourceUri &other ) const;
+      bool operator==( const QgsDataSourceUri &other ) const;
     bool operator!=( const QgsDataSourceUri &other ) const;
 
   private:

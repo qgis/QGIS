@@ -35,7 +35,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsSelectiveMaskSource
 {
   public:
-
     /**
      * Constructor for an invalid QgsSelectiveMaskSource.
      */
@@ -98,6 +97,7 @@ class CORE_EXPORT QgsSelectiveMaskSource
     void setSourceId( const QString &id ) { mSourceId = id; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     if ( !sipCpp->isValid() )
@@ -120,9 +120,11 @@ class CORE_EXPORT QgsSelectiveMaskSource
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End
+// clang-format on
 #endif
 
-    bool operator==( const QgsSelectiveMaskSource &other ) const = default;
+      bool operator==( const QgsSelectiveMaskSource &other ) const
+      = default;
     bool operator!=( const QgsSelectiveMaskSource &other ) const = default;
 
   private:

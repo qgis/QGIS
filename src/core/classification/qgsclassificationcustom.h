@@ -32,13 +32,12 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
     QString name() const override;
     QString id() const override;
 
-    bool valuesRequired() const override {return false;}
+    bool valuesRequired() const override { return false; }
 
     static const QString METHOD_ID;
 
   private:
-    QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses, QString &error ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) override;
 };
 
 #endif // QGSCLASSIFICATIONCUSTOM_H

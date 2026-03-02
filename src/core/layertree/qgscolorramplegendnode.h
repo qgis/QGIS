@@ -35,7 +35,6 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
 
 
   public:
-
     /**
      * Constructor for QgsColorRampLegendNode.
      * \param nodeLayer layer node
@@ -46,9 +45,15 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
      * \param parentKey rule key of parent (since QGIS 3.40)
      */
-    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
-                            const QString &minimumLabel, const QString &maximumLabel, QObject *parent SIP_TRANSFERTHIS = nullptr,
-                            const QString &key = QString(), const QString &parentKey = QString() );
+    QgsColorRampLegendNode(
+      QgsLayerTreeLayer *nodeLayer,
+      QgsColorRamp *ramp SIP_TRANSFER,
+      const QString &minimumLabel,
+      const QString &maximumLabel,
+      QObject *parent SIP_TRANSFERTHIS = nullptr,
+      const QString &key = QString(),
+      const QString &parentKey = QString()
+    );
 
     /**
      * Constructor for QgsColorRampLegendNode.
@@ -61,10 +66,16 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      * \param key rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
      * \param parentKey rule key of parent (since QGIS 3.40)
      */
-    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
-                            const QgsColorRampLegendNodeSettings &settings, double minimumValue,
-                            double maximumValue, QObject *parent SIP_TRANSFERTHIS = nullptr,
-                            const QString &key = QString(), const QString &parentKey = QString() );
+    QgsColorRampLegendNode(
+      QgsLayerTreeLayer *nodeLayer,
+      QgsColorRamp *ramp SIP_TRANSFER,
+      const QgsColorRampLegendNodeSettings &settings,
+      double minimumValue,
+      double maximumValue,
+      QObject *parent SIP_TRANSFERTHIS = nullptr,
+      const QString &key = QString(),
+      const QString &parentKey = QString()
+    );
 
 
     QVariant data( int role ) const override;
@@ -150,7 +161,6 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     QString mKey;
     QString mParentKey;
 };
-
 
 
 #endif // QGSCOLORRAMPLEGENDNODE_H

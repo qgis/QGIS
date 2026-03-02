@@ -23,30 +23,35 @@ class QgsVectorLayerUndoPassthroughCommand;
 class QgsTransaction;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsvectorlayereditpassthrough.h>
 % End
+// clang-format on
 #endif
 
-/**
+  /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
  * \brief An edit buffer which directly passes commands through, used when a layer is within a transaction.
  */
-class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
+  class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
       sipType = sipType_QgsVectorLayerEditPassthrough;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
-    Q_OBJECT
+  // clang-format off
+  Q_OBJECT
+
   public:
+    // clang-format on
+
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
     bool isModified() const override;
     bool addFeature( QgsFeature &f ) override;
@@ -85,7 +90,6 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
 
     // utility function to avoid cpy/paste
     bool modify( QgsVectorLayerUndoPassthroughCommand *cmd );
-
 };
 
 #endif // QGSVECTORLAYEREDITPASSTHROUGH_H

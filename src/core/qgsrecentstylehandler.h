@@ -39,7 +39,6 @@ class QgsSymbol;
 class CORE_EXPORT QgsRecentStyleHandler
 {
   public:
-
     /**
      * Creates a new recent style handler.
      *
@@ -92,7 +91,7 @@ class CORE_EXPORT QgsRecentStyleHandler
      * \note not available in Python bindings
      * \see pushRecentSymbol()
      */
-    template <class SymbolType> std::unique_ptr< SymbolType > recentSymbol( const QString &identifier ) const SIP_SKIP
+    template<class SymbolType> std::unique_ptr< SymbolType > recentSymbol( const QString &identifier ) const SIP_SKIP
     {
       std::unique_ptr< QgsSymbol > tmpSymbol( recentSymbol( identifier ) );
       if ( SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol.get() ) )
@@ -107,13 +106,11 @@ class CORE_EXPORT QgsRecentStyleHandler
     }
 
   private:
-
 #ifdef SIP_RUN
     QgsRecentStyleHandler( const QgsRecentStyleHandler &other );
 #endif
 
     std::unordered_map< QString, std::unique_ptr< QgsSymbol > > mRecentSymbols;
-
 };
 
 #endif // QGSRECENTSTYLEHANDLER_H

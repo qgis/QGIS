@@ -32,14 +32,15 @@ using namespace Qt::StringLiterals;
  * \class QgsCircularString
  * \brief Circular string geometry type.
  */
-class CORE_EXPORT QgsCircularString: public QgsCurve
+class CORE_EXPORT QgsCircularString : public QgsCurve
 {
   public:
-
+    // clang-format off
     /**
      * Constructs an empty circular string.
      */
     QgsCircularString() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructs a circular string with a single
@@ -336,6 +337,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -344,6 +346,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QString str = u"<QgsCircularString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

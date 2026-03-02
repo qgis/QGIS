@@ -30,10 +30,9 @@ class QgsPolygon;
  * \class QgsSurface
  * \brief Surface geometry type.
  */
-class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
+class CORE_EXPORT QgsSurface : public QgsAbstractGeometry
 {
   public:
-
     QgsBox3D boundingBox3D() const override
     {
       if ( mBoundingBox.isNull() )
@@ -62,10 +61,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
         return nullptr;
 
       const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
-      if ( flatType == Qgis::WkbType::CurvePolygon
-           || flatType == Qgis::WkbType::Polygon
-           || flatType == Qgis::WkbType::Triangle
-           || flatType == Qgis::WkbType::PolyhedralSurface
+      if ( flatType == Qgis::WkbType::CurvePolygon || flatType == Qgis::WkbType::Polygon || flatType == Qgis::WkbType::Triangle || flatType == Qgis::WkbType::PolyhedralSurface
            || flatType == Qgis::WkbType::TIN )
         return static_cast<const QgsSurface *>( geom );
       return nullptr;
@@ -85,17 +81,13 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
         return nullptr;
 
       const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
-      if ( flatType == Qgis::WkbType::CurvePolygon
-           || flatType == Qgis::WkbType::Polygon
-           || flatType == Qgis::WkbType::Triangle
-           || flatType == Qgis::WkbType::PolyhedralSurface
+      if ( flatType == Qgis::WkbType::CurvePolygon || flatType == Qgis::WkbType::Polygon || flatType == Qgis::WkbType::Triangle || flatType == Qgis::WkbType::PolyhedralSurface
            || flatType == Qgis::WkbType::TIN )
         return static_cast<QgsSurface *>( geom );
       return nullptr;
     }
 #endif
   protected:
-
     void clearCache() const override;
 
     mutable QgsBox3D mBoundingBox;

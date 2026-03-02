@@ -40,7 +40,6 @@ class QgsClassificationRange;
 class CORE_EXPORT QgsRendererRange
 {
   public:
-
     QgsRendererRange() = default;
     ~QgsRendererRange();
 
@@ -181,6 +180,7 @@ class CORE_EXPORT QgsRendererRange
     bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange = false ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = sipCpp->label().isEmpty()
@@ -205,9 +205,12 @@ class CORE_EXPORT QgsRendererRange
       PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
     }
     % End
+// clang-format on
 #endif
 
-  protected:
+    // clang-format off
+    protected:
+    // clang-format on
     friend class QgsGraduatedSymbolRendererWidget;
 
     double mLowerValue = 0, mUpperValue = 0;

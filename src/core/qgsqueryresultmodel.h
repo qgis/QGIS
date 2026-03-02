@@ -31,12 +31,11 @@
  * The QgsQueryResultFetcher class fetches query results from a separate thread
  * WARNING: this class is an implementation detail and it is not part of public API!
  */
-class QgsQueryResultFetcher: public QObject
+class QgsQueryResultFetcher : public QObject
 {
     Q_OBJECT
 
   public:
-
     //! Constructs a result fetcher from \a queryResult
     QgsQueryResultFetcher( const QgsAbstractDatabaseProviderConnection::QueryResult *queryResult )
       : mQueryResult( queryResult )
@@ -57,12 +56,10 @@ class QgsQueryResultFetcher: public QObject
     void fetchingComplete();
 
   private:
-
     const QgsAbstractDatabaseProviderConnection::QueryResult *mQueryResult = nullptr;
     QAtomicInt mStopFetching = 0;
     // Number of rows rows to fetch before emitting rowsReady
     static const int ROWS_BATCH_COUNT;
-
 };
 
 #endif
@@ -80,7 +77,6 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs a QgsQueryResultModel from a \a queryResult with optional \a parent
      */
@@ -90,7 +86,6 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 
     // QAbstractItemModel interface
   public:
-
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -142,7 +137,6 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     void fetchingStarted();
 
   private:
-
     QgsAbstractDatabaseProviderConnection::QueryResult mQueryResult;
     QStringList mColumns;
     QThread mWorkerThread;
@@ -151,7 +145,6 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 
     //! Number of rows to fetch when more rows are required, generally bigger than ROWS_BATCH_COUNT
     static const int FETCH_MORE_ROWS_COUNT;
-
 };
 
 #endif // qgsqueryresultmodel.h

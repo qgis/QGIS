@@ -34,7 +34,6 @@ class QgsRasterShaderFunction;
  */
 class CORE_EXPORT QgsRasterShader
 {
-
   public:
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
 
@@ -80,11 +79,7 @@ class CORE_EXPORT QgsRasterShader
      * \param returnAlpha The alpha component of the new RGBA value
      * \return TRUE if the return values are valid otherwise FALSE
     */
-    bool shade( double value,
-                int *returnRedValue SIP_OUT,
-                int *returnGreenValue SIP_OUT,
-                int *returnBlueValue SIP_OUT,
-                int *returnAlpha SIP_OUT ) const;
+    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates a new RGBA value based on an original RGBA value.
@@ -98,14 +93,9 @@ class CORE_EXPORT QgsRasterShader
      * \param returnAlpha The alpha component of the new RGBA value
      * \return TRUE if the return values are valid otherwise FALSE
     */
-    bool shade( double redValue,
-                double greenValue,
-                double blueValue,
-                double alphaValue,
-                int *returnRedValue SIP_OUT,
-                int *returnGreenValue SIP_OUT,
-                int *returnBlueValue SIP_OUT,
-                int *returnAlpha SIP_OUT ) const;
+    bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlpha SIP_OUT
+    ) const;
 
     /**
      * \brief A public method that allows the user to set their own shader \a function.
@@ -150,6 +140,5 @@ class CORE_EXPORT QgsRasterShader
 
     //! \brief Pointer to the shader function
     std::unique_ptr< QgsRasterShaderFunction > mRasterShaderFunction;
-
 };
 #endif

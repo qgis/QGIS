@@ -17,7 +17,7 @@
 #ifndef QGSMAPLAYERUTILS_H
 #define QGSMAPLAYERUTILS_H
 
-#define MAXIMUM_OPENSTREETMAP_TILES_FETCH  5000
+#define MAXIMUM_OPENSTREETMAP_TILES_FETCH 5000
 
 #include "qgis.h"
 #include "qgis_core.h"
@@ -37,9 +37,7 @@ class QgsGeometry;
 */
 class CORE_EXPORT QgsMapLayerUtils
 {
-
   public:
-
     /**
      * Returns the combined extent of a list of \a layers.
      *
@@ -128,9 +126,6 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 4.0
      */
     static QString layerTypeToString( Qgis::LayerType type );
-
 };
 
 #endif // QGSMAPLAYERUTILS_H
-
-

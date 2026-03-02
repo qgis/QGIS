@@ -43,7 +43,6 @@ class QgsTextSettingsPrivate;
 class CORE_EXPORT QgsTextFormat
 {
   public:
-
     /**
      * Default constructor for QgsTextFormat. Creates a text format initially
      * set to an invalid state (see isValid()).
@@ -500,7 +499,6 @@ class CORE_EXPORT QgsTextFormat
     class CORE_EXPORT Tab
     {
       public:
-
         /**
          * Constructor for a Tab at the specified \a position.
          */
@@ -520,23 +518,24 @@ class CORE_EXPORT QgsTextFormat
          */
         double position() const { return mPosition; }
 
-        bool operator==( const QgsTextFormat::Tab &other ) const
-        {
-          return qgsDoubleNear( mPosition, other.mPosition );
-        }
+        bool operator==( const QgsTextFormat::Tab &other ) const { return qgsDoubleNear( mPosition, other.mPosition ); }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
         % MethodCode
         const QString str = u"<QgsTextFormat.Tab: %1>"_s.arg( sipCpp->position() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
 
-      private:
+        // clang-format off
+        private:
+        // clang-format on
 
-        double mPosition = 0;
-
+        double mPosition
+        = 0;
     };
 
     /**
@@ -828,7 +827,6 @@ class CORE_EXPORT QgsTextFormat
     QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
 
   private:
-
     QgsTextBufferSettings mBufferSettings;
     QgsTextBackgroundSettings mBackgroundSettings;
     QgsTextShadowSettings mShadowSettings;
@@ -838,7 +836,6 @@ class CORE_EXPORT QgsTextFormat
     bool mTextFontFound = true;
 
     QSharedDataPointer<QgsTextSettingsPrivate> d;
-
 };
 
 Q_DECLARE_METATYPE( QgsTextFormat )

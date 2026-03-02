@@ -38,7 +38,7 @@ class QgsTriangle;
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
+class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
 {
   public:
     QgsTriangulatedSurface();
@@ -62,20 +62,17 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -85,7 +82,9 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 #endif
 
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper( other, epsilon, false );
     }
@@ -146,6 +145,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
      */
     QgsTriangle *triangleN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the triangle with the specified \a index.
@@ -164,6 +164,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
       return sipConvertFromType( sipCpp->triangleN( a0 ), sipType_QgsTriangle, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -214,6 +215,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
     QgsTriangulatedSurface *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -222,6 +224,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
     QString str = u"<QgsTriangulatedSurface: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

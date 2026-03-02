@@ -39,7 +39,6 @@ class QgsVectorTileRawData;
 class CORE_EXPORT QgsVectorTileMVTDecoder
 {
   public:
-
     /**
      * Constructor for QgsVectorTileMVTDecoder, using the specified tile \a structure.
      */
@@ -60,8 +59,7 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
      *
      * If \a layerSubset is specified then only features from the specified layers will be returned.
      */
-    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct,
-                                         const QSet< QString > *layerSubset = nullptr ) const;
+    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct, const QSet< QString > *layerSubset = nullptr ) const;
 
   private:
     //! map of tiles for each source
