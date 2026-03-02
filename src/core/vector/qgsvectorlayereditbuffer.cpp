@@ -757,13 +757,16 @@ bool QgsVectorLayerEditBuffer::commitChangesCheckAttributesModifications( const 
     QgsField newField = newFields.at( i );
     if ( oldField != newField )
     {
-      commitErrors << tr( "ERROR: field with index %1 is not the same!" ).arg( i ) << tr( "Provider: %1" ).arg( L->providerType() ) << tr( "Storage: %1" ).arg( L->storageType() )
-                   << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s.arg( tr( "expected field" ), oldField.name(), QVariant::typeToName( oldField.type() ), oldField.typeName() )
-                        .arg( oldField.length() )
-                        .arg( oldField.precision() )
-                   << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s.arg( tr( "retrieved field" ), newField.name(), QVariant::typeToName( newField.type() ), newField.typeName() )
-                        .arg( newField.length() )
-                        .arg( newField.precision() );
+      commitErrors
+        << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
+        << tr( "Provider: %1" ).arg( L->providerType() )
+        << tr( "Storage: %1" ).arg( L->storageType() )
+        << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s.arg( tr( "expected field" ), oldField.name(), QVariant::typeToName( oldField.type() ), oldField.typeName() )
+             .arg( oldField.length() )
+             .arg( oldField.precision() )
+        << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s.arg( tr( "retrieved field" ), newField.name(), QVariant::typeToName( newField.type() ), newField.typeName() )
+             .arg( newField.length() )
+             .arg( newField.precision() );
       return false; // don't try attribute updates - they'll fail.
     }
   }

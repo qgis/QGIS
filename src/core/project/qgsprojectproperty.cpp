@@ -354,9 +354,12 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
     const QDomNode subkey = subkeys.item( i );
     QString name;
 
-    if ( subkey.nodeName() == "properties"_L1 && subkey.hasAttributes() && // if we have attributes
-         subkey.isElement() &&                                             // and we're an element
-         subkey.toElement().hasAttribute( u"name"_s ) )                    // and we have a "name" attribute
+    if ( subkey.nodeName() == "properties"_L1
+         && subkey.hasAttributes()
+         && // if we have attributes
+         subkey.isElement()
+         &&                                             // and we're an element
+         subkey.toElement().hasAttribute( u"name"_s ) ) // and we have a "name" attribute
       name = subkey.toElement().attribute( u"name"_s );
     else
       name = subkey.nodeName();
@@ -364,8 +367,10 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
     // if the current node is an element that has a "type" attribute,
     // then we know it's a leaf node; i.e., a subkey _value_, and not
     // a subkey
-    if ( subkey.hasAttributes() &&                      // if we have attributes
-         subkey.isElement() &&                          // and we're an element
+    if ( subkey.hasAttributes()
+         && // if we have attributes
+         subkey.isElement()
+         &&                                             // and we're an element
          subkey.toElement().hasAttribute( u"type"_s ) ) // and we have a "type" attribute
     {
       // then we're a key value

@@ -1903,9 +1903,12 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
   }
 
   // Any delete capability will set ClearStorage
-  if ( ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword ) || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteConfiguration )
-       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSetting ) || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity )
-       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig ) || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority )
+  if ( ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteConfiguration )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSetting )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority )
        || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ClearStorage;

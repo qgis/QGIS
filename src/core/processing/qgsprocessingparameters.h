@@ -185,7 +185,11 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
     // TODO c++20 - replace with = default
     bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const
     {
-      return source == other.source && selectedFeaturesOnly == other.selectedFeaturesOnly && featureLimit == other.featureLimit && filterExpression == other.filterExpression && flags == other.flags
+      return source == other.source
+             && selectedFeaturesOnly == other.selectedFeaturesOnly
+             && featureLimit == other.featureLimit
+             && filterExpression == other.filterExpression
+             && flags == other.flags
              && geometryCheck == other.geometryCheck;
     }
 

@@ -63,8 +63,13 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         // TODO c++20 - replace with = default
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
-          return mLayer == other.mLayer && isVisible == other.isVisible && usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle
-                 && usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems && expandedLegendItems == other.expandedLegendItems
+          return mLayer == other.mLayer
+                 && isVisible == other.isVisible
+                 && usingCurrentStyle == other.usingCurrentStyle
+                 && currentStyle == other.currentStyle
+                 && usingLegendItems == other.usingLegendItems
+                 && checkedLegendItems == other.checkedLegendItems
+                 && expandedLegendItems == other.expandedLegendItems
                  && expandedLayerNode == other.expandedLayerNode;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const { return !( *this == other ); }
@@ -118,7 +123,9 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
       public:
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
-          return validLayerRecords() == other.validLayerRecords() && mHasExpandedStateInfo == other.mHasExpandedStateInfo && mExpandedGroupNodes == other.mExpandedGroupNodes
+          return validLayerRecords() == other.validLayerRecords()
+                 && mHasExpandedStateInfo == other.mHasExpandedStateInfo
+                 && mExpandedGroupNodes == other.mExpandedGroupNodes
                  && mCheckedGroupNodes == other.mCheckedGroupNodes;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const { return !( *this == other ); }

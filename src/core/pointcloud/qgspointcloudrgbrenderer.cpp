@@ -144,7 +144,8 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       context.getAttribute( ptr, i * recordSize + blueOffset, blueType, blue );
 
       //skip if red, green or blue not in displayable range
-      if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) ) || ( useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
+      if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) )
+           || ( useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
            || ( useBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
       {
         continue;
@@ -332,7 +333,8 @@ QColor QgsPointCloudRgbRendererPreparedData::pointColor( const QgsPointCloudBloc
   QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + blueOffset, blueType, blue );
 
   //skip if red, green or blue not in displayable range
-  if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( red ) ) || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( green ) )
+  if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( red ) )
+       || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( green ) )
        || ( useBlueContrastEnhancement && !blueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
   {
     return QColor();

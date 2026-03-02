@@ -1480,8 +1480,14 @@ int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimension
 
 bool QgsAbstractDatabaseProviderConnection::TableProperty::operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const
 {
-  return mSchema == other.mSchema && mTableName == other.mTableName && mGeometryColumn == other.mGeometryColumn && mGeometryColumnCount == other.mGeometryColumnCount && mPkColumns == other.mPkColumns
-         && mFlags == other.mFlags && mComment == other.mComment && mInfo == other.mInfo;
+  return mSchema == other.mSchema
+         && mTableName == other.mTableName
+         && mGeometryColumn == other.mGeometryColumn
+         && mGeometryColumnCount == other.mGeometryColumnCount
+         && mPkColumns == other.mPkColumns
+         && mFlags == other.mFlags
+         && mComment == other.mComment
+         && mInfo == other.mInfo;
 }
 
 

@@ -64,8 +64,12 @@ void QgsStatisticalSummary::reset()
 
   mRequiresHisto = mStatistics & Qgis::Statistic::Majority || mStatistics & Qgis::Statistic::Minority || mStatistics & Qgis::Statistic::Variety;
 
-  mRequiresAllValueStorage = mStatistics & Qgis::Statistic::StDev || mStatistics & Qgis::Statistic::StDevSample || mStatistics & Qgis::Statistic::Median || mStatistics & Qgis::Statistic::FirstQuartile
-                             || mStatistics & Qgis::Statistic::ThirdQuartile || mStatistics & Qgis::Statistic::InterQuartileRange;
+  mRequiresAllValueStorage = mStatistics & Qgis::Statistic::StDev
+                             || mStatistics & Qgis::Statistic::StDevSample
+                             || mStatistics & Qgis::Statistic::Median
+                             || mStatistics & Qgis::Statistic::FirstQuartile
+                             || mStatistics & Qgis::Statistic::ThirdQuartile
+                             || mStatistics & Qgis::Statistic::InterQuartileRange;
 }
 
 /***************************************************************************

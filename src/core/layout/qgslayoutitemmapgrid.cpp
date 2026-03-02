@@ -2200,7 +2200,8 @@ bool QgsLayoutItemMapGrid::shouldShowAnnotationForSide( Qgis::MapGridAnnotationT
 
 bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( Qgis::MapGridAnnotationType coordinate, Qgis::MapGridComponentVisibility mode ) const
 {
-  return mode == Qgis::MapGridComponentVisibility::ShowAll || ( mode == Qgis::MapGridComponentVisibility::LatitudeOnly && coordinate == Qgis::MapGridAnnotationType::Latitude )
+  return mode == Qgis::MapGridComponentVisibility::ShowAll
+         || ( mode == Qgis::MapGridComponentVisibility::LatitudeOnly && coordinate == Qgis::MapGridAnnotationType::Latitude )
          || ( mode == Qgis::MapGridComponentVisibility::LongitudeOnly && coordinate == Qgis::MapGridAnnotationType::Longitude );
 }
 
@@ -2223,7 +2224,8 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   const QgsExpressionContext context = createExpressionContext();
 
   // if we are changing the grid interval or offset, then we also have to mark the transform as dirty
-  mTransformDirty = mTransformDirty || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridIntervalX )
+  mTransformDirty = mTransformDirty
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridIntervalX )
                     || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridIntervalY )
                     || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetX )
                     || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetY );

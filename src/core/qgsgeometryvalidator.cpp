@@ -85,8 +85,12 @@ void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex
         if ( d >= 0 && d <= v.length() )
         {
           d = -distLine2Point( ring1XAtj, ring1YAtj, w.perpVector(), sX, sY );
-          if ( d > 0 && d < w.length() && ringLine0->pointN( i + 1 ) != ringLine1->pointN( j + 1 ) && ringLine0->pointN( i + 1 ) != ringLine1->pointN( j )
-               && ringLine0->pointN( i + 0 ) != ringLine1->pointN( j + 1 ) && ringLine0->pointN( i + 0 ) != ringLine1->pointN( j ) )
+          if ( d > 0
+               && d < w.length()
+               && ringLine0->pointN( i + 1 ) != ringLine1->pointN( j + 1 )
+               && ringLine0->pointN( i + 1 ) != ringLine1->pointN( j )
+               && ringLine0->pointN( i + 0 ) != ringLine1->pointN( j + 1 )
+               && ringLine0->pointN( i + 0 ) != ringLine1->pointN( j ) )
           {
             const QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
                                   .arg( i )

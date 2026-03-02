@@ -99,8 +99,15 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
   QString geomType = geometryTypeElement.tagName();
   QgsGeometry geometry;
 
-  if ( !( geomType == "Point"_L1 || geomType == "LineString"_L1 || geomType == "Polygon"_L1 || geomType == "MultiPoint"_L1 || geomType == "MultiLineString"_L1 || geomType == "MultiPolygon"_L1
-          || geomType == "Box"_L1 || geomType == "Envelope"_L1 || geomType == "MultiCurve"_L1 ) )
+  if ( !( geomType == "Point"_L1
+          || geomType == "LineString"_L1
+          || geomType == "Polygon"_L1
+          || geomType == "MultiPoint"_L1
+          || geomType == "MultiLineString"_L1
+          || geomType == "MultiPolygon"_L1
+          || geomType == "Box"_L1
+          || geomType == "Envelope"_L1
+          || geomType == "MultiCurve"_L1 ) )
   {
     const QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
@@ -111,8 +118,15 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
     geomType = geometryTypeElement.tagName();
   }
 
-  if ( !( geomType == "Point"_L1 || geomType == "LineString"_L1 || geomType == "Polygon"_L1 || geomType == "MultiPoint"_L1 || geomType == "MultiLineString"_L1 || geomType == "MultiPolygon"_L1
-          || geomType == "Box"_L1 || geomType == "Envelope"_L1 || geomType == "MultiCurve"_L1 ) )
+  if ( !( geomType == "Point"_L1
+          || geomType == "LineString"_L1
+          || geomType == "Polygon"_L1
+          || geomType == "MultiPoint"_L1
+          || geomType == "MultiLineString"_L1
+          || geomType == "MultiPolygon"_L1
+          || geomType == "Box"_L1
+          || geomType == "Envelope"_L1
+          || geomType == "MultiCurve"_L1 ) )
     return QgsGeometry();
 
   if ( geomType == "Point"_L1 )

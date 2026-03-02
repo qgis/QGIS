@@ -841,8 +841,29 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   QString constraintDescription;
   QMap< int, QVariant > metadata;
 
-  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression
-    >> strengthNotNull >> strengthUnique >> strengthExpression >> constraintExpression >> constraintDescription >> subType >> splitPolicy >> duplicatePolicy >> metadata;
+  in
+    >> name
+    >> type
+    >> typeName
+    >> length
+    >> precision
+    >> comment
+    >> alias
+    >> defaultValueExpression
+    >> applyOnUpdate
+    >> constraints
+    >> originNotNull
+    >> originUnique
+    >> originExpression
+    >> strengthNotNull
+    >> strengthUnique
+    >> strengthExpression
+    >> constraintExpression
+    >> constraintDescription
+    >> subType
+    >> splitPolicy
+    >> duplicatePolicy
+    >> metadata;
   field.setName( name );
   field.setType( static_cast< QMetaType::Type >( type ) );
   field.setTypeName( typeName );

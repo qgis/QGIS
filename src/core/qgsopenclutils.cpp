@@ -152,8 +152,19 @@ void QgsOpenClUtils::init()
 
               if ( VerQueryValue( lpVI, _T( "\\VarFileInfo\\Translation" ), ( LPVOID * ) &lpTranslate, ( UINT * ) &cbTranslate ) && cbTranslate >= sizeof( struct LANGANDCODEPAGE ) )
               {
-                QStringList items = QStringList() << u"Comments"_s << u"InternalName"_s << u"ProductName"_s << u"CompanyName"_s << u"LegalCopyright"_s << u"ProductVersion"_s << u"FileDescription"_s
-                                                  << u"LegalTrademarks"_s << u"PrivateBuild"_s << u"FileVersion"_s << u"OriginalFilename"_s << u"SpecialBuild"_s;
+                QStringList items = QStringList()
+                                    << u"Comments"_s
+                                    << u"InternalName"_s
+                                    << u"ProductName"_s
+                                    << u"CompanyName"_s
+                                    << u"LegalCopyright"_s
+                                    << u"ProductVersion"_s
+                                    << u"FileDescription"_s
+                                    << u"LegalTrademarks"_s
+                                    << u"PrivateBuild"_s
+                                    << u"FileVersion"_s
+                                    << u"OriginalFilename"_s
+                                    << u"SpecialBuild"_s;
                 for ( auto d : items )
                 {
                   LPTSTR lpBuffer;

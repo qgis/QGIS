@@ -729,8 +729,10 @@ void QgsLayoutItemPicture::recalculateSize()
 
 void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
-  if ( property == QgsLayoutObject::DataDefinedProperty::PictureSource || property == QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor
-       || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth
+  if ( property == QgsLayoutObject::DataDefinedProperty::PictureSource
+       || property == QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor
+       || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor
+       || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth
        || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     const QgsExpressionContext context = createExpressionContext();

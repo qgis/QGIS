@@ -225,9 +225,11 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
       lAxis.normalize();
 
       const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-      const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+      const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) )
+                        + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
                         + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-      const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+      const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) )
+                        + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
                         + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
       const double penetration = ( ra + rb ) - tl;
       if ( penetration <= 0 )
@@ -241,9 +243,11 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
     lAxis.normalize();
 
     const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
                       + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
                       + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
     const double penetration = ( ra + rb ) - tl;
     if ( penetration <= 0 )
@@ -256,9 +260,11 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
     lAxis.normalize();
 
     const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
                       + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
                       + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
     const double penetration = ( ra + rb ) - tl;
     if ( penetration <= 0 )

@@ -148,7 +148,8 @@ void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &par
   {
     uri[parameter] = true;
   }
-  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0
+            || value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
             || value.toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     uri[parameter] = false;
@@ -157,12 +158,14 @@ void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &par
 
 bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue )
 {
-  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 || uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0
+  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0
+       || uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0
        || uri.value( parameter, QString() ).toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
     return true;
   }
-  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 || uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0
+            || uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
             || uri.value( parameter, QString() ).toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     return false;

@@ -256,7 +256,8 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   }
 
   QgsEllipseSymbolLayer::Shape shape = mShape;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Height )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Height )
        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) )
   {
     context.setOriginalValueVariable( encodeShape( shape ) );
@@ -834,9 +835,14 @@ Qgis::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
 
 bool QgsEllipseSymbolLayer::usesMapUnits() const
 {
-  return mSymbolWidthUnit == Qgis::RenderUnit::MapUnits || mSymbolWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mSymbolHeightUnit == Qgis::RenderUnit::MapUnits
-         || mSymbolHeightUnit == Qgis::RenderUnit::MetersInMapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mSymbolWidthUnit == Qgis::RenderUnit::MapUnits
+         || mSymbolWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mSymbolHeightUnit == Qgis::RenderUnit::MapUnits
+         || mSymbolHeightUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -1043,7 +1049,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     case Rectangle:
     {
       QgsPointSequence p;
-      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
+      p
+        << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
+        << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
         << QgsPoint( t.map( QPointF( -halfWidth, halfHeight ) ) );
       p << p[0];
 
@@ -1180,7 +1189,6 @@ QString QgsEllipseSymbolLayer::encodeShape( QgsEllipseSymbolLayer::Shape shape )
 QList<QgsEllipseSymbolLayer::Shape> QgsEllipseSymbolLayer::availableShapes()
 {
   QList< Shape > shapes;
-  shapes << Circle << Rectangle << Diamond << Cross << Arrow << HalfArc << Triangle << LeftHalfTriangle << RightHalfTriangle << SemiCircle << ThirdCircle << QuarterCircle << Pentagon << Hexagon
-         << Octagon << Star;
+  shapes << Circle << Rectangle << Diamond << Cross << Arrow << HalfArc << Triangle << LeftHalfTriangle << RightHalfTriangle << SemiCircle << ThirdCircle << QuarterCircle << Pentagon << Hexagon << Octagon << Star;
   return shapes;
 }

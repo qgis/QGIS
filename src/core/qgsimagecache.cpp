@@ -66,8 +66,13 @@ bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) co
 {
   const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->frameNumber != frameNumber || otherImage->size != size || ( !size.isValid() && otherImage->targetDpi != targetDpi )
-       || otherImage->opacity != opacity || otherImage->path != path )
+  if ( !otherImage
+       || otherImage->keepAspectRatio != keepAspectRatio
+       || otherImage->frameNumber != frameNumber
+       || otherImage->size != size
+       || ( !size.isValid() && otherImage->targetDpi != targetDpi )
+       || otherImage->opacity != opacity
+       || otherImage->path != path )
     return false;
 
   return true;

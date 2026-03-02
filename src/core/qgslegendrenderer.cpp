@@ -601,8 +601,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
 
     const double averageRemainingSpaceAboveGroups = numberRemainingGroupsIncludingThisOne > 1 ? ( totalRemainingSpaceAboveGroups / ( numberRemainingGroupsIncludingThisOne - 1 ) ) : 0;
     const double estimatedRemainingSpaceAboveGroupsWhichWontBeUsedBecauseGroupsAreFirstInColumn = numberRemainingColumnBreaks * averageRemainingSpaceAboveGroups;
-    const double estimatedRemainingTotalHeightAfterThisGroup = totalRemainingGroupHeight + totalRemainingSpaceAboveGroups
-                                                               - estimatedRemainingSpaceAboveGroupsWhichWontBeUsedBecauseGroupsAreFirstInColumn;
+    const double estimatedRemainingTotalHeightAfterThisGroup = totalRemainingGroupHeight + totalRemainingSpaceAboveGroups - estimatedRemainingSpaceAboveGroupsWhichWontBeUsedBecauseGroupsAreFirstInColumn;
 
     const double estimatedTotalHeightOfRemainingColumnsIncludingThisOne = currentColumnHeightIfGroupIsIncluded + estimatedRemainingTotalHeightAfterThisGroup;
 
@@ -981,8 +980,10 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   // NOTE -- we hard code left/right margins below, because those are the only ones exposed for use currently.
   // ideally we could (should?) expose all these margins as settings, and then adapt the below to respect the current symbol/text alignment
   // and consider the correct margin sides...
-  double width = std::max( static_cast< double >( im.symbolSize.width() ), maxSiblingSymbolWidth ) + mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Left )
-                 + mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right ) + mSettings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left )
+  double width = std::max( static_cast< double >( im.symbolSize.width() ), maxSiblingSymbolWidth )
+                 + mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Left )
+                 + mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                 + mSettings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left )
                  + im.labelSize.width();
 
   double height = std::max( im.symbolSize.height(), im.labelSize.height() );

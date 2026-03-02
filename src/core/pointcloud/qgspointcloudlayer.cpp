@@ -473,8 +473,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     mDataProvider->generateIndex();
   }
 
-  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed
-       && mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     calculateStatistics();
   }
@@ -591,8 +590,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
-  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Point count" ) + u"</td><td>"_s + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Point count" ) + u"</td><td>"_s + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) ) + u"</td></tr>\n"_s;
 
   if ( const QgsPointCloudDataProvider *provider = dataProvider() )
   {
@@ -617,13 +615,18 @@ QString QgsPointCloudLayer::htmlMetadata() const
   }
   if ( originalMetadata.contains( u"major_version"_s ) && originalMetadata.contains( u"minor_version"_s ) )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Version" ) + u"</td><td>"_s
-                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(), originalMetadata.value( u"minor_version"_s ).toString() ) + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Version" )
+                  + u"</td><td>"_s
+                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(), originalMetadata.value( u"minor_version"_s ).toString() )
+                  + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"dataformat_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Data format" ) + u"</td><td>"_s
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Data format" )
+                  + u"</td><td>"_s
                   + u"%1 (%2)"_s
                       .arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ), originalMetadata.value( u"dataformat_id"_s ).toString() )
                       .trimmed()

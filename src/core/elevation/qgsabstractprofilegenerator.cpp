@@ -127,8 +127,11 @@ double QgsProfileGenerationContext::convertDistanceToPixels( double size, Qgis::
 
 bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
 {
-  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits ) && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel ) && qgsDoubleNear( mDpi, other.mDpi )
-         && mDistanceRange == other.mDistanceRange && mElevationRange == other.mElevationRange;
+  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
+         && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
+         && qgsDoubleNear( mDpi, other.mDpi )
+         && mDistanceRange == other.mDistanceRange
+         && mElevationRange == other.mElevationRange;
 }
 
 bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext &other ) const

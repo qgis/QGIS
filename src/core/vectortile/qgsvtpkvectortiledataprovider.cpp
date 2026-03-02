@@ -268,8 +268,11 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 
   if ( reader.metadata().contains( u"minLOD"_s ) )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s
-                % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s
+                % tr( "Tile detail levels" )
+                % u"</td><td>"_s
+                % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() )
+                % u"</td></tr>\n"_s;
   }
 
   return metadata;

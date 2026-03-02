@@ -164,8 +164,21 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
   }
 
   QStringList geometryAliases;
-  geometryAliases << u"location"_s << u"centerOf"_s << u"position"_s << u"extentOf"_s << u"coverage"_s << u"edgeOf"_s << u"centerLineOf"_s << u"multiLocation"_s << u"multiCenterOf"_s
-                  << u"multiPosition"_s << u"multiCenterLineOf"_s << u"multiEdgeOf"_s << u"multiCoverage"_s << u"multiExtentOf"_s;
+  geometryAliases
+    << u"location"_s
+    << u"centerOf"_s
+    << u"position"_s
+    << u"extentOf"_s
+    << u"coverage"_s
+    << u"edgeOf"_s
+    << u"centerLineOf"_s
+    << u"multiLocation"_s
+    << u"multiCenterOf"_s
+    << u"multiPosition"_s
+    << u"multiCenterLineOf"_s
+    << u"multiEdgeOf"_s
+    << u"multiCoverage"_s
+    << u"multiExtentOf"_s;
 
   // Add attributes from current comple type
   const QList<QDomElement> sequenceElements = domElements( extrest, u"sequence.element"_s );

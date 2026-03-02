@@ -249,7 +249,9 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   const int datasetGroupCount = layer->datasetGroupCount();
   const QgsMeshRendererScalarSettings::DataResamplingMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataResamplingMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
-  if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) && ( cache->mActiveScalarDatasetIndex == datasetIndex ) && ( cache->mDataInterpolationMethod == method )
+  if ( ( cache->mDatasetGroupsCount == datasetGroupCount )
+       && ( cache->mActiveScalarDatasetIndex == datasetIndex )
+       && ( cache->mDataInterpolationMethod == method )
        && ( QgsMesh3DAveragingMethod::equals( cache->mScalarAveragingMethod.get(), mRendererSettings.averagingMethod() ) ) )
   {
     mScalarDatasetValues = cache->mScalarDatasetValues;
@@ -327,7 +329,8 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->datasetGroupCount();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
-  if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) && ( cache->mActiveVectorDatasetIndex == datasetIndex )
+  if ( ( cache->mDatasetGroupsCount == datasetGroupCount )
+       && ( cache->mActiveVectorDatasetIndex == datasetIndex )
        && ( QgsMesh3DAveragingMethod::equals( cache->mVectorAveragingMethod.get(), mRendererSettings.averagingMethod() ) ) )
   {
     mVectorDatasetValues = cache->mVectorDatasetValues;

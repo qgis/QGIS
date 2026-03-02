@@ -84,7 +84,9 @@ Qgis::RenderUnit QgsSimpleFillSymbolLayer::outputUnit() const
 
 bool QgsSimpleFillSymbolLayer::usesMapUnits() const
 {
-  return mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
+  return mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
          || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -965,7 +967,8 @@ void QgsGradientFillSymbolLayer::applyGradient(
   }
 
   //add stops to gradient
-  if ( gradientColorType == Qgis::GradientColorSource::ColorRamp && gradientRamp
+  if ( gradientColorType == Qgis::GradientColorSource::ColorRamp
+       && gradientRamp
        && ( gradientRamp->type() == QgsGradientColorRamp::typeString() || gradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
@@ -1759,7 +1762,9 @@ Qgis::RenderUnit QgsShapeburstFillSymbolLayer::outputUnit() const
 
 bool QgsShapeburstFillSymbolLayer::usesMapUnits() const
 {
-  return mDistanceUnit == Qgis::RenderUnit::MapUnits || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
+  return mDistanceUnit == Qgis::RenderUnit::MapUnits
+         || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
          || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -2339,7 +2344,9 @@ bool QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsS
 
 bool QgsSVGFillSymbolLayer::usesMapUnits() const
 {
-  return mPatternWidthUnit == Qgis::RenderUnit::MapUnits || mPatternWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mSvgStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+  return mPatternWidthUnit == Qgis::RenderUnit::MapUnits
+         || mPatternWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mSvgStrokeWidthUnit == Qgis::RenderUnit::MapUnits
          || mSvgStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -2477,9 +2484,12 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
 void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
   {
     return; //no data defined settings
   }
@@ -2769,8 +2779,12 @@ Qgis::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
 
 bool QgsLinePatternFillSymbolLayer::usesMapUnits() const
 {
-  return mDistanceUnit == Qgis::RenderUnit::MapUnits || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits || mLineWidthUnit == Qgis::RenderUnit::MapUnits
-         || mLineWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mDistanceUnit == Qgis::RenderUnit::MapUnits
+         || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mLineWidthUnit == Qgis::RenderUnit::MapUnits
+         || mLineWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsLinePatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3205,7 +3219,9 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
 {
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the line has data defined symbology, in which case we need to evaluate this line-by-line)
-  mRenderUsingLines = context.forceVectorRendering() || ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() ) || mClipMode != Qgis::LineClipMode::ClipPainterOnly
+  mRenderUsingLines = context.forceVectorRendering()
+                      || ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() )
+                      || mClipMode != Qgis::LineClipMode::ClipPainterOnly
                       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineClipping );
 
   if ( !mRenderUsingLines )
@@ -3555,7 +3571,8 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
 
 void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineAngle ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineDistance )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineAngle )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineDistance )
        && ( !mFillLineSymbol || !mFillLineSymbol->hasDataDefinedProperties() ) )
   {
     return; //no data defined settings
@@ -3688,9 +3705,13 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 Qgis::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
 {
   Qgis::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
-  if ( mDistanceXUnit != unit || mDistanceYUnit != unit || ( mDisplacementXUnit != Qgis::RenderUnit::Percentage && mDisplacementXUnit != unit )
-       || ( mDisplacementYUnit != Qgis::RenderUnit::Percentage && mDisplacementYUnit != unit ) || ( mOffsetXUnit != Qgis::RenderUnit::Percentage && mOffsetXUnit != unit )
-       || ( mOffsetYUnit != Qgis::RenderUnit::Percentage && mOffsetYUnit != unit ) || ( mRandomDeviationXUnit != Qgis::RenderUnit::Percentage && mRandomDeviationXUnit != unit )
+  if ( mDistanceXUnit != unit
+       || mDistanceYUnit != unit
+       || ( mDisplacementXUnit != Qgis::RenderUnit::Percentage && mDisplacementXUnit != unit )
+       || ( mDisplacementYUnit != Qgis::RenderUnit::Percentage && mDisplacementYUnit != unit )
+       || ( mOffsetXUnit != Qgis::RenderUnit::Percentage && mOffsetXUnit != unit )
+       || ( mOffsetYUnit != Qgis::RenderUnit::Percentage && mOffsetYUnit != unit )
+       || ( mRandomDeviationXUnit != Qgis::RenderUnit::Percentage && mRandomDeviationXUnit != unit )
        || ( mRandomDeviationYUnit != Qgis::RenderUnit::Percentage && mRandomDeviationYUnit != unit ) )
   {
     return Qgis::RenderUnit::Unknown;
@@ -3700,11 +3721,21 @@ Qgis::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
 
 bool QgsPointPatternFillSymbolLayer::usesMapUnits() const
 {
-  return mDistanceXUnit == Qgis::RenderUnit::MapUnits || mDistanceXUnit == Qgis::RenderUnit::MetersInMapUnits || mDistanceYUnit == Qgis::RenderUnit::MapUnits
-         || mDistanceYUnit == Qgis::RenderUnit::MetersInMapUnits || mDisplacementXUnit == Qgis::RenderUnit::MapUnits || mDisplacementXUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mDisplacementYUnit == Qgis::RenderUnit::MapUnits || mDisplacementYUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetXUnit == Qgis::RenderUnit::MapUnits
-         || mOffsetXUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetYUnit == Qgis::RenderUnit::MapUnits || mOffsetYUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mRandomDeviationXUnit == Qgis::RenderUnit::MapUnits || mRandomDeviationXUnit == Qgis::RenderUnit::MetersInMapUnits || mRandomDeviationYUnit == Qgis::RenderUnit::MapUnits
+  return mDistanceXUnit == Qgis::RenderUnit::MapUnits
+         || mDistanceXUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mDistanceYUnit == Qgis::RenderUnit::MapUnits
+         || mDistanceYUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mDisplacementXUnit == Qgis::RenderUnit::MapUnits
+         || mDisplacementXUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mDisplacementYUnit == Qgis::RenderUnit::MapUnits
+         || mDisplacementYUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetXUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetXUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetYUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetYUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mRandomDeviationXUnit == Qgis::RenderUnit::MapUnits
+         || mRandomDeviationXUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mRandomDeviationYUnit == Qgis::RenderUnit::MapUnits
          || mRandomDeviationYUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -3723,9 +3754,14 @@ void QgsPointPatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &sca
 
 QgsMapUnitScale QgsPointPatternFillSymbolLayer::mapUnitScale() const
 {
-  if ( QgsImageFillSymbolLayer::mapUnitScale() == mDistanceXMapUnitScale && mDistanceXMapUnitScale == mDistanceYMapUnitScale && mDistanceYMapUnitScale == mDisplacementXMapUnitScale
-       && mDisplacementXMapUnitScale == mDisplacementYMapUnitScale && mDisplacementYMapUnitScale == mOffsetXMapUnitScale && mOffsetXMapUnitScale == mOffsetYMapUnitScale
-       && mRandomDeviationXMapUnitScale == mOffsetYMapUnitScale && mRandomDeviationYMapUnitScale == mRandomDeviationXMapUnitScale )
+  if ( QgsImageFillSymbolLayer::mapUnitScale() == mDistanceXMapUnitScale
+       && mDistanceXMapUnitScale == mDistanceYMapUnitScale
+       && mDistanceYMapUnitScale == mDisplacementXMapUnitScale
+       && mDisplacementXMapUnitScale == mDisplacementYMapUnitScale
+       && mDisplacementYMapUnitScale == mOffsetXMapUnitScale
+       && mOffsetXMapUnitScale == mOffsetYMapUnitScale
+       && mRandomDeviationXMapUnitScale == mOffsetYMapUnitScale
+       && mRandomDeviationYMapUnitScale == mRandomDeviationXMapUnitScale )
   {
     return mDistanceXMapUnitScale;
   }
@@ -3977,9 +4013,15 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
 {
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
-  mRenderUsingMarkers = context.forceVectorRendering() || ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::MarkerClipping )
-                        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::RandomOffsetX ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::RandomOffsetY )
-                        || mClipMode != Qgis::MarkerClipMode::Shape || !qgsDoubleNear( mRandomDeviationX, 0 ) || !qgsDoubleNear( mRandomDeviationY, 0 ) || !qgsDoubleNear( mAngle, 0 )
+  mRenderUsingMarkers = context.forceVectorRendering()
+                        || ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() )
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::MarkerClipping )
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::RandomOffsetX )
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::RandomOffsetY )
+                        || mClipMode != Qgis::MarkerClipMode::Shape
+                        || !qgsDoubleNear( mRandomDeviationX, 0 )
+                        || !qgsDoubleNear( mRandomDeviationY, 0 )
+                        || !qgsDoubleNear( mAngle, 0 )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle );
 
   if ( !mRenderUsingMarkers )
@@ -4700,9 +4742,12 @@ QgsSymbol *QgsPointPatternFillSymbolLayer::subSymbol()
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceY )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DisplacementX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DisplacementY )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetY )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceX )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceY )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DisplacementX )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DisplacementY )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetX )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetY )
        && ( !mMarkerSymbol || !mMarkerSymbol->hasDataDefinedProperties() ) )
   {
     return;

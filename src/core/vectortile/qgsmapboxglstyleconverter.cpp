@@ -1333,7 +1333,9 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     };
 
     const QVariant jsonTextFont = jsonLayout.value( u"text-font"_s );
-    if ( jsonTextFont.userType() != QMetaType::Type::QVariantList && jsonTextFont.userType() != QMetaType::Type::QStringList && jsonTextFont.userType() != QMetaType::Type::QString
+    if ( jsonTextFont.userType() != QMetaType::Type::QVariantList
+         && jsonTextFont.userType() != QMetaType::Type::QStringList
+         && jsonTextFont.userType() != QMetaType::Type::QString
          && jsonTextFont.userType() != QMetaType::Type::QVariantMap )
     {
       context.pushWarning( QObject::tr( "%1: Skipping unsupported text-font type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextFont.userType() ) ) ) );
@@ -3469,8 +3471,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QStringList parts;
 
     QVariantList values = expression.mid( 2 );
-    if ( expression.size() == 3 && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1
-         && expression.at( 2 ).toList().at( 0 ).toString() == "literal"_L1 )
+    if ( expression.size() == 3 && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1 && expression.at( 2 ).toList().at( 0 ).toString() == "literal"_L1 )
     {
       values = expression.at( 2 ).toList().at( 1 ).toList();
     }
@@ -3509,7 +3510,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     const QString attribute = expression.value( 1 ).toList().value( 1 ).toString();
 
-    if ( expression.size() == 5 && expression.at( 3 ).userType() == QMetaType::Type::Bool && expression.at( 3 ).toBool() == true && expression.at( 4 ).userType() == QMetaType::Type::Bool
+    if ( expression.size() == 5
+         && expression.at( 3 ).userType() == QMetaType::Type::Bool
+         && expression.at( 3 ).toBool() == true
+         && expression.at( 4 ).userType() == QMetaType::Type::Bool
          && expression.at( 4 ).toBool() == false )
     {
       // simple case, make a nice simple expression instead of a CASE statement
@@ -3526,7 +3530,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
         else
           return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ).toList().value( 0 ) );
       }
-      else if ( expression.at( 2 ).userType() == QMetaType::Type::QString || expression.at( 2 ).userType() == QMetaType::Type::Int || expression.at( 2 ).userType() == QMetaType::Type::Double
+      else if ( expression.at( 2 ).userType() == QMetaType::Type::QString
+                || expression.at( 2 ).userType() == QMetaType::Type::Int
+                || expression.at( 2 ).userType() == QMetaType::Type::Double
                 || expression.at( 2 ).userType() == QMetaType::Type::LongLong )
       {
         return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ) );
@@ -3555,7 +3561,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
           else
             caseString += u"WHEN %1 "_s.arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ).toList().value( 0 ) ) );
         }
-        else if ( expression.at( i ).userType() == QMetaType::Type::QString || expression.at( i ).userType() == QMetaType::Type::Int || expression.at( i ).userType() == QMetaType::Type::Double
+        else if ( expression.at( i ).userType() == QMetaType::Type::QString
+                  || expression.at( i ).userType() == QMetaType::Type::Int
+                  || expression.at( i ).userType() == QMetaType::Type::Double
                   || expression.at( i ).userType() == QMetaType::Type::LongLong )
         {
           caseString += u"WHEN (%1) "_s.arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );

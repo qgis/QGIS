@@ -160,7 +160,8 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
     const QString myFile = myList.at( i );
     mReport += "<tr><td colspan=3>"
                "Checking if "
-               + myFile + " is a known anomaly.";
+               + myFile
+               + " is a known anomaly.";
     mReport += "</td></tr>"_L1;
     const QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + '/' + myFile );
     QString myHashMessage = u"Checking if anomaly %1 (hash %2)<br>"_s.arg( myFile, myAnomalyHash );
@@ -658,8 +659,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       }
       else
       {
-        if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance || std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance
-             || std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance || std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
+        if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance
+             || std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance
+             || std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance
+             || std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
           diffScanline[x] = qRgb( 255, 0, 0 );
@@ -740,10 +743,16 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     " If you feel the difference image should be considered an anomaly "
     "you can do something like this\n"
     "cp '"
-      + mDiffImageFile + "' " + controlImagePath() + mControlName
+      + mDiffImageFile
+      + "' "
+      + controlImagePath()
+      + mControlName
       + "/\nIf it should be included in the mask run\n"
         "scripts/generate_test_mask_image.py '"
-      + referenceImageFile + "' '" + mRenderedImageFile + "'\n"
+      + referenceImageFile
+      + "' '"
+      + mRenderedImageFile
+      + "'\n"
   );
 
   mReport += "<tr><td colspan = 3>\n"_L1;

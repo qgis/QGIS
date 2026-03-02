@@ -807,8 +807,14 @@ Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
 Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
   Qgis::VectorProviderCapabilities caps {
-    Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes
-    | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::FastTruncate
+    Qgis::VectorProviderCapability::AddFeatures
+    | Qgis::VectorProviderCapability::DeleteFeatures
+    | Qgis::VectorProviderCapability::ChangeAttributeValues
+    | Qgis::VectorProviderCapability::AddAttributes
+    | Qgis::VectorProviderCapability::DeleteAttributes
+    | Qgis::VectorProviderCapability::RenameAttributes
+    | Qgis::VectorProviderCapability::SelectAtId
+    | Qgis::VectorProviderCapability::FastTruncate
   };
   if ( mWkbType != Qgis::WkbType::NoGeometry )
   {

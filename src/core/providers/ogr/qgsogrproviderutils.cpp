@@ -998,7 +998,10 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   QString filePath( QString::fromUtf8( pszPath ) );
 
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( "gpkg"_L1, Qt::CaseInsensitive ) == 0;
-  const bool bIsLocalGpkg = bIsGpkg && IsLocalFile( filePath ) && !filePath.startsWith( "/vsizip/" ) && !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr )
+  const bool bIsLocalGpkg = bIsGpkg
+                            && IsLocalFile( filePath )
+                            && !filePath.startsWith( "/vsizip/" )
+                            && !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr )
                             && QgsSettings().value( u"qgis/walForSqlite3"_s, true ).toBool();
 
   if ( bIsGpkg )
@@ -2181,7 +2184,9 @@ OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatur
     OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
 
     // ESRI MultiPatch can be reported as GeometryCollectionZ of TINZ
-    if ( wkbFlatten( gType ) == wkbGeometryCollection && isMultiPatchAsGeomCollectionZOfTinZ( driverName ) && OGR_G_GetGeometryCount( geom ) >= 1
+    if ( wkbFlatten( gType ) == wkbGeometryCollection
+         && isMultiPatchAsGeomCollectionZOfTinZ( driverName )
+         && OGR_G_GetGeometryCount( geom ) >= 1
          && wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
     {
       gType = wkbMultiPolygon25D;
@@ -3045,7 +3050,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
       QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
       sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
       const char *pszAttrFilter = OGR_L_GetAttributeFilter( hLayer );
       if ( pszAttrFilter && pszAttrFilter[0] != '\0' )
       {

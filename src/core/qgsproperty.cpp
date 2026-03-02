@@ -281,8 +281,11 @@ QgsProperty &QgsProperty::operator=( const QgsProperty &other ) //NOLINT
 
 bool QgsProperty::operator==( const QgsProperty &other ) const
 {
-  return d->active == other.d->active && d->type == other.d->type && ( d->type != Qgis::PropertyType::Static || d->staticValue == other.d->staticValue )
-         && ( d->type != Qgis::PropertyType::Field || d->fieldName == other.d->fieldName ) && ( d->type != Qgis::PropertyType::Expression || d->expressionString == other.d->expressionString )
+  return d->active == other.d->active
+         && d->type == other.d->type
+         && ( d->type != Qgis::PropertyType::Static || d->staticValue == other.d->staticValue )
+         && ( d->type != Qgis::PropertyType::Field || d->fieldName == other.d->fieldName )
+         && ( d->type != Qgis::PropertyType::Expression || d->expressionString == other.d->expressionString )
          && ( ( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
 }
 

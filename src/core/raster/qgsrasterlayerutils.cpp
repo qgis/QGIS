@@ -111,7 +111,8 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange( QgsRasterLaye
         const QgsDoubleRange rangeForBand = rangePerBand.value( band );
         if ( rangeForBand.overlaps( elevationRange ) )
         {
-          if ( currentMatchingRange.isInfinite() || ( rangeForBand.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite()
+               || ( rangeForBand.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && rangeForBand.upper() >= currentMatchingRange.upper() ) )
           {
             matched = true;
@@ -156,7 +157,8 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange( QgsRasterLaye
         const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
         if ( bandRange.overlaps( elevationRange ) )
         {
-          if ( currentMatchingRange.isInfinite() || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite()
+               || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
           {
             currentMatchingBand = band;

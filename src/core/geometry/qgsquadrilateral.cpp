@@ -256,7 +256,9 @@ bool QgsQuadrilateral::equals( const QgsQuadrilateral &other, double epsilon ) c
     return false;
   }
   return (
-    ( equalPoint( mPoint1, other.mPoint1, epsilon ) ) && ( equalPoint( mPoint2, other.mPoint2, epsilon ) ) && ( equalPoint( mPoint3, other.mPoint3, epsilon ) )
+    ( equalPoint( mPoint1, other.mPoint1, epsilon ) )
+    && ( equalPoint( mPoint2, other.mPoint2, epsilon ) )
+    && ( equalPoint( mPoint3, other.mPoint3, epsilon ) )
     && ( equalPoint( mPoint4, other.mPoint4, epsilon ) )
   );
 }

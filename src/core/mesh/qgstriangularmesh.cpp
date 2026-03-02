@@ -106,8 +106,10 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
                                              mCoordinateTransform.destinationCrs() != transform.destinationCrs() ||
                                              mCoordinateTransform.isValid() != transform.isValid() ) ) ;
 
-  bool needUpdateFrame = mTriangularMesh.vertices.size() != nativeMesh->vertices.size() || mNativeMeshFaceCentroids.size() != nativeMesh->faces.size()
-                         || mTriangularMesh.faces.size() < nativeMesh->faces.size() || mTriangularMesh.edges.size() != nativeMesh->edges.size();
+  bool needUpdateFrame = mTriangularMesh.vertices.size() != nativeMesh->vertices.size()
+                         || mNativeMeshFaceCentroids.size() != nativeMesh->faces.size()
+                         || mTriangularMesh.faces.size() < nativeMesh->faces.size()
+                         || mTriangularMesh.edges.size() != nativeMesh->edges.size();
 
 
   // FIND OUT IF UPDATE IS NEEDED

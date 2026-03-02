@@ -1686,8 +1686,11 @@ Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return Qgis::RasterInterfaceCapabilities();
 
-  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue | Qgis::RasterInterfaceCapability::Size
-                                                 | Qgis::RasterInterfaceCapability::BuildPyramids | Qgis::RasterInterfaceCapability::Prefetch;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
+                                                 | Qgis::RasterInterfaceCapability::IdentifyValue
+                                                 | Qgis::RasterInterfaceCapability::Size
+                                                 | Qgis::RasterInterfaceCapability::BuildPyramids
+                                                 | Qgis::RasterInterfaceCapability::Prefetch;
   if ( mDriverName != "WMS"_L1 )
   {
     capability |= Qgis::RasterInterfaceCapability::Size;
@@ -1859,8 +1862,12 @@ Qgis::DataProviderFlags QgsGdalProvider::flags() const
 
 Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
-  return Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling | Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling | Qgis::RasterProviderCapability::ReloadData
-         | Qgis::RasterProviderCapability::NativeRasterAttributeTable | Qgis::RasterProviderCapability::ReadLayerMetadata | Qgis::RasterProviderCapability::BuildPyramids;
+  return Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling
+         | Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling
+         | Qgis::RasterProviderCapability::ReloadData
+         | Qgis::RasterProviderCapability::NativeRasterAttributeTable
+         | Qgis::RasterProviderCapability::ReadLayerMetadata
+         | Qgis::RasterProviderCapability::BuildPyramids;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags )
@@ -2037,7 +2044,8 @@ bool QgsGdalProvider::hasHistogram( int bandNo, int binCount, double minimum, do
   myExpectedMaxVal += dfHalfBucket;
 
   // min/max are stored as text in aux file => use threshold
-  if ( myBinCount != myHistogram.binCount || std::fabs( myMinVal - myExpectedMinVal ) > std::fabs( myExpectedMinVal ) / 10e6
+  if ( myBinCount != myHistogram.binCount
+       || std::fabs( myMinVal - myExpectedMinVal ) > std::fabs( myExpectedMinVal ) / 10e6
        || std::fabs( myMaxVal - myExpectedMaxVal ) > std::fabs( myExpectedMaxVal ) / 10e6 )
   {
     QgsDebugMsgLevel( u"Params do not match binCount: %1 x %2, minVal: %3 x %4, maxVal: %5 x %6"_s.arg( myBinCount ).arg( myHistogram.binCount ).arg( myMinVal ).arg( myExpectedMinVal ).arg( myMaxVal ).arg( myExpectedMaxVal ), 2 );
@@ -2580,8 +2588,10 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &lis
         QgsDebugMsgLevel( "Checking whether " + QString::number( myRasterPyramid.getXDim() ) + " x " + QString::number( myRasterPyramid.getYDim() ) + " matches " + QString::number( myOverviewXDim ) + " x " + QString::number( myOverviewYDim ), 2 );
 
 
-        if ( ( myOverviewXDim <= ( myRasterPyramid.getXDim() + myNearMatchLimit ) ) && ( myOverviewXDim >= ( myRasterPyramid.getXDim() - myNearMatchLimit ) )
-             && ( myOverviewYDim <= ( myRasterPyramid.getYDim() + myNearMatchLimit ) ) && ( myOverviewYDim >= ( myRasterPyramid.getYDim() - myNearMatchLimit ) ) )
+        if ( ( myOverviewXDim <= ( myRasterPyramid.getXDim() + myNearMatchLimit ) )
+             && ( myOverviewXDim >= ( myRasterPyramid.getXDim() - myNearMatchLimit ) )
+             && ( myOverviewYDim <= ( myRasterPyramid.getYDim() + myNearMatchLimit ) )
+             && ( myOverviewYDim >= ( myRasterPyramid.getYDim() - myNearMatchLimit ) ) )
         {
           //right we have a match so adjust the a / y before they get added to the list
           myRasterPyramid.setXDim( myOverviewXDim );
@@ -3089,7 +3099,10 @@ bool QgsGdalProvider::hasStatistics( int bandNo, Qgis::RasterBandStatistics _sta
   }
 
   // If not cached, check if supported by GDAL
-  Qgis::RasterBandStatistics supportedStats = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean
+  Qgis::RasterBandStatistics supportedStats = Qgis::RasterBandStatistic::Min
+                                              | Qgis::RasterBandStatistic::Max
+                                              | Qgis::RasterBandStatistic::Range
+                                              | Qgis::RasterBandStatistic::Mean
                                               | Qgis::RasterBandStatistic::StdDev;
 
   if ( myRasterBandStats.extent != extent() || ( stats & ( ~supportedStats ) ) )
@@ -3182,7 +3195,10 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, Qgis::RasterBand
     return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize, feedback );
   }
 
-  const Qgis::RasterBandStatistics supportedStats = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean
+  const Qgis::RasterBandStatistics supportedStats = Qgis::RasterBandStatistic::Min
+                                                    | Qgis::RasterBandStatistic::Max
+                                                    | Qgis::RasterBandStatistic::Range
+                                                    | Qgis::RasterBandStatistic::Mean
                                                     | Qgis::RasterBandStatistic::StdDev;
 
   QgsDebugMsgLevel( u"theStats = %1 supportedStats = %2"_s.arg( static_cast<int>( stats ), 0, 2 ).arg( static_cast<int>( supportedStats ), 0, 2 ), 2 );
@@ -3253,7 +3269,10 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, Qgis::RasterBand
     myRasterBandStats.elementCount = 0; //not available via gdal
     myRasterBandStats.sumOfSquares = 0; //not available via gdal
     myRasterBandStats.stdDev = pdfStdDev;
-    myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean
+    myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min
+                                      | Qgis::RasterBandStatistic::Max
+                                      | Qgis::RasterBandStatistic::Range
+                                      | Qgis::RasterBandStatistic::Mean
                                       | Qgis::RasterBandStatistic::StdDev;
 
     // define if the band has scale and offset to apply
@@ -3742,8 +3761,10 @@ void QgsGdalProvider::initBaseDataset()
 #endif
   // Check if we need a warped VRT for this file.
   bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
-  if ( ( hasGeoTransform && ( mGeoTransform[1] < 0.0 || mGeoTransform[2] != 0.0 || mGeoTransform[4] != 0.0 || mGeoTransform[5] > 0.0 ) ) || GDALGetGCPCount( mGdalBaseDataset ) > 0
-       || GDALGetMetadata( mGdalBaseDataset, "RPC" ) || GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
+  if ( ( hasGeoTransform && ( mGeoTransform[1] < 0.0 || mGeoTransform[2] != 0.0 || mGeoTransform[4] != 0.0 || mGeoTransform[5] > 0.0 ) )
+       || GDALGetGCPCount( mGdalBaseDataset ) > 0
+       || GDALGetMetadata( mGdalBaseDataset, "RPC" )
+       || GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
   {
     QgsDebugMsgLevel( u"Creating Warped VRT."_s, 2 );
 
@@ -3756,7 +3777,9 @@ void QgsGdalProvider::initBaseDataset()
 
     // South-up oriented raster without any rotation, GCP, RPC or GEOLOCATION doesn't need alpha band
     const bool isSouthUpWithoutRotationGcpOrRPC = ( hasGeoTransform && ( mGeoTransform[1] > 0.0 && mGeoTransform[2] == 0.0 && mGeoTransform[4] == 0.0 && mGeoTransform[5] > 0.0 ) )
-                                                  && GDALGetGCPCount( mGdalBaseDataset ) == 0 && !GDALGetMetadata( mGdalBaseDataset, "RPC" ) && !GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" );
+                                                  && GDALGetGCPCount( mGdalBaseDataset ) == 0
+                                                  && !GDALGetMetadata( mGdalBaseDataset, "RPC" )
+                                                  && !GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" );
 
     if ( !isSouthUpWithoutRotationGcpOrRPC && GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {

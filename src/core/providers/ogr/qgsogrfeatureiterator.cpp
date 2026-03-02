@@ -59,7 +59,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
    * (see GH #39178) so we need to skip all calls that might reset the reading (rewind) to avoid an endless loop in the
    * outer fetching iterator that uses the same connection.
    */
-  mAllowResetReading = !transaction || ( source->mDriverName != "GPKG"_L1 && source->mDriverName != "SQLite"_L1 )
+  mAllowResetReading = !transaction
+                       || ( source->mDriverName != "GPKG"_L1 && source->mDriverName != "SQLite"_L1 )
                        || ( mRequest.filterType() != Qgis::FeatureRequestFilterType::Fid && mRequest.filterType() != Qgis::FeatureRequestFilterType::Fids );
 
   mCplHttpFetchOverrider = std::make_unique< QgsCPLHTTPFetchOverrider >( mAuthCfg );
@@ -144,7 +145,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   // as a JOIN with the GPKG RTree when it exists, instead of having just OGR
   // evaluating it as a post processing.
   const auto constOrderBy = request.orderBy();
-  if ( !constOrderBy.isEmpty() && source->mDriverName == "GPKG"_L1
+  if ( !constOrderBy.isEmpty()
+       && source->mDriverName == "GPKG"_L1
        && ( request.filterType() == Qgis::FeatureRequestFilterType::NoFilter || request.filterType() == Qgis::FeatureRequestFilterType::Expression )
        && ( mSource->mSubsetString.isEmpty() || !mSource->mSubsetString.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) ) )
   {

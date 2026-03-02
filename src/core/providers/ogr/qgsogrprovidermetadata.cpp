@@ -264,11 +264,16 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
 
   // Handles DB connections extracting database name if possible
   // Example: MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'
-  if ( uri.startsWith( u"MySQL"_s, Qt::CaseSensitivity::CaseInsensitive ) || uri.startsWith( u"PostgreSQL"_s, Qt::CaseSensitivity::CaseInsensitive )
-       || uri.startsWith( u"MSSQL"_s, Qt::CaseSensitivity::CaseInsensitive ) || uri.startsWith( u"ODBC"_s, Qt::CaseSensitivity::CaseInsensitive )
-       || uri.startsWith( u"PGeo"_s, Qt::CaseSensitivity::CaseInsensitive ) || uri.startsWith( u"SDE"_s, Qt::CaseSensitivity::CaseInsensitive )
-       || uri.startsWith( u"OGDI"_s, Qt::CaseSensitivity::CaseInsensitive ) || uri.startsWith( u"Ingres"_s, Qt::CaseSensitivity::CaseInsensitive )
-       || uri.startsWith( u"IDB"_s, Qt::CaseSensitivity::CaseInsensitive ) || uri.startsWith( u"OCI"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( uri.startsWith( u"MySQL"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"PostgreSQL"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"MSSQL"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"ODBC"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"PGeo"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"SDE"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"OGDI"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"Ingres"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"IDB"_s, Qt::CaseSensitivity::CaseInsensitive )
+       || uri.startsWith( u"OCI"_s, Qt::CaseSensitivity::CaseInsensitive ) )
   {
     auto parts( path.split( ':' ) );
     if ( parts.count() > 1 )
@@ -1187,8 +1192,10 @@ bool QgsOgrProviderMetadata::urisReferToSame( const QString &uri1, const QString
   const QVariantMap parts1 = decodeUri( uri1 );
   const QVariantMap parts2 = decodeUri( uri2 );
 
-  const bool sameConnection = parts1.value( u"path"_s ) == parts2.value( u"path"_s ) && parts1.value( u"vsiPrefix"_s ) == parts2.value( u"vsiPrefix"_s )
-                              && parts1.value( u"vsiSuffix"_s ) == parts2.value( u"vsiSuffix"_s ) && parts1.value( u"databaseName"_s ) == parts2.value( u"databaseName"_s );
+  const bool sameConnection = parts1.value( u"path"_s ) == parts2.value( u"path"_s )
+                              && parts1.value( u"vsiPrefix"_s ) == parts2.value( u"vsiPrefix"_s )
+                              && parts1.value( u"vsiSuffix"_s ) == parts2.value( u"vsiSuffix"_s )
+                              && parts1.value( u"databaseName"_s ) == parts2.value( u"databaseName"_s );
   const bool sameTable = parts1.value( u"layerName"_s ) == parts2.value( u"layerName"_s );
   switch ( level )
   {

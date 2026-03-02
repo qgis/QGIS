@@ -449,7 +449,9 @@ void QgsTextDocumentMetrics::processFragment(
       }
 
       // do we need to move this image fragment to a new block to respect wrapping?
-      if ( documentContext.flags() & Qgis::TextRendererFlag::WrapLines && documentContext.maximumWidth() > 0 && ( thisBlockMetrics.blockXMax + imageWidth > documentContext.maximumWidth() )
+      if ( documentContext.flags() & Qgis::TextRendererFlag::WrapLines
+           && documentContext.maximumWidth() > 0
+           && ( thisBlockMetrics.blockXMax + imageWidth > documentContext.maximumWidth() )
            && !currentOutputBlock.empty() )
       {
         // yep, need to wrap before the image

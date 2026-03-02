@@ -66,10 +66,10 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     {
       sipType = NULL;
     }
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:

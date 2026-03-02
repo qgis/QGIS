@@ -51,8 +51,7 @@ class CORE_EXPORT QgsSensorThingsUtils
      *
      * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity type.
      */
-    static Qgis::SensorThingsEntity
-      stringToEntity( const QString &type );
+    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 
     /**
      * Converts a Qgis::SensorThingsEntity \a type to a user-friendly translated string.

@@ -236,8 +236,9 @@ int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, co
       {
         if ( it.value().overlaps( range ) )
         {
-          if ( currentMatchingRange.isInfinite() || ( it.value().includeEnd() && it.value().end() >= currentMatchingRange.end() ) // cppcheck-suppress mismatchingContainerExpression
-               || ( !currentMatchingRange.includeEnd() && it.value().end() >= currentMatchingRange.end() ) )                      // cppcheck-suppress mismatchingContainerExpression
+          if ( currentMatchingRange.isInfinite()
+               || ( it.value().includeEnd() && it.value().end() >= currentMatchingRange.end() )              // cppcheck-suppress mismatchingContainerExpression
+               || ( !currentMatchingRange.includeEnd() && it.value().end() >= currentMatchingRange.end() ) ) // cppcheck-suppress mismatchingContainerExpression
           {
             currentMatchingBand = it.key();
             currentMatchingRange = it.value();

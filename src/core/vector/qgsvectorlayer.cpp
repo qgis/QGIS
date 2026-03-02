@@ -1059,7 +1059,8 @@ QgsRectangle QgsVectorLayer::extent() const
     return rect;
   }
 
-  if ( !mEditBuffer || ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) )
+  if ( !mEditBuffer
+       || ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) )
        || QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
@@ -1170,7 +1171,8 @@ QgsBox3D QgsVectorLayer::extent3D() const
     return extent;
   }
 
-  if ( !mEditBuffer || ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) )
+  if ( !mEditBuffer
+       || ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) )
        || QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
@@ -1292,7 +1294,11 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &render
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != Qgis::GeometryType::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint )
+  if ( isValid()
+       && mDataProvider
+       && !mEditBuffer
+       && ( isSpatial() && geometryType() != Qgis::GeometryType::Point )
+       && ( mSimplifyMethod.simplifyHints() & simplifyHint )
        && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
@@ -5977,7 +5983,10 @@ QString QgsVectorLayer::htmlMetadata() const
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Feature count" ) + u"</td><td>"_s + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( featureCount() ) ) )
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Feature count" )
+                + u"</td><td>"_s
+                + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( featureCount() ) ) )
                 + u"</td></tr>\n"_s;
 
   // End Provider section
@@ -6026,8 +6035,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Count" ) + u"</td><td>"_s + QString::number( myFields.size() ) + u"</td></tr>\n"_s;
 
   myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n"_L1;
-  myMetadata += "<tr><th>"_L1 + tr( "Field" ) + "</th><th>"_L1 + tr( "Type" ) + "</th><th>"_L1 + tr( "Length" ) + "</th><th>"_L1 + tr( "Precision" ) + "</th><th>"_L1 + tr( "Comment" )
-                + "</th></tr>\n"_L1;
+  myMetadata += "<tr><th>"_L1 + tr( "Field" ) + "</th><th>"_L1 + tr( "Type" ) + "</th><th>"_L1 + tr( "Length" ) + "</th><th>"_L1 + tr( "Precision" ) + "</th><th>"_L1 + tr( "Comment" ) + "</th></tr>\n"_L1;
 
   for ( int i = 0; i < myFields.size(); ++i )
   {
@@ -6035,8 +6043,19 @@ QString QgsVectorLayer::htmlMetadata() const
     QString rowClass;
     if ( i % 2 )
       rowClass = u"class=\"odd-row\""_s;
-    myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + myField.displayNameWithAlias() + "</td><td>"_L1 + myField.typeName() + "</td><td>"_L1 + QString::number( myField.length() ) + "</td><td>"_L1
-                  + QString::number( myField.precision() ) + "</td><td>"_L1 + myField.comment() + "</td></tr>\n"_L1;
+    myMetadata += "<tr "_L1
+                  + rowClass
+                  + "><td>"_L1
+                  + myField.displayNameWithAlias()
+                  + "</td><td>"_L1
+                  + myField.typeName()
+                  + "</td><td>"_L1
+                  + QString::number( myField.length() )
+                  + "</td><td>"_L1
+                  + QString::number( myField.precision() )
+                  + "</td><td>"_L1
+                  + myField.comment()
+                  + "</td></tr>\n"_L1;
   }
 
   //close field list

@@ -456,7 +456,10 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
   // If we're drawing using symbol levels, we only draw buffers for the bottom most level
-  const bool usingBuffer = ( layerIdx == -1 || layerIdx == 0 ) && mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol()
+  const bool usingBuffer = ( layerIdx == -1 || layerIdx == 0 )
+                           && mBufferSettings
+                           && mBufferSettings->enabled()
+                           && mBufferSettings->fillSymbol()
                            && !symbolRenderContext()->renderHints().testFlag( Qgis::SymbolRenderHint::ExcludeSymbolBuffers );
 
   if ( layerIdx != -1 && !usingBuffer )

@@ -567,7 +567,10 @@ void QgsRasterInterface::cumulativeCut( int bandNo, double lowerCount, double up
   }
 
   // fix integer data - round down/up
-  if ( mySrcDataType == Qgis::DataType::Byte || mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16
+  if ( mySrcDataType == Qgis::DataType::Byte
+       || mySrcDataType == Qgis::DataType::Int16
+       || mySrcDataType == Qgis::DataType::Int32
+       || mySrcDataType == Qgis::DataType::UInt16
        || mySrcDataType == Qgis::DataType::UInt32 )
   {
     if ( !std::isnan( lowerValue ) )

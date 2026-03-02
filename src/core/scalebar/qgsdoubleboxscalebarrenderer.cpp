@@ -41,8 +41,16 @@ QString QgsDoubleBoxScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel
-         | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol
+         | Flag::FlagUsesFillSymbol
+         | Flag::FlagUsesAlternateFillSymbol
+         | Flag::FlagRespectsUnits
+         | Flag::FlagRespectsMapUnitsPerScaleBarUnit
+         | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments
+         | Flag::FlagUsesLabelBarSpace
+         | Flag::FlagUsesLabelVerticalPlacement
+         | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsDoubleBoxScaleBarRenderer::sortKey() const
@@ -157,8 +165,12 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
     // outside line
     lineSymbol->renderPolyline(
-      QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + segmentHeight * 2 ) << QPointF( minX, barTopPosition + segmentHeight * 2 )
-                  << QPointF( minX, barTopPosition ),
+      QPolygonF()
+        << QPointF( minX, barTopPosition )
+        << QPointF( maxX, barTopPosition )
+        << QPointF( maxX, barTopPosition + segmentHeight * 2 )
+        << QPointF( minX, barTopPosition + segmentHeight * 2 )
+        << QPointF( minX, barTopPosition ),
       nullptr,
       context,
       layer

@@ -323,8 +323,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
         // TODO c++20 - replace with = default
         bool operator==( const QgsPointLocator::Match &other ) const
         {
-          return mType == other.mType && mDist == other.mDist && mPoint == other.mPoint && mLayer == other.mLayer && mFid == other.mFid && mVertexIndex == other.mVertexIndex
-                 && mEdgePoints[0] == other.mEdgePoints[0] && mEdgePoints[1] == other.mEdgePoints[1] && mCentroid == other.mCentroid && mMiddleOfSegment == other.mMiddleOfSegment;
+          return mType == other.mType
+                 && mDist == other.mDist
+                 && mPoint == other.mPoint
+                 && mLayer == other.mLayer
+                 && mFid == other.mFid
+                 && mVertexIndex == other.mVertexIndex
+                 && mEdgePoints[0] == other.mEdgePoints[0]
+                 && mEdgePoints[1] == other.mEdgePoints[1]
+                 && mCentroid == other.mCentroid
+                 && mMiddleOfSegment == other.mMiddleOfSegment;
         }
 
       protected:

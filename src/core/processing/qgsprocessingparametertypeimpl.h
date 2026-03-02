@@ -53,22 +53,28 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsProcessingRasterLayerDefinition"_s << u"QgsProperty"_s
-                           << u"QgsRasterLayer"_s;
+      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsProcessingRasterLayerDefinition"_s << u"QgsProperty"_s << u"QgsRasterLayer"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Path to a raster layer" ); }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterRasterLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName()
-                           << QgsProcessingOutputFolder::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 
     QColor modelColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
@@ -104,15 +110,17 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingPara
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterExpression::typeName();
+      return QStringList() << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName()
-                           // TODO  << QgsProcessingOutputMeshLayer::typeName()
-                           << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputFolder::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             // TODO  << QgsProcessingOutputMeshLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 
     QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
@@ -151,14 +159,21 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName()
-                           << QgsProcessingOutputFolder::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 
     QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const override
@@ -195,23 +210,33 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsMapLayer"_s << u"QgsProperty"_s << u"QgsRasterLayer"_s
-                           << u"QgsVectorLayer"_s;
+      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsMapLayer"_s << u"QgsProperty"_s << u"QgsRasterLayer"_s << u"QgsVectorLayer"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Path to a vector, raster or mesh layer" ); }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterRasterLayer::typeName() << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterVectorLayer::typeName()
-                           << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterAnnotationLayer::typeName()
-                           << QgsProcessingParameterString::typeName() << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName()
-                           << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputVariant::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 
     QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
@@ -242,24 +267,48 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "1 for true/yes" ) << QObject::tr( "0 for false/no" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "1 for true/yes" )
+             << QObject::tr( "0 for false/no" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QStringList acceptedParameterTypes() const override
     {
       //pretty much everything is compatible here and can be converted to a bool!
-      return QStringList() << QgsProcessingParameterBoolean::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterNumber::typeName()
-                           << QgsProcessingParameterDistance::typeName() << QgsProcessingParameterArea::typeName() << QgsProcessingParameterVolume::typeName()
-                           << QgsProcessingParameterDuration::typeName() << QgsProcessingParameterScale::typeName() << QgsProcessingParameterFile::typeName() << QgsProcessingParameterField::typeName()
-                           << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterRasterLayer::typeName()
-                           << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterExpression::typeName()
-                           << QgsProcessingParameterProviderConnection::typeName() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterAnnotationLayer::typeName();
+      return QStringList()
+             << QgsProcessingParameterBoolean::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterField::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterProviderConnection::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
     }
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputNumber::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputRasterLayer::typeName()
-                           << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName() << QgsProcessingOutputBoolean::typeName();
+      return QStringList()
+             << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputBoolean::typeName();
     }
 
     QColor modelColor() const override { return QColor( 51, 201, 28 ); /* green */ };
@@ -292,9 +341,15 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterExpression::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterNumber::typeName()
-                           << QgsProcessingParameterDistance::typeName() << QgsProcessingParameterArea::typeName() << QgsProcessingParameterVolume::typeName()
-                           << QgsProcessingParameterScale::typeName() << QgsProcessingParameterProviderConnection::typeName();
+      return QStringList()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterProviderConnection::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
@@ -328,29 +383,51 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << u"str: 'ProjectCrs'"_s << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" ) << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:…')" )
-                           << QObject::tr( "str: CRS WKT (e.g. 'WKT:…')" ) << QObject::tr( "str: layer ID. CRS of layer is used." ) << QObject::tr( "str: layer name. CRS of layer is used." )
-                           << QObject::tr( "str: layer source. CRS of layer is used." ) << QObject::tr( "QgsCoordinateReferenceSystem" ) << QObject::tr( "QgsMapLayer: CRS of layer is used" )
-                           << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" ) << u"QgsProperty"_s;
+      return QStringList()
+             << u"str: 'ProjectCrs'"_s
+             << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" )
+             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:…')" )
+             << QObject::tr( "str: CRS WKT (e.g. 'WKT:…')" )
+             << QObject::tr( "str: layer ID. CRS of layer is used." )
+             << QObject::tr( "str: layer name. CRS of layer is used." )
+             << QObject::tr( "str: layer source. CRS of layer is used." )
+             << QObject::tr( "QgsCoordinateReferenceSystem" )
+             << QObject::tr( "QgsMapLayer: CRS of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" )
+             << u"QgsProperty"_s;
     }
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "CRS as an auth ID (e.g. 'EPSG:3111')" ) << QObject::tr( "CRS as a PROJ4 string (e.g. 'PROJ4:…')" ) << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
-                           << QObject::tr( "Path to a layer. The CRS of the layer is used." );
+      return QStringList()
+             << QObject::tr( "CRS as an auth ID (e.g. 'EPSG:3111')" )
+             << QObject::tr( "CRS as a PROJ4 string (e.g. 'PROJ4:…')" )
+             << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
+             << QObject::tr( "Path to a layer. The CRS of the layer is used." );
     }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterCrs::typeName() << QgsProcessingParameterExpression::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterRasterLayer::typeName() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterMeshLayer::typeName()
-                           << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterAnnotationLayer::typeName();
+      return QStringList()
+             << QgsProcessingParameterCrs::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputMapLayer::typeName()
-                           << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName();
+      return QStringList()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 
     QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
@@ -379,8 +456,11 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "list[float]: list of 2 float values" ) << QObject::tr( "list[str]: list of strings representing floats" )
-                           << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" ) << u"QgsProperty"_s;
+      return QStringList()
+             << QObject::tr( "list[float]: list of 2 float values" )
+             << QObject::tr( "list[str]: list of strings representing floats" )
+             << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
+             << u"QgsProperty"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Two comma separated numeric values, e.g. '1,10'" ); }
@@ -415,8 +495,7 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" ) << u"QgsPointXY"_s << u"QgsProperty"_s << u"QgsReferencedPointXY"_s
-                           << u"QgsGeometry: centroid of geometry is used"_s;
+      return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" ) << u"QgsPointXY"_s << u"QgsProperty"_s << u"QgsReferencedPointXY"_s << u"QgsGeometry: centroid of geometry is used"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Point coordinate as an 'x,y' string, e.g. '1.5,10.1'" ); }
@@ -455,8 +534,7 @@ class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParam
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterGeometry::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterPoint::typeName()
-                           << QgsProcessingParameterExtent::typeName();
+      return QStringList() << QgsProcessingParameterGeometry::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterPoint::typeName() << QgsProcessingParameterExtent::typeName();
     }
 
     QStringList acceptedOutputTypes() const override { return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName(); }
@@ -525,10 +603,17 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: as comma delimited list of x min, x max, y min, y max. E.g. '4,10,101,105'" ) << QObject::tr( "str: layer ID. Extent of layer is used." )
-                           << QObject::tr( "str: layer name. Extent of layer is used." ) << QObject::tr( "str: layer source. Extent of layer is used." )
-                           << QObject::tr( "QgsMapLayer: Extent of layer is used" ) << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" ) << u"QgsProperty"_s
-                           << u"QgsRectangle"_s << u"QgsReferencedRectangle"_s << u"QgsGeometry: bounding box of geometry is used"_s;
+      return QStringList()
+             << QObject::tr( "str: as comma delimited list of x min, x max, y min, y max. E.g. '4,10,101,105'" )
+             << QObject::tr( "str: layer ID. Extent of layer is used." )
+             << QObject::tr( "str: layer name. Extent of layer is used." )
+             << QObject::tr( "str: layer source. Extent of layer is used." )
+             << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
+             << u"QgsProperty"_s
+             << u"QgsRectangle"_s
+             << u"QgsReferencedRectangle"_s
+             << u"QgsGeometry: bounding box of geometry is used"_s;
     }
 
     QStringList acceptedStringValues() const override
@@ -538,15 +623,26 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterExtent::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterMapLayer::typeName()
-                           << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterRasterLayer::typeName() << QgsProcessingParameterVectorLayer::typeName()
-                           << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterAnnotationLayer::typeName();
+      return QStringList()
+             << QgsProcessingParameterExtent::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName()
-                           << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputVariant::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 
     QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
@@ -613,8 +709,14 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputFolder::typeName() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName()
-                           << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputMapLayer::typeName();
+      return QStringList()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName();
     }
 
     QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
@@ -662,8 +764,13 @@ class CORE_EXPORT QgsProcessingParameterTypeDestination : public QgsProcessingPa
 {
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterRasterLayer::typeName() << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterVectorLayer::typeName()
-                           << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
@@ -745,8 +852,13 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName() << QgsProcessingOutputRasterLayer::typeName()
-                           << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputMapLayer::typeName();
+      return QStringList()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName();
     }
 
     QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
@@ -857,22 +969,38 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "String value" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "String value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterString::typeName() << QgsProcessingParameterAuthConfig::typeName() << QgsProcessingParameterNumber::typeName()
-                           << QgsProcessingParameterDistance::typeName() << QgsProcessingParameterArea::typeName() << QgsProcessingParameterVolume::typeName()
-                           << QgsProcessingParameterDuration::typeName() << QgsProcessingParameterScale::typeName() << QgsProcessingParameterFile::typeName() << QgsProcessingParameterField::typeName()
-                           << QgsProcessingParameterExpression::typeName() << QgsProcessingParameterCoordinateOperation::typeName() << QgsProcessingParameterProviderConnection::typeName();
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterAuthConfig::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterField::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterCoordinateOperation::typeName()
+             << QgsProcessingParameterProviderConnection::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputNumber::typeName() << QgsProcessingOutputVariant::typeName() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputFolder::typeName()
-                           << QgsProcessingOutputString::typeName();
+      return QStringList()
+             << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputString::typeName();
     }
 
     QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
@@ -934,20 +1062,36 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "list[str]: list of layer IDs" ) << QObject::tr( "list[str]: list of layer names" ) << QObject::tr( "list[str]: list of layer sources" )
-                           << u"list[QgsMapLayer]"_s << u"QgsProperty"_s;
+      return QStringList()
+             << QObject::tr( "list[str]: list of layer IDs" )
+             << QObject::tr( "list[str]: list of layer names" )
+             << QObject::tr( "list[str]: list of layer sources" )
+             << u"list[QgsMapLayer]"_s
+             << u"QgsProperty"_s;
     }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterMultipleLayers::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterVectorLayer::typeName()
-                           << QgsProcessingParameterMeshLayer::typeName() << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterRasterLayer::typeName()
-                           << QgsProcessingParameterFile::typeName() << QgsProcessingParameterString::typeName();
+      return QStringList()
+             << QgsProcessingParameterMultipleLayers::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterString::typeName();
     }
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName()
-                           << QgsProcessingOutputMultipleLayers::typeName() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVariant::typeName();
+      return QStringList()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMultipleLayers::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 
     QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
@@ -976,22 +1120,29 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsProcessingFeatureSourceDefinition"_s << u"QgsProperty"_s
-                           << u"QgsVectorLayer"_s;
+      return QStringList() << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" ) << QObject::tr( "str: layer source" ) << u"QgsProcessingFeatureSourceDefinition"_s << u"QgsProperty"_s << u"QgsVectorLayer"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Path to a vector layer" ); }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterMapLayer::typeName()
-                           << QgsProcessingParameterString::typeName() << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName()
-                           << QgsProcessingOutputFolder::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 
     QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const override
@@ -1030,14 +1181,21 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A numeric value" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterString::typeName() << QgsProcessingParameterNumber::typeName() << QgsProcessingParameterDistance::typeName()
-                           << QgsProcessingParameterVolume::typeName() << QgsProcessingParameterDuration::typeName() << QgsProcessingParameterScale::typeName();
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
@@ -1073,8 +1231,10 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A numeric value" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
@@ -1106,8 +1266,10 @@ class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameter
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A numeric value" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1137,8 +1299,10 @@ class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParamet
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A numeric value" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1168,8 +1332,10 @@ class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParam
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A numeric value (unit type set by algorithms)" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A numeric value (unit type set by algorithms)" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
@@ -1263,9 +1429,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" ) << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
-                           << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" ) << u"QgsProcessingOutputLayerDefinition"_s
-                           << u"QgsProperty"_s;
+      return QStringList()
+             << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
+             << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
+             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" )
+             << u"QgsProcessingOutputLayerDefinition"_s
+             << u"QgsProperty"_s;
     }
 
     QStringList acceptedStringValues() const override { return QStringList() << QObject::tr( "Path for new vector layer" ); }
@@ -1361,9 +1530,10 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
-                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QStringList acceptedParameterTypes() const override { return QStringList() << QgsProcessingParameterColor::typeName() << QgsProcessingParameterString::typeName(); }
@@ -1458,8 +1628,10 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
 
     QStringList acceptedStringValues() const override
     {
-      return QStringList() << QObject::tr( "A datetime value in ISO format" ) << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+      return QStringList()
+             << QObject::tr( "A datetime value in ISO format" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 
     QStringList acceptedParameterTypes() const override { return QStringList() << QgsProcessingParameterDateTime::typeName() << QgsProcessingParameterString::typeName(); }
@@ -1598,14 +1770,21 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessi
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputPointCloudLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputFile::typeName()
-                           << QgsProcessingOutputFolder::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 
     QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
@@ -1641,8 +1820,11 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterAnnotationLayer::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterString::typeName()
-                           << QgsProcessingParameterExpression::typeName();
+      return QStringList()
+             << QgsProcessingParameterAnnotationLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
     }
 
     QStringList acceptedOutputTypes() const override

@@ -44,8 +44,14 @@ int QgsSteppedLineScaleBarRenderer::sortKey() const
 
 QgsScaleBarRenderer::Flags QgsSteppedLineScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace
-         | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol
+         | Flag::FlagRespectsUnits
+         | Flag::FlagRespectsMapUnitsPerScaleBarUnit
+         | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments
+         | Flag::FlagUsesLabelBarSpace
+         | Flag::FlagUsesLabelVerticalPlacement
+         | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const
@@ -87,7 +93,8 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   {
     // we render one extra place, corresponding to the final position + width (i.e. the "end" of the bar)
     const double x = i < positions.size() ? context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset
-                                          : context.convertToPainterUnits( positions.at( i - 1 ), Qgis::RenderUnit::Millimeters ) + xOffset
+                                          : context.convertToPainterUnits( positions.at( i - 1 ), Qgis::RenderUnit::Millimeters )
+                                              + xOffset
                                               + context.convertToPainterUnits( widths.at( i - 1 ), Qgis::RenderUnit::Millimeters );
     if ( i % 2 == 0 )
     {

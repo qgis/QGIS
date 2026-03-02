@@ -379,7 +379,9 @@ bool QgsCurve::snapToGridPrivate(
     }
     else
     {
-      const bool isPointEqual = qgsDoubleNear( roundedX, previousX ) && qgsDoubleNear( roundedY, previousY ) && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
+      const bool isPointEqual = qgsDoubleNear( roundedX, previousX )
+                                && qgsDoubleNear( roundedY, previousY )
+                                && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
                                 && ( !hasM || mSpacing <= 0 || qgsDoubleNear( roundedM, previousM ) );
       if ( isPointEqual )
         continue;

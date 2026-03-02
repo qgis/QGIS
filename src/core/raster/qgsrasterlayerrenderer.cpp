@@ -120,8 +120,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   if ( rendererContext.coordinateTransform().isValid() )
   {
     QgsDebugMsgLevel( u"coordinateTransform set -> project extents."_s, 4 );
-    if ( rendererContext.extent().xMinimum() == std::numeric_limits<double>::lowest() && rendererContext.extent().yMinimum() == std::numeric_limits<double>::lowest()
-         && rendererContext.extent().xMaximum() == std::numeric_limits<double>::max() && rendererContext.extent().yMaximum() == std::numeric_limits<double>::max() )
+    if ( rendererContext.extent().xMinimum() == std::numeric_limits<double>::lowest()
+         && rendererContext.extent().yMinimum() == std::numeric_limits<double>::lowest()
+         && rendererContext.extent().xMaximum() == std::numeric_limits<double>::max()
+         && rendererContext.extent().yMaximum() == std::numeric_limits<double>::max() )
     {
       // We get in this situation if the view CRS is geographical and the
       // extent goes beyond -180,-90,180,90. To avoid reprojection issues to the
@@ -372,9 +374,11 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
           const QDateTime &offset = temporalProperties->temporalRepresentationOffset();
           const QgsInterval &scale = temporalProperties->temporalRepresentationScale();
           const double adjustedLower = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().begin() ) )
-                                       * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
+                                       * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() )
+                                       / scale.originalDuration();
           const double adjustedUpper = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().end() ) )
-                                       * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
+                                       * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() )
+                                       / scale.originalDuration();
           if ( !temporalProperties->accumulatePixels() )
           {
             transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
@@ -567,7 +571,8 @@ bool QgsRasterLayerRenderer::render()
   if ( projector )
   {
     // Force provider resampling if reprojection is needed
-    if ( ( mPipe->provider()->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) && mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS
+    if ( ( mPipe->provider()->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling )
+         && mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS
          && oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {
       restoreOldResamplingStage = true;
@@ -730,8 +735,10 @@ void QgsRasterLayerRenderer::drawElevationMap()
       QgsRectangle viewExtentInLayerCoordinate = renderContext()->extent();
 
       // If view extent is infinite, we use the data provider extent
-      if ( viewExtentInLayerCoordinate.xMinimum() == std::numeric_limits<double>::lowest() && viewExtentInLayerCoordinate.yMinimum() == std::numeric_limits<double>::lowest()
-           && viewExtentInLayerCoordinate.xMaximum() == std::numeric_limits<double>::max() && viewExtentInLayerCoordinate.yMaximum() == std::numeric_limits<double>::max() )
+      if ( viewExtentInLayerCoordinate.xMinimum() == std::numeric_limits<double>::lowest()
+           && viewExtentInLayerCoordinate.yMinimum() == std::numeric_limits<double>::lowest()
+           && viewExtentInLayerCoordinate.xMaximum() == std::numeric_limits<double>::max()
+           && viewExtentInLayerCoordinate.yMaximum() == std::numeric_limits<double>::max() )
       {
         viewExtentInLayerCoordinate = dataProvider->extent();
       }
@@ -817,10 +824,11 @@ void QgsRasterLayerRenderer::drawElevationMap()
         int right = 0;
 
         QList<QgsPointXY> corners;
-        corners << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMinimum() )
-                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMaximum() )
-                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMaximum() )
-                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMinimum() );
+        corners
+          << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMinimum() )
+          << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMaximum() )
+          << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMaximum() )
+          << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMinimum() );
 
         for ( const QgsPointXY &corner : std::as_const( corners ) )
         {

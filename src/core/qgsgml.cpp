@@ -613,7 +613,9 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mCoorMode = QgsGmlStreamingParser::PosList;
     elDimension = readSrsNameAndDimensionAttributes( attr );
   }
-  else if ( ( parseMode == Feature || parseMode == FeatureTuple ) && mCurrentFeature && localNameLen == static_cast<int>( mGeometryAttributeUTF8Len )
+  else if ( ( parseMode == Feature || parseMode == FeatureTuple )
+            && mCurrentFeature
+            && localNameLen == static_cast<int>( mGeometryAttributeUTF8Len )
             && memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.push( QgsGmlStreamingParser::Geometry );
@@ -902,9 +904,19 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     // e.g: http://services.cuzk.cz/wfs/inspire-cp-wfs.asp?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=cp:CadastralParcel
     mTruncatedResponse = true;
   }
-  else if ( !mGeometryString.empty() && !LOCALNAME_EQUALS( "exterior" ) && !LOCALNAME_EQUALS( "interior" ) && !LOCALNAME_EQUALS( "innerBoundaryIs" ) && !LOCALNAME_EQUALS( "outerBoundaryIs" )
-            && !LOCALNAME_EQUALS( "LinearRing" ) && !LOCALNAME_EQUALS( "pointMember" ) && !LOCALNAME_EQUALS( "curveMember" ) && !LOCALNAME_EQUALS( "lineStringMember" )
-            && !LOCALNAME_EQUALS( "polygonMember" ) && !LOCALNAME_EQUALS( "surfaceMember" ) && !LOCALNAME_EQUALS( "Curve" ) && !LOCALNAME_EQUALS( "segments" )
+  else if ( !mGeometryString.empty()
+            && !LOCALNAME_EQUALS( "exterior" )
+            && !LOCALNAME_EQUALS( "interior" )
+            && !LOCALNAME_EQUALS( "innerBoundaryIs" )
+            && !LOCALNAME_EQUALS( "outerBoundaryIs" )
+            && !LOCALNAME_EQUALS( "LinearRing" )
+            && !LOCALNAME_EQUALS( "pointMember" )
+            && !LOCALNAME_EQUALS( "curveMember" )
+            && !LOCALNAME_EQUALS( "lineStringMember" )
+            && !LOCALNAME_EQUALS( "polygonMember" )
+            && !LOCALNAME_EQUALS( "surfaceMember" )
+            && !LOCALNAME_EQUALS( "Curve" )
+            && !LOCALNAME_EQUALS( "segments" )
             && !LOCALNAME_EQUALS( "LineStringSegment" ) )
   {
     //QgsDebugError( "Found unhandled geometry element " + QString::fromUtf8( pszLocalName, localNameLen ) );
@@ -1358,8 +1370,13 @@ void QgsGmlStreamingParser::characters( const XML_Char *chars, int len )
   }
 
   const QgsGmlStreamingParser::ParseMode parseMode = mParseModeStack.top();
-  if ( parseMode == QgsGmlStreamingParser::Attribute || parseMode == QgsGmlStreamingParser::AttributeTuple || parseMode == QgsGmlStreamingParser::Coordinate || parseMode == QgsGmlStreamingParser::PosList
-       || parseMode == QgsGmlStreamingParser::LowerCorner || parseMode == QgsGmlStreamingParser::UpperCorner || parseMode == QgsGmlStreamingParser::ExceptionText )
+  if ( parseMode == QgsGmlStreamingParser::Attribute
+       || parseMode == QgsGmlStreamingParser::AttributeTuple
+       || parseMode == QgsGmlStreamingParser::Coordinate
+       || parseMode == QgsGmlStreamingParser::PosList
+       || parseMode == QgsGmlStreamingParser::LowerCorner
+       || parseMode == QgsGmlStreamingParser::UpperCorner
+       || parseMode == QgsGmlStreamingParser::ExceptionText )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }

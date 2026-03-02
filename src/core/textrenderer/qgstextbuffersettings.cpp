@@ -66,8 +66,15 @@ QgsTextBufferSettings::~QgsTextBufferSettings() //NOLINT
 
 bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) const
 {
-  if ( d->enabled != other.enabled() || d->size != other.size() || d->sizeUnit != other.sizeUnit() || d->sizeMapUnitScale != other.sizeMapUnitScale() || d->color != other.color()
-       || d->opacity != other.opacity() || d->fillBufferInterior != other.fillBufferInterior() || d->joinStyle != other.joinStyle() || d->blendMode != other.blendMode() )
+  if ( d->enabled != other.enabled()
+       || d->size != other.size()
+       || d->sizeUnit != other.sizeUnit()
+       || d->sizeMapUnitScale != other.sizeMapUnitScale()
+       || d->color != other.color()
+       || d->opacity != other.opacity()
+       || d->fillBufferInterior != other.fillBufferInterior()
+       || d->joinStyle != other.joinStyle()
+       || d->blendMode != other.blendMode() )
     return false;
 
   if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )

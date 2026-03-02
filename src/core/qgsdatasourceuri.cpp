@@ -1001,15 +1001,31 @@ QSet<QString> QgsDataSourceUri::parameterKeys() const
 bool QgsDataSourceUri::operator==( const QgsDataSourceUri &other ) const
 {
   // cheap comparisons first:
-  if ( mUseEstimatedMetadata != other.mUseEstimatedMetadata || mSelectAtIdDisabled != other.mSelectAtIdDisabled || mSelectAtIdDisabledSet != other.mSelectAtIdDisabledSet || mSSLmode != other.mSSLmode
+  if ( mUseEstimatedMetadata != other.mUseEstimatedMetadata
+       || mSelectAtIdDisabled != other.mSelectAtIdDisabled
+       || mSelectAtIdDisabledSet != other.mSelectAtIdDisabledSet
+       || mSSLmode != other.mSSLmode
        || mWkbType != other.mWkbType )
   {
     return false;
   }
 
-  if ( mHost != other.mHost || mPort != other.mPort || mDriver != other.mDriver || mService != other.mService || mDatabase != other.mDatabase || mSchema != other.mSchema || mTable != other.mTable
-       || mGeometryColumn != other.mGeometryColumn || mSql != other.mSql || mAuthConfigId != other.mAuthConfigId || mUsername != other.mUsername || mPassword != other.mPassword
-       || mKeyColumn != other.mKeyColumn || mSrid != other.mSrid || mParams != other.mParams || mHttpHeaders != other.mHttpHeaders )
+  if ( mHost != other.mHost
+       || mPort != other.mPort
+       || mDriver != other.mDriver
+       || mService != other.mService
+       || mDatabase != other.mDatabase
+       || mSchema != other.mSchema
+       || mTable != other.mTable
+       || mGeometryColumn != other.mGeometryColumn
+       || mSql != other.mSql
+       || mAuthConfigId != other.mAuthConfigId
+       || mUsername != other.mUsername
+       || mPassword != other.mPassword
+       || mKeyColumn != other.mKeyColumn
+       || mSrid != other.mSrid
+       || mParams != other.mParams
+       || mHttpHeaders != other.mHttpHeaders )
   {
     return false;
   }

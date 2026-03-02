@@ -61,8 +61,14 @@ QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other
 
 bool QgsTextMaskSettings::operator==( const QgsTextMaskSettings &other ) const
 {
-  if ( d->enabled != other.enabled() || d->type != other.type() || d->size != other.size() || d->sizeUnit != other.sizeUnit() || d->sizeMapUnitScale != other.sizeMapUnitScale()
-       || d->joinStyle != other.joinStyle() || d->opacity != other.opacity() || d->maskedSymbolLayers != other.maskedSymbolLayers() )
+  if ( d->enabled != other.enabled()
+       || d->type != other.type()
+       || d->size != other.size()
+       || d->sizeUnit != other.sizeUnit()
+       || d->sizeMapUnitScale != other.sizeMapUnitScale()
+       || d->joinStyle != other.joinStyle()
+       || d->opacity != other.opacity()
+       || d->maskedSymbolLayers != other.maskedSymbolLayers() )
     return false;
 
   if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )

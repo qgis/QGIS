@@ -401,7 +401,9 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
     long long roughFrameEnd = totalFrameCount();
     // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
     // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
-    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades
+    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades
          && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Centuries )
     {
       // Only if we receive a valid frameStart, that is within current mTemporalExtents

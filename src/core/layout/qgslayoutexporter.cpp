@@ -695,8 +695,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
           const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, Qgis::LayoutUnit::Millimeters );
 
           georef.pageBoundsPolygon.setExteriorRing( new QgsLineString(
-            QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) << QgsPointXY( topRightMm.x(), topRightMm.y() ) << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
-                                    << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ) << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+            QVector< QgsPointXY >()
+            << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+            << QgsPointXY( topRightMm.x(), topRightMm.y() )
+            << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
+            << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
+            << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
           ) );
 
           georef.controlPoints.reserve( 4 );

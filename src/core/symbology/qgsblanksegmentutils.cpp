@@ -113,8 +113,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
       {
         if ( level < 0 )
           throw std::runtime_error( "Extraneous ')'" );
-        if ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 1
-             && blankSegments.back().back().back() == QPair<double, double>( -1, -1 ) )
+        if ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 1 && blankSegments.back().back().back() == QPair<double, double>( -1, -1 ) )
         {
           blankSegments.back().back().pop_back();
         }
@@ -122,7 +121,8 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
       }
       else if ( c == ',' )
       {
-        if ( ( level == 0 && blankSegments.count() == 0 ) || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
+        if ( ( level == 0 && blankSegments.count() == 0 )
+             || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
              || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 0 ) )
           throw std::runtime_error( "No elements, Not expecting ','" );
 

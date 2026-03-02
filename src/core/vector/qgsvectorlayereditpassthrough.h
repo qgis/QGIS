@@ -43,10 +43,10 @@ class QgsTransaction;
       sipType = sipType_QgsVectorLayerEditPassthrough;
     else
       sipType = nullptr;
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_OBJECT
 
   public:

@@ -138,8 +138,12 @@ class CORE_EXPORT QgsRasterTransparency
 
         bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
         {
-          return qgsDoubleNear( red, other.red ) && qgsDoubleNear( green, other.green ) && qgsDoubleNear( blue, other.blue ) && qgsDoubleNear( opacity, other.opacity )
-                 && qgsDoubleNear( fuzzyToleranceRed, other.fuzzyToleranceRed ) && qgsDoubleNear( fuzzyToleranceGreen, other.fuzzyToleranceGreen )
+          return qgsDoubleNear( red, other.red )
+                 && qgsDoubleNear( green, other.green )
+                 && qgsDoubleNear( blue, other.blue )
+                 && qgsDoubleNear( opacity, other.opacity )
+                 && qgsDoubleNear( fuzzyToleranceRed, other.fuzzyToleranceRed )
+                 && qgsDoubleNear( fuzzyToleranceGreen, other.fuzzyToleranceGreen )
                  && qgsDoubleNear( fuzzyToleranceBlue, other.fuzzyToleranceBlue );
         }
         bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const { return !( *this == other ); }
@@ -218,7 +222,10 @@ class CORE_EXPORT QgsRasterTransparency
 
         bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
         {
-          return qgsDoubleNear( min, other.min ) && qgsDoubleNear( max, other.max ) && qgsDoubleNear( opacity, other.opacity ) && includeMinimum == other.includeMinimum
+          return qgsDoubleNear( min, other.min )
+                 && qgsDoubleNear( max, other.max )
+                 && qgsDoubleNear( opacity, other.opacity )
+                 && includeMinimum == other.includeMinimum
                  && includeMaximum == other.includeMaximum;
         }
         bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const { return !( *this == other ); }

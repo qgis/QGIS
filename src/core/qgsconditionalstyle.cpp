@@ -388,7 +388,12 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const Qgs
 
 bool QgsConditionalStyle::operator==( const QgsConditionalStyle &other ) const
 {
-  return mValid == other.mValid && mName == other.mName && mRule == other.mRule && mFont == other.mFont && mBackColor == other.mBackColor && mTextColor == other.mTextColor
+  return mValid == other.mValid
+         && mName == other.mName
+         && mRule == other.mRule
+         && mFont == other.mFont
+         && mBackColor == other.mBackColor
+         && mTextColor == other.mTextColor
          && static_cast< bool >( mSymbol ) == static_cast< bool >( other.mSymbol )
          && ( !mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
 }

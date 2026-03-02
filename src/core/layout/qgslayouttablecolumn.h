@@ -193,8 +193,13 @@ class CORE_EXPORT QgsLayoutTableColumn
 
     bool operator==( const QgsLayoutTableColumn &other ) const
     {
-      return mHeading == other.mHeading && mAttribute == other.mAttribute && mSortByRank == other.mSortByRank && mSortOrder == other.mSortOrder && mWidth == other.mWidth
-             && mHAlignment == other.mHAlignment && mVAlignment == other.mVAlignment;
+      return mHeading == other.mHeading
+             && mAttribute == other.mAttribute
+             && mSortByRank == other.mSortByRank
+             && mSortOrder == other.mSortOrder
+             && mWidth == other.mWidth
+             && mHAlignment == other.mHAlignment
+             && mVAlignment == other.mVAlignment;
     }
 
 

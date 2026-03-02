@@ -232,7 +232,8 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       poly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( part.release() ) );
       added = geomCollection->addGeometry( poly.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Polygon || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Polygon
+              || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::CurvePolygon )
     {
       if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( part.get() ) )

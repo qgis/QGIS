@@ -2476,8 +2476,7 @@ QgsGeometry QgsPalLayerSettings::evaluateLabelGeometry( const QgsFeature &featur
 
   const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
   std::unique_ptr<QgsGeometry> scopedClonedGeom;
-  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification )
-       && simplifyMethod.forceLocalOptimization() )
+  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
   {
     unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
@@ -4260,7 +4259,9 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   {
     skip = true;
   }
-  if ( shapeKind != QgsTextBackgroundSettings::ShapeSVG && shapeKind != QgsTextBackgroundSettings::ShapeMarkerSymbol && shpSizeType == QgsTextBackgroundSettings::SizeFixed
+  if ( shapeKind != QgsTextBackgroundSettings::ShapeSVG
+       && shapeKind != QgsTextBackgroundSettings::ShapeMarkerSymbol
+       && shpSizeType == QgsTextBackgroundSettings::SizeFixed
        && ( ddShpSizeX == 0.0 || ddShpSizeY == 0.0 ) )
   {
     skip = true;
@@ -4431,7 +4432,8 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
-      return ( vl->labelsEnabled() && vl->labeling() ) || ( vl->diagramsEnabled() && vl->diagramRenderer() )
+      return ( vl->labelsEnabled() && vl->labeling() )
+             || ( vl->diagramsEnabled() && vl->diagramRenderer() )
              || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) );
     }
 

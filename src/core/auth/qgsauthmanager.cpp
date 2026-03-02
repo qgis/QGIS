@@ -4030,7 +4030,9 @@ void QgsAuthManager::passwordHelperProcessError()
 #ifdef HAVE_AUTH
   ensureInitialized();
 
-  if ( mPasswordHelperErrorCode == QKeychain::AccessDenied || mPasswordHelperErrorCode == QKeychain::AccessDeniedByUser || mPasswordHelperErrorCode == QKeychain::NoBackendAvailable
+  if ( mPasswordHelperErrorCode == QKeychain::AccessDenied
+       || mPasswordHelperErrorCode == QKeychain::AccessDeniedByUser
+       || mPasswordHelperErrorCode == QKeychain::NoBackendAvailable
        || mPasswordHelperErrorCode == QKeychain::NotImplemented )
   {
     // If the error is permanent or the user denied access to the wallet

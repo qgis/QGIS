@@ -235,7 +235,8 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
     //accept item if either displayed text or comment role matches string
     const QString comment = mModel->data( sourceIndex, static_cast< int >( QgsBrowserModel::CustomRole::Comment ) ).toString();
     return (
-      filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() ) || ( !comment.isEmpty() && filterAcceptsString( comment ) )
+      filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() )
+      || ( !comment.isEmpty() && filterAcceptsString( comment ) )
       || mModel->data( sourceIndex, static_cast< int >( QgsBrowserModel::CustomRole::LayerMetadata ) ).value< QgsLayerMetadata >().matches( mREList )
     );
   }

@@ -46,8 +46,13 @@ bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlPrope
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDimensionInfo &other ) const
 {
-  return name == other.name && fieldName == other.fieldName && endFieldName == other.endFieldName && units == other.units && unitSymbol == other.unitSymbol
-         && defaultDisplayType == other.defaultDisplayType && referenceValue == other.referenceValue;
+  return name == other.name
+         && fieldName == other.fieldName
+         && endFieldName == other.endFieldName
+         && units == other.units
+         && unitSymbol == other.unitSymbol
+         && defaultDisplayType == other.defaultDisplayType
+         && referenceValue == other.referenceValue;
 }
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
@@ -266,9 +271,18 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
 
 bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties &other ) const
 {
-  return QgsServerMetadataUrlProperties::operator==( other ) && QgsServerWmsDimensionProperties::operator==( other ) && mShortName == other.mShortName && mTitle == other.mTitle
-         && mAbstract == other.mAbstract && mKeywordList == other.mKeywordList && mDataUrl == other.mDataUrl && mDataUrlFormat == other.mDataUrlFormat && mAttribution == other.mAttribution
-         && mAttributionUrl == other.mAttributionUrl && mLegendUrl == other.mLegendUrl && mLegendUrlFormat == other.mLegendUrlFormat;
+  return QgsServerMetadataUrlProperties::operator==( other )
+         && QgsServerWmsDimensionProperties::operator==( other )
+         && mShortName == other.mShortName
+         && mTitle == other.mTitle
+         && mAbstract == other.mAbstract
+         && mKeywordList == other.mKeywordList
+         && mDataUrl == other.mDataUrl
+         && mDataUrlFormat == other.mDataUrlFormat
+         && mAttribution == other.mAttribution
+         && mAttributionUrl == other.mAttributionUrl
+         && mLegendUrl == other.mLegendUrl
+         && mLegendUrlFormat == other.mLegendUrlFormat;
 }
 
 bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const

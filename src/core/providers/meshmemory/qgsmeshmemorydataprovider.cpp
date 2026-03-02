@@ -487,7 +487,11 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatase
 
 QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
 {
-  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) && ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) && ( valueIndex >= 0 )
+  if ( ( index.group() >= 0 )
+       && ( index.group() < datasetGroupCount() )
+       && ( index.dataset() >= 0 )
+       && ( index.dataset() < datasetCount( index.group() ) )
+       && ( valueIndex >= 0 )
        && ( valueIndex < mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values.count() ) )
   {
     return mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values[valueIndex];

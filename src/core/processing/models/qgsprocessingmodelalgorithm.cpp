@@ -428,8 +428,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       QgsExpressionContext expContext = baseContext;
-      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
-                 << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
+      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context ) << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
       context.setExpressionContext( expContext );
 
       QString error;
@@ -1126,14 +1125,35 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   // "static"/single value sources
   QgsProcessingModelChildParameterSources sources = availableSourcesForChild(
     childId,
-    QStringList() << QgsProcessingParameterNumber::typeName() << QgsProcessingParameterDistance::typeName() << QgsProcessingParameterArea::typeName() << QgsProcessingParameterVolume::typeName()
-                  << QgsProcessingParameterDuration::typeName() << QgsProcessingParameterScale::typeName() << QgsProcessingParameterBoolean::typeName() << QgsProcessingParameterEnum::typeName()
-                  << QgsProcessingParameterExpression::typeName() << QgsProcessingParameterField::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterAuthConfig::typeName()
-                  << QgsProcessingParameterCrs::typeName() << QgsProcessingParameterRange::typeName() << QgsProcessingParameterPoint::typeName() << QgsProcessingParameterGeometry::typeName()
-                  << QgsProcessingParameterFile::typeName() << QgsProcessingParameterFolderDestination::typeName() << QgsProcessingParameterBand::typeName() << QgsProcessingParameterLayout::typeName()
-                  << QgsProcessingParameterLayoutItem::typeName() << QgsProcessingParameterColor::typeName() << QgsProcessingParameterCoordinateOperation::typeName()
-                  << QgsProcessingParameterMapTheme::typeName() << QgsProcessingParameterDateTime::typeName() << QgsProcessingParameterProviderConnection::typeName()
-                  << QgsProcessingParameterDatabaseSchema::typeName() << QgsProcessingParameterDatabaseTable::typeName(),
+    QStringList()
+      << QgsProcessingParameterNumber::typeName()
+      << QgsProcessingParameterDistance::typeName()
+      << QgsProcessingParameterArea::typeName()
+      << QgsProcessingParameterVolume::typeName()
+      << QgsProcessingParameterDuration::typeName()
+      << QgsProcessingParameterScale::typeName()
+      << QgsProcessingParameterBoolean::typeName()
+      << QgsProcessingParameterEnum::typeName()
+      << QgsProcessingParameterExpression::typeName()
+      << QgsProcessingParameterField::typeName()
+      << QgsProcessingParameterString::typeName()
+      << QgsProcessingParameterAuthConfig::typeName()
+      << QgsProcessingParameterCrs::typeName()
+      << QgsProcessingParameterRange::typeName()
+      << QgsProcessingParameterPoint::typeName()
+      << QgsProcessingParameterGeometry::typeName()
+      << QgsProcessingParameterFile::typeName()
+      << QgsProcessingParameterFolderDestination::typeName()
+      << QgsProcessingParameterBand::typeName()
+      << QgsProcessingParameterLayout::typeName()
+      << QgsProcessingParameterLayoutItem::typeName()
+      << QgsProcessingParameterColor::typeName()
+      << QgsProcessingParameterCoordinateOperation::typeName()
+      << QgsProcessingParameterMapTheme::typeName()
+      << QgsProcessingParameterDateTime::typeName()
+      << QgsProcessingParameterProviderConnection::typeName()
+      << QgsProcessingParameterDatabaseSchema::typeName()
+      << QgsProcessingParameterDatabaseTable::typeName(),
     QStringList() << QgsProcessingOutputNumber::typeName() << QgsProcessingOutputString::typeName() << QgsProcessingOutputBoolean::typeName() << QgsProcessingOutputVariant::typeName()
   );
 
@@ -1369,14 +1389,17 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           const auto constDataTypes = sourceDef->dataTypes();
           for ( int type : constDataTypes )
           {
-            if ( dataTypes.contains( type ) || type == static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) || type == static_cast< int >( Qgis::ProcessingSourceType::Vector )
+            if ( dataTypes.contains( type )
+                 || type == static_cast< int >( Qgis::ProcessingSourceType::MapLayer )
+                 || type == static_cast< int >( Qgis::ProcessingSourceType::Vector )
                  || type == static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) )
             {
               ok = true;
               break;
             }
           }
-          if ( dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) ) || dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) )
+          if ( dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) )
+               || dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) )
                || dataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) )
             ok = true;
 
@@ -1848,9 +1871,13 @@ bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int>
   // I.e. we only reject outputs which we know can NEVER be acceptable, but
   // if there's doubt then we default to returning true.
   return (
-    acceptableDataTypes.empty() || acceptableDataTypes.contains( static_cast< int >( outputType ) ) || outputType == Qgis::ProcessingSourceType::MapLayer
-    || outputType == Qgis::ProcessingSourceType::Vector || outputType == Qgis::ProcessingSourceType::VectorAnyGeometry
-    || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) )
+    acceptableDataTypes.empty()
+    || acceptableDataTypes.contains( static_cast< int >( outputType ) )
+    || outputType == Qgis::ProcessingSourceType::MapLayer
+    || outputType == Qgis::ProcessingSourceType::Vector
+    || outputType == Qgis::ProcessingSourceType::VectorAnyGeometry
+    || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) )
+    || acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) )
     || ( acceptableDataTypes.contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) && ( outputType == Qgis::ProcessingSourceType::VectorPoint || outputType == Qgis::ProcessingSourceType::VectorLine || outputType == Qgis::ProcessingSourceType::VectorPolygon ) )
   );
 }

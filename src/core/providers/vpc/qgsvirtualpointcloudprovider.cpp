@@ -223,8 +223,15 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   for ( const auto &f : data["features"] )
   {
-    if ( !f.contains( "type" ) || f["type"] != "Feature" || !f.contains( "stac_version" ) || !f.contains( "assets" ) || !f["assets"].is_object() || !f.contains( "properties" )
-         || !f["properties"].is_object() || !f.contains( "geometry" ) || !f["geometry"].is_object() )
+    if ( !f.contains( "type" )
+         || f["type"] != "Feature"
+         || !f.contains( "stac_version" )
+         || !f.contains( "assets" )
+         || !f["assets"].is_object()
+         || !f.contains( "properties" )
+         || !f["properties"].is_object()
+         || !f.contains( "geometry" )
+         || !f["geometry"].is_object() )
     {
       QgsDebugError( u"Malformed STAC item: %1"_s.arg( QString::fromStdString( f ) ) );
       continue;

@@ -128,8 +128,10 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
     GetLayoutMapLayerCredits( const QgsLayout *c )
       : QgsScopedExpressionFunction(
           u"map_credits"_s,
-          QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"id"_s, true ) << QgsExpressionFunction::Parameter( u"include_layer_names"_s, true, false )
-                                                 << QgsExpressionFunction::Parameter( u"layer_name_separator"_s, true, u": "_s ),
+          QgsExpressionFunction::ParameterList()
+            << QgsExpressionFunction::Parameter( u"id"_s, true )
+            << QgsExpressionFunction::Parameter( u"include_layer_names"_s, true, false )
+            << QgsExpressionFunction::Parameter( u"layer_name_separator"_s, true, u": "_s ),
           u"Layout"_s
         )
       , mLayout( c )

@@ -302,27 +302,96 @@ QString QgsSqliteUtils::quotedValue( const QVariant &value )
 
 QStringList QgsSqliteUtils::systemTables()
 {
-  return QStringList() << u"ElementaryGeometries"_s << u"SpatialIndex"_s << u"geom_cols_ref_sys"_s << u"geometry_columns"_s << u"geometry_columns_auth"_s << u"geometry_columns_field_infos"_s
-                       << u"geometry_columns_statistics"_s << u"geometry_columns_time"_s << u"layer_params"_s << u"layer_statistics"_s << u"layer_sub_classes"_s << u"layer_table_layout"_s
-                       << u"pattern_bitmaps"_s << u"project_defs"_s << u"raster_pyramids"_s << u"spatial_ref_sys"_s << u"spatial_ref_sys_all"_s << u"spatial_ref_sys_aux"_s << u"spatialite_history"_s
-                       << u"sql_statements_log"_s << u"sqlite_sequence"_s << u"sqlite_stat1"_s << u"sqlite_stat2"_s << u"symbol_bitmaps"_s << u"tableprefix_metadata"_s << u"tableprefix_rasters"_s
-                       << u"vector_layers"_s << u"vector_layers_auth"_s << u"vector_layers_field_infos"_s << u"vector_layers_statistics"_s << u"views_geometry_columns"_s
-                       << u"views_geometry_columns_auth"_s << u"views_geometry_columns_field_infos"_s << u"views_geometry_columns_statistics"_s << u"views_layer_statistics"_s
-                       << u"virts_geometry_columns"_s << u"virts_geometry_columns_auth"_s << u"virts_geometry_columns_field_infos"_s << u"virts_geometry_columns_statistics"_s
-                       << u"virts_layer_statistics"_s
-                       // Additional tables to be hidden
-                       << u"all_buckets_objects"_s << u"byfoot"_s << u"byfoot_data"_s << u"data_licenses"_s << u"ISO_metadata"_s << u"ISO_metadata_reference"_s << u"ISO_metadata_view"_s << u"KNN2"_s
-                       << u"KNN"_s << u"networks"_s << u"raster_coverages"_s << u"raster_coverages_keyword"_s << u"raster_coverages_ref_sys"_s << u"raster_coverages_srid"_s << u"rl2map_configurations"_s
-                       << u"rl2map_configurations_view"_s
-                       // SE_ (Styled Elements)
-                       << u"SE_external_graphics"_s << u"SE_external_graphics_view"_s << u"SE_fonts"_s << u"SE_fonts_view"_s << u"SE_group_styles"_s << u"SE_group_styles_view"_s
-                       << u"SE_raster_styled_layers"_s << u"SE_raster_styled_layers_view"_s << u"SE_raster_styles"_s << u"SE_raster_styles_view"_s << u"SE_styled_group_refs"_s
-                       << u"SE_styled_group_styles"_s << u"SE_styled_groups"_s << u"SE_styled_groups_view"_s << u"SE_vector_styled_layers"_s << u"SE_vector_styled_layers_view"_s
-                       << u"SE_vector_styles"_s << u"SE_vector_styles_view"_s << u"sqlite_stat3"_s << u"stored_procedures"_s << u"stored_variables"_s << u"topologies"_s << u"vector_coverages"_s
-                       << u"vector_coverages_keyword"_s << u"vector_coverages_ref_sys"_s
-                       << u"vector_coverages_srid"_s
-                       // WMS
-                       << u"wms_getcapabilities"_s << u"wms_getmap"_s << u"wms_ref_sys"_s << u"wms_settings"_s;
+  return QStringList()
+         << u"ElementaryGeometries"_s
+         << u"SpatialIndex"_s
+         << u"geom_cols_ref_sys"_s
+         << u"geometry_columns"_s
+         << u"geometry_columns_auth"_s
+         << u"geometry_columns_field_infos"_s
+         << u"geometry_columns_statistics"_s
+         << u"geometry_columns_time"_s
+         << u"layer_params"_s
+         << u"layer_statistics"_s
+         << u"layer_sub_classes"_s
+         << u"layer_table_layout"_s
+         << u"pattern_bitmaps"_s
+         << u"project_defs"_s
+         << u"raster_pyramids"_s
+         << u"spatial_ref_sys"_s
+         << u"spatial_ref_sys_all"_s
+         << u"spatial_ref_sys_aux"_s
+         << u"spatialite_history"_s
+         << u"sql_statements_log"_s
+         << u"sqlite_sequence"_s
+         << u"sqlite_stat1"_s
+         << u"sqlite_stat2"_s
+         << u"symbol_bitmaps"_s
+         << u"tableprefix_metadata"_s
+         << u"tableprefix_rasters"_s
+         << u"vector_layers"_s
+         << u"vector_layers_auth"_s
+         << u"vector_layers_field_infos"_s
+         << u"vector_layers_statistics"_s
+         << u"views_geometry_columns"_s
+         << u"views_geometry_columns_auth"_s
+         << u"views_geometry_columns_field_infos"_s
+         << u"views_geometry_columns_statistics"_s
+         << u"views_layer_statistics"_s
+         << u"virts_geometry_columns"_s
+         << u"virts_geometry_columns_auth"_s
+         << u"virts_geometry_columns_field_infos"_s
+         << u"virts_geometry_columns_statistics"_s
+         << u"virts_layer_statistics"_s
+         // Additional tables to be hidden
+         << u"all_buckets_objects"_s
+         << u"byfoot"_s
+         << u"byfoot_data"_s
+         << u"data_licenses"_s
+         << u"ISO_metadata"_s
+         << u"ISO_metadata_reference"_s
+         << u"ISO_metadata_view"_s
+         << u"KNN2"_s
+         << u"KNN"_s
+         << u"networks"_s
+         << u"raster_coverages"_s
+         << u"raster_coverages_keyword"_s
+         << u"raster_coverages_ref_sys"_s
+         << u"raster_coverages_srid"_s
+         << u"rl2map_configurations"_s
+         << u"rl2map_configurations_view"_s
+         // SE_ (Styled Elements)
+         << u"SE_external_graphics"_s
+         << u"SE_external_graphics_view"_s
+         << u"SE_fonts"_s
+         << u"SE_fonts_view"_s
+         << u"SE_group_styles"_s
+         << u"SE_group_styles_view"_s
+         << u"SE_raster_styled_layers"_s
+         << u"SE_raster_styled_layers_view"_s
+         << u"SE_raster_styles"_s
+         << u"SE_raster_styles_view"_s
+         << u"SE_styled_group_refs"_s
+         << u"SE_styled_group_styles"_s
+         << u"SE_styled_groups"_s
+         << u"SE_styled_groups_view"_s
+         << u"SE_vector_styled_layers"_s
+         << u"SE_vector_styled_layers_view"_s
+         << u"SE_vector_styles"_s
+         << u"SE_vector_styles_view"_s
+         << u"sqlite_stat3"_s
+         << u"stored_procedures"_s
+         << u"stored_variables"_s
+         << u"topologies"_s
+         << u"vector_coverages"_s
+         << u"vector_coverages_keyword"_s
+         << u"vector_coverages_ref_sys"_s
+         << u"vector_coverages_srid"_s
+         // WMS
+         << u"wms_getcapabilities"_s
+         << u"wms_getmap"_s
+         << u"wms_ref_sys"_s
+         << u"wms_settings"_s;
 }
 
 QString qgs_sqlite3_mprintf( const char *format, ... )

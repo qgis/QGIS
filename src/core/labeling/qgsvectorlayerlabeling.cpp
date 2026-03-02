@@ -141,9 +141,11 @@ bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 
 bool QgsVectorLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 {
-  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode ) || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
          || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
-         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode ) || mSettings->format().hasNonDefaultCompositionMode();
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode();
 }
 
 QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember

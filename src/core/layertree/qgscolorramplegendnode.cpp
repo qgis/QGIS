@@ -363,7 +363,9 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       // NOTE -- while the below calculations use the flipped margins from the style, that's only done because
       // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
       // ones) TODO when/if we expose other margin settings, these should be reversed...
-      const double labelYMin = currentYCoord + rampHeight + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+      const double labelYMin = currentYCoord
+                               + rampHeight
+                               + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
                                + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
       const double labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ), QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) )
                                  / dotsPerMM;
@@ -392,7 +394,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       // we only need this when we are calculating the size of the node, not at render time
       labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ), QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) )
                       / context->scaleFactor()
-                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right ) + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
     }
   }
 
@@ -460,7 +463,9 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     {
       case Qt::AlignLeft:
       default:
-        labelXMin = ctx->columnLeft + std::max( rampWidth, ctx->maxSiblingSymbolWidth ) + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+        labelXMin = ctx->columnLeft
+                    + std::max( rampWidth, ctx->maxSiblingSymbolWidth )
+                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
                     + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         labelXMax = ctx->columnRight;
         break;
@@ -470,7 +475,9 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
         // NOTE -- while the below calculations use the flipped margins from the style, that's only done because
         // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
         // ones) TODO when/if we expose other margin settings, these should be reversed...
-        labelXMax = ctx->columnRight - std::max( rampWidth, ctx->maxSiblingSymbolWidth ) - settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+        labelXMax = ctx->columnRight
+                    - std::max( rampWidth, ctx->maxSiblingSymbolWidth )
+                    - settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
                     - settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         break;
     }

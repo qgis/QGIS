@@ -964,7 +964,8 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
   const Qgis::GeometryType geomType = mLayer->geometryType();
   if ( geomType == Qgis::GeometryType::Null // nothing to index
-       || hasIndex() || mIsIndexing )       // already indexing, return!
+       || hasIndex()
+       || mIsIndexing ) // already indexing, return!
     return true;
 
   if ( !mLayer->dataProvider() || !mLayer->dataProvider()->isValid() )

@@ -433,7 +433,13 @@ bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other
 
 bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other ) const
 {
-  return equals( other ) && mFees == other.mFees && mConstraints == other.mConstraints && mRights == other.mRights && mLicenses == other.mLicenses && mEncoding == other.mEncoding && mCrs == other.mCrs
+  return equals( other )
+         && mFees == other.mFees
+         && mConstraints == other.mConstraints
+         && mRights == other.mRights
+         && mLicenses == other.mLicenses
+         && mEncoding == other.mEncoding
+         && mCrs == other.mCrs
          && mExtent == other.mExtent;
 }
 

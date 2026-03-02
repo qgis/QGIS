@@ -374,7 +374,9 @@ void QgsRasterLayer::draw( QPainter *theQPainter, QgsRasterViewPort *rasterViewP
   if ( projector )
   {
     // Force provider resampling if reprojection is needed
-    if ( mDataProvider && ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) && rasterViewPort->mSrcCRS != rasterViewPort->mDestCRS
+    if ( mDataProvider
+         && ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling )
+         && rasterViewPort->mSrcCRS != rasterViewPort->mDestCRS
          && oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {
       restoreOldResamplingStage = true;
@@ -420,9 +422,15 @@ QString QgsRasterLayer::htmlMetadata() const
   // Begin Provider section
   myMetadata += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s + u"<table class=\"list-view\">\n"_s;
 
-  myMetadata += u"\n"_s %
+  myMetadata += u"\n"_s
+                %
                 // Extent
-                u"<tr><td class=\"highlight\">"_s % tr( "Extent" ) % u"</td><td>"_s % extent().toString() % u"</td></tr>\n"_s %
+                u"<tr><td class=\"highlight\">"_s
+                % tr( "Extent" )
+                % u"</td><td>"_s
+                % extent().toString()
+                % u"</td></tr>\n"_s
+                %
 
                 // Raster Width
                 u"<tr><td class=\"highlight\">"_s % tr( "Width" ) % u"</td><td>"_s;
@@ -434,12 +442,14 @@ QString QgsRasterLayer::htmlMetadata() const
 
                   // Raster height
                   u"<tr><td class=\"highlight\">"_s
-                + tr( "Height" ) + u"</td><td>"_s;
+                + tr( "Height" )
+                + u"</td><td>"_s;
   if ( dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
     myMetadata += QString::number( height() );
   else
     myMetadata += tr( "n/a" );
-  myMetadata += u"</td></tr>\n"_s %
+  myMetadata += u"</td></tr>\n"_s
+                %
 
                 // Data type
                 u"<tr><td class=\"highlight\">"_s % tr( "Data type" ) % u"</td><td>"_s;
@@ -485,10 +495,12 @@ QString QgsRasterLayer::htmlMetadata() const
     default:
       myMetadata += tr( "Could not determine raster data type." );
   }
-  myMetadata += u"</td></tr>\n"_s %
+  myMetadata += u"</td></tr>\n"_s
+                %
 
                 // Insert provider-specific (e.g. WMS-specific) metadata
-                mDataProvider->htmlMetadata() %
+                mDataProvider->htmlMetadata()
+                %
 
                 // End Provider section
                 u"</table>\n<br><br>"_s;
@@ -497,23 +509,51 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += crsHtmlMetadata();
 
   // Identification section
-  myMetadata += u"<h1>"_s % tr( "Identification" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.identificationSectionHtml() % u"<br><br>\n"_s %
+  myMetadata += u"<h1>"_s
+                % tr( "Identification" )
+                % u"</h1>\n<hr>\n"_s
+                % htmlFormatter.identificationSectionHtml()
+                % u"<br><br>\n"_s
+                %
 
                 // extent section
-                u"<h1>"_s % tr( "Extent" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.extentSectionHtml() % u"<br><br>\n"_s %
+                u"<h1>"_s
+                % tr( "Extent" )
+                % u"</h1>\n<hr>\n"_s
+                % htmlFormatter.extentSectionHtml()
+                % u"<br><br>\n"_s
+                %
 
                 // Start the Access section
-                u"<h1>"_s % tr( "Access" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.accessSectionHtml() % u"<br><br>\n"_s %
+                u"<h1>"_s
+                % tr( "Access" )
+                % u"</h1>\n<hr>\n"_s
+                % htmlFormatter.accessSectionHtml()
+                % u"<br><br>\n"_s
+                %
 
                 // Bands section
-                u"</table>\n<br><br><h1>"_s % tr( "Bands" ) % u"</h1>\n<hr>\n<table class=\"list-view\">\n"_s %
+                u"</table>\n<br><br><h1>"_s
+                % tr( "Bands" )
+                % u"</h1>\n<hr>\n<table class=\"list-view\">\n"_s
+                %
 
                 // Band count
                 u"<tr><td class=\"highlight\">"_s % tr( "Band count" ) % u"</td><td>"_s % QString::number( bandCount() ) % u"</td></tr>\n"_s;
 
   // Band table
-  myMetadata += u"</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n"_s % u"<tr><th>"_s % tr( "Number" ) % u"</th><th>"_s % tr( "Band" ) % u"</th><th>"_s % tr( "NoData" ) % u"</th><th>"_s
-                % tr( "Min" ) % u"</th><th>"_s % tr( "Max" ) % u"</th></tr>\n"_s;
+  myMetadata += u"</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n"_s
+                % u"<tr><th>"_s
+                % tr( "Number" )
+                % u"</th><th>"_s
+                % tr( "Band" )
+                % u"</th><th>"_s
+                % tr( "NoData" )
+                % u"</th><th>"_s
+                % tr( "Min" )
+                % u"</th><th>"_s
+                % tr( "Max" )
+                % u"</th></tr>\n"_s;
 
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
@@ -544,13 +584,24 @@ QString QgsRasterLayer::htmlMetadata() const
   }
 
   //close previous bands table
-  myMetadata += u"</table>\n<br><br>"_s %
+  myMetadata += u"</table>\n<br><br>"_s
+                %
 
                 // Start the contacts section
-                u"<h1>"_s % tr( "Contacts" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.contactsSectionHtml() % u"<br><br>\n"_s %
+                u"<h1>"_s
+                % tr( "Contacts" )
+                % u"</h1>\n<hr>\n"_s
+                % htmlFormatter.contactsSectionHtml()
+                % u"<br><br>\n"_s
+                %
 
                 // Start the links section
-                u"<h1>"_s % tr( "References" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.linksSectionHtml() % u"<br><br>\n"_s %
+                u"<h1>"_s
+                % tr( "References" )
+                % u"</h1>\n<hr>\n"_s
+                % htmlFormatter.linksSectionHtml()
+                % u"<br><br>\n"_s
+                %
 
                 // Start the history section
                 u"<h1>"_s % tr( "History" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.historySectionHtml() % u"<br><br>\n"_s % customPropertyHtmlMetadata() % u"\n</body>\n</html>\n"_s;

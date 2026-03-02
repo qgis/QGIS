@@ -852,7 +852,10 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     subSimpleMarker->setPenJoinStyle( Qt::RoundJoin );
     subSimpleMarker->setPenCapStyle( Qt::RoundCap );
 
-    if ( shape == Qgis::MarkerShape::Octagon || shape == Qgis::MarkerShape::Square || shape == Qgis::MarkerShape::EquilateralTriangle || shape == Qgis::MarkerShape::Diamond
+    if ( shape == Qgis::MarkerShape::Octagon
+         || shape == Qgis::MarkerShape::Square
+         || shape == Qgis::MarkerShape::EquilateralTriangle
+         || shape == Qgis::MarkerShape::Diamond
          || shape == Qgis::MarkerShape::SemiCircle )
     {
       subSimpleMarker->setStrokeStyle( Qt::NoPen );

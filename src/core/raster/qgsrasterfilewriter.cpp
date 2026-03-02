@@ -728,8 +728,10 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster(
       }
 
       //write data to output file
-      if ( !partDestProvider->write( &redData[0], 1, iterCols, iterRows, 0, 0 ) || !partDestProvider->write( &greenData[0], 2, iterCols, iterRows, 0, 0 )
-           || !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 ) || !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
+      if ( !partDestProvider->write( &redData[0], 1, iterCols, iterRows, 0, 0 )
+           || !partDestProvider->write( &greenData[0], 2, iterCols, iterRows, 0, 0 )
+           || !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 )
+           || !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
       {
         return Qgis::RasterFileWriterResult::WriteError;
       }
@@ -741,8 +743,10 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster(
     }
     else if ( destProvider )
     {
-      if ( !destProvider->write( &redData[0], 1, iterCols, iterRows, iterLeft, iterTop ) || !destProvider->write( &greenData[0], 2, iterCols, iterRows, iterLeft, iterTop )
-           || !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop ) || !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
+      if ( !destProvider->write( &redData[0], 1, iterCols, iterRows, iterLeft, iterTop )
+           || !destProvider->write( &greenData[0], 2, iterCols, iterRows, iterLeft, iterTop )
+           || !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop )
+           || !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
       {
         return Qgis::RasterFileWriterResult::WriteError;
       }
@@ -963,8 +967,17 @@ void QgsRasterFileWriter::createVRT(
   if ( geoTransform )
   {
     QDomElement geoTransformElem = mVRTDocument.createElement( u"GeoTransform"_s );
-    const QString geoTransformString = QString::number( geoTransform[0], 'f', 6 ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) + ", "
-                                       + QString::number( geoTransform[3], 'f', 6 ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
+    const QString geoTransformString = QString::number( geoTransform[0], 'f', 6 )
+                                       + ", "
+                                       + QString::number( geoTransform[1] )
+                                       + ", "
+                                       + QString::number( geoTransform[2] )
+                                       + ", "
+                                       + QString::number( geoTransform[3], 'f', 6 )
+                                       + ", "
+                                       + QString::number( geoTransform[4] )
+                                       + ", "
+                                       + QString::number( geoTransform[5] );
     const QDomText geoTransformText = mVRTDocument.createTextNode( geoTransformString );
     geoTransformElem.appendChild( geoTransformText );
     VRTDatasetElem.appendChild( geoTransformElem );

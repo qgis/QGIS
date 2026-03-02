@@ -1207,7 +1207,9 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
   if ( !mShared->mZRange.isInfinite() )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Z Range" ) % u"</td><td>%1 - %2</a>"_s.arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) )
+    metadata += u"<tr><td class=\"highlight\">"_s
+                % tr( "Z Range" )
+                % u"</td><td>%1 - %2</a>"_s.arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) )
                 % u"</td></tr>\n"_s;
   }
 

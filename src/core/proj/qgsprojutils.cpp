@@ -303,7 +303,8 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
     const char *outDirection = nullptr;
     proj_cs_get_axis_info( context, pjCs.get(), axisIndex, nullptr, nullptr, &outDirection, nullptr, nullptr, nullptr, nullptr );
     const QString outDirectionString = QString( outDirection );
-    if ( outDirectionString.compare( "geocentricZ"_L1, Qt::CaseInsensitive ) == 0 || outDirectionString.compare( "up"_L1, Qt::CaseInsensitive ) == 0
+    if ( outDirectionString.compare( "geocentricZ"_L1, Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( "up"_L1, Qt::CaseInsensitive ) == 0
          || outDirectionString.compare( "down"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return true;

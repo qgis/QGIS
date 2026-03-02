@@ -1214,9 +1214,13 @@ class QgsVectorFileWriterMetadataContainer
         u"SEPARATOR"_s,
         new QgsVectorFileWriter::SetOption(
           QObject::tr( "Field separator character." ),
-          QStringList() << u"COMMA"_s << u"SEMICOLON"_s << u"TAB"_s << u"SPACE"_s
+          QStringList()
+            << u"COMMA"_s
+            << u"SEMICOLON"_s
+            << u"TAB"_s
+            << u"SPACE"_s
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 12, 0 )
-                        << u"PIPE"_s
+            << u"PIPE"_s
 #endif
           ,
           u"COMMA"_s // Default value
@@ -1276,9 +1280,28 @@ class QgsVectorFileWriterMetadataContainer
               " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
               " geometries."
             )
-            + QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) + "",
-          QStringList() << u"NULL"_s << u"POINT"_s << u"ARC"_s << u"POLYGON"_s << u"MULTIPOINT"_s << u"POINTZ"_s << u"ARCZ"_s << u"POLYGONZ"_s << u"MULTIPOINTZ"_s << u"POINTM"_s << u"ARCM"_s
-                        << u"POLYGONM"_s << u"MULTIPOINTM"_s << u"POINTZM"_s << u"ARCZM"_s << u"POLYGONZM"_s << u"MULTIPOINTZM"_s << u"MULTIPATCH"_s << QString(),
+            + QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." )
+            + "",
+          QStringList()
+            << u"NULL"_s
+            << u"POINT"_s
+            << u"ARC"_s
+            << u"POLYGON"_s
+            << u"MULTIPOINT"_s
+            << u"POINTZ"_s
+            << u"ARCZ"_s
+            << u"POLYGONZ"_s
+            << u"MULTIPOINTZ"_s
+            << u"POINTM"_s
+            << u"ARCM"_s
+            << u"POLYGONM"_s
+            << u"MULTIPOINTM"_s
+            << u"POINTZM"_s
+            << u"ARCZM"_s
+            << u"POLYGONZM"_s
+            << u"MULTIPOINTZM"_s
+            << u"MULTIPATCH"_s
+            << QString(),
           QString(), // Default value
           true       // Allow None
         )

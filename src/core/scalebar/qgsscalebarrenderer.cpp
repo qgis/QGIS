@@ -153,8 +153,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     else
     {
       pos.setX(
-        context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, Qgis::RenderUnit::Millimeters ) + xOffset
-        - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0
+        context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, Qgis::RenderUnit::Millimeters ) + xOffset - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0
       );
       QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }

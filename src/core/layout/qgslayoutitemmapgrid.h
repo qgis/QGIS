@@ -397,8 +397,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see markerSymbol()
      * \see style()
      */
-    QgsLineSymbol *
-      lineSymbol();
+    QgsLineSymbol *lineSymbol();
 
     /**
      * Sets the marker \a symbol used for drawing grid points. This is only used for grids with a
@@ -427,8 +426,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see lineSymbol()
      * \see style()
      */
-    QgsMarkerSymbol *
-      markerSymbol();
+    QgsMarkerSymbol *markerSymbol();
 
     //
     // ANNOTATIONS

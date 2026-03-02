@@ -101,13 +101,33 @@ QgsTextFormat::~QgsTextFormat() //NOLINT
 
 bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
 {
-  if ( d->isValid != other.isValid() || d->textFont != other.font() || namedStyle() != other.namedStyle() || d->fontSizeUnits != other.sizeUnit() || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
-       || d->fontSize != other.size() || d->textColor != other.color() || d->opacity != other.opacity() || d->blendMode != other.blendMode() || d->multilineHeight != other.lineHeight()
-       || d->multilineHeightUnits != other.lineHeightUnit() || d->orientation != other.orientation() || d->previewBackgroundColor != other.previewBackgroundColor()
-       || d->allowHtmlFormatting != other.allowHtmlFormatting() || d->forcedBold != other.forcedBold() || d->forcedItalic != other.forcedItalic() || d->capitalization != other.capitalization()
-       || d->tabStopDistance != other.tabStopDistance() || d->tabPositions != other.tabPositions() || d->tabStopDistanceUnits != other.tabStopDistanceUnit()
-       || d->tabStopDistanceMapUnitScale != other.tabStopDistanceMapUnitScale() || mBufferSettings != other.mBufferSettings || mBackgroundSettings != other.mBackgroundSettings
-       || mShadowSettings != other.mShadowSettings || mMaskSettings != other.mMaskSettings || d->families != other.families() || d->mDataDefinedProperties != other.dataDefinedProperties() )
+  if ( d->isValid != other.isValid()
+       || d->textFont != other.font()
+       || namedStyle() != other.namedStyle()
+       || d->fontSizeUnits != other.sizeUnit()
+       || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
+       || d->fontSize != other.size()
+       || d->textColor != other.color()
+       || d->opacity != other.opacity()
+       || d->blendMode != other.blendMode()
+       || d->multilineHeight != other.lineHeight()
+       || d->multilineHeightUnits != other.lineHeightUnit()
+       || d->orientation != other.orientation()
+       || d->previewBackgroundColor != other.previewBackgroundColor()
+       || d->allowHtmlFormatting != other.allowHtmlFormatting()
+       || d->forcedBold != other.forcedBold()
+       || d->forcedItalic != other.forcedItalic()
+       || d->capitalization != other.capitalization()
+       || d->tabStopDistance != other.tabStopDistance()
+       || d->tabPositions != other.tabPositions()
+       || d->tabStopDistanceUnits != other.tabStopDistanceUnit()
+       || d->tabStopDistanceMapUnitScale != other.tabStopDistanceMapUnitScale()
+       || mBufferSettings != other.mBufferSettings
+       || mBackgroundSettings != other.mBackgroundSettings
+       || mShadowSettings != other.mShadowSettings
+       || mMaskSettings != other.mMaskSettings
+       || d->families != other.families()
+       || d->mDataDefinedProperties != other.dataDefinedProperties() )
     return false;
 
   return true;
@@ -967,8 +987,10 @@ bool QgsTextFormat::hasNonDefaultCompositionMode() const
   if ( mShadowSettings.enabled() && mShadowSettings.blendMode() != QPainter::CompositionMode_SourceOver )
     return true;
 
-  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontBlendMode ) || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
-       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferBlendMode ) || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeBlendMode ) )
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeBlendMode ) )
     return true;
 
   return false;

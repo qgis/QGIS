@@ -95,8 +95,7 @@ class CORE_EXPORT QgsSatelliteInfo
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {
-      return id == other.id && inUse == other.inUse && elevation == other.elevation && azimuth == other.azimuth && signal == other.signal && satType == other.satType
-             && mConstellation == other.mConstellation;
+      return id == other.id && inUse == other.inUse && elevation == other.elevation && azimuth == other.azimuth && signal == other.signal && satType == other.satType && mConstellation == other.mConstellation;
     }
 
     bool operator!=( const QgsSatelliteInfo &other ) const { return !operator==( other ); }

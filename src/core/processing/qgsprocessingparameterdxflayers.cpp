@@ -88,7 +88,10 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
       {
         const QVariantMap layerMap = variantLayer.toMap();
 
-        if ( !layerMap.contains( u"layer"_s ) && !layerMap.contains( u"attributeIndex"_s ) && !layerMap.contains( u"overriddenLayerName"_s ) && !layerMap.contains( u"buildDataDefinedBlocks"_s )
+        if ( !layerMap.contains( u"layer"_s )
+             && !layerMap.contains( u"attributeIndex"_s )
+             && !layerMap.contains( u"overriddenLayerName"_s )
+             && !layerMap.contains( u"buildDataDefinedBlocks"_s )
              && !layerMap.contains( u"dataDefinedBlocksMaximumNumberOfClasses"_s ) )
           return false;
 

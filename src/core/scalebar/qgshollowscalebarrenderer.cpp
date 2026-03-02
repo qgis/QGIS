@@ -41,8 +41,16 @@ QString QgsHollowScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsHollowScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel
-         | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol
+         | Flag::FlagUsesFillSymbol
+         | Flag::FlagUsesAlternateFillSymbol
+         | Flag::FlagRespectsUnits
+         | Flag::FlagRespectsMapUnitsPerScaleBarUnit
+         | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments
+         | Flag::FlagUsesLabelBarSpace
+         | Flag::FlagUsesLabelVerticalPlacement
+         | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsHollowScaleBarRenderer::sortKey() const
@@ -145,13 +153,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
     }
 
     // outside line
-    lineSymbol->renderPolyline(
-      QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight )
-                  << QPointF( minX, barTopPosition ),
-      nullptr,
-      context,
-      layer
-    );
+    lineSymbol
+      ->renderPolyline( QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition ), nullptr, context, layer );
   }
 
   lineSymbol->stopRender( context );

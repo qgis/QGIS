@@ -1038,8 +1038,10 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
-  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth )
-       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize )
+       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth )
+       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight )
+       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
     return size;
 
 

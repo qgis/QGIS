@@ -1770,7 +1770,8 @@ bool QgsTextRenderer::usePathsToRender( const QgsRenderContext &context, const Q
       // was introduced
       if ( format.font().underline() || format.font().overline() || format.font().strikeOut() || std::any_of( document.begin(), document.end(), []( const QgsTextBlock &block ) {
              return std::any_of( block.begin(), block.end(), []( const QgsTextFragment &fragment ) {
-               return fragment.characterFormat().underline() == QgsTextCharacterFormat::BooleanValue::SetTrue || fragment.characterFormat().overline() == QgsTextCharacterFormat::BooleanValue::SetTrue
+               return fragment.characterFormat().underline() == QgsTextCharacterFormat::BooleanValue::SetTrue
+                      || fragment.characterFormat().overline() == QgsTextCharacterFormat::BooleanValue::SetTrue
                       || fragment.characterFormat().strikeOut() == QgsTextCharacterFormat::BooleanValue::SetTrue;
              } );
            } ) )
@@ -2140,7 +2141,8 @@ void QgsTextRenderer::drawTextInternalHorizontal(
       }
 
       // if we are drawing both text + buffer, we'll need a path, as we HAVE to render buffers using paths
-      const bool needsPaths = usePathsForText || ( ( components & Qgis::TextComponent::Buffer ) && format.buffer().enabled() )
+      const bool needsPaths = usePathsForText
+                              || ( ( components & Qgis::TextComponent::Buffer ) && format.buffer().enabled() )
                               || ( ( components & Qgis::TextComponent::Shadow ) && format.shadow().enabled() );
 
       std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;

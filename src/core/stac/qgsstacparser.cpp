@@ -437,7 +437,10 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   const int minor = m[2].toInt();
   const int release = m[3].toInt();
 
-  if ( major > maxMajor || major < minMajor || ( major == minMajor && minor < minMinor ) || ( major == minMajor && minor == minMinor && release < minRelease )
+  if ( major > maxMajor
+       || major < minMajor
+       || ( major == minMajor && minor < minMinor )
+       || ( major == minMajor && minor == minMinor && release < minRelease )
        || ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
   {
     return false;

@@ -60,13 +60,44 @@ static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 QList<Qgis::MarkerShape> QgsSimpleMarkerSymbolLayerBase::availableShapes()
 {
   QList< Qgis::MarkerShape > shapes;
-  shapes << Qgis::MarkerShape::Square << Qgis::MarkerShape::Trapezoid << Qgis::MarkerShape::ParallelogramLeft << Qgis::MarkerShape::ParallelogramRight << Qgis::MarkerShape::Diamond
-         << Qgis::MarkerShape::Shield << Qgis::MarkerShape::Pentagon << Qgis::MarkerShape::Hexagon << Qgis::MarkerShape::Octagon << Qgis::MarkerShape::Decagon << Qgis::MarkerShape::SquareWithCorners
-         << Qgis::MarkerShape::RoundedSquare << Qgis::MarkerShape::Triangle << Qgis::MarkerShape::EquilateralTriangle << Qgis::MarkerShape::DiamondStar << Qgis::MarkerShape::Star
-         << Qgis::MarkerShape::Heart << Qgis::MarkerShape::Arrow << Qgis::MarkerShape::Circle << Qgis::MarkerShape::Cross << Qgis::MarkerShape::CrossFill << Qgis::MarkerShape::Cross2
-         << Qgis::MarkerShape::Line << Qgis::MarkerShape::HalfArc << Qgis::MarkerShape::ThirdArc << Qgis::MarkerShape::QuarterArc << Qgis::MarkerShape::ArrowHead << Qgis::MarkerShape::ArrowHeadFilled
-         << Qgis::MarkerShape::SemiCircle << Qgis::MarkerShape::ThirdCircle << Qgis::MarkerShape::QuarterCircle << Qgis::MarkerShape::QuarterSquare << Qgis::MarkerShape::HalfSquare
-         << Qgis::MarkerShape::DiagonalHalfSquare << Qgis::MarkerShape::RightHalfTriangle << Qgis::MarkerShape::LeftHalfTriangle << Qgis::MarkerShape::AsteriskFill;
+  shapes
+    << Qgis::MarkerShape::Square
+    << Qgis::MarkerShape::Trapezoid
+    << Qgis::MarkerShape::ParallelogramLeft
+    << Qgis::MarkerShape::ParallelogramRight
+    << Qgis::MarkerShape::Diamond
+    << Qgis::MarkerShape::Shield
+    << Qgis::MarkerShape::Pentagon
+    << Qgis::MarkerShape::Hexagon
+    << Qgis::MarkerShape::Octagon
+    << Qgis::MarkerShape::Decagon
+    << Qgis::MarkerShape::SquareWithCorners
+    << Qgis::MarkerShape::RoundedSquare
+    << Qgis::MarkerShape::Triangle
+    << Qgis::MarkerShape::EquilateralTriangle
+    << Qgis::MarkerShape::DiamondStar
+    << Qgis::MarkerShape::Star
+    << Qgis::MarkerShape::Heart
+    << Qgis::MarkerShape::Arrow
+    << Qgis::MarkerShape::Circle
+    << Qgis::MarkerShape::Cross
+    << Qgis::MarkerShape::CrossFill
+    << Qgis::MarkerShape::Cross2
+    << Qgis::MarkerShape::Line
+    << Qgis::MarkerShape::HalfArc
+    << Qgis::MarkerShape::ThirdArc
+    << Qgis::MarkerShape::QuarterArc
+    << Qgis::MarkerShape::ArrowHead
+    << Qgis::MarkerShape::ArrowHeadFilled
+    << Qgis::MarkerShape::SemiCircle
+    << Qgis::MarkerShape::ThirdCircle
+    << Qgis::MarkerShape::QuarterCircle
+    << Qgis::MarkerShape::QuarterSquare
+    << Qgis::MarkerShape::HalfSquare
+    << Qgis::MarkerShape::DiagonalHalfSquare
+    << Qgis::MarkerShape::RightHalfTriangle
+    << Qgis::MarkerShape::LeftHalfTriangle
+    << Qgis::MarkerShape::AsteriskFill;
 
   return shapes;
 }
@@ -477,9 +508,16 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     {
       static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 0.6072;
 
-      polygon << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 ) << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 ) << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN ) << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
-              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 ) << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 ) << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN ) << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
-              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
+      polygon
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 )
+        << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 )
+        << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 )
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 )
+        << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
       return true;
     }
 
@@ -540,17 +578,33 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     {
       static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 1.0 / ( 1 + M_SQRT2 );
 
-      polygon << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 ) << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 ) << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN ) << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
-              << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 ) << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 ) << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN ) << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
-              << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
+      polygon
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 )
+        << QPointF( VERTEX_OFFSET_FROM_ORIGIN, 1 )
+        << QPointF( 1, VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( 1, -VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( VERTEX_OFFSET_FROM_ORIGIN, -1 )
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, -1 )
+        << QPointF( -1, -VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( -1, VERTEX_OFFSET_FROM_ORIGIN )
+        << QPointF( -VERTEX_OFFSET_FROM_ORIGIN, 1 );
       return true;
     }
 
     case Qgis::MarkerShape::Decagon:
     {
-      polygon << QPointF( 0.587785252, 0.809016994 ) << QPointF( 0.951056516, 0.309016994 ) << QPointF( 0.951056516, -0.309016994 ) << QPointF( 0.587785252, -0.809016994 ) << QPointF( 0, -1 )
-              << QPointF( -0.587785252, -0.809016994 ) << QPointF( -0.951056516, -0.309016994 ) << QPointF( -0.951056516, 0.309016994 ) << QPointF( -0.587785252, 0.809016994 ) << QPointF( 0, 1 )
-              << QPointF( 0.587785252, 0.809016994 );
+      polygon
+        << QPointF( 0.587785252, 0.809016994 )
+        << QPointF( 0.951056516, 0.309016994 )
+        << QPointF( 0.951056516, -0.309016994 )
+        << QPointF( 0.587785252, -0.809016994 )
+        << QPointF( 0, -1 )
+        << QPointF( -0.587785252, -0.809016994 )
+        << QPointF( -0.951056516, -0.309016994 )
+        << QPointF( -0.951056516, 0.309016994 )
+        << QPointF( -0.587785252, 0.809016994 )
+        << QPointF( 0, 1 )
+        << QPointF( 0.587785252, 0.809016994 );
       return true;
     }
 
@@ -578,11 +632,16 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     {
       const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
 
-      polygon << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), -inner_r * std::cos( DEG2RAD( 315.0 ) ) ) << QPointF( std::sin( DEG2RAD( 270 ) ), -std::cos( DEG2RAD( 270 ) ) )
-              << QPointF( inner_r * std::sin( DEG2RAD( 225.0 ) ), -inner_r * std::cos( DEG2RAD( 225.0 ) ) ) << QPointF( std::sin( DEG2RAD( 180 ) ), -std::cos( DEG2RAD( 180 ) ) )
-              << QPointF( inner_r * std::sin( DEG2RAD( 135.0 ) ), -inner_r * std::cos( DEG2RAD( 135.0 ) ) ) << QPointF( std::sin( DEG2RAD( 90 ) ), -std::cos( DEG2RAD( 90 ) ) )
-              << QPointF( inner_r * std::sin( DEG2RAD( 45.0 ) ), -inner_r * std::cos( DEG2RAD( 45.0 ) ) ) << QPointF( std::sin( DEG2RAD( 0 ) ), -std::cos( DEG2RAD( 0 ) ) )
-              << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), -inner_r * std::cos( DEG2RAD( 315.0 ) ) );
+      polygon
+        << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), -inner_r * std::cos( DEG2RAD( 315.0 ) ) )
+        << QPointF( std::sin( DEG2RAD( 270 ) ), -std::cos( DEG2RAD( 270 ) ) )
+        << QPointF( inner_r * std::sin( DEG2RAD( 225.0 ) ), -inner_r * std::cos( DEG2RAD( 225.0 ) ) )
+        << QPointF( std::sin( DEG2RAD( 180 ) ), -std::cos( DEG2RAD( 180 ) ) )
+        << QPointF( inner_r * std::sin( DEG2RAD( 135.0 ) ), -inner_r * std::cos( DEG2RAD( 135.0 ) ) )
+        << QPointF( std::sin( DEG2RAD( 90 ) ), -std::cos( DEG2RAD( 90 ) ) )
+        << QPointF( inner_r * std::sin( DEG2RAD( 45.0 ) ), -inner_r * std::cos( DEG2RAD( 45.0 ) ) )
+        << QPointF( std::sin( DEG2RAD( 0 ) ), -std::cos( DEG2RAD( 0 ) ) )
+        << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), -inner_r * std::cos( DEG2RAD( 315.0 ) ) );
       return true;
     }
 
@@ -590,16 +649,18 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     {
       const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
 
-      polygon << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), -inner_r * std::cos( DEG2RAD( 324.0 ) ) )                      // 324
-              << QPointF( std::sin( DEG2RAD( 288.0 ) ), -std::cos( DEG2RAD( 288 ) ) )                                            // 288
-              << QPointF( inner_r * std::sin( DEG2RAD( 252.0 ) ), -inner_r * std::cos( DEG2RAD( 252.0 ) ) )                      // 252
-              << QPointF( std::sin( DEG2RAD( 216.0 ) ), -std::cos( DEG2RAD( 216.0 ) ) )                                          // 216
-              << QPointF( 0, inner_r )                                                                                           // 180
-              << QPointF( std::sin( DEG2RAD( 144.0 ) ), -std::cos( DEG2RAD( 144.0 ) ) )                                          // 144
-              << QPointF( inner_r * std::sin( DEG2RAD( 108.0 ) ), -inner_r * std::cos( DEG2RAD( 108.0 ) ) )                      // 108
-              << QPointF( std::sin( DEG2RAD( 72.0 ) ), -std::cos( DEG2RAD( 72.0 ) ) )                                            //  72
-              << QPointF( inner_r * std::sin( DEG2RAD( 36.0 ) ), -inner_r * std::cos( DEG2RAD( 36.0 ) ) )                        //  36
-              << QPointF( 0, -1 ) << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), -inner_r * std::cos( DEG2RAD( 324.0 ) ) ); // 324;          //   0
+      polygon
+        << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), -inner_r * std::cos( DEG2RAD( 324.0 ) ) ) // 324
+        << QPointF( std::sin( DEG2RAD( 288.0 ) ), -std::cos( DEG2RAD( 288 ) ) )                       // 288
+        << QPointF( inner_r * std::sin( DEG2RAD( 252.0 ) ), -inner_r * std::cos( DEG2RAD( 252.0 ) ) ) // 252
+        << QPointF( std::sin( DEG2RAD( 216.0 ) ), -std::cos( DEG2RAD( 216.0 ) ) )                     // 216
+        << QPointF( 0, inner_r )                                                                      // 180
+        << QPointF( std::sin( DEG2RAD( 144.0 ) ), -std::cos( DEG2RAD( 144.0 ) ) )                     // 144
+        << QPointF( inner_r * std::sin( DEG2RAD( 108.0 ) ), -inner_r * std::cos( DEG2RAD( 108.0 ) ) ) // 108
+        << QPointF( std::sin( DEG2RAD( 72.0 ) ), -std::cos( DEG2RAD( 72.0 ) ) )                       //  72
+        << QPointF( inner_r * std::sin( DEG2RAD( 36.0 ) ), -inner_r * std::cos( DEG2RAD( 36.0 ) ) )   //  36
+        << QPointF( 0, -1 )
+        << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), -inner_r * std::cos( DEG2RAD( 324.0 ) ) ); // 324;          //   0
       return true;
     }
 
@@ -612,8 +673,21 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
       return true;
 
     case Qgis::MarkerShape::CrossFill:
-      polygon << QPointF( -1, -0.2 ) << QPointF( -1, -0.2 ) << QPointF( -1, 0.2 ) << QPointF( -0.2, 0.2 ) << QPointF( -0.2, 1 ) << QPointF( 0.2, 1 ) << QPointF( 0.2, 0.2 ) << QPointF( 1, 0.2 )
-              << QPointF( 1, -0.2 ) << QPointF( 0.2, -0.2 ) << QPointF( 0.2, -1 ) << QPointF( -0.2, -1 ) << QPointF( -0.2, -0.2 ) << QPointF( -1, -0.2 );
+      polygon
+        << QPointF( -1, -0.2 )
+        << QPointF( -1, -0.2 )
+        << QPointF( -1, 0.2 )
+        << QPointF( -0.2, 0.2 )
+        << QPointF( -0.2, 1 )
+        << QPointF( 0.2, 1 )
+        << QPointF( 0.2, 0.2 )
+        << QPointF( 1, 0.2 )
+        << QPointF( 1, -0.2 )
+        << QPointF( 0.2, -0.2 )
+        << QPointF( 0.2, -1 )
+        << QPointF( -0.2, -1 )
+        << QPointF( -0.2, -0.2 )
+        << QPointF( -1, -0.2 );
       return true;
 
     case Qgis::MarkerShape::AsteriskFill:
@@ -624,14 +698,32 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
       static constexpr double DIAGONAL1 = M_SQRT1_2 - INTERSECTION_POINT * 0.5;
       static constexpr double DIAGONAL2 = M_SQRT1_2 + INTERSECTION_POINT * 0.5;
 
-      polygon << QPointF( -HALF_THICKNESS, -1 ) << QPointF( HALF_THICKNESS, -1 ) << QPointF( HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT ) << QPointF( DIAGONAL1, -DIAGONAL2 )
-              << QPointF( DIAGONAL2, -DIAGONAL1 ) << QPointF( HALF_THICKNESS + INTERSECTION_POINT, -HALF_THICKNESS ) << QPointF( 1, -HALF_THICKNESS ) << QPointF( 1, HALF_THICKNESS )
-              << QPointF( HALF_THICKNESS + INTERSECTION_POINT, HALF_THICKNESS ) << QPointF( DIAGONAL2, DIAGONAL1 ) << QPointF( DIAGONAL1, DIAGONAL2 )
-              << QPointF( HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT ) << QPointF( HALF_THICKNESS, 1 ) << QPointF( -HALF_THICKNESS, 1 )
-              << QPointF( -HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT ) << QPointF( -DIAGONAL1, DIAGONAL2 ) << QPointF( -DIAGONAL2, DIAGONAL1 )
-              << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, HALF_THICKNESS ) << QPointF( -1, HALF_THICKNESS ) << QPointF( -1, -HALF_THICKNESS )
-              << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, -HALF_THICKNESS ) << QPointF( -DIAGONAL2, -DIAGONAL1 ) << QPointF( -DIAGONAL1, -DIAGONAL2 )
-              << QPointF( -HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT ) << QPointF( -HALF_THICKNESS, -1 );
+      polygon
+        << QPointF( -HALF_THICKNESS, -1 )
+        << QPointF( HALF_THICKNESS, -1 )
+        << QPointF( HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT )
+        << QPointF( DIAGONAL1, -DIAGONAL2 )
+        << QPointF( DIAGONAL2, -DIAGONAL1 )
+        << QPointF( HALF_THICKNESS + INTERSECTION_POINT, -HALF_THICKNESS )
+        << QPointF( 1, -HALF_THICKNESS )
+        << QPointF( 1, HALF_THICKNESS )
+        << QPointF( HALF_THICKNESS + INTERSECTION_POINT, HALF_THICKNESS )
+        << QPointF( DIAGONAL2, DIAGONAL1 )
+        << QPointF( DIAGONAL1, DIAGONAL2 )
+        << QPointF( HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT )
+        << QPointF( HALF_THICKNESS, 1 )
+        << QPointF( -HALF_THICKNESS, 1 )
+        << QPointF( -HALF_THICKNESS, HALF_THICKNESS + INTERSECTION_POINT )
+        << QPointF( -DIAGONAL1, DIAGONAL2 )
+        << QPointF( -DIAGONAL2, DIAGONAL1 )
+        << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, HALF_THICKNESS )
+        << QPointF( -1, HALF_THICKNESS )
+        << QPointF( -1, -HALF_THICKNESS )
+        << QPointF( -HALF_THICKNESS - INTERSECTION_POINT, -HALF_THICKNESS )
+        << QPointF( -DIAGONAL2, -DIAGONAL1 )
+        << QPointF( -DIAGONAL1, -DIAGONAL2 )
+        << QPointF( -HALF_THICKNESS, -HALF_THICKNESS - INTERSECTION_POINT )
+        << QPointF( -HALF_THICKNESS, -1 );
       return true;
     }
 
@@ -999,9 +1091,14 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // use caching only when:
   // - size, rotation, shape, color, stroke color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.forceVectorRendering() && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name )
-                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
-                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle )
+  mUsingCache = !hasDataDefinedRotation
+                && !hasDataDefinedSize
+                && !context.forceVectorRendering()
+                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name )
+                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor )
+                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
+                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth )
+                && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle );
 
   if ( mUsingCache )
@@ -1689,8 +1786,12 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayer::mapUnitScale() const
 
 bool QgsSimpleMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mSizeUnit == Qgis::RenderUnit::MapUnits
+         || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
@@ -1938,7 +2039,10 @@ QColor QgsFilledMarkerSymbolLayer::color() const
 
 bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+  return mSizeUnit == Qgis::RenderUnit::MapUnits
+         || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
          || ( mFill && mFill->usesMapUnits() );
 }
 
@@ -2540,8 +2644,12 @@ QVariantMap QgsSvgMarkerSymbolLayer::properties() const
 
 bool QgsSvgMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mSizeUnit == Qgis::RenderUnit::MapUnits
+         || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
@@ -3641,7 +3749,8 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
-  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontFamily ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontStyle )
+  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontFamily )
+                   && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontStyle )
                    && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Character );
   if ( mUseCachedPath )
   {
@@ -3989,8 +4098,12 @@ bool QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &e
 
 bool QgsFontMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
-         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mSizeUnit == Qgis::RenderUnit::MapUnits
+         || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsFontMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )

@@ -1554,7 +1554,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
       QgsGeometryUtils::circleCenterRadius( filletPoints[0], filletPoints[1], filletPoints[2], radius, centerX, centerY );
       const double arcAngle
         = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY, filletPoints[0].x(), filletPoints[0].y(), filletPoints[1].x(), filletPoints[1].y(), filletPoints[2].x(), filletPoints[2].y() ) )
-          * M_PI / 180.0; // Convert to radians
+          * M_PI
+          / 180.0; // Convert to radians
       // Add small epsilon to avoid ceil() rounding up due to numerical precision
       angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
     }
@@ -1674,7 +1675,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
         double radius, centerX, centerY;
         QgsGeometryUtils::circleCenterRadius( firstNewPoint, middlePoint, lastNewPoint, radius, centerX, centerY );
         const double arcAngle = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY, firstNewPoint.x(), firstNewPoint.y(), middlePoint.x(), middlePoint.y(), lastNewPoint.x(), lastNewPoint.y() ) )
-                                * M_PI / 180.0; // Convert to radians
+                                * M_PI
+                                / 180.0; // Convert to radians
         // Add small epsilon to avoid ceil() rounding up due to numerical precision
         const double angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
         std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );

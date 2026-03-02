@@ -147,13 +147,23 @@ void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScal
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
-  return mValid != other.mValid || mEnabled != other.mEnabled || mType != other.mType || mTolerance != other.mTolerance || mUnits != other.mUnits || mMinimumScale != other.mMinimumScale
+  return mValid != other.mValid
+         || mEnabled != other.mEnabled
+         || mType != other.mType
+         || mTolerance != other.mTolerance
+         || mUnits != other.mUnits
+         || mMinimumScale != other.mMinimumScale
          || mMaximumScale != other.mMaximumScale;
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
-  return mValid == other.mValid && mEnabled == other.mEnabled && mType == other.mType && mTolerance == other.mTolerance && mUnits == other.mUnits && mMinimumScale == other.mMinimumScale
+  return mValid == other.mValid
+         && mEnabled == other.mEnabled
+         && mType == other.mType
+         && mTolerance == other.mTolerance
+         && mUnits == other.mUnits
+         && mMinimumScale == other.mMinimumScale
          && mMaximumScale == other.mMaximumScale;
 }
 
@@ -166,9 +176,17 @@ QgsSnappingConfig::QgsSnappingConfig( QgsProject *project )
 
 bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
 {
-  return mEnabled == other.mEnabled && mMode == other.mMode && mType == other.mType && mTolerance == other.mTolerance && mUnits == other.mUnits && mIntersectionSnapping == other.mIntersectionSnapping
-         && mSelfSnapping == other.mSelfSnapping && mIndividualLayerSettings == other.mIndividualLayerSettings && mScaleDependencyMode == other.mScaleDependencyMode
-         && mMinimumScale == other.mMinimumScale && mMaximumScale == other.mMaximumScale;
+  return mEnabled == other.mEnabled
+         && mMode == other.mMode
+         && mType == other.mType
+         && mTolerance == other.mTolerance
+         && mUnits == other.mUnits
+         && mIntersectionSnapping == other.mIntersectionSnapping
+         && mSelfSnapping == other.mSelfSnapping
+         && mIndividualLayerSettings == other.mIndividualLayerSettings
+         && mScaleDependencyMode == other.mScaleDependencyMode
+         && mMinimumScale == other.mMinimumScale
+         && mMaximumScale == other.mMaximumScale;
 }
 
 void QgsSnappingConfig::reset()
@@ -412,8 +430,14 @@ void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const In
 
 bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
 {
-  return mEnabled != other.mEnabled || mMode != other.mMode || mType != other.mType || mTolerance != other.mTolerance || mUnits != other.mUnits
-         || mIndividualLayerSettings != other.mIndividualLayerSettings || mScaleDependencyMode != other.mScaleDependencyMode || mMinimumScale != other.mMinimumScale
+  return mEnabled != other.mEnabled
+         || mMode != other.mMode
+         || mType != other.mType
+         || mTolerance != other.mTolerance
+         || mUnits != other.mUnits
+         || mIndividualLayerSettings != other.mIndividualLayerSettings
+         || mScaleDependencyMode != other.mScaleDependencyMode
+         || mMinimumScale != other.mMinimumScale
          || mMaximumScale != other.mMaximumScale;
 }
 

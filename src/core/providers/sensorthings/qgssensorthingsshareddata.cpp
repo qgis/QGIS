@@ -664,8 +664,18 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     {
                       std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
                       std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantMap( entityData, "unitOfMeasurement" )
-                                 << getString( entityData, "observationType" ) << properties << phenomenonTime.first << phenomenonTime.second << resultTime.first << resultTime.second;
+                      attributes
+                        << iotId
+                        << selfLink
+                        << getString( entityData, "name" )
+                        << getString( entityData, "description" )
+                        << getVariantMap( entityData, "unitOfMeasurement" )
+                        << getString( entityData, "observationType" )
+                        << properties
+                        << phenomenonTime.first
+                        << phenomenonTime.second
+                        << resultTime.first
+                        << resultTime.second;
                       break;
                     }
 
@@ -681,9 +691,17 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     {
                       std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
                       std::pair< QVariant, QVariant > validTime = getDateTimeRange( entityData, "validTime" );
-                      attributes << iotId << selfLink << phenomenonTime.first << phenomenonTime.second << getString( entityData, "result" ) // TODO -- result type handling!
-                                 << getDateTime( entityData, "resultTime" ) << getStringList( entityData, "resultQuality" ) << validTime.first << validTime.second
-                                 << getVariantMap( entityData, "parameters" );
+                      attributes
+                        << iotId
+                        << selfLink
+                        << phenomenonTime.first
+                        << phenomenonTime.second
+                        << getString( entityData, "result" ) // TODO -- result type handling!
+                        << getDateTime( entityData, "resultTime" )
+                        << getStringList( entityData, "resultQuality" )
+                        << validTime.first
+                        << validTime.second
+                        << getVariantMap( entityData, "parameters" );
                       break;
                     }
 
@@ -695,9 +713,19 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     {
                       std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
                       std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getVariantList( entityData, "unitOfMeasurements" )
-                                 << getString( entityData, "observationType" ) << getStringList( entityData, "multiObservationDataTypes" ) << properties << phenomenonTime.first
-                                 << phenomenonTime.second << resultTime.first << resultTime.second;
+                      attributes
+                        << iotId
+                        << selfLink
+                        << getString( entityData, "name" )
+                        << getString( entityData, "description" )
+                        << getVariantList( entityData, "unitOfMeasurements" )
+                        << getString( entityData, "observationType" )
+                        << getStringList( entityData, "multiObservationDataTypes" )
+                        << properties
+                        << phenomenonTime.first
+                        << phenomenonTime.second
+                        << resultTime.first
+                        << resultTime.second;
                       break;
                     }
                   }

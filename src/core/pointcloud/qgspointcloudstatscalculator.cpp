@@ -127,9 +127,17 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == "ScannerChannel"_L1 || attribute.name() == "ReturnNumber"_L1 || attribute.name() == "NumberOfReturns"_L1 || attribute.name() == "ScanDirectionFlag"_L1
-             || attribute.name() == "Classification"_L1 || attribute.name() == "EdgeOfFlightLine"_L1 || attribute.name() == "PointSourceId"_L1 || attribute.name() == "Synthetic"_L1
-             || attribute.name() == "KeyPoint"_L1 || attribute.name() == "Withheld"_L1 || attribute.name() == "Overlap"_L1 )
+        if ( attribute.name() == "ScannerChannel"_L1
+             || attribute.name() == "ReturnNumber"_L1
+             || attribute.name() == "NumberOfReturns"_L1
+             || attribute.name() == "ScanDirectionFlag"_L1
+             || attribute.name() == "Classification"_L1
+             || attribute.name() == "EdgeOfFlightLine"_L1
+             || attribute.name() == "PointSourceId"_L1
+             || attribute.name() == "Synthetic"_L1
+             || attribute.name() == "KeyPoint"_L1
+             || attribute.name() == "Withheld"_L1
+             || attribute.name() == "Overlap"_L1 )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }

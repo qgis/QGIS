@@ -875,7 +875,8 @@ QString QgsApplication::iconPath( const QString &iconFile )
 
 QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor, const QColor &strokeColor )
 {
-  const QString cacheKey = ( name.startsWith( '/' ) ? name.mid( 1 ) : name ) + ( fillColor.isValid() ? u"_%1"_s.arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() )
+  const QString cacheKey = ( name.startsWith( '/' ) ? name.mid( 1 ) : name )
+                           + ( fillColor.isValid() ? u"_%1"_s.arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() )
                            + ( strokeColor.isValid() ? u"_%1"_s.arg( strokeColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() );
   QgsApplication *app = instance();
   if ( app && app->mIconCache.contains( cacheKey ) )

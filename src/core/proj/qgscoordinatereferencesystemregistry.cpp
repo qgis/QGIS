@@ -113,17 +113,33 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   //the autoinc related system tables.
   if ( QgsCoordinateReferenceSystem::getRecordCount() == 0 )
   {
-    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values (" + QString::number( Qgis::USER_CRS_START_ID ) + ','
-            + QgsSqliteUtils::quotedString( name ) + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s ) + ',' + quotedEllipsoidString
-            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s ) + ",0," // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s ) + ')';
+    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
+            + QString::number( Qgis::USER_CRS_START_ID )
+            + ','
+            + QgsSqliteUtils::quotedString( name )
+            + ','
+            + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s )
+            + ','
+            + quotedEllipsoidString
+            + ','
+            + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s )
+            + ",0," // <-- is_geo shamelessly hard coded for now
+            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s )
+            + ')';
   }
   else
   {
-    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values (" + QgsSqliteUtils::quotedString( name ) + ','
-            + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s ) + ',' + quotedEllipsoidString + ','
-            + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s ) + ",0," // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s ) + ')';
+    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
+            + QgsSqliteUtils::quotedString( name )
+            + ','
+            + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s )
+            + ','
+            + quotedEllipsoidString
+            + ','
+            + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s )
+            + ",0," // <-- is_geo shamelessly hard coded for now
+            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s )
+            + ')';
   }
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
@@ -175,12 +191,19 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
     return false;
   }
 
-  const QString sql = "update tbl_srs set description=" + QgsSqliteUtils::quotedString( name )
-                      + ",projection_acronym=" + ( !crs.projectionAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.projectionAcronym() ) : u"''"_s )
-                      + ",ellipsoid_acronym=" + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : u"''"_s )
-                      + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : u"''"_s ) + ",is_geo=0" // <--shamelessly hard coded for now
-                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : u"''"_s )
-                      + " where srs_id=" + QgsSqliteUtils::quotedString( QString::number( id ) );
+  const QString sql = "update tbl_srs set description="
+                      + QgsSqliteUtils::quotedString( name )
+                      + ",projection_acronym="
+                      + ( !crs.projectionAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.projectionAcronym() ) : u"''"_s )
+                      + ",ellipsoid_acronym="
+                      + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : u"''"_s )
+                      + ",parameters="
+                      + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : u"''"_s )
+                      + ",is_geo=0" // <--shamelessly hard coded for now
+                      + ",wkt="
+                      + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : u"''"_s )
+                      + " where srs_id="
+                      + QgsSqliteUtils::quotedString( QString::number( id ) );
 
   sqlite3_database_unique_ptr database;
   //check the db is available
@@ -311,9 +334,15 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
     {
       QgsDebugMsgLevel( u"Trying to insert projection"_s, 4 );
       // We have the result from system srs.db. Now insert into user db.
-      sql = "insert into tbl_projection(acronym,name,notes,parameters) values (" + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) ) + ','
-            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) ) + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) ) + ','
-            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) ) + ')';
+      sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
+            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
+            + ','
+            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) )
+            + ','
+            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) )
+            + ','
+            + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) )
+            + ')';
       sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
       if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
       {

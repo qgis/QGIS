@@ -85,8 +85,12 @@ class CORE_EXPORT QgsMapUnitScale
 
     bool operator==( const QgsMapUnitScale &other ) const
     {
-      return qgsDoubleNear( minScale, other.minScale ) && qgsDoubleNear( maxScale, other.maxScale ) && minSizeMMEnabled == other.minSizeMMEnabled && qgsDoubleNear( minSizeMM, other.minSizeMM )
-             && maxSizeMMEnabled == other.maxSizeMMEnabled && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
+      return qgsDoubleNear( minScale, other.minScale )
+             && qgsDoubleNear( maxScale, other.maxScale )
+             && minSizeMMEnabled == other.minSizeMMEnabled
+             && qgsDoubleNear( minSizeMM, other.minSizeMM )
+             && maxSizeMMEnabled == other.maxSizeMMEnabled
+             && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
     }
 
     bool operator!=( const QgsMapUnitScale &other ) const { return !operator==( other ); }

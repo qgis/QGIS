@@ -304,11 +304,13 @@ bool QgsSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer *other ) const
   if ( other == this )
     return true;
 
-  if ( mEnabled != other->mEnabled || mColor != other->mColor
+  if ( mEnabled != other->mEnabled
+       || mColor != other->mColor
        || mRenderingPass != other->mRenderingPass
 
        // TODO -- we could consider the actual settings of the paint effect
-       || ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) ) || ( other->mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( other->mPaintEffect.get() ) ) )
+       || ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+       || ( other->mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( other->mPaintEffect.get() ) ) )
     return false;
 
   return properties() == other->properties();
@@ -973,8 +975,10 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
   }
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
-  if ( points.size() <= 5 && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
-       && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 5
+       && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
+       && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() )
+       && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     p->setRenderHint( QPainter::Antialiasing, false );
     p->drawRect( points.boundingRect() );

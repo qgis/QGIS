@@ -238,7 +238,9 @@ bool QgsPolymorphicRelation::isValid() const
 
 bool QgsPolymorphicRelation::hasEqualDefinition( const QgsPolymorphicRelation &other ) const
 {
-  return d->mReferencedLayerField == other.d->mReferencedLayerField && d->mReferencedLayerExpression == other.d->mReferencedLayerExpression && d->mReferencingLayerId == other.d->mReferencingLayerId
+  return d->mReferencedLayerField == other.d->mReferencedLayerField
+         && d->mReferencedLayerExpression == other.d->mReferencedLayerExpression
+         && d->mReferencingLayerId == other.d->mReferencingLayerId
          && d->mFieldPairs == other.d->mFieldPairs;
 }
 

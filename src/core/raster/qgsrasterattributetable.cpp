@@ -49,7 +49,8 @@ Qgis::RasterAttributeTableType QgsRasterAttributeTable::type() const
 bool QgsRasterAttributeTable::hasColor() const
 {
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
-  return fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
+  return fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
          && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue );
 }
 
@@ -132,9 +133,12 @@ bool QgsRasterAttributeTable::setRamp( const int row, const QColor &colorMin, co
 bool QgsRasterAttributeTable::hasRamp() const
 {
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
-  return fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
-         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
-         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax );
+  return fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax )
+         && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax );
 }
 
 
@@ -164,7 +168,10 @@ QColor QgsRasterAttributeTable::color( int row ) const
 {
   QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
   // No ramps support here
-  if ( hasColor() && row < mData.count() && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
+  if ( hasColor()
+       && row < mData.count()
+       && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red )
+       && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
        && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) )
   {
     const QVariantList rowData = mData.at( row );
@@ -675,10 +682,12 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   }
 
   // Check color
-  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
+  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
        || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) )
   {
-    if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
+    if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green )
             && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) ) )
     {
       errors.push_back( tr( "The attribute table has some but not all the fields required for color definition (Red, Green, Blue)." ) );
@@ -686,13 +695,19 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   }
 
   // Check ramp
-  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
-       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
-       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) )
+  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax )
+       || fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) )
   {
-    if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
-            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
-            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) ) )
+    if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax )
+            && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) ) )
     {
       errors.push_back( tr( "The attribute table has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax)." ) );
     }
@@ -1394,7 +1409,8 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
   const bool isRange { minIdx >= 0 && maxIdx >= 0 };
 
   int labelIdx { labelColumn };
-  if ( labelColumn < 0 || labelColumn >= fields().count()
+  if ( labelColumn < 0
+       || labelColumn >= fields().count()
        || ( fieldUsages.at( labelColumn ) != Qgis::RasterAttributeTableFieldUsage::Name && fieldUsages.at( labelColumn ) != Qgis::RasterAttributeTableFieldUsage::Generic ) )
   {
     labelIdx = -1;
@@ -1653,13 +1669,20 @@ QList<QList<QVariant> > QgsRasterAttributeTable::orderedRows() const
 
 bool QgsRasterAttributeTable::Field::isColor() const
 {
-  return usage == Qgis::RasterAttributeTableFieldUsage::Red || usage == Qgis::RasterAttributeTableFieldUsage::Green || usage == Qgis::RasterAttributeTableFieldUsage::Blue
+  return usage == Qgis::RasterAttributeTableFieldUsage::Red
+         || usage == Qgis::RasterAttributeTableFieldUsage::Green
+         || usage == Qgis::RasterAttributeTableFieldUsage::Blue
          || usage == Qgis::RasterAttributeTableFieldUsage::Alpha;
 }
 
 bool QgsRasterAttributeTable::Field::isRamp() const
 {
-  return usage == Qgis::RasterAttributeTableFieldUsage::RedMin || usage == Qgis::RasterAttributeTableFieldUsage::GreenMin || usage == Qgis::RasterAttributeTableFieldUsage::BlueMin
-         || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMin || usage == Qgis::RasterAttributeTableFieldUsage::RedMax || usage == Qgis::RasterAttributeTableFieldUsage::GreenMax
-         || usage == Qgis::RasterAttributeTableFieldUsage::BlueMax || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMax;
+  return usage == Qgis::RasterAttributeTableFieldUsage::RedMin
+         || usage == Qgis::RasterAttributeTableFieldUsage::GreenMin
+         || usage == Qgis::RasterAttributeTableFieldUsage::BlueMin
+         || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMin
+         || usage == Qgis::RasterAttributeTableFieldUsage::RedMax
+         || usage == Qgis::RasterAttributeTableFieldUsage::GreenMax
+         || usage == Qgis::RasterAttributeTableFieldUsage::BlueMax
+         || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMax;
 }

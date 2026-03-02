@@ -211,7 +211,10 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert, const QSslKey &cl
 const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath, const QString &keyPath, const QString &keyPass, const QList<QSslCertificate> &caChain )
 {
   QgsPkiBundle pkibundle;
-  if ( !certPath.isEmpty() && !keyPath.isEmpty() && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive ) || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) ) && QFile::exists( certPath )
+  if ( !certPath.isEmpty()
+       && !keyPath.isEmpty()
+       && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive ) || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) )
+       && QFile::exists( certPath )
        && QFile::exists( keyPath ) )
   {
     // client cert
@@ -233,7 +236,9 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath, const QS
 const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath, const QString &bundlepass )
 {
   QgsPkiBundle pkibundle;
-  if ( QCA::isSupported( "pkcs12" ) && !bundlepath.isEmpty() && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive ) || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
+  if ( QCA::isSupported( "pkcs12" )
+       && !bundlepath.isEmpty()
+       && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive ) || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
        && QFile::exists( bundlepath ) )
   {
     QCA::SecureArray passarray;

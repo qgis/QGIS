@@ -2306,10 +2306,11 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver(
   }
 
   QList<QgsVectorDataProvider::NativeType> nativeTypes;
-  nativeTypes << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), u"integer"_s, QMetaType::Type::Int, 0, nMaxIntLen )
-              << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), u"integer64"_s, QMetaType::Type::LongLong, 0, nMaxInt64Len )
-              << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), u"double"_s, QMetaType::Type::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-              << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), u"string"_s, QMetaType::Type::QString, 0, 65535 );
+  nativeTypes
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), u"integer"_s, QMetaType::Type::Int, 0, nMaxIntLen )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), u"integer64"_s, QMetaType::Type::LongLong, 0, nMaxInt64Len )
+    << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), u"double"_s, QMetaType::Type::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), u"string"_s, QMetaType::Type::QString, 0, 65535 );
 
   if ( driverName == "GPKG"_L1 )
     nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), u"JSON"_s, QMetaType::Type::QVariantMap, 0, 0, 0, 0, QMetaType::Type::QString );

@@ -343,8 +343,15 @@ class CORE_EXPORT QgsMapToPixel
 
     bool operator==( const QgsMapToPixel &other ) const
     {
-      return mValid == other.mValid && mMapUnitsPerPixel == other.mMapUnitsPerPixel && mWidth == other.mWidth && mHeight == other.mHeight && mRotation == other.mRotation && mXCenter == other.mXCenter
-             && mYCenter == other.mYCenter && mXMin == other.mXMin && mYMin == other.mYMin;
+      return mValid == other.mValid
+             && mMapUnitsPerPixel == other.mMapUnitsPerPixel
+             && mWidth == other.mWidth
+             && mHeight == other.mHeight
+             && mRotation == other.mRotation
+             && mXCenter == other.mXCenter
+             && mYCenter == other.mYCenter
+             && mXMin == other.mXMin
+             && mYMin == other.mYMin;
     }
 
     bool operator!=( const QgsMapToPixel &other ) const { return !( *this == other ); }

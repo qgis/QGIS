@@ -133,8 +133,12 @@ bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
 
 bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLayerDefinition &other ) const
 {
-  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions
-         && mUseRemapping == other.mUseRemapping && mRemappingDefinition == other.mRemappingDefinition;
+  return sink == other.sink
+         && destinationProject == other.destinationProject
+         && destinationName == other.destinationName
+         && createOptions == other.createOptions
+         && mUseRemapping == other.mUseRemapping
+         && mRemappingDefinition == other.mRemappingDefinition;
 }
 
 bool QgsProcessingOutputLayerDefinition::operator!=( const QgsProcessingOutputLayerDefinition &other ) const

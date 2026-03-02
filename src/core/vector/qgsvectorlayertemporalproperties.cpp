@@ -452,7 +452,8 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
     return QString();
 
   auto dateTimefieldCast = [&context]( const QString &fieldName ) -> QString {
-    if ( context.layer() && context.layer()->fields().lookupField( fieldName ) >= 0
+    if ( context.layer()
+         && context.layer()->fields().lookupField( fieldName ) >= 0
          && context.layer()->fields().at( context.layer()->fields().lookupField( fieldName ) ).type() != QMetaType::Type::QDateTime )
     {
       return u"to_datetime( %1 )"_s.arg( QgsExpression::quotedColumnRef( fieldName ) );

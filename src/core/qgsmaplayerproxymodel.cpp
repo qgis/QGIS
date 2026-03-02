@@ -61,7 +61,9 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
     return true;
 
   // geometry type
-  const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry ) || filters.testFlag( Qgis::LayerFilter::PointLayer ) || filters.testFlag( Qgis::LayerFilter::LineLayer )
+  const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry )
+                              || filters.testFlag( Qgis::LayerFilter::PointLayer )
+                              || filters.testFlag( Qgis::LayerFilter::LineLayer )
                               || filters.testFlag( Qgis::LayerFilter::PolygonLayer );
   if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {

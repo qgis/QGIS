@@ -1378,8 +1378,11 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 int QgsLayoutItemMap::numberExportLayers() const
 {
   const int layerCount = layersToRender().length();
-  return ( hasBackground() ? 1 : 0 ) + ( layerCount + ( layerCount ? 1 : 0 ) ) // +1 for label layer, if labels present
-         + ( mGridStack->hasEnabledItems() ? 1 : 0 ) + ( mOverviewStack->hasEnabledItems() ? 1 : 0 ) + ( frameEnabled() ? 1 : 0 );
+  return ( hasBackground() ? 1 : 0 )
+         + ( layerCount + ( layerCount ? 1 : 0 ) ) // +1 for label layer, if labels present
+         + ( mGridStack->hasEnabledItems() ? 1 : 0 )
+         + ( mOverviewStack->hasEnabledItems() ? 1 : 0 )
+         + ( frameEnabled() ? 1 : 0 );
 }
 
 void QgsLayoutItemMap::startLayeredExport()
@@ -2240,9 +2243,14 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     }
   }
   //updates data defined properties and redraws item to match
-  if ( property == QgsLayoutObject::DataDefinedProperty::MapRotation || property == QgsLayoutObject::DataDefinedProperty::MapScale || property == QgsLayoutObject::DataDefinedProperty::MapXMin
-       || property == QgsLayoutObject::DataDefinedProperty::MapYMin || property == QgsLayoutObject::DataDefinedProperty::MapXMax || property == QgsLayoutObject::DataDefinedProperty::MapYMax
-       || property == QgsLayoutObject::DataDefinedProperty::MapAtlasMargin || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapRotation
+       || property == QgsLayoutObject::DataDefinedProperty::MapScale
+       || property == QgsLayoutObject::DataDefinedProperty::MapXMin
+       || property == QgsLayoutObject::DataDefinedProperty::MapYMin
+       || property == QgsLayoutObject::DataDefinedProperty::MapXMax
+       || property == QgsLayoutObject::DataDefinedProperty::MapYMax
+       || property == QgsLayoutObject::DataDefinedProperty::MapAtlasMargin
+       || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     QgsRectangle beforeExtent = mExtent;
     refreshMapExtents( &context );

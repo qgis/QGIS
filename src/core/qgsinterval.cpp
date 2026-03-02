@@ -61,7 +61,8 @@ QgsInterval::QgsInterval( double years, double months, double weeks, double days
       + weeks * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Weeks, Qgis::TemporalUnit::Seconds )
       + days * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Days, Qgis::TemporalUnit::Seconds )
       + hours * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Hours, Qgis::TemporalUnit::Seconds )
-      + minutes * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Minutes, Qgis::TemporalUnit::Seconds ) + seconds
+      + minutes * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Minutes, Qgis::TemporalUnit::Seconds )
+      + seconds
     )
   , mValid( true )
 {

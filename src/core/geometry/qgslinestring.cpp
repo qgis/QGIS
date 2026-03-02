@@ -422,10 +422,12 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
     // and test whether any are inside the rectangle. Maybe we can shortcut a lot of iterations by doing this!
     // (why 1/5th? it's picked so that it works nicely for polygon rings which are almost rectangles, so the vertex extremities
     // will fall on approximately these vertex indices)
-    if ( rectangle.contains( mX.at( 0 ), mY.at( 0 ) ) || rectangle.contains( mX.at( static_cast< int >( nb * 0.2 ) ), mY.at( static_cast< int >( nb * 0.2 ) ) )
+    if ( rectangle.contains( mX.at( 0 ), mY.at( 0 ) )
+         || rectangle.contains( mX.at( static_cast< int >( nb * 0.2 ) ), mY.at( static_cast< int >( nb * 0.2 ) ) )
          || rectangle.contains( mX.at( static_cast< int >( nb * 0.4 ) ), mY.at( static_cast< int >( nb * 0.4 ) ) )
          || rectangle.contains( mX.at( static_cast< int >( nb * 0.6 ) ), mY.at( static_cast< int >( nb * 0.6 ) ) )
-         || rectangle.contains( mX.at( static_cast< int >( nb * 0.8 ) ), mY.at( static_cast< int >( nb * 0.8 ) ) ) || rectangle.contains( mX.at( nb - 1 ), mY.at( nb - 1 ) ) )
+         || rectangle.contains( mX.at( static_cast< int >( nb * 0.8 ) ), mY.at( static_cast< int >( nb * 0.8 ) ) )
+         || rectangle.contains( mX.at( nb - 1 ), mY.at( nb - 1 ) ) )
       return true;
   }
 

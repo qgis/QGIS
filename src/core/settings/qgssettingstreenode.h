@@ -54,10 +54,10 @@ class CORE_EXPORT QgsSettingsTreeNode
       sipType = sipType_QgsSettingsTreeNode;
     else
       sipType = NULL;
-  SIP_END
+    SIP_END
 #endif
 
-  // clang-format off
+    // clang-format off
   Q_GADGET
 
   public:

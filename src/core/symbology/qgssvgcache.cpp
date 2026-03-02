@@ -68,8 +68,15 @@ bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) cons
 {
   const QgsSvgCacheEntry *otherSvg = dynamic_cast< const QgsSvgCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherSvg || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio ) || !qgsDoubleNear( otherSvg->size, size ) || !qgsDoubleNear( otherSvg->strokeWidth, strokeWidth )
-       || !qgsDoubleNear( otherSvg->widthScaleFactor, widthScaleFactor ) || otherSvg->fill != fill || otherSvg->stroke != stroke || otherSvg->path != path || otherSvg->parameters != parameters )
+  if ( !otherSvg
+       || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio )
+       || !qgsDoubleNear( otherSvg->size, size )
+       || !qgsDoubleNear( otherSvg->strokeWidth, strokeWidth )
+       || !qgsDoubleNear( otherSvg->widthScaleFactor, widthScaleFactor )
+       || otherSvg->fill != fill
+       || otherSvg->stroke != stroke
+       || otherSvg->path != path
+       || otherSvg->parameters != parameters )
     return false;
 
   return true;

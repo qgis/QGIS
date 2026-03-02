@@ -379,7 +379,8 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer(
           // Expose the OGR FID if it comes from a "real" column (typically GPKG)
           // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
           const QString ogrFidColumnName { OGR_L_GetFIDColumn( hLayer ) };
-          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) && OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), ogrFidColumnName.toUtf8() ) < 0
+          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) )
+                            && OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), ogrFidColumnName.toUtf8() ) < 0
                             && cleanedFields.indexFromName( ogrFidColumnName.toUtf8() ) < 0;
           // At this point we must check if there is a real FID field in the the fields argument,
           // because in that case we don't want to shift all fields (see issue GH #34333)
@@ -1266,7 +1267,8 @@ void QgsOgrProvider::loadMetadata()
       }
     }
     else if (
-      mGDALDriverName == "FileGDB"_L1 || mGDALDriverName == "OpenFileGDB"_L1
+      mGDALDriverName == "FileGDB"_L1
+      || mGDALDriverName == "OpenFileGDB"_L1
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 4, 0 )
       || mGDALDriverName == "PGeo"_L1 // supported on GDAL 3.4+ only
 #endif
@@ -1594,8 +1596,13 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
     resultVar = QTime::currentTime();
 
   // Get next sequence value for sqlite in case we are inside a transaction
-  if ( mOgrOrigLayer && mTransaction && mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" ) && providerProperty( EvaluateDefaultValues, false ).toBool()
-       && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 ) && mFirstFieldIsFid && fieldId == 0 )
+  if ( mOgrOrigLayer
+       && mTransaction
+       && mDefaultValues.value( fieldId, QString() ) == tr( "Autogenerate" )
+       && providerProperty( EvaluateDefaultValues, false ).toBool()
+       && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 )
+       && mFirstFieldIsFid
+       && fieldId == 0 )
   {
     QgsOgrLayerUniquePtr resultLayer = mOgrOrigLayer->ExecuteSQL( QByteArray( "SELECT seq FROM sqlite_sequence WHERE name = " ) + QgsSqliteUtils::quotedValue( mOgrOrigLayer->name() ).toUtf8() );
     if ( resultLayer )
@@ -1640,8 +1647,12 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 {
   // Return empty clause to force defaultValue calls for sqlite in case we are inside a transaction
-  if ( mTransaction && mDefaultValues.value( fieldIndex, QString() ) == tr( "Autogenerate" ) && providerProperty( EvaluateDefaultValues, false ).toBool()
-       && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 ) && mFirstFieldIsFid && fieldIndex == 0 )
+  if ( mTransaction
+       && mDefaultValues.value( fieldIndex, QString() ) == tr( "Autogenerate" )
+       && providerProperty( EvaluateDefaultValues, false ).toBool()
+       && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 )
+       && mFirstFieldIsFid
+       && fieldIndex == 0 )
     return QString();
   else
     return mDefaultValues.value( fieldIndex, QString() );
@@ -1657,7 +1668,8 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
   else
   {
     // stricter check
-    return mDefaultValues.contains( fieldIndex ) && !QgsVariantUtils::isNull( value )
+    return mDefaultValues.contains( fieldIndex )
+           && !QgsVariantUtils::isNull( value )
            && ( mDefaultValues.value( fieldIndex ) == value.toString() || value.userType() == qMetaTypeId<QgsUnsetAttributeValue>() );
   }
 }
@@ -2769,7 +2781,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   // If changing the below value, update it into test_provider_ogr_gpkg.py
   // as well
   constexpr size_t THRESHOLD_UPDATE_OPTIM = 100;
-  if ( static_cast<size_t>( attr_map.size() ) >= THRESHOLD_UPDATE_OPTIM && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 ) && mOgrLayer->TestCapability( OLCFastFeatureCount )
+  if ( static_cast<size_t>( attr_map.size() ) >= THRESHOLD_UPDATE_OPTIM
+       && ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 )
+       && mOgrLayer->TestCapability( OLCFastFeatureCount )
        && attr_map.size() == mOgrLayer->GetFeatureCount() )
   {
     std::set<QgsFeatureId> fids;
@@ -4655,7 +4669,10 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::invalidateNetworkCache()
 {
-  if ( mFilePath.startsWith( "/vsicurl/"_L1 ) || mFilePath.startsWith( "/vsis3/"_L1 ) || mFilePath.startsWith( "/vsigs/"_L1 ) || mFilePath.startsWith( "/vsiaz/"_L1 )
+  if ( mFilePath.startsWith( "/vsicurl/"_L1 )
+       || mFilePath.startsWith( "/vsis3/"_L1 )
+       || mFilePath.startsWith( "/vsigs/"_L1 )
+       || mFilePath.startsWith( "/vsiaz/"_L1 )
        || mFilePath.startsWith( "/vsiadls/"_L1 ) )
   {
     QgsDebugMsgLevel( QString( "Invalidating cache for %1" ).arg( mFilePath ), 3 );

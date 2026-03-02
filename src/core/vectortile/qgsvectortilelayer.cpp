@@ -546,25 +546,56 @@ QString QgsVectorTileLayer::htmlMetadata() const
   info += crsHtmlMetadata();
 
   // Identification section
-  info += u"<h1>"_s % tr( "Identification" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.identificationSectionHtml() % u"<br>\n"_s %
+  info += u"<h1>"_s
+          % tr( "Identification" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.identificationSectionHtml()
+          % u"<br>\n"_s
+          %
 
           // extent section
-          u"<h1>"_s % tr( "Extent" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.extentSectionHtml() % u"<br>\n"_s %
+          u"<h1>"_s
+          % tr( "Extent" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.extentSectionHtml()
+          % u"<br>\n"_s
+          %
 
           // Start the Access section
-          u"<h1>"_s % tr( "Access" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.accessSectionHtml() % u"<br>\n"_s %
+          u"<h1>"_s
+          % tr( "Access" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.accessSectionHtml()
+          % u"<br>\n"_s
+          %
 
 
           // Start the contacts section
-          u"<h1>"_s % tr( "Contacts" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.contactsSectionHtml() % u"<br><br>\n"_s %
+          u"<h1>"_s
+          % tr( "Contacts" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.contactsSectionHtml()
+          % u"<br><br>\n"_s
+          %
 
           // Start the links section
-          u"<h1>"_s % tr( "References" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.linksSectionHtml() % u"<br>\n"_s %
+          u"<h1>"_s
+          % tr( "References" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.linksSectionHtml()
+          % u"<br>\n"_s
+          %
 
           // Start the history section
-          u"<h1>"_s % tr( "History" ) % u"</h1>\n<hr>\n"_s % htmlFormatter.historySectionHtml() % u"<br>\n"_s %
+          u"<h1>"_s
+          % tr( "History" )
+          % u"</h1>\n<hr>\n"_s
+          % htmlFormatter.historySectionHtml()
+          % u"<br>\n"_s
+          %
 
-          customPropertyHtmlMetadata() %
+          customPropertyHtmlMetadata()
+          %
 
           u"\n</body>\n</html>\n"_s;
 

@@ -355,7 +355,13 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       result = createFromSrid( id );
       Q_NOWARN_DEPRECATED_POP
     }
-    else if ( authName == "esri"_L1 || authName == "osgeo"_L1 || authName == "ignf"_L1 || authName == "zangi"_L1 || authName == "iau2000"_L1 || authName == "ogc"_L1 || authName == "nkg"_L1
+    else if ( authName == "esri"_L1
+              || authName == "osgeo"_L1
+              || authName == "ignf"_L1
+              || authName == "zangi"_L1
+              || authName == "iau2000"_L1
+              || authName == "ogc"_L1
+              || authName == "nkg"_L1
               || authName == "iau_2015"_L1 )
     {
       result = createFromOgcWmsCrs( definition );
@@ -677,7 +683,10 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo,wkt "
                   "from tbl_srs where "
-                  + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
+                  + expression
+                  + '='
+                  + QgsSqliteUtils::quotedString( value )
+                  + " order by deprecated";
   statement = database.prepare( mySql, myResult );
   QString wkt;
   // XXX Need to free memory from the error msg if one is set
@@ -1832,11 +1841,16 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 
     // proj unit names are freeform -- they differ from authority to authority :(
     // see https://lists.osgeo.org/pipermail/proj/2019-April/008444.html
-    if ( unitName.compare( "degree"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "degree minute second"_L1, Qt::CaseInsensitive ) == 0
-         || unitName.compare( "degree minute second hemisphere"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "degree minute"_L1, Qt::CaseInsensitive ) == 0
-         || unitName.compare( "degree hemisphere"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "degree minute hemisphere"_L1, Qt::CaseInsensitive ) == 0
-         || unitName.compare( "hemisphere degree"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "hemisphere degree minute"_L1, Qt::CaseInsensitive ) == 0
-         || unitName.compare( "hemisphere degree minute second"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "degree (supplier to define representation)"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( unitName.compare( "degree"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree minute second"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree minute second hemisphere"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree minute"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree hemisphere"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree minute hemisphere"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "hemisphere degree"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "hemisphere degree minute"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "hemisphere degree minute second"_L1, Qt::CaseInsensitive ) == 0
+         || unitName.compare( "degree (supplier to define representation)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Degrees;
     else if ( unitName.compare( "metre"_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( 'm'_L1, Qt::CaseInsensitive ) == 0 || unitName.compare( "meter"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Meters;

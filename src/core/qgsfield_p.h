@@ -96,9 +96,20 @@ class QgsFieldPrivate : public QSharedData
     bool operator==( const QgsFieldPrivate &other ) const
     {
       return (
-        ( name == other.name ) && ( type == other.type ) && ( subType == other.subType ) && ( length == other.length ) && ( precision == other.precision ) && ( metadata == other.metadata )
-        && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition ) && ( constraints == other.constraints ) && ( flags == other.flags )
-        && ( splitPolicy == other.splitPolicy ) && ( duplicatePolicy == other.duplicatePolicy ) && ( mergePolicy == other.mergePolicy ) && ( isReadOnly == other.isReadOnly )
+        ( name == other.name )
+        && ( type == other.type )
+        && ( subType == other.subType )
+        && ( length == other.length )
+        && ( precision == other.precision )
+        && ( metadata == other.metadata )
+        && ( alias == other.alias )
+        && ( defaultValueDefinition == other.defaultValueDefinition )
+        && ( constraints == other.constraints )
+        && ( flags == other.flags )
+        && ( splitPolicy == other.splitPolicy )
+        && ( duplicatePolicy == other.duplicatePolicy )
+        && ( mergePolicy == other.mergePolicy )
+        && ( isReadOnly == other.isReadOnly )
         && ( editorWidgetSetup == other.editorWidgetSetup )
       );
     }

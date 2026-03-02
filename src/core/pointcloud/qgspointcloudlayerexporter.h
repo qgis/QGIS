@@ -65,11 +65,15 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     static QList< ExportFormat > supportedFormats() SIP_SKIP
     {
       QList< ExportFormat > formats;
-      formats << ExportFormat::Memory
+      formats
+        << ExportFormat::Memory
 #ifdef HAVE_PDAL_QGIS
-              << ExportFormat::Las
+        << ExportFormat::Las
 #endif
-              << ExportFormat::Gpkg << ExportFormat::Shp << ExportFormat::Dxf << ExportFormat::Csv;
+        << ExportFormat::Gpkg
+        << ExportFormat::Shp
+        << ExportFormat::Dxf
+        << ExportFormat::Csv;
       return formats;
     }
 

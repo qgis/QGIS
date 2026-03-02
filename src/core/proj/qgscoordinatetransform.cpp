@@ -188,8 +188,11 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
 
 bool QgsCoordinateTransform::operator==( const QgsCoordinateTransform &other ) const
 {
-  return d->mSourceCRS == other.d->mSourceCRS && d->mDestCRS == other.d->mDestCRS && mBallparkTransformsAreAppropriate == other.mBallparkTransformsAreAppropriate
-         && d->mProjCoordinateOperation == other.d->mProjCoordinateOperation && instantiatedCoordinateOperationDetails().proj == other.instantiatedCoordinateOperationDetails().proj;
+  return d->mSourceCRS == other.d->mSourceCRS
+         && d->mDestCRS == other.d->mDestCRS
+         && mBallparkTransformsAreAppropriate == other.mBallparkTransformsAreAppropriate
+         && d->mProjCoordinateOperation == other.d->mProjCoordinateOperation
+         && instantiatedCoordinateOperationDetails().proj == other.instantiatedCoordinateOperationDetails().proj;
 }
 
 bool QgsCoordinateTransform::operator!=( const QgsCoordinateTransform &other ) const
@@ -706,8 +709,12 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     {
       const double xMin = std::fmod( x[0], 180.0 );
       const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
-      if ( handle180Crossover && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) || ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
-           && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
+      if ( handle180Crossover
+           && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) || ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+           && xMin > 0.0
+           && xMin <= 180.0
+           && xMax < 0.0
+           && xMax >= -180.0 )
       {
         doHandle180Crossover = true;
       }
@@ -879,7 +886,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   bool doHandle180Crossover = false;
   // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
-  if ( handle180Crossover && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) || ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+  if ( handle180Crossover
+       && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) || ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
        && ( transXMax < transXMin ) )
   {
     //if crossing the date line, temporarily add 360 degrees to -ve longitudes
@@ -1028,7 +1036,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   {
     // proj_errno is sometimes not an accurate method to test for transform failures - so we need to
     // manually scan for nan values
-    if ( std::any_of( x, x + numPoints, []( double v ) { return std::isinf( v ); } ) || std::any_of( y, y + numPoints, []( double v ) { return std::isinf( v ); } )
+    if ( std::any_of( x, x + numPoints, []( double v ) { return std::isinf( v ); } )
+         || std::any_of( y, y + numPoints, []( double v ) { return std::isinf( v ); } )
          || std::any_of( z, z + numPoints, []( double v ) { return std::isinf( v ); } ) )
     {
       actualRes = 1;
@@ -1037,7 +1046,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   mFallbackOperationOccurred = false;
   bool errorOccurredDuringFallbackOperation = false;
-  if ( actualRes != 0 && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
+  if ( actualRes != 0
+       && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
        && ( d->mAllowFallbackTransforms || mBallparkTransformsAreAppropriate ) )
   {
     // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
@@ -1233,8 +1243,10 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
-    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj && ( *valIt ).allowFallbackTransforms() == allowFallback
-         && qgsNanCompatibleEquals( src.coordinateEpoch(), ( *valIt ).sourceCrs().coordinateEpoch() ) && qgsNanCompatibleEquals( dest.coordinateEpoch(), ( *valIt ).destinationCrs().coordinateEpoch() ) )
+    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj
+         && ( *valIt ).allowFallbackTransforms() == allowFallback
+         && qgsNanCompatibleEquals( src.coordinateEpoch(), ( *valIt ).sourceCrs().coordinateEpoch() )
+         && qgsNanCompatibleEquals( dest.coordinateEpoch(), ( *valIt ).destinationCrs().coordinateEpoch() ) )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
       const QgsCoordinateTransformContext context = mContext;

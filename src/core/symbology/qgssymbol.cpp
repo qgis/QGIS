@@ -1008,7 +1008,8 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
     // 2. When the symbol layer type doesn't explicitly state that it's compatible with per-feature mask geometries
     // 3. When per feature mask geometry is explicitly disabled for the render context
     // In other circumstances we do NOT prepare masks in advance, and instead calculate them in renderFeature().
-    if ( mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol ) || context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
+    if ( mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol )
+         || context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
          || !layer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature ) )
       layer->prepareMasks( symbolContext );
     layer->startRender( symbolContext );
@@ -1369,8 +1370,13 @@ bool QgsSymbol::rendersIdenticallyTo( const QgsSymbol *other ) const
   if ( !other )
     return false;
 
-  if ( mType != other->mType || !qgsDoubleNear( mExtentBuffer, other->mExtentBuffer ) || mExtentBufferSizeUnit != other->mExtentBufferSizeUnit || !qgsDoubleNear( mOpacity, other->mOpacity )
-       || mRenderHints != other->mRenderHints || mSymbolFlags != other->mSymbolFlags || mClipFeaturesToExtent != other->mClipFeaturesToExtent
+  if ( mType != other->mType
+       || !qgsDoubleNear( mExtentBuffer, other->mExtentBuffer )
+       || mExtentBufferSizeUnit != other->mExtentBufferSizeUnit
+       || !qgsDoubleNear( mOpacity, other->mOpacity )
+       || mRenderHints != other->mRenderHints
+       || mSymbolFlags != other->mSymbolFlags
+       || mClipFeaturesToExtent != other->mClipFeaturesToExtent
        || mForceRHR != other->mForceRHR
 
        // TODO: consider actual buffer settings
@@ -1378,7 +1384,8 @@ bool QgsSymbol::rendersIdenticallyTo( const QgsSymbol *other ) const
        || other->mBufferSettings
 
        // TODO: consider actual animation settings
-       || mAnimationSettings.isAnimated() || other->mAnimationSettings.isAnimated() )
+       || mAnimationSettings.isAnimated()
+       || other->mAnimationSettings.isAnimated() )
     return false;
 
   // TODO -- we could slacken this check if we ignore disabled layers
@@ -1977,7 +1984,8 @@ void QgsSymbol::renderFeature(
     // if this symbol layer has associated clip masks, we need to render it to a QPicture first so that we can
     // determine the actual rendered bounds of the symbol. We'll then use that to retrieve the clip masks we need
     // to apply when painting the symbol via this QPicture.
-    const bool hasClipGeometries = !maskGeometriesDisabledForSymbol && symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
+    const bool hasClipGeometries = !maskGeometriesDisabledForSymbol
+                                   && symbolLayer->flags().testFlag( Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature )
                                    && context.symbolLayerHasClipGeometries( symbolLayer->id() );
     QPainter *previousPainter = nullptr;
     std::unique_ptr< QPicture > renderedPicture;

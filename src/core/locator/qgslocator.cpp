@@ -36,8 +36,19 @@ const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterDefault = new QgsSe
 
 const QgsSettingsEntryString *QgsLocator::settingsLocatorFilterPrefix = new QgsSettingsEntryString( u"prefix"_s, sTreeLocatorFilters, QString(), QObject::tr( "Locator filter prefix" ) );
 
-const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << u"actions"_s << u"processing_alg"_s << u"layertree"_s << u"layouts"_s << u"features"_s << u"allfeatures"_s << u"calculator"_s
-                                                                 << u"bookmarks"_s << u"optionpages"_s << u"edit_features"_s << u"goto"_s << u"nominatimgeocoder"_s;
+const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>()
+                                                << u"actions"_s
+                                                << u"processing_alg"_s
+                                                << u"layertree"_s
+                                                << u"layouts"_s
+                                                << u"features"_s
+                                                << u"allfeatures"_s
+                                                << u"calculator"_s
+                                                << u"bookmarks"_s
+                                                << u"optionpages"_s
+                                                << u"edit_features"_s
+                                                << u"goto"_s
+                                                << u"nominatimgeocoder"_s;
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )

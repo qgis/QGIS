@@ -722,7 +722,8 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
     Q_ASSERT(
-      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
         || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
     );
@@ -906,7 +907,8 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive(
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
     Q_ASSERT(
-      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
         || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
     );

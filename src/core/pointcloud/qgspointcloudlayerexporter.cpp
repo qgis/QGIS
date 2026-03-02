@@ -142,8 +142,11 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // Don't add x, y, z or duplicate attributes
-    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) && attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) && attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
-         && attributeList.contains( attribute.name() ) && !mRequestedAttributes.contains( attribute.name() ) )
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive )
+         && attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive )
+         && attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
+         && attributeList.contains( attribute.name() )
+         && !mRequestedAttributes.contains( attribute.name() ) )
     {
       mRequestedAttributes.append( attribute.name() );
     }
@@ -168,7 +171,9 @@ const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttr
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // For this collection we also need x, y, z apart from the requested attributes
-    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) || attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) || attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive )
+         || attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive )
+         || attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
          || mRequestedAttributes.contains( attribute.name(), Qt::CaseInsensitive ) )
     {
       requestAttributes.push_back( attribute );
@@ -340,7 +345,8 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     QgsPointCloudNode node = mParent->mIndex.getNode( queue.front() );
     queue.pop_front();
     const QgsBox3D nodeBounds = node.bounds();
-    if ( mParent->mExtent.intersects( nodeBounds.toRectangle() ) && mParent->mZRange.overlaps( { nodeBounds.zMinimum(), nodeBounds.zMaximum() } )
+    if ( mParent->mExtent.intersects( nodeBounds.toRectangle() )
+         && mParent->mZRange.overlaps( { nodeBounds.zMinimum(), nodeBounds.zMaximum() } )
          && geometryFilterRectangle.intersects( nodeBounds.toRectangle() ) )
     {
       pointCount += node.pointCount();
@@ -586,7 +592,9 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
     mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[u"ScannerChannel"_s].toInt() );
-    const int classificationFlags = ( map[u"Synthetic"_s].toInt() & 0x01 ) << 0 | ( map[u"KeyPoint"_s].toInt() & 0x01 ) << 1 | ( map[u"Withheld"_s].toInt() & 0x01 ) << 2
+    const int classificationFlags = ( map[u"Synthetic"_s].toInt() & 0x01 ) << 0
+                                    | ( map[u"KeyPoint"_s].toInt() & 0x01 ) << 1
+                                    | ( map[u"Withheld"_s].toInt() & 0x01 ) << 2
                                     | ( map[u"Overlap"_s].toInt() & 0x01 ) << 3;
     mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, classificationFlags );
   }

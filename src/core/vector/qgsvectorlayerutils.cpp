@@ -448,7 +448,8 @@ bool QgsVectorLayerUtils::attributeHasConstraints( const QgsVectorLayer *layer, 
 
   const QgsFieldConstraints constraints = layer->fields().at( attributeIndex ).constraints();
   return (
-    constraints.constraints() & QgsFieldConstraints::ConstraintNotNull || constraints.constraints() & QgsFieldConstraints::ConstraintUnique
+    constraints.constraints() & QgsFieldConstraints::ConstraintNotNull
+    || constraints.constraints() & QgsFieldConstraints::ConstraintUnique
     || constraints.constraints() & QgsFieldConstraints::ConstraintExpression
   );
 }
@@ -471,7 +472,8 @@ bool QgsVectorLayerUtils::validateAttribute(
 
   QgsFieldConstraints constraints = field.constraints();
 
-  if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression && !constraints.constraintExpression().isEmpty()
+  if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression
+       && !constraints.constraintExpression().isEmpty()
        && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) )
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) ) )
   {
@@ -967,7 +969,9 @@ bool QgsVectorLayerUtils::fieldIsReadOnly( const QgsVectorLayer *layer, int fiel
   else
   {
     // any of these properties makes the field read only
-    if ( !layer->isEditable() || layer->editFormConfig().readOnly( fieldIndex ) || !layer->dataProvider()
+    if ( !layer->isEditable()
+         || layer->editFormConfig().readOnly( fieldIndex )
+         || !layer->dataProvider()
          || ( !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) )
          || layer->fields().at( fieldIndex ).isReadOnly() )
       return true;

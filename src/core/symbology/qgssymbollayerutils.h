@@ -1190,7 +1190,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     {
       const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
-        ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s ) + "|| ',' || "
+        ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s )
+        + "|| ',' || "
         + ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s )
       );
     }

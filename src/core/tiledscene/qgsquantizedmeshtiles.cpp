@@ -302,7 +302,9 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     size_t skirtTrianglesStartIdx = triangleBuffer.data.size();
     size_t edgeQuadCount =
       // For 0/1 point we have 0 quads, for N we have N-1, and an additional one for skirtDepth
-      ( mWestVertices.size() > 1 ? mWestVertices.size() : 0 ) + ( mSouthVertices.size() > 1 ? mSouthVertices.size() : 0 ) + ( mEastVertices.size() > 1 ? mEastVertices.size() : 0 )
+      ( mWestVertices.size() > 1 ? mWestVertices.size() : 0 )
+      + ( mSouthVertices.size() > 1 ? mSouthVertices.size() : 0 )
+      + ( mEastVertices.size() > 1 ? mEastVertices.size() : 0 )
       + ( mNorthVertices.size() > 1 ? mNorthVertices.size() : 0 );
     triangleBuffer.data.resize( triangleBuffer.data.size() + edgeQuadCount * 6 * sizeof( uint32_t ) );
     uint32_t *skirtTriangles = ( uint32_t * ) ( triangleBuffer.data.data() + skirtTrianglesStartIdx );

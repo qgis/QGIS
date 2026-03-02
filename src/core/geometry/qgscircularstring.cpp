@@ -670,7 +670,10 @@ bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
     double currentX = mX.at( i + 1 );
     double currentY = mY.at( i + 1 );
     double currentZ = useZ ? mZ.at( i + 1 ) : 0;
-    if ( qgsDoubleNear( currentCurveX, prevX, epsilon ) && qgsDoubleNear( currentCurveY, prevY, epsilon ) && qgsDoubleNear( currentX, prevX, epsilon ) && qgsDoubleNear( currentY, prevY, epsilon )
+    if ( qgsDoubleNear( currentCurveX, prevX, epsilon )
+         && qgsDoubleNear( currentCurveY, prevY, epsilon )
+         && qgsDoubleNear( currentX, prevX, epsilon )
+         && qgsDoubleNear( currentY, prevY, epsilon )
          && ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
     {
       result = true;
@@ -1065,8 +1068,12 @@ void QgsCircularString::append( const QgsCircularString *line )
   }
 
   // do not store duplicate points
-  if ( numPoints() > 0 && line->numPoints() > 0 && qgsDoubleNear( endPoint().x(), line->startPoint().x() ) && qgsDoubleNear( endPoint().y(), line->startPoint().y() )
-       && ( !is3D() || !line->is3D() || qgsDoubleNear( endPoint().z(), line->startPoint().z() ) ) && ( !isMeasure() || !line->isMeasure() || qgsDoubleNear( endPoint().m(), line->startPoint().m() ) ) )
+  if ( numPoints() > 0
+       && line->numPoints() > 0
+       && qgsDoubleNear( endPoint().x(), line->startPoint().x() )
+       && qgsDoubleNear( endPoint().y(), line->startPoint().y() )
+       && ( !is3D() || !line->is3D() || qgsDoubleNear( endPoint().z(), line->startPoint().z() ) )
+       && ( !isMeasure() || !line->isMeasure() || qgsDoubleNear( endPoint().m(), line->startPoint().m() ) ) )
   {
     mX.pop_back();
     mY.pop_back();
@@ -1928,17 +1935,19 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
       {
         const double distanceToEnd = endDistance - distanceTraversed;
         const double midPointDistance = ( distanceToEnd - distanceToStart ) * 0.5 + distanceToStart;
-        substringPoints << startPoint
-                        << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
-                        << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
+        substringPoints
+          << startPoint
+          << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
+          << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
         addedSegmentEnd = true;
       }
       else
       {
         const double midPointDistance = ( segmentLength - distanceToStart ) * 0.5 + distanceToStart;
-        substringPoints << startPoint
-                        << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
-                        << QgsPoint( pointType, x3, y3, z3, m3 );
+        substringPoints
+          << startPoint
+          << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
+          << QgsPoint( pointType, x3, y3, z3, m3 );
         addedSegmentEnd = true;
       }
       foundStart = true;
@@ -1948,9 +1957,10 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
       // end point falls on this segment
       const double distanceToEnd = endDistance - distanceTraversed;
       // add mid point, at half way along this arc, then add the interpolated end point
-      substringPoints << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd / 2.0 )
+      substringPoints
+        << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd / 2.0 )
 
-                      << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
+        << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ), QgsPoint( pointType, x2, y2, z2, m2 ), QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
     }
     else if ( !addedSegmentEnd && foundStart )
     {

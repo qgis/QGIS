@@ -102,21 +102,37 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" ) << QObject::tr( "list[str]: list of layer IDs" )
-                           << QObject::tr( "list[str]: list of layer names" ) << QObject::tr( "list[str]: list of layer sources" ) << QObject::tr( "str: layer ID" ) << QObject::tr( "str: layer name" )
-                           << QObject::tr( "str: layer source" ) << u"list[QgsMapLayer]"_s << u"QgsVectorLayer"_s;
+      return QStringList()
+             << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" )
+             << QObject::tr( "list[str]: list of layer IDs" )
+             << QObject::tr( "list[str]: list of layer names" )
+             << QObject::tr( "list[str]: list of layer sources" )
+             << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << u"list[QgsMapLayer]"_s
+             << u"QgsVectorLayer"_s;
     }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterMultipleLayers::typeName() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterVectorLayer::typeName()
-                           << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterFile::typeName() << QgsProcessingParameterString::typeName();
+      return QStringList()
+             << QgsProcessingParameterMultipleLayers::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterString::typeName();
     }
 
     QStringList acceptedOutputTypes() const override
     {
-      return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputVectorLayer::typeName()
-                           << QgsProcessingOutputMultipleLayers::typeName() << QgsProcessingOutputFile::typeName();
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMultipleLayers::typeName()
+             << QgsProcessingOutputFile::typeName();
     }
 };
 

@@ -28,7 +28,8 @@ Qgis::GpsFixStatus QgsGpsInformation::bestFixStatus( Qgis::GnssConstellation &co
   Qgis::GpsFixStatus bestStatus = Qgis::GpsFixStatus::NoData;
   for ( auto it = mConstellationFixStatus.begin(); it != mConstellationFixStatus.end(); ++it )
   {
-    if ( it.value() == Qgis::GpsFixStatus::Fix3D || ( it.value() == Qgis::GpsFixStatus::Fix2D && bestStatus != Qgis::GpsFixStatus::Fix3D )
+    if ( it.value() == Qgis::GpsFixStatus::Fix3D
+         || ( it.value() == Qgis::GpsFixStatus::Fix2D && bestStatus != Qgis::GpsFixStatus::Fix3D )
          || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData ) )
     {
       bestStatus = it.value();
@@ -47,7 +48,10 @@ bool QgsGpsInformation::isValid() const
   {
     valid = false;
   }
-  else if ( status == 'A' || status == 'D' || bestFix == Qgis::GpsFixStatus::Fix2D || bestFix == Qgis::GpsFixStatus::Fix3D
+  else if ( status == 'A'
+            || status == 'D'
+            || bestFix == Qgis::GpsFixStatus::Fix2D
+            || bestFix == Qgis::GpsFixStatus::Fix3D
             || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good - D=Differential for UM98x
   {
     valid = true;

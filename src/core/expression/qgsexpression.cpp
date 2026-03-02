@@ -862,7 +862,8 @@ void QgsExpression::buildVariableHelp()
 
   sVariableHelpTexts()->insert(
     u"row_number"_s,
-    QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + u"\n\n"_s
+    QCoreApplication::translate( "variable_help", "Stores the number of the current row." )
+      + u"\n\n"_s
       + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." )
       + u"\n\n"_s
       + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." )
@@ -1233,8 +1234,12 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     QgsDebugError( u"Unknown color format: %1"_s.arg( color.spec() ) );
     return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
   }
-  else if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::UInt || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::ULongLong
-            || value.userType() == QMetaType::Type::Double ||
+  else if ( value.userType() == QMetaType::Type::Int
+            || value.userType() == QMetaType::Type::UInt
+            || value.userType() == QMetaType::Type::LongLong
+            || value.userType() == QMetaType::Type::ULongLong
+            || value.userType() == QMetaType::Type::Double
+            ||
             // Qt madness with QMetaType::Float :/
             value.userType() == static_cast<QMetaType::Type>( QMetaType::Float ) )
   {

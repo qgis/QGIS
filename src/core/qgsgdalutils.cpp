@@ -955,9 +955,19 @@ Qgis::VsiHandlerType QgsGdalUtils::vsiHandlerType( const QString &prefix )
   else if ( vsiPrefix == "vsicurl"_L1 || vsiPrefix == "vsicurl_streaming"_L1 )
     return Qgis::VsiHandlerType::Network;
 
-  else if ( vsiPrefix == "vsis3"_L1 || vsiPrefix == "vsicurl_streaming"_L1 || vsiPrefix == "vsigs"_L1 || vsiPrefix == "vsigs_streaming"_L1 || vsiPrefix == "vsiaz"_L1
-            || vsiPrefix == "vsiaz_streaming"_L1 || vsiPrefix == "vsiadls"_L1 || vsiPrefix == "vsioss"_L1 || vsiPrefix == "vsioss_streaming"_L1 || vsiPrefix == "vsiswift"_L1
-            || vsiPrefix == "vsiswift_streaming"_L1 || vsiPrefix == "vsihdfs"_L1 || vsiPrefix == "vsiwebhdfs"_L1 )
+  else if ( vsiPrefix == "vsis3"_L1
+            || vsiPrefix == "vsicurl_streaming"_L1
+            || vsiPrefix == "vsigs"_L1
+            || vsiPrefix == "vsigs_streaming"_L1
+            || vsiPrefix == "vsiaz"_L1
+            || vsiPrefix == "vsiaz_streaming"_L1
+            || vsiPrefix == "vsiadls"_L1
+            || vsiPrefix == "vsioss"_L1
+            || vsiPrefix == "vsioss_streaming"_L1
+            || vsiPrefix == "vsiswift"_L1
+            || vsiPrefix == "vsiswift_streaming"_L1
+            || vsiPrefix == "vsihdfs"_L1
+            || vsiPrefix == "vsiwebhdfs"_L1 )
     return Qgis::VsiHandlerType::Cloud;
 
   else if ( vsiPrefix == "vsimem"_L1 )

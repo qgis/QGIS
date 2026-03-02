@@ -193,10 +193,18 @@ bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
 
 bool QgsArrowSymbolLayer::usesMapUnits() const
 {
-  return mArrowWidthUnit == Qgis::RenderUnit::MapUnits || mArrowWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mArrowStartWidthUnit == Qgis::RenderUnit::MapUnits
-         || mArrowStartWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mHeadLengthUnit == Qgis::RenderUnit::MapUnits || mHeadLengthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mHeadThicknessUnit == Qgis::RenderUnit::MapUnits || mHeadThicknessUnit == Qgis::RenderUnit::MetersInMapUnits || mWidthUnit == Qgis::RenderUnit::MapUnits
-         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mArrowWidthUnit == Qgis::RenderUnit::MapUnits
+         || mArrowWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mArrowStartWidthUnit == Qgis::RenderUnit::MapUnits
+         || mArrowStartWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeadLengthUnit == Qgis::RenderUnit::MapUnits
+         || mHeadLengthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeadThicknessUnit == Qgis::RenderUnit::MapUnits
+         || mHeadThicknessUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsArrowSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )

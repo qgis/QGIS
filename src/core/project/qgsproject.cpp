@@ -2150,7 +2150,10 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
       QgsLogger::warning(
         "Loading a file that was saved with an older "
         "version of qgis (saved in "
-        + fileVersion.text() + ", loaded in " + Qgis::version() + "). Problems may occur."
+        + fileVersion.text()
+        + ", loaded in "
+        + Qgis::version()
+        + "). Problems may occur."
       );
     }
 
@@ -2169,7 +2172,10 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     QgsLogger::warning(
       "Loading a file that was saved with a newer "
       "version of qgis (saved in "
-      + fileVersion.text() + ", loaded in " + Qgis::version() + "). Problems may occur."
+      + fileVersion.text()
+      + ", loaded in "
+      + Qgis::version()
+      + "). Problems may occur."
     );
 
     emit readVersionMismatchOccurred( fileVersion.text() );

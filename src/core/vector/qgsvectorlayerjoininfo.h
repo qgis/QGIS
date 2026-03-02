@@ -189,8 +189,12 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
-      return mTargetFieldName == other.mTargetFieldName && mJoinLayerRef.layerId == other.mJoinLayerRef.layerId && mJoinFieldName == other.mJoinFieldName
-             && mJoinFieldsSubset == other.mJoinFieldsSubset && mMemoryCache == other.mMemoryCache && mPrefix == other.mPrefix;
+      return mTargetFieldName == other.mTargetFieldName
+             && mJoinLayerRef.layerId == other.mJoinLayerRef.layerId
+             && mJoinFieldName == other.mJoinFieldName
+             && mJoinFieldsSubset == other.mJoinFieldsSubset
+             && mMemoryCache == other.mMemoryCache
+             && mPrefix == other.mPrefix;
     }
 
     /**

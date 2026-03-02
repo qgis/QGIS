@@ -292,7 +292,9 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
   {
     const QgsCurve *finalCurve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
     const QgsPoint finalCurveEndPoint = finalCurve->endPoint();
-    if ( qgsDoubleNear( finalCurveEndPoint.x(), lineX.at( 0 ) ) && qgsDoubleNear( finalCurveEndPoint.y(), lineY.at( 0 ) ) && ( !hasZ || qgsDoubleNear( finalCurveEndPoint.z(), lineZ.at( 0 ) ) )
+    if ( qgsDoubleNear( finalCurveEndPoint.x(), lineX.at( 0 ) )
+         && qgsDoubleNear( finalCurveEndPoint.y(), lineY.at( 0 ) )
+         && ( !hasZ || qgsDoubleNear( finalCurveEndPoint.z(), lineZ.at( 0 ) ) )
          && ( !hasM || qgsDoubleNear( finalCurveEndPoint.m(), lineM.at( 0 ) ) ) )
     {
       actualLineSize = 0; // redundant final curve containing a duplicate vertex

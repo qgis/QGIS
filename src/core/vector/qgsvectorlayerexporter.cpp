@@ -137,7 +137,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
 
   QMap<QString, QVariant> modifiedOptions( options );
 
-  if ( providerKey == "ogr"_L1 && options.contains( u"driverName"_s )
+  if ( providerKey == "ogr"_L1
+       && options.contains( u"driverName"_s )
        && ( options[u"driverName"_s].toString().compare( "GPKG"_L1, Qt::CaseInsensitive ) == 0 || options[u"driverName"_s].toString().compare( "SQLite"_L1, Qt::CaseInsensitive ) == 0 ) )
   {
     if ( geometryType != Qgis::WkbType::NoGeometry )
@@ -151,13 +152,17 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
         const QStringList layerOptions = options.value( u"layerOptions"_s ).toStringList();
         for ( const QString &layerOption : layerOptions )
         {
-          if ( layerOption.compare( "SPATIAL_INDEX=YES"_L1, Qt::CaseInsensitive ) == 0 || layerOption.compare( "SPATIAL_INDEX=ON"_L1, Qt::CaseInsensitive ) == 0
-               || layerOption.compare( "SPATIAL_INDEX=TRUE"_L1, Qt::CaseInsensitive ) == 0 || layerOption.compare( "SPATIAL_INDEX=1"_L1, Qt::CaseInsensitive ) == 0 )
+          if ( layerOption.compare( "SPATIAL_INDEX=YES"_L1, Qt::CaseInsensitive ) == 0
+               || layerOption.compare( "SPATIAL_INDEX=ON"_L1, Qt::CaseInsensitive ) == 0
+               || layerOption.compare( "SPATIAL_INDEX=TRUE"_L1, Qt::CaseInsensitive ) == 0
+               || layerOption.compare( "SPATIAL_INDEX=1"_L1, Qt::CaseInsensitive ) == 0 )
           {
             // do nothing
           }
-          else if ( layerOption.compare( "SPATIAL_INDEX=NO"_L1, Qt::CaseInsensitive ) == 0 || layerOption.compare( "SPATIAL_INDEX=OFF"_L1, Qt::CaseInsensitive ) == 0
-                    || layerOption.compare( "SPATIAL_INDEX=FALSE"_L1, Qt::CaseInsensitive ) == 0 || layerOption.compare( "SPATIAL_INDEX=0"_L1, Qt::CaseInsensitive ) == 0 )
+          else if ( layerOption.compare( "SPATIAL_INDEX=NO"_L1, Qt::CaseInsensitive ) == 0
+                    || layerOption.compare( "SPATIAL_INDEX=OFF"_L1, Qt::CaseInsensitive ) == 0
+                    || layerOption.compare( "SPATIAL_INDEX=FALSE"_L1, Qt::CaseInsensitive ) == 0
+                    || layerOption.compare( "SPATIAL_INDEX=0"_L1, Qt::CaseInsensitive ) == 0 )
           {
             mCreateSpatialIndex = false;
           }

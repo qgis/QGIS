@@ -45,8 +45,11 @@ QString QgsSqlExpressionCompiler::result()
 
 bool QgsSqlExpressionCompiler::opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op )
 {
-  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike
-       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
+  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike
+       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike
+       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike
+       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike
+       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
     return true;
   else
     return false;

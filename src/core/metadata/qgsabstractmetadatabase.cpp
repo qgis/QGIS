@@ -556,16 +556,30 @@ void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )
 bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther ) const
 {
   return (
-    ( mIdentifier == metadataOther.mIdentifier ) && ( mParentIdentifier == metadataOther.mParentIdentifier ) && ( mLanguage == metadataOther.mLanguage ) && ( mType == metadataOther.mType )
-    && ( mTitle == metadataOther.mTitle ) && ( mAbstract == metadataOther.mAbstract ) && ( mHistory == metadataOther.mHistory ) && ( mKeywords == metadataOther.mKeywords )
-    && ( mContacts == metadataOther.mContacts ) && ( mLinks == metadataOther.mLinks ) && ( mDates == metadataOther.mDates )
+    ( mIdentifier == metadataOther.mIdentifier )
+    && ( mParentIdentifier == metadataOther.mParentIdentifier )
+    && ( mLanguage == metadataOther.mLanguage )
+    && ( mType == metadataOther.mType )
+    && ( mTitle == metadataOther.mTitle )
+    && ( mAbstract == metadataOther.mAbstract )
+    && ( mHistory == metadataOther.mHistory )
+    && ( mKeywords == metadataOther.mKeywords )
+    && ( mContacts == metadataOther.mContacts )
+    && ( mLinks == metadataOther.mLinks )
+    && ( mDates == metadataOther.mDates )
   );
 }
 
 
 bool QgsAbstractMetadataBase::Contact::operator==( const QgsAbstractMetadataBase::Contact &other ) const
 {
-  return name == other.name && organization == other.organization && position == other.position && addresses == other.addresses && voice == other.voice && fax == other.fax && email == other.email
+  return name == other.name
+         && organization == other.organization
+         && position == other.position
+         && addresses == other.addresses
+         && voice == other.voice
+         && fax == other.fax
+         && email == other.email
          && role == other.role;
 }
 

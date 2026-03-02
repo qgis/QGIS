@@ -570,7 +570,8 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
       {
         if ( it.value().overlaps( range ) )
         {
-          if ( currentMatchingRange.isInfinite() || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite()
+               || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && it.value().upper() >= currentMatchingRange.upper() ) )
           {
             currentMatchingBand = it.key();
@@ -615,7 +616,8 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
           const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
           if ( bandRange.overlaps( range ) )
           {
-            if ( currentMatchingRange.isInfinite() || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+            if ( currentMatchingRange.isInfinite()
+                 || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
                  || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
             {
               currentMatchingBand = band;

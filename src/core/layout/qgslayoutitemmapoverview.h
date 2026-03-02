@@ -175,11 +175,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      * Retrieves the blending mode used for drawing the overview.
      * \see setBlendMode()
      */
-    QPainter::CompositionMode
-      blendMode() const
-    {
-      return mBlendMode;
-    }
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /**
      * Sets the blending \a mode used for drawing the overview.

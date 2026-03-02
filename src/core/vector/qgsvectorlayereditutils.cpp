@@ -949,7 +949,8 @@ bool QgsVectorLayerEditUtils::mergeFeatures(
   {
     QVariant val = mergeAttributes.at( i );
 
-    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider && mLayer->dataProvider()
+    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider
+                          && mLayer->dataProvider()
                           && mLayer->dataProvider()->defaultValueClause( mLayer->fields().fieldOriginIndex( i ) ) == val;
 
     // convert to destination data type

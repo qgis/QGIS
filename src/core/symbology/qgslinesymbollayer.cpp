@@ -461,8 +461,10 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
   std::unique_ptr< QgsScopedQPainterState > painterState;
-  if ( points.size() <= 2 && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
-       && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 2
+       && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
+       && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() )
+       && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     painterState = std::make_unique< QgsScopedQPainterState >( p );
     p->setRenderHint( QPainter::Antialiasing, false );
@@ -1484,7 +1486,9 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
 
 bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() const
 {
-  return mPlaceOnEveryPart || ( mPlacements & Qgis::MarkerLinePlacement::Interval ) || ( mPlacements & Qgis::MarkerLinePlacement::CentralPoint )
+  return mPlaceOnEveryPart
+         || ( mPlacements & Qgis::MarkerLinePlacement::Interval )
+         || ( mPlacements & Qgis::MarkerLinePlacement::CentralPoint )
          || ( mPlacements & Qgis::MarkerLinePlacement::SegmentCenter );
 }
 
@@ -1974,7 +1978,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex(
   }
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
-  if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry() && context.renderContext().geometry()->hasCurvedSegments()
+  if ( qgsDoubleNear( offsetAlongLine, 0.0 )
+       && context.renderContext().geometry()
+       && context.renderContext().geometry()->hasCurvedSegments()
        && ( placement == Qgis::MarkerLinePlacement::Vertex || placement == Qgis::MarkerLinePlacement::InnerVertices || placement == Qgis::MarkerLinePlacement::CurvePoint ) )
   {
     QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
@@ -2772,10 +2778,18 @@ void QgsMarkerLineSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 
 bool QgsMarkerLineSymbolLayer::usesMapUnits() const
 {
-  return intervalUnit() == Qgis::RenderUnit::MapUnits || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits
-         || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
-         || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits || ( mMarker && mMarker->usesMapUnits() );
+  return intervalUnit() == Qgis::RenderUnit::MapUnits
+         || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits
+         || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || averageAngleUnit() == Qgis::RenderUnit::MapUnits
+         || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits
+         || ( mMarker && mMarker->usesMapUnits() );
 }
 
 QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
@@ -2932,7 +2946,8 @@ double QgsHashedLineSymbolLayer::width( const QgsRenderContext &context ) const
 
 double QgsHashedLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return ( mHashSymbol->width( context ) / 2.0 ) + context.convertToPainterUnits( mHashLength, mHashLengthUnit, mHashLengthMapUnitScale )
+  return ( mHashSymbol->width( context ) / 2.0 )
+         + context.convertToPainterUnits( mHashLength, mHashLengthUnit, mHashLengthMapUnitScale )
          + context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
@@ -2970,11 +2985,20 @@ void QgsHashedLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property 
 
 bool QgsHashedLineSymbolLayer::usesMapUnits() const
 {
-  return mHashLengthUnit == Qgis::RenderUnit::MapUnits || mHashLengthUnit == Qgis::RenderUnit::MetersInMapUnits || intervalUnit() == Qgis::RenderUnit::MapUnits
-         || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
-         || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits || mWidthUnit == Qgis::RenderUnit::MapUnits
-         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-         || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits || ( mHashSymbol && mHashSymbol->usesMapUnits() );
+  return mHashLengthUnit == Qgis::RenderUnit::MapUnits
+         || mHashLengthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || intervalUnit() == Qgis::RenderUnit::MapUnits
+         || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits
+         || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || averageAngleUnit() == Qgis::RenderUnit::MapUnits
+         || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits
+         || ( mHashSymbol && mHashSymbol->usesMapUnits() );
 }
 
 void QgsHashedLineSymbolLayer::setSymbolLineAngle( double angle )
@@ -3212,7 +3236,8 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
         // angle of LAST line segment in the whole line (i.e. the one which will eventually connect back to the first point in the line). Used to determine
         // what angle the current segment polygon should START on.
-        const double lastSegmentAngleDegrees = 180.0 / M_PI
+        const double lastSegmentAngleDegrees = 180.0
+                                                 / M_PI
                                                  * QgsGeometryUtilsBase::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(), segmentStartPoint.x(), segmentStartPoint.y() )
                                                - 90;
 
@@ -3329,8 +3354,12 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
     // now draw the segment polygon
     imagePainter.drawPolygon(
-      QPolygonF() << prevSegmentPolygonEndLeft.toQPointF() << thisSegmentPolygonEndLeftForPainter.toQPointF() << thisSegmentPolygonEndRightForPainter.toQPointF()
-                  << prevSegmentPolygonEndRight.toQPointF() << prevSegmentPolygonEndLeft.toQPointF()
+      QPolygonF()
+      << prevSegmentPolygonEndLeft.toQPointF()
+      << thisSegmentPolygonEndLeftForPainter.toQPointF()
+      << thisSegmentPolygonEndRightForPainter.toQPointF()
+      << prevSegmentPolygonEndRight.toQPointF()
+      << prevSegmentPolygonEndLeft.toQPointF()
     );
 
 #if 0 // for debugging, will draw the segment polygons
@@ -3513,7 +3542,8 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     return;
 
   QImage sourceImage = mLineImage;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Opacity ) )
   {
     QString path = mPath;
@@ -3783,7 +3813,8 @@ void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbol
   //create a QGradient with the desired properties
   QGradient gradient = QLinearGradient( QPointF( 0, 0 ), QPointF( 0, scaledWidth ) );
   //add stops to gradient
-  if ( mGradientColorType == Qgis::GradientColorSource::ColorRamp && mGradientRamp
+  if ( mGradientColorType == Qgis::GradientColorSource::ColorRamp
+       && mGradientRamp
        && ( mGradientRamp->type() == QgsGradientColorRamp::typeString() || mGradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
@@ -4158,7 +4189,10 @@ QColor QgsFilledLineSymbolLayer::color() const
 
 bool QgsFilledLineSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+  return mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
          || ( mFill && mFill->usesMapUnits() );
 }
 

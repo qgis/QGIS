@@ -290,7 +290,9 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
       while ( !ruleChildElem.isNull() )
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
-        if ( ruleChildElem.localName() == "Filter"_L1 || ruleChildElem.localName() == "ElseFilter"_L1 || ruleChildElem.localName() == "MinScaleDenominator"_L1
+        if ( ruleChildElem.localName() == "Filter"_L1
+             || ruleChildElem.localName() == "ElseFilter"_L1
+             || ruleChildElem.localName() == "MinScaleDenominator"_L1
              || ruleChildElem.localName() == "MaxScaleDenominator"_L1 )
         {
           hasRuleRenderer = true;

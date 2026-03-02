@@ -191,7 +191,10 @@ bool QgsRemappingSinkDefinition::loadVariant( const QVariantMap &map )
 
 bool QgsRemappingSinkDefinition::operator==( const QgsRemappingSinkDefinition &other ) const
 {
-  return mDestinationWkbType == other.mDestinationWkbType && mDestinationFields == other.mDestinationFields && mFieldMap == other.mFieldMap && mSourceCrs == other.mSourceCrs
+  return mDestinationWkbType == other.mDestinationWkbType
+         && mDestinationFields == other.mDestinationFields
+         && mFieldMap == other.mFieldMap
+         && mSourceCrs == other.mSourceCrs
          && mDestinationCrs == other.mDestinationCrs;
 }
 

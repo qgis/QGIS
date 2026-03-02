@@ -161,7 +161,9 @@ bool QgsPointCloudLayerRenderer::render()
   mAttributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
   mAttributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
 
-  if ( !context.renderContext().zRange().isInfinite() || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom
+  if ( !context.renderContext().zRange().isInfinite()
+       || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop
+       || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom
        || renderContext()->elevationMap() )
     mAttributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
@@ -239,7 +241,8 @@ bool QgsPointCloudLayerRenderer::render()
 
         QgsPointCloudIndex pc = si.index();
         // if the index of point cloud is invalid, or we are zoomed out and want extents, we render the point cloud extent
-        if ( !pc || !pc.isValid()
+        if ( !pc
+             || !pc.isValid()
              || ( ( mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderExtents || mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) && zoomedOut ) )
         {
           mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );

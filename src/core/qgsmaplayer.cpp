@@ -2009,7 +2009,8 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_bind_text( statement.get(), 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK
-           && sqlite3_bind_text( statement.get(), 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_DONE )
+           && sqlite3_bind_text( statement.get(), 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK
+           && sqlite3_step( statement.get() ) == SQLITE_DONE )
       {
         resultFlag = true;
         switch ( type )
@@ -2042,7 +2043,8 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
       if ( myResult == SQLITE_OK )
       {
         if ( sqlite3_bind_text( statement.get(), 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK
-             && sqlite3_bind_text( statement.get(), 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_DONE )
+             && sqlite3_bind_text( statement.get(), 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK
+             && sqlite3_step( statement.get() ) == SQLITE_DONE )
         {
           resultFlag = true;
           switch ( type )
@@ -3205,8 +3207,10 @@ QString QgsMapLayer::generalHtmlMetadata() const
       if ( fi.exists() )
       {
         isLocalPath = true;
-        metadata += u"<tr><td class=\"highlight\">"_s + tr( "Path" )
-                    + u"</td><td>%1"_s.arg( u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + u"</td></tr>\n"_s;
+        metadata += u"<tr><td class=\"highlight\">"_s
+                    + tr( "Path" )
+                    + u"</td><td>%1"_s.arg( u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) )
+                    + u"</td></tr>\n"_s;
 
         QDateTime lastModified = fi.lastModified();
         QString lastModifiedFileName;
@@ -3229,14 +3233,21 @@ QString QgsMapLayer::generalHtmlMetadata() const
               }
               sidecarFileNames << sidecarFi.fileName();
             }
-            metadata += u"<tr><td class=\"highlight\">"_s + ( sidecarFiles.size() > 1 ? tr( "Sidecar files" ) : tr( "Sidecar file" ) ) + u"</td><td>%1"_s.arg( sidecarFileNames.join( ", "_L1 ) )
+            metadata += u"<tr><td class=\"highlight\">"_s
+                        + ( sidecarFiles.size() > 1 ? tr( "Sidecar files" ) : tr( "Sidecar file" ) )
+                        + u"</td><td>%1"_s.arg( sidecarFileNames.join( ", "_L1 ) )
                         + u"</td></tr>\n"_s;
           }
-          metadata += u"<tr><td class=\"highlight\">"_s + ( !sidecarFiles.isEmpty() ? tr( "Total size" ) : tr( "Size" ) ) + u"</td><td>%1"_s.arg( QgsFileUtils::representFileSize( fileSize ) )
+          metadata += u"<tr><td class=\"highlight\">"_s
+                      + ( !sidecarFiles.isEmpty() ? tr( "Total size" ) : tr( "Size" ) )
+                      + u"</td><td>%1"_s.arg( QgsFileUtils::representFileSize( fileSize ) )
                       + u"</td></tr>\n"_s;
         }
-        metadata += u"<tr><td class=\"highlight\">"_s + tr( "Last modified" ) + u"</td><td>%1"_s.arg( QLocale().toString( fi.lastModified() ) )
-                    + ( !lastModifiedFileName.isEmpty() ? u" (%1)"_s.arg( lastModifiedFileName ) : QString() ) + u"</td></tr>\n"_s;
+        metadata += u"<tr><td class=\"highlight\">"_s
+                    + tr( "Last modified" )
+                    + u"</td><td>%1"_s.arg( QLocale().toString( fi.lastModified() ) )
+                    + ( !lastModifiedFileName.isEmpty() ? u" (%1)"_s.arg( lastModifiedFileName ) : QString() )
+                    + u"</td></tr>\n"_s;
       }
     }
     if ( uriComponents.contains( u"url"_s ) )
@@ -3316,8 +3327,11 @@ QString QgsMapLayer::crsHtmlMetadata() const
       metadata += u"<tr><td class=\"highlight\">"_s + tr( "Name" ) + u"</td><td>"_s + c.userFriendlyIdentifier( Qgis::CrsIdentifierType::FullString ) + u"</td></tr>\n"_s;
 
       // map units
-      metadata += u"<tr><td class=\"highlight\">"_s + tr( "Units" ) + u"</td><td>"_s
-                  + ( c.isGeographic() ? tr( "Geographic (uses latitude and longitude for coordinates)" ) : QgsUnitTypes::toString( c.mapUnits() ) ) + u"</td></tr>\n"_s;
+      metadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Units" )
+                  + u"</td><td>"_s
+                  + ( c.isGeographic() ? tr( "Geographic (uses latitude and longitude for coordinates)" ) : QgsUnitTypes::toString( c.mapUnits() ) )
+                  + u"</td></tr>\n"_s;
 
       if ( includeType )
       {
@@ -3384,7 +3398,8 @@ QString QgsMapLayer::crsHtmlMetadata() const
       }
 
       // static/dynamic
-      metadata += u"<tr><td class=\"highlight\">"_s + tr( "Reference" )
+      metadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Reference" )
                   + u"</td><td>%1</td></tr>\n"_s.arg( c.isDynamic() ? tr( "Dynamic (relies on a datum which is not plate-fixed)" ) : tr( "Static (relies on a datum which is plate-fixed)" ) );
 
       // coordinate epoch

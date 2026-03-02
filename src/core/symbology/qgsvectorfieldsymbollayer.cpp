@@ -288,8 +288,12 @@ QVariantMap QgsVectorFieldSymbolLayer::properties() const
 
 bool QgsVectorFieldSymbolLayer::usesMapUnits() const
 {
-  return mDistanceUnit == Qgis::RenderUnit::MapUnits || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits || mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mDistanceUnit == Qgis::RenderUnit::MapUnits
+         || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mSizeUnit == Qgis::RenderUnit::MapUnits
+         || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const

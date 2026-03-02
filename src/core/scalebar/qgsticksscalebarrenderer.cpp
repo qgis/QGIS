@@ -74,8 +74,17 @@ int QgsTicksScaleBarRenderer::sortKey() const
 
 QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol | Flag::FlagUsesDivisionSymbol | Flag::FlagUsesSubdivisionSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel
-         | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement | Flag::FlagUsesSubdivisions
+  return Flag::FlagUsesLineSymbol
+         | Flag::FlagUsesDivisionSymbol
+         | Flag::FlagUsesSubdivisionSymbol
+         | Flag::FlagRespectsUnits
+         | Flag::FlagRespectsMapUnitsPerScaleBarUnit
+         | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments
+         | Flag::FlagUsesLabelBarSpace
+         | Flag::FlagUsesLabelVerticalPlacement
+         | Flag::FlagUsesLabelHorizontalPlacement
+         | Flag::FlagUsesSubdivisions
          | Flag::FlagUsesSubdivisionsHeight;
 }
 

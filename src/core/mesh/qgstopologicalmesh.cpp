@@ -1055,9 +1055,23 @@ QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() cons
 bool QgsTopologicalMesh::Changes::isEmpty() const
 {
   return (
-    mFaceIndexesToRemove.isEmpty() && mFacesToAdd.isEmpty() && mFacesNeighborhoodToAdd.isEmpty() && mFacesToRemove.isEmpty() && mFacesNeighborhoodToRemove.isEmpty() && mNeighborhoodChanges.isEmpty()
-    && mVerticesToAdd.isEmpty() && mVertexToFaceToAdd.isEmpty() && mVerticesToRemoveIndexes.isEmpty() && mRemovedVertices.isEmpty() && mVerticesToFaceRemoved.isEmpty()
-    && mVerticesToFaceChanges.isEmpty() && mChangeCoordinateVerticesIndexes.isEmpty() && mNewZValues.isEmpty() && mOldZValues.isEmpty() && mNewXYValues.isEmpty() && mOldXYValues.isEmpty()
+    mFaceIndexesToRemove.isEmpty()
+    && mFacesToAdd.isEmpty()
+    && mFacesNeighborhoodToAdd.isEmpty()
+    && mFacesToRemove.isEmpty()
+    && mFacesNeighborhoodToRemove.isEmpty()
+    && mNeighborhoodChanges.isEmpty()
+    && mVerticesToAdd.isEmpty()
+    && mVertexToFaceToAdd.isEmpty()
+    && mVerticesToRemoveIndexes.isEmpty()
+    && mRemovedVertices.isEmpty()
+    && mVerticesToFaceRemoved.isEmpty()
+    && mVerticesToFaceChanges.isEmpty()
+    && mChangeCoordinateVerticesIndexes.isEmpty()
+    && mNewZValues.isEmpty()
+    && mOldZValues.isEmpty()
+    && mNewXYValues.isEmpty()
+    && mOldXYValues.isEmpty()
     && mNativeFacesIndexesGeometryChanged.isEmpty()
   );
 }
@@ -1907,8 +1921,7 @@ bool QgsTopologicalMesh::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) 
 
   bool result = eitherSideFacesAndVertices( vertexIndex1, vertexIndex2, faceIndex1, faceIndex2, oppositeVertexFace1, supposedoppositeVertexFace2, supposedOppositeVertexFace1, oppositeVertexFace2 );
 
-  if ( !result || faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 || supposedOppositeVertexFace1 != oppositeVertexFace1
-       || supposedoppositeVertexFace2 != oppositeVertexFace2 )
+  if ( !result || faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 || supposedOppositeVertexFace1 != oppositeVertexFace1 || supposedoppositeVertexFace2 != oppositeVertexFace2 )
     return false;
 
   const QgsMeshFace &face1 = mMesh->face( faceIndex1 );
@@ -1935,8 +1948,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::flipEdge( int vertexIndex1, int 
 
   bool result = eitherSideFacesAndVertices( vertexIndex1, vertexIndex2, faceIndex1, faceIndex2, oppositeVertexFace1, supposedoppositeVertexFace2, supposedOppositeVertexFace1, oppositeVertexFace2 );
 
-  if ( !result || faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 || supposedOppositeVertexFace1 != oppositeVertexFace1
-       || supposedoppositeVertexFace2 != oppositeVertexFace2 )
+  if ( !result || faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 || supposedOppositeVertexFace1 != oppositeVertexFace1 || supposedoppositeVertexFace2 != oppositeVertexFace2 )
     return Changes();
 
 
