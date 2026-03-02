@@ -40,6 +40,8 @@ QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipC
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+
+
         QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
 %Docstring
 Returns the unary operator.

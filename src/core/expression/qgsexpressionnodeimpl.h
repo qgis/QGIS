@@ -49,12 +49,16 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
       , mOperand( operand )
     {}
 
+    // clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode QString str = u"<QgsExpressionNodeUnaryOperator: %1>"_s.arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+
+        // clang-format on
+
 
         /**
      * Returns the unary operator.

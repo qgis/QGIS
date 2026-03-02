@@ -33,6 +33,7 @@ class QgsExpressionContext;
  */
 class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 {
+    // clang-format off
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->nodeType() )
@@ -70,10 +71,10 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
   Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode )
 
-    public :
-
+  public:
     //! Known node types.
-    enum NodeType {
+    enum NodeType
+    {
       ntUnaryOperator,   //!< \see QgsExpression::Node::NodeUnaryOperator
       ntBinaryOperator,  //!< \see QgsExpression::Node::NodeBinaryOperator
       ntInOperator,      //!< \see QgsExpression::Node::NodeInOperator
@@ -84,6 +85,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       ntIndexOperator,   //!< Index operator
       ntBetweenOperator, //!< Between operator \since QGIS 3.26
     };
+    // clang-format on
 
 
     /**
