@@ -2183,8 +2183,7 @@ QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSetti
 
     double pixelToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Pixels ) );
     bounds
-      = bounds
-          .adjusted( -settings.cropMargins.left() * pixelToLayoutUnits, -settings.cropMargins.top() * pixelToLayoutUnits, settings.cropMargins.right() * pixelToLayoutUnits, settings.cropMargins.bottom() * pixelToLayoutUnits );
+      = bounds.adjusted( -settings.cropMargins.left() * pixelToLayoutUnits, -settings.cropMargins.top() * pixelToLayoutUnits, settings.cropMargins.right() * pixelToLayoutUnits, settings.cropMargins.bottom() * pixelToLayoutUnits );
     return renderRegionToImage( bounds, QSize(), settings.dpi );
   }
   else

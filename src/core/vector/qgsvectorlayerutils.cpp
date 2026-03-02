@@ -69,9 +69,8 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureRequest request = QgsFeatureRequest()
-                                .setFlags( ( expression && expression->needsGeometry() ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
-                                .setSubsetOfAttributes( lst, layer->fields() );
+  QgsFeatureRequest request
+    = QgsFeatureRequest().setFlags( ( expression && expression->needsGeometry() ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( lst, layer->fields() );
 
   ok = true;
   if ( !selectedOnly )

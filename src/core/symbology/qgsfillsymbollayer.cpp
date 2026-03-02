@@ -3985,8 +3985,7 @@ bool QgsPointPatternFillSymbolLayer::applyPattern(
     {
       for ( double currentY = -height; currentY <= height * 2.0; currentY += height / 2.0 )
       {
-        mMarkerSymbol
-          ->renderPoint( QPointF( currentX + widthOffset + ( std::fmod( currentY, height ) != 0 ? displacementPixelX : 0 ), currentY + heightOffset - displacementPixelY ), context.feature(), pointRenderContext );
+        mMarkerSymbol->renderPoint( QPointF( currentX + widthOffset + ( std::fmod( currentY, height ) != 0 ? displacementPixelX : 0 ), currentY + heightOffset - displacementPixelY ), context.feature(), pointRenderContext );
       }
     }
 

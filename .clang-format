@@ -149,6 +149,7 @@ ObjCSpaceBeforeProtocolList: true
 PackConstructorInitializers: Never
 PenaltyBreakAssignment: 150
 PenaltyBreakBeforeFirstCallParameter: 5000
+PenaltyBreakBeforeMemberAccess: 500
 PenaltyBreakComment: 500
 PenaltyBreakFirstLessLess: 400
 PenaltyBreakOpenParenthesis: 0

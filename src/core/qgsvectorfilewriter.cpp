@@ -1146,8 +1146,7 @@ class QgsVectorFileWriterMetadataContainer
         )
       );
 
-      driverMetadata
-        .insert( u"Arrow"_s, QgsVectorFileWriter::MetaData( u"(Geo)Arrow"_s, QObject::tr( "(Geo)Arrow" ), u"*.arrow *.feather *.arrows *.ipc"_s, u"arrow"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
+      driverMetadata.insert( u"Arrow"_s, QgsVectorFileWriter::MetaData( u"(Geo)Arrow"_s, QObject::tr( "(Geo)Arrow" ), u"*.arrow *.feather *.arrows *.ipc"_s, u"arrow"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
 
       // Arc/Info ASCII Coverage
       datasetOptions.clear();
@@ -1803,8 +1802,7 @@ class QgsVectorFileWriterMetadataContainer
         )
       );
 
-      driverMetadata
-        .insert( u"GPX"_s, QgsVectorFileWriter::MetaData( u"GPS eXchange Format [GPX]"_s, QObject::tr( "GPS eXchange Format [GPX]" ), u"*.gpx"_s, u"gpx"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
+      driverMetadata.insert( u"GPX"_s, QgsVectorFileWriter::MetaData( u"GPS eXchange Format [GPX]"_s, QObject::tr( "GPS eXchange Format [GPX]" ), u"*.gpx"_s, u"gpx"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
 
       // INTERLIS 1
       datasetOptions.clear();
@@ -2496,8 +2494,7 @@ class QgsVectorFileWriterMetadataContainer
         )
       );
 
-      driverMetadata
-        .insert( u"OpenFileGDB"_s, QgsVectorFileWriter::MetaData( u"ESRI File Geodatabase"_s, QObject::tr( "ESRI File Geodatabase" ), u"*.gdb"_s, u"gdb"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
+      driverMetadata.insert( u"OpenFileGDB"_s, QgsVectorFileWriter::MetaData( u"ESRI File Geodatabase"_s, QObject::tr( "ESRI File Geodatabase" ), u"*.gdb"_s, u"gdb"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
 
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 11, 0 )
       // ESRI FileGDB (using ESRI FileGDB API SDK)
@@ -2603,8 +2600,7 @@ class QgsVectorFileWriterMetadataContainer
         )
       );
 
-      driverMetadata
-        .insert( u"ODS"_s, QgsVectorFileWriter::MetaData( u"Open Document Spreadsheet"_s, QObject::tr( "Open Document Spreadsheet [ODS]" ), u"*.ods"_s, u"ods"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
+      driverMetadata.insert( u"ODS"_s, QgsVectorFileWriter::MetaData( u"Open Document Spreadsheet"_s, QObject::tr( "Open Document Spreadsheet [ODS]" ), u"*.ods"_s, u"ods"_s, datasetOptions, layerOptions, u"UTF-8"_s ) );
 
       // Parquet
       datasetOptions.clear();

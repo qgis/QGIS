@@ -2044,8 +2044,7 @@ std::unique_ptr< QgsAbstractGeometry > triangularWavesRandomizedPrivate(
     auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing(
-      triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt )
-        .release()
+      triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release()
     );
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
@@ -2354,8 +2353,7 @@ std::unique_ptr< QgsAbstractGeometry > squareWavesRandomizedPrivate(
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
       result->addInteriorRing(
-        squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt )
-          .release()
+        squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release()
       );
     }
 
@@ -2759,8 +2757,7 @@ std::unique_ptr< QgsAbstractGeometry > roundWavesRandomizedPrivate(
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
       result->addInteriorRing(
-        roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt )
-          .release()
+        roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release()
       );
     }
 

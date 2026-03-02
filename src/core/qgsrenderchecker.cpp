@@ -694,10 +694,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Send match result to report
   //
-  mReport += u"<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>"_s.arg( mMismatchCount )
-               .arg( mMatchTarget )
-               .arg( mismatchCount )
-               .arg( mColorTolerance );
+  mReport += u"<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>"_s.arg( mMismatchCount ).arg( mMatchTarget ).arg( mismatchCount ).arg( mColorTolerance );
 
   //
   // And send it to CDash

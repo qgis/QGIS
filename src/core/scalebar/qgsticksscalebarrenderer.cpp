@@ -204,8 +204,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       //horizontal line
       if ( drawLineForThisSymbolLayer )
       {
-        symbol
-          ->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), Qgis::RenderUnit::Millimeters ), verticalPos ) << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );
+        symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), Qgis::RenderUnit::Millimeters ), verticalPos ) << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );
       }
     }
   }

@@ -123,8 +123,7 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
       maxX = thisX + thisWidth;
 
     const QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
-    currentSymbol
-      ->renderPolygon( QPolygonF() << segmentRect.topLeft() << segmentRect.topRight() << segmentRect.bottomRight() << segmentRect.bottomLeft() << segmentRect.topLeft(), nullptr, nullptr, context );
+    currentSymbol->renderPolygon( QPolygonF() << segmentRect.topLeft() << segmentRect.topRight() << segmentRect.bottomRight() << segmentRect.bottomLeft() << segmentRect.topLeft(), nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -153,8 +152,12 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
     }
 
     // outside line
-    lineSymbol
-      ->renderPolyline( QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition ), nullptr, context, layer );
+    lineSymbol->renderPolyline(
+      QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition ),
+      nullptr,
+      context,
+      layer
+    );
   }
 
   lineSymbol->stopRender( context );

@@ -872,9 +872,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
         topLeft = mRasterViewPort->mTopLeftPoint.toQPointF().toPoint();
       }
 
-      renderContext()
-        ->elevationMap()
-        ->fillWithRasterBlock( elevationBlock.get(), topLeft.y() * renderContext()->devicePixelRatio(), topLeft.x() * renderContext()->devicePixelRatio(), mElevationScale, mElevationOffset );
+      renderContext()->elevationMap()->fillWithRasterBlock( elevationBlock.get(), topLeft.y() * renderContext()->devicePixelRatio(), topLeft.x() * renderContext()->devicePixelRatio(), mElevationScale, mElevationOffset );
     }
   }
 }

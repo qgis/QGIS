@@ -48,8 +48,8 @@ class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProvider
 {
   public:
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections = QgsSettingsTree::sTreeConnections
-                                                                                 ->createNamedListNode( u"sensorthings"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections
+      = QgsSettingsTree::sTreeConnections->createNamedListNode( u"sensorthings"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;

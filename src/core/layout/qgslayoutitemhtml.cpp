@@ -360,8 +360,9 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( painterRect.width() );
-      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s
-                    .arg( tr( "WebKit not available!" ), tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
+      td.setHtml(
+        u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg( tr( "WebKit not available!" ), tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) )
+      );
       painter->setClipRect( painterRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );

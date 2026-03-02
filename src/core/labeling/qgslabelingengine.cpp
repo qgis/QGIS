@@ -435,8 +435,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
   // find the solution
   mLabels
-    = mPal
-        ->solveProblem( mProblem.get(), context, settings.testFlag( Qgis::LabelingFlag::UseAllLabels ), settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
+    = mPal->solveProblem( mProblem.get(), context, settings.testFlag( Qgis::LabelingFlag::UseAllLabels ), settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 
   // sort labels
   std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
@@ -783,13 +782,11 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 
           painter->setPen( pen );
 
-          painter
-            ->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ), QPointF( rect.left() + left, rect.top() + prevBlockBaseline + verticalAlignOffset ) );
+          painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ), QPointF( rect.left() + left, rect.top() + prevBlockBaseline + verticalAlignOffset ) );
         }
 
         painter->setPen( QColor( 0, 0, 255, 220 ) );
-        painter
-          ->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ), QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ) );
+        painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ), QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ) );
         left = right;
       }
       prevBlockBaseline = blockBaseLine;

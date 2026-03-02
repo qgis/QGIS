@@ -225,8 +225,8 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
 
   // read from device and write to the table
   const QByteArray content = device->readAll();
-  const QString metadataExpr = u"{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }"_s
-                                 .arg( QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ), QgsApplication::userLoginName() );
+  const QString metadataExpr
+    = u"{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }"_s.arg( QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ), QgsApplication::userLoginName() );
   QString sql;
   if ( listProjects( uri ).contains( projectUri.projectName ) )
   {

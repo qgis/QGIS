@@ -205,8 +205,8 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
       }
       else //7 parameter transformation
       {
-        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s
-                             .arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString
+          += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
   }
@@ -257,8 +257,8 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
       }
       else //7 parameter transformation
       {
-        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s
-                             .arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString
+          += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
 

@@ -111,8 +111,9 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( thisPaintRect.width() );
-      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s
-                    .arg( tr( "Invalid scale!" ), tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
+      td.setHtml(
+        u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg( tr( "Invalid scale!" ), tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) )
+      );
       painter->setClipRect( thisPaintRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );

@@ -42,8 +42,8 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections
-                                                                              ->createNamedListNode( u"vector-tile"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile
+      = QgsSettingsTree::sTreeConnections->createNamedListNode( u"vector-tile"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryInteger *settingsZmin;

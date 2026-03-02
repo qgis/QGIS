@@ -720,8 +720,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CustomDash ) )
   {
-    const QString customDashString = mDataDefinedProperties
-                                       .valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
+    const QString customDashString
+      = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
     const QStringList dashList = customDashString.split( ';' );
     QVector<qreal> dashVector;
     for ( const QString &dash : dashList )
@@ -756,8 +756,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    const QString lineStyleString = mDataDefinedProperties
-                                      .valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
+    const QString lineStyleString
+      = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
     pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
   }
 
@@ -765,8 +765,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    const QString joinStyleString = mDataDefinedProperties
-                                      .valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
+    const QString joinStyleString
+      = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
     pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
   }
 
@@ -774,8 +774,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    const QString capStyleString = mDataDefinedProperties
-                                     .valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    const QString capStyleString
+      = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
     pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( capStyleString ) );
   }
 }

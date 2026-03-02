@@ -1724,8 +1724,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   {
     // draw a label icon
 
-    QgsApplication::getThemeIcon( u"labelingSingle.svg"_s )
-      .paint( &painter, QRect( rect.width() - iconWidth * 3, rect.height() - iconWidth * 3, iconWidth * 2, iconWidth * 2 ), Qt::AlignRight | Qt::AlignBottom );
+    QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ).paint( &painter, QRect( rect.width() - iconWidth * 3, rect.height() - iconWidth * 3, iconWidth * 2, iconWidth * 2 ), Qt::AlignRight | Qt::AlignBottom );
   }
 
   // draw border on top of text

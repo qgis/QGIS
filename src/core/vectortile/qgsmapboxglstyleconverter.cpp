@@ -631,8 +631,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddProperties
-          .setProperty( QgsSymbolLayer::Property::Offset, parseValueList( jsonLineOffset.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * -1, 255, nullptr, &lineOffset ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::Offset, parseValueList( jsonLineOffset.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * -1, 255, nullptr, &lineOffset ) );
         break;
 
       default:
@@ -939,8 +938,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddProperties
-          .setProperty( QgsSymbolLayer::Property::Size, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::Size, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
         break;
 
       default:
@@ -969,8 +967,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddProperties
-          .setProperty( QgsSymbolLayer::Property::FillColor, parseValueList( jsonCircleOpacity.toList(), PropertyType::Opacity, context, 1, circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::FillColor, parseValueList( jsonCircleOpacity.toList(), PropertyType::Opacity, context, 1, circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
         break;
 
       default:
@@ -1033,8 +1030,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddProperties
-          .setProperty( QgsSymbolLayer::Property::StrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleStrokeWidth ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::StrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleStrokeWidth ) );
         break;
 
       default:
@@ -1058,8 +1054,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       case QMetaType::Type::QVariantMap:
-        ddProperties
-          .setProperty( QgsSymbolLayer::Property::StrokeColor, parseInterpolateOpacityByZoom( jsonCircleStrokeOpacity.toMap(), circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255, &context ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::StrokeColor, parseInterpolateOpacityByZoom( jsonCircleStrokeOpacity.toMap(), circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255, &context ) );
         break;
 
       case QMetaType::Type::QVariantList:
@@ -1257,8 +1252,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddLabelProperties
-          .setProperty( QgsPalLayerSettings::Property::FontLetterSpacing, parseValueList( jsonTextLetterSpacing.toList(), PropertyType::Numeric, context, 1, 255, nullptr, &textLetterSpacing ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::FontLetterSpacing, parseValueList( jsonTextLetterSpacing.toList(), PropertyType::Numeric, context, 1, 255, nullptr, &textLetterSpacing ) );
         break;
 
       default:
@@ -2027,8 +2021,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
             size = jsonIconSize.toDouble();
             if ( !spriteSizeProperty.isEmpty() )
             {
-              ddLabelProperties
-                .setProperty( QgsPalLayerSettings::Property::ShapeSizeX, QgsProperty::fromExpression( u"with_variable('marker_size',%1,%2*@marker_size)"_s.arg( spriteSizeProperty ).arg( size ) ) );
+              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::ShapeSizeX, QgsProperty::fromExpression( u"with_variable('marker_size',%1,%2*@marker_size)"_s.arg( spriteSizeProperty ).arg( size ) ) );
             }
             break;
           }
@@ -2184,8 +2177,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
         case QMetaType::Type::QVariantList:
         case QMetaType::Type::QStringList:
-          markerDdProperties
-            .setProperty( QgsSymbolLayer::Property::Angle, parseValueList( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
+          markerDdProperties.setProperty( QgsSymbolLayer::Property::Angle, parseValueList( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
           break;
 
         default:
@@ -2367,8 +2359,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
           case QMetaType::Type::QVariantList:
           case QMetaType::Type::QStringList:
-            markerDdProperties
-              .setProperty( QgsSymbolLayer::Property::Angle, parseValueList( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
+            markerDdProperties.setProperty( QgsSymbolLayer::Property::Angle, parseValueList( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
             break;
 
           default:

@@ -702,8 +702,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !runResult )
       {
         const QString formattedException = u"<span style=\"color:red\">%1</span><br/>"_s.arg( error.toHtmlEscaped() ).replace( '\n', "<br>"_L1 );
-        const QString formattedRunTime = u"<span style=\"color:red\">%1</span><br/>"_s.arg( QObject::tr( "Failed after %1 s." ).arg( childTime.elapsed() / 1000.0 ).toHtmlEscaped() )
-                                           .replace( '\n', "<br>"_L1 );
+        const QString formattedRunTime
+          = u"<span style=\"color:red\">%1</span><br/>"_s.arg( QObject::tr( "Failed after %1 s." ).arg( childTime.elapsed() / 1000.0 ).toHtmlEscaped() ).replace( '\n', "<br>"_L1 );
 
         childResult.setHtmlLog( thisAlgorithmHtmlLog + formattedException + formattedRunTime );
         context.modelResult().childResults().insert( childId, childResult );
@@ -786,8 +786,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     if ( childIt->isActive() && childIt->algorithm() )
     {
       toExecute.insert( childIt->childId() );
-      friendlyChildNames
-        .insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty(), friendlyChildNames ) );
+      friendlyChildNames.insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty(), friendlyChildNames ) );
     }
   }
   const int totalSteps = toExecute.count();
@@ -1318,14 +1317,10 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     }
 
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
-    variables
-      .insert( safeName( u"%1_minx"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
-    variables
-      .insert( safeName( u"%1_miny"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
-    variables
-      .insert( safeName( u"%1_maxx"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
-    variables
-      .insert( safeName( u"%1_maxy"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().yMaximum() : QVariant(), source, QObject::tr( "Maximum Y of %1" ).arg( description ) ) );
+    variables.insert( safeName( u"%1_minx"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
+    variables.insert( safeName( u"%1_miny"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
+    variables.insert( safeName( u"%1_maxx"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
+    variables.insert( safeName( u"%1_maxy"_s.arg( name ) ), VariableDefinition( featureSource ? featureSource->sourceExtent().yMaximum() : QVariant(), source, QObject::tr( "Maximum Y of %1" ).arg( description ) ) );
   }
 
   return variables;

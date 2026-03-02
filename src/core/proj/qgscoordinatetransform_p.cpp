@@ -420,8 +420,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           }
           else
           {
-            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." )
-                                  .arg( mSourceCRS.authid(), mDestCRS.authid(), available.proj, preferred.proj );
+            const QString err
+              = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." ).arg( mSourceCRS.authid(), mDestCRS.authid(), available.proj, preferred.proj );
             QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
           }
         }

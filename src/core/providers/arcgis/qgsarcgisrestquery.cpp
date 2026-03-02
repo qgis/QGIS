@@ -147,8 +147,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects(
   query.addQueryItem( u"returnZ"_s, fetchZ ? u"true"_s : u"false"_s );
   if ( !filterRect.isNull() )
   {
-    query
-      .addQueryItem( u"geometry"_s, u"%1,%2,%3,%4"_s.arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 ).arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
+    query.addQueryItem( u"geometry"_s, u"%1,%2,%3,%4"_s.arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 ).arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
     query.addQueryItem( u"geometryType"_s, u"esriGeometryEnvelope"_s );
     query.addQueryItem( u"spatialRel"_s, u"esriSpatialRelEnvelopeIntersects"_s );
   }
@@ -173,8 +172,7 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent(
   query.addQueryItem( u"f"_s, u"json"_s );
   query.addQueryItem( u"where"_s, whereClause.isEmpty() ? u"1=1"_s : whereClause );
   query.addQueryItem( u"returnIdsOnly"_s, u"true"_s );
-  query
-    .addQueryItem( u"geometry"_s, u"%1,%2,%3,%4"_s.arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 ).arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
+  query.addQueryItem( u"geometry"_s, u"%1,%2,%3,%4"_s.arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 ).arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
   query.addQueryItem( u"geometryType"_s, u"esriGeometryEnvelope"_s );
   query.addQueryItem( u"spatialRel"_s, u"esriSpatialRelEnvelopeIntersects"_s );
   queryUrl.setQuery( query );

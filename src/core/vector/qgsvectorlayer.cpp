@@ -2721,8 +2721,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
         QString field = constraintElem.attribute( u"field"_s, QString() );
         QString exp = constraintElem.attribute( u"exp"_s, QString() );
-        QString desc = context.projectTranslator()
-                         ->translate( u"project:layers:%1:constraintdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), constraintElem.attribute( u"desc"_s, QString() ) );
+        QString desc
+          = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), constraintElem.attribute( u"desc"_s, QString() ) );
         QgsDebugMsgLevel( "context" + u"project:layers:%1:constraintdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + constraintElem.attribute( u"desc"_s, QString() ), 3 );
         if ( field.isEmpty() || exp.isEmpty() )
           continue;
@@ -2762,8 +2762,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         if ( widgetType == "ValueRelation"_L1 )
         {
           optionsMap[u"Value"_s]
-            = context.projectTranslator()
-                ->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), optionsMap[u"Value"_s].toString() );
+            = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), optionsMap[u"Value"_s].toString() );
           optionsMap[u"Description"_s]
             = context.projectTranslator()
                 ->translate( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), optionsMap[u"Description"_s].toString() );

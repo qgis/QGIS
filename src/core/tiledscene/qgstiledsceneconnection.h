@@ -50,8 +50,8 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene = QgsSettingsTree::sTreeConnections
-                                                                              ->createNamedListNode( u"tiled-scene"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene
+      = QgsSettingsTree::sTreeConnections->createNamedListNode( u"tiled-scene"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsProvider;
     static const QgsSettingsEntryString *settingsUrl;

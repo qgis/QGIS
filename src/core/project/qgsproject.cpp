@@ -690,8 +690,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
             //value relation
             if ( field.editorWidgetSetup().type() == "ValueRelation"_L1 )
             {
-              translationContext
-                ->registerTranslation( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Value"_s ).toString() );
+              translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Value"_s ).toString() );
               translationContext
                 ->registerTranslation( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Description"_s ).toString() );
             }

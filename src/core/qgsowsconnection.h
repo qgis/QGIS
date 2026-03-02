@@ -73,8 +73,8 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections
-                                                                          ->createNamedListNode( u"arcgisfeatureserver"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis
+      = QgsSettingsTree::sTreeConnections->createNamedListNode( u"arcgisfeatureserver"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;

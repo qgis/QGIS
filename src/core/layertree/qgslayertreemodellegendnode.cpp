@@ -1390,8 +1390,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
         break;
 
       case Qt::AlignRight:
-        ctx->painter
-          ->drawImage( QRectF( ctx->columnRight - settings.wmsLegendSize().width(), ctx->top, targetSize.width(), targetSize.height() ), smoothImage, QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
+        ctx->painter->drawImage( QRectF( ctx->columnRight - settings.wmsLegendSize().width(), ctx->top, targetSize.width(), targetSize.height() ), smoothImage, QRectF( QPointF( 0, 0 ), smoothImage.size() ) );
         break;
     }
   }

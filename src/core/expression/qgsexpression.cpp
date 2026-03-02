@@ -766,8 +766,7 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( u"project_keywords"_s, QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
   sVariableHelpTexts()->insert( u"project_area_units"_s, QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
   sVariableHelpTexts()->insert( u"project_distance_units"_s, QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
-  sVariableHelpTexts()
-    ->insert( u"project_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
+  sVariableHelpTexts()->insert( u"project_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
   sVariableHelpTexts()->insert( u"layer_ids"_s, QCoreApplication::translate( "variable_help", "List of all map layer IDs from the current project." ) );
   sVariableHelpTexts()->insert( u"layers"_s, QCoreApplication::translate( "variable_help", "List of all map layers from the current project." ) );
 
@@ -818,8 +817,7 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( u"item_height"_s, QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
 
   //map settings item variables
-  sVariableHelpTexts()
-    ->insert( u"map_id"_s, QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
+  sVariableHelpTexts()->insert( u"map_id"_s, QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
   sVariableHelpTexts()->insert( u"map_rotation"_s, QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
   sVariableHelpTexts()->insert( u"map_scale"_s, QCoreApplication::translate( "variable_help", "Current scale of map." ) );
   sVariableHelpTexts()->insert( u"map_extent"_s, QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );

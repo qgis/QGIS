@@ -335,8 +335,7 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty &property ) const
 
       if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
-        markerLayer
-          ->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, property ) );
+        markerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, property ) );
       }
     }
   }

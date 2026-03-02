@@ -158,8 +158,8 @@ bool QgsAuthConfigurationStorageDb::authDbOpen() const
   {
     if ( !authdb.open() )
     {
-      const QString err = tr( "Unable to establish database connection\nDatabase: %1\nDriver error: %2\nDatabase error: %3" )
-                            .arg( mDatabase, authdb.lastError().driverText(), authdb.lastError().databaseText() );
+      const QString err
+        = tr( "Unable to establish database connection\nDatabase: %1\nDriver error: %2\nDatabase error: %3" ).arg( mDatabase, authdb.lastError().driverText(), authdb.lastError().databaseText() );
 
       const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( err );
       return false;
