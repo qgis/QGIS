@@ -37,7 +37,7 @@ AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortEnumsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: InlineOnly
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: false
@@ -45,8 +45,8 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: No
-BinPackArguments: true
-BinPackParameters: true
+BinPackArguments: false
+BinPackParameters: false
 BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: true
@@ -77,10 +77,9 @@ BreakBeforeInheritanceComma: false
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeComma
 BreakStringLiterals: true
-ColumnLimit: 0
+ColumnLimit: 200
 CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 2
 ContinuationIndentWidth: 2
 Cpp11BracedListStyle: true
@@ -132,6 +131,12 @@ JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 # Do not add QT_BEGIN_NAMESPACE/QT_END_NAMESPACE as this will indent lines in between.
 MacroBlockBegin: ""
+StatementMacros:
+  - Q_UNUSED
+  - QT_REQUIRE_VERSION
+  - Q_PROPERTY
+  - Q_OBJECT
+  - Q_GADGET
 MacroBlockEnd: ""
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
@@ -140,7 +145,7 @@ ObjCBlockIndentWidth: 4
 ObjCBreakBeforeNestedBlockParam: true
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
-PackConstructorInitializers: BinPack
+PackConstructorInitializers: Never
 PenaltyBreakAssignment: 150
 PenaltyBreakBeforeFirstCallParameter: 5000
 PenaltyBreakComment: 500
@@ -209,8 +214,40 @@ UseTab: Never
 Macros:
   - SIP_ENUM_BASETYPE(x)=x
   - SIP_MONKEYPATCH_SCOPEENUM_UNNEST(x,y)=x
+  - SIP_HOLDGIL=
+  - SIP_RELEASEGIL=
+StatementAttributeLikeMacros:
+  - SIP_HOLDGIL
+  - SIP_RELEASEGIL
 AttributeMacros:
+  - SIP_ABSTRACT
+  - SIP_ALLOWNONE
+  - SIP_ARRAY
+  - SIP_ARRAYSIZE
+  - SIP_CONSTRAINED
+  - SIP_DEPRECATED
+  - SIP_DOC_TEMPLATE
+  - SIP_DOCSTRING_OUT
+  - SIP_END
+  - SIP_EXTERNAL
+  - SIP_FACTORY
+  - SIP_FORCE
+  - SIP_GETWRAPPER
+  - SIP_IN
+  - SIP_INOUT
+  - SIP_KEEPREFERENCE
+  - SIP_MAKE_PRIVATE
+  - SIP_MONKEYPATCH_SCOPEENUM
+  - SIP_NO_FILE
+  - SIP_NODEFAULTCTORS
+  - SIP_OUT
+  - SIP_PYARGREMOVE
+  - SIP_PYARGREMOVE6
+  - SIP_PYQT5_RUN
   - SIP_SKIP
+  - SIP_TRANSFER
+  - SIP_TRANSFERBACK
+  - SIP_TRANSFERTHIS
 
 ---
 
