@@ -152,8 +152,8 @@ class CORE_EXPORT QgsGeometryUtils
       QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
-     * Calculates the inner tangent points for two circles, centered at \a
-     * center1 and \a center2 and with radii of \a radius1 and \a radius2
+     * Calculates the inner tangent points for two circles, centered at
+     * \a center1 and \a center2 and with radii of \a radius1 and \a radius2
      * respectively.
      *
      * The inner tangent points correspond to the points at which the two lines

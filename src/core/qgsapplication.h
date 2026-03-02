@@ -707,9 +707,9 @@ class CORE_EXPORT QgsApplication : public QApplication
   static QStringList deferredSkippedGdalDrivers();
 
   /**
-   * Sets the list of gdal drivers that should be disabled (\a
-   * skippedGdalDrivers), but excludes for now the ones defines in \a
-   * deferredSkippedGdalDrivers. This writes the "gdal/skipList" setting.
+   * Sets the list of gdal drivers that should be disabled
+   * (\a skippedGdalDrivers), but excludes for now the ones defines in
+   * \a deferredSkippedGdalDrivers. This writes the "gdal/skipList" setting.
    * \since QGIS 3.10
    */
   static void
@@ -1264,8 +1264,8 @@ signals:
   /**
    * Emitted when project strings which require translation are being collected
    * for inclusion in a .ts file. In order to register translatable strings,
-   * connect to this signal and register the strings within the specified \a
-   * translationContext.
+   * connect to this signal and register the strings within the
+   * specified \a translationContext.
    *
    * \since QGIS 3.4
    */

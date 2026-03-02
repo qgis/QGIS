@@ -696,9 +696,9 @@ the next application restart.
   static void setSkippedGdalDrivers(const QStringList &skippedGdalDrivers,
                         const QStringList &deferredSkippedGdalDrivers);
 %Docstring
-Sets the list of gdal drivers that should be disabled (\a
-skippedGdalDrivers), but excludes for now the ones defines in \a
-deferredSkippedGdalDrivers. This writes the "gdal/skipList" setting.
+Sets the list of gdal drivers that should be disabled
+(``skippedGdalDrivers``), but excludes for now the ones defines in
+``deferredSkippedGdalDrivers``. This writes the "gdal/skipList" setting.
 
 .. versionadded:: 3.10
 %End
@@ -1240,7 +1240,7 @@ Emitted when the string representing the `NULL` value is changed.
 Emitted when project strings which require translation are being
 collected for inclusion in a .ts file. In order to register translatable
 strings, connect to this signal and register the strings within the
-specified \a translationContext.
+specified ``translationContext``.
 
 .. versionadded:: 3.4
 %End
