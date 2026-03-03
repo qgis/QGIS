@@ -130,8 +130,22 @@ class CORE_EXPORT QgsCesiumUtils
      * Returns empty byte array on error.
      *
      * \note cmpt, pnts, i3dm tile types are currently not supported
+     *
+     * \deprecated QGIS 4.2. : use extractTileContent() which can handle composite tiles as well.
      */
-    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+    Q_DECL_DEPRECATED static TileContents extractGltfFromTileContent( const QByteArray &tileContent ) SIP_DEPRECATED;
+
+    /**
+     * Parses tile content and returns a list of TileContents.
+     *
+     * For b3dm and glTF tiles, the returned list will contain a single entry.
+     * For cmpt (composite) tiles, the returned list will contain one entry
+     * per inner tile that could be successfully parsed.
+     * Returns an empty list on error or for unsupported tile types (pnts, i3dm).
+     *
+     * \since QGIS 4.2
+     */
+    static QVector<TileContents> extractTileContent( const QByteArray &tileContent );
 
 };
 

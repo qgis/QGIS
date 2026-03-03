@@ -77,6 +77,36 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertEqual(sphere.centerZ(), 3)
         self.assertEqual(sphere.radius(), 10)
 
+    def test_extract_tile_content(self):
+        """Test extractTileContent()"""
+
+        # invalid data
+        result = QgsCesiumUtils.extractGltfFromTileContent(b"unknown data")
+        self.assertEqual(len(result), 0)
+
+        # composite tile ("cmpt")
+        with open(os.path.join(TEST_DATA_DIR, "3dtiles", "cmpt", "dragon.cmpt")) as f:
+            cmpt_data = f.read()
+        result = QgsCesiumUtils.extractGltfFromTileContent(cmpt_data)
+        self.assertEqual(len(result), 2)
+        self.assertFalse(result[0].gltf.isEmpty())
+        self.assertFalse(result[1].gltf.isEmpty())
+
+        # batch 3d model ("b3dm")
+        with open(
+            os.path.join(
+                TEST_DATA_DIR,
+                "3dtiles",
+                "tiled_scene",
+                "LOD-0",
+                "Mesh-XL-YL-XL-YL.b3dm",
+            )
+        ) as f:
+            b3dm_data = f.read()
+        result = QgsCesiumUtils.extractTileContent(b3dm_data)
+        self.assertEqual(len(result), 1)
+        self.assertFalse(result[0].gltf.isEmpty())
+
 
 if __name__ == "__main__":
     unittest.main()
