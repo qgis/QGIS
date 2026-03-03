@@ -318,6 +318,7 @@ class QgsAbstractGeometry;
      * Checks if this is equal to \a geom ie. if each vertex of this is within the distance tolerance of the corresponding vertex in \a geom.
      * If both are Null geometries, `FALSE` is returned.
      * \param geom geometry to compare with
+     * \param epsilon maximum difference for coordinates between the objects
      * \param errorMsg destination storage for any error message
      * \return true if fuzzy equivalent, else false
      */
