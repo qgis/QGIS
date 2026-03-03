@@ -199,7 +199,7 @@ void QgsOapifItemsRequest::processReply()
   {
     idField = mFields.indexOf( "id"_L1 );
     // If no "id" field, then use the first field if it contains "id" in it.
-    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( "id"_L1, 0, Qt::CaseInsensitive ) )
+    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( "id"_L1, 0, Qt::CaseInsensitive ) >= 0 )
     {
       idField = 0;
     }
@@ -214,6 +214,10 @@ void QgsOapifItemsRequest::processReply()
     if ( idField >= 0 )
     {
       id = f.attribute( idField ).toString();
+    }
+    else if ( mFeatureFormat == PSEUDO_JSONFG_MEDIA_TYPE )
+    {
+      id = QString::number( f.id() );
     }
     mFeatures.push_back( QgsFeatureUniqueIdPair( f, id ) );
   }
