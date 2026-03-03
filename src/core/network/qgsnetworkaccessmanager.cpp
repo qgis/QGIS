@@ -345,6 +345,14 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
   }
+  else if ( QgsNetworkDiskCache *diskCache = qobject_cast< QgsNetworkDiskCache *>( cache() ) )
+  {
+    if ( diskCache->requestShouldNotBeCached( *pReq ) )
+    {
+      pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+      pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+    }
+  }
 
   for ( const auto &preprocessor :  sCustomPreprocessors )
   {

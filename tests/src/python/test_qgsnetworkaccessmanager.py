@@ -30,13 +30,26 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
+class MockServerRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/no-cache":
+            self.send_response(200)
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            self.wfile.write(b"response")
+        else:
+            # Fallback to standard behavior for other files like index.html
+            super().do_GET()
+
+
 class TestQgsNetworkAccessManager(QgisTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + "")
-        handler = http.server.SimpleHTTPRequestHandler
+
+        handler = MockServerRequestHandler
 
         cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
         cls.port = cls.httpd.server_address[1]
@@ -145,6 +158,45 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         # no longer exists, so a key error should be raised
         with self.assertRaises(KeyError):
             QgsNetworkAccessManager.removeReplyPreprocessor(_id)
+
+    def test_vary_authorization_caching(self):
+        """
+        Test that cache-control: no-cache responses are respected for cache
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.CacheSaveControlAttribute)
+        )
+
+        # try again, should still not be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.CacheSaveControlAttribute)
+        )
 
 
 if __name__ == "__main__":

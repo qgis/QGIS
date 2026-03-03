@@ -21,8 +21,11 @@
 #include <mutex>
 
 #include <QStorageInfo>
+#include <QString>
 
 #include "moc_qgsnetworkdiskcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
@@ -97,6 +100,19 @@ bool QgsNetworkDiskCache::remove( const QUrl &url )
 
 QIODevice *QgsNetworkDiskCache::prepare( const QNetworkCacheMetaData &metaData )
 {
+  const QNetworkCacheMetaData::RawHeaderList headers = metaData.rawHeaders();
+  for ( const QNetworkCacheMetaData::RawHeader &header : headers )
+  {
+    const QString headerName = header.first;
+    const QString headerValue = header.second;
+
+    if ( headerName.compare( "cache-control"_L1, Qt::CaseInsensitive ) == 0 && headerValue.contains( "no-cache"_L1, Qt::CaseInsensitive ) )
+    {
+      // response specified no-cache, so explicitly block caching
+      return nullptr;
+    }
+  }
+
   const QMutexLocker lock( &sDiskCacheMutex );
   return sDiskCache.prepare( metaData );
 }
@@ -111,6 +127,23 @@ QNetworkCacheMetaData QgsNetworkDiskCache::fileMetaData( const QString &fileName
 {
   const QMutexLocker lock( &sDiskCacheMutex );
   return sDiskCache.fileMetaData( fileName );
+}
+
+bool QgsNetworkDiskCache::requestShouldNotBeCached( const QNetworkRequest &request )
+{
+  const QNetworkCacheMetaData cachedMetadata = metaData( request.url() );
+  if ( cachedMetadata.isValid() )
+  {
+    for ( const QNetworkCacheMetaData::RawHeader &header : cachedMetadata.rawHeaders() )
+    {
+      if ( header.first.compare( "cache-control"_L1, Qt::CaseInsensitive ) == 0 && header.second.compare( "no-cache"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        // found an existing entry in the cache which should never have been cached in the first place!
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 qint64 QgsNetworkDiskCache::expire()

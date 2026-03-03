@@ -91,6 +91,13 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     QNetworkCacheMetaData fileMetaData( const QString &fileName ) const;
 
     /**
+     * Returns TRUE if a \a request should not be cached.
+     *
+     * \since QGIS 4.0
+     */
+    bool requestShouldNotBeCached( const QNetworkRequest &request );
+
+    /**
      * Returns a smart cache size, in bytes, based on available free space
      * \since QGIS 3.40
      */
