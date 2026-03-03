@@ -247,20 +247,11 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( a0 );
-      if ( !v.isValid() )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
-      }
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
-      {
-        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
-        PyObject *args = PyTuple_Pack( 1, vartype );
-        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
-        Py_DECREF( args );
-        Py_DECREF( vartype );
       }
       else
       {
@@ -319,20 +310,11 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( fieldIdx );
-      if ( !v.isValid() )
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
-      }
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
-      {
-        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
-        PyObject *args = PyTuple_Pack( 1, vartype );
-        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
-        Py_DECREF( args );
-        Py_DECREF( vartype );
       }
       else
       {
