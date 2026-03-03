@@ -293,6 +293,7 @@ the distance tolerance of the corresponding vertex in ``geom``. If both
 are Null geometries, ```False``` is returned.
 
 :param geom: geometry to compare with
+:param epsilon: maximum difference for coordinates between the objects
 :param errorMsg: destination storage for any error message
 
 :return: true if fuzzy equivalent, else false

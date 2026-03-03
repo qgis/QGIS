@@ -474,6 +474,8 @@ class CORE_EXPORT QgsGeometry
      *
      * The QGIS internal implementation is chosen by default.
      *
+     * \param geometry geometry to compare with
+     * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
      * \since QGIS 4.0
      */
@@ -490,6 +492,8 @@ class CORE_EXPORT QgsGeometry
      *
      * The GEOS implementation is chosen by default.
      *
+     * \param geometry geometry to compare with
+     * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
      * \since QGIS 4.0
      */
@@ -505,6 +509,9 @@ class CORE_EXPORT QgsGeometry
      *
      * The QGIS internal implementation is chosen by default.
      *
+     * \param geometry geometry to compare with
+     * \param epsilon maximum difference for coordinates between the objects
+     * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
      * \since QGIS 4.0
      */
