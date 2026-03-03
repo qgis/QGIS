@@ -370,7 +370,7 @@ std::unique_ptr<QgsLineString> QgsArcGisRestUtils::convertLineString( const QVar
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Found unexpected value when parsing ESRI json line string. Expected list, got %1" ).arg( curveData.metaType().name() ) );
+      QgsDebugError( QStringLiteral( "Found unexpected value when parsing ESRI json line string. Expected list, got %1" ).arg( QMetaType::typeName( curveData.userType() ) ) );
       return nullptr;
     }
   }
