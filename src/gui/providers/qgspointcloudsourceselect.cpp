@@ -111,16 +111,16 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
     {
-      QString baseName = u"remote ept layer"_s;
-      if ( mPath.endsWith( "/ept.json"_L1, Qt::CaseInsensitive ) )
+      QString baseName = u"remote point cloud layer"_s;
+      if ( mPath.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) || mPath.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
+      {
+        baseName = QFileInfo( mPath ).baseName();
+      }
+      else if ( mPath.endsWith( "/ept.json"_L1, Qt::CaseInsensitive ) )
       {
         QStringList separatedPath = mPath.split( '/' );
         if ( separatedPath.size() >= 2 )
           baseName = separatedPath[separatedPath.size() - 2];
-      }
-      if ( mPath.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) )
-      {
-        baseName = QFileInfo( mPath ).baseName();
       }
 
       QVariantMap parts;
