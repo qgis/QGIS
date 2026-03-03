@@ -441,7 +441,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isEqual which accepts Qgis::GeometryBackend.
+     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isExactlyEqual which accepts Qgis::GeometryBackend.
      */
     Q_DECL_DEPRECATED bool equals( const QgsGeometry &geometry ) const SIP_DEPRECATED;
 
@@ -458,23 +458,57 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isEqual which accepts Qgis::GeometryBackend.
+     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isTopologicallyEqual which accepts Qgis::GeometryBackend.
      */
     Q_DECL_DEPRECATED bool isGeosEqual( const QgsGeometry & ) const SIP_DEPRECATED;
 
     /**
      * Compares the geometry with another geometry using the specified \a backend.
      *
+     * This is a strict equality check, where the underlying geometries must have exactly the same type, component vertices and vertex order.
+     *
      * Implementations:
      *
-     * - GEOS: this method performs a slow, topological check, where geometries are considered equal if all of the their component edges overlap. E.g. lines with the same vertex locations but opposite direction will be considered equal by this method.
-     * - QGIS: this is a strict equality check, where the underlying geometries must have exactly the same type, component vertices and vertex order.
+     * - GEOS
+     * - QGIS
      *
      * The QGIS internal implementation is chosen by default.
      *
      * \note Comparing two null geometries will return FALSE.
+     * \since QGIS 4.0
      */
-    bool isEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+    bool isExactlyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+
+    /**
+     * Compares the geometry with another geometry using the specified \a backend.
+     *
+     * This method performs a slow, topological check, where geometries are considered equal if all of the their component edges overlap. E.g. lines with the same vertex locations but opposite direction will be considered equal by this method.
+     *
+     * Implementations:
+     *
+     * - GEOS
+     *
+     * The GEOS implementation is chosen by default.
+     *
+     * \note Comparing two null geometries will return FALSE.
+     * \since QGIS 4.0
+     */
+    bool isTopologicallyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::GEOS ) const;
+
+    /**
+     * Compares the geometry with another geometry within the tolerance \a epsilon using the specified \a backend.
+     *
+     * Implementations:
+     *
+     * - GEOS
+     * - QGIS
+     *
+     * The QGIS internal implementation is chosen by default.
+     *
+     * \note Comparing two null geometries will return FALSE.
+     * \since QGIS 4.0
+     */
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
 
     /**
      * Checks validity of the geometry using GEOS.

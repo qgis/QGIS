@@ -499,38 +499,57 @@ void TestQgsGeometry::isValid()
 void TestQgsGeometry::equality()
 {
   // null geometries
-  QVERIFY( !QgsGeometry().isEqual( QgsGeometry() ) );
+  QVERIFY( !QgsGeometry().isExactlyEqual( QgsGeometry() ) );
 
   // compare to null
   QgsGeometry g1( std::make_unique<QgsPoint>( 1.0, 2.0 ) );
-  QVERIFY( !g1.isEqual( QgsGeometry() ) );
-  QVERIFY( !QgsGeometry().isEqual( g1 ) );
+  QVERIFY( !g1.isExactlyEqual( QgsGeometry() ) );
+  QVERIFY( !QgsGeometry().isExactlyEqual( g1 ) );
 
   // compare implicitly shared copies
   QgsGeometry g2( g1 );
-  QVERIFY( g2.isEqual( g1 ) );
-  QVERIFY( g1.isEqual( g2 ) );
-  QVERIFY( g1.isEqual( g1 ) );
+  QVERIFY( g2.isExactlyEqual( g1 ) );
+  QVERIFY( g1.isExactlyEqual( g2 ) );
+  QVERIFY( g1.isExactlyEqual( g1 ) );
 
   // equal geometry, but different internal data
   g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
-  QVERIFY( g2.isEqual( g1 ) );
-  QVERIFY( g1.isEqual( g2 ) );
+  QVERIFY( g2.isExactlyEqual( g1 ) );
+  QVERIFY( g1.isExactlyEqual( g2 ) );
+
+  // tpopologically equal
+  g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ))" );
+  QVERIFY( g2.isTopologicallyEqual( g1 ) );
+  QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+  g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ), ( 3.0 2.0 ))" );
+  QVERIFY( !g2.isTopologicallyEqual( g1 ) );
+  QVERIFY( !g1.isTopologicallyEqual( g2 ) );
+
+  // fuzzy equal
+  g2 = QgsGeometry::fromWkt( "Point( 1.5 2.5 ))" );
+  QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+  QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+  QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+  QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+  QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
+  QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
 
   // different dimensionality
   g2 = QgsGeometry::fromWkt( "PointM( 1.0 2.0 3.0)" );
-  QVERIFY( !g2.isEqual( g1 ) );
-  QVERIFY( !g1.isEqual( g2 ) );
+  QVERIFY( !g2.isExactlyEqual( g1 ) );
+  QVERIFY( !g1.isExactlyEqual( g2 ) );
 
   // different type
   g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 3.0 4.0 )" );
-  QVERIFY( !g2.isEqual( g1 ) );
-  QVERIFY( !g1.isEqual( g2 ) );
+  QVERIFY( !g2.isExactlyEqual( g1 ) );
+  QVERIFY( !g1.isExactlyEqual( g2 ) );
 
   // different direction
   g1 = QgsGeometry::fromWkt( "LineString( 3.0 4.0, 1.0 2.0 )" );
-  QVERIFY( !g2.isEqual( g1 ) );
-  QVERIFY( !g1.isEqual( g2 ) );
+  QVERIFY( !g2.isExactlyEqual( g1 ) );
+  QVERIFY( !g1.isExactlyEqual( g2 ) );
 }
 
 void TestQgsGeometry::vertexIterator()

@@ -80,7 +80,7 @@ bool QgsFeature::operator==( const QgsFeature &other ) const
     return true;
   else if ( d->geometry.isNull() || other.d->geometry.isNull() )
     return false;
-  else if ( !d->geometry.isEqual( other.d->geometry ) )
+  else if ( !d->geometry.isExactlyEqual( other.d->geometry ) )
     return false;
 
   return true;

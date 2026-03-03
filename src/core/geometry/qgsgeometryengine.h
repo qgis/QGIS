@@ -313,6 +313,16 @@ class QgsAbstractGeometry;
      *
      */
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if this is equal to \a geom ie. if each vertex of this is within the distance tolerance of the corresponding vertex in \a geom.
+     * If both are Null geometries, `FALSE` is returned.
+     * \param geom geometry to compare with
+     * \param errorMsg destination storage for any error message
+     * \return true if fuzzy equivalent, else false
+     */
+    virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr ) const = 0;
+
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
     /**
