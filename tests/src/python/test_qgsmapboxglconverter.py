@@ -2554,7 +2554,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertIsInstance(rl, QgsRasterLayer)
         self.assertEqual(
             rl.source(),
-            "tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3",
+            "tilePixelRation=1&type=xyz&url=https%3A%2F%2Fyyyyyy%2Fv1%2Ftiles%2Ftexturereliefshade%2FEPSG%3A3857%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.webp&zmax=20&zmin=3",
         )
         self.assertEqual(rl.providerType(), "wms")
 
@@ -2566,7 +2566,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(raster_layer.name(), "Texture-Relief")
         self.assertEqual(
             raster_layer.source(),
-            "tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3",
+            "tilePixelRation=1&type=xyz&url=https%3A%2F%2Fyyyyyy%2Fv1%2Ftiles%2Ftexturereliefshade%2FEPSG%3A3857%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.webp&zmax=20&zmin=3",
         )
         self.assertEqual(
             raster_layer.pipe()
