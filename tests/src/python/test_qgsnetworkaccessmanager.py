@@ -12,8 +12,11 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import http.server
 import os
+import random
 import socketserver
+import string
 import threading
+import unittest
 from functools import partial
 
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QUrl
@@ -31,6 +34,51 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
+class MockServerRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        content = b"response"
+        if self.path.startswith("/no-cache"):
+            if self.path == "/no-cache-same-etag":
+                etag = 'W/"1111"'
+            else:
+                etag = (
+                    'W/"'
+                    + "".join(random.choice(string.ascii_lowercase) for i in range(20))
+                    + '"'
+                )
+            if self.headers.get("If-None-Match") == etag:
+                self.send_response(304)  # 304 Not Modified
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("ETag", etag)
+                self.end_headers()
+                return  # Stop here! Do not write the body.
+
+            self.send_response(200)
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("ETag", etag)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+        elif self.path == "/no-store":
+            self.send_response(200)
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+        elif self.path == "/cache":
+            self.send_response(200)
+            self.send_header("Cache-Control", "max-age=604800")
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+        else:
+            # Fallback to standard behavior for other files like index.html
+            super().do_GET()
+
+
 class TestQgsNetworkAccessManager(QgisTestCase):
 
     @classmethod
@@ -38,7 +86,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         super().setUpClass()
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + "")
-        handler = http.server.SimpleHTTPRequestHandler
+
+        handler = MockServerRequestHandler
 
         cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
         cls.port = cls.httpd.server_address[1]
@@ -232,6 +281,268 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         )
         reply.deleteLater()
         QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+
+    def test_cache_control_allow_cache(self):
+        """
+        Test caching of a reply which allows it
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/cache"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should definitely be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_cache_same_etag(self):
+        """
+        Test caching of a reply with no-cache attribute, matching etag on second request
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-same-etag"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CAN use cached version, the server resource etag is identical
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_cache_different_etag(self):
+        """
+        Test caching of a reply with no-cache attribute, different etag on second request
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-different-etag"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should still not be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CANNOT use cached version, the server resource etag is different
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_store(self):
+        """
+        Test caching of a reply with no-store attribute
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-store"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should still not be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CANNOT use cached version, the response had "no-store" cache control
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_allow_cache(self):
+        """
+        Test caching of a reply which allows it
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/cache"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should definitely be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(1000)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_cache_same_etag(self):
+        """
+        Test caching of a reply with no-cache attribute, matching etag on second request
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-same-etag"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CAN use cached version, the server resource etag is identical
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_cache_different_etag(self):
+        """
+        Test caching of a reply with no-cache attribute, different etag on second request
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-different-etag"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should still not be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CANNOT use cached version, the server resource etag is different
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_no_store(self):
+        """
+        Test caching of a reply with no-store attribute
+        """
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-store"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # try again, should still not be cached
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        # second request CANNOT use cached version, the response had "no-store" cache control
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
 
 
 if __name__ == "__main__":
