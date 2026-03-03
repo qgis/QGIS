@@ -188,7 +188,7 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             "http://testhost.com:8080/qgis_local_server/index.html",
         )
 
-        # HTTPS request with redundant default port 80
+        # HTTPS request with redundant default port 443
         request = QNetworkRequest(
             QUrl("https://testhost.com:443/qgis_local_server/index.html")
         )
