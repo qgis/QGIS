@@ -2424,6 +2424,26 @@ bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) cons
   CATCH_GEOS_WITH_ERRMSG( false )
 }
 
+bool QgsGeos::isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg ) const
+{
+  if ( !mGeos || !geom )
+  {
+    return false;
+  }
+
+  try
+  {
+    geos::unique_ptr geosGeom( asGeos( geom, mPrecision ) );
+    if ( !geosGeom )
+    {
+      return false;
+    }
+    bool equal = GEOSEqualsExact_r( QgsGeosContext::get(), mGeos.get(), geosGeom.get(), epsilon );
+    return equal;
+  }
+  CATCH_GEOS_WITH_ERRMSG( false )
+}
+
 bool QgsGeos::isEmpty( QString *errorMsg ) const
 {
   if ( !mGeos )

@@ -63,9 +63,9 @@ void QgsSingleGeometryCheckError::update( const QgsSingleGeometryCheckError *oth
 
 bool QgsSingleGeometryCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return mGeometry.isEqual( other->mGeometry )
+  return mGeometry.isExactlyEqual( other->mGeometry )
          && mCheck == other->mCheck
-         && mErrorLocation.isEqual( other->mErrorLocation )
+         && mErrorLocation.isExactlyEqual( other->mErrorLocation )
          && mVertexId == other->mVertexId;
 }
 
