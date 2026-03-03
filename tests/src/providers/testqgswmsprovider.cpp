@@ -319,7 +319,7 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
-  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file%3A%2F%2F%1%2Fisle_of_man.mbtiles&type=mbtiles"_s.arg( QString( TEST_DATA_DIR ).replace( "/", "%2F" ) ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
@@ -328,7 +328,7 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
-  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file%3A%2F%2F%1%2Fisle_of_man.mbtiles&type=mbtiles"_s.arg( QString( TEST_DATA_DIR ).replace( "/", "%2F" ) ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
@@ -345,16 +345,16 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
-  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file%3A%2F%2F%1%2Fisle_of_man.mbtiles&type=mbtiles"_s.arg( QString( TEST_DATA_DIR ).replace( "/", "%2F" ) ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
 
-  sublayers = wmsMetadata->querySublayers( u"type=mbtiles&url=%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = wmsMetadata->querySublayers( u"type=mbtiles&url=file%3A%2F%2F%1%2Fisle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
-  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file%3A%2F%2F%1%2Fisle_of_man.mbtiles&type=mbtiles"_s.arg( QString( TEST_DATA_DIR ).replace( "/", "%2F" ) ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
@@ -372,7 +372,7 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
-  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/vector_tile/mbtiles_vt.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file%3A%2F%2F%1%2Fvector_tile%2Fmbtiles_vt.mbtiles&type=mbtiles"_s.arg( QString( TEST_DATA_DIR ).replace( "/", "%2F" ) ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
@@ -433,22 +433,21 @@ void TestQgsWmsProvider::providerUriUpdates()
   QCOMPARE( parts["testParam"], QVariant( "false" ) );
 
   QString updatedUri = metadata->encodeUri( parts );
-  QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+  QString expectedUri = QStringLiteral( "crs=EPSG%3A4326&dpiMode=7&"
                                         "layers=testlayer&styles&"
                                         "testParam=false&"
-                                        "url=http://localhost:8380/mapserv" );
+                                        "url=http%3A%2F%2Flocalhost%3A8380%2Fmapserv" );
   QCOMPARE( updatedUri, expectedUri );
 }
 
 void TestQgsWmsProvider::providerUriLocalFile()
 {
-  QString uriString = u"url=file:///my/local/tiles.mbtiles&type=mbtiles"_s;
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"wms"_s, uriString );
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"wms"_s, u"url=file:///my/local/tiles.mbtiles&type=mbtiles"_s );
   QVariantMap expectedParts { { QString( "type" ), QVariant( "mbtiles" ) }, { QString( "path" ), QVariant( "/my/local/tiles.mbtiles" ) }, { QString( "url" ), QVariant( "file:///my/local/tiles.mbtiles" ) } };
   QCOMPARE( parts, expectedParts );
 
   QString encodedUri = QgsProviderRegistry::instance()->encodeUri( u"wms"_s, parts );
-  QCOMPARE( encodedUri, uriString );
+  QCOMPARE( encodedUri, u"url=file%3A%2F%2F%2Fmy%2Flocal%2Ftiles.mbtiles&type=mbtiles"_s );
 
   QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
   QVERIFY( wmsMetadata );
