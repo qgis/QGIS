@@ -72,6 +72,15 @@ class MockServerRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-Length", str(len(content)))
             self.end_headers()
             self.wfile.write(content)
+        elif self.path.startswith("/vary-"):
+            vary_by = self.path[len("/vary-") :].replace("_", " ")
+            self.send_response(200)
+            self.send_header("Cache-Control", "max-age=604800")
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Vary", vary_by)
+            self.end_headers()
+            self.wfile.write(content)
         else:
             # Fallback to standard behavior for other files like index.html
             super().do_GET()
@@ -414,6 +423,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         """
         Test caching of a reply which allows it
         """
+        QgsNetworkAccessManager.instance().cache().clear()
+
         url = f"http://localhost:{TestQgsNetworkAccessManager.port}/cache"
 
         request = QNetworkRequest(QUrl(url))
@@ -449,6 +460,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         """
         Test caching of a reply with no-cache attribute, matching etag on second request
         """
+        QgsNetworkAccessManager.instance().cache().clear()
+
         url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-same-etag"
 
         request = QNetworkRequest(QUrl(url))
@@ -481,6 +494,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         """
         Test caching of a reply with no-cache attribute, different etag on second request
         """
+        QgsNetworkAccessManager.instance().cache().clear()
+
         url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-cache-different-etag"
 
         request = QNetworkRequest(QUrl(url))
@@ -513,6 +528,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         """
         Test caching of a reply with no-store attribute
         """
+        QgsNetworkAccessManager.instance().cache().clear()
+
         url = f"http://localhost:{TestQgsNetworkAccessManager.port}/no-store"
 
         request = QNetworkRequest(QUrl(url))
@@ -536,6 +553,123 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
 
         # second request CANNOT use cached version, the response had "no-store" cache control
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_vary_authorization(self):
+        """
+        Test caching of a reply with Vary: Authorization attribute
+        """
+        QgsNetworkAccessManager.instance().cache().clear()
+
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/vary-Authorization"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        self.assertEqual(reply.rawHeader(b"Vary"), b"Authorization")
+
+        # try again, should be cached, because Authorization header is same (unset)
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # use a different Authorization header, now we must not use the cached response
+        request.setRawHeader(b"Authorization", b"Bearer: mytoken")
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_vary_accept(self):
+        """
+        Test caching of a reply with Vary: Accept attribute
+        """
+        QgsNetworkAccessManager.instance().cache().clear()
+
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/vary-Accept"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+        request.setRawHeader(b"Accept", b"application/json")
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        self.assertEqual(reply.rawHeader(b"Vary"), b"Accept")
+
+        # try again, should be cached, because Accept header is same
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setRawHeader(b"Accept", b"application/json")
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # use a different Accept header, now we must not use the cached response
+        request.setRawHeader(b"accept", b"application/xml")
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+    def test_cache_control_vary_star(self):
+        """
+        Test caching of a reply with Vary: * attribute
+        """
+        QgsNetworkAccessManager.instance().cache().clear()
+
+        url = f"http://localhost:{TestQgsNetworkAccessManager.port}/vary-*"
+
+        request = QNetworkRequest(QUrl(url))
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute,
+            QNetworkRequest.CacheLoadControl.PreferCache,
+        )
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, True)
+
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        self.assertEqual(reply.rawHeader(b"Vary"), b"*")
+
+        # try again, should NOT be cached
+        request = QNetworkRequest(QUrl(url))
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # use a different Authorization header, still must not use the cached response
+        request.setRawHeader(b"Authorization", b"Bearer: mytoken")
         reply = QgsNetworkAccessManager.instance().blockingGet(request)
         self.assertFalse(
             reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
