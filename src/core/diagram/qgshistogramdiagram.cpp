@@ -221,11 +221,15 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( QRectF( baseXRight, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, length, scaledWidth ) );
+        p->drawRect(
+          QRectF( baseXRight, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, length, scaledWidth )
+        );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( QRectF( baseXLeft, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, 0 - length, scaledWidth ) );
+        p->drawRect(
+          QRectF( baseXLeft, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, 0 - length, scaledWidth )
+        );
         break;
     }
 
@@ -239,27 +243,31 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        axisPoints << QPointF( baseX, baseYTop - scaledMaxVal )
-                   << QPointF( baseX, baseYTop )
-                   << QPointF( baseX + scaledWidth * static_cast<double>( values.size() ) + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseYTop );
+        axisPoints
+          << QPointF( baseX, baseYTop - scaledMaxVal )
+          << QPointF( baseX, baseYTop )
+          << QPointF( baseX + scaledWidth * static_cast<double>( values.size() ) + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseYTop );
         break;
 
       case QgsDiagramSettings::Down:
-        axisPoints << QPointF( baseX, baseYDown + scaledMaxVal )
-                   << QPointF( baseX, baseYDown )
-                   << QPointF( baseX + scaledWidth * static_cast<double>( values.size() ) + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseYDown );
+        axisPoints
+          << QPointF( baseX, baseYDown + scaledMaxVal )
+          << QPointF( baseX, baseYDown )
+          << QPointF( baseX + scaledWidth * static_cast<double>( values.size() ) + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseYDown );
         break;
 
       case QgsDiagramSettings::Right:
-        axisPoints << QPointF( baseXRight + scaledMaxVal, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
-                   << QPointF( baseXRight, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
-                   << QPointF( baseXRight, baseY );
+        axisPoints
+          << QPointF( baseXRight + scaledMaxVal, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+          << QPointF( baseXRight, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+          << QPointF( baseXRight, baseY );
         break;
 
       case QgsDiagramSettings::Left:
-        axisPoints << QPointF( baseXLeft - scaledMaxVal, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
-                   << QPointF( baseXLeft, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
-                   << QPointF( baseXLeft, baseY );
+        axisPoints
+          << QPointF( baseXLeft - scaledMaxVal, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+          << QPointF( baseXLeft, baseY - scaledWidth * static_cast<double>( values.size() ) - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+          << QPointF( baseXLeft, baseY );
         break;
     }
 
