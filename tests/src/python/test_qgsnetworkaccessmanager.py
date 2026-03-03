@@ -17,7 +17,7 @@ import threading
 from functools import partial
 
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsNetworkAccessManager,
@@ -147,6 +147,83 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         # no longer exists, so a key error should be raised
         with self.assertRaises(KeyError):
             QgsNetworkAccessManager.removeReplyPreprocessor(_id)
+
+    def test_default_port_removal(self):
+        """
+        Test removal of redundant default ports from hosts
+
+        See https://github.com/qgis/QGIS/issues/29475
+        """
+
+        # HTTP request with redundant default port 80
+        request = QNetworkRequest(
+            QUrl("http://testhost.com:80/qgis_local_server/index.html")
+        )
+        self.assertEqual(
+            request.url().toString(),
+            "http://testhost.com:80/qgis_local_server/index.html",
+        )
+
+        reply = QgsNetworkAccessManager.instance().createRequest(
+            QNetworkAccessManager.Operation.GetOperation, request, None
+        )
+        # default port should be removed in actual used request
+        self.assertEqual(
+            reply.request().url().toString(),
+            "http://testhost.com/qgis_local_server/index.html",
+        )
+
+        # HTTP request with non-default port 8080
+        request = QNetworkRequest(
+            QUrl("http://testhost.com:8080/qgis_local_server/index.html")
+        )
+        self.assertEqual(
+            request.url().toString(),
+            "http://testhost.com:8080/qgis_local_server/index.html",
+        )
+
+        reply = QgsNetworkAccessManager.instance().createRequest(
+            QNetworkAccessManager.Operation.GetOperation, request, None
+        )
+        self.assertEqual(
+            reply.request().url().toString(),
+            "http://testhost.com:8080/qgis_local_server/index.html",
+        )
+
+        # HTTPS request with redundant default port 80
+        request = QNetworkRequest(
+            QUrl("https://testhost.com:443/qgis_local_server/index.html")
+        )
+        self.assertEqual(
+            request.url().toString(),
+            "https://testhost.com:443/qgis_local_server/index.html",
+        )
+
+        reply = QgsNetworkAccessManager.instance().createRequest(
+            QNetworkAccessManager.Operation.GetOperation, request, None
+        )
+        # default port should be removed in actual used request
+        self.assertEqual(
+            reply.request().url().toString(),
+            "https://testhost.com/qgis_local_server/index.html",
+        )
+
+        # HTTPS request with non-default port 8080
+        request = QNetworkRequest(
+            QUrl("https://testhost.com:8080/qgis_local_server/index.html")
+        )
+        self.assertEqual(
+            request.url().toString(),
+            "https://testhost.com:8080/qgis_local_server/index.html",
+        )
+
+        reply = QgsNetworkAccessManager.instance().createRequest(
+            QNetworkAccessManager.Operation.GetOperation, request, None
+        )
+        self.assertEqual(
+            reply.request().url().toString(),
+            "https://testhost.com:8080/qgis_local_server/index.html",
+        )
 
 
 if __name__ == "__main__":

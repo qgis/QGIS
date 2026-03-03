@@ -336,6 +336,20 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   }
 #endif
 
+  if ( modifiedRequest.url().port() != -1 )
+  {
+    QUrl requestUrl = modifiedRequest.url();
+    const QString scheme = requestUrl.scheme();
+    const bool isDefaultPort = ( scheme == QLatin1String( "http" ) && requestUrl.port() == 80 )
+                               || ( scheme == QLatin1String( "https" ) && requestUrl.port() == 443 );
+    if ( isDefaultPort )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Removing explicit default port %2 from url %1" ).arg( requestUrl.port( ) ).arg( requestUrl.toString() ), 2 );
+      requestUrl.setPort( -1 );
+      modifiedRequest.setUrl( requestUrl );
+    }
+  }
+
   if ( sMainNAM->mCacheDisabled )
   {
     // if caching is disabled then we override whatever the request actually has set!
