@@ -300,6 +300,25 @@ struct TreeNode
 };
 ///@endcond
 
+//! Sort a tree node list according to layerOrder
+void sortTreeNodeList( std::vector<std::unique_ptr<TreeNode>> &nodeList, QStringList layerOrder )
+{
+  std::sort( nodeList.begin(), nodeList.end(), [&layerOrder]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
+  {
+    const qsizetype indexA = layerOrder.indexOf( a->mapLayerId );
+    const qsizetype indexB = layerOrder.indexOf( b->mapLayerId );
+
+    if ( indexA >= 0 && indexB >= 0 )
+      return indexA < indexB;
+    else if ( indexA >= 0 )
+      return true;
+    else if ( indexB >= 0 )
+      return false;
+
+    return a->name.localeAwareCompare( b->name ) < 0;
+  } );
+}
+
 QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
 {
   QDomDocument doc;
@@ -678,6 +697,12 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     return layerTreeGroupOrder.indexOf( a->name ) < layerTreeGroupOrder.indexOf( b->name );
   } );
 
+  // sort group children
+  for ( const std::unique_ptr<TreeNode> &rootGroup : rootGroups )
+  {
+    sortTreeNodeList( rootGroup->children, details.layerOrder );
+  }
+
   bool haveFoundMutuallyExclusiveGroup = false;
   for ( const auto &node : std::as_const( rootGroups ) )
   {
@@ -698,20 +723,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
 
 
   // then top-level layers
-  std::sort( rootLayers.begin(), rootLayers.end(), [&details]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
-  {
-    const int indexA = details.layerOrder.indexOf( a->mapLayerId );
-    const int indexB = details.layerOrder.indexOf( b->mapLayerId );
-
-    if ( indexA >= 0 && indexB >= 0 )
-      return indexA < indexB;
-    else if ( indexA >= 0 )
-      return true;
-    else if ( indexB >= 0 )
-      return false;
-
-    return a->name.localeAwareCompare( b->name ) < 0;
-  } );
+  sortTreeNodeList( rootLayers, details.layerOrder );
 
   for ( const auto &node : std::as_const( rootLayers ) )
   {
