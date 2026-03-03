@@ -130,9 +130,13 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     world();
   }
-  if ( mLineEdit->text() == "contributors"_L1 )
+  else if ( mLineEdit->text() == "contributors"_L1 )
   {
     contributors();
+  }
+  else if ( mLineEdit->text() == "versions"_L1 )
+  {
+    versions();
   }
   else if ( mLineEdit->text() == "hackfests"_L1 )
   {
@@ -282,6 +286,19 @@ void QgsStatusBarCoordinatesWidget::contributors()
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
   layer->setAutoRefreshMode( Qgis::AutoRefreshMode::RedrawOnly );
+}
+
+void QgsStatusBarCoordinatesWidget::versions()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/qgis-versions.json"_s;
+  const QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Versions" ), u"ogr"_s, options );
+  QgsProject::instance()->addMapLayer( layer );
 }
 
 void QgsStatusBarCoordinatesWidget::world()
