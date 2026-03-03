@@ -439,6 +439,7 @@ Implementations:
 The QGIS internal implementation is chosen by default.
 
 :param geometry: geometry to compare with
+:param backend: backend implementation
 
 .. note::
 
@@ -464,6 +465,7 @@ Implementations:
 The GEOS implementation is chosen by default.
 
 :param geometry: geometry to compare with
+:param backend: backend implementation
 
 .. note::
 
@@ -486,6 +488,7 @@ The QGIS internal implementation is chosen by default.
 
 :param geometry: geometry to compare with
 :param epsilon: maximum difference for coordinates between the objects
+:param backend: backend implementation
 
 .. note::
 
