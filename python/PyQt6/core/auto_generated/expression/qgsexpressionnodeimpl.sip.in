@@ -35,7 +35,8 @@ it with ``op``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+%MethodCode
+QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -134,7 +135,8 @@ Binary combination of the left and the right with op.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+%MethodCode
+QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -407,7 +409,8 @@ function array and a list of arguments that will be passed to it.
     ~QgsExpressionNodeFunction();
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString function;
+%MethodCode
+QString function;
     if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
     {
       function = fd->name();
@@ -481,7 +484,8 @@ Constructor for QgsExpressionNodeLiteral, with the specified literal
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+%MethodCode
+QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -539,7 +543,8 @@ the specified ``name``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+%MethodCode
+QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

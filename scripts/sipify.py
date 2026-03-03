@@ -2017,13 +2017,18 @@ def try_skip_sip_directives():
             write_output("HCE", "%End\n")
         directive_name = sip_directive_match.group(1)
         trailing_content = (sip_directive_match.group(2) or "").strip()
-        # Include trailing content on the directive line itself
-        # (e.g. %MappedType QgsAttributes — the type name must stay on the same line)
-        if trailing_content:
+        # For named directives (MappedType, VirtualErrorHandler), trailing content
+        # is part of the directive and must stay on the same line.
+        # For code directives (MethodCode, TypeHeaderCode, etc.), trailing content
+        # is actual code that clang-format joined onto the directive line — it must
+        # go on the next line.
+        named_directives = ("MappedType", "VirtualErrorHandler", "Docstring")
+        if trailing_content and directive_name in named_directives:
             CONTEXT.current_line = f"%{directive_name} {trailing_content}"
             trailing_content = None
         else:
             CONTEXT.current_line = f"%{directive_name}"
+            # trailing_content (if any) will be emitted as the next line in the loop
         CONTEXT.reset_method_state()
         dbg_info("do not process SIP code")
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
