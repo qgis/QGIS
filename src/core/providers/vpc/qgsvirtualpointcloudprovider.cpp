@@ -220,6 +220,7 @@ void QgsVirtualPointCloudProvider::parseFile()
   QSet<QString> attributeNames;
   double subIndexesWidth = 0.0;
   double subIndexesHeight = 0.0;
+  bool noOverviewFound = false;
 
   for ( const auto &f : data["features"] )
   {
@@ -261,22 +262,25 @@ void QgsVirtualPointCloudProvider::parseFile()
     }
 
     // look for vpc overview reference
-    if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
+    if ( !noOverviewFound && !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
       const QUrl overviewUrl = url.resolved( QUrl( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
       mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
     // if it doesn't exist look for overview file in the directory
-    else if ( !mOverview )
+    else if ( !noOverviewFound && !mOverview )
     {
       const QString baseName = QFileInfo( url.fileName() ).baseName();
       const QUrl overviewUrl = url.resolved( QUrl( baseName + u"-overview.copc.laz"_s ) );
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
       mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
-    if ( !mOverview.isValid() )
+    if ( !noOverviewFound && !mOverview.isValid() )
+    {
       mOverview = QgsPointCloudIndex();
+      noOverviewFound = true;
+    }
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
     if ( !uri.endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) && !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
