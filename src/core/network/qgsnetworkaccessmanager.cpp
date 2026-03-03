@@ -302,26 +302,27 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 {
   const QgsSettings s;
 
-  QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
+  // copy request so we can modify it
+  QNetworkRequest modifiedRequest( req );
 
   QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
   userAgent += QStringLiteral( "QGIS/%1/%2" ).arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
-  pReq->setRawHeader( "User-Agent", userAgent.toLatin1() );
+  modifiedRequest.setRawHeader( "User-Agent", userAgent.toLatin1() );
 
 #ifndef QT_NO_SSL
-  const bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
+  const bool ishttps = modifiedRequest.url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
   if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Adding trusted CA certs to request" ), 3 );
-    QSslConfiguration sslconfig( pReq->sslConfiguration() );
+    QSslConfiguration sslconfig( modifiedRequest.sslConfiguration() );
     // Merge trusted CAs with any additional CAs added by the authentication methods
     sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCertsCache(), sslconfig.caCertificates( ) ) );
     // check for SSL cert custom config
     const QString hostport( QStringLiteral( "%1:%2" )
-                            .arg( pReq->url().host().trimmed() )
-                            .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
+                            .arg( modifiedRequest.url().host().trimmed() )
+                            .arg( modifiedRequest.url().port() != -1 ? modifiedRequest.url().port() : 443 ) );
     const QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->sslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
@@ -331,20 +332,20 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
       sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
     }
 
-    pReq->setSslConfiguration( sslconfig );
+    modifiedRequest.setSslConfiguration( sslconfig );
   }
 #endif
 
   if ( sMainNAM->mCacheDisabled )
   {
     // if caching is disabled then we override whatever the request actually has set!
-    pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
-    pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+    modifiedRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+    modifiedRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
   }
 
   for ( const auto &preprocessor :  sCustomPreprocessors )
   {
-    preprocessor.second( pReq );
+    preprocessor.second( &modifiedRequest );
   }
 
   static QAtomicInt sRequestId = 0;
@@ -358,15 +359,15 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   for ( const auto &preprocessor :  sCustomAdvancedPreprocessors )
   {
     int intOp = static_cast< int >( op );
-    preprocessor.second( pReq, intOp, &content );
+    preprocessor.second( &modifiedRequest, intOp, &content );
     op = static_cast< QNetworkAccessManager::Operation >( intOp );
   }
 
-  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );
+  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, modifiedRequest, requestId, content ) );
   Q_NOWARN_DEPRECATED_PUSH
-  emit requestAboutToBeCreated( op, req, outgoingData );
+  emit requestAboutToBeCreated( op, modifiedRequest, outgoingData );
   Q_NOWARN_DEPRECATED_POP
-  QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
+  QNetworkReply *reply = QNetworkAccessManager::createRequest( op, modifiedRequest, outgoingData );
   reply->setProperty( "requestId", requestId );
 
   emit requestCreated( QgsNetworkRequestParameters( op, reply->request(), requestId, content ) );
@@ -381,7 +382,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   for ( const auto &replyPreprocessor :  sCustomReplyPreprocessors )
   {
-    replyPreprocessor.second( req, reply );
+    replyPreprocessor.second( modifiedRequest, reply );
   }
 
   // The timer will call abortRequest slot to abort the connection if needed.
