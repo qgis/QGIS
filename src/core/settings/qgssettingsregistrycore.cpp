@@ -141,6 +141,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
+  // added in 3.44
+  QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->copyValueFromKey( QStringLiteral( "qgis/dockAttributeTable" ) );
+
   // single settings - added in 3.30
   QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
@@ -406,6 +409,9 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   // CAREFUL! There's a mix of copyValueToKeyIfChanged and copyValueToKey used here.
   // copyValueToKeyIfChanged should be used if copyValueFromKey did NOT have the removeSettingAtKey argument set to True
   // in migrateOldSettings
+
+  // added in 3.44
+  QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->copyValueToKey( QStringLiteral( "qgis/dockAttributeTable" ) );
 
   // single settings - added in 3.30
   QgsLayout::settingsSearchPathForTemplates->copyValueToKeyIfChanged( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
