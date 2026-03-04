@@ -88,6 +88,12 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
     //! Returns a new data gatherer for a given line chart \a plot.
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
+    /**
+     * Initializes properties of this plot from an existing \a plot, transferring all applicable
+     * settings.
+     */
+    void initFromPlot( const QgsPlot *plot ) override;
+
   private:
 
     std::vector<std::unique_ptr<QgsMarkerSymbol>> mMarkerSymbols;

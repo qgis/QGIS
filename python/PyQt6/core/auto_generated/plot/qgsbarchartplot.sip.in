@@ -67,6 +67,13 @@ Returns a new bar chart.
 Returns a new data gatherer for a given bar chart ``plot``.
 %End
 
+    virtual void initFromPlot( const QgsPlot *plot );
+
+%Docstring
+Initializes properties of this plot from an existing ``plot``,
+transferring all applicable settings.
+%End
+
 };
 
 /************************************************************************

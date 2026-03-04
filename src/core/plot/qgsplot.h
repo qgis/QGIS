@@ -161,6 +161,13 @@ class CORE_EXPORT QgsPlot
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
+     * Initializes properties of this plot from an existing \a plot, transferring all applicable
+     * settings. Subclasses should override this method and call the base class implementation first.
+     * \since QGIS 4.0
+     */
+    virtual void initFromPlot( const QgsPlot *plot );
+
+    /**
      * Returns the plot property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -431,6 +438,15 @@ class CORE_EXPORT QgsPlotAxis
     QgsLineSymbol *gridMajorSymbol();
 
     /**
+     * Returns the line symbol used to render the major lines in the axis grid.
+     *
+     * \see setGridMajorSymbol()
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    const QgsLineSymbol *gridMajorSymbol() const SIP_SKIP;
+
+    /**
      * Sets the \a symbol used to render the major lines in the axis grid.
      *
      * Ownership of \a symbol is transferred to the plot.
@@ -445,6 +461,15 @@ class CORE_EXPORT QgsPlotAxis
      * \see setGridMinorSymbol()
      */
     QgsLineSymbol *gridMinorSymbol();
+
+    /**
+     * Returns the line symbol used to render the major lines in the axis grid.
+     *
+     * \see setGridMinorSymbol()
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    const QgsLineSymbol *gridMinorSymbol() const SIP_SKIP;
 
     /**
      * Sets the \a symbol used to render the minor lines in the axis grid.
@@ -525,6 +550,12 @@ class CORE_EXPORT QgsPlotAxis
      */
     void setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement );
 
+    /**
+     * Copies all properties from \a source axis to \a destination axis.
+     *
+     * \since QGIS 4.0
+     */
+    static void copyProperties( const QgsPlotAxis &source, QgsPlotAxis &destination );
   private:
 
 #ifdef SIP_RUN
@@ -628,6 +659,12 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * \see setMargins()
      */
     void setMargins( const QgsMargins &margins );
+
+    /**
+     * Copies all Qgs2DPlot-level properties (size, margins, data-defined properties) from \a other to this plot.
+     * \since QGIS 4.0
+     */
+    void copyCommonProperties( const Qgs2DPlot *other );
 
   protected:
 
@@ -786,6 +823,13 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
     QgsFillSymbol *chartBackgroundSymbol();
 
     /**
+     * Returns the fill symbol used to render the background of the chart.
+     * \see setChartBackgroundSymbol()
+     * \note not available in Python bindings
+     */
+    const QgsFillSymbol *chartBackgroundSymbol() const SIP_SKIP;
+
+    /**
      * Sets the fill \a symbol used to render the background of the chart.
      *
      * Ownership of \a symbol is transferred to the plot.
@@ -800,6 +844,14 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      * \see setChartBorderSymbol()
      */
     QgsFillSymbol *chartBorderSymbol();
+
+    /**
+     * Returns the symbol used to render the border of the chart.
+     *
+     * \see setChartBorderSymbol()
+     * \note not available in Python bindings
+     */
+    const QgsFillSymbol *chartBorderSymbol() const SIP_SKIP;
 
     /**
      * Sets the \a symbol used to render the border of the chart.
@@ -819,6 +871,13 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      * Sets whether the X and Y axes are flipped.
      */
     void setFlipAxes( bool flipAxes );
+
+    /**
+     * Copies all Qgs2DXyPlot-level properties (axis ranges, axes, flip state, background and border symbols)
+     * from \a other to this plot.
+     * \since QGIS 4.0
+     */
+    void copyCommonProperties( const Qgs2DXyPlot *other );
 
   protected:
 
