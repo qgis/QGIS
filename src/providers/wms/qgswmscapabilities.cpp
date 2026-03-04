@@ -2309,7 +2309,15 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( resourceType == "tile"_L1 )
       {
-        tileLayer.getTileURLs.insert( format, tmpl );
+        if ( tmpl.contains( u"{TIME}"_s, Qt::CaseInsensitive ) )
+        {
+          tileLayer.getTileURLs.insert( format, tmpl );
+        }
+        else if ( !tileLayer.getTileURLs.contains( format ) )
+        {
+          // Only use non-temporal URL if no URL exists yet for this format
+          tileLayer.getTileURLs.insert( format, tmpl );
+        }
       }
       else if ( resourceType == "FeatureInfo"_L1 )
       {

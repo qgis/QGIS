@@ -534,6 +534,7 @@ class TestQgsWmsCapabilities : public QObject
               <TileMatrixSetLink>
                   <TileMatrixSet>g</TileMatrixSet>
               </TileMatrixSetLink>
+              <ResourceURL format="image/png" resourceType="tile" template="https:\/\/landscapes-mapserver.tern.org.au/mapcache/wmts/1.0.0/ETaScaled/default/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
               <ResourceURL format="image/png" resourceType="tile" template="https:\/\/landscapes-mapserver.tern.org.au/mapcache/wmts/1.0.0/ETaScaled/default/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
           </Layer>
           <TileMatrixSet>
@@ -574,6 +575,11 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
       QCOMPARE( tileLayer.defaultTimeDimensionValue, u"current"_s );
+
+      // Verify the temporal URL (with {TIME}) was selected
+      QVERIFY( tileLayer.getTileURLs.contains( "image/png" ) );
+      QString selectedUrl = tileLayer.getTileURLs.value( "image/png" );
+      QVERIFY( selectedUrl.toLower().contains( "{time}" ) );
     }
 
     void wmtsTimeDimensionValue_data()
