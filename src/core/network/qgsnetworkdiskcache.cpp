@@ -19,6 +19,8 @@
 #include "qgsnetworkdiskcache.h"
 #include "moc_qgsnetworkdiskcache.cpp"
 
+#include "qgsnetworkaccessmanager.h"
+
 #include <QStorageInfo>
 #include <mutex>
 
@@ -27,9 +29,29 @@ ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
 ///@endcond
 QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
+QHash<QUrl, QVariantMap> QgsNetworkDiskCache::sPendingRequestHeaders;
+
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
   : QNetworkDiskCache( parent )
 {
+}
+
+void QgsNetworkDiskCache::insertPendingRequestHeaders( const QUrl &url, const QVariantMap &headers )
+{
+  const QMutexLocker lock( &sDiskCacheMutex );
+  sPendingRequestHeaders.insert( url, headers );
+}
+
+bool QgsNetworkDiskCache::hasPendingRequestForUrl( const QUrl &url ) const
+{
+  const QMutexLocker lock( &sDiskCacheMutex );
+  return sPendingRequestHeaders.contains( url );
+}
+
+void QgsNetworkDiskCache::removePendingRequestForUrl( const QUrl &url ) const
+{
+  const QMutexLocker lock( &sDiskCacheMutex );
+  sPendingRequestHeaders.remove( url );
 }
 
 QString QgsNetworkDiskCache::cacheDirectory() const
