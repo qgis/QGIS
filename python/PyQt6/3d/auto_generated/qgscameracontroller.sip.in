@@ -319,6 +319,17 @@ camera will be positioned to look at the cross section from the side.
 .. versionadded:: 4.0
 %End
 
+    double sampleDepthBuffer( int px, int py );
+%Docstring
+Returns the minimum depth value in the square [px - 3, px + 3] * [py -
+3, py + 3] Returned depth is in range [0..1] and it is returned as it
+was written to the depth buffer (not linearized, see
+Qgs3DUtils.screenPointToWorldPos() for conversion to linear depth).
+Returned value 1 means there void around that pixel (no 3D objects).
+
+.. versionadded:: 4.2
+%End
+
     void rotateCameraToHome();
 %Docstring
 .. versionadded:: 3.44
@@ -410,6 +421,13 @@ Emitted to ask for the depth buffer image
 Emitted when the camera rotation center changes
 
 .. versionadded:: 3.24
+%End
+
+    void depthBufferChanged();
+%Docstring
+Emitted when the depth buffer updates
+
+.. versionadded:: 4.2
 %End
 
 };
