@@ -394,6 +394,30 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     op = static_cast< QNetworkAccessManager::Operation >( intOp );
   }
 
+  bool needsCachePendingRequestCleanup = false;
+  if ( QgsNetworkDiskCache *diskCache = qobject_cast< QgsNetworkDiskCache * >( cache() ) )
+  {
+    if ( modifiedRequest.attribute( QNetworkRequest::CacheSaveControlAttribute, true ).toBool() )
+    {
+      if ( diskCache->hasPendingRequestForUrl( modifiedRequest.url() ) )
+      {
+        // don't allow multiple requests to attempt to write to the same cache resource
+        modifiedRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+      }
+      else
+      {
+        QVariantMap currentHeaders;
+        const QList<QByteArray> rawHeaderList = modifiedRequest.rawHeaderList();
+        for ( const QByteArray &header : rawHeaderList )
+        {
+          currentHeaders.insert( QString::fromUtf8( header ).toLower(), modifiedRequest.rawHeader( header ) );
+        }
+        diskCache->insertPendingRequestHeaders( modifiedRequest.url(), currentHeaders );
+        needsCachePendingRequestCleanup = true;
+      }
+    }
+  }
+
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, modifiedRequest, requestId, content ) );
   Q_NOWARN_DEPRECATED_PUSH
   emit requestAboutToBeCreated( op, modifiedRequest, outgoingData );
@@ -414,6 +438,15 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   for ( const auto &replyPreprocessor : sCustomReplyPreprocessors )
   {
     replyPreprocessor.second( modifiedRequest, reply );
+  }
+
+  if ( needsCachePendingRequestCleanup )
+  {
+    if ( QgsNetworkDiskCache *diskCache = qobject_cast< QgsNetworkDiskCache * >( cache() ) )
+    {
+      const QUrl url = modifiedRequest.url();
+      connect( reply, &QNetworkReply::finished, diskCache, [url, diskCache] { diskCache->removePendingRequestForUrl( url ); } );
+    }
   }
 
   // The timer will call abortRequest slot to abort the connection if needed.
