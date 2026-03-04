@@ -77,6 +77,16 @@ class CORE_EXPORT QgsAttributeTableConfig
       DropDown      //!< A tool button with a drop-down to select the current action
     };
 
+    /**
+    * The way how to add features in the attribute table
+    */
+    enum class AddFeatureMethod : int
+    {
+      Unset,   //!< No method set for current layer
+      Form,    //!< Opens a new Attributeform-Dialog
+      Table    //!< Adds a new row (or a form embedded in the attribute table depending on the view)
+    };
+
     QgsAttributeTableConfig() = default;
 
     /**
@@ -166,6 +176,20 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Set the sort expression used for sorting.
      */
     void setSortExpression( const QString &sortExpression );
+
+    /**
+     * Returns the method that defines how features are added (single form or embedded in a table).
+     * \see setAddFeatureMethod()
+     * \since QGIS 4.2
+     */
+    AddFeatureMethod addFeatureMethod() const;
+
+    /**
+     * Sets the \a addFeatureMethod that defines how features are added (single form or embedded in a table).
+     * \see addFeatureMethod()
+     * \since QGIS 4.2
+    */
+    void setAddFeatureMethod( const AddFeatureMethod addFeatureMethod );
 
 #ifndef SIP_RUN
 
@@ -318,6 +342,8 @@ class CORE_EXPORT QgsAttributeTableConfig
     ActionWidgetStyle mActionWidgetStyle = DropDown;
     QString mSortExpression;
     Qt::SortOrder mSortOrder = Qt::AscendingOrder;
+    AddFeatureMethod mAddFeatureMethod = AddFeatureMethod::Unset;
+
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )

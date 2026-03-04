@@ -48,6 +48,13 @@ The configuration is specific for one vector layer.
       DropDown
     };
 
+    enum class AddFeatureMethod /BaseType=IntEnum/
+    {
+      Unset,
+      Form,
+      Table
+    };
+
     QgsAttributeTableConfig();
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
@@ -137,6 +144,26 @@ Gets the expression used for sorting.
     void setSortExpression( const QString &sortExpression );
 %Docstring
 Set the sort expression used for sorting.
+%End
+
+    AddFeatureMethod addFeatureMethod() const;
+%Docstring
+Returns the method that defines how features are added (single form or
+embedded in a table).
+
+.. seealso:: :py:func:`setAddFeatureMethod`
+
+.. versionadded:: 4.2
+%End
+
+    void setAddFeatureMethod( const AddFeatureMethod addFeatureMethod );
+%Docstring
+Sets the ``addFeatureMethod`` that defines how features are added
+(single form or embedded in a table).
+
+.. seealso:: :py:func:`addFeatureMethod`
+
+.. versionadded:: 4.2
 %End
 
 
