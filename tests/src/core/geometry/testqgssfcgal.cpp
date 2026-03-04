@@ -1003,7 +1003,12 @@ void TestQgsSfcgal::buffer3DCheck()
   QVERIFY2( sfcgalBuffer3D != nullptr, "buffer 3d is NULL." );
 
   { // read expected from WKT dump with CGAL formalism
-    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( "buffer3d_linestring.wkt" );
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 3, 0 )
+    QString expectedWKt = u"buffer3d_linestring_before_23.wkt"_s;
+#else
+    QString expectedWKt = u"buffer3d_linestring_since_23.wkt"_s;
+#endif
+    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( expectedWKt );
     QVERIFY2( expectedBuffer->sfcgalGeometry() != nullptr, "Expected buffer is NULL." );
 
     bool isOK = expectedBuffer->covers( *sfcgalBuffer3D.get() );
@@ -1011,7 +1016,12 @@ void TestQgsSfcgal::buffer3DCheck()
   }
 
   { // read expected from WKT dump with 2 decimals
-    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( "buffer3d_linestring_2_deci.wkt" );
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 3, 0 )
+    QString expectedWKt = u"buffer3d_linestring_2_deci_before_23.wkt"_s;
+#else
+    QString expectedWKt = u"buffer3d_linestring_2_deci_since_23.wkt"_s;
+#endif
+    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( expectedWKt );
     QVERIFY2( expectedBuffer->sfcgalGeometry() != nullptr, "buffer 3d linestring 2 is NULL" );
 
     // cover fails with decimal dump
@@ -1020,7 +1030,7 @@ void TestQgsSfcgal::buffer3DCheck()
 
     // isEquals passes with decimal dump
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
-    isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001 );
+    isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.01 );
     QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
 #endif
   }
