@@ -378,22 +378,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.repaintModel()
             self.endUndoCommand()
 
-            res, errors = self.model().validateChildAlgorithm(id)
-            if not res:
-                self.view().scene().showWarning(
-                    QCoreApplication.translate(
-                        "ModelerDialog", "Algorithm “{}” is invalid"
-                    ).format(alg.description()),
-                    self.tr("Algorithm is Invalid"),
-                    QCoreApplication.translate(
-                        "ModelerDialog",
-                        '<div style="color:palette(window-text);"><p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul></div>',
-                    ).format(alg.description(), "</li><li>".join(errors)),
-                    level=Qgis.MessageLevel.Warning,
-                )
-            else:
-                self.view().scene().messageBar().clearWidgets()
-
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
         BOX_WIDTH = 200
