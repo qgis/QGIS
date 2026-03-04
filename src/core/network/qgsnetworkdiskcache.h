@@ -55,6 +55,41 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
+    /**
+     * Registers the original request headers for a pending request to the specified \a url.
+     *
+     * This method is thread-safe.
+     *
+     * \see hasPendingRequestForUrl()
+     * \see removePendingRequestForUrl()
+     * \since QGIS 4.0
+     */
+    void insertPendingRequestHeaders( const QUrl &url, const QVariantMap &headers );
+
+    /**
+     * Returns TRUE if there is a pending (ongoing) request in place for the specified \a url.
+     *
+      * This method is thread-safe.
+     *
+     * \see insertPendingRequestHeaders()
+     * \see removePendingRequestForUrl()
+     *
+     * \since QGIS 4.0
+     */
+    bool hasPendingRequestForUrl( const QUrl &url ) const;
+
+    /**
+     * Removes a pending (ongoing) request in place for the specified \a url.
+     *
+     * This method is thread-safe.
+     *
+     * \see insertPendingRequestHeaders()
+     * \see hasPendingRequestForUrl()
+     *
+     * \since QGIS 4.0
+     */
+    void removePendingRequestForUrl( const QUrl &url ) const;
+
     //! \see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
 
@@ -110,6 +145,8 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
 
     static ExpirableNetworkDiskCache sDiskCache;
     static QMutex sDiskCacheMutex;
+
+    static QHash<QUrl, QVariantMap> sPendingRequestHeaders;
 
     friend class QgsNetworkAccessManager;
 };
