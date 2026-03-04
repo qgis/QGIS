@@ -62,7 +62,7 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, true, u"If true, attribute tables will be docked by default."_s );
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, false, u"If true, attribute tables will be docked by default."_s );
 
 const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
 
