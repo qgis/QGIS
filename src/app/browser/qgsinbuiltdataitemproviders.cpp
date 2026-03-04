@@ -1905,6 +1905,15 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         QPointer< QgsLayerItem > layerItem( qobject_cast<QgsLayerItem *>( item ) );
 
         connect( renameTableAction, &QAction::triggered, renameTableAction, [providerKey, connectionUri, schema, tableName, context, layerItem = std::move( layerItem )] {
+          if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, layerItem->uri() ).isEmpty() )
+          {
+            if ( context.messageBar() )
+            {
+              context.messageBar()->pushCritical( tr( "Rename Table" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+            }
+            return;
+          }
+
           QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
           if ( !md )
             return;
