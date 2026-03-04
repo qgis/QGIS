@@ -96,6 +96,7 @@ class TestQgsSfcgal : public QgsTest
     void simplify();
     void approximateMedialAxis();
     void primitiveCube();
+    void toSolid();
 
   private:
     //! Must be called before each render test
@@ -1202,6 +1203,23 @@ void TestQgsSfcgal::primitiveCube()
   QCOMPARE( param.toDouble(), 8.2 );
 
 #endif
+}
+
+void TestQgsSfcgal::toSolid()
+{
+  QString phsWkt = u"POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0.5 0.5 1,0 0 0)),((1 0 0,1 1 0,0.5 0.5 1,1 0 0)),((1 1 0,0 1 0,0.5 0.5 1,1 1 0)),((0 1 0,0 0 0,0.5 0.5 1,0 1 0)))"_s;
+
+  QgsSfcgalGeometry sfcgalPolyhedralSurface( phsWkt );
+  QVERIFY2( sfcgalPolyhedralSurface.sfcgalGeometry() != nullptr, "Solid, input phs is NULL" );
+  QCOMPARE( sfcgalPolyhedralSurface.wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  std::unique_ptr<QgsSfcgalGeometry> solid = sfcgalPolyhedralSurface.toSolid();
+  QCOMPARE( solid->asWkt( 1 ), u"SOLID Z ((((0.0 0.0 0.0,0.0 1.0 0.0,1.0 1.0 0.0,1.0 0.0 0.0,0.0 0.0 0.0)),((0.0 0.0 0.0,1.0 0.0 0.0,0.5 0.5 1.0,0.0 0.0 0.0)),((1.0 0.0 0.0,1.0 1.0 0.0,0.5 0.5 1.0,1.0 0.0 0.0)),((1.0 1.0 0.0,0.0 1.0 0.0,0.5 0.5 1.0,1.0 1.0 0.0)),((0.0 1.0 0.0,0.0 0.0 0.0,0.5 0.5 1.0,0.0 1.0 0.0))))"_s );
+
+  // solid conversion does not work on a polygon
+  QgsSfcgalGeometry sfcgalPolygonZ( "POLYGON Z ((0 0 1, 20 0 2, 20 10 3, 0 10 4, 0 0 1))" );
+  QVERIFY2( sfcgalPolygonZ.sfcgalGeometry() != nullptr, "Solid, input polygon is NULL" );
+  QCOMPARE( sfcgalPolygonZ.wkbType(), Qgis::WkbType::PolygonZ );
+  QVERIFY_EXCEPTION_THROWN( sfcgalPolygonZ.toSolid(), QgsSfcgalException );
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )

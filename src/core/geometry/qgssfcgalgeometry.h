@@ -617,6 +617,18 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
 
+    /**
+     * Converts the geometry to a Solid geometry.
+     * The geometry must be of type PolyhedralSurface
+     *
+     * \return geometry as a Solid
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const SIP_THROW( QgsSfcgalException );
+
     // ============= PRIMITIVE
 
     /**

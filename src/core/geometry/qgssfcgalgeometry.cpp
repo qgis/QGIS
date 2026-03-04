@@ -879,6 +879,20 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() co
   return resultGeom;
 }
 
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toSolid() const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom solid = QgsSfcgalEngine::toSolid( geom.get(), &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> solidGeom = QgsSfcgalEngine::toSfcgalGeometry( solid, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return solidGeom;
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
 {
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
