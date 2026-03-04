@@ -140,7 +140,6 @@ bool QgsAbstractGeospatialPdfExporter::finalize( const QList<ComponentLayerDetai
       {
         mErrorMessage += ( !mErrorMessage.isEmpty() ? u"\n"_s : QString() ) + error;
       }
-
     }
     else
     {
@@ -174,7 +173,7 @@ bool QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::Compo
     case QPainter::CompositionMode_HardLight:
     case QPainter::CompositionMode_SoftLight:
     case QPainter::CompositionMode_Difference:
-    case  QPainter::CompositionMode_Exclusion:
+    case QPainter::CompositionMode_Exclusion:
       return true;
 
     default:
@@ -192,7 +191,7 @@ void QgsAbstractGeospatialPdfExporter::pushRenderedFeature( const QString &layer
   // collate all the features which belong to the same layer, replacing their geometries with the rendered feature bounds
   QgsFeature f = feature.feature;
   f.setGeometry( feature.renderedBounds );
-  mCollatedFeatures[ group ][ layerId ].append( f );
+  mCollatedFeatures[group][layerId].append( f );
 }
 
 bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
@@ -213,7 +212,10 @@ bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
       QgsVectorFileWriter::SaveVectorOptions saveOptions;
       saveOptions.driverName = u"GPKG"_s;
       saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
-      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( filePath, features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::RegeneratePrimaryKey, nullptr, &layerName ) );
+      std::unique_ptr< QgsVectorFileWriter > writer(
+        QgsVectorFileWriter::
+          create( filePath, features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::RegeneratePrimaryKey, nullptr, &layerName )
+      );
       if ( writer->hasError() )
       {
         mErrorMessage = writer->errorMessage();
@@ -240,63 +242,63 @@ bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
 ///@cond PRIVATE
 struct TreeNode
 {
-  QString id;
-  bool initiallyVisible = false;
-  QString name;
-  QString mutuallyExclusiveGroupId;
-  QString mapLayerId;
-  std::vector< std::unique_ptr< TreeNode > > children;
-  TreeNode *parent = nullptr;
+    QString id;
+    bool initiallyVisible = false;
+    QString name;
+    QString mutuallyExclusiveGroupId;
+    QString mapLayerId;
+    std::vector< std::unique_ptr< TreeNode > > children;
+    TreeNode *parent = nullptr;
 
-  void addChild( std::unique_ptr< TreeNode > child )
-  {
-    child->parent = this;
-    children.emplace_back( std::move( child ) );
-  }
-
-  QDomElement toElement( QDomDocument &doc ) const
-  {
-    QDomElement layerElement = doc.createElement( u"Layer"_s );
-    layerElement.setAttribute( u"id"_s, id );
-    layerElement.setAttribute( u"name"_s, name );
-    layerElement.setAttribute( u"initiallyVisible"_s, initiallyVisible ? u"true"_s : u"false"_s );
-    if ( !mutuallyExclusiveGroupId.isEmpty() )
-      layerElement.setAttribute( u"mutuallyExclusiveGroupId"_s, mutuallyExclusiveGroupId );
-
-    for ( const auto &child : children )
+    void addChild( std::unique_ptr< TreeNode > child )
     {
-      layerElement.appendChild( child->toElement( doc ) );
+      child->parent = this;
+      children.emplace_back( std::move( child ) );
     }
 
-    return layerElement;
-  }
-
-  QDomElement createIfLayerOnElement( QDomDocument &doc, QDomElement &contentElement ) const
-  {
-    QDomElement element = doc.createElement( u"IfLayerOn"_s );
-    element.setAttribute( u"layerId"_s, id );
-    contentElement.appendChild( element );
-    return element;
-  }
-
-  QDomElement createNestedIfLayerOnElements( QDomDocument &doc, QDomElement &contentElement ) const
-  {
-    TreeNode *currentParent = parent;
-    QDomElement finalElement = doc.createElement( u"IfLayerOn"_s );
-    finalElement.setAttribute( u"layerId"_s, id );
-
-    QDomElement currentElement = finalElement;
-    while ( currentParent )
+    QDomElement toElement( QDomDocument &doc ) const
     {
-      QDomElement ifGroupOn = doc.createElement( u"IfLayerOn"_s );
-      ifGroupOn.setAttribute( u"layerId"_s, currentParent->id );
-      ifGroupOn.appendChild( currentElement );
-      currentElement = ifGroupOn;
-      currentParent = currentParent->parent;
+      QDomElement layerElement = doc.createElement( u"Layer"_s );
+      layerElement.setAttribute( u"id"_s, id );
+      layerElement.setAttribute( u"name"_s, name );
+      layerElement.setAttribute( u"initiallyVisible"_s, initiallyVisible ? u"true"_s : u"false"_s );
+      if ( !mutuallyExclusiveGroupId.isEmpty() )
+        layerElement.setAttribute( u"mutuallyExclusiveGroupId"_s, mutuallyExclusiveGroupId );
+
+      for ( const auto &child : children )
+      {
+        layerElement.appendChild( child->toElement( doc ) );
+      }
+
+      return layerElement;
     }
-    contentElement.appendChild( currentElement );
-    return finalElement;
-  }
+
+    QDomElement createIfLayerOnElement( QDomDocument &doc, QDomElement &contentElement ) const
+    {
+      QDomElement element = doc.createElement( u"IfLayerOn"_s );
+      element.setAttribute( u"layerId"_s, id );
+      contentElement.appendChild( element );
+      return element;
+    }
+
+    QDomElement createNestedIfLayerOnElements( QDomDocument &doc, QDomElement &contentElement ) const
+    {
+      TreeNode *currentParent = parent;
+      QDomElement finalElement = doc.createElement( u"IfLayerOn"_s );
+      finalElement.setAttribute( u"layerId"_s, id );
+
+      QDomElement currentElement = finalElement;
+      while ( currentParent )
+      {
+        QDomElement ifGroupOn = doc.createElement( u"IfLayerOn"_s );
+        ifGroupOn.setAttribute( u"layerId"_s, currentParent->id );
+        ifGroupOn.appendChild( currentElement );
+        currentElement = ifGroupOn;
+        currentParent = currentParent->parent;
+      }
+      contentElement.appendChild( currentElement );
+      return finalElement;
+    }
 };
 ///@endcond
 
@@ -411,12 +413,11 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   QMap< QString, TreeNode * > groupNameToTreeNode;
   QMap< QString, TreeNode * > layerIdToTreeNode;
 
-  auto createGroup = [&details, &groupNameToTreeNode]( const QString & groupName ) -> std::unique_ptr< TreeNode >
-  {
+  auto createGroup = [&details, &groupNameToTreeNode]( const QString &groupName ) -> std::unique_ptr< TreeNode > {
     auto group = std::make_unique< TreeNode >();
     const QString id = QUuid::createUuid().toString();
     group->id = id;
-    groupNameToTreeNode[ groupName ] = group.get();
+    groupNameToTreeNode[groupName] = group.get();
 
     group->name = groupName;
     group->initiallyVisible = true;
@@ -566,8 +567,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
 
       // transform to PDF coordinate space
-      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
-                     -pageHeightPdfUnits / details.pageSizeMm.height() );
+      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(), -pageHeightPdfUnits / details.pageSizeMm.height() );
 
       QgsPolygon p = section.pageBoundsPolygon;
       p.transform( t );
@@ -603,8 +603,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     page.appendChild( georeferencing );
   }
 
-  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
-  {
+  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail &component ) -> QDomElement {
     QDomElement pdfDataset = doc.createElement( u"PDF"_s );
     pdfDataset.setAttribute( u"dataset"_s, component.sourcePdfPath );
     if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
@@ -673,8 +672,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   // groups are added first
 
   // sort root groups in desired order
-  std::sort( rootGroups.begin(), rootGroups.end(), [&layerTreeGroupOrder]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
-  {
+  std::sort( rootGroups.begin(), rootGroups.end(), [&layerTreeGroupOrder]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool {
     return layerTreeGroupOrder.indexOf( a->name ) < layerTreeGroupOrder.indexOf( b->name );
   } );
 
@@ -691,15 +689,14 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   }
 
   // filter out groups which don't have any content
-  layerTreeGroupOrder.erase( std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString & group )
-  {
-    return details.customLayerTreeGroups.key( group ).isEmpty();
-  } ), layerTreeGroupOrder.end() );
+  layerTreeGroupOrder.erase(
+    std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString &group ) { return details.customLayerTreeGroups.key( group ).isEmpty(); } ),
+    layerTreeGroupOrder.end()
+  );
 
 
   // then top-level layers
-  std::sort( rootLayers.begin(), rootLayers.end(), [&details]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
-  {
+  std::sort( rootLayers.begin(), rootLayers.end(), [&details]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool {
     const int indexA = details.layerOrder.indexOf( a->mapLayerId );
     const int indexB = details.layerOrder.indexOf( b->mapLayerId );
 
@@ -767,7 +764,7 @@ QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::Com
     case QPainter::CompositionMode_Difference:
       return u"Difference"_s;
 
-    case  QPainter::CompositionMode_Exclusion:
+    case QPainter::CompositionMode_Exclusion:
       return u"Exclusion"_s;
 
     default:
@@ -777,4 +774,3 @@ QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::Com
   QgsDebugError( u"Unsupported PDF blend mode %1"_s.arg( mode ) );
   return u"Normal"_s;
 }
-

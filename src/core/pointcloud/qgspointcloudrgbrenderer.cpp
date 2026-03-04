@@ -27,9 +27,7 @@
 using namespace Qt::StringLiterals;
 
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
-{
-
-}
+{}
 
 QString QgsPointCloudRgbRenderer::type() const
 {

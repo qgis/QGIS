@@ -29,11 +29,10 @@ class QgsLayerMetadataProviderResult;
  * Entry point for registration of the OGR data provider
  * \since QGIS 3.10
  */
-class QgsOgrProviderMetadata final: public QgsProviderMetadata
+class QgsOgrProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
-
     QgsOgrProviderMetadata();
     QIcon icon() const override;
     void initProvider() override;
@@ -61,19 +60,19 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options,
-      QString &createdLayerUri ) override;
+      QString &createdLayerUri
+    ) override;
     bool createDatabase( const QString &uri, QString &errorMessage ) override;
 
     // -----
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    bool saveStyle(
+      const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
+    ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &name, QString &errCause ) override;
-    int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                    QStringList &descriptions, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
 
@@ -88,10 +87,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
 
   protected:
-
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
-
-
 };
 
 ///@endcond

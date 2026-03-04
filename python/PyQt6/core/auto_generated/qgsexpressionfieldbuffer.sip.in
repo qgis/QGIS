@@ -22,10 +22,10 @@ Buffers information about expression fields for a vector layer.
   public:
     struct ExpressionField
     {
-      ExpressionField( const QString &exp, const QgsField &fld );
+        ExpressionField( const QString &exp, const QgsField &fld );
 
-      QgsExpression cachedExpression;
-      QgsField field;
+        QgsExpression cachedExpression;
+        QgsField field;
     };
 
     QgsExpressionFieldBuffer();

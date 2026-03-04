@@ -79,6 +79,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+    // clang-format off
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -159,6 +160,8 @@ class CORE_EXPORT QgsAbstractGeometry
     };
     Q_ENUM( QgsAbstractGeometry::AxisOrder )
 
+    // clang-format on
+
     QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
@@ -238,12 +241,14 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QString geometryType() const = 0;
 
+    // clang-format off
     /**
      * Returns the WKB type of the geometry.
      * \see geometryType
      * \see wktTypeStr
      */
     inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
+    // clang-format on
 
     /**
      * Returns the WKT type string of the geometry.
@@ -1250,6 +1255,7 @@ class CORE_EXPORT QgsVertexIterator
     QgsPoint next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsVertexIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1262,6 +1268,7 @@ class CORE_EXPORT QgsVertexIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1299,6 +1306,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1311,6 +1319,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1349,6 +1358,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     const QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryConstPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1361,6 +1371,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:

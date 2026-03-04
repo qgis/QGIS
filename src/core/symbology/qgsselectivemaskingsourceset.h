@@ -39,7 +39,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsSelectiveMaskingSourceSet
 {
   public:
-
     /**
      * Constructor for an empty (invalid) QgsSelectiveMaskingSourceSet.
      */
@@ -82,7 +81,11 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
      *
      * \see name()
      */
-    void setName( const QString &name ) { mName = name; mIsValid = true; }
+    void setName( const QString &name )
+    {
+      mName = name;
+      mIsValid = true;
+    }
 
     /**
      * Returns the list of selective mask sources configured in this set.
@@ -122,6 +125,7 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
      */
     QgsSelectiveMaskSource &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
+    // clang-format off
     % MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
@@ -129,12 +133,13 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
     else
       sipRes = new QgsSelectiveMaskSource( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the number of sources in the set.
      */
-    int size() const;
+      int size() const;
 
     /**
      * Returns TRUE if the set is empty.
@@ -142,13 +147,16 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
     bool isEmpty() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
 #ifdef SIP_RUN
+        // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     if ( !sipCpp->isValid() )
@@ -169,10 +177,14 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End
+// clang-format on
 #endif
 
-  private:
-    bool mIsValid = false;
+    // clang-format off
+    private:
+    // clang-format on
+    bool mIsValid
+    = false;
     QString mId;
     QString mName;
     QVector< QgsSelectiveMaskSource > mSources;

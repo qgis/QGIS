@@ -35,7 +35,6 @@ version.
 #include "qgseffectstack.h"
 %End
   public:
-
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsEffectStack effect. This method ignores the map
@@ -148,12 +147,10 @@ Returns a pointer to the effect at a specified index within the stack
 
 
   protected:
-
     virtual void draw( QgsRenderContext &context );
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

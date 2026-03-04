@@ -31,11 +31,9 @@
  * \note Not available in Python bindings (although SIP file is present for specific implementations).
  *
  */
-template<typename T>
-class CORE_EXPORT QgsOptional
+template<typename T> class CORE_EXPORT QgsOptional
 {
   public:
-
     /**
      * A QgsOptional is disabled by default if default constructed.
      */
@@ -47,8 +45,7 @@ class CORE_EXPORT QgsOptional
     QgsOptional( const T &data )
       : mEnabled( true )
       , mData( data )
-    {
-    }
+    {}
 
     /**
      * A QgsOptional constructed with enabled status and data
@@ -56,8 +53,7 @@ class CORE_EXPORT QgsOptional
     QgsOptional( const T &data, bool enabled )
       : mEnabled( enabled )
       , mData( data )
-    {
-    }
+    {}
 
     /**
      * Compare this QgsOptional to another one.
@@ -66,63 +62,42 @@ class CORE_EXPORT QgsOptional
      * of the contained class.
      *
      */
-    bool operator== ( const QgsOptional<T> &other ) const
-    {
-      return mEnabled == other.mEnabled && mData == other.mData;
-    }
+    bool operator==( const QgsOptional<T> &other ) const { return mEnabled == other.mEnabled && mData == other.mData; }
 
     /**
      * Boolean operator. Will return TRUE if this optional is enabled.
      */
-    explicit operator bool() const SIP_SKIP
-    {
-      return mEnabled;
-    }
+    explicit operator bool() const SIP_SKIP { return mEnabled; }
 
     /**
      * Check if this optional is enabled
      *
      */
-    bool enabled() const
-    {
-      return mEnabled;
-    }
+    bool enabled() const { return mEnabled; }
 
     /**
      * Set if this optional is enabled
      *
      */
-    void setEnabled( bool enabled )
-    {
-      mEnabled = enabled;
-    }
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
      * Access the payload data
      *
      */
-    const T *operator->() const
-    {
-      return &mData;
-    }
+    const T *operator->() const { return &mData; }
 
     /**
      * Access the payload data
      *
      */
-    T data() const
-    {
-      return mData;
-    }
+    T data() const { return mData; }
 
     /**
      * Set the payload data
      *
      */
-    void setData( const T &data )
-    {
-      mData = data;
-    }
+    void setData( const T &data ) { mData = data; }
 
   private:
     bool mEnabled = false;

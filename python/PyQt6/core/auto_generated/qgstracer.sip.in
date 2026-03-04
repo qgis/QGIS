@@ -24,7 +24,6 @@ features.
 #include "qgstracer.h"
 %End
   public:
-
     QgsTracer();
 %Docstring
 Constructor for QgsTracer.
@@ -172,8 +171,8 @@ existed on the input layers
 
 .. versionadded:: 3.40
 %End
-  protected:
 
+  protected:
     virtual void configure();
 %Docstring
 Allows derived classes to setup the settings just before the tracer is

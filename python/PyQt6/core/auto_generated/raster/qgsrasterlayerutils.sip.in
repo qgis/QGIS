@@ -22,12 +22,7 @@ Contains utility functions for working with raster layers.
 #include "qgsrasterlayerutils.h"
 %End
   public:
-
-    static int renderedBandForElevationAndTemporalRange(
-      QgsRasterLayer *layer,
-      const QgsDateTimeRange &temporalRange,
-      const QgsDoubleRange &elevationRange,
-      bool &matched /Out/ );
+    static int renderedBandForElevationAndTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &temporalRange, const QgsDoubleRange &elevationRange, bool &matched /Out/ );
 %Docstring
 Given a raster ``layer``, returns the band which should be used for
 rendering the layer for a specified temporal and elevation range,
@@ -44,14 +39,9 @@ band.
            elevation range was found
 %End
 
-    static void computeMinMax( QgsRasterDataProvider *provider,
-                               int band,
-                               const QgsRasterMinMaxOrigin &mmo,
-                               Qgis::RasterRangeLimit limits,
-                               const QgsRectangle &extent,
-                               int sampleSize,
-                               double &min /Out/,
-                               double &max /Out/ );
+    static void computeMinMax(
+      QgsRasterDataProvider *provider, int band, const QgsRasterMinMaxOrigin &mmo, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, double &min /Out/, double &max /Out/
+    );
 %Docstring
 Compute the ``min`` ``max`` values for ``provider`` along ``band``
 according to MinMaxOrigin parameters ``mmo`` and ``extent``.
@@ -73,7 +63,6 @@ corners fall on pixel boundaries defined by the origin and pixel sizes.
 
 .. versionadded:: 4.0
 %End
-
 };
 
 /************************************************************************

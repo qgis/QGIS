@@ -28,7 +28,6 @@ class QgsProject;
 class QgsVectorLayer;
 
 
-
 /**
  * \ingroup core
  * \brief Stores configuration of snapping settings for the project.
@@ -42,16 +41,15 @@ class CORE_EXPORT QgsSnappingConfig
     Q_PROPERTY( Qgis::SnappingMode mode READ mode WRITE setMode )
 
   public:
-
     /**
      * SnappingType defines on what object the snapping is performed
      * \deprecated QGIS 3.12. Use Qgis::SnappingTypes instead.
      */
     enum SnappingType
     {
-      Vertex = 1, //!< On vertices only
+      Vertex = 1,           //!< On vertices only
       VertexAndSegment = 2, //!< Both on vertices and segments
-      Segment = 3, //!< On segments only
+      Segment = 3,          //!< On segments only
     };
     // TODO QGIS 5: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
@@ -63,9 +61,9 @@ class CORE_EXPORT QgsSnappingConfig
      */
     enum ScaleDependencyMode
     {
-      Disabled = 0,//!< No scale dependency
-      Global = 1,//!< Scale dependency using global min max range
-      PerLayer = 2//!< Scale dependency using min max range per layer
+      Disabled = 0, //!< No scale dependency
+      Global = 1,   //!< Scale dependency using global min max range
+      PerLayer = 2  //!< Scale dependency using min max range per layer
     };
     Q_ENUM( ScaleDependencyMode )
 
@@ -82,7 +80,7 @@ class CORE_EXPORT QgsSnappingConfig
      * \since QGIS 3.12
      * \deprecated QGIS 3.26. Use snappingTypeToString() instead.
      */
-    Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToString( type );}
+    Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED { return snappingTypeToString( type ); }
 
 
     /**
@@ -98,7 +96,7 @@ class CORE_EXPORT QgsSnappingConfig
      * \deprecated QGIS 3.26. Use snappingTypeToIcon() instead.
      * \since QGIS 3.20
      */
-    Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
+    Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED { return snappingTypeToIcon( type ); }
 
     /**
      * \ingroup core
@@ -107,7 +105,6 @@ class CORE_EXPORT QgsSnappingConfig
     class CORE_EXPORT IndividualLayerSettings
     {
       public:
-
         /**
          * \brief IndividualLayerSettings
          * \param enabled
@@ -204,10 +201,10 @@ class CORE_EXPORT QgsSnappingConfig
          */
         void setMaximumScale( double maxScale );
 
-        bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
+        bool operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
         // TODO c++20 - replace with = default
-        bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
+        bool operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:
         bool mValid = false;
@@ -337,6 +334,7 @@ class CORE_EXPORT QgsSnappingConfig
 #ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 #else
+    // clang-format off
     SIP_PYDICT individualLayerSettings() const;
     % MethodCode
     // Create the dictionary.
@@ -377,6 +375,7 @@ class CORE_EXPORT QgsSnappingConfig
     }
     sipRes = d;
     % End
+// clang-format on
 #endif
 
     //! Returns individual layer snappings settings (applied if mode is AdvancedConfiguration)
@@ -392,7 +391,7 @@ class CORE_EXPORT QgsSnappingConfig
      */
     void clearIndividualLayerSettings();
 
-    bool operator!= ( const QgsSnappingConfig &other ) const;
+    bool operator!=( const QgsSnappingConfig &other ) const;
 
     /**
      * Reads the configuration from the specified QGIS project document.
@@ -457,7 +456,6 @@ class CORE_EXPORT QgsSnappingConfig
     bool mSelfSnapping = false;
 
     QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
-
 };
 
 #endif // QGSPROJECTSNAPPINGSETTINGS_H

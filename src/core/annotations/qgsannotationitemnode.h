@@ -35,7 +35,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsAnnotationItemNode
 {
   public:
-
     QgsAnnotationItemNode() = default;
 
     /**
@@ -48,21 +47,26 @@ class CORE_EXPORT QgsAnnotationItemNode
       , mCursor( cursor )
     {}
 
+    // clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsAnnotationItemNode: %1 - %2 (%3, %4)>"_s.arg( sipCpp->id().vertex )
-                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
-                  .arg( sipCpp->point().x() )
-                  .arg( sipCpp->point().y() );
+        QString str = u"<QgsAnnotationItemNode: %1 - %2 (%3, %4)>"_s.arg( sipCpp->id().vertex )
+          .arg( qgsEnumValueToKey( sipCpp->type() ) )
+          .arg( sipCpp->point().x() )
+          .arg( sipCpp->point().y() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+        // clang-format on
 
-    /**
+        /**
      * Returns the ID number of the node, used for uniquely identifying the node in the item.
      */
-    QgsVertexId id() const { return mId; }
+        QgsVertexId id() const
+    {
+      return mId;
+    }
 
     /**
      * Returns the node's position, in geographic coordinates.
@@ -102,10 +106,7 @@ class CORE_EXPORT QgsAnnotationItemNode
      * \see setCursor()
      * \since QGIS 3.34
      */
-    Qt::CursorShape cursor() const
-    {
-      return mCursor;
-    }
+    Qt::CursorShape cursor() const { return mCursor; }
 
     /**
      * Sets the mouse cursor \a shape to use when hovering the node.
@@ -113,29 +114,18 @@ class CORE_EXPORT QgsAnnotationItemNode
      * \see cursor()
      * \since QGIS 3.34
      */
-    void setCursor( Qt::CursorShape shape )
-    {
-      mCursor = shape;
-    }
+    void setCursor( Qt::CursorShape shape ) { mCursor = shape; }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsAnnotationItemNode &other ) const
-    {
-      return mId == other.mId && mType == other.mType && mPoint == other.mPoint;
-    }
+    bool operator==( const QgsAnnotationItemNode &other ) const { return mId == other.mId && mType == other.mType && mPoint == other.mPoint; }
 
-    bool operator!=( const QgsAnnotationItemNode &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsAnnotationItemNode &other ) const { return !( *this == other ); }
 
   private:
-
     QgsVertexId mId;
     QgsPointXY mPoint;
     Qgis::AnnotationItemNodeType mType = Qgis::AnnotationItemNodeType::VertexHandle;
     Qt::CursorShape mCursor = Qt::CursorShape::ArrowCursor;
-
 };
 
 #endif // QGSANNOTATIONITEMEDITNODE_H

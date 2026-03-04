@@ -28,7 +28,6 @@ Features are collected to form one "inverted" polygon during
 #include "qgsinvertedpolygonrenderer.h"
 %End
   public:
-
     QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer /Transfer/ = 0 );
 %Docstring
 Constructor
@@ -83,7 +82,6 @@ renderer.
 :return: a new renderer if the conversion was possible, otherwise
          ``None``.
 %End
-
 };
 
 

@@ -10,7 +10,7 @@
 
 
 
-class QgsBilinearRasterResampler: QgsRasterResamplerV2
+class QgsBilinearRasterResampler : QgsRasterResamplerV2
 {
 %Docstring(signature="appended")
 Bilinear raster resampler.
@@ -20,7 +20,6 @@ Bilinear raster resampler.
 #include "qgsbilinearrasterresampler.h"
 %End
   public:
-
     QgsBilinearRasterResampler();
 
  virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated="Since 3.12. Use resampleV2() instead."/;

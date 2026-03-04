@@ -30,11 +30,10 @@ class QgsWebPage;
  * \brief An annotation item that embeds HTML content.
 */
 
-class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
+class CORE_EXPORT QgsHtmlAnnotation : public QgsAnnotation
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsHtmlAnnotation.
      */
@@ -78,7 +77,6 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     static QgsHtmlAnnotation *create() SIP_FACTORY { return new QgsHtmlAnnotation(); }
 
   protected:
-
     void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private slots:
@@ -89,7 +87,6 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     QgsWebPage *mWebPage = nullptr;
     QString mHtmlFile;
     QString mHtmlSource;
-
 };
 
 #endif // QGSHTMLANNOTATION_H

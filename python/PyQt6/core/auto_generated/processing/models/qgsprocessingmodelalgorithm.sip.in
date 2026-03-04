@@ -23,13 +23,12 @@ Model based algorithm with processing.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString(), const QString &groupId = QString() );
 %Docstring
 Constructor for QgsProcessingModelAlgorithm.
 %End
 
-    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );  //#spellok
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ); //#spellok
 
 
     virtual Qgis::ProcessingAlgorithmFlags flags() const;
@@ -535,8 +534,9 @@ The source compatibilibity is deducted from the parameter type
 .. versionadded:: 3.44
 %End
 
-    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
-        const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
+    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild(
+      const QString &childId, const QStringList &parameterTypes = QStringList(), const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >()
+    ) const;
 %Docstring
 Returns a list of possible sources which can be used for the parameters
 for a child algorithm in the model. Returned sources are those which
@@ -559,8 +559,11 @@ execution.
 %End
 
       public:
-
-        VariableDefinition( const QVariant &value = QVariant(), const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ), const QString &description = QString() );
+        VariableDefinition(
+          const QVariant &value = QVariant(),
+          const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ),
+          const QString &description = QString()
+        );
 %Docstring
 Constructor for a new VariableDefinition with the specified ``value``
 and original parameter ``source``, and ``description``.
@@ -573,8 +576,9 @@ and original parameter ``source``, and ``description``.
         QString description;
     };
 
-    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context = 0, const QVariantMap &modelParameters = QVariantMap(),
-        const QVariantMap &results = QVariantMap() ) const;
+    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm(
+      const QString &childId, QgsProcessingContext *context = 0, const QVariantMap &modelParameters = QVariantMap(), const QVariantMap &results = QVariantMap()
+    ) const;
 %Docstring
 Returns a map of variable name to variable definition for expression
 context variables which are available for use by child algorithm during
@@ -594,8 +598,9 @@ must be passed.
 .. seealso:: :py:func:`createExpressionContextScopeForChildAlgorithm`
 %End
 
-    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
-        const QVariantMap &results = QVariantMap() ) const /Factory/;
+    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm(
+      const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(), const QVariantMap &results = QVariantMap()
+    ) const /Factory/;
 %Docstring
 Creates a new expression context scope for a child algorithm within the
 model.
@@ -677,7 +682,6 @@ camel case string.
 
 
   protected:
-
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 
 

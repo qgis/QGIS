@@ -20,9 +20,23 @@ Represents the calculated placement of a map label.
 #include "qgslabelposition.h"
 %End
   public:
-
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false );
+    QgsLabelPosition(
+      QgsFeatureId id,
+      double r,
+      const QVector< QgsPointXY > &corners,
+      const QgsRectangle &rect,
+      double w,
+      double h,
+      const QString &layer,
+      const QString &labeltext,
+      const QFont &labelfont,
+      bool upside_down,
+      bool diagram = false,
+      bool pinned = false,
+      const QString &providerId = QString(),
+      const QgsGeometry &labelGeometry = QgsGeometry(),
+      bool isUnplaced = false
+    );
 %Docstring
 Constructor for QgsLabelPosition.
 
@@ -53,7 +67,7 @@ Constructor for QgsLabelPosition.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsFeatureId featureId;
+        QgsFeatureId featureId;
 
     double rotation;
 

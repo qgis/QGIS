@@ -37,9 +37,7 @@
 */
 class CORE_EXPORT QgsGeocoderResult
 {
-
   public:
-
     /**
      * Creates an invalid error result, with the specified \a errorMessage string.
      */
@@ -180,7 +178,6 @@ class CORE_EXPORT QgsGeocoderResult
     void setDescription( const QString &description );
 
   private:
-
     QgsGeocoderResult() = default;
 
     bool mIsValid = false;
@@ -193,7 +190,6 @@ class CORE_EXPORT QgsGeocoderResult
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mViewport;
     QVariantMap mAdditionalAttributes;
-
 };
 
 #endif // QGSGEOCODERRESULT_H

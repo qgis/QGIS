@@ -41,7 +41,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
     Q_OBJECT
 
   public:
-
     QgsMessageLog() = default;
 
     // TODO: Update this code to use std::source_location from C++20 when transitioning to a fully C++20-compliant codebase.
@@ -62,8 +61,16 @@ class CORE_EXPORT QgsMessageLog : public QObject
      *
      * The \a format parameter specifies the message format (since QGIS 4.0).
      */
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
-                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText );
+    static void logMessage(
+      const QString &message,
+      const QString &tag = QString(),
+      Qgis::MessageLevel level = Qgis::MessageLevel::Warning,
+      bool notifyUser = true,
+      const char *file = __builtin_FILE(),
+      const char *function = __builtin_FUNCTION(),
+      int line = __builtin_LINE(),
+      Qgis::StringFormat format = Qgis::StringFormat::PlainText
+    );
 
   signals:
 
@@ -98,13 +105,11 @@ class CORE_EXPORT QgsMessageLog : public QObject
     void messageReceived( bool received );
 
   private:
-
     void emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser = true, Qgis::StringFormat format = Qgis::StringFormat::PlainText );
 
     int mAdviseBlockCount = 0;
 
     friend class QgsMessageLogNotifyBlocker;
-
 };
 
 /**
@@ -123,7 +128,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
 class CORE_EXPORT QgsMessageLogNotifyBlocker
 {
   public:
-
     /**
      * Constructor for QgsMessageLogNotifyBlocker.
      *
@@ -137,7 +141,6 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
     ~QgsMessageLogNotifyBlocker();
 
   private:
-
 #ifdef SIP_RUN
     QgsMessageLogNotifyBlocker( const QgsMessageLogNotifyBlocker &other );
 #endif
@@ -155,14 +158,12 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMessageLogConsole.
      */
     QgsMessageLogConsole();
 
   protected:
-
     /**
      * Formats a log message. Used by child classes.
      *

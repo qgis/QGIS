@@ -24,7 +24,6 @@ Contains details of a child algorithm dependency.
 #include "qgsprocessingmodelchilddependency.h"
 %End
   public:
-
     QgsProcessingModelChildDependency( const QString &childId = QString(), const QString &conditionalBranch = QString() );
 %Docstring
 Constructor for QgsProcessingModelChildDependency, with the specified

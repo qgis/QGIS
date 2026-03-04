@@ -37,9 +37,7 @@ using namespace Qt::StringLiterals;
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
-{
-
-}
+{}
 
 QgsAnnotationManager::~QgsAnnotationManager()
 {
@@ -104,7 +102,9 @@ bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWri
   return readXmlPrivate( element, context, nullptr, QgsCoordinateTransformContext() );
 }
 
-bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
+bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems(
+  const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext
+)
 {
   return readXmlPrivate( element, context, layer, transformContext );
 }
@@ -115,8 +115,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
   //restore each annotation
   bool result = true;
 
-  auto createAnnotationFromElement = [this, &context, layer, &transformContext]( const QDomElement & element )
-  {
+  auto createAnnotationFromElement = [this, &context, layer, &transformContext]( const QDomElement &element ) {
     std::unique_ptr< QgsAnnotation > annotation( createAnnotationFromXml( element, context ) );
     if ( !annotation )
       return;
@@ -143,7 +142,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
   QDomElement annotationsElem = element.firstChildElement( u"Annotations"_s );
 
   QDomElement annotationElement = annotationsElem.firstChildElement( u"Annotation"_s );
-  while ( ! annotationElement.isNull() )
+  while ( !annotationElement.isNull() )
   {
     createAnnotationFromElement( annotationElement );
     annotationElement = annotationElement.nextSiblingElement( u"Annotation"_s );
@@ -179,8 +178,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
 
 std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
 {
-  auto setCommonProperties = [layer, &transformContext]( const QgsAnnotation * source, QgsAnnotationItem * destination ) -> bool
-  {
+  auto setCommonProperties = [layer, &transformContext]( const QgsAnnotation *source, QgsAnnotationItem *destination ) -> bool {
     destination->setEnabled( source->isVisible() );
     if ( source->hasFixedMapPosition() )
     {
@@ -228,29 +226,25 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsDebugError( u"Error transforming annotation position"_s );
     }
 
-    auto item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
-                svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    auto item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG, svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
     if ( !setCommonProperties( annotation, item.get() ) )
       return nullptr;
 
     const QgsMargins margins = svg->contentsMargin();
-    item->setFixedSize( QSizeF( svg->frameSizeMm().width() - margins.left() - margins.right(),
-                                svg->frameSizeMm().height() - margins.top() - margins.bottom() ) );
+    item->setFixedSize( QSizeF( svg->frameSizeMm().width() - margins.left() - margins.right(), svg->frameSizeMm().height() - margins.top() - margins.bottom() ) );
     item->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
 
     if ( svg->hasFixedMapPosition() )
     {
       item->setPlacementMode( Qgis::AnnotationPlacementMode::FixedSize );
 
-      item->setOffsetFromCallout( QSizeF( svg->frameOffsetFromReferencePointMm().x() + margins.left(),
-                                          svg->frameOffsetFromReferencePointMm().y() + margins.top() ) );
+      item->setOffsetFromCallout( QSizeF( svg->frameOffsetFromReferencePointMm().x() + margins.left(), svg->frameOffsetFromReferencePointMm().y() + margins.top() ) );
       item->setOffsetFromCalloutUnit( Qgis::RenderUnit::Millimeters );
     }
     else
     {
       item->setPlacementMode( Qgis::AnnotationPlacementMode::RelativeToMapFrame );
-      item->setBounds( QgsRectangle( svg->relativePosition().x(), svg->relativePosition().y(),
-                                     svg->relativePosition().x(), svg->relativePosition().y() ) );
+      item->setBounds( QgsRectangle( svg->relativePosition().x(), svg->relativePosition().y(), svg->relativePosition().x(), svg->relativePosition().y() ) );
       if ( QgsFillSymbol *fill = svg->fillSymbol() )
       {
         item->setBackgroundEnabled( true );
@@ -282,16 +276,14 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     item->setFormat( format );
 
     const QgsMargins margins = text->contentsMargin();
-    item->setFixedSize( QSizeF( text->frameSizeMm().width() - margins.left() - margins.right(),
-                                text->frameSizeMm().height() - margins.top() - margins.bottom() ) );
+    item->setFixedSize( QSizeF( text->frameSizeMm().width() - margins.left() - margins.right(), text->frameSizeMm().height() - margins.top() - margins.bottom() ) );
     item->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
 
     if ( text->hasFixedMapPosition() )
     {
       item->setPlacementMode( Qgis::AnnotationPlacementMode::FixedSize );
 
-      item->setOffsetFromCallout( QSizeF( text->frameOffsetFromReferencePointMm().x() + margins.left(),
-                                          text->frameOffsetFromReferencePointMm().y() + margins.top() ) );
+      item->setOffsetFromCallout( QSizeF( text->frameOffsetFromReferencePointMm().x() + margins.left(), text->frameOffsetFromReferencePointMm().y() + margins.top() ) );
       item->setOffsetFromCalloutUnit( Qgis::RenderUnit::Millimeters );
       item->setBackgroundEnabled( false );
       item->setFrameEnabled( false );
@@ -299,8 +291,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     else
     {
       item->setPlacementMode( Qgis::AnnotationPlacementMode::RelativeToMapFrame );
-      item->setBounds( QgsRectangle( text->relativePosition().x(), text->relativePosition().y(),
-                                     text->relativePosition().x(), text->relativePosition().y() ) );
+      item->setBounds( QgsRectangle( text->relativePosition().x(), text->relativePosition().y(), text->relativePosition().x(), text->relativePosition().y() ) );
       if ( QgsFillSymbol *fill = text->fillSymbol() )
       {
         item->setBackgroundEnabled( true );

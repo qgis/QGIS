@@ -175,7 +175,7 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
 bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings )
 {
 #ifndef QGISDEBUG
-  ( void )silenceNullWarnings;
+  ( void ) silenceNullWarnings;
 #endif
 
   if ( variant.isNull() || !variant.isValid() )
@@ -629,10 +629,7 @@ QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
 
 QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
 {
-
-  auto _displayString = [ ]( const QVariant & variant, int precision ) -> QString
-  {
-
+  auto _displayString = []( const QVariant &variant, int precision ) -> QString {
     if ( QgsVariantUtils::isNull( variant ) )
     {
       return QgsApplication::nullRepresentation();
@@ -642,8 +639,7 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
     if ( variant.userType() == QMetaType::Type::Double )
     {
       // Locales with decimal point != '.' or that require group separator: use QLocale
-      if ( QLocale().decimalPoint() != '.' ||
-           !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+      if ( QLocale().decimalPoint() != '.' || !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
       {
         if ( precision > 0 )
         {
@@ -670,8 +666,10 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
           }
           else
           {
-            if ( dotPosition < 0 ) precision = 0;
-            else precision = static_cast<int>( str.length() ) - dotPosition - 1;
+            if ( dotPosition < 0 )
+              precision = 0;
+            else
+              precision = static_cast<int>( str.length() ) - dotPosition - 1;
 
             if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
             {
@@ -698,8 +696,7 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
       }
     }
     // Other numeric types than doubles
-    else if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( variant.userType() ) ) &&
-              !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    else if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( variant.userType() ) ) && !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
     {
       bool ok;
       const qlonglong converted( variant.toLongLong( &ok ) );

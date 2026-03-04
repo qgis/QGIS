@@ -22,7 +22,6 @@ Represents an error which occurred during mesh editing.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditingError();
 %Docstring
 Constructor of the default error, that is NoError
@@ -54,7 +53,6 @@ Handles edit operations on a mesh layer.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 %Docstring
 Constructor with a specified layer ``meshLayer``

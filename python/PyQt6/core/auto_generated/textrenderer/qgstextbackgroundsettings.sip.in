@@ -24,7 +24,6 @@ Container for settings relating to a text background object.
 #include "qgstextbackgroundsettings.h"
 %End
   public:
-
     enum ShapeType /BaseType=IntEnum/
     {
       ShapeRectangle,

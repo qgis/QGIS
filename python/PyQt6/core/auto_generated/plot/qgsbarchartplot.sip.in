@@ -28,7 +28,6 @@ A simple bar chart class.
 #include "qgsbarchartplot.h"
 %End
   public:
-
     QgsBarChartPlot();
     ~QgsBarChartPlot();
 

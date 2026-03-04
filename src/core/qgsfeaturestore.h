@@ -73,6 +73,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     int count() const { return mFeatures.size(); }
 
 #ifdef SIP_RUN
+    // clang-format off
 
     /**
      * Returns the number of features contained in the store.
@@ -87,12 +88,16 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns the list of features contained in the store.
      */
-    QgsFeatureList features() const { return mFeatures; }
+        QgsFeatureList features() const
+    {
+      return mFeatures;
+    }
 
     /**
      * Sets a map of optional \a parameters for the store.
@@ -120,6 +125,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 #ifndef SIP_RUN
 typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 #else
+// clang-format off
 typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 
 % MappedType QgsFeatureStoreList
@@ -196,6 +202,7 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
   return sipGetState( sipTransferObj );
   % End
 };
+// clang-format on
 #endif
 
 Q_DECLARE_METATYPE( QgsFeatureStore )

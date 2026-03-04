@@ -221,4 +221,3 @@ QString QgsStringStatisticalSummary::displayName( Qgis::StringStatistic statisti
   }
   return QString();
 }
-

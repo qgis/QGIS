@@ -37,7 +37,7 @@ class QgsPolygon;
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type.
  */
-class CORE_EXPORT QgsCurvePolygon: public QgsSurface
+class CORE_EXPORT QgsCurvePolygon : public QgsSurface
 {
   public:
     QgsCurvePolygon();
@@ -79,20 +79,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
       for ( int i = 0; i < mInteriorRings.count(); ++i )
       {
-        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) ||
-             ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
+        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) || ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
       }
@@ -101,7 +98,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 #endif
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper( other, epsilon, false );
     }
@@ -232,6 +231,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return mInteriorRings.at( i );
     }
 #else
+// clang-format off
 
     /**
      * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
@@ -253,6 +253,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return sipConvertFromType( const_cast< QgsCurve * >( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -288,6 +289,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     bool removeInteriorRing( int ringIndex );
 #else
+// clang-format off
 
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
@@ -310,6 +312,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return PyBool_FromLong( sipCpp->removeInteriorRing( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -462,6 +465,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -470,6 +474,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString str = u"<QgsCurvePolygon: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

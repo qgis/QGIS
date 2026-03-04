@@ -128,7 +128,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 
 #ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 ); // all dims should be the same
   QgsDebugMsgLevel( u"res at lvl0 %1"_s.arg( dx / mSpan ), 2 );
   QgsDebugMsgLevel( u"res at lvl1 %1"_s.arg( dx / mSpan / 2 ), 2 );
   QgsDebugMsgLevel( u"res at lvl2 %1 with node size %2"_s.arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
@@ -168,7 +168,6 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   }
   else
   {
-
     std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
     if ( !blockRequest )
       return nullptr;
@@ -193,8 +192,7 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
     return nullptr; // TODO
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
-    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
-           scale(), offset(), mFilterExpression, request.filterRect() );
+    return new QgsCachedPointCloudBlockRequest( cached, n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
   if ( !fetchNodeHierarchy( n ) )
@@ -207,12 +205,10 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );
+  auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
   int pointCount = mHierarchy.value( n );
 
-  return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes,
-         scale(), offset(), filterExpression, request.filterRect(),
-         blockOffset, blockSize, pointCount, *mLazInfo.get(), mAuthCfg );
+  return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), blockOffset, blockSize, pointCount, *mLazInfo.get(), mAuthCfg );
 }
 
 
@@ -320,7 +316,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 
 QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
 {
-  if ( ! mStatistics )
+  if ( !mStatistics )
   {
     const QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
     if ( statisticsEvlrData.isEmpty() )
@@ -381,18 +377,18 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
 {
   struct CopcVoxelKey
   {
-    int32_t level;
-    int32_t x;
-    int32_t y;
-    int32_t z;
+      int32_t level;
+      int32_t x;
+      int32_t y;
+      int32_t z;
   };
 
   struct CopcEntry
   {
-    CopcVoxelKey key;
-    uint64_t offset;
-    int32_t byteSize;
-    int32_t pointCount;
+      CopcVoxelKey key;
+      uint64_t offset;
+      int32_t byteSize;
+      int32_t pointCount;
   };
 
   QMutexLocker locker( &mHierarchyMutex );
@@ -543,8 +539,7 @@ void QgsCopcPointCloudIndex::reset()
 
 QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
 {
-  return
-  {
+  return {
     { u"CopcGpsTimeFlag"_s, mLazInfo.get()->header().global_encoding & 1 },
   };
 }

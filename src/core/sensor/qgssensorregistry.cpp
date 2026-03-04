@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsSensorRegistry::QgsSensorRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsSensorRegistry::~QgsSensorRegistry()
 {

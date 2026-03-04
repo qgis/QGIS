@@ -49,7 +49,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     Q_OBJECT
 
   private:
-
     /**
      * This is a wrapper class around a cached QgsFeature, which
      * will inform the cache, when it has been deleted, so indexes can be
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     class CORE_EXPORT QgsCachedFeature
     {
       public:
-
         /**
          * Will create a new cached feature.
          *
@@ -80,7 +78,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           // That's the reason we need this wrapper:
           // Inform the cache that this feature has been removed
           mCache->featureRemoved( mFeature->id() );
-
         }
 
         inline const QgsFeature *feature() { return mFeature.get(); }
@@ -149,7 +146,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \see setCacheSubsetOfAttributes()
      * \since QGIS 3.32
      */
-    QgsAttributeList cacheSubsetOfAttributes( ) const;
+    QgsAttributeList cacheSubsetOfAttributes() const;
 
     /**
      * If this is enabled, the subset of cached attributes will automatically be extended
@@ -206,10 +203,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Query the layer for features matching a given expression.
      */
-    inline QgsFeatureIterator getFeatures( const QString &expression )
-    {
-      return getFeatures( QgsFeatureRequest( expression ) );
-    }
+    inline QgsFeatureIterator getFeatures( const QString &expression ) { return getFeatures( QgsFeatureRequest( expression ) ); }
 
     /**
      * Query the layer for the feature with the given id.
@@ -225,18 +219,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Query the layer for the features with the given ids.
      */
-    inline QgsFeatureIterator getFeatures( const QgsFeatureIds &fids )
-    {
-      return getFeatures( QgsFeatureRequest( fids ) );
-    }
+    inline QgsFeatureIterator getFeatures( const QgsFeatureIds &fids ) { return getFeatures( QgsFeatureRequest( fids ) ); }
 
     /**
      * Query the layer for the features which intersect the specified rectangle.
      */
-    inline QgsFeatureIterator getFeatures( const QgsRectangle &rectangle )
-    {
-      return getFeatures( QgsFeatureRequest( rectangle ) );
-    }
+    inline QgsFeatureIterator getFeatures( const QgsRectangle &rectangle ) { return getFeatures( QgsFeatureRequest( rectangle ) ); }
 
     /**
      * Check if a certain feature id is cached.
@@ -319,6 +307,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     Qgis::WkbType wkbType() const;
 
 #ifdef SIP_RUN
+    // clang-format off
 
     /**
      * Returns the number of features contained in the source, or -1
@@ -334,16 +323,16 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    long long featureCount() const;
+      long long featureCount() const;
 
   protected:
-
     /**
      * \brief
      * Gets called, whenever the full list of feature ids for a certain request is known.
@@ -435,7 +424,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void invalidate();
 
   private:
-
     void connectJoinedLayers() const;
 
     inline void cacheFeature( QgsFeature &feat, bool allAttributesFetched, bool geometryFetched = false )

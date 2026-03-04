@@ -24,7 +24,6 @@ to log this feedback or report it to users via the GUI.
 #include "qgsprocessingfeedback.h"
 %End
   public:
-
     QgsProcessingFeedback( bool logFeedback = true );
 %Docstring
 Constructor for QgsProcessingFeedback.
@@ -199,7 +198,6 @@ number of child steps which each report their own feedback.
 #include "qgsprocessingfeedback.h"
 %End
   public:
-
     QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
 %Docstring
 Constructor for QgsProcessingMultiStepFeedback, for a process with the
@@ -252,8 +250,6 @@ If this is not called, all steps are assumed to have equal weight.
     virtual QString textLog() const;
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

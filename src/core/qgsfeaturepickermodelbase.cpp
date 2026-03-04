@@ -188,7 +188,6 @@ int QgsFeaturePickerModelBase::rowCount( const QModelIndex &parent ) const
 }
 
 
-
 QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
@@ -307,8 +306,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b )
-    {
+    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) {
       bool ok = false;
       double aNumericOrderValue = a.orderValue.toDouble( &ok );
       if ( ok )
@@ -334,7 +332,6 @@ void QgsFeaturePickerModelBase::updateCompleter()
       {
         return a.orderValue.localeAwareCompare( b.orderValue ) < 0;
       }
-
     } );
 
     if ( mAllowNull && mSourceLayer )
@@ -608,14 +605,14 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
   const QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
 
-  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(), mExpressionContext );
 
   if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
     const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
     const auto allStyles = layer->conditionalStyles()->fieldStyles( fieldName );
-    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
+    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ), mExpressionContext );
 
     styles += matchingFieldStyles;
   }

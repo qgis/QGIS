@@ -31,7 +31,6 @@
 #define POINTSET_H
 
 
-
 #include <cfloat>
 #include <cmath>
 #include <geos_c.h>
@@ -58,13 +57,13 @@ namespace pal
    */
   struct OrientedConvexHullBoundingBox
   {
-    double x[4] = {0, 0, 0, 0};
-    double y[4] = {0, 0, 0, 0};
+      double x[4] = { 0, 0, 0, 0 };
+      double y[4] = { 0, 0, 0, 0 };
 
-    double alpha = 0;
+      double alpha = 0;
 
-    double width = 0;
-    double length = 0;
+      double width = 0;
+      double length = 0;
   };
 
   /**
@@ -160,10 +159,7 @@ namespace pal
       /**
        * Returns the point set bounding box.
        */
-      QgsRectangle boundingBox() const
-      {
-        return QgsRectangle( xmin, ymin, xmax, ymax );
-      }
+      QgsRectangle boundingBox() const { return QgsRectangle( xmin, ymin, xmax, ymax ); }
 
       /**
        * Returns TRUE if the bounding box of this pointset intersects the bounding box
@@ -228,7 +224,7 @@ namespace pal
 
       int nbPoints;
       std::vector< double > x;
-      std::vector< double > y;   // points order is counterclockwise
+      std::vector< double > y; // points order is counterclockwise
 
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
@@ -261,18 +257,15 @@ namespace pal
       double ymax = std::numeric_limits<double>::lowest();
 
     private:
-
       mutable const GEOSPreparedGeometry *mGeosPreparedBoundary = nullptr;
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
       mutable GEOSGeometry *mMultipartGeos = nullptr;
       mutable const GEOSPreparedGeometry *mMultipartPreparedGeos = nullptr;
 
-      PointSet &operator= ( const PointSet & ) = delete;
-
+      PointSet &operator=( const PointSet & ) = delete;
   };
 
 } // namespace pal
 
 #endif
-

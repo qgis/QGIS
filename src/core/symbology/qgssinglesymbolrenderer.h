@@ -30,7 +30,6 @@ class QgsSymbol;
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     /**
      * Constructor for QgsSingleSymbolRenderer.
      *
@@ -124,7 +123,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
     QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
 #endif
-
 };
 
 

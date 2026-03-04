@@ -24,7 +24,6 @@ Vector layer specific subclass of
 #include "qgsvectorlayerelevationproperties.h"
 %End
   public:
-
     QgsVectorLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsVectorLayerElevationProperties, with the specified

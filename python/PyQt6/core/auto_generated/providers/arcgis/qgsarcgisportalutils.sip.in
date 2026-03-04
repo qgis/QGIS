@@ -24,8 +24,17 @@ Utility functions for working with ArcGIS REST services.
 #include "qgsarcgisportalutils.h"
 %End
   public:
-
-    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantMap retrieveUserInfo(
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 %Docstring
 Retrieves JSON user info for the specified user name.
 
@@ -51,7 +60,16 @@ details will be retrieved
 .. versionadded:: 3.24
 %End
 
- static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantMap retrieveUserInfo(
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0,
+      const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON user info for the specified user name. Only to avoid API
 break.
@@ -77,7 +95,17 @@ details will be retrieved
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveUserGroups(
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name
 is a member of.
@@ -104,7 +132,16 @@ details will be retrieved
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveUserGroups(
+      const QString &communityUrl,
+      const QString &user,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0,
+      const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name
 is a member of. Only to avoid API break.
@@ -130,7 +167,18 @@ details will be retrieved
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveGroupContent(
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0,
+      int pageSize = 100,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``.
@@ -155,7 +203,17 @@ Retrieves JSON definitions for all items which belong the the specified
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveGroupContent(
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``. Only to avoid API break.
@@ -179,9 +237,19 @@ Retrieves JSON definitions for all items which belong the the specified
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveGroupItemsOfType(
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      const QList< int > &itemTypes,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0,
+      int pageSize = 100,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``.
@@ -208,9 +276,18 @@ Retrieves JSON definitions for all items which belong the the specified
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveGroupItemsOfType(
+      const QString &contentUrl,
+      const QString &groupId,
+      const QString &authcfg,
+      const QList< int > &itemTypes,
+      QString &errorTitle /Out/,
+      QString &errorText /Out/,
+      const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0,
+      int pageSize = 100,
+      const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``. Only to avoid API break.

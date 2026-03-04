@@ -30,7 +30,6 @@ but rather accessed through
 #include "qgsrasterrendererregistry.h"
 %End
   public:
-
     QgsRasterRendererRegistry();
 %Docstring
 Constructor for QgsRasterRendererRegistry.

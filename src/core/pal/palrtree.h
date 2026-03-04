@@ -33,11 +33,9 @@
  * \note Not available in Python bindings.
  * \since QGIS 3.12
  */
-template <typename T>
-class PalRtree : public RTree<T *, float, 2, float>
+template<typename T> class PalRtree : public RTree<T *, float, 2, float>
 {
   public:
-
     /**
      * Constructor for PalRtree. The \a maxBounds argument specifies the maximum bounding box
      * for all coordinates which will be stored in the index.
@@ -48,9 +46,7 @@ class PalRtree : public RTree<T *, float, 2, float>
       , mXRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.xMaximum() - maxBounds.xMinimum() ) )
       , mYRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.yMaximum() - maxBounds.yMinimum() ) )
       , mMaxBounds( maxBounds )
-    {
-
-    }
+    {}
 
     /**
      * Inserts new \a data into the spatial index, with the specified \a bounds.
@@ -61,18 +57,9 @@ class PalRtree : public RTree<T *, float, 2, float>
     void insert( T *data, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      const float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      const float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Insert(
-        aMin,
-        aMax,
-        data );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Insert( aMin, aMax, data );
     }
 
     /**
@@ -84,18 +71,9 @@ class PalRtree : public RTree<T *, float, 2, float>
     void remove( T *data, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      const float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      const float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Remove(
-        aMin,
-        aMax,
-        data );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Remove( aMin, aMax, data );
     }
 
     /**
@@ -106,22 +84,13 @@ class PalRtree : public RTree<T *, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function< bool( T *data )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      const float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      const float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Search(
-        aMin, aMax,
-        callback );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Search( aMin, aMax, callback );
       return true;
     }
 
   private:
-
     // Coordinates are scaled inside the index so that they cover the maximum range for float values
     double mXMin = 0;
     double mYMin = 0;
@@ -130,8 +99,7 @@ class PalRtree : public RTree<T *, float, 2, float>
     const QgsRectangle mMaxBounds;
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return
-      {
+      return {
         static_cast< float >( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
         static_cast< float >( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
         static_cast< float >( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
@@ -141,4 +109,3 @@ class PalRtree : public RTree<T *, float, 2, float>
 };
 
 #endif
-

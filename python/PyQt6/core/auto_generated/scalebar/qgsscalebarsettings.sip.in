@@ -21,7 +21,6 @@ Stores the appearance and layout settings for scalebar drawing with
 #include "qgsscalebarsettings.h"
 %End
   public:
-
     QgsScaleBarSettings();
 
     ~QgsScaleBarSettings();
@@ -798,7 +797,6 @@ Ownership of ``format`` is transferred to the settings.
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

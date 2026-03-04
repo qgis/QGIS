@@ -35,7 +35,6 @@ return the 3D extent of a geometry or collection of geometries.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, QgsVector3D, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
 %Docstring
 Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.

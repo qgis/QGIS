@@ -139,10 +139,7 @@ void QgsMapSettings::updateDerived()
   // the ratio indicates that there is more than about 12 significant
   // figures (there are about 16 significant figures in a double).
 
-  if ( extent.width()  > 0 &&
-       extent.height() > 0 &&
-       extent.width()  < 1 &&
-       extent.height() < 1 )
+  if ( extent.width() > 0 && extent.height() > 0 && extent.width() < 1 && extent.height() < 1 )
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
@@ -175,8 +172,7 @@ void QgsMapSettings::updateDerived()
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
-  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(), dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
@@ -198,13 +194,7 @@ void QgsMapSettings::updateDerived()
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   bool ok = true;
-  mMapToPixel.setParameters(
-    mapUnitsPerPixel(),
-    visibleExtent().center().x(),
-    visibleExtent().center().y(),
-    outputSize().width(),
-    outputSize().height(),
-    mRotation, &ok );
+  mMapToPixel.setParameters( mapUnitsPerPixel(), visibleExtent().center().x(), visibleExtent().center().y(), outputSize().width(), outputSize().height(), mRotation, &ok );
 
   mValid = ok;
 
@@ -234,19 +224,15 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( u"Extent: %1"_s.arg( mExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( u"Visible Extent: %1"_s.arg( mVisibleExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( u"Magnification factor: %1"_s.arg( mMagnificationFactor ), 5 );
-
 }
 
 void QgsMapSettings::matchRasterizedRenderingPolicyToFlags()
 {
-  if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-       && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
-  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-            && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
-  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-            && !mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }
 
@@ -325,9 +311,8 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
 
   QList< QgsMapLayer * > result;
 
-  std::function< void( const QList< QgsMapLayer * >& layers ) > expandLayers;
-  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers )
-  {
+  std::function< void( const QList< QgsMapLayer * > &layers ) > expandLayers;
+  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers ) {
     for ( QgsMapLayer *layer : layers )
     {
       if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
@@ -345,8 +330,7 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
   return result;
 }
 
-template<typename T>
-QVector<T> QgsMapSettings::layers() const
+template<typename T> QVector<T> QgsMapSettings::layers() const
 {
   const QList<QgsMapLayer *> actualLayers = _qgis_listQPointerToRaw( mLayers );
 
@@ -366,11 +350,7 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   // filter list, removing null layers and non-spatial layers
   auto filteredList = layers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isSpatial();
-  } ), filteredList.end() );
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) { return !layer || !layer->isSpatial(); } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
 
@@ -747,7 +727,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
 }
 
 
-
 QgsRectangle QgsMapSettings::fullExtent() const
 {
   // reset the map canvas extent since the extent may now be smaller
@@ -784,8 +763,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
     // rectangle a bit. If they are all at zero, do something a bit
     // more crude.
 
-    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
-         fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 && fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
     {
       fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
     }
@@ -826,7 +804,7 @@ void QgsMapSettings::readXml( QDomNode &node )
   // set rotation
   const QDomNode rotationNode = node.namedItem( u"rotation"_s );
   const QString rotationVal = rotationNode.toElement().text();
-  if ( ! rotationVal.isEmpty() )
+  if ( !rotationVal.isEmpty() )
   {
     const double rot = rotationVal.toDouble();
     setRotation( rot );
@@ -841,7 +819,6 @@ void QgsMapSettings::readXml( QDomNode &node )
 }
 
 
-
 void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 {
   // units
@@ -852,9 +829,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 
   // Write current view rotation
   QDomElement rotNode = doc.createElement( u"rotation"_s );
-  rotNode.appendChild(
-    doc.createTextNode( qgsDoubleToString( rotation() ) )
-  );
+  rotNode.appendChild( doc.createTextNode( qgsDoubleToString( rotation() ) ) );
   node.appendChild( rotNode );
 
   // destination CRS
@@ -1001,4 +976,3 @@ void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMa
     mSelectiveMaskingSourceSets.insert( set.id(), set );
   }
 }
-

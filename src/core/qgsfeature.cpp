@@ -56,10 +56,9 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
 
 QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
   : d( rhs.d )
-{
-}
+{}
 
-QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
+QgsFeature &QgsFeature::operator=( const QgsFeature &rhs ) //NOLINT
 {
   if ( &rhs == this )
     return *this;
@@ -68,16 +67,12 @@ QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
   return *this;
 }
 
-bool QgsFeature::operator ==( const QgsFeature &other ) const
+bool QgsFeature::operator==( const QgsFeature &other ) const
 {
   if ( d == other.d )
     return true;
 
-  if ( !( d->fid == other.d->fid
-          && d->valid == other.d->valid
-          && d->fields == other.d->fields
-          && d->attributes == other.d->attributes
-          && d->symbol == other.d->symbol ) )
+  if ( !( d->fid == other.d->fid && d->valid == other.d->valid && d->fields == other.d->fields && d->attributes == other.d->attributes && d->symbol == other.d->symbol ) )
     return false;
 
   // compare geometry
@@ -97,8 +92,7 @@ bool QgsFeature::operator!=( const QgsFeature &other ) const
 }
 
 QgsFeature::~QgsFeature() //NOLINT
-{
-}
+{}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -407,7 +401,7 @@ int QgsFeature::approximateMemoryUsage() const
   // Fields
   s += sizeof( QgsFieldsPrivate );
   // TODO potentially: take into account the length of the name, comment, default value, etc...
-  s += d->fields.size() * ( sizeof( QgsField )  + sizeof( QgsFieldPrivate ) );
+  s += d->fields.size() * ( sizeof( QgsField ) + sizeof( QgsFieldPrivate ) );
 
   return static_cast<int>( s );
 }
@@ -464,4 +458,3 @@ uint qHash( const QgsFeature &key, uint seed )
 
   return hash;
 }
-

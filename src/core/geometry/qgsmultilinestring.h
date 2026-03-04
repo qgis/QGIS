@@ -31,14 +31,15 @@ class QgsLineString;
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  */
-class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
+class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty multilinestring geometry.
      */
     QgsMultiLineString() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for a multilinestring containing the specified \a linestrings.
@@ -67,6 +68,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      */
     QgsLineString *lineStringN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the line string with the specified \a index.
@@ -87,6 +89,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
       return sipConvertFromType( sipCpp->lineStringN( a0 ), sipType_QgsLineString, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -155,6 +158,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -163,6 +167,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QString str = u"<QgsMultiLineString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
     /**

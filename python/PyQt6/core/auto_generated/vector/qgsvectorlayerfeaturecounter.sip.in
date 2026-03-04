@@ -21,7 +21,6 @@ signal :py:func:`QgsVectorLayer.symbolFeatureCountMapChanged()`.
 #include "qgsvectorlayerfeaturecounter.h"
 %End
   public:
-
     QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), bool storeSymbolFids = false );
 %Docstring
 Create a new feature counter for ``layer``.

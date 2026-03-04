@@ -22,7 +22,6 @@ raster band.
 #include "qgsrasterbandstats.h"
 %End
   public:
-
     QgsRasterBandStats();
 
     bool contains( const QgsRasterBandStats &s ) const;

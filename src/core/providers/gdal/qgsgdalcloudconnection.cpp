@@ -132,8 +132,7 @@ QgsGdalCloudProviderConnection::QgsGdalCloudProviderConnection( const QString &n
 
 QgsGdalCloudProviderConnection::QgsGdalCloudProviderConnection( const QString &uri, const QVariantMap &configuration )
   : QgsAbstractProviderConnection( uri, configuration )
-{
-}
+{}
 
 void QgsGdalCloudProviderConnection::store( const QString &name ) const
 {
@@ -152,16 +151,13 @@ QList<QgsGdalCloudProviderConnection::DirectoryObject> QgsGdalCloudProviderConne
 
   if ( !connectionDetails.credentialOptions.isEmpty() )
   {
-    QgsGdalUtils::applyVsiCredentialOptions( connectionDetails.vsiHandler,
-        connectionDetails.container, connectionDetails.credentialOptions );
+    QgsGdalUtils::applyVsiCredentialOptions( connectionDetails.vsiHandler, connectionDetails.container, connectionDetails.credentialOptions );
   }
 
   char **papszOptions = nullptr;
   papszOptions = CSLAddString( papszOptions, "NAME_AND_TYPE_ONLY=YES" );
 
-  const QString vsiPath = u"/%1/%2/%3"_s.arg( connectionDetails.vsiHandler,
-                          connectionDetails.container,
-                          path );
+  const QString vsiPath = u"/%1/%2/%3"_s.arg( connectionDetails.vsiHandler, connectionDetails.container, path );
 
   VSIDIR *dir = VSIOpenDir( vsiPath.toUtf8().constData(), 0, papszOptions );
   if ( !dir )

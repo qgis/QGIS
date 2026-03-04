@@ -50,7 +50,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
 
     //! Alternative constructor.
-    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+    QgsLegendModel( QgsLayerTree *rootNode, QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
@@ -89,7 +89,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void forceRefresh();
 
   private:
-
     /**
      * Pointer to the QgsLayoutItemLegend class that made the model.
      * \since QGIS 3.10
@@ -101,7 +100,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.14
      */
     QString evaluateLayerExpressions( QgsLayerTreeLayer *nodeLayer ) const;
-
 };
 
 #ifndef SIP_RUN
@@ -115,7 +113,6 @@ class CORE_EXPORT QgsLegendFilterProxyModel : public QgsLayerTreeFilterProxyMode
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsLegendFilterProxyModel, with the specified \a parent object.
      */
@@ -137,12 +134,10 @@ class CORE_EXPORT QgsLegendFilterProxyModel : public QgsLayerTreeFilterProxyMode
     void setFilterToCheckedLayers( bool filter );
 
   private:
-
     bool layerShown( QgsMapLayer *layer ) const override;
 
     bool mIsDefaultLegend = true;
     bool mFilterToCheckedLayers = false;
-
 };
 #endif
 
@@ -155,7 +150,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
     /**
      * Settings entry - Layout legend synchronization mode.
      *
@@ -805,8 +799,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QString mThemeName;
 
     friend class QgsCompositionConverter;
-
 };
 
 #endif // QGSLAYOUTITEMLEGEND_H
-

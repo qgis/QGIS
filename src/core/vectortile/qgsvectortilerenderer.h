@@ -123,7 +123,6 @@ class CORE_EXPORT QgsVectorTileRendererData
  */
 class CORE_EXPORT QgsVectorTileRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -133,7 +132,7 @@ class CORE_EXPORT QgsVectorTileRenderer
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -162,7 +161,12 @@ class CORE_EXPORT QgsVectorTileRenderer
      *
      * \since QGIS 3.16
      */
-    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const { Q_UNUSED( context ); Q_UNUSED( tileZoom ); return QSet< QString >() << QString(); }
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( tileZoom );
+      return QSet< QString >() << QString();
+    }
 
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;
@@ -195,7 +199,6 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
     //! Resolves references to other objects - second phase of loading - after readXml()
     virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
-
 };
 
 #endif // QGSVECTORTILERENDERER_H

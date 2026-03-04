@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItemElevationProfile: QgsLayoutItem
+class QgsLayoutItemElevationProfile : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for elevation profile plots.
@@ -21,7 +21,6 @@ A layout item subclass for elevation profile plots.
 #include "qgslayoutitemelevationprofile.h"
 %End
   public:
-
     QgsLayoutItemElevationProfile( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemElevationProfile, with the specified parent
