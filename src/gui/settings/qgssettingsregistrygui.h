@@ -42,6 +42,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry respect screen dpi
     static const QgsSettingsEntryBool *settingsRespectScreenDPI;
 
+    //! Settings entry CAD floater active state
+    static const QgsSettingsEntryBool *settingsCadFloaterActive;
+
 #endif
 };
 
