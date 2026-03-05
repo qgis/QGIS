@@ -21,6 +21,8 @@
 #include "qgssettingsregistry.h"
 
 class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryString;
 
 /**
  * \ingroup gui
@@ -44,6 +46,27 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
     //! Settings entry CAD floater active state
     static const QgsSettingsEntryBool *settingsCadFloaterActive;
+
+    //! Settings entry raster histogram show markers
+    static const QgsSettingsEntryBool *settingsRasterHistogramShowMarkers;
+
+    //! Settings entry raster histogram zoom to min/max
+    static const QgsSettingsEntryBool *settingsRasterHistogramZoomToMinMax;
+
+    //! Settings entry raster histogram update style to min/max
+    static const QgsSettingsEntryBool *settingsRasterHistogramUpdateStyleToMinMax;
+
+    //! Settings entry raster histogram draw lines
+    static const QgsSettingsEntryBool *settingsRasterHistogramDrawLines;
+
+    //! Settings entry zoom factor
+    static const QgsSettingsEntryDouble *settingsZoomFactor;
+
+    //! Settings entry reverse wheel zoom
+    static const QgsSettingsEntryBool *settingsReverseWheelZoom;
+
+    //! Settings entry default raster color ramp palette name
+    static const QgsSettingsEntryString *settingsRasterDefaultPalette;
 
 #endif
 };
