@@ -181,9 +181,7 @@ void Qgs3DMeasureDialog::updateSettings()
 
   mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, "3" ).toInt();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
-  mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
-    settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
-  );
+  mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit( settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString() );
   setupTableHeader();
   mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
 }

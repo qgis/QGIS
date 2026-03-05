@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 class QgsPointCloudAttribute;
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )
   : Qgs3DMapToolPointCloudChangeAttribute( canvas )
-{
-}
+{}
 
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::~Qgs3DMapToolPointCloudChangeAttributePaintbrush() = default;
 

@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
-{
-}
+{}
 
 void QgsDatumTransformTableModel::setTransformContext( const QgsCoordinateTransformContext &context )
 {
@@ -190,9 +189,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
 
-  connect( mTableView, &QTableView::doubleClicked, this, [this]( const QModelIndex &index ) {
-    editDatumTransform( index );
-  } );
+  connect( mTableView, &QTableView::doubleClicked, this, [this]( const QModelIndex &index ) { editDatumTransform( index ); } );
   mEditButton->setEnabled( false );
 }
 
@@ -204,7 +201,8 @@ QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair<int, int>(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
+  QgsDatumTransformDialog
+    dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair<int, int>(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
   if ( dlg.exec() )
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
@@ -235,7 +233,9 @@ void QgsDatumTransformTableWidget::editDatumTransform( const QModelIndex &index 
   const int destinationTransform = -1;
 
   const QgsCoordinateReferenceSystem sourceCrs = QgsCoordinateReferenceSystem( mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::SourceCrsColumn ), Qt::DisplayRole ).toString() );
-  const QgsCoordinateReferenceSystem destinationCrs = QgsCoordinateReferenceSystem( mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::DestinationCrsColumn ), Qt::DisplayRole ).toString() );
+  const QgsCoordinateReferenceSystem destinationCrs = QgsCoordinateReferenceSystem(
+    mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::DestinationCrsColumn ), Qt::DisplayRole ).toString()
+  );
 
   bool allowFallback = true;
   proj = mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::ProjDefinitionColumn ), Qt::UserRole ).toString();
@@ -243,7 +243,8 @@ void QgsDatumTransformTableWidget::editDatumTransform( const QModelIndex &index 
 
   if ( sourceCrs.isValid() && destinationCrs.isValid() )
   {
-    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, Qt::WindowFlags(), proj, QgisApp::instance()->mapCanvas(), allowFallback );
+    QgsDatumTransformDialog
+      dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, Qt::WindowFlags(), proj, QgisApp::instance()->mapCanvas(), allowFallback );
     if ( dlg.exec() )
     {
       const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();

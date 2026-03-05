@@ -91,8 +91,7 @@ void Qgs3DOptionsWidget::apply()
 //
 Qgs3DOptionsFactory::Qgs3DOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "3D" ), QIcon(), u"3d"_s )
-{
-}
+{}
 
 QIcon Qgs3DOptionsFactory::icon() const
 {

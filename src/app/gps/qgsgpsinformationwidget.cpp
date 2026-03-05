@@ -118,18 +118,20 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mpSatellitesWidget->setAutoReplot( false );                                                                        // plot on demand (after all data has been handled)
   mpSatellitesWidget->setPlotBackground( Qt::white );
   // scales
-  mpSatellitesWidget->setScale( QwtPolar::ScaleAzimuth,
-                                360, // min - reverse the min/max values to get compass orientation - increasing clockwise
-                                0,   // max
-                                90   // interval - just show cardinal and intermediate (NE, N, NW, etc.) compass points (in degrees)
+  mpSatellitesWidget->setScale(
+    QwtPolar::ScaleAzimuth,
+    360, // min - reverse the min/max values to get compass orientation - increasing clockwise
+    0,   // max
+    90   // interval - just show cardinal and intermediate (NE, N, NW, etc.) compass points (in degrees)
   );
   mpSatellitesWidget->setAzimuthOrigin( M_PI_2 ); // to get compass orientation - need to rotate 90 deg. ccw; this is in Radians (not indicated in QwtPolarPlot docs)
 
   // mpSatellitesWidget->setScaleMaxMinor( QwtPolar::ScaleRadius, 2 );  // seems unnecessary
-  mpSatellitesWidget->setScale( QwtPolar::ScaleRadius,
-                                90, // min - reverse the min/max to get 0 at edge, 90 at center
-                                0,  // max
-                                45  // interval
+  mpSatellitesWidget->setScale(
+    QwtPolar::ScaleRadius,
+    90, // min - reverse the min/max to get 0 at edge, 90 at center
+    0,  // max
+    45  // interval
   );
 
   // grids, axes
@@ -560,15 +562,16 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       mTxt3Dacc->setEnabled( false );
       mTxt3Dacc->setText( tr( "Not available" ) );
     }
-    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" )
-                                                                                        : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
-    mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" )
-                                                         : info.fixType == 1 ? tr( "No fix" )
-                                                                             : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
+    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
+    mTxtFixType->setText(
+      info.fixType == 3   ? tr( "3D" )
+      : info.fixType == 2 ? tr( "2D" )
+      : info.fixType == 1 ? tr( "No fix" )
+                          : QString::number( info.fixType )
+    ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
     mTxtSatellitesUsed->setText( tr( "%1 used (%2 in view)" ).arg( info.satellitesUsed ).arg( info.satellitesInView.size() ) );
-    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" )
-                                                                                 : tr( "Other (%1)" ).arg( info.status ) );
+    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : tr( "Other (%1)" ).arg( info.status ) );
   }
 
   if ( mLastGpsPosition != myNewCenter )

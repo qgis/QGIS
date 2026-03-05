@@ -237,14 +237,25 @@ QString QgsPoint3DSymbolWidget::symbolType() const
 void QgsPoint3DSymbolWidget::onShapeChanged()
 {
   QList<QWidget *> allWidgets;
-  allWidgets << labelSize << spinSize
-             << labelRadius << spinRadius
-             << labelMinorRadius << spinMinorRadius
-             << labelTopRadius << spinTopRadius
-             << labelBottomRadius << spinBottomRadius
-             << labelLength << spinLength
-             << labelModel << lineEditModel
-             << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
+  allWidgets
+    << labelSize
+    << spinSize
+    << labelRadius
+    << spinRadius
+    << labelMinorRadius
+    << spinMinorRadius
+    << labelTopRadius
+    << spinTopRadius
+    << labelBottomRadius
+    << spinBottomRadius
+    << labelLength
+    << spinLength
+    << labelModel
+    << lineEditModel
+    << labelBillboardHeight
+    << spinBillboardHeight
+    << labelBillboardSymbol
+    << btnChangeSymbol;
 
   materialsGroupBox->show();
   transformationWidget->show();

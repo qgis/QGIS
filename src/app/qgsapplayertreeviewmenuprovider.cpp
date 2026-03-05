@@ -68,8 +68,7 @@ using namespace Qt::StringLiterals;
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
   , mCanvas( canvas )
-{
-}
+{}
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
@@ -208,14 +207,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer || vectorTileLayer || meshLayer || rlayer )
       {
-        const QString iconName = vectorTileLayer || ( vlayer && vlayer->labeling() && vlayer->labeling()->type() == "rule-based"_L1 )
-                                   ? u"labelingRuleBased.svg"_s
-                                   : u"labelingSingle.svg"_s;
+        const QString iconName = vectorTileLayer || ( vlayer && vlayer->labeling() && vlayer->labeling()->type() == "rule-based"_L1 ) ? u"labelingRuleBased.svg"_s : u"labelingSingle.svg"_s;
         QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
-        actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled() : meshLayer ? meshLayer->labelsEnabled()
-                                                                                         : rlayer    ? rlayer->labelsEnabled()
-                                                                                                     : vlayer->labelsEnabled() );
+        actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled() : meshLayer ? meshLayer->labelsEnabled() : rlayer ? rlayer->labelsEnabled() : vlayer->labelsEnabled() );
         connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
         menu->addAction( actionShowLabels );
       }
@@ -231,7 +226,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer && mView->selectedLayerNodes().count() == 1 )
       {
-        QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( u"/mActionZoomActual.svg"_s ), tr( "Zoom to Nat&ive Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
+        QAction *zoomToNative
+          = menu->addAction( QgsApplication::getThemeIcon( u"/mActionZoomActual.svg"_s ), tr( "Zoom to Nat&ive Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
         zoomToNative->setEnabled( rlayer->isValid() );
 
         if ( rlayer->rasterType() != Qgis::RasterLayerType::Palette )
@@ -410,7 +406,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator()->setObjectName( "LayerSeparator"_L1 );
 
       // duplicate layer
-      QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( u"/mActionDuplicateLayer.svg"_s ), tr( "&Duplicate Layer" ), QgisApp::instance(), [] { QgisApp::instance()->duplicateLayers(); } );
+      QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( u"/mActionDuplicateLayer.svg"_s ), tr( "&Duplicate Layer" ), QgisApp::instance(), [] {
+        QgisApp::instance()->duplicateLayers();
+      } );
       QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( u"/mActionRemoveLayer.svg"_s ), tr( "&Remove Layer…" ), QgisApp::instance(), &QgisApp::removeLayer );
       removeAction->setEnabled( removeActionEnabled() );
 
@@ -500,9 +498,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
         else
         {
-          connect( a, &QAction::triggered, this, [layer] {
-            QgisApp::instance()->changeDataSource( layer );
-          } );
+          connect( a, &QAction::triggered, this, [layer] { QgisApp::instance()->changeDataSource( layer ); } );
         }
         menu->addAction( a );
       }
@@ -580,9 +576,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
         }
 
-        QAction *actionCurrentCrs = new QAction( !allSameCrs ? tr( "Mixed CRS" ) : layer->crs().isValid() ? layer->crs().userFriendlyIdentifier()
-                                                                                                          : tr( "No CRS" ),
-                                                 menuSetCRS );
+        QAction *actionCurrentCrs = new QAction( !allSameCrs ? tr( "Mixed CRS" ) : layer->crs().isValid() ? layer->crs().userFriendlyIdentifier() : tr( "No CRS" ), menuSetCRS );
         actionCurrentCrs->setEnabled( false );
         menuSetCRS->addAction( actionCurrentCrs );
 
@@ -605,9 +599,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               continue;
 
             QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
-            connect( action, &QAction::triggered, this, [this, crs] {
-              setLayerCrs( crs );
-            } );
+            connect( action, &QAction::triggered, this, [this, crs] { setLayerCrs( crs ); } );
 
             i++;
             if ( i == 5 )
@@ -870,15 +862,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             const QString layerId = vlayer->id();
 
             QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menuStyleManager );
-            connect( editSymbolAction, &QAction::triggered, this, [this, layerId] {
-              editVectorSymbol( layerId );
-            } );
+            connect( editSymbolAction, &QAction::triggered, this, [this, layerId] { editVectorSymbol( layerId ); } );
             menuStyleManager->addAction( editSymbolAction );
 
             QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), menuStyleManager );
-            connect( copySymbolAction, &QAction::triggered, this, [this, layerId] {
-              copyVectorSymbol( layerId );
-            } );
+            connect( copySymbolAction, &QAction::triggered, this, [this, layerId] { copyVectorSymbol( layerId ); } );
             menuStyleManager->addAction( copySymbolAction );
 
             bool enablePaste = false;
@@ -887,9 +875,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               enablePaste = true;
 
             QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menuStyleManager );
-            connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId] {
-              pasteVectorSymbol( layerId );
-            } );
+            connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId] { pasteVectorSymbol( layerId ); } );
             pasteSymbolAction->setEnabled( enablePaste );
             menuStyleManager->addAction( pasteSymbolAction );
           }
@@ -913,15 +899,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
         QAction *notes = new QAction( QgsLayerNotesUtils::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
-        connect( notes, &QAction::triggered, this, [layer] {
-          QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
-        } );
+        connect( notes, &QAction::triggered, this, [layer] { QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() ); } );
         menu->addAction( notes );
         if ( QgsLayerNotesUtils::layerHasNotes( layer ) )
         {
           QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
           connect( notes, &QAction::triggered, this, [layer] {
-            if ( QMessageBox::question( QgisApp::instance(), tr( "Remove Layer Notes" ), tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+            if ( QMessageBox::
+                   question( QgisApp::instance(), tr( "Remove Layer Notes" ), tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+                 == QMessageBox::Yes )
             {
               QgsLayerNotesUtils::removeNotes( layer );
               QgsProject::instance()->setDirty( true );
@@ -1053,16 +1039,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->type() == Qgis::LayerType::Vector )
       {
         QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menu );
-        connect( editSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] {
-          editSymbolLegendNodeSymbol( layerId, ruleKey );
-        } );
+        connect( editSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] { editSymbolLegendNodeSymbol( layerId, ruleKey ); } );
         menu->addAction( editSymbolAction );
       }
 
       QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), menu );
-      connect( copySymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] {
-        copySymbolLegendNodeSymbol( layerId, ruleKey );
-      } );
+      connect( copySymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] { copySymbolLegendNodeSymbol( layerId, ruleKey ); } );
       menu->addAction( copySymbolAction );
 
       if ( layer && layer->type() == Qgis::LayerType::Vector )
@@ -1073,9 +1055,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           enablePaste = true;
 
         QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menu );
-        connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] {
-          pasteSymbolLegendNodeSymbol( layerId, ruleKey );
-        } );
+        connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey] { pasteSymbolLegendNodeSymbol( layerId, ruleKey ); } );
         pasteSymbolAction->setEnabled( enablePaste );
         menu->addAction( pasteSymbolAction );
       }
@@ -1093,8 +1073,7 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction *action, con
 bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction *action )
 {
   QMap<Qgis::LayerType, QList<LegendLayerAction>>::iterator it;
-  for ( it = mLegendLayerActionMap.begin();
-        it != mLegendLayerActionMap.end(); ++it )
+  for ( it = mLegendLayerActionMap.begin(); it != mLegendLayerActionMap.end(); ++it )
   {
     for ( int i = 0; i < it->count(); i++ )
     {
@@ -1116,8 +1095,7 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction *act
   if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
-  const QMap<Qgis::LayerType, QList<LegendLayerAction>>::iterator it
-    = mLegendLayerActionMap.find( layer->type() );
+  const QMap<Qgis::LayerType, QList<LegendLayerAction>>::iterator it = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
     if ( ( *it )[i].action == action )
@@ -1133,8 +1111,7 @@ void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLa
   if ( !layer || !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
-  const QMap<Qgis::LayerType, QList<LegendLayerAction>>::iterator it
-    = mLegendLayerActionMap.find( layer->type() );
+  const QMap<Qgis::LayerType, QList<LegendLayerAction>>::iterator it = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
     ( *it )[i].layers.removeAll( layer );

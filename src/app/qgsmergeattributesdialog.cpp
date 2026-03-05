@@ -40,21 +40,22 @@
 
 using namespace Qt::StringLiterals;
 
-const QList<Qgis::Statistic> QgsMergeAttributesDialog::DISPLAY_STATS = QList<Qgis::Statistic>() << Qgis::Statistic::Count
-                                                                                                << Qgis::Statistic::Sum
-                                                                                                << Qgis::Statistic::Mean
-                                                                                                << Qgis::Statistic::Median
-                                                                                                << Qgis::Statistic::StDev
-                                                                                                << Qgis::Statistic::StDevSample
-                                                                                                << Qgis::Statistic::Min
-                                                                                                << Qgis::Statistic::Max
-                                                                                                << Qgis::Statistic::Range
-                                                                                                << Qgis::Statistic::Minority
-                                                                                                << Qgis::Statistic::Majority
-                                                                                                << Qgis::Statistic::Variety
-                                                                                                << Qgis::Statistic::FirstQuartile
-                                                                                                << Qgis::Statistic::ThirdQuartile
-                                                                                                << Qgis::Statistic::InterQuartileRange;
+const QList<Qgis::Statistic> QgsMergeAttributesDialog::DISPLAY_STATS = QList<Qgis::Statistic>()
+                                                                       << Qgis::Statistic::Count
+                                                                       << Qgis::Statistic::Sum
+                                                                       << Qgis::Statistic::Mean
+                                                                       << Qgis::Statistic::Median
+                                                                       << Qgis::Statistic::StDev
+                                                                       << Qgis::Statistic::StDevSample
+                                                                       << Qgis::Statistic::Min
+                                                                       << Qgis::Statistic::Max
+                                                                       << Qgis::Statistic::Range
+                                                                       << Qgis::Statistic::Minority
+                                                                       << Qgis::Statistic::Majority
+                                                                       << Qgis::Statistic::Variety
+                                                                       << Qgis::Statistic::FirstQuartile
+                                                                       << Qgis::Statistic::ThirdQuartile
+                                                                       << Qgis::Statistic::InterQuartileRange;
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, bool skipAll, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -195,7 +196,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
     mTableWidget->setHorizontalHeaderItem( col, item );
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type(), col );
-    if ( ( !mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) && mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) || mHiddenAttributes.contains( idx ) )
+    if ( ( !mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) && mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+         || mHiddenAttributes.contains( idx ) )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );
     }
@@ -612,7 +614,8 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
     if ( !currentComboBox )
       continue;
 
-    if ( !mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mVectorLayer->fields().fieldOriginIndex( i ) ) && mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( !mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mVectorLayer->fields().fieldOriginIndex( i ) )
+         && mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       currentComboBox->setCurrentIndex( currentComboBox->findData( u"skip"_s ) );
     }
@@ -820,9 +823,7 @@ void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
   }
 
   //finally remove the feature from mFeatureList
-  for ( QgsFeatureList::iterator f_it = mFeatureList.begin();
-        f_it != mFeatureList.end();
-        ++f_it )
+  for ( QgsFeatureList::iterator f_it = mFeatureList.begin(); f_it != mFeatureList.end(); ++f_it )
   {
     if ( f_it->id() == mTargetFeatureId )
       mTargetFeatureId = FID_NULL;

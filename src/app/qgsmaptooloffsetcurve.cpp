@@ -114,7 +114,8 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         if ( hasZ || hasM )
         {
-          emit messageEmitted( u"layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool."_s.arg( mSourceLayer->name(), hasZ ? u"Z"_s : QString(), hasZ && hasM ? u"/"_s : QString(), hasM ? u"M"_s : QString() ), Qgis::MessageLevel::Warning );
+          emit
+            messageEmitted( u"layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool."_s.arg( mSourceLayer->name(), hasZ ? u"Z"_s : QString(), hasZ && hasM ? u"/"_s : QString(), hasM ? u"M"_s : QString() ), Qgis::MessageLevel::Warning );
         }
       }
     }
@@ -359,7 +360,8 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || mModifiedGeometry.isEmpty() )
   {
-    const QString errorMessage = ( mModifiedGeometry.isEmpty() ) ? tr( "The feature cannot be modified because the resulting geometry would be empty" ) : tr( "An error was reported during intersection removal" );
+    const QString errorMessage = ( mModifiedGeometry.isEmpty() ) ? tr( "The feature cannot be modified because the resulting geometry would be empty" )
+                                                                 : tr( "An error was reported during intersection removal" );
 
     emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
     destLayer->destroyEditCommand();
@@ -715,10 +717,22 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mOffsetSpinBox->installEventFilter( this );
   connect( mOffsetSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetChanged );
 
-  connect( mJoinStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( static_cast< Qgis::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
-  connect( mQuadrantSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, [this]( const int quadSegments ) { QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( quadSegments ); emit offsetConfigChanged(); } );
-  connect( mMiterLimitSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double miterLimit ) { QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->setValue( miterLimit ); emit offsetConfigChanged(); } );
-  connect( mCapStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->setValue( static_cast< Qgis::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mJoinStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
+    QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( static_cast< Qgis::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) );
+    emit offsetConfigChanged();
+  } );
+  connect( mQuadrantSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, [this]( const int quadSegments ) {
+    QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( quadSegments );
+    emit offsetConfigChanged();
+  } );
+  connect( mMiterLimitSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double miterLimit ) {
+    QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->setValue( miterLimit );
+    emit offsetConfigChanged();
+  } );
+  connect( mCapStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
+    QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->setValue( static_cast< Qgis::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) );
+    emit offsetConfigChanged();
+  } );
 
   const bool showAdvanced = QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced->value();
   mShowAdvancedButton->setChecked( showAdvanced );

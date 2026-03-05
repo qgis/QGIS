@@ -70,8 +70,7 @@ void QgsMapToolMeasureBearing::canvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
 }
 

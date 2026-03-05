@@ -113,9 +113,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
         {
           auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
           terrain->setLayer( rasterLayer );
-          QgsProject::instance()->elevationProperties()->setTerrainProvider(
-            terrain.release()
-          );
+          QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
         }
       }
 
@@ -227,15 +225,17 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       {
         if ( vpcProvider->containsUnsupportedFiles() )
         {
-          QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
+          QgsMessageBarItem *barItem
+            = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
           QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
           barItem->setWidget( button );
           QObject::connect( button, &QPushButton::clicked, barItem, [barItem, layer]() {
-            const QString message = QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() )
-                                    + u"\n"_s
-                                    + QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format." )
-                                    + u"\n\n"_s
-                                    + QObject::tr( "You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." );
+            const QString message
+              = QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() )
+                + u"\n"_s
+                + QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format." )
+                + u"\n\n"_s
+                + QObject::tr( "You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." );
 
             QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
             dialog->setTitle( QObject::tr( "Unsupported files in VPC layer" ) );
@@ -451,10 +451,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
 
     QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s )->querySublayers( uri, Qgis::SublayerQueryFlag::IncludeSystemTables );
     // filter out non-vector sublayers
-    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) {
-                       return sublayer.type() != Qgis::LayerType::Vector;
-                     } ),
-                     sublayers.end() );
+    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) { return sublayer.type() != Qgis::LayerType::Vector; } ), sublayers.end() );
 
     cursorOverride.reset();
 
@@ -494,10 +491,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
               // requery sublayers, resolving geometry types
               sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
               // filter out non-vector sublayers
-              sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) {
-                                 return sublayer.type() != Qgis::LayerType::Vector;
-                               } ),
-                               sublayers.end() );
+              sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) { return sublayer.type() != Qgis::LayerType::Vector; } ), sublayers.end() );
             }
             break;
           }
@@ -518,7 +512,9 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( uri );
       // If the failed layer was a vsicurl type, give the user a chance to try the normal download.
-      if ( isVsiCurl && QMessageBox::question( QgisApp::instance(), QObject::tr( "Invalid Data Source" ), QObject::tr( "Download with \"Protocol\" source type has failed, do you want to try the \"File\" source type?" ) ) == QMessageBox::Yes )
+      if ( isVsiCurl
+           && QMessageBox::question( QgisApp::instance(), QObject::tr( "Invalid Data Source" ), QObject::tr( "Download with \"Protocol\" source type has failed, do you want to try the \"File\" source type?" ) )
+                == QMessageBox::Yes )
       {
         QString fileUri = uri;
         fileUri.replace( "/vsicurl/"_L1, " " );
@@ -563,19 +559,16 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
   return addedLayers;
 }
 
-template<typename L>
-std::unique_ptr<L> createLayer( const QString &uri, const QString &name, const QString &provider )
+template<typename L> std::unique_ptr<L> createLayer( const QString &uri, const QString &name, const QString &provider )
 {
   return std::make_unique<L>( uri, name, provider );
 }
-template<>
-std::unique_ptr<QgsVectorTileLayer> createLayer( const QString &uri, const QString &name, const QString & )
+template<> std::unique_ptr<QgsVectorTileLayer> createLayer( const QString &uri, const QString &name, const QString & )
 {
   const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
   return std::make_unique<QgsVectorTileLayer>( uri, name, options );
 }
-template<>
-std::unique_ptr<QgsPluginLayer> createLayer( const QString &uri, const QString &name, const QString &provider )
+template<> std::unique_ptr<QgsPluginLayer> createLayer( const QString &uri, const QString &name, const QString &provider )
 {
   std::unique_ptr<QgsPluginLayer> layer( QgsApplication::pluginLayerRegistry()->createLayer( provider, uri ) );
   if ( !layer )
@@ -585,8 +578,7 @@ std::unique_ptr<QgsPluginLayer> createLayer( const QString &uri, const QString &
   return layer;
 }
 
-template<typename L>
-L *QgsAppLayerHandling::addLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid )
+template<typename L> L *QgsAppLayerHandling::addLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -635,10 +627,11 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
   QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
   // filter out non-matching sublayers
-  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
-                     return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
-                   } ),
-                   sublayers.end() );
+  sublayers.erase(
+    std::
+      remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) { return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() ); } ),
+    sublayers.end()
+  );
 
   if ( sublayers.empty() )
     return false;
@@ -671,10 +664,12 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
         {
           // requery sublayers, resolving geometry types
           sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
-          sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
-                             return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
-                           } ),
-                           sublayers.end() );
+          sublayers.erase(
+            std::remove_if(
+              sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) { return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() ); }
+            ),
+            sublayers.end()
+          );
         }
         break;
       }
@@ -1143,10 +1138,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
 
     // if needed prompt for zipitem layers
     const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uri );
-    if ( ( !uri.startsWith( "/vsi"_L1, Qt::CaseInsensitive )
-           || uri.endsWith( ".zip"_L1 )
-           || uri.endsWith( ".tar"_L1 ) )
-         && QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
+    if ( ( !uri.startsWith( "/vsi"_L1, Qt::CaseInsensitive ) || uri.endsWith( ".zip"_L1 ) || uri.endsWith( ".tar"_L1 ) ) && QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     {
       if ( askUserForZipItemLayers( uri, { Qgis::LayerType::Raster } ) )
         continue;
@@ -1352,14 +1344,13 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addDatabaseLayers( const QStringList &
     else
     {
       QgsMessageLog::logMessage( QObject::tr( "%1 is an invalid layer - not loaded" ).arg( layerPath ) );
-      QLabel *msgLabel = new QLabel( QObject::tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).arg( layerPath ), QgisApp::instance()->messageBar() );
+      QLabel *msgLabel
+        = new QLabel( QObject::tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).arg( layerPath ), QgisApp::instance()->messageBar() );
       msgLabel->setWordWrap( true );
 
       if ( providerKey == "postgres"_L1 )
       {
-        QObject::connect( msgLabel, &QLabel::linkActivated, QgisApp::instance(), [] {
-          QgisApp::instance()->openMessageLog( QObject::tr( "PostGIS" ) );
-        } );
+        QObject::connect( msgLabel, &QLabel::linkActivated, QgisApp::instance(), [] { QgisApp::instance()->openMessageLog( QObject::tr( "PostGIS" ) ); } );
       }
       else
       {
@@ -1390,8 +1381,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addDatabaseLayers( const QStringList &
   return myList;
 }
 
-template<typename T>
-QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings, bool addToLegend )
+template<typename T> QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings, bool addToLegend )
 {
   QgsSettings settings;
 
@@ -1430,10 +1420,7 @@ QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QSt
     QList<QgsProviderSublayerDetails> sublayers = providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
     // filter out non-matching sublayers
-    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails &sublayer ) {
-                       return sublayer.type() != type;
-                     } ),
-                     sublayers.end() );
+    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails &sublayer ) { return sublayer.type() != type; } ), sublayers.end() );
 
     if ( sublayers.empty() )
     {
@@ -1529,7 +1516,9 @@ QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QSt
   return result;
 }
 
-const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags )
+const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
+  QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags
+)
 {
   QList<QgsVectorLayerRef> brokenDependencies;
 
@@ -1610,8 +1599,7 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
         bool refFound = false;
         for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
         {
-          if ( ( !dependency.layerId.isEmpty() && dependency.layerId == otherRef.layerId )
-               || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
+          if ( ( !dependency.layerId.isEmpty() && dependency.layerId == otherRef.layerId ) || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
           {
             refFound = true;
             break;
@@ -1727,7 +1715,9 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
       }
       else if ( !( dependencyFlags & DependencyFlag::SilentLoad ) )
       {
-        QgisApp::instance()->messageBar()->pushSuccess( QObject::tr( "Missing layer form dependency" ), QObject::tr( "Layer dependency '%2' required by '%1' was automatically loaded." ).arg( vl->name(), loadedLayer->name() ) );
+        QgisApp::instance()
+          ->messageBar()
+          ->pushSuccess( QObject::tr( "Missing layer form dependency" ), QObject::tr( "Layer dependency '%2' required by '%1' was automatically loaded." ).arg( vl->name(), loadedLayer->name() ) );
       }
     }
   }
@@ -1866,12 +1856,7 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
       QgsSettings settings;
       const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-      filePath = QFileDialog::getOpenFileName(
-        nullptr,
-        QObject::tr( "Load Layer Properties from Style File" ),
-        lastUsedDir,
-        QObject::tr( "QGIS Layer Style File" ) + u" (*.qml)"_s
-      );
+      filePath = QFileDialog::getOpenFileName( nullptr, QObject::tr( "Load Layer Properties from Style File" ), lastUsedDir, QObject::tr( "QGIS Layer Style File" ) + u" (*.qml)"_s );
       if ( filePath.isEmpty() )
         return;
 
@@ -1927,9 +1912,7 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
     QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
     barItem->setWidget( button );
     QObject::connect( button, &QPushButton::clicked, barItem, [barItem, failedLayers]() {
-      const QString message = QObject::tr( "Could not load style for layers." )
-                              + u"\n\n"_s
-                              + QObject::tr( "Layers where style loading failed:  %1." ).arg( failedLayers.join( ", " ) );
+      const QString message = QObject::tr( "Could not load style for layers." ) + u"\n\n"_s + QObject::tr( "Layers where style loading failed:  %1." ).arg( failedLayers.join( ", " ) );
 
       QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
       dialog->setTitle( QObject::tr( "Load Style" ) );

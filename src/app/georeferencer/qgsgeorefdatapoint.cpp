@@ -23,7 +23,9 @@
 
 #include "moc_qgsgeorefdatapoint.cpp"
 
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )
+QgsGeorefDataPoint::QgsGeorefDataPoint(
+  QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled
+)
   : mSrcCanvas( srcCanvas )
   , mDstCanvas( dstCanvas )
   , mGcpPoint( sourceCoordinates, destinationPoint, destinationPointCrs, enabled )
@@ -50,8 +52,7 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   , mGcpPoint( p.mGcpPoint )
   , mId( p.id() )
   , mResidual( p.residual() )
-{
-}
+{}
 
 QgsGeorefDataPoint::~QgsGeorefDataPoint()
 {
