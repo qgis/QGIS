@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 QgsReportSectionModel::QgsReportSectionModel( QgsReport *report, QObject *parent )
   : QAbstractItemModel( parent )
   , mReport( report )
-{
-}
+{}
 
 Qt::ItemFlags QgsReportSectionModel::flags( const QModelIndex &index ) const
 {

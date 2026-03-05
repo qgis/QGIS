@@ -43,16 +43,13 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   QString symbolPath;
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-    symbolPath = u"%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3"_s
-                   .arg( getenv( "QGIS_PREFIX_PATH" ) )
+    symbolPath = u"%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3"_s.arg( getenv( "QGIS_PREFIX_PATH" ) )
                    .arg( QSysInfo::WordSize == 64 ? u"x86_64"_s : u"x86"_s )
                    .arg( QFileInfo( getenv( "QGIS_PREFIX_PATH" ) ).baseName() );
   }
   else
   {
-    symbolPath = u"%1;%2;http://msdl.microsoft.com/download/symbols"_s
-                   .arg( getenv( "QGIS_PDB_PATH" ) )
-                   .arg( QgsApplication::applicationDirPath() );
+    symbolPath = u"%1;%2;http://msdl.microsoft.com/download/symbols"_s.arg( getenv( "QGIS_PDB_PATH" ) ).arg( QgsApplication::applicationDirPath() );
   }
 
   QString ptrStr = QString( "0x%1" ).arg( ( quintptr ) exception, QT_POINTER_SIZE * 2, 16, QChar( '0' ) );
@@ -86,9 +83,7 @@ void QgsCrashHandler::handleCrash( int processID, int threadID, const QString &s
 
   if ( QString( Qgis::devVersion() ) == "exported"_L1 )
   {
-    reportData.append( u"QGIS code branch: Release %1.%2"_s
-                         .arg( Qgis::versionInt() / 10000 )
-                         .arg( Qgis::versionInt() / 100 % 100 ) );
+    reportData.append( u"QGIS code branch: Release %1.%2"_s.arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ) );
   }
   else
   {

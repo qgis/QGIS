@@ -44,17 +44,12 @@ struct Vertex
     Vertex( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId )
       : layer( layer )
       , fid( fid )
-      , vertexId( vertexId ) {}
+      , vertexId( vertexId )
+    {}
 
     // TODO c++20 - replace with = default
-    bool operator==( const Vertex &other ) const
-    {
-      return layer == other.layer && fid == other.fid && vertexId == other.vertexId;
-    }
-    bool operator!=( const Vertex &other ) const
-    {
-      return !operator==( other );
-    }
+    bool operator==( const Vertex &other ) const { return layer == other.layer && fid == other.fid && vertexId == other.vertexId; }
+    bool operator!=( const Vertex &other ) const { return !operator==( other ); }
 
     QgsVectorLayer *layer = nullptr;
     QgsFeatureId fid;

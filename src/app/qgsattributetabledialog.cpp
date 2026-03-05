@@ -174,7 +174,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeTable );
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeForm );
   mActionAddFeature->setIcon(
-    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == u"attributeForm"_s ? mActionAddFeatureViaAttributeForm->icon() : mActionAddFeatureViaAttributeTable->icon()
+    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == "attributeForm"_L1 ? mActionAddFeatureViaAttributeForm->icon() : mActionAddFeatureViaAttributeTable->icon()
   );
 
   // Fix selection color on losing focus (Windows)

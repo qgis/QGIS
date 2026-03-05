@@ -80,12 +80,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinHorizontal->setClearValue( 0 );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  wgtUnitSelection->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::Percentage, Qgis::RenderUnit::Pixels } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled

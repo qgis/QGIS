@@ -90,8 +90,7 @@ void QgsRenderingOptionsWidget::apply()
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), u"rendering"_s )
-{
-}
+{}
 
 QIcon QgsRenderingOptionsFactory::icon() const
 {

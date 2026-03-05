@@ -91,9 +91,7 @@ void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance,
   Qgis::DistanceUnit distanceUnit = mCrs.mapUnits();
   const Qgis::DistanceUnit projectUnit = QgsProject::instance()->distanceUnits();
 
-  if ( projectUnit != distanceUnit
-       && QgsUnitTypes::unitType( distanceUnit ) == Qgis::DistanceUnitType::Standard
-       && QgsUnitTypes::unitType( projectUnit ) == Qgis::DistanceUnitType::Standard )
+  if ( projectUnit != distanceUnit && QgsUnitTypes::unitType( distanceUnit ) == Qgis::DistanceUnitType::Standard && QgsUnitTypes::unitType( projectUnit ) == Qgis::DistanceUnitType::Standard )
   {
     // convert distance to desired project units. We can only do this if neither the crs units nor the project units are geographic!
     distance *= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, projectUnit );
@@ -155,9 +153,7 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
     mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
     mDialog->show();
   } );
-  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [this] {
-    clear();
-  } );
+  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [this] { clear(); } );
 }
 
 QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure()

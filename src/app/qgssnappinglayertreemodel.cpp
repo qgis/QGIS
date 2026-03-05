@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
   , mCanvas( canvas )
-{
-}
+{}
 
 QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -201,9 +200,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
     }
   }
-  else if (
-    index.column() == QgsSnappingLayerTreeModel::UnitsColumn
-  )
+  else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )

@@ -208,14 +208,31 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast<int>( Qgis::TransactionMode::Disabled ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Edits are buffered locally and sent to the provider when toggling layer editing mode." ), Qt::ToolTipRole );
   mTransactionModeComboBox->addItem( tr( "Automatic Transaction Groups" ), static_cast<int>( Qgis::TransactionMode::AutomaticGroups ) );
-  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->setItemData(
+    mTransactionModeComboBox->count() - 1,
+    tr(
+      "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a "
+      "server side transaction."
+    ),
+    Qt::ToolTipRole
+  );
   mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast<int>( Qgis::TransactionMode::BufferedGroups ) );
-  mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)." ), Qt::ToolTipRole );
+  mTransactionModeComboBox->setItemData(
+    mTransactionModeComboBox->count() - 1,
+    tr(
+      "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is "
+      "executed within a single transaction on all layers (per provider)."
+    ),
+    Qt::ToolTipRole
+  );
 
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
-  connect( this, &QDialog::finished, this, [this]( int result ) { if ( result == QDialog::Rejected ) cancel(); } );
+  connect( this, &QDialog::finished, this, [this]( int result ) {
+    if ( result == QDialog::Rejected )
+      cancel();
+  } );
 
   // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
   // to validate widgets before allowing dialog to be closed
@@ -283,8 +300,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
   projectionSelector->setPreviewRect( g.boundingBox() );
 
@@ -523,9 +539,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mLayerCapabilitiesTree->repaint();
   } );
 
-  connect( mShowSpatialLayersCheckBox, &QCheckBox::stateChanged, this, [this]( int state ) {
-    mLayerCapabilitiesModel->setShowSpatialLayersOnly( static_cast<bool>( state ) );
-  } );
+  connect( mShowSpatialLayersCheckBox, &QCheckBox::stateChanged, this, [this]( int state ) { mLayerCapabilitiesModel->setShowSpatialLayersOnly( static_cast<bool>( state ) ); } );
 
   grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( u"WMSServiceCapabilities"_s, u"/"_s, false ) );
   mWMSTitle->setText( QgsProject::instance()->readEntry( u"WMSServiceTitle"_s, u"/"_s ) );
@@ -633,11 +647,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "gl" ) ), QLocale( u"gl"_s ).nativeLanguageName(), "gal" );
   mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "gd" ) ), QLocale( u"gd"_s ).nativeLanguageName(), "gla" );
   mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "cy" ) ), QLocale( u"cy"_s ).nativeLanguageName(), "cym" );
-  mWMSInspireLanguage->setCurrentIndex(
-    mWMSInspireLanguage->findText(
-      QLocale().nativeLanguageName()
-    )
-  );
+  mWMSInspireLanguage->setCurrentIndex( mWMSInspireLanguage->findText( QLocale().nativeLanguageName() ) );
 
   bool addWMSInspire = QgsProject::instance()->readBoolEntry( u"WMSInspire"_s, u"/activated"_s );
   if ( addWMSInspire )
@@ -652,11 +662,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     {
       mWMSInspireScenario1->setChecked( true );
       mWMSInspireMetadataUrl->setText( inspireMetadataUrl );
-      mWMSInspireMetadataUrlType->setCurrentIndex(
-        mWMSInspireMetadataUrlType->findText(
-          QgsProject::instance()->readEntry( u"WMSInspire"_s, u"/metadataUrlType"_s, QString() )
-        )
-      );
+      mWMSInspireMetadataUrlType->setCurrentIndex( mWMSInspireMetadataUrlType->findText( QgsProject::instance()->readEntry( u"WMSInspire"_s, u"/metadataUrlType"_s, QString() ) ) );
     }
     else
     {
@@ -690,15 +696,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   grpWMSExt->setChecked( ok && values.size() == 4 );
   if ( grpWMSExt->isChecked() )
   {
-    mAdvertisedExtentServer->setOriginalExtent(
-      QgsRectangle(
-        values[0].toDouble(),
-        values[1].toDouble(),
-        values[2].toDouble(),
-        values[3].toDouble()
-      ),
-      QgsProject::instance()->crs()
-    );
+    mAdvertisedExtentServer->setOriginalExtent( QgsRectangle( values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble() ), QgsProject::instance()->crs() );
     mAdvertisedExtentServer->setOutputExtentFromOriginal();
   }
 
@@ -804,7 +802,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   else
   {
     mWMSDefaultMapUnitScale = new QgsScaleWidget();
-    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( u"WMSDefaultMapUnitsPerMm"_s, u"/"_s, 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), Qgis::DistanceUnit::Millimeters ) );
+    mWMSDefaultMapUnitScale->setScale(
+      QgsProject::instance()->readDoubleEntry( u"WMSDefaultMapUnitsPerMm"_s, u"/"_s, 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), Qgis::DistanceUnit::Millimeters )
+    );
     mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
     mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
@@ -1204,9 +1204,7 @@ void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &c
 QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 {
   QgsExpressionContext context;
-  context
-    << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   return context;
 }
@@ -1319,9 +1317,7 @@ void QgsProjectProperties::apply()
         minor = val;
       }
     }
-    QgsProject::instance()->setEllipsoid( u"PARAMETER:%1:%2"_s
-                                            .arg( major, 0, 'g', 17 )
-                                            .arg( minor, 0, 'g', 17 ) );
+    QgsProject::instance()->setEllipsoid( u"PARAMETER:%1:%2"_s.arg( major, 0, 'g', 17 ).arg( minor, 0, 'g', 17 ) );
   }
   else
   {
@@ -1512,12 +1508,9 @@ void QgsProjectProperties::apply()
   {
     QgsRectangle wmsExtent = mAdvertisedExtentServer->outputExtent();
     QgsProject::instance()->writeEntry(
-      u"WMSExtent"_s, u"/"_s,
-      QStringList()
-        << qgsDoubleToString( wmsExtent.xMinimum() )
-        << qgsDoubleToString( wmsExtent.yMinimum() )
-        << qgsDoubleToString( wmsExtent.xMaximum() )
-        << qgsDoubleToString( wmsExtent.yMaximum() )
+      u"WMSExtent"_s,
+      u"/"_s,
+      QStringList() << qgsDoubleToString( wmsExtent.xMinimum() ) << qgsDoubleToString( wmsExtent.yMinimum() ) << qgsDoubleToString( wmsExtent.xMaximum() ) << qgsDoubleToString( wmsExtent.yMaximum() )
     );
   }
   else
@@ -1696,7 +1689,13 @@ void QgsProjectProperties::apply()
     if ( !item->checkState( 1 ) )
       continue;
     wmtsGridList << item->data( 0, Qt::UserRole ).toString();
-    wmtsGridConfigList << u"%1,%2,%3,%4,%5"_s.arg( item->data( 0, Qt::UserRole ).toString(), item->data( 2, Qt::DisplayRole ).toString(), item->data( 3, Qt::DisplayRole ).toString(), item->data( 4, Qt::DisplayRole ).toString(), item->data( 5, Qt::DisplayRole ).toString() );
+    wmtsGridConfigList << u"%1,%2,%3,%4,%5"_s.arg(
+      item->data( 0, Qt::UserRole ).toString(),
+      item->data( 2, Qt::DisplayRole ).toString(),
+      item->data( 3, Qt::DisplayRole ).toString(),
+      item->data( 4, Qt::DisplayRole ).toString(),
+      item->data( 5, Qt::DisplayRole ).toString()
+    );
   }
   QgsProject::instance()->writeEntry( u"WMTSGrids"_s, u"CRS"_s, wmtsGridList );
   QgsProject::instance()->writeEntry( u"WMTSGrids"_s, u"Config"_s, wmtsGridConfigList );
@@ -2276,13 +2275,7 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 
 void QgsProjectProperties::pbnAddScale_clicked()
 {
-  int myScale = QInputDialog::getInt(
-    this,
-    tr( "Enter scale" ),
-    tr( "Scale denominator" ),
-    -1,
-    1
-  );
+  int myScale = QInputDialog::getInt( this, tr( "Enter scale" ), tr( "Scale denominator" ), -1, 1 );
 
   if ( myScale != -1 )
   {
@@ -2364,9 +2357,11 @@ void QgsProjectProperties::pbnExportScales_clicked()
 void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
-  ptePythonMacros->setText( "def openProject():\n    pass\n\n"
-                            "def saveProject():\n    pass\n\n"
-                            "def closeProject():\n    pass\n" );
+  ptePythonMacros->setText(
+    "def openProject():\n    pass\n\n"
+    "def saveProject():\n    pass\n\n"
+    "def closeProject():\n    pass\n"
+  );
 }
 
 void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem )
@@ -2661,19 +2656,8 @@ void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
   if ( initialFolder.isEmpty() )
     initialFolder = QDir::homePath();
 
-  QString databasePath = createNew
-                           ? QFileDialog::getSaveFileName(
-                               this,
-                               tr( "Create Style Database" ),
-                               initialFolder,
-                               tr( "Style databases" ) + " (*.db)"
-                             )
-                           : QFileDialog::getOpenFileName(
-                               this,
-                               tr( "Add Style Database" ),
-                               initialFolder,
-                               tr( "Style databases" ) + " (*.db *.xml)"
-                             );
+  QString databasePath = createNew ? QFileDialog::getSaveFileName( this, tr( "Create Style Database" ), initialFolder, tr( "Style databases" ) + " (*.db)" )
+                                   : QFileDialog::getOpenFileName( this, tr( "Add Style Database" ), initialFolder, tr( "Style databases" ) + " (*.db *.xml)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -2715,12 +2699,7 @@ void QgsProjectProperties::removeStyleDatabase()
 
 void QgsProjectProperties::addIccProfile()
 {
-  const QString iccProfileFilePath = QFileDialog::getOpenFileName(
-    this,
-    tr( "Load ICC Profile" ),
-    QDir::homePath(),
-    tr( "ICC Profile" ) + u" (*.icc)"_s
-  );
+  const QString iccProfileFilePath = QFileDialog::getOpenFileName( this, tr( "Load ICC Profile" ), QDir::homePath(), tr( "ICC Profile" ) + u" (*.icc)"_s );
 
   addIccProfile( iccProfileFilePath );
 }
@@ -2885,8 +2864,14 @@ void QgsProjectProperties::checkPageWidgetNameMap()
     QListWidgetItem *item = mOptionsListWidget->item( idx );
     const QString title = item->text();
     const QString name = currentPage->objectName();
-    Q_ASSERT_X( pageNames.contains( title ), "QgsProjectProperties::checkPageWidgetNameMap()", u"QgisApp::projectPropertiesPagesMap() is outdated, please update. Missing %1"_s.arg( title ).toLocal8Bit().constData() );
-    Q_ASSERT_X( pageNames.value( title ) == name, "QgsProjectProperties::checkPageWidgetNameMap()", u"QgisApp::projectPropertiesPagesMap() is outdated, please update. %1 should be %2 not %3"_s.arg( title, name, pageNames.value( title ) ).toLocal8Bit().constData() );
+    Q_ASSERT_X(
+      pageNames.contains( title ), "QgsProjectProperties::checkPageWidgetNameMap()", u"QgisApp::projectPropertiesPagesMap() is outdated, please update. Missing %1"_s.arg( title ).toLocal8Bit().constData()
+    );
+    Q_ASSERT_X(
+      pageNames.value( title ) == name,
+      "QgsProjectProperties::checkPageWidgetNameMap()",
+      u"QgisApp::projectPropertiesPagesMap() is outdated, please update. %1 should be %2 not %3"_s.arg( title, name, pageNames.value( title ) ).toLocal8Bit().constData()
+    );
   }
 }
 
@@ -2909,15 +2894,21 @@ void QgsProjectProperties::onGenerateTsFileButton() const
 {
   QString l = cbtsLocale->currentData().toString();
   QgsProject::instance()->generateTsFile( l );
-  QMessageBox::information( nullptr, tr( "General TS file generated" ), tr( "TS file generated with source language %1.\n"
-                                                                            "- open it with Qt Linguist\n"
-                                                                            "- translate strings\n"
-                                                                            "- save the TS file with the suffix of the target language (e.g. _de.ts)\n"
-                                                                            "- release to get the QM file including the suffix (e.g. aproject_de.qm)\n"
-                                                                            "- open the original QGIS file (e.g. aproject.qgs)\n"
-                                                                            "- if your QGIS is set to use a specific language and the QM file for that language is found, the translated QGIS project will be generated on the fly.\n"
-                                                                            "- you will be redirected to this new project (e.g. aproject_de.qgs)." )
-                                                                          .arg( l ) );
+  QMessageBox::information(
+    nullptr,
+    tr( "General TS file generated" ),
+    tr(
+      "TS file generated with source language %1.\n"
+      "- open it with Qt Linguist\n"
+      "- translate strings\n"
+      "- save the TS file with the suffix of the target language (e.g. _de.ts)\n"
+      "- release to get the QM file including the suffix (e.g. aproject_de.qm)\n"
+      "- open the original QGIS file (e.g. aproject.qgs)\n"
+      "- if your QGIS is set to use a specific language and the QM file for that language is found, the translated QGIS project will be generated on the fly.\n"
+      "- you will be redirected to this new project (e.g. aproject_de.qgs)."
+    )
+      .arg( l )
+  );
 }
 
 void QgsProjectProperties::customizeBearingFormat()

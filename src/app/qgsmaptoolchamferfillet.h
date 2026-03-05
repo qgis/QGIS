@@ -36,8 +36,7 @@ class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 template<class T> class QgsSettingsEntryEnumFlag;
 
-class APP_EXPORT QgsChamferFilletUserWidget : public QWidget,
-                                              private Ui::QgsChamferFilletUserInputBase
+class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsChamferFilletUserInputBase
 {
     Q_OBJECT
 

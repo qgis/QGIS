@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 Qgs3DIconGenerator::Qgs3DIconGenerator( QObject *parent )
   : QgsAbstractStyleEntityIconGenerator( parent )
-{
-}
+{}
 
 void Qgs3DIconGenerator::generateIcon( QgsStyle *, QgsStyle::StyleEntity type, const QString &name )
 {

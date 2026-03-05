@@ -138,15 +138,11 @@ void QgsAnnotationLayer3DRendererWidget::clampingChanged()
   switch ( mComboClamping->currentData().value< Qgis::AltitudeClamping >() )
   {
     case Qgis::AltitudeClamping::Absolute:
-      mLabelClampingExplanation->setText(
-        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "All billboards will be placed at the same elevation." ), tr( "The terrain height will be ignored." ) )
-      );
+      mLabelClampingExplanation->setText( u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "All billboards will be placed at the same elevation." ), tr( "The terrain height will be ignored." ) ) );
 
       break;
     case Qgis::AltitudeClamping::Relative:
-      mLabelClampingExplanation->setText(
-        u"<p><b>%1</b></p>"_s.arg( tr( "Billboard elevation is relative to terrain height." ) )
-      );
+      mLabelClampingExplanation->setText( u"<p><b>%1</b></p>"_s.arg( tr( "Billboard elevation is relative to terrain height." ) ) );
       break;
     case Qgis::AltitudeClamping::Terrain:
       mLabelClampingExplanation->setText(
