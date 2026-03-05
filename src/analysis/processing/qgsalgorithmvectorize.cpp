@@ -150,9 +150,11 @@ QStringList QgsRasterPixelsToPolygonsAlgorithm::tags() const
 
 QString QgsRasterPixelsToPolygonsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm converts a raster layer to a vector layer, by creating polygon features "
-                      "for each individual pixel's extent in the raster layer.\n\n"
-                      "Any NoData pixels are skipped in the output." );
+  return QObject::tr(
+    "This algorithm converts a raster layer to a vector layer, by creating polygon features "
+    "for each individual pixel's extent in the raster layer.\n\n"
+    "Any NoData pixels are skipped in the output."
+  );
 }
 
 QString QgsRasterPixelsToPolygonsAlgorithm::shortDescription() const
@@ -209,9 +211,11 @@ QStringList QgsRasterPixelsToPointsAlgorithm::tags() const
 
 QString QgsRasterPixelsToPointsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm converts a raster layer to a vector layer, by creating point features "
-                      "for each individual pixel's center in the raster layer.\n\n"
-                      "Any NoData pixels are skipped in the output." );
+  return QObject::tr(
+    "This algorithm converts a raster layer to a vector layer, by creating point features "
+    "for each individual pixel's center in the raster layer.\n\n"
+    "Any NoData pixels are skipped in the output."
+  );
 }
 
 QString QgsRasterPixelsToPointsAlgorithm::shortDescription() const

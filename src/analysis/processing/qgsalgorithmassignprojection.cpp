@@ -55,10 +55,12 @@ QString QgsAssignProjectionAlgorithm::outputName() const
 
 QString QgsAssignProjectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
-                      "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
-                      "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
-                      "Attributes are not modified by this algorithm." );
+  return QObject::tr(
+    "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
+    "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
+    "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
+    "Attributes are not modified by this algorithm."
+  );
 }
 
 QString QgsAssignProjectionAlgorithm::shortDescription() const

@@ -84,7 +84,8 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  QString overlayPath = parameterAsCompatibleSourceLayerPath( parameters, u"OVERLAY"_s, context, QgsVectorFileWriter::supportedFormatExtensions(), QgsVectorFileWriter::supportedFormatExtensions()[0], feedback );
+  QString overlayPath
+    = parameterAsCompatibleSourceLayerPath( parameters, u"OVERLAY"_s, context, QgsVectorFileWriter::supportedFormatExtensions(), QgsVectorFileWriter::supportedFormatExtensions()[0], feedback );
 
   const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );

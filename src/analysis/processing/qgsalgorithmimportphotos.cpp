@@ -70,10 +70,12 @@ void QgsImportPhotosAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsImportPhotosAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a point layer corresponding to the geotagged locations from JPEG or HEIF/HEIC images from a source folder. Optionally the folder can be recursively scanned.\n\n"
-                      "The point layer will contain a single PointZ feature per input file from which the geotags could be read. Any altitude information from the geotags will be used "
-                      "to set the point's Z value.\n\n"
-                      "Optionally, a table of unreadable or non-geotagged photos can also be created." );
+  return QObject::tr(
+    "This algorithm creates a point layer corresponding to the geotagged locations from JPEG or HEIF/HEIC images from a source folder. Optionally the folder can be recursively scanned.\n\n"
+    "The point layer will contain a single PointZ feature per input file from which the geotags could be read. Any altitude information from the geotags will be used "
+    "to set the point's Z value.\n\n"
+    "Optionally, a table of unreadable or non-geotagged photos can also be created."
+  );
 }
 
 QString QgsImportPhotosAlgorithm::shortDescription() const
@@ -107,8 +109,7 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-    if ( QStringView { metadata.value( u"EXIF_GPSLongitudeRef"_s ).toString() }.right( 1 ).compare( 'W'_L1, Qt::CaseInsensitive ) == 0
-         || metadata.value( u"EXIF_GPSLongitudeRef"_s ).toDouble() < 0 )
+    if ( QStringView { metadata.value( u"EXIF_GPSLongitudeRef"_s ).toString() }.right( 1 ).compare( 'W'_L1, Qt::CaseInsensitive ) == 0 || metadata.value( u"EXIF_GPSLongitudeRef"_s ).toDouble() < 0 )
     {
       x = -x;
     }
@@ -126,8 +127,7 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-    if ( QStringView { metadata.value( u"EXIF_GPSLatitudeRef"_s ).toString() }.right( 1 ).compare( 'S'_L1, Qt::CaseInsensitive ) == 0
-         || metadata.value( u"EXIF_GPSLatitudeRef"_s ).toDouble() < 0 )
+    if ( QStringView { metadata.value( u"EXIF_GPSLatitudeRef"_s ).toString() }.right( 1 ).compare( 'S'_L1, Qt::CaseInsensitive ) == 0 || metadata.value( u"EXIF_GPSLatitudeRef"_s ).toDouble() < 0 )
     {
       y = -y;
     }
@@ -380,9 +380,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
 
     const QFileInfo fi( file );
     QgsAttributes attributes;
-    attributes << QDir::toNativeSeparators( file )
-               << fi.completeBaseName()
-               << QDir::toNativeSeparators( fi.absolutePath() );
+    attributes << QDir::toNativeSeparators( file ) << fi.completeBaseName() << QDir::toNativeSeparators( fi.absolutePath() );
 
     const gdal::dataset_unique_ptr hDS( GDALOpen( file.toUtf8().constData(), GA_ReadOnly ) );
     if ( !hDS )
@@ -423,13 +421,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       const QgsGeometry p = QgsGeometry( new QgsPoint( tag.x(), tag.y(), altitude.toDouble(), 0, Qgis::WkbType::PointZ ) );
       f.setGeometry( p );
 
-      attributes
-        << altitude
-        << extractDirectionFromMetadata( metadata )
-        << extractOrientationFromMetadata( metadata )
-        << tag.x()
-        << tag.y()
-        << extractTimestampFromMetadata( metadata );
+      attributes << altitude << extractDirectionFromMetadata( metadata ) << extractOrientationFromMetadata( metadata ) << tag.x() << tag.y() << extractTimestampFromMetadata( metadata );
       f.setAttributes( attributes );
       if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, u"OUTPUT"_s ) );

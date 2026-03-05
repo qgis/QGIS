@@ -85,10 +85,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
       return formatter->representValue( mLayer.data(), i, mConfig.value( i ), cache, value );
     }
 
-    FieldValueConverter *clone() const override
-    {
-      return new FieldValueConverter( *this );
-    }
+    FieldValueConverter *clone() const override { return new FieldValueConverter( *this ); }
 
   private:
     QPointer<QgsVectorLayer> mLayer;
@@ -127,7 +124,8 @@ void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
   addParameter( new QgsProcessingParameterBoolean( u"USE_ALIAS"_s, QObject::tr( "Use field aliases as column headings" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( u"FORMATTED_VALUES"_s, QObject::tr( "Export formatted values instead of raw values" ), false ) );
-  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );
+  QgsProcessingParameterFileDestination *outputParameter
+    = new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );
   outputParameter->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"dontconfirmoverwrite"_s, true } } ) } } ) );
   addParameter( outputParameter );
   addParameter( new QgsProcessingParameterBoolean( u"OVERWRITE"_s, QObject::tr( "Overwrite existing spreadsheet" ), true ) );
@@ -136,8 +134,10 @@ void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExportToSpreadsheetAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm collects a number of existing layers and exports them to a spreadsheet document.\n\n"
-                      "Optionally the layers can be appended to an existing spreadsheet as additional sheets.\n\n" );
+  return QObject::tr(
+    "This algorithm collects a number of existing layers and exports them to a spreadsheet document.\n\n"
+    "Optionally the layers can be appended to an existing spreadsheet as additional sheets.\n\n"
+  );
 }
 
 QString QgsExportToSpreadsheetAlgorithm::shortDescription() const
@@ -253,7 +253,16 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
   return outputs;
 }
 
-bool QgsExportToSpreadsheetAlgorithm::exportVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QString &driverName, bool createNew, bool preferAlias, QgsVectorFileWriter::FieldValueConverter *converter )
+bool QgsExportToSpreadsheetAlgorithm::exportVectorLayer(
+  QgsVectorLayer *layer,
+  const QString &path,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  const QString &driverName,
+  bool createNew,
+  bool preferAlias,
+  QgsVectorFileWriter::FieldValueConverter *converter
+)
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = driverName;

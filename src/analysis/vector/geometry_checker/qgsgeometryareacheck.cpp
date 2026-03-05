@@ -22,7 +22,9 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
 
-QgsGeometryCheck::Result QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryAreaCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   Q_UNUSED( messages )
 
@@ -126,7 +128,9 @@ bool QgsGeometryAreaCheck::checkThreshold( double layerToMapUnits, const QgsAbst
   return value < threshold;
 }
 
-bool QgsGeometryAreaCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
+bool QgsGeometryAreaCheck::mergeWithNeighbor(
+  const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg
+) const
 {
   QgsFeaturePool *featurePool = featurePools[layerId];
 
@@ -154,7 +158,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool
       {
         continue;
       }
-      const double len = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), mContext->reducedTolerance );
+      const double len
+        = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), mContext->reducedTolerance );
       if ( len > 0. )
       {
         if ( method == MergeLongestEdge || method == MergeLargestArea )

@@ -64,13 +64,15 @@ QString QgsExtractNetworkEndpointsAlgorithm::shortDescription() const
 
 QString QgsExtractNetworkEndpointsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the end points (nodes) from a network line layer.\n\n"
-                      "Two definitions are available for identifying end points:\n\n"
-                      "1. Nodes with only all incoming or all outgoing edges: Identifies 'Source' or 'Sink' nodes "
-                      "based on the direction of flow. These are nodes where flow can start (only outgoing) or stop "
-                      "(only incoming).\n"
-                      "2. Nodes connected to a single edge: Identifies topological 'dead-ends' or 'dangles', regardless "
-                      "of directionality. This checks if the node is connected to only one other distinct node." );
+  return QObject::tr(
+    "This algorithm extracts the end points (nodes) from a network line layer.\n\n"
+    "Two definitions are available for identifying end points:\n\n"
+    "1. Nodes with only all incoming or all outgoing edges: Identifies 'Source' or 'Sink' nodes "
+    "based on the direction of flow. These are nodes where flow can start (only outgoing) or stop "
+    "(only incoming).\n"
+    "2. Nodes connected to a single edge: Identifies topological 'dead-ends' or 'dangles', regardless "
+    "of directionality. This checks if the node is connected to only one other distinct node."
+  );
 }
 
 QgsExtractNetworkEndpointsAlgorithm *QgsExtractNetworkEndpointsAlgorithm::createInstance() const
@@ -95,8 +97,7 @@ void QgsExtractNetworkEndpointsAlgorithm::initAlgorithm( const QVariantMap & )
   removeParameter( u"DEFAULT_SPEED"_s );
 
   QStringList definitions;
-  definitions << QObject::tr( "Extract Nodes with only All Incoming or All Outgoing Edges" )
-              << QObject::tr( "Extract Nodes Connected to a Single Edge" );
+  definitions << QObject::tr( "Extract Nodes with only All Incoming or All Outgoing Edges" ) << QObject::tr( "Extract Nodes Connected to a Single Edge" );
 
   auto strategyParam = std::make_unique<QgsProcessingParameterEnum>( u"ENDPOINT_DEFINITION"_s, QObject::tr( "End point definition" ), definitions, false, 1 );
   addParameter( strategyParam.release() );

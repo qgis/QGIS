@@ -21,7 +21,9 @@ points using different strategies with Dijkstra's algorithm.
 #include "qgsgraphanalyzer.h"
 %End
   public:
-    static SIP_PYOBJECT dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree  = 0, QVector<double> *resultCost  = 0 ) /TypeHint="Tuple[List[int], List[float]]"/;
+    static SIP_PYOBJECT dijkstra(
+      const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree  = 0, QVector<double> *resultCost  = 0
+    ) /TypeHint="Tuple[List[int], List[float]]"/;
 %Docstring
 Solve shortest path problem using Dijkstra algorithm
 
@@ -29,7 +31,10 @@ Solve shortest path problem using Dijkstra algorithm
 :param startVertexIdx: index of the start vertex
 :param criterionNum: index of the optimization strategy
 
-:return: - resultTree: array that represents shortest path tree.
+:return: - a tuple of (resultTree, resultCost) - resultTree is a list of
+           vertex indices in the shortest path tree, resultCost is a
+           list of path costs
+         - resultTree: array that represents shortest path tree.
            resultTree[ vertexIndex ] == inboundingArcIndex if vertex
            reachable, otherwise resultTree[ vertexIndex ] == -1. Note
            that the startVertexIdx will also have a value of -1 and may

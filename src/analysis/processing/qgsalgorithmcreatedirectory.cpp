@@ -54,9 +54,11 @@ QString QgsCreateDirectoryAlgorithm::groupId() const
 
 QString QgsCreateDirectoryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new directory on a file system. Directories will be created recursively, creating all "
-                      "required parent directories in order to construct the full specified directory path.\n\n"
-                      "No errors will be raised if the directory already exists." );
+  return QObject::tr(
+    "This algorithm creates a new directory on a file system. Directories will be created recursively, creating all "
+    "required parent directories in order to construct the full specified directory path.\n\n"
+    "No errors will be raised if the directory already exists."
+  );
 }
 
 QString QgsCreateDirectoryAlgorithm::shortDescription() const

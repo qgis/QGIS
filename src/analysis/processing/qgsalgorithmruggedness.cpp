@@ -53,12 +53,16 @@ QString QgsRuggednessAlgorithm::groupId() const
 
 QString QgsRuggednessAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the quantitative measurement of terrain "
-                      "heterogeneity described by Riley et al. (1999)." )
+  return QObject::tr(
+           "This algorithm calculates the quantitative measurement of terrain "
+           "heterogeneity described by Riley et al. (1999)."
+         )
          + u"\n\n"_s
-         + QObject::tr( "It is calculated for every location, by summarizing the change "
-                        "in elevation within the 3x3 pixel grid. Each pixel contains the "
-                        "difference in elevation from a center cell and the 8 cells surrounding it." );
+         + QObject::tr(
+           "It is calculated for every location, by summarizing the change "
+           "in elevation within the 3x3 pixel grid. Each pixel contains the "
+           "difference in elevation from a center cell and the 8 cells surrounding it."
+         );
 }
 
 QString QgsRuggednessAlgorithm::shortDescription() const
@@ -77,10 +81,7 @@ void QgsRuggednessAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
-  zFactorParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
-    }
-  );
+  zFactorParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } ) } );
   addParameter( zFactorParam.release() );
 
   auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );

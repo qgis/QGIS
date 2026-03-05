@@ -81,8 +81,10 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDbscanClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm clusters point features based on a 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm.\n\n"
-                      "The algorithm requires two parameters, a minimum cluster size (“minPts”), and the maximum distance allowed between clustered points (“eps”)." );
+  return QObject::tr(
+    "This algorithm clusters point features based on a 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm.\n\n"
+    "The algorithm requires two parameters, a minimum cluster size (“minPts”), and the maximum distance allowed between clustered points (“eps”)."
+  );
 }
 
 QgsDbscanClusteringAlgorithm *QgsDbscanClusteringAlgorithm::createInstance() const
@@ -92,18 +94,12 @@ QgsDbscanClusteringAlgorithm *QgsDbscanClusteringAlgorithm::createInstance() con
 
 struct KDBushDataEqualById
 {
-    bool operator()( const QgsSpatialIndexKDBushData &a, const QgsSpatialIndexKDBushData &b ) const
-    {
-      return a.id == b.id;
-    }
+    bool operator()( const QgsSpatialIndexKDBushData &a, const QgsSpatialIndexKDBushData &b ) const { return a.id == b.id; }
 };
 
 struct KDBushDataHashById
 {
-    std::size_t operator()( const QgsSpatialIndexKDBushData &a ) const
-    {
-      return std::hash<QgsFeatureId> {}( a.id );
-    }
+    std::size_t operator()( const QgsSpatialIndexKDBushData &a ) const { return std::hash<QgsFeatureId> {}( a.id ); }
 };
 
 QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -151,10 +147,15 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   // build spatial index, also collecting feature datetimes if required
   feedback->pushInfo( QObject::tr( "Building spatial index" ) );
   QgsFeatureIterator indexIterator = source->getFeatures( indexRequest );
-  QgsSpatialIndexKDBush index( indexIterator, [&idToDateTime, dateTimefieldIndex]( const QgsFeature &feature ) -> bool {
-    if ( dateTimefieldIndex >= 0 )
-      idToDateTime[ feature.id() ] = feature.attributes().at( dateTimefieldIndex ).toDateTime();
-    return true; }, feedback );
+  QgsSpatialIndexKDBush index(
+    indexIterator,
+    [&idToDateTime, dateTimefieldIndex]( const QgsFeature &feature ) -> bool {
+      if ( dateTimefieldIndex >= 0 )
+        idToDateTime[feature.id()] = feature.attributes().at( dateTimefieldIndex ).toDateTime();
+      return true;
+    },
+    feedback
+  );
 
   if ( feedback->isCanceled() )
     return QVariantMap();
@@ -208,7 +209,18 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   return outputs;
 }
 
-void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize, const double eps1, const double eps2, const bool borderPointsAreNoise, const long featureCount, QgsFeatureIterator features, QgsSpatialIndexKDBush &index, std::unordered_map<QgsFeatureId, int> &idToCluster, std::unordered_map<QgsFeatureId, QDateTime> &idToDateTime, QgsProcessingFeedback *feedback )
+void QgsDbscanClusteringAlgorithm::stdbscan(
+  const std::size_t minSize,
+  const double eps1,
+  const double eps2,
+  const bool borderPointsAreNoise,
+  const long featureCount,
+  QgsFeatureIterator features,
+  QgsSpatialIndexKDBush &index,
+  std::unordered_map<QgsFeatureId, int> &idToCluster,
+  std::unordered_map<QgsFeatureId, QDateTime> &idToDateTime,
+  QgsProcessingFeedback *feedback
+)
 {
   const double step = featureCount > 0 ? 90.0 / featureCount : 1;
 

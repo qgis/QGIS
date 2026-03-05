@@ -73,13 +73,15 @@ QString QgsRemovePartsByLengthAlgorithm::shortDescription() const
 
 QString QgsRemovePartsByLengthAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a line layer and removes lines which are shorter than a specified length.\n\n"
-                      "If the input geometry is a multipart geometry, then the parts will be filtered by their individual lengths. If no parts match the "
-                      "required minimum length, then the feature will be skipped and omitted from the output layer.\n\n"
-                      "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
-                      "length is below the required size and omitted from the output layer.\n\n"
-                      "The length will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
-                      "Attributes are not modified." );
+  return QObject::tr(
+    "This algorithm takes a line layer and removes lines which are shorter than a specified length.\n\n"
+    "If the input geometry is a multipart geometry, then the parts will be filtered by their individual lengths. If no parts match the "
+    "required minimum length, then the feature will be skipped and omitted from the output layer.\n\n"
+    "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
+    "length is below the required size and omitted from the output layer.\n\n"
+    "The length will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
+    "Attributes are not modified."
+  );
 }
 
 QgsRemovePartsByLengthAlgorithm *QgsRemovePartsByLengthAlgorithm::createInstance() const

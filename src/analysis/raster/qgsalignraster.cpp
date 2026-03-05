@@ -257,9 +257,11 @@ bool QgsAlignRaster::checkInputParameters()
     QgsRectangle extent;
     if ( !suggestedWarpOutput( info, mCrsWkt, &cs, nullptr, &extent ) )
     {
-      mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
-                               "File:\n%1\n\n"
-                               "Source WKT:\n%2\n\nDestination WKT:\n%3" )
+      mErrorMessage = QString(
+                        "Failed to get suggested warp output.\n\n"
+                        "File:\n%1\n\n"
+                        "Source WKT:\n%2\n\nDestination WKT:\n%3"
+      )
                         .arg( r.inputFilename, info.mCrsWkt, mCrsWkt );
       return false;
     }

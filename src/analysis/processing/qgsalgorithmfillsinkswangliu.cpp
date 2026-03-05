@@ -53,15 +53,18 @@ QString QgsFillSinksWangLiuAlgorithm::groupId() const
 
 QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm uses a method proposed by Wang & Liu to identify and fill surface depressions in digital elevation models.\n\n"
+  return QObject::tr(
+    "This algorithm uses a method proposed by Wang & Liu to identify and fill surface depressions in digital elevation models.\n\n"
 
-                      "The method was enhanced to allow the creation of hydrologically sound elevation models, i.e. not only to fill the depression(s) "
-                      "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
-                      "gradient (and thus elevation difference) between cells.\n\n"
+    "The method was enhanced to allow the creation of hydrologically sound elevation models, i.e. not only to fill the depression(s) "
+    "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
+    "gradient (and thus elevation difference) between cells.\n\n"
 
-                      "References: Wang, L. & H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.\n\n"
+    "References: Wang, L. & H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International "
+    "Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.\n\n"
 
-                      "This algorithm is a port of the SAGA 'Fill Sinks (Wang & Liu)' tool." );
+    "This algorithm is a port of the SAGA 'Fill Sinks (Wang & Liu)' tool."
+  );
 }
 
 QString QgsFillSinksWangLiuAlgorithm::shortDescription() const
@@ -76,7 +79,9 @@ void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
   auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0 );
-  minSlopeParam->setHelp( QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." ) );
+  minSlopeParam->setHelp(
+    QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." )
+  );
   addParameter( minSlopeParam.release() );
 
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
@@ -176,10 +181,7 @@ struct CFillSinks_WL_Node
 class CompareGreater
 {
   public:
-    bool operator()( CFillSinks_WL_Node n1, CFillSinks_WL_Node n2 ) const
-    {
-      return n1.spill > n2.spill;
-    }
+    bool operator()( CFillSinks_WL_Node n1, CFillSinks_WL_Node n2 ) const { return n1.spill > n2.spill; }
 };
 
 typedef std::vector< CFillSinks_WL_Node > nodeVector;
