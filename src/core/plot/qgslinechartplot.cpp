@@ -379,3 +379,21 @@ QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( Qg
 
   return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }
+
+void QgsLineChartPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+  {
+    return;
+  }
+
+  if ( const Qgs2DXyPlot *plotXy = dynamic_cast<const Qgs2DXyPlot *>( plot ) )
+  {
+    Qgs2DXyPlot::copyCommonProperties( plotXy );
+  }
+  else if ( const Qgs2DPlot *plotPie = dynamic_cast<const Qgs2DPlot *>( plot ) )
+  {
+
+    Qgs2DPlot::copyCommonProperties( plotPie );
+  }
+}

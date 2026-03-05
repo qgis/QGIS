@@ -2,7 +2,7 @@
 try:
     QgsBarChartPlot.create = staticmethod(QgsBarChartPlot.create)
     QgsBarChartPlot.createDataGatherer = staticmethod(QgsBarChartPlot.createDataGatherer)
-    QgsBarChartPlot.__overridden_methods__ = ['type', 'renderContent', 'writeXml', 'readXml']
+    QgsBarChartPlot.__overridden_methods__ = ['type', 'renderContent', 'writeXml', 'readXml', 'initFromPlot']
     QgsBarChartPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
