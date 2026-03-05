@@ -35,7 +35,9 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url ), mFeatureFormat( featureFormat )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
+  , mFeatureFormat( featureFormat )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -157,9 +159,7 @@ void QgsOapifItemsRequest::processReply()
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
   QgsDebugMsgLevel( u"OGR data source open start time: %1"_s.arg( time( nullptr ) ), 5 );
-  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
-    qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) )
-  );
+  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>( qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) ) );
   QgsDebugMsgLevel( u"OGR data source open end time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !vectorProvider || !vectorProvider->isValid() )
   {

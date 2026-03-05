@@ -187,9 +187,7 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
   }
   wfsVersionComboBox()->setCurrentIndex( versionIdx );
 
-  wfsPagingComboBox()->setCurrentIndex(
-    static_cast<int>( caps.supportsPaging ? QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED : QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED )
-  );
+  wfsPagingComboBox()->setCurrentIndex( static_cast<int>( caps.supportsPaging ? QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED : QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED ) );
 
   mCapabilities.reset();
 }

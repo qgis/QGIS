@@ -42,8 +42,7 @@ extern "C"
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent )
   : QObject( parent )
@@ -111,8 +110,7 @@ QgsFields QgsGrassVectorLayer::fields()
     mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
-  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty()
-       && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
+  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty() && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
   {
     QgsDebugMsgLevel( "reload fields", 2 );
     mError.clear();
@@ -190,15 +188,13 @@ QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location
   : QObject( parent )
   , mGrassObject( gisdbase, location, mapset, name )
   , mNodeCount( 0 )
-{
-}
+{}
 
 QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent )
   : QObject( parent )
   , mGrassObject( grassObject )
   , mNodeCount( 0 )
-{
-}
+{}
 
 bool QgsGrassVector::openHead()
 {

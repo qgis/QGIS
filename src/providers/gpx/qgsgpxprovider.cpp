@@ -197,8 +197,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     return false;
 
   // add all the features
-  for ( QgsFeatureList::iterator iter = flist.begin();
-        iter != flist.end(); ++iter )
+  for ( QgsFeatureList::iterator iter = flist.begin(); iter != flist.end(); ++iter )
   {
     if ( !addFeature( *iter, flags ) )
       return false;
@@ -564,8 +563,7 @@ QVariantMap QgsGPXProvider::decodeUri( const QString &uri )
 
 QgsGpxProviderMetadata::QgsGpxProviderMetadata()
   : QgsProviderMetadata( GPX_KEY, GPX_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsGpxProviderMetadata::icon() const
 {

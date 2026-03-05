@@ -462,15 +462,14 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       mbrFilter += u"ymin <= %1 AND "_s.arg( qgsDoubleToString( mFilterRect.yMaximum() ) );
       mbrFilter += u"ymax >= %1"_s.arg( qgsDoubleToString( mFilterRect.yMinimum() ) );
       QString idxName = u"idx_%1_%2"_s.arg( mSource->mIndexTable, mSource->mIndexGeometry );
-      whereClause += u"%1 IN (SELECT pkid FROM %2 WHERE %3)"_s
-                       .arg( mSource->mViewBased ? quotedPrimaryKey() : u"ROWID"_s, QgsSqliteUtils::quotedIdentifier( idxName ), mbrFilter );
+      whereClause += u"%1 IN (SELECT pkid FROM %2 WHERE %3)"_s.arg( mSource->mViewBased ? quotedPrimaryKey() : u"ROWID"_s, QgsSqliteUtils::quotedIdentifier( idxName ), mbrFilter );
     }
     else if ( mSource->mSpatialIndexMbrCache )
     {
       // using the MbrCache spatial index
       QString idxName = u"cache_%1_%2"_s.arg( mSource->mIndexTable, mSource->mIndexGeometry );
-      whereClause += u"%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))"_s
-                       .arg( mSource->mViewBased ? quotedPrimaryKey() : u"ROWID"_s, QgsSqliteUtils::quotedIdentifier( idxName ), mbr( mFilterRect ) );
+      whereClause
+        += u"%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))"_s.arg( mSource->mViewBased ? quotedPrimaryKey() : u"ROWID"_s, QgsSqliteUtils::quotedIdentifier( idxName ), mbr( mFilterRect ) );
     }
     else
     {
@@ -492,8 +491,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
 
 QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle &rect )
 {
-  return u"%1, %2, %3, %4"_s
-    .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
+  return u"%1, %2, %3, %4"_s.arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 }
 
 
@@ -700,8 +698,7 @@ QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvi
   , mSqlitePath( p->mSqlitePath )
   , mCrs( p->crs() )
   , mTransactionHandle( p->transaction() ? p->sqliteHandle() : nullptr )
-{
-}
+{}
 
 QgsFeatureIterator QgsSpatiaLiteFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

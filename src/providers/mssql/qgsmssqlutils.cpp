@@ -60,15 +60,27 @@ QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &systemTypeNam
   QMetaType::Type type = QMetaType::Type::UnknownType;
   // cloned branches are intentional here for improved readability
   // NOLINTBEGIN(bugprone-branch-clone)
-  if ( systemTypeName.startsWith( "decimal"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "numeric"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "real"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "float"_L1, Qt::CaseInsensitive ) )
+  if ( systemTypeName.startsWith( "decimal"_L1, Qt::CaseInsensitive )
+       || systemTypeName.startsWith( "numeric"_L1, Qt::CaseInsensitive )
+       || systemTypeName.startsWith( "real"_L1, Qt::CaseInsensitive )
+       || systemTypeName.startsWith( "float"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::Double;
   }
-  else if ( systemTypeName.startsWith( "char"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "nchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "varchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "nvarchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "text"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "ntext"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "uniqueidentifier"_L1, Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "char"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "nchar"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "varchar"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "nvarchar"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "text"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "ntext"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "uniqueidentifier"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QString;
   }
-  else if ( systemTypeName.startsWith( "smallint"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "int"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "bit"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "tinyint"_L1, Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "smallint"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "int"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "bit"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "tinyint"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::Int;
   }
@@ -76,11 +88,15 @@ QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &systemTypeNam
   {
     type = QMetaType::Type::LongLong;
   }
-  else if ( systemTypeName.startsWith( "binary"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "varbinary"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "image"_L1, Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "binary"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "varbinary"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "image"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QByteArray;
   }
-  else if ( systemTypeName.startsWith( "datetime"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "smalldatetime"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "datetime2"_L1, Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "datetime"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "smalldatetime"_L1, Qt::CaseInsensitive )
+            || systemTypeName.startsWith( "datetime2"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QDateTime;
   }

@@ -26,7 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
+QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLayerMetadata(
+  const QgsMetadataSearchContext &searchContext, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback
+)
 {
   Q_UNUSED( searchContext );
   QList<QgsLayerMetadataProviderResult> results;
@@ -184,7 +186,9 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
   }
   else
   {
-    QgsPostgresResult res( conn->LoggedPQexec( u"QgsPostgresProviderMetadataUtils"_s, QStringLiteral( R"SQL(
+    QgsPostgresResult res( conn->LoggedPQexec(
+      u"QgsPostgresProviderMetadataUtils"_s,
+      QStringLiteral( R"SQL(
             CREATE TABLE %1.qgis_layer_metadata (
               id SERIAL PRIMARY KEY
               ,f_table_catalog VARCHAR NOT NULL
@@ -204,10 +208,15 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
               UNIQUE (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, geometry_type, crs, layer_type)
             )
           )SQL" )
-                                                                                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) ) ) );
+        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+    ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
-      errorMessage = QObject::tr( "Unable to save layer metadata. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+      errorMessage
+        = QObject::tr(
+            "Unable to save layer metadata. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin"
+        )
+            .arg( dsUri.username() );
       conn->unref();
       return false;
     }
@@ -334,7 +343,9 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
 
   bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
   if ( !saved )
-    errorMessage = QObject::tr( "Unable to save layer metadata. It's not possible to insert a new record into the qgis_layer_metadata table. Maybe this is due to table permissions (user=%1). Please contact your database administrator." ).arg( dsUri.username() );
+    errorMessage
+      = QObject::tr( "Unable to save layer metadata. It's not possible to insert a new record into the qgis_layer_metadata table. Maybe this is due to table permissions (user=%1). Please contact your database administrator." )
+          .arg( dsUri.username() );
 
   conn->unref();
 

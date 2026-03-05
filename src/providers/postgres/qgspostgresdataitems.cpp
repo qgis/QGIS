@@ -156,11 +156,11 @@ QString QgsPGLayerItem::createUri()
   const QgsSettings &settings = QgsSettings();
   QString basekey = u"/PostgreSQL/connections/%1"_s.arg( connName );
 
-  const QStringList defPk( settings.value(
-                                     u"%1/keys/%2/%3"_s.arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
-                                     QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
-  )
-                             .toStringList() );
+  const QStringList defPk(
+    settings
+      .value( u"%1/keys/%2/%3"_s.arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ), QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() ) )
+      .toStringList()
+  );
 
   const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
@@ -211,7 +211,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  const bool ok = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::allowRasterOverviewTables( mConnectionName ), mName );
+  const bool ok
+    = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::allowRasterOverviewTables( mConnectionName ), mName );
 
   if ( !ok )
   {
@@ -256,7 +257,9 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     if ( layerProperty.schemaName != mName )
       continue;
 
-    if ( !layerProperty.geometryColName.isNull() && !layerProperty.isRaster && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
+    if ( !layerProperty.geometryColName.isNull()
+         && !layerProperty.isRaster
+         && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
       {
@@ -446,7 +449,9 @@ bool QgsPGSchemaItem::layerCollection() const
 }
 
 QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri &postgresProjectUri, const QString &connectionName )
-  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), u"postgres"_s ), mProjectUri( postgresProjectUri ), mConnectionName( connectionName )
+  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), u"postgres"_s )
+  , mProjectUri( postgresProjectUri )
+  , mConnectionName( connectionName )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
 
@@ -480,19 +485,24 @@ void QgsPGProjectItem::refreshTooltip()
         commentColumn = u", comment "_s;
       }
 
-      const QString sql = QStringLiteral( "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
-                                          "metadata->>'last_modified_user' AS user %1"
-                                          "FROM %2.qgis_projects WHERE name = %3" )
+      const QString sql = QStringLiteral(
+                            "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                            "metadata->>'last_modified_user' AS user %1"
+                            "FROM %2.qgis_projects WHERE name = %3"
+      )
                             .arg( commentColumn, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
 
       QgsPostgresResult res( conn->PQexec( sql ) );
 
       if ( res.PQntuples() == 1 )
       {
-        const QString tooltip = QStringLiteral( "%1: %2\n"
-                                                "%3: %4\n"
-                                                "%5: %6" )
-                                  .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
+        const QString tooltip
+          = QStringLiteral(
+              "%1: %2\n"
+              "%3: %4\n"
+              "%5: %6"
+          )
+              .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
         setToolTip( tooltip );
       }
       conn->unref();

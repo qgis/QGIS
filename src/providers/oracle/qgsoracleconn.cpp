@@ -285,8 +285,7 @@ bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList
 
   if ( !res )
   {
-    QgsDebugError( u"SQL: %1\nERROR: %2"_s
-                     .arg( qry.lastQuery(), qry.lastError().text() ) );
+    QgsDebugError( u"SQL: %1\nERROR: %2"_s.arg( qry.lastQuery(), qry.lastError().text() ) );
   }
 
   return res;
@@ -315,8 +314,7 @@ bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVaria
   if ( !res )
   {
     logWrapper.setError( qry.lastError().text() );
-    QgsDebugError( u"SQL: %1\nERROR: %2"_s
-                     .arg( qry.lastQuery(), qry.lastError().text() ) );
+    QgsDebugError( u"SQL: %1\nERROR: %2"_s.arg( qry.lastQuery(), qry.lastError().text() ) );
   }
   else
   {
@@ -364,21 +362,31 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
 
   QString sql;
 
-  QString prefix( userTablesOnly ? u"user"_s : u"all"_s ),
-    owner( userTablesOnly ? u"user AS owner"_s : u"c.owner"_s );
+  QString prefix( userTablesOnly ? u"user"_s : u"all"_s ), owner( userTablesOnly ? u"user AS owner"_s : u"c.owner"_s );
 
-  sql = QStringLiteral( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
-                        " FROM %3_%4 c"
-                        " JOIN %3_objects o ON c.table_name=o.object_name AND o.object_type IN ('TABLE','VIEW','SYNONYM')%5%6" )
-          .arg( owner, geometryColumnsOnly ? u"c.srid"_s : u"NULL AS srid"_s, prefix, geometryColumnsOnly ? u"sdo_geom_metadata"_s : u"tab_columns"_s, userTablesOnly ? QString() : u" AND c.owner=%1"_s.arg( schema.isEmpty() ? u"o.owner"_s : quotedValue( schema ) ), geometryColumnsOnly ? QString() : u" WHERE c.data_type='SDO_GEOMETRY'"_s );
+  sql = QStringLiteral(
+          "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
+          " FROM %3_%4 c"
+          " JOIN %3_objects o ON c.table_name=o.object_name AND o.object_type IN ('TABLE','VIEW','SYNONYM')%5%6"
+  )
+          .arg(
+            owner,
+            geometryColumnsOnly ? u"c.srid"_s : u"NULL AS srid"_s,
+            prefix,
+            geometryColumnsOnly ? u"sdo_geom_metadata"_s : u"tab_columns"_s,
+            userTablesOnly ? QString() : u" AND c.owner=%1"_s.arg( schema.isEmpty() ? u"o.owner"_s : quotedValue( schema ) ),
+            geometryColumnsOnly ? QString() : u" WHERE c.data_type='SDO_GEOMETRY'"_s
+          );
 
   if ( allowGeometrylessTables )
   {
     // also here!
-    sql += QStringLiteral( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
-                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') "
-                           // get only geometry table without geometry column
-                           " AND NOT EXISTS( SELECT 1 FROM %2_tab_columns cols WHERE cols.table_name=c.object_name AND cols.data_type='SDO_GEOMETRY') %3" )
+    sql += QStringLiteral(
+             " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
+             " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') "
+             // get only geometry table without geometry column
+             " AND NOT EXISTS( SELECT 1 FROM %2_tab_columns cols WHERE cols.table_name=c.object_name AND cols.data_type='SDO_GEOMETRY') %3"
+    )
              .arg( owner, prefix, userTablesOnly || schema.isEmpty() ? QString() : u" AND c.owner=%1"_s.arg( quotedValue( schema ) ) );
   }
 
@@ -501,14 +509,12 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
     QString error = qry.lastError().text();
     if ( logError )
     {
-      const QString errorMsg { tr( "Connection error: %1 returned %2" )
-                                 .arg( query, error ) };
+      const QString errorMsg { tr( "Connection error: %1 returned %2" ).arg( query, error ) };
       QgsMessageLog::logMessage( errorMsg, tr( "Oracle" ) );
     }
     else
     {
-      const QString errorMsg { u"Connection error: %1 returned %2"_s
-                                 .arg( query, error ) };
+      const QString errorMsg { u"Connection error: %1 returned %2"_s.arg( query, error ) };
       QgsDebugError( errorMsg );
     }
     if ( errorMessage )
@@ -537,14 +543,12 @@ bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *er
     logWrapper.setError( error );
     if ( logError )
     {
-      const QString errorMsg { tr( "Connection error: %1 returned %2" )
-                                 .arg( query, error ) };
+      const QString errorMsg { tr( "Connection error: %1 returned %2" ).arg( query, error ) };
       QgsMessageLog::logMessage( errorMsg, tr( "Oracle" ) );
     }
     else
     {
-      const QString errorMsg { u"Connection error: %1 returned %2"_s
-                                 .arg( query, error ) };
+      const QString errorMsg { u"Connection error: %1 returned %2"_s.arg( query, error ) };
       QgsDebugError( errorMsg );
     }
     if ( errorMessage )
@@ -663,13 +667,17 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   if ( useEstimatedMetadata )
   {
     table = u"(SELECT %1 FROM %2.%3 WHERE %1 IS NOT NULL%4 AND rownum<=%5)"_s
-              .arg( quotedIdentifier( layerProperty.geometryColName ), quotedIdentifier( layerProperty.ownerName ), quotedIdentifier( layerProperty.tableName ), layerProperty.sql.isEmpty() ? QString() : u" AND (%1)"_s.arg( layerProperty.sql ) )
+              .arg(
+                quotedIdentifier( layerProperty.geometryColName ),
+                quotedIdentifier( layerProperty.ownerName ),
+                quotedIdentifier( layerProperty.tableName ),
+                layerProperty.sql.isEmpty() ? QString() : u" AND (%1)"_s.arg( layerProperty.sql )
+              )
               .arg( sGeomTypeSelectLimit );
   }
   else if ( !layerProperty.ownerName.isEmpty() )
   {
-    table = u"%1.%2"_s
-              .arg( quotedIdentifier( layerProperty.ownerName ), quotedIdentifier( layerProperty.tableName ) );
+    table = u"%1.%2"_s.arg( quotedIdentifier( layerProperty.ownerName ), quotedIdentifier( layerProperty.tableName ) );
     where = layerProperty.sql;
   }
   else
@@ -705,8 +713,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   if ( !LoggedExecPrivate( u"QgsOracleConn"_s, qry, sql.arg( quotedIdentifier( layerProperty.geometryColName ), table, where.isEmpty() ? QString() : u" AND (%1)"_s.arg( where ) ), QVariantList() ) )
   {
-    const QString error { tr( "SQL: %1\nerror: %2\n" )
-                            .arg( qry.lastQuery(), qry.lastError().text() ) };
+    const QString error { tr( "SQL: %1\nerror: %2\n" ).arg( qry.lastQuery(), qry.lastError().text() ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return;
   }
@@ -722,7 +729,8 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
       Qgis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
       if ( type == Qgis::WkbType::Unknown )
       {
-        QgsMessageLog::logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" ).arg( qry.value( 0 ).toInt() ).arg( layerProperty.ownerName, layerProperty.tableName, layerProperty.geometryColName ), tr( "Oracle" ) );
+        QgsMessageLog::
+          logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" ).arg( qry.value( 0 ).toInt() ).arg( layerProperty.ownerName, layerProperty.tableName, layerProperty.geometryColName ), tr( "Oracle" ) );
         continue;
       }
       QgsDebugMsgLevel( u"add type %1"_s.arg( qgsEnumValueToKey( type ) ), 2 );
@@ -1099,9 +1107,7 @@ int QgsOracleConn::version()
   }
   else
   {
-    const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                            .arg( qry.lastError().text() )
-                            .arg( qry.lastQuery() ) };
+    const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return -1;
   }
@@ -1153,11 +1159,17 @@ QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QStr
 
   QSqlQuery qry( mDatabase );
 
-  if ( LoggedExecPrivate( u"QgsOracleConn"_s, qry, QStringLiteral( "SELECT i.index_name,i.domidx_opstatus"
-                                                                   " FROM all_indexes i"
-                                                                   " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
-                                                                   " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ),
-                          QVariantList() << geometryColumn << ownerName << tableName ) )
+  if ( LoggedExecPrivate(
+         u"QgsOracleConn"_s,
+         qry,
+         QStringLiteral(
+           "SELECT i.index_name,i.domidx_opstatus"
+           " FROM all_indexes i"
+           " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
+           " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'"
+         ),
+         QVariantList() << geometryColumn << ownerName << tableName
+       ) )
   {
     if ( qry.next() )
     {
@@ -1180,11 +1192,7 @@ QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QStr
   }
   else
   {
-    const QString error { tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" )
-                            .arg( ownerName )
-                            .arg( tableName )
-                            .arg( geometryColumn )
-                            .arg( qry.lastError().text() ) };
+    const QString error { tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" ).arg( ownerName ).arg( tableName ).arg( geometryColumn ).arg( qry.lastError().text() ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
 
     isValid = false;
@@ -1205,16 +1213,13 @@ QString QgsOracleConn::createSpatialIndex( const QString &ownerName, const QStri
     n = qry.value( 0 ).toInt() + 1;
   }
 
-  const QString sql2 { u"CREATE INDEX QGIS_IDX_%1 ON %2.%3(%4) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARALLEL"_s
-                         .arg( n, 10, 10, QChar( '0' ) )
+  const QString sql2 { u"CREATE INDEX QGIS_IDX_%1 ON %2.%3(%4) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARALLEL"_s.arg( n, 10, 10, QChar( '0' ) )
                          .arg( quotedIdentifier( ownerName ) )
                          .arg( quotedIdentifier( tableName ) )
                          .arg( quotedIdentifier( geometryColumn ) ) };
   if ( !LoggedExecPrivate( u"QgsOracleConn"_s, qry, sql2, QVariantList() ) )
   {
-    const QString error { tr( "Creation spatial index failed.\nSQL: %1\nError: %2" )
-                            .arg( qry.lastQuery() )
-                            .arg( qry.lastError().text() ) };
+    const QString error { tr( "Creation spatial index failed.\nSQL: %1\nError: %2" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return QString();
   }
@@ -1228,15 +1233,19 @@ QStringList QgsOracleConn::getPrimaryKeys( const QString &ownerName, const QStri
 
   QStringList result;
 
-  if ( !LoggedExecPrivate( u"QgsOracleConn"_s, qry, QStringLiteral( "SELECT column_name"
-                                                                    " FROM all_cons_columns a"
-                                                                    " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
-                                                                    " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
-                           QVariantList() << ownerName << tableName ) )
+  if ( !LoggedExecPrivate(
+         u"QgsOracleConn"_s,
+         qry,
+         QStringLiteral(
+           "SELECT column_name"
+           " FROM all_cons_columns a"
+           " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
+           " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?"
+         ),
+         QVariantList() << ownerName << tableName
+       ) )
   {
-    const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                            .arg( qry.lastError().text() )
-                            .arg( qry.lastQuery() ) };
+    const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     return result;
   }
@@ -1253,8 +1262,7 @@ QStringList QgsOracleConn::getPrimaryKeys( const QString &ownerName, const QStri
 
 QgsPoolOracleConn::QgsPoolOracleConn( const QString &connInfo )
   : mConn( QgsOracleConnPool::instance()->acquireConnection( connInfo ) )
-{
-}
+{}
 
 QgsPoolOracleConn::~QgsPoolOracleConn()
 {
