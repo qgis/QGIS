@@ -47,7 +47,9 @@ QgsGeometryCheck::Flags QgsGeometryCheck::flags() const
   return QgsGeometryCheck::Flags();
 }
 
-QgsGeometryCheck::Result QgsGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   Q_UNUSED( featurePools )
   Q_UNUSED( errors )
@@ -59,7 +61,9 @@ QgsGeometryCheck::Result QgsGeometryCheck::collectErrors( const QMap<QString, Qg
 }
 
 
-void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
+void QgsGeometryCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes
+) const
 {
   Q_UNUSED( featurePools )
   Q_UNUSED( error )
@@ -101,7 +105,9 @@ QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds( const QMap<QS
   return featureIds;
 }
 
-void QgsGeometryCheck::replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
+void QgsGeometryCheck::replaceFeatureGeometryPart(
+  const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes
+) const
 {
   QgsFeaturePool *featurePool = featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();

@@ -38,13 +38,14 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
      * The \a neighbors are a map of layer ids and feature ids.
      * The \a area of the gap in map units and the bounding box of the gap in map units too.
      */
-    QgsGeometryGapCheckError( const QgsGeometryCheck *check, const QString &layerId, const QgsGeometry &geometry, const QMap<QString, QgsFeatureIds> &neighbors, double area, const QgsRectangle &gapAreaBBox, const QgsRectangle &contextArea )
+    QgsGeometryGapCheckError(
+      const QgsGeometryCheck *check, const QString &layerId, const QgsGeometry &geometry, const QMap<QString, QgsFeatureIds> &neighbors, double area, const QgsRectangle &gapAreaBBox, const QgsRectangle &contextArea
+    )
       : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
       , mContextBoundingBox( contextArea )
-    {
-    }
+    {}
 
     QgsRectangle contextBoundingBox() const override;
 
@@ -108,7 +109,9 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) override;
 
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()
+    ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 

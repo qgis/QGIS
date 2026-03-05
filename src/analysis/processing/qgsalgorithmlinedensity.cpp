@@ -76,11 +76,12 @@ void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsLineDensityAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates a density measure of linear features "
-                      "which is obtained in a circular neighborhood within each raster cell. "
-                      "First, the length of the segment of each line that is intersected by the circular neighborhood "
-                      "is multiplied with the lines weight factor. In a second step, all length values are summed and "
-                      "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
+  return QObject::tr(
+    "This algorithm calculates a density measure of linear features "
+    "which is obtained in a circular neighborhood within each raster cell. "
+    "First, the length of the segment of each line that is intersected by the circular neighborhood "
+    "is multiplied with the lines weight factor. In a second step, all length values are summed and "
+    "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
   );
 }
 
@@ -91,8 +92,10 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsLineDensityAlgorithm::documentati
 
 QString QgsLineDensityAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates a density measure of linear features "
-                      "which is obtained in a circular neighborhood within each raster cell." );
+  return QObject::tr(
+    "Calculates a density measure of linear features "
+    "which is obtained in a circular neighborhood within each raster cell."
+  );
 }
 
 QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
@@ -113,8 +116,12 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
   mSearchRadius = parameterAsDouble( parameters, u"RADIUS"_s, context );
   if ( mSearchRadius < 0.5 * mPixelSize * std::sqrt( 2 ) )
-    throw QgsProcessingException( QObject::tr( "Raster cells must be fully contained by the search circle. Therefore, "
-                                               "the search radius must not be smaller than half of the pixel diagonal." ) );
+    throw QgsProcessingException(
+      QObject::tr(
+        "Raster cells must be fully contained by the search circle. Therefore, "
+        "the search radius must not be smaller than half of the pixel diagonal."
+      )
+    );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();

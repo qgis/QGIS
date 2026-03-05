@@ -43,7 +43,8 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Categorized layer" ) ) );
 
-  auto failCategories = std::make_unique<QgsProcessingParameterFeatureSink>( u"NON_MATCHING_CATEGORIES"_s, QObject::tr( "Non-matching categories" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  auto failCategories
+    = std::make_unique<QgsProcessingParameterFeatureSink>( u"NON_MATCHING_CATEGORIES"_s, QObject::tr( "Non-matching categories" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   // not supported for outputs yet!
   //failCategories->setFlags( failCategories->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failCategories.release() );
@@ -87,17 +88,18 @@ QString QgsCategorizeUsingStyleAlgorithm::groupId() const
 
 QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
-                      "style file is specified, symbols from the user's current style library are used instead.\n\n"
-                      "The specified expression (or field name) is used to create categories for the renderer. A category will be "
-                      "created for each unique value within the layer.\n\n"
-                      "Each category is individually matched to the symbols which exist within the specified QGIS XML style database. Whenever "
-                      "a matching symbol name is found, the category's symbol will be set to this matched symbol.\n\n"
-                      "The matching is case-insensitive by default, but can be made case-sensitive if required.\n\n"
-                      "Optionally, non-alphanumeric characters in both the category value and symbol name can be ignored "
-                      "while performing the match. This allows for greater tolerance when matching categories to symbols.\n\n"
-                      "If desired, tables can also be output containing lists of the categories which could not be matched "
-                      "to symbols, and symbols which were not matched to categories."
+  return QObject::tr(
+    "This algorithm sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
+    "style file is specified, symbols from the user's current style library are used instead.\n\n"
+    "The specified expression (or field name) is used to create categories for the renderer. A category will be "
+    "created for each unique value within the layer.\n\n"
+    "Each category is individually matched to the symbols which exist within the specified QGIS XML style database. Whenever "
+    "a matching symbol name is found, the category's symbol will be set to this matched symbol.\n\n"
+    "The matching is case-insensitive by default, but can be made case-sensitive if required.\n\n"
+    "Optionally, non-alphanumeric characters in both the category value and symbol name can be ignored "
+    "while performing the match. This allows for greater tolerance when matching categories to symbols.\n\n"
+    "If desired, tables can also be output containing lists of the categories which could not be matched "
+    "to symbols, and symbols which were not matched to categories."
   );
 }
 
@@ -146,9 +148,7 @@ bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &para
   mLayerGeometryType = layer->geometryType();
   mLayerFields = layer->fields();
 
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( context.project() )
-                     << QgsExpressionContextUtils::layerScope( layer );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( context.project() ) << QgsExpressionContextUtils::layerScope( layer );
 
   mExpression = QgsExpression( mField );
   mExpression.prepare( &mExpressionContext );
@@ -188,7 +188,9 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   QgsFields nonMatchingCategoryFields;
   nonMatchingCategoryFields.append( QgsField( u"category"_s, QMetaType::Type::QString ) );
   QString nonMatchingCategoriesDest;
-  std::unique_ptr<QgsFeatureSink> nonMatchingCategoriesSink( parameterAsSink( parameters, u"NON_MATCHING_CATEGORIES"_s, context, nonMatchingCategoriesDest, nonMatchingCategoryFields, Qgis::WkbType::NoGeometry ) );
+  std::unique_ptr<QgsFeatureSink> nonMatchingCategoriesSink(
+    parameterAsSink( parameters, u"NON_MATCHING_CATEGORIES"_s, context, nonMatchingCategoriesDest, nonMatchingCategoryFields, Qgis::WkbType::NoGeometry )
+  );
   if ( !nonMatchingCategoriesSink && parameters.contains( u"NON_MATCHING_CATEGORIES"_s ) && parameters.value( u"NON_MATCHING_CATEGORIES"_s ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING_CATEGORIES"_s ) );
 

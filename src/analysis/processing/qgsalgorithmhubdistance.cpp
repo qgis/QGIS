@@ -53,12 +53,13 @@ QString QgsHubDistanceAlgorithm::groupId() const
 
 QString QgsHubDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes the distance between features from the source layer to the closest feature "
-                      "from the destination layer.\n\n"
-                      "Distance calculations are based on the feature's bounding box center.\n\n"
-                      "The resulting line layer contains lines linking each origin point with its nearest destination feature.\n\n"
-                      "The resulting point layer contains each origin feature's center point with additional fields indicating the identifier "
-                      "of the nearest destination feature and the distance to it."
+  return QObject::tr(
+    "This algorithm computes the distance between features from the source layer to the closest feature "
+    "from the destination layer.\n\n"
+    "Distance calculations are based on the feature's bounding box center.\n\n"
+    "The resulting line layer contains lines linking each origin point with its nearest destination feature.\n\n"
+    "The resulting point layer contains each origin feature's center point with additional fields indicating the identifier "
+    "of the nearest destination feature and the distance to it."
   );
 }
 
@@ -83,12 +84,7 @@ void QgsHubDistanceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"HUBS"_s, QObject::tr( "Destination layer (hubs)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Hub layer name attribute" ), QVariant(), u"HUBS"_s ) );
 
-  const QStringList options = QStringList()
-                              << QObject::tr( "Meters" )
-                              << QObject::tr( "Feet" )
-                              << QObject::tr( "Miles" )
-                              << QObject::tr( "Kilometers" )
-                              << QObject::tr( "Layer Units" );
+  const QStringList options = QStringList() << QObject::tr( "Meters" ) << QObject::tr( "Feet" ) << QObject::tr( "Miles" ) << QObject::tr( "Kilometers" ) << QObject::tr( "Layer Units" );
   addParameter( new QgsProcessingParameterEnum( u"UNIT"_s, QObject::tr( "Measurement unit" ), options, false, 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_LINES"_s, QObject::tr( "Hub lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_POINTS"_s, QObject::tr( "Hub points" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, false ) );
@@ -149,17 +145,22 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   QHash<QgsFeatureId, QVariant> hubsAttributeCache;
   double step = hubSource->featureCount() > 0 ? 50.0 / hubSource->featureCount() : 1;
   long long i = 0;
-  const QgsSpatialIndex hubsIndex( hubSource->getFeatures( request ), [&]( const QgsFeature &f ) -> bool {
-    if ( feedback-> isCanceled() )
-    {
-      return false;
-    }
+  const QgsSpatialIndex hubsIndex(
+    hubSource->getFeatures( request ),
+    [&]( const QgsFeature &f ) -> bool {
+      if ( feedback->isCanceled() )
+      {
+        return false;
+      }
 
-    hubsAttributeCache.insert( f.id(), f.attributes().at( hubNameIndex ) );
+      hubsAttributeCache.insert( f.id(), f.attributes().at( hubNameIndex ) );
 
-    i++;
-    feedback->setProgress( i * step );
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      i++;
+      feedback->setProgress( i * step );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   QgsDistanceArea da;
   da.setSourceCrs( spokeSource->sourceCrs(), context.transformContext() );

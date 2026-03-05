@@ -77,7 +77,8 @@ void QgsVirtualRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
   addParameter( extentParam.release() );
-  auto cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"CELL_SIZE"_s, QObject::tr( "Output cell size (leave empty to set automatically)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
+  auto cellSizeParam = std::make_unique<
+    QgsProcessingParameterNumber>( u"CELL_SIZE"_s, QObject::tr( "Output cell size (leave empty to set automatically)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
   cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
   addParameter( cellSizeParam.release() );
   auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"CRS"_s, QObject::tr( "Output CRS" ), QVariant(), true );

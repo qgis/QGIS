@@ -50,7 +50,9 @@ class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    virtual QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+    virtual QVariantMap exportAtlas(
+      QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) = 0;
 };
 
 
@@ -69,7 +71,9 @@ class QgsLayoutAtlasToPdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithmBase
     QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap exportAtlas(
+      QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) override;
 };
 
 /**
@@ -87,7 +91,9 @@ class QgsLayoutAtlasToMultiplePdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithm
     QgsLayoutAtlasToMultiplePdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap exportAtlas(
+      QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) override;
 };
 
 ///@endcond PRIVATE

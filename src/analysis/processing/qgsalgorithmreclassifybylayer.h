@@ -55,8 +55,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
      * Returns a list of classes to use during the reclassification.
      */
     virtual QVector<QgsReclassifyUtils::RasterClass> createClasses(
-      QgsReclassifyUtils::RasterClass::BoundsType boundsType,
-      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+      QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
     ) = 0;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
@@ -94,8 +93,7 @@ class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVector<QgsReclassifyUtils::RasterClass> createClasses(
-      QgsReclassifyUtils::RasterClass::BoundsType boundsType,
-      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+      QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
     ) override;
 
   private:
@@ -122,7 +120,9 @@ class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
   protected:
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVector<QgsReclassifyUtils::RasterClass> createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVector<QgsReclassifyUtils::RasterClass> createClasses(
+      QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) override;
 };
 
 ///@endcond PRIVATE

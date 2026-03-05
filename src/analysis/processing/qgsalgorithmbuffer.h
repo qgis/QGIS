@@ -53,7 +53,9 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
-    QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const override;
+    QgsProcessingAlgorithm::VectorProperties sinkProperties(
+      const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties
+    ) const override;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

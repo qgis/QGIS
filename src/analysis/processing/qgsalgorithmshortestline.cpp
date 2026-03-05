@@ -60,20 +60,21 @@ QString QgsShortestLineAlgorithm::shortDescription() const
 
 QString QgsShortestLineAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a line layer as the "
-                      "shortest line between the source and the destination layer. "
-                      "By default only the first nearest feature of the "
-                      "destination layer is taken into account. "
-                      "The n-nearest neighboring features number can be specified.\n\n"
-                      "If a maximum distance is specified, then only "
-                      "features which are closer than this distance will "
-                      "be considered.\n\nThe output features will contain all the "
-                      "source layer attributes, all the attributes from the n-nearest "
-                      "feature and the additional field of the distance.\n\n"
-                      "This algorithm uses purely Cartesian calculations for distance, "
-                      "and does not consider geodetic or ellipsoid properties when "
-                      "determining feature proximity. The measurement and output coordinate "
-                      "system is based on the coordinate system of the source layer."
+  return QObject::tr(
+    "This algorithm creates a line layer as the "
+    "shortest line between the source and the destination layer. "
+    "By default only the first nearest feature of the "
+    "destination layer is taken into account. "
+    "The n-nearest neighboring features number can be specified.\n\n"
+    "If a maximum distance is specified, then only "
+    "features which are closer than this distance will "
+    "be considered.\n\nThe output features will contain all the "
+    "source layer attributes, all the attributes from the n-nearest "
+    "feature and the additional field of the distance.\n\n"
+    "This algorithm uses purely Cartesian calculations for distance, "
+    "and does not consider geodetic or ellipsoid properties when "
+    "determining feature proximity. The measurement and output coordinate "
+    "system is based on the coordinate system of the source layer."
   );
 }
 
@@ -131,16 +132,21 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   QHash<QgsFeatureId, QgsAttributes> destinationAttributeCache;
   double step = mDestination->featureCount() > 0 ? 50.0 / mDestination->featureCount() : 1;
   int i = 0;
-  const QgsSpatialIndex idx( destinationIterator, [&]( const QgsFeature &f ) -> bool {
-    i++;
-    if ( feedback-> isCanceled() )
-      return false;
+  const QgsSpatialIndex idx(
+    destinationIterator,
+    [&]( const QgsFeature &f ) -> bool {
+      i++;
+      if ( feedback->isCanceled() )
+        return false;
 
-    feedback->setProgress( i * step );
+      feedback->setProgress( i * step );
 
-    destinationAttributeCache.insert( f.id(), f.attributes() );
+      destinationAttributeCache.insert( f.id(), f.attributes() );
 
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
   QgsFeatureIterator sourceIterator = mSource->getFeatures();

@@ -86,39 +86,20 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
  *
  * \note Not available in Python bindings.
  */
-template<class T>
-class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
+template<class T> class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
   public:
-    QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const override
-    {
-      return new T( context, configuration );
-    }
+    QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const override { return new T( context, configuration ); }
 
-    QString description() const override
-    {
-      return T::factoryDescription();
-    }
+    QString description() const override { return T::factoryDescription(); }
 
-    QString id() const override
-    {
-      return T::factoryId();
-    }
+    QString id() const override { return T::factoryId(); }
 
-    bool isCompatible( QgsVectorLayer *layer ) const override
-    {
-      return T::factoryIsCompatible( layer );
-    }
+    bool isCompatible( QgsVectorLayer *layer ) const override { return T::factoryIsCompatible( layer ); }
 
-    QgsGeometryCheck::Flags flags() const override
-    {
-      return T::factoryFlags();
-    }
+    QgsGeometryCheck::Flags flags() const override { return T::factoryFlags(); }
 
-    QgsGeometryCheck::CheckType checkType() const override
-    {
-      return T::factoryCheckType();
-    }
+    QgsGeometryCheck::CheckType checkType() const override { return T::factoryCheckType(); }
 };
 
 

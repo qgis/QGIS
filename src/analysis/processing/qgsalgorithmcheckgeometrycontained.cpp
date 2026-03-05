@@ -62,9 +62,11 @@ QString QgsGeometryCheckContainedAlgorithm::groupId() const
 
 QString QgsGeometryCheckContainedAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the input geometries contained in the polygons from the polygon layers list.\n"
-                      "A polygon layer can be checked against itself.\n"
-                      "Input features contained in the polygon layers features are errors.\n" );
+  return QObject::tr(
+    "This algorithm checks the input geometries contained in the polygons from the polygon layers list.\n"
+    "A polygon layer can be checked against itself.\n"
+    "Input features contained in the polygon layers features are errors.\n"
+  );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckContainedAlgorithm::flags() const
@@ -82,32 +84,25 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ),
-    QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
-                 << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
-                 << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+    u"INPUT"_s,
+    QObject::tr( "Input layer" ),
+    QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
-  ) );
-  addParameter( new QgsProcessingParameterMultipleLayers(
-    u"POLYGONS"_s, QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
-  ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"POLYGONS"_s, QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"ERRORS"_s, QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"ERRORS"_s, QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
-  );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
 
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -153,13 +148,9 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
   fields.append( uniqueIdField );
 
   QString dest_output, dest_errors;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
 
-  std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
-  ) );
+  std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink( parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
@@ -242,15 +233,7 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
       uniqueIds << uniqueId;
     }
 
-    attrs << error->layerId()
-          << inputLayer->name()
-          << error->vidx().part
-          << error->vidx().ring
-          << error->vidx().vertex
-          << error->location().x()
-          << error->location().y()
-          << error->value().toString()
-          << uniqueId;
+    attrs << error->layerId() << inputLayer->name() << error->vidx().part << error->vidx().ring << error->vidx().vertex << error->location().x() << error->location().y() << error->value().toString() << uniqueId;
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );

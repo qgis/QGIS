@@ -52,9 +52,11 @@ QString QgsShapefileEncodingInfoAlgorithm::groupId() const
 
 QString QgsShapefileEncodingInfoAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the attribute encoding information embedded in a Shapefile.\n\n"
-                      "Both the encoding specified by an optional .cpg file and any encoding details present in the "
-                      ".dbf LDID header block are considered." );
+  return QObject::tr(
+    "This algorithm extracts the attribute encoding information embedded in a Shapefile.\n\n"
+    "Both the encoding specified by an optional .cpg file and any encoding details present in the "
+    ".dbf LDID header block are considered."
+  );
 }
 
 QString QgsShapefileEncodingInfoAlgorithm::shortDescription() const
@@ -69,7 +71,9 @@ QgsShapefileEncodingInfoAlgorithm *QgsShapefileEncodingInfoAlgorithm::createInst
 
 void QgsShapefileEncodingInfoAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( "*.shp *.SHP"_L1 ) ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( "*.shp *.SHP"_L1 ) )
+  );
 
   addOutput( new QgsProcessingOutputString( u"ENCODING"_s, QObject::tr( "Shapefile Encoding" ) ) );
   addOutput( new QgsProcessingOutputString( u"CPG_ENCODING"_s, QObject::tr( "CPG Encoding" ) ) );

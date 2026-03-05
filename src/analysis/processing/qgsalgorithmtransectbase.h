@@ -68,9 +68,7 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
     /**
    * Prepares the transect algorithm subclass for execution.
    */
-    virtual bool
-      prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-      = 0;
+    virtual bool prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
     /**
    * Processes a line geometry using the specific sampling strategy implemented
@@ -82,8 +80,7 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
    * Pure virtual method that generates sampling points along a line geometry.
    * Subclasses implement their specific sampling strategy here.
    */
-    virtual std::vector<QgsPoint>
-      generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) = 0;
+    virtual std::vector<QgsPoint> generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) = 0;
 
     /**
    * Calculate the azimuth at a given point for transect orientation.

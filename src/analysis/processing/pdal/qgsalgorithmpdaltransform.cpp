@@ -119,7 +119,8 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
 
   const QMatrix3x3 rotation3x3 = QQuaternion::fromEulerAngles( rotateX, rotateY, rotateZ ).toRotationMatrix();
 
-  const QgsMatrix4x4 rotateMatrix = QgsMatrix4x4( rotation3x3( 0, 0 ), rotation3x3( 0, 1 ), rotation3x3( 0, 2 ), 0, rotation3x3( 1, 0 ), rotation3x3( 1, 1 ), rotation3x3( 1, 2 ), 0, rotation3x3( 2, 0 ), rotation3x3( 2, 1 ), rotation3x3( 2, 2 ), 0, 0, 0, 0, 1 );
+  const QgsMatrix4x4 rotateMatrix
+    = QgsMatrix4x4( rotation3x3( 0, 0 ), rotation3x3( 0, 1 ), rotation3x3( 0, 2 ), 0, rotation3x3( 1, 0 ), rotation3x3( 1, 1 ), rotation3x3( 1, 2 ), 0, rotation3x3( 2, 0 ), rotation3x3( 2, 1 ), rotation3x3( 2, 2 ), 0, 0, 0, 0, 1 );
 
   const QgsMatrix4x4 translateMatrix = QgsMatrix4x4( 1, 0, 0, translateX, 0, 1, 0, translateY, 0, 0, 1, translateZ, 0, 0, 0, 1 );
 
@@ -127,8 +128,7 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
 
   QgsMatrix4x4 transformMatrix = translateMatrix * rotateMatrix * scaleMatrix;
 
-  const QString transformString = u"%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16"_s
-                                    .arg( transformMatrix.data()[0] )
+  const QString transformString = u"%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16"_s.arg( transformMatrix.data()[0] )
                                     .arg( transformMatrix.data()[4] )
                                     .arg( transformMatrix.data()[8] )
                                     .arg( transformMatrix.data()[12] )
