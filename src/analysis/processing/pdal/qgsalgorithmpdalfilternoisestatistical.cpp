@@ -55,7 +55,10 @@ QString QgsPdalFilterNoiseStatisticalAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm filters noise in a point cloud using a statistical outlier removal algorithm." )
          + u"\n\n"_s
-         + QObject::tr( "For each point, the algorithm computes the mean distance to its K nearest neighbors. Points whose mean distance exceeds a threshold (mean distance + multiplier × standard deviation) are classified as noise." );
+         + QObject::tr(
+           "For each point, the algorithm computes the mean distance to its K nearest neighbors. Points whose mean distance exceeds a threshold (mean distance + multiplier × standard deviation) are "
+           "classified as noise."
+         );
 }
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortDescription() const
@@ -103,7 +106,15 @@ QStringList QgsPdalFilterNoiseStatisticalAlgorithm::createArgumentLists( const Q
     removeNoisePoints = "true";
   }
 
-  QStringList args = { u"filter_noise"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=statistical"_s, u"--remove-noise-points=%1"_s.arg( removeNoisePoints ), u"--statistical-mean-k=%1"_s.arg( meanK ), u"--statistical-multiplier=%1"_s.arg( multiplier ) };
+  QStringList args = {
+    u"filter_noise"_s,
+    u"--input=%1"_s.arg( layer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
+    u"--algorithm=statistical"_s,
+    u"--remove-noise-points=%1"_s.arg( removeNoisePoints ),
+    u"--statistical-mean-k=%1"_s.arg( meanK ),
+    u"--statistical-multiplier=%1"_s.arg( multiplier )
+  };
 
   applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
