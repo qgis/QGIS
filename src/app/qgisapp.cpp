@@ -5936,7 +5936,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( u"/projections/defaultProjectCrs"_s, Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
-  const bool planimetric = settings.value( u"measure/planimetric"_s, true, QgsSettings::Core ).toBool();
+  const bool planimetric = QgsSettingsRegistryCore::settingsMeasurePlanimetric->value();
   prj->setCrs( srs, !planimetric ); // If the default ellipsoid is not planimetric, set it from the default crs
   if ( planimetric )
     prj->setEllipsoid( Qgis::geoNone() );

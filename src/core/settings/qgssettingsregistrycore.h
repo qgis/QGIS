@@ -191,6 +191,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for projects and folders that are denied execution of embedded scripts across sessions
     static const QgsSettingsEntryStringList *settingsCodeExecutionUntrustedProjectsFolders;
 
+    //! Settings entry for whether measurements should be planimetric (ellipsoid off) or use the ellipsoid
+    static const QgsSettingsEntryBool *settingsMeasurePlanimetric;
+
   private:
     friend class QgsApplication;
 

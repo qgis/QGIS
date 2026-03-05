@@ -674,7 +674,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   bool baseUnit = mSettings->value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
   mKeepBaseUnitCheckBox->setChecked( baseUnit );
 
-  mPlanimetricMeasurementsComboBox->setChecked( mSettings->value( u"measure/planimetric"_s, false, QgsSettings::Core ).toBool() );
+  mPlanimetricMeasurementsComboBox->setChecked( QgsSettingsRegistryCore::settingsMeasurePlanimetric->value() );
 
   // set the measure tool copy settings
   connect( mSeparatorOther, &QRadioButton::toggled, mSeparatorCustom, &QLineEdit::setEnabled );
@@ -1748,7 +1748,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/projections/crsAccuracyIndicator"_s, mCrsAccuracyIndicatorCheck->isChecked(), QgsSettings::App );
 
   //measurement settings
-  mSettings->setValue( u"measure/planimetric"_s, mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
+  QgsSettingsRegistryCore::settingsMeasurePlanimetric->setValue( mPlanimetricMeasurementsComboBox->isChecked() );
 
   Qgis::DistanceUnit distanceUnit = static_cast<Qgis::DistanceUnit>( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( u"/qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( distanceUnit ) );
