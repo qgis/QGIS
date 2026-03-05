@@ -505,6 +505,23 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
 
 QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix )
 {
+  // built-in Qt3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // They are rotated to have their Z axis goes "up", like the rest of the scene
+  // Retrieve the rotation matrix
+  QMatrix4x4 instanceMaterialTransform;
+  const QList<Qt3DRender::QMaterial *> materials = entity->findChildren<Qt3DRender::QMaterial *>();
+  if ( !materials.isEmpty() )
+  {
+    for ( const Qt3DRender::QParameter *parameter : materials[0]->parameters() )
+    {
+      if ( parameter->name() == QLatin1String( "inst" ) )
+      {
+        instanceMaterialTransform = parameter->value().value<QMatrix4x4>();
+        break;
+      }
+    }
+  }
+
   QVector<Qgs3DExportObject *> objects;
   const QList<Qt3DQGeometry *> geometriesList = entity->findChildren<Qt3DQGeometry *>();
   for ( Qt3DQGeometry *geometry : geometriesList )
@@ -548,6 +565,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
+      instanceTransform *= instanceMaterialTransform;
       object->setupPositionCoordinates( positionData, instanceTransform );
       object->setupFaces( indexData );
 

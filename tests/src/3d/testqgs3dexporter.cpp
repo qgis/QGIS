@@ -25,6 +25,7 @@
 #include "qgs3dutils.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgspoint3dsymbol.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -44,6 +45,7 @@ class TestQgs3DExporter : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void test3DSceneExporter();
     void test3DSceneExporterBig();
+    void test3DSceneExporterInstanced();
 
   private:
     void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
@@ -259,6 +261,57 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   do3DSceneExport( "big_scene_export", 4, 32, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
   // =========== check with 25 tiles ==> 70 exported objects
   do3DSceneExport( "big_scene_export", 5, 70, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::test3DSceneExporterInstanced()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *plane3DSymbol = new QgsPoint3DSymbol();
+  plane3DSymbol->setShape( Qgis::Point3DShape::Plane );
+  QVariantMap vmPlane;
+  vmPlane[QStringLiteral( "size" )] = 100.0f;
+  plane3DSymbol->setShapeProperties( vmPlane );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::blue );
+  plane3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( plane3DSymbol ) );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+  mapSettings.setOutputDpi( 92 );
+
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  engine.setRootEntity( scene );
+
+  do3DSceneExport( QStringLiteral( "instanced_export" ), 2, 2, 0, 12, scene, layerPointsZ.get(), &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
