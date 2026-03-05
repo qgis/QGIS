@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 QgsLightSource::~QgsLightSource() = default;
 
 void QgsLightSource::resolveReferences( const QgsProject & )
-{
-}
+{}
 
 QgsLightSource *QgsLightSource::createFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {

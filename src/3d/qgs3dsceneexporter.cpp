@@ -72,8 +72,7 @@
 
 using namespace Qt::StringLiterals;
 
-template<typename T>
-QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )
+template<typename T> QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )
 {
   const uint bytesOffset = attribute->byteOffset();
   const uint bytesStride = attribute->byteStride();
@@ -100,8 +99,7 @@ QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &
   return result;
 }
 
-template<typename T>
-QVector<uint> _getIndexDataImplementation( const QByteArray &data )
+template<typename T> QVector<uint> _getIndexDataImplementation( const QByteArray &data )
 {
   QVector<uint> result;
   const char *pData = data.constData();
@@ -160,8 +158,7 @@ Qt3DCore::QAttribute *findAttribute( Qt3DCore::QGeometry *geometry, const QStrin
   return nullptr;
 }
 
-template<typename Component>
-Component *findTypedComponent( Qt3DCore::QEntity *entity )
+template<typename Component> Component *findTypedComponent( Qt3DCore::QEntity *entity )
 {
   if ( !entity )
     return nullptr;
@@ -708,16 +705,13 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
       const uint triangleIdx = i / 3;
 
       // search for valid triangle index interval
-      while ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-              && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
+      while ( intervalIdx < triangleIndexStartingIndiceToKeepSize && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         intervalIdx++;
       }
 
       // keep only triangles within the triangle index interval
-      if ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-           && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
-           && triangleIdx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
+      if ( intervalIdx < triangleIndexStartingIndiceToKeepSize && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].first && triangleIdx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         indexData.push_back( indexDataTmp[static_cast<int>( i )] );
         indexData.push_back( indexDataTmp[static_cast<int>( i + 1 )] );

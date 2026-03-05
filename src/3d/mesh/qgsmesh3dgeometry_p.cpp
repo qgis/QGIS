@@ -31,11 +31,7 @@
 
 ///@cond PRIVATE
 
-static QByteArray createTerrainVertexData(
-  const QgsTriangularMesh &mesh,
-  const QgsVector3D &origin,
-  float vertScale
-)
+static QByteArray createTerrainVertexData( const QgsTriangularMesh &mesh, const QgsVector3D &origin, float vertScale )
 {
   const int nVerts = mesh.vertices().count();
 
@@ -69,13 +65,7 @@ static QByteArray createTerrainVertexData(
   return bufferBytes;
 }
 
-static QByteArray createDatasetVertexData(
-  const QgsTriangularMesh &mesh,
-  const QgsMesh &nativeMesh,
-  const QgsVector3D &origin,
-  float vertScale,
-  const QgsMeshDataset3DGeometry::VertexData &data
-)
+static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, float vertScale, const QgsMeshDataset3DGeometry::VertexData &data )
 {
   const int nVerts = mesh.vertices().count();
 
@@ -198,13 +188,7 @@ QgsMesh3DGeometry::QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, c
 }
 
 QgsMeshDataset3DGeometry::QgsMeshDataset3DGeometry(
-  const QgsTriangularMesh &triangularMesh,
-  QgsMeshLayer *layer,
-  const QgsDateTimeRange &timeRange,
-  const QgsVector3D &origin,
-  const QgsRectangle &extent,
-  const QgsMesh3DSymbol *symbol,
-  Qt3DCore::QNode *parent
+  const QgsTriangularMesh &triangularMesh, QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsRectangle &extent, const QgsMesh3DSymbol *symbol, Qt3DCore::QNode *parent
 )
   : QgsMesh3DGeometry( triangularMesh, origin, extent, symbol->verticalScale(), parent )
   , mIsVerticalMagnitudeRelative( symbol->isVerticalMagnitudeRelative() )
@@ -434,7 +418,9 @@ void QgsMesh3DGeometryBuilder::indexFinished()
   }
 }
 
-QgsMeshDataset3DGeometryBuilder::QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, const QgsMeshDataset3DGeometry::VertexData &vertexData, QObject *parent )
+QgsMeshDataset3DGeometryBuilder::QgsMeshDataset3DGeometryBuilder(
+  const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, const QgsMeshDataset3DGeometry::VertexData &vertexData, QObject *parent
+)
   : QgsMesh3DGeometryBuilder( mesh, origin, extent, vertScale, parent )
   , mNativeMesh( nativeMesh )
   , mVertexData( vertexData )

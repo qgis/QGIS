@@ -29,7 +29,9 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/qsubtreeenabler.h>
 
-QgsAmbientOcclusionRenderView::QgsAmbientOcclusionRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera, QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
+QgsAmbientOcclusionRenderView::QgsAmbientOcclusionRenderView(
+  const QString &viewName, Qt3DRender::QCamera *mainCamera, QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity
+)
   : QgsAbstractRenderView( viewName )
 {
   mAOPassLayer = new Qt3DRender::QLayer;

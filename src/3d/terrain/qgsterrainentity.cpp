@@ -47,13 +47,9 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
   public:
     TerrainMapUpdateJobFactory( QgsTerrainTextureGenerator *textureGenerator )
       : mTextureGenerator( textureGenerator )
-    {
-    }
+    {}
 
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
-    {
-      return new TerrainMapUpdateJob( mTextureGenerator, chunk );
-    }
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return new TerrainMapUpdateJob( mTextureGenerator, chunk ); }
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
@@ -238,8 +234,7 @@ float QgsTerrainEntity::terrainElevationOffset() const
 TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
-{
-}
+{}
 
 void TerrainMapUpdateJob::start()
 {
