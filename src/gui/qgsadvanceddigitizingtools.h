@@ -71,28 +71,19 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
      * Handles canvas press event.
      * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual void canvasPressEvent( QgsMapMouseEvent *event )
-    {
-      Q_UNUSED( event )
-    }
+    virtual void canvasPressEvent( QgsMapMouseEvent *event ) { Q_UNUSED( event ) }
 
     /**
      * Handles canvas press move.
      * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual void canvasMoveEvent( QgsMapMouseEvent *event )
-    {
-      Q_UNUSED( event )
-    }
+    virtual void canvasMoveEvent( QgsMapMouseEvent *event ) { Q_UNUSED( event ) }
 
     /**
      * Handles canvas release event.
      * \note To stop propagation, set the event's accepted property to FALSE.
      */
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *event )
-    {
-      Q_UNUSED( event )
-    }
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *event ) { Q_UNUSED( event ) }
 
   signals:
 

@@ -373,10 +373,17 @@ namespace QgsGuiUtils
       return true;
     }
 
-    return QMessageBox::question( parent, dialogTitle, QObject::tr( "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
-                                                                    "and may not be recognized by other software.\n\n"
-                                                                    "Do you want to continue?" ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+    return QMessageBox::question(
+             parent,
+             dialogTitle,
+             QObject::tr(
+               "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
+               "and may not be recognized by other software.\n\n"
+               "Do you want to continue?"
+             ),
+             QMessageBox::Yes | QMessageBox::No,
+             QMessageBox::No
+           )
            == QMessageBox::Yes;
   }
 } // namespace QgsGuiUtils

@@ -52,11 +52,7 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
     case Qgis::WkbType::CircularString:
       if ( mPoints.size() != 3 )
         return nullptr;
-      return new QgsCircularString(
-        mPoints[0],
-        mPoints[1],
-        mPoints[2]
-      );
+      return new QgsCircularString( mPoints[0], mPoints[1], mPoints[2] );
       break;
     case Qgis::WkbType::NurbsCurve:
       if ( mPoints.size() < 4 )
@@ -70,8 +66,7 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
 
 bool QgsMapToolCaptureRubberBand::curveIsComplete() const
 {
-  return ( mStringType == Qgis::WkbType::LineString && mPoints.size() > 1 )
-         || ( mStringType == Qgis::WkbType::CircularString && mPoints.size() > 2 );
+  return ( mStringType == Qgis::WkbType::LineString && mPoints.size() > 1 ) || ( mStringType == Qgis::WkbType::CircularString && mPoints.size() > 2 );
 }
 
 void QgsMapToolCaptureRubberBand::reset( Qgis::GeometryType geomType, Qgis::WkbType stringType, const QgsPoint &firstPolygonPoint )

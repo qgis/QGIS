@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mFieldIdx( fieldIdx )
-{
-}
+{}
 
 int QgsEditorWidgetWrapper::fieldIdx() const
 {
@@ -124,11 +123,15 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
 
       case ConstraintResultFailHard:
-        widget()->setStyleSheet( u"QWidget { background-color: rgba(255, 150, 0, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 150, 0, 1); }"_s );
+        widget()->setStyleSheet(
+          u"QWidget { background-color: rgba(255, 150, 0, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 150, 0, 1); }"_s
+        );
         break;
 
       case ConstraintResultFailSoft:
-        widget()->setStyleSheet( u"QWidget { background-color: rgba(255, 200, 45, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 200, 45, 1); }"_s );
+        widget()->setStyleSheet(
+          u"QWidget { background-color: rgba(255, 200, 45, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 200, 45, 1); }"_s
+        );
         break;
     }
   }
@@ -265,8 +268,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 
-    const ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard
-                                                       : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
+    const ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
     //set the constraint result
     mConstraintResult = result;
     updateConstraintWidgetStatus();

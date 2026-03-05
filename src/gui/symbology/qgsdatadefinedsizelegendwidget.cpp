@@ -201,10 +201,11 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   }
   else
   {
-    ec << QgsExpressionContextUtils::globalScope()
-       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-       << QgsExpressionContextUtils::atlasScope( nullptr )
-       << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    ec
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   context.setExpressionContext( &ec );
 

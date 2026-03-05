@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-{
-}
+{}
 
 void QgsListWidgetWrapper::showIndeterminateState()
 {

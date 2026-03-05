@@ -53,9 +53,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
     mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? u"/mIconRememberEnabled.svg"_s : u"/mIconRememberDisabled.svg"_s ) );
     emit rememberLastValueChanged( mEditorWidget->fieldIdx(), checked );
   } );
-  connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) {
-    updateRememberWidget();
-  } );
+  connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) { updateRememberWidget(); } );
 
   mConstraintResultLabel = new QLabel();
   mConstraintResultLabel->setObjectName( u"ConstraintStatus"_s );

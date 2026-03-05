@@ -43,8 +43,7 @@ class DatabaseQueryHistoryNode : public QgsHistoryEntryGroup
       : QgsHistoryEntryGroup()
       , mEntry( entry )
       , mProvider( provider )
-    {
-    }
+    {}
 
   protected:
     QgsHistoryEntry mEntry;
@@ -72,10 +71,7 @@ class DatabaseQueryValueNode : public DatabaseQueryHistoryNode
       }
     }
 
-    QString html( const QgsHistoryWidgetContext & ) const override
-    {
-      return mValue;
-    }
+    QString html( const QgsHistoryWidgetContext & ) const override { return mValue; }
 
   private:
     QString mValue;
@@ -169,18 +165,14 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
     {
       if ( QgsDatabaseQueryHistoryWidget *queryHistoryWidget = qobject_cast< QgsDatabaseQueryHistoryWidget * >( context.historyWidget() ) )
       {
-        QAction *loadAction = new QAction(
-          QObject::tr( "Load SQL Command…" ), menu
-        );
+        QAction *loadAction = new QAction( QObject::tr( "Load SQL Command…" ), menu );
         QObject::connect( loadAction, &QAction::triggered, menu, [this, queryHistoryWidget] {
           queryHistoryWidget->emitSqlTriggered( mEntry.entry.value( u"connection"_s ).toString(), mEntry.entry.value( u"provider"_s ).toString(), mEntry.entry.value( u"query"_s ).toString() );
         } );
         menu->addAction( loadAction );
       }
 
-      QAction *copyAction = new QAction(
-        QObject::tr( "Copy SQL Command" ), menu
-      );
+      QAction *copyAction = new QAction( QObject::tr( "Copy SQL Command" ), menu );
       copyAction->setIcon( QgsApplication::getThemeIcon( u"mActionEditCopy.svg"_s ) );
       QObject::connect( copyAction, &QAction::triggered, menu, [this] {
         QMimeData *m = new QMimeData();
@@ -202,8 +194,7 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
 
 
 QgsDatabaseQueryHistoryProvider::QgsDatabaseQueryHistoryProvider()
-{
-}
+{}
 
 QString QgsDatabaseQueryHistoryProvider::id() const
 {
@@ -229,8 +220,7 @@ void QgsDatabaseQueryHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *n
 
 QgsDatabaseQueryHistoryWidget::QgsDatabaseQueryHistoryWidget( Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsHistoryWidget( u"dbquery"_s, backends, registry, context, parent )
-{
-}
+{}
 
 void QgsDatabaseQueryHistoryWidget::emitSqlTriggered( const QString &connectionUri, const QString &provider, const QString &sql )
 {

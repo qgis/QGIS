@@ -140,7 +140,8 @@ void QgsMaskSourceSelectionWidget::update()
       struct TreeNode
       {
           TreeNode( const QgsSymbol *_symbol, const QgsSymbolLayer *_sl = nullptr )
-            : sl( _sl ), symbol( _symbol ) {};
+            : sl( _sl )
+            , symbol( _symbol ) {};
 
           const QgsSymbolLayer *sl = nullptr;
           const QgsSymbol *symbol = nullptr;
@@ -200,7 +201,8 @@ void QgsMaskSourceSelectionWidget::update()
         else
         {
           item = new QTreeWidgetItem( rootItem );
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( node.sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), node.symbol->type(), nullptr, QgsScreenProperties( mScreen.data() ) );
+          const QIcon slIcon = QgsSymbolLayerUtils::
+            symbolLayerPreviewIcon( node.sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), node.symbol->type(), nullptr, QgsScreenProperties( mScreen.data() ) );
           item->setIcon( 0, slIcon );
           if ( node.sl->layerType() == "MaskMarker" )
           {
@@ -231,7 +233,9 @@ void QgsMaskSourceSelectionWidget::update()
   {
     public:
       LabelMasksVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QgsSymbolLayerReference, QTreeWidgetItem *> &items )
-        : mLayerItem( layerItem ), mLayer( layer ), mItems( items )
+        : mLayerItem( layerItem )
+        , mLayer( layer )
+        , mItems( items )
       {}
       bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
       {
@@ -250,9 +254,7 @@ void QgsMaskSourceSelectionWidget::update()
           auto labelSettingsEntity = static_cast<const QgsStyleLabelSettingsEntity *>( leaf.entity );
           if ( labelSettingsEntity->settings().format().mask().enabled() )
           {
-            const QString maskTitle = currentRule.isEmpty()
-                                        ? QObject::tr( "Label mask" )
-                                        : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
+            const QString maskTitle = currentRule.isEmpty() ? QObject::tr( "Label mask" ) : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
             QTreeWidgetItem *slItem = new QTreeWidgetItem( mLayerItem, QStringList() << maskTitle );
             slItem->setFlags( slItem->flags() | Qt::ItemIsUserCheckable );
             slItem->setCheckState( 0, Qt::Unchecked );
@@ -450,7 +452,8 @@ void QgsMaskSourceSelectionWidget::removeSet()
     return;
 
   const QString setName = mSetComboBox->currentText();
-  if ( QMessageBox::warning( this, tr( "Remove Selective Masking Set" ), tr( "Do you really want to remove the selective masking set “%1”?" ).arg( setName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+  if ( QMessageBox::warning( this, tr( "Remove Selective Masking Set" ), tr( "Do you really want to remove the selective masking set “%1”?" ).arg( setName ), QMessageBox::Ok | QMessageBox::Cancel )
+       != QMessageBox::Ok )
   {
     return;
   }

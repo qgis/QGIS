@@ -50,10 +50,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   }
   if ( mHostPort.isEmpty() )
   {
-    mHostPort = u"%1:%2"_s
-                  .arg( reply->url().host() )
-                  .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                  .trimmed();
+    mHostPort = u"%1:%2"_s.arg( reply->url().host() ).arg( reply->url().port() != -1 ? reply->url().port() : 443 ).trimmed();
   }
 
   setupUi( this );
@@ -173,10 +170,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   switch ( btnenum )
   {
     case QDialogButtonBox::Ignore:
-      QgsApplication::authManager()->updateIgnoredSslErrorsCache(
-        u"%1:%2"_s.arg( mDigest, mHostPort ),
-        mSslErrors
-      );
+      QgsApplication::authManager()->updateIgnoredSslErrorsCache( u"%1:%2"_s.arg( mDigest, mHostPort ), mSslErrors );
       accept();
       break;
     case QDialogButtonBox::Save:
@@ -204,8 +198,7 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   const auto constMSslErrors = mSslErrors;
   for ( const QSslError &err : constMSslErrors )
   {
-    errs << u"* %1: %2"_s
-              .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ), err.errorString() );
+    errs << u"* %1: %2"_s.arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ), err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( QLatin1Char( '\n' ) ) );
 }

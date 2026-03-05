@@ -51,10 +51,14 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( u"cad-snapping-prioritize-feature"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( u"cad-record-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides = new QgsSettingsEntryBool( u"cad-show-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( u"cad-snap-to-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature
+  = new QgsSettingsEntryBool( u"cad-snapping-prioritize-feature"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides
+  = new QgsSettingsEntryBool( u"cad-record-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides
+  = new QgsSettingsEntryBool( u"cad-show-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides
+  = new QgsSettingsEntryBool( u"cad-snap-to-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent, QgsUserInputWidget *userInputWidget )
@@ -250,9 +254,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     {
       QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
       QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), toolsMenu );
-      connect( toolAction, &QAction::triggered, this, [this, toolMetadata]() {
-        setTool( toolMetadata->createTool( mMapCanvas, this ) );
-      } );
+      connect( toolAction, &QAction::triggered, this, [this, toolMetadata]() { setTool( toolMetadata->createTool( mMapCanvas, this ) ); } );
       toolsMenu->addAction( toolAction );
     }
   } );
@@ -351,9 +353,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Distance" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked ); } );
     const bool isDistanceChecked = QgsSettings().value( u"/Cad/DistanceShowInFloater"_s, true ).toBool();
     action->setChecked( isDistanceChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -364,9 +364,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked ); } );
     const bool isAngleChecked = QgsSettings().value( u"/Cad/AngleShowInFloater"_s, true ).toBool();
     action->setChecked( isAngleChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -394,9 +392,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Z Value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ ); } );
     const bool isZCoordinateChecked = QgsSettings().value( u"/Cad/ZCoordinateShowInFloater"_s, true ).toBool();
     action->setChecked( isZCoordinateChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -408,9 +404,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show M Value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM ); } );
     const bool isMCoordinateChecked = QgsSettings().value( u"/Cad/MCoordinateShowInFloater"_s, true ).toBool();
     action->setChecked( isMCoordinateChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -422,9 +416,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Bearing/Azimuth" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked ); } );
     const bool isBearingChecked = QgsSettings().value( u"/Cad/BearingShowInFloater"_s, false ).toBool();
     action->setChecked( isBearingChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -436,9 +428,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Common Snapping Angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked ); } );
     const bool isCommonAngleSnappingChecked = QgsSettings().value( u"/Cad/CommonAngleSnappingShowInFloater"_s, false ).toBool();
     action->setChecked( isCommonAngleSnappingChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -532,9 +522,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Weight" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [this]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Weight, checked );
-    } );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) { mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Weight, checked ); } );
     const bool isWeightChecked = QgsSettings().value( u"/Cad/WeightShowInFloater"_s, true ).toBool();
     action->setChecked( isWeightChecked );
     // Call this explicitly because toggled won't be called if there is no change
@@ -544,9 +532,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   updateCapacity( true );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [this] { updateCapacity( true ); } );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [this]() {
-    mConstructionGuidesLayer.reset();
-  } );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [this]() { mConstructionGuidesLayer.reset(); } );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] { updateConstructionGuidesCrs(); } );
 
   disable();
@@ -585,7 +571,14 @@ void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const Q
   {
     QString areaString;
     QString totalLengthString;
-    QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mMapCanvas->mapSettings().destinationCrs(), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area ), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ), areaString, totalLengthString );
+    QgsMapToolAdvancedDigitizing::calculateGeometryMeasures(
+      geometry,
+      mMapCanvas->mapSettings().destinationCrs(),
+      mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area ),
+      mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ),
+      areaString,
+      totalLengthString
+    );
 
     emit valueAreaChanged( areaString );
     emit valueTotalLengthChanged( totalLengthString );
@@ -1542,8 +1535,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   {
     // note ND: I'm not 100% sure if the point == mSnapMatch.point() comparison was intended be done using QgsPointXY or QgsPoint objects here!
     // I'm using QgsPointXY here to keep the behavior the same from before a duplicate QgsPointXY == operator was removed...
-    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) )
-         || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
+    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
     {
       e->snapPoint();
       point = mSnapMatch.interpolatedPoint( mMapCanvas->mapSettings().destinationCrs() );

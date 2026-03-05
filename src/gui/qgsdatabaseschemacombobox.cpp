@@ -188,8 +188,7 @@ void QgsDatabaseSchemaComboBox::rowsChanged()
 ///@cond PRIVATE
 QgsDatabaseSchemaComboBoxSortModel::QgsDatabaseSchemaComboBoxSortModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {

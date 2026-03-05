@@ -302,8 +302,7 @@ void QgsRendererWidget::changeSymbolAngle()
 }
 
 void QgsRendererWidget::pasteSymbolToSelection()
-{
-}
+{}
 
 void QgsRendererWidget::copySymbol()
 {
@@ -331,9 +330,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   {
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
-      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
-    } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
     panel->openPanel( widget );
   }
   else
@@ -375,8 +372,7 @@ void QgsRendererWidget::setDockMode( bool dockMode )
 }
 
 void QgsRendererWidget::disableSymbolLevels()
-{
-}
+{}
 
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
@@ -393,8 +389,7 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
 }
 
 void QgsRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &, bool )
-{
-}
+{}
 
 void QgsRendererWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key )
 {
@@ -473,10 +468,11 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )
@@ -623,5 +619,4 @@ void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsProp
 }
 
 void QgsRendererWidget::apply()
-{
-}
+{}

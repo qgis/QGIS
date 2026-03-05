@@ -153,9 +153,7 @@ bool QgsOptionsDialogHighlightWidgetEventFilter::eventFilter( QObject *obj, QEve
     mHighlightWidget->mChangedStyle = mHighlightWidget->highlightText( mHighlightWidget->mSearchText );
     return true;
 #else
-    QTimer::singleShot( 500, this, [] {
-      mChangedStyle = highlightText( mSearchText );
-    } );
+    QTimer::singleShot( 500, this, [] { mChangedStyle = highlightText( mSearchText ); } );
 #endif
   }
   return QObject::eventFilter( obj, event );

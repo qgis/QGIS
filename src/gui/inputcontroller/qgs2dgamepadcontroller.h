@@ -58,7 +58,7 @@ class GUI_EXPORT QgsGamepad2DMapController : public QgsAbstract2DMapController
       sipType = sipType_QgsGamepad2DMapController;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:

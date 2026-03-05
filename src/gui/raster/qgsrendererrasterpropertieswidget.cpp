@@ -186,7 +186,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 ) || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
+      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 )
+           || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
       {
         cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
       }

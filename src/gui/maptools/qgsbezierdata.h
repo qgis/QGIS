@@ -50,11 +50,17 @@ struct GUI_EXPORT QgsAnchorWithHandles
 
     //! Constructor with anchor position, handles retracted at anchor
     explicit QgsAnchorWithHandles( const QgsPoint &point )
-      : anchor( point ), leftHandle( point ), rightHandle( point ) {}
+      : anchor( point )
+      , leftHandle( point )
+      , rightHandle( point )
+    {}
 
     //! Constructor with all points specified
     QgsAnchorWithHandles( const QgsPoint &point, const QgsPoint &left, const QgsPoint &right )
-      : anchor( point ), leftHandle( left ), rightHandle( right ) {}
+      : anchor( point )
+      , leftHandle( left )
+      , rightHandle( right )
+    {}
 };
 
 /**

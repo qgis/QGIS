@@ -57,9 +57,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
     }
   } );
 
-  connect( mScriptPreviewBackButton, &QAbstractButton::clicked, this, [this] {
-    mScriptPreviewStackedWidget->setCurrentIndex( 0 );
-  } );
+  connect( mScriptPreviewBackButton, &QAbstractButton::clicked, this, [this] { mScriptPreviewStackedWidget->setCurrentIndex( 0 ); } );
 
   mScriptPreviewEditor->setReadOnly( true );
   mScriptPreviewEditor->setLineNumbersVisible( false );

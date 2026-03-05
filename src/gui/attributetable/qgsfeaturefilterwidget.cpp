@@ -166,7 +166,8 @@ void QgsFeatureFilterWidget::filterEdited()
 
 void QgsFeatureFilterWidget::filterQueryAccepted()
 {
-  if ( ( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) || ( mCurrentSearchWidgetWrapper && mCurrentSearchWidgetWrapper->widget()->isVisible() && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
+  if ( ( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() )
+       || ( mCurrentSearchWidgetWrapper && mCurrentSearchWidgetWrapper->widget()->isVisible() && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;
@@ -263,9 +264,7 @@ void QgsFeatureFilterWidget::storedFilterExpressionBoxInit()
   for ( const QgsStoredExpression &storedExpression : storedExpressions )
   {
     QAction *storedExpressionAction = new QAction( storedExpression.name, mFilterButton );
-    connect( storedExpressionAction, &QAction::triggered, this, [this, storedExpression]() {
-      setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true );
-    } );
+    connect( storedExpressionAction, &QAction::triggered, this, [this, storedExpression]() { setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true ); } );
     mStoredFilterExpressionMenu->addAction( storedExpressionAction );
   }
 }

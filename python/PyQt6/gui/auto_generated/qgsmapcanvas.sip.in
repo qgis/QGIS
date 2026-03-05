@@ -373,7 +373,9 @@ Pan to the combined extent of the selected features of all provided
 .. versionadded:: 3.18
 %End
 
-    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
+    void flashFeatureIds(
+      QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500
+    );
 %Docstring
 Causes a set of features with matching ``ids`` from a vector ``layer``
 to flash within the canvas.
@@ -388,7 +390,14 @@ number of ``flashes`` and ``duration`` of each flash (in milliseconds).
 .. seealso:: :py:func:`flashGeometries`
 %End
 
-    void flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
+    void flashGeometries(
+      const QList<QgsGeometry> &geometries,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      const QColor &startColor = QColor( 255, 0, 0, 255 ),
+      const QColor &endColor = QColor( 255, 0, 0, 0 ),
+      int flashes = 3,
+      int duration = 500
+    );
 %Docstring
 Causes a set of ``geometries`` to flash within the canvas.
 

@@ -47,7 +47,8 @@ using namespace Qt::StringLiterals;
 #include "modeltest.h"
 #endif
 
-const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( u"show-aliases"_s, sTreeAttributesForm, false, u"Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels."_s );
+const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases
+  = new QgsSettingsEntryBool( u"show-aliases"_s, sTreeAttributesForm, false, u"Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels."_s );
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent, QgsSourceFieldsProperties *sourceFieldsProperties )
   : QWidget( parent )
@@ -251,20 +252,22 @@ void QgsAttributesFormProperties::initInitPython()
 
   if ( mInitCode.isEmpty() )
   {
-    mInitCode.append( tr( "# -*- coding: utf-8 -*-\n\"\"\"\n"
-                          "QGIS forms can have a Python function that is called when the form is\n"
-                          "opened.\n"
-                          "\n"
-                          "Use this function to add extra logic to your forms.\n"
-                          "\n"
-                          "Enter the name of the function in the \"Python Init function\"\n"
-                          "field.\n"
-                          "An example follows:\n"
-                          "\"\"\"\n"
-                          "from qgis.PyQt.QtWidgets import QWidget\n\n"
-                          "def my_form_open(dialog, layer, feature):\n"
-                          "    geom = feature.geometry()\n"
-                          "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+    mInitCode.append( tr(
+      "# -*- coding: utf-8 -*-\n\"\"\"\n"
+      "QGIS forms can have a Python function that is called when the form is\n"
+      "opened.\n"
+      "\n"
+      "Use this function to add extra logic to your forms.\n"
+      "\n"
+      "Enter the name of the function in the \"Python Init function\"\n"
+      "field.\n"
+      "An example follows:\n"
+      "\"\"\"\n"
+      "from qgis.PyQt.QtWidgets import QWidget\n\n"
+      "def my_form_open(dialog, layer, feature):\n"
+      "    geom = feature.geometry()\n"
+      "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n"
+    ) );
   }
 }
 
@@ -1274,7 +1277,8 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
       Qgis::AttributeFormReuseLastValuePolicy reusePolicy = Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
       if ( widgetGeneralSettingsElement.hasAttribute( u"reuse_last_values"_s ) )
       {
-        reusePolicy = widgetGeneralSettingsElement.attribute( u"reuse_last_values"_s, u"0"_s ).toInt() == 1 ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
+        reusePolicy = widgetGeneralSettingsElement.attribute( u"reuse_last_values"_s, u"0"_s ).toInt() == 1 ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn
+                                                                                                            : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
       }
       else
       {

@@ -28,73 +28,49 @@ using namespace Qt::StringLiterals;
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsBasicNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsBasicNumericFormatWidget( format ); }
 };
 
 class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsBearingNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsBearingNumericFormatWidget( format ); }
 };
 
 class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsGeographicCoordinateNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsGeographicCoordinateNumericFormatWidget( format ); }
 };
 
 class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsCurrencyNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsCurrencyNumericFormatWidget( format ); }
 };
 
 class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsPercentageNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsPercentageNumericFormatWidget( format ); }
 };
 
 class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsScientificNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsScientificNumericFormatWidget( format ); }
 };
 
 class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsFractionNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsFractionNumericFormatWidget( format ); }
 };
 
 class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
-    {
-      return new QgsExpressionBasedNumericFormatWidget( format );
-    }
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override { return new QgsExpressionBasedNumericFormatWidget( format ); }
 };
 
 ///@endcond

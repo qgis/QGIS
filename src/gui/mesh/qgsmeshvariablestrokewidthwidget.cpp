@@ -26,13 +26,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
-  const QgsInterpolatedLineWidth &variableStrokeWidth,
-  double defaultMinimumvalue,
-  double defaultMaximumValue,
-  QWidget *parent
-)
-  : QgsPanelWidget( parent ), mDefaultMinimumValue( defaultMinimumvalue ), mDefaultMaximumValue( defaultMaximumValue )
+QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget( const QgsInterpolatedLineWidth &variableStrokeWidth, double defaultMinimumvalue, double defaultMaximumValue, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mDefaultMinimumValue( defaultMinimumvalue )
+  , mDefaultMaximumValue( defaultMaximumValue )
 {
   setupUi( this );
 

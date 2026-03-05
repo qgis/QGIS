@@ -98,8 +98,7 @@ void QgsAppStyle::polish( QWidget *widget )
 {
   QProxyStyle::polish( widget );
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
-  if ( mBaseStyle.contains( "fusion"_L1, Qt::CaseInsensitive )
-       || mBaseStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) )
+  if ( mBaseStyle.contains( "fusion"_L1, Qt::CaseInsensitive ) || mBaseStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) )
   {
     // fix broken inactive window coloring applying to unfocused docks or list/tree widgets
     // see eg https://github.com/FedoraQt/adwaita-qt/issues/126

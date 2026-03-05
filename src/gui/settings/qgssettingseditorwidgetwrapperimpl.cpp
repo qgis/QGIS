@@ -53,9 +53,7 @@ bool QgsSettingsStringLineEditWrapper::setWidgetValue( const QString &value ) co
 
 void QgsSettingsStringLineEditWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [this]( const QString &text ) {
-    this->mSetting->setValue( text, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [this]( const QString &text ) { this->mSetting->setValue( text, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsStringLineEditWrapper::setSettingFromWidget() const
@@ -178,9 +176,7 @@ bool QgsSettingsBoolCheckBoxWrapper::setWidgetValue( const bool &value ) const
 
 void QgsSettingsBoolCheckBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [this]( bool checked ) {
-    this->mSetting->setValue( checked, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [this]( bool checked ) { this->mSetting->setValue( checked, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsBoolCheckBoxWrapper::setSettingFromWidget() const
@@ -236,9 +232,7 @@ bool QgsSettingsBoolGroupBoxWrapper::setWidgetValue( const bool &value ) const
 
 void QgsSettingsBoolGroupBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QGroupBox::clicked, this, [this]( bool checked ) {
-    this->mSetting->setValue( checked, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, &QGroupBox::clicked, this, [this]( bool checked ) { this->mSetting->setValue( checked, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsBoolGroupBoxWrapper::setSettingFromWidget() const
@@ -299,9 +293,7 @@ bool QgsSettingsIntegerSpinBoxWrapper::setWidgetValue( const int &value ) const
 
 void QgsSettingsIntegerSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
-    this->mSetting->setValue( value, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) { this->mSetting->setValue( value, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsIntegerSpinBoxWrapper::setSettingFromWidget() const
@@ -357,9 +349,7 @@ bool QgsSettingsDoubleSpinBoxWrapper::setWidgetValue( const double &value ) cons
 
 void QgsSettingsDoubleSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
-    this->mSetting->setValue( value, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) { this->mSetting->setValue( value, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsDoubleSpinBoxWrapper::setSettingFromWidget() const
@@ -426,9 +416,7 @@ void QgsSettingsColorButtonWrapper::configureEditorPrivateImplementation()
 
 void QgsSettingsColorButtonWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [this]( const QColor &color ) {
-    this->mSetting->setValue( color, this->mDynamicKeyPartList );
-  } );
+  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [this]( const QColor &color ) { this->mSetting->setValue( color, this->mDynamicKeyPartList ); } );
 }
 
 bool QgsSettingsColorButtonWrapper::setSettingFromWidget() const

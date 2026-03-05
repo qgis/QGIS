@@ -163,9 +163,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   {
     definedOnMesh = tr( "invalid mesh" );
   }
-  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
-           .arg( tr( "Mesh type" ) )
-           .arg( definedOnMesh );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s.arg( tr( "Mesh type" ) ).arg( definedOnMesh );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->datasetGroupMetadata( datasetIndex );
   QString definedOn;
@@ -184,13 +182,9 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       definedOn = tr( "edges" );
       break;
   }
-  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
-           .arg( tr( "Data type" ) )
-           .arg( definedOn );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s.arg( tr( "Data type" ) ).arg( definedOn );
 
-  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
-           .arg( tr( "Is vector" ) )
-           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s.arg( tr( "Is vector" ) ).arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )

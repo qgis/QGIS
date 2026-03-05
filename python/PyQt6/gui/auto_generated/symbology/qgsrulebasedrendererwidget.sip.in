@@ -185,7 +185,9 @@ A widget for editing the details of a rule based renderer rule.
 #include "qgsrulebasedrendererwidget.h"
 %End
   public:
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsWidget(
+      QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext()
+    );
 %Docstring
 Widget to edit the details of a rule based renderer rule.
 
@@ -243,7 +245,9 @@ A dialog for editing the details of a rule based renderer rule.
 #include "qgsrulebasedrendererwidget.h"
 %End
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog(
+      QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext()
+    );
 %Docstring
 Constructor for QgsRendererRulePropsDialog
 

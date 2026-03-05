@@ -38,7 +38,9 @@ A dialog for configuring vector layer save to file operations.
 
 
 
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog(
+      QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags()
+    );
 %Docstring
 Construct a new QgsVectorLayerSaveAsDialog
 %End

@@ -98,13 +98,16 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
   {
     //band selector
     const int myBandCountInt = mRasterLayer->bandCount();
-    for ( int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt )
+    for ( int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt )
     {
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
       const Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
-      if ( !( mySrcDataType == Qgis::DataType::Byte || mySrcDataType == Qgis::DataType::Int8 || mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
+      if ( !( mySrcDataType == Qgis::DataType::Byte
+              || mySrcDataType == Qgis::DataType::Int8
+              || mySrcDataType == Qgis::DataType::Int16
+              || mySrcDataType == Qgis::DataType::Int32
+              || mySrcDataType == Qgis::DataType::UInt16
+              || mySrcDataType == Qgis::DataType::UInt32 ) )
         isInt = false;
     }
 
@@ -329,9 +332,7 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
   // if forceComputeFlag = false make sure raster has cached histogram, else return false
   if ( !forceComputeFlag )
   {
-    for ( int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt )
+    for ( int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt )
     {
       const int sampleSize = SAMPLE_SIZE; // number of sample cells
       const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
@@ -350,9 +351,7 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
   connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
+  for ( int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt )
   {
     const int sampleSize = SAMPLE_SIZE; // number of sample cells
     const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
@@ -507,9 +506,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   double myBinXStep = 1;
   double myBinX = 0;
 
-  for ( int bandNumber = 1;
-        bandNumber <= myBandCountInt;
-        ++bandNumber )
+  for ( int bandNumber = 1; bandNumber <= myBandCountInt; ++bandNumber )
   {
     /* skip this band if mHistoShowBands != ShowAll and this band is not selected */
     if ( mHistoShowBands != ShowAll )
@@ -524,13 +521,15 @@ void QgsRasterHistogramWidget::refreshHistogram()
     connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
 
     const int binCount = getBinCount( mRasterLayer->dataProvider(), bandNumber, sampleSize );
-    const QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( bandNumber, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
+    const QgsRasterHistogram myHistogram
+      = mRasterLayer->dataProvider()->histogram( bandNumber, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
 
     QgsDebugMsgLevel( u"got raster histo for band %1 : min=%2 max=%3 count=%4"_s.arg( bandNumber ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ), 2 );
 
     const Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( bandNumber );
     bool myDrawLines = true;
-    if ( !mHistoDrawLines && ( mySrcDataType == Qgis::DataType::Byte || mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
+    if ( !mHistoDrawLines
+         && ( mySrcDataType == Qgis::DataType::Byte || mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
     {
       myDrawLines = false;
     }
@@ -1219,5 +1218,4 @@ QPair<QString, QString> QgsRasterHistogramWidget::rendererMinMax( int bandNo )
 }
 
 void QgsRasterHistogramWidget::apply()
-{
-}
+{}

@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )
   , mRootItem( new QgsMeshDatasetGroupTreeItem() )
-{
-}
+{}
 
 int QgsMeshDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
 {
@@ -92,8 +91,7 @@ QVariant QgsMeshDatasetGroupTreeModel::headerData( int section, Qt::Orientation 
   return QVariant();
 }
 
-QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent )
-  const
+QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();
@@ -341,8 +339,7 @@ QgsMeshDatasetGroupTreeItemDelegate::QgsMeshDatasetGroupTreeItemDelegate( QObjec
   , mScalarDeselectedPixmap( u":/images/themes/default/propertyicons/meshcontoursoff.svg"_s )
   , mVectorSelectedPixmap( u":/images/themes/default/propertyicons/meshvectors.svg"_s )
   , mVectorDeselectedPixmap( u":/images/themes/default/propertyicons/meshvectorsoff.svg"_s )
-{
-}
+{}
 
 void QgsMeshDatasetGroupTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -385,7 +382,8 @@ QSize QgsMeshDatasetGroupTreeItemDelegate::sizeHint( const QStyleOptionViewItem 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 QgsMeshActiveDatasetGroupTreeView::QgsMeshActiveDatasetGroupTreeView( QWidget *parent )
-  : QTreeView( parent ), mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
+  : QTreeView( parent )
+  , mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
 {
   setModel( mProxyModel );
   setItemDelegate( &mDelegate );
@@ -698,13 +696,11 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
     {
       const QString driverName = driver.name();
       const QString suffix = driver.writeDatasetOnFileSuffix();
-      if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
-             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
-           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
+      if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
+           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
+           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
       {
-        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this] {
-          this->saveDatasetGroup( groupIndex, driverName, suffix );
-        } );
+        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this] { this->saveDatasetGroup( groupIndex, driverName, suffix ); } );
       }
     }
   }

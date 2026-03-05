@@ -62,8 +62,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     }
     case MixedValues:
     {
-      const QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
-                                                     : tr( "Set field for all selected features" );
+      const QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() ) : tr( "Set field for all selected features" );
       QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
       break;

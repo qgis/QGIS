@@ -55,11 +55,7 @@ class GUI_EXPORT QgsProcessingDxfLayersPanelWidget : public QgsProcessingMultipl
     /**
      * Constructor for QgsProcessingDxfLayersPanelWidget.
      */
-    QgsProcessingDxfLayersPanelWidget(
-      const QVariant &value,
-      QgsProject *project,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr
-    );
+    QgsProcessingDxfLayersPanelWidget( const QVariant &value, QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
 

@@ -140,7 +140,9 @@ additional properties to the content. (Such as recording the results of
 after a long-running operation completes).
 %End
 
-    QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+    QList<QgsHistoryEntry> queryEntries(
+      const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile
+    ) const;
 %Docstring
 Queries history entries which occurred between the specified ``start``
 and ``end`` times.

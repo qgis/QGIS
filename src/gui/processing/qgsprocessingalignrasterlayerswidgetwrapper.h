@@ -55,11 +55,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersPanelWidget : public QgsProcessin
     /**
      * Constructor for QgsProcessingAlignRasterLayersPanelWidget.
      */
-    QgsProcessingAlignRasterLayersPanelWidget(
-      const QVariant &value,
-      QgsProject *project,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr
-    );
+    QgsProcessingAlignRasterLayersPanelWidget( const QVariant &value, QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
 

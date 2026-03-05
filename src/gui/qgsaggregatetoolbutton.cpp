@@ -53,9 +53,7 @@ void QgsAggregateToolButton::aboutToShowMenu()
   mMenu->clear();
 
   QAction *action = mMenu->addAction( tr( "Exclude" ) );
-  connect( action, &QAction::triggered, this, [this] {
-    setActive( false );
-  } );
+  connect( action, &QAction::triggered, this, [this] { setActive( false ); } );
 
   for ( const auto &aggregate : std::as_const( mAvailableAggregates ) )
   {

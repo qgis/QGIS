@@ -176,11 +176,8 @@ QgsHistoryEntry QgsHistoryProviderRegistry::entry( long long id, bool &ok, Qgis:
         }
 
         ok = true;
-        QgsHistoryEntry res = QgsHistoryEntry(
-          statement.columnAsText( 0 ),
-          QDateTime::fromString( statement.columnAsText( 2 ), u"yyyy-MM-dd HH:mm:ss"_s ),
-          QgsXmlUtils::readVariant( doc.documentElement() ).toMap()
-        );
+        QgsHistoryEntry res
+          = QgsHistoryEntry( statement.columnAsText( 0 ), QDateTime::fromString( statement.columnAsText( 2 ), u"yyyy-MM-dd HH:mm:ss"_s ), QgsXmlUtils::readVariant( doc.documentElement() ).toMap() );
         res.id = id;
         return res;
       }
@@ -258,11 +255,7 @@ QList<QgsHistoryEntry> QgsHistoryProviderRegistry::queryEntries( const QDateTime
         continue;
       }
 
-      QgsHistoryEntry entry(
-        statement.columnAsText( 1 ),
-        QDateTime::fromString( statement.columnAsText( 3 ), u"yyyy-MM-dd HH:mm:ss"_s ),
-        QgsXmlUtils::readVariant( doc.documentElement() ).toMap()
-      );
+      QgsHistoryEntry entry( statement.columnAsText( 1 ), QDateTime::fromString( statement.columnAsText( 3 ), u"yyyy-MM-dd HH:mm:ss"_s ), QgsXmlUtils::readVariant( doc.documentElement() ).toMap() );
       entry.id = statement.columnAsInt64( 0 );
 
       entries.append( entry );
@@ -286,8 +279,7 @@ bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend back
       if ( providerId.isEmpty() )
         runEmptyQuery( u"DELETE from history;"_s );
       else
-        runEmptyQuery( u"DELETE from history WHERE provider_id='%1'"_s
-                         .arg( providerId ) );
+        runEmptyQuery( u"DELETE from history WHERE provider_id='%1'"_s.arg( providerId ) );
       break;
     }
   }
@@ -323,13 +315,14 @@ bool QgsHistoryProviderRegistry::openDatabase( const QString &filename, QString 
 
 void QgsHistoryProviderRegistry::createTables()
 {
-  QString query = qgs_sqlite3_mprintf( "CREATE TABLE history("
-                                       "id INTEGER PRIMARY KEY,"
-                                       "provider_id TEXT,"
-                                       "xml TEXT,"
-                                       "timestamp DATETIME);"
-                                       "CREATE INDEX provider_index ON history(provider_id);"
-                                       "CREATE INDEX timestamp_index ON history(timestamp);"
+  QString query = qgs_sqlite3_mprintf(
+    "CREATE TABLE history("
+    "id INTEGER PRIMARY KEY,"
+    "provider_id TEXT,"
+    "xml TEXT,"
+    "timestamp DATETIME);"
+    "CREATE INDEX provider_index ON history(provider_id);"
+    "CREATE INDEX timestamp_index ON history(timestamp);"
   );
 
   runEmptyQuery( query );
