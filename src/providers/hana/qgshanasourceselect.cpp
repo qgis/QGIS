@@ -44,9 +44,7 @@
 using namespace Qt::StringLiterals;
 
 //! Used to create an editor for when the user tries to change the contents of a cell
-QWidget *QgsHanaSourceSelectDelegate::createEditor(
-  QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index
-) const
+QWidget *QgsHanaSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
 
@@ -63,8 +61,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   {
     QComboBox *cb = new QComboBox( parent );
     for ( const Qgis::WkbType type :
-          {
-            Qgis::WkbType::Point,
+          { Qgis::WkbType::Point,
             Qgis::WkbType::LineString,
             Qgis::WkbType::Polygon,
             Qgis::WkbType::MultiPoint,
@@ -72,8 +69,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
             Qgis::WkbType::MultiPolygon,
             Qgis::WkbType::CircularString,
             Qgis::WkbType::GeometryCollection,
-            Qgis::WkbType::NoGeometry
-          } )
+            Qgis::WkbType::NoGeometry } )
     {
       cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<quint32>( type ) );
     }
@@ -117,9 +113,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   return nullptr;
 }
 
-void QgsHanaSourceSelectDelegate::setModelData(
-  QWidget *editor, QAbstractItemModel *model, const QModelIndex &index
-) const
+void QgsHanaSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
@@ -201,11 +195,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
   }
 }
 
-QgsHanaSourceSelect::QgsHanaSourceSelect(
-  QWidget *parent,
-  Qt::WindowFlags fl,
-  QgsProviderRegistry::WidgetMode theWidgetMode
-)
+QgsHanaSourceSelect::QgsHanaSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -261,8 +251,7 @@ void QgsHanaSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -521,9 +510,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     mTableModel->setSql( index, gb.sql() );
 }
 
-QString QgsHanaSourceSelect::fullDescription(
-  const QString &schema, const QString &table, const QString &column, const QString &type
-)
+QString QgsHanaSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
   QString desc;
   if ( !schema.isEmpty() )
@@ -540,9 +527,7 @@ void QgsHanaSourceSelect::setConnectionListPosition()
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );
 }
 
-void QgsHanaSourceSelect::treeWidgetSelectionChanged(
-  const QItemSelection &selected, const QItemSelection &deselected
-)
+void QgsHanaSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );

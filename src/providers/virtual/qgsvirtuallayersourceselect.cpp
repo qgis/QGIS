@@ -276,7 +276,8 @@ bool QgsVirtualLayerSourceSelect::preFlight()
         {
           bulletedFieldNames.append( "<li>"_L1 + fieldName + "</li>"_L1 );
         }
-        QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
+        QMessageBox::
+          warning( nullptr, tr( "Test Virtual Layer " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
       }
       else
       {
@@ -284,7 +285,8 @@ bool QgsVirtualLayerSourceSelect::preFlight()
         {
           // warning when the geometryRadio is checked, but the user did not set a proper crs
           // old implementation did NOT set a crs then...
-          if ( QMessageBox::Yes == QMessageBox::question( nullptr, tr( "Test Virtual Layer " ), tr( "No CRS defined, are you sure you want to create a layer without a crs?" ), QMessageBox::Yes | QMessageBox::No ) )
+          if ( QMessageBox::Yes
+               == QMessageBox::question( nullptr, tr( "Test Virtual Layer " ), tr( "No CRS defined, are you sure you want to create a layer without a crs?" ), QMessageBox::Yes | QMessageBox::No ) )
           {
             return true;
           }

@@ -74,11 +74,7 @@ namespace
   }
 } // namespace
 
-QgsHanaFeatureIterator::QgsHanaFeatureIterator(
-  QgsHanaFeatureSource *source,
-  bool ownSource,
-  const QgsFeatureRequest &request
-)
+QgsHanaFeatureIterator::QgsHanaFeatureIterator( QgsHanaFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>( source, ownSource, request )
   , mDatabaseVersion( source->mDatabaseVersion )
   , mConnection( source->mUri )
@@ -284,11 +280,9 @@ bool QgsHanaFeatureIterator::nextFeatureFilterExpression( QgsFeature &feature )
 QString QgsHanaFeatureIterator::getBBOXFilter() const
 {
   if ( mDatabaseVersion.majorVersion() == 1 )
-    return u"%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1"_s
-      .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ), QString::number( mSource->mSrid ) );
+    return u"%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1"_s.arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ), QString::number( mSource->mSrid ) );
   else
-    return u"%1.ST_IntersectsRectPlanar(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1"_s
-      .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ) );
+    return u"%1.ST_IntersectsRectPlanar(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1"_s.arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ) );
 }
 
 QgsRectangle QgsHanaFeatureIterator::getFilterRect() const
@@ -315,9 +309,7 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
 
 QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
-  const bool geometryRequested = ( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) == 0
-                                 || !mFilterRect.isNull()
-                                 || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
+  const bool geometryRequested = ( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) == 0 || !mFilterRect.isNull() || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
   bool limitAtProvider = ( request.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
   QgsRectangle filterRect = mFilterRect;
@@ -458,10 +450,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
         }
         break;
         case QgsSqlExpressionCompiler::Result::Fail:
-          QgsDebugError( u"Unable to compile filter expression: '%1'"_s
-                           .arg( request.filterExpression()->expression() )
-                           .toStdString()
-                           .c_str() );
+          QgsDebugError( u"Unable to compile filter expression: '%1'"_s.arg( request.filterExpression()->expression() ).toStdString().c_str() );
           break;
         case QgsSqlExpressionCompiler::Result::None:
           break;

@@ -23,9 +23,7 @@
 
 double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs )
 {
-  auto throwUnableToGetAngularUnits = []() {
-    throw QgsHanaException( "Unable to retrieve angular units from a spatial reference system" );
-  };
+  auto throwUnableToGetAngularUnits = []() { throw QgsHanaException( "Unable to retrieve angular units from a spatial reference system" ); };
 
   PJ *pjCrs = crs.projObject();
   if ( !pjCrs )

@@ -186,7 +186,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         dimensions.insert( it.key(), it.value() );
       }
 
-      QgsDataItem *dimensionItem = ( dimensions.empty() || ( dimensions.size() == 1 && dimensions.constBegin()->values.size() < 2 ) ) ? qobject_cast<QgsDataItem *>( this ) : new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
+      QgsDataItem *dimensionItem = ( dimensions.empty() || ( dimensions.size() == 1 && dimensions.constBegin()->values.size() < 2 ) ) ? qobject_cast<QgsDataItem *>( this )
+                                                                                                                                      : new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
       if ( dimensionItem != this )
       {
         dimensionItem->setCapabilities( dimensionItem->capabilities2() & ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile ) );
@@ -196,9 +197,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       }
 
       QStringList dimensionIds = dimensions.keys();
-      std::sort( dimensionIds.begin(), dimensionIds.end(), []( const QString &a, const QString &b ) -> bool {
-        return QString::localeAwareCompare( a, b ) < 0;
-      } );
+      std::sort( dimensionIds.begin(), dimensionIds.end(), []( const QString &a, const QString &b ) -> bool { return QString::localeAwareCompare( a, b ) < 0; } );
 
       if ( dimensionIds.empty() )
       {
@@ -224,7 +223,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
         QStringList dimensionValues = dimension.values;
 
-        QgsDataItem *dimensionValueItem = dimensionValues.size() < 2 ? static_cast<QgsDataItem *>( dimensionItem ) : static_cast<QgsDataItem *>( new QgsWMTSRootItem( this, dimensionName, dimensionItem->path() + '/' + dimensionPathIdentifier ) );
+        QgsDataItem *dimensionValueItem = dimensionValues.size() < 2 ? static_cast<QgsDataItem *>( dimensionItem )
+                                                                     : static_cast<QgsDataItem *>( new QgsWMTSRootItem( this, dimensionName, dimensionItem->path() + '/' + dimensionPathIdentifier ) );
 
         if ( dimensionValueItem != dimensionItem )
         {
@@ -263,7 +263,9 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           }
           dimensionValueIdentifiers.insert( dimensionValuePathIdentifier );
 
-          QgsDataItem *layerItem = l.styles.size() == 1 ? static_cast<QgsDataItem *>( dimensionValueItem ) : static_cast<QgsDataItem *>( new QgsWMTSRootItem( this, dimensionValueTitle, dimensionValueItem->path() + '/' + dimensionValuePathIdentifier ) );
+          QgsDataItem *layerItem = l.styles.size() == 1
+                                     ? static_cast<QgsDataItem *>( dimensionValueItem )
+                                     : static_cast<QgsDataItem *>( new QgsWMTSRootItem( this, dimensionValueTitle, dimensionValueItem->path() + '/' + dimensionValuePathIdentifier ) );
 
           if ( layerItem != dimensionValueItem )
           {
@@ -295,7 +297,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
             }
             styleIdentifiers.insert( stylePathIdentifier );
 
-            QgsDataItem *styleItem = l.setLinks.size() == 1 ? static_cast<QgsDataItem *>( layerItem ) : static_cast<QgsDataItem *>( new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier ) );
+            QgsDataItem *styleItem = l.setLinks.size() == 1 ? static_cast<QgsDataItem *>( layerItem )
+                                                            : static_cast<QgsDataItem *>( new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier ) );
 
             if ( styleItem != layerItem )
             {
@@ -327,7 +330,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
               }
               linkIdentifiers.insert( linkPathIdentifier );
 
-              QgsDataItem *linkItem = l.formats.size() == 1 ? static_cast<QgsDataItem *>( styleItem ) : static_cast<QgsDataItem *>( new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier ) );
+              QgsDataItem *linkItem = l.formats.size() == 1 ? static_cast<QgsDataItem *>( styleItem )
+                                                            : static_cast<QgsDataItem *>( new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier ) );
 
               if ( linkItem != styleItem )
               {
@@ -350,7 +354,9 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
                 if ( linkItem == styleItem )
                   name = linkName; // just one format so no need to display it
 
-                QgsDataItem *tileLayerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + '/' + name, uri, l.identifier, dimensionId, dimensionValue, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[setLink.tileMatrixSet].crs, title );
+                QgsDataItem *tileLayerItem = new QgsWMTSLayerItem(
+                  linkItem, name, linkItem->path() + '/' + name, uri, l.identifier, dimensionId, dimensionValue, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[setLink.tileMatrixSet].crs, title
+                );
                 tileLayerItem->setToolTip( name );
                 tileLayerItem->setSortKey( ++layerIndex );
 
@@ -430,8 +436,7 @@ QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesPr
   : mCapabilitiesProperty( capabilitiesProperty )
   , mDataSourceUri( dataSourceUri )
   , mLayerProperty( layerProperty )
-{
-}
+{}
 
 QString QgsWMSItemBase::createUri( bool withStyle )
 {
@@ -503,7 +508,9 @@ QString QgsWMSItemBase::createUri( bool withStyle )
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem(
+  QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty
+)
   : QgsDataCollectionItem( parent, name, path, u"wms"_s )
   , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
@@ -603,7 +610,9 @@ QgsMimeDataUtils::UriList QgsWMSLayerCollectionItem::mimeUris() const
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem(
+  QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty
+)
   : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, u"wms"_s )
   , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
@@ -638,7 +647,20 @@ bool QgsWMSLayerItem::equal( const QgsDataItem *other )
 
 // ---------------------------------------------------------------------------
 
-QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QgsDataSourceUri &uri, const QString &id, const QString &dimension, const QString &dimensionValue, const QString &format, const QString &style, const QString &tileMatrixSet, const QString &crs, const QString &title )
+QgsWMTSLayerItem::QgsWMTSLayerItem(
+  QgsDataItem *parent,
+  const QString &name,
+  const QString &path,
+  const QgsDataSourceUri &uri,
+  const QString &id,
+  const QString &dimension,
+  const QString &dimensionValue,
+  const QString &format,
+  const QString &style,
+  const QString &tileMatrixSet,
+  const QString &crs,
+  const QString &title
+)
   : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, u"wms"_s )
   , mDataSourceUri( uri )
   , mId( id )
