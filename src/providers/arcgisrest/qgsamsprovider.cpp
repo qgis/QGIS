@@ -133,9 +133,7 @@ void QgsAmsLegendFetcher::handleFinished()
   {
     QVariantMap queryResultMap = result.toMap();
     QString layerId = queryResultMap[u"layerId"_s].toString();
-    if ( !dataSource.param( u"layer"_s ).isNull()
-         && layerId != dataSource.param( u"layer"_s )
-         && !mProvider->subLayers().contains( layerId ) )
+    if ( !dataSource.param( u"layer"_s ).isNull() && layerId != dataSource.param( u"layer"_s ) && !mProvider->subLayers().contains( layerId ) )
     {
       continue;
     }
@@ -172,7 +170,8 @@ void QgsAmsLegendFetcher::handleFinished()
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
       textWidth = std::max( textWidth, fm.boundingRect( legendEntry.first ).width() + 10 );
     }
-    double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 : std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
+    double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0
+                                                                                 : std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
     mLegendImage = QImage( imageSize + padding + textWidth, verticalPadding + legendEntries.size() * ( verticalSize + verticalPadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );
@@ -373,19 +372,25 @@ Qgis::RasterProviderCapabilities QgsAmsProvider::providerCapabilities() const
   return Qgis::RasterProviderCapability::ReadLayerMetadata | Qgis::RasterProviderCapability::ReloadData;
 }
 
-QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }
+QString QgsAmsProvider::name() const
+{
+  return AMS_PROVIDER_KEY;
+}
 
-QString QgsAmsProvider::providerKey() { return AMS_PROVIDER_KEY; }
+QString QgsAmsProvider::providerKey()
+{
+  return AMS_PROVIDER_KEY;
+}
 
 Qgis::RasterInterfaceCapabilities QgsAmsProvider::capabilities() const
 {
-  return Qgis::RasterInterfaceCapability::Identify
-         | Qgis::RasterInterfaceCapability::IdentifyText
-         | Qgis::RasterInterfaceCapability::IdentifyFeature
-         | Qgis::RasterInterfaceCapability::Prefetch;
+  return Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyText | Qgis::RasterInterfaceCapability::IdentifyFeature | Qgis::RasterInterfaceCapability::Prefetch;
 }
 
-QString QgsAmsProvider::description() const { return AMS_PROVIDER_DESCRIPTION; }
+QString QgsAmsProvider::description() const
+{
+  return AMS_PROVIDER_DESCRIPTION;
+}
 
 QStringList QgsAmsProvider::subLayerStyles() const
 {
@@ -855,9 +860,7 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
 QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings * /*mapSettings*/ )
 {
   QgsAmsLegendFetcher *fetcher = new QgsAmsLegendFetcher( this, mLegendFetcher->getImage() );
-  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [this]( const QImage &fetched ) {
-    mLegendFetcher->setImage( fetched );
-  } );
+  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [this]( const QImage &fetched ) { mLegendFetcher->setImage( fetched ); } );
   return fetcher;
 }
 
@@ -962,7 +965,16 @@ bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
 // QgsAmsTiledImageDownloadHandler
 //
 
-QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth, const QgsHttpHeaders &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix )
+QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler(
+  const QString &auth,
+  const QgsHttpHeaders &requestHeaders,
+  int tileReqNo,
+  const QgsAmsProvider::TileRequests &requests,
+  QImage *image,
+  const QgsRectangle &viewExtent,
+  QgsRasterBlockFeedback *feedback,
+  const QString &urlPrefix
+)
   : mAuth( auth )
   , mRequestHeaders( requestHeaders )
   , mImage( image )
@@ -1136,7 +1148,8 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)" ).arg( status.toString(), contentType ).arg( text.size() ).arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::
+          logMessage( tr( "Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)" ).arg( status.toString(), contentType ).arg( text.size() ).arg( reply->url().toString() ), tr( "WMS" ) );
 #ifdef QGISDEBUG
         QFile file( QDir::tempPath() + "/broken-image.png" );
         if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -1180,8 +1193,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       }
       else
       {
-        QString errorText = tr( "Returned image is flawed [Content-Type: %1; URL: %2]" )
-                              .arg( contentType, reply->url().toString() );
+        QString errorText = tr( "Returned image is flawed [Content-Type: %1; URL: %2]" ).arg( contentType, reply->url().toString() );
         if ( mFeedback )
           mFeedback->appendError( errorText );
       }
@@ -1269,8 +1281,7 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
 
 QgsAmsProviderMetadata::QgsAmsProviderMetadata()
   : QgsProviderMetadata( QgsAmsProvider::AMS_PROVIDER_KEY, QgsAmsProvider::AMS_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsAmsProviderMetadata::icon() const
 {

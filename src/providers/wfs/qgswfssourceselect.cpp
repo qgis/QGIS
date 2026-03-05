@@ -445,8 +445,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 
 void QgsWFSSourceSelect::deleteEntryOfServerList()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                  .arg( cmbConnections->currentText() );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {

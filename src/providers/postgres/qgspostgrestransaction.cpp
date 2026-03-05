@@ -30,15 +30,13 @@ using namespace Qt::StringLiterals;
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )
 
-{
-}
+{}
 
 bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTimeout )
 {
   mConn = QgsPostgresConn::connectDb( mConnString, false /*readonly*/, false /*shared*/, true /*transaction*/ );
 
-  return executeSql( u"SET statement_timeout = %1"_s.arg( statementTimeout * 1000 ), error )
-         && executeSql( u"BEGIN TRANSACTION"_s, error );
+  return executeSql( u"SET statement_timeout = %1"_s.arg( statementTimeout * 1000 ), error ) && executeSql( u"BEGIN TRANSACTION"_s, error );
 }
 
 bool QgsPostgresTransaction::commitTransaction( QString &error )

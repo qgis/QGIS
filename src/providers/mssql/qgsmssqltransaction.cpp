@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsMssqlTransaction::QgsMssqlTransaction( const QString &connString )
   : QgsTransaction( connString )
-{
-}
+{}
 
 QgsMssqlTransaction::~QgsMssqlTransaction() = default;
 

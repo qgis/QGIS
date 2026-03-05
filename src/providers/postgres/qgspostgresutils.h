@@ -68,9 +68,13 @@ class QgsPostgresUtils
     static bool deleteLayer( const QString &uri, QString &errCause );
     static bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
 
-    static QString whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData );
+    static QString whereClause(
+      QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData
+    );
 
-    static QString whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData );
+    static QString whereClause(
+      const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData
+    );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 
@@ -79,15 +83,9 @@ class QgsPostgresUtils
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
     // See https://github.com/qgis/QGIS/issues/22258
-    static qint64 int32pk_to_fid( qint32 x )
-    {
-      return x >= 0 ? x : x + INT32PK_OFFSET;
-    }
+    static qint64 int32pk_to_fid( qint32 x ) { return x >= 0 ? x : x + INT32PK_OFFSET; }
 
-    static qint32 fid_to_int32pk( qint64 x )
-    {
-      return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
-    }
+    static qint32 fid_to_int32pk( qint64 x ) { return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x ); }
 
     //! Replaces invalid XML chars with UTF-8[<char_code>]
     static void replaceInvalidXmlChars( QString &xml );

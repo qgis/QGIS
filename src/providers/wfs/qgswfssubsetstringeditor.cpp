@@ -55,9 +55,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
     mapTypenameToTitle[f.name] = f.title;
 
   QList<QgsSQLComposerDialog::PairNameTitle> tablenames;
-  tablenames << QgsSQLComposerDialog::PairNameTitle(
-    QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName]
-  );
+  tablenames << QgsSQLComposerDialog::PairNameTitle( QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName] );
   if ( bSupportJoins )
   {
     for ( const auto &featureType : caps.featureTypes )
@@ -70,9 +68,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
         if ( !caps.setAmbiguousUnprefixedTypename.contains( unprefixedIterTypename ) )
           displayedIterTypename = unprefixedIterTypename;
 
-        tablenames << QgsSQLComposerDialog::PairNameTitle(
-          QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename]
-        );
+        tablenames << QgsSQLComposerDialog::PairNameTitle( QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename] );
       }
     }
   }
@@ -139,8 +135,7 @@ QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent, const QgsWFSD
   , mURI( uri )
   , mAllSql( allSql )
   , mCaps( caps )
-{
-}
+{}
 
 bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReason, QString &warningMsg )
 {
@@ -168,8 +163,7 @@ QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *
   , mDialog( dialog )
   , mURI( uri )
   , mCaps( caps )
-{
-}
+{}
 
 void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
 {

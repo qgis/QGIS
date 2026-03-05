@@ -76,13 +76,12 @@ void QgsWCSSourceSelect::populateLayerList()
 
   int coverageAndStyleCount = -1;
 
-  for ( QVector<QgsWcsCoverageSummary>::iterator coverage = coverages.begin();
-        coverage != coverages.end();
-        ++coverage )
+  for ( QVector<QgsWcsCoverageSummary>::iterator coverage = coverages.begin(); coverage != coverages.end(); ++coverage )
   {
     QgsDebugMsgLevel( u"coverage orderId = %1 identifier = %2"_s.arg( coverage->orderId ).arg( coverage->identifier ), 2 );
 
-    QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
+    QgsTreeWidgetItem *lItem
+      = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
     lItem->setData( 0, Qt::UserRole + 1, coverage->title );
@@ -164,8 +163,9 @@ void QgsWCSSourceSelect::addButtonClicked()
     extentCrsToSSelectedCrs.setBallparkTransformsAreAppropriate( true );
     spatialExtent = extentCrsToSSelectedCrs.transformBoundingBox( spatialExtent );
     bool inverted = uri.hasParam( u"InvertAxisOrientation"_s );
-    QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                     .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
+    QString bbox
+      = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+          .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
 
     uri.setParam( u"bbox"_s, bbox );
   }

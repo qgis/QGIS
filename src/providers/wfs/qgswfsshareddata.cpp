@@ -90,15 +90,16 @@ void QgsWFSSharedData::setInitialGetFeatureIssued( bool issued )
 }
 
 void QgsWFSSharedData::invalidateCacheBaseUnderLock()
-{
-}
+{}
 
 QString QgsWFSSharedData::srsName() const
 {
   QString srsName;
   if ( !mSourceCrs.authid().isEmpty() )
   {
-    if ( mWFSVersion.startsWith( "1.0"_L1 ) || !mSourceCrs.authid().startsWith( "EPSG:"_L1 ) ||
+    if ( mWFSVersion.startsWith( "1.0"_L1 )
+         || !mSourceCrs.authid().startsWith( "EPSG:"_L1 )
+         ||
          // For servers like Geomedia that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
          mCaps.useEPSGColumnFormat )
     {
@@ -134,12 +135,8 @@ QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) 
     }
 
     QDomDocument expressionDoc;
-    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression(
-      expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute,
-      srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr,
-      true,
-      fieldNameToXPathMap, mNamespacePrefixToURIMap
-    );
+    QDomElement expressionElem = QgsOgcUtils::
+      expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr, true, fieldNameToXPathMap, mNamespacePrefixToURIMap );
 
     if ( !expressionElem.isNull() )
     {
@@ -200,12 +197,8 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
     }
 
     QDomDocument filterDoc;
-    const QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter(
-      sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList,
-      honourAxisOrientation, mURI.invertAxisOrientation(),
-      mCaps.mapUnprefixedTypenameToPrefixedTypename,
-      &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap
-    );
+    const QDomElement filterElem = QgsOgcUtils::
+      SQLStatementToOgcFilter( sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList, honourAxisOrientation, mURI.invertAxisOrientation(), mCaps.mapUnprefixedTypenameToPrefixedTypename, &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap );
     if ( !errorMsg.isEmpty() )
     {
       errorMsg = tr( "SQL statement to OGC Filter error: " ) + errorMsg;
@@ -245,12 +238,19 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
         }
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
-          filterExpression, filterDoc, gmlVersion, filterVersion,
+          filterExpression,
+          filterDoc,
+          gmlVersion,
+          filterVersion,
           mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
           mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
           mGeometryAttribute,
-          srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
-          &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap
+          srsName(),
+          honourAxisOrientation,
+          mURI.invertAxisOrientation(),
+          &errorMsg,
+          fieldNameToXPathMap,
+          mNamespacePrefixToURIMap
         );
 
         if ( !errorMsg.isEmpty() )
@@ -454,7 +454,12 @@ bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExten
   Q_ASSERT( !mComputedExtent.isNull() );
   if ( mWFSVersion.startsWith( "1.1"_L1 ) && !mURI.ignoreAxisOrientation() && !mURI.invertAxisOrientation() && mSourceCrs.hasAxisInverted() && mCapabilityExtent.contains( mComputedExtent ) )
   {
-    pushError( QObject::tr( "It is likely that there is an issue with coordinate axis order of geometries when interacting with the server. You may want to enable the Ignore axis orientation and/or Invert axis orientation settings of the WFS connection." ) );
+    pushError(
+      QObject::tr(
+        "It is likely that there is an issue with coordinate axis order of geometries when interacting with the server. You may want to enable the Ignore axis orientation and/or Invert axis "
+        "orientation settings of the WFS connection."
+      )
+    );
     return true;
   }
   return false;
@@ -465,8 +470,7 @@ bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExten
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-{
-}
+{}
 
 long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities &caps )
 {
@@ -616,9 +620,9 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( const QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI ), mShared( shared )
-{
-}
+  : QgsWfsRequest( shared->mURI )
+  , mShared( shared )
+{}
 
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {

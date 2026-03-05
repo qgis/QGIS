@@ -104,10 +104,7 @@ class QgsDelimitedTextProvider final : public QgsVectorDataProvider
     bool supportsSubsetString() const override;
     QString subsetStringDialect() const override;
     QString subsetStringHelpUrl() const override;
-    QString subsetString() const override
-    {
-      return mSubsetString;
-    }
+    QString subsetString() const override { return mSubsetString; }
     /* new functions */
 
     /**

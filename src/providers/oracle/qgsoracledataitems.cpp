@@ -57,9 +57,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
 
   if ( ownerName != conn->currentUser() )
   {
-    errCause = QObject::tr( "%1 not owner of the table %2." )
-                 .arg( ownerName )
-                 .arg( tableName );
+    errCause = QObject::tr( "%1 not owner of the table %2." ).arg( ownerName ).arg( tableName );
     conn->disconnect();
     return false;
   }
@@ -67,16 +65,21 @@ bool deleteLayer( const QString &uri, QString &errCause )
   QSqlQuery qry( *conn );
 
   // check the geometry column count
-  if ( !QgsOracleProvider::execLoggedStatic( qry, QString( "SELECT count(*)"
-                                                           " FROM user_tab_columns"
-                                                           " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'" ),
-                                             QVariantList() << tableName, dsUri.uri(), u"QgsOracleLayerItem"_s, QGS_QUERY_LOG_ORIGIN )
+  if ( !QgsOracleProvider::execLoggedStatic(
+         qry,
+         QString(
+           "SELECT count(*)"
+           " FROM user_tab_columns"
+           " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'"
+         ),
+         QVariantList() << tableName,
+         dsUri.uri(),
+         u"QgsOracleLayerItem"_s,
+         QGS_QUERY_LOG_ORIGIN
+       )
        || !qry.next() )
   {
-    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
-                 .arg( ownerName )
-                 .arg( tableName )
-                 .arg( qry.lastError().text() );
+    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" ).arg( ownerName ).arg( tableName ).arg( qry.lastError().text() );
     conn->disconnect();
     return false;
   }
@@ -89,37 +92,28 @@ bool deleteLayer( const QString &uri, QString &errCause )
   if ( !geometryCol.isEmpty() && count > 1 )
   {
     // the table has more geometry columns, drop just the geometry column
-    dropTable = QString( "ALTER TABLE %1 DROP COLUMN %2" )
-                  .arg( QgsOracleConn::quotedIdentifier( tableName ) )
-                  .arg( QgsOracleConn::quotedIdentifier( geometryCol ) );
+    dropTable = QString( "ALTER TABLE %1 DROP COLUMN %2" ).arg( QgsOracleConn::quotedIdentifier( tableName ) ).arg( QgsOracleConn::quotedIdentifier( geometryCol ) );
     cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=? AND column_name=?" );
     args << tableName << geometryCol;
   }
   else
   {
     // drop the table
-    dropTable = QString( "DROP TABLE %1" )
-                  .arg( QgsOracleConn::quotedIdentifier( tableName ) );
+    dropTable = QString( "DROP TABLE %1" ).arg( QgsOracleConn::quotedIdentifier( tableName ) );
     cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=%1" );
     args << tableName;
   }
 
   if ( !QgsOracleProvider::execLoggedStatic( qry, dropTable, QVariantList(), dsUri.uri(), u"QgsOracleLayerItem"_s, QGS_QUERY_LOG_ORIGIN ) )
   {
-    errCause = QObject::tr( "Unable to delete layer %1.%2: \n%3" )
-                 .arg( ownerName )
-                 .arg( tableName )
-                 .arg( qry.lastError().text() );
+    errCause = QObject::tr( "Unable to delete layer %1.%2: \n%3" ).arg( ownerName ).arg( tableName ).arg( qry.lastError().text() );
     conn->disconnect();
     return false;
   }
 
   if ( !QgsOracleProvider::execLoggedStatic( qry, cleanView, args, dsUri.uri(), u"QgsOracleLayerItem"_s, QGS_QUERY_LOG_ORIGIN ) )
   {
-    errCause = QObject::tr( "Unable to clean metadata %1.%2: \n%3" )
-                 .arg( ownerName )
-                 .arg( tableName )
-                 .arg( qry.lastError().text() );
+    errCause = QObject::tr( "Unable to clean metadata %1.%2: \n%3" ).arg( ownerName ).arg( tableName ).arg( qry.lastError().text() );
     conn->disconnect();
     return false;
   }
@@ -194,8 +188,12 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
   if ( !mColumnTypeTask )
   {
-    mColumnTypeTask = new QgsOracleColumnTypeTask( mName, QgsOracleConn::schemaToRestrict( mName ),
-                                                   /* useEstimatedMetadata */ true, QgsOracleConn::allowGeometrylessTables( mName ) );
+    mColumnTypeTask = new QgsOracleColumnTypeTask(
+      mName,
+      QgsOracleConn::schemaToRestrict( mName ),
+      /* useEstimatedMetadata */ true,
+      QgsOracleConn::allowGeometrylessTables( mName )
+    );
 
     connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleConnectionItem::setLayerType );
     connect( mColumnTypeTask, &QgsTask::begun, this, &QgsOracleConnectionItem::taskStarted );
@@ -325,7 +323,8 @@ void QgsOracleConnectionItem::duplicateConnection()
 
 void QgsOracleConnectionItem::deleteConnection()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ), QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( mName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ), QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( mName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
     return;
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"oracle"_s );
@@ -447,7 +446,9 @@ QList<QAction *> QgsOracleLayerItem::actions( QWidget *parent )
 
 bool QgsOracleLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ), QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::
+         question( nullptr, QObject::tr( "Delete Table" ), QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
     return true;
 
   QString errCause;

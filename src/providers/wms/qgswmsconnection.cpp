@@ -40,8 +40,7 @@ static const QString SERVICE_WMS = u"WMS"_s;
 
 QgsWMSConnection::QgsWMSConnection( const QString &connName )
   : QgsOwsConnection( SERVICE_WMS, connName )
-{
-}
+{}
 
 QStringList QgsWMSConnection::connectionList()
 {

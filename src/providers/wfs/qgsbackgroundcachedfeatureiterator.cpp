@@ -49,9 +49,7 @@ const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5( u"__qgis
 // -------------------------
 
 QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
-  QgsBackgroundCachedFeatureSource *source, bool ownSource,
-  std::shared_ptr<QgsBackgroundCachedSharedData> shared,
-  const QgsFeatureRequest &request
+  QgsBackgroundCachedFeatureSource *source, bool ownSource, std::shared_ptr<QgsBackgroundCachedSharedData> shared, const QgsFeatureRequest &request
 )
   : QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>( source, ownSource, request )
   , mShared( shared )
@@ -146,7 +144,8 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
-  int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ? mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) : mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
+  int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ? mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression )
+                                                                                     : mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -223,7 +222,9 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
 {
   requestCache.setFilterRect( mFilterRect );
 
-  if ( ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() ) || ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) || ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
+  if ( ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() )
+       || ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
+       || ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
   {
     mFetchGeometry = true;
   }
@@ -368,7 +369,9 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   {
     if ( !errorRaised && QgsWkbTypes::hasZ( pair.first.geometry().wkbType() ) && !QgsWkbTypes::hasZ( expectedType ) )
     {
-      mShared->pushError( u"Received feature geometry has Z values but the layer type (%1) does not. Please check the WFS connection setting 'Force initial GetFeature'."_s.arg( QgsWkbTypes::displayString( expectedType ) ) );
+      mShared->pushError(
+        u"Received feature geometry has Z values but the layer type (%1) does not. Please check the WFS connection setting 'Force initial GetFeature'."_s.arg( QgsWkbTypes::displayString( expectedType ) )
+      );
       errorRaised = true;
     }
     *mWriterStream << pair.first;

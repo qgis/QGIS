@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-{
-}
+{}
 
 bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities &caps )
 {

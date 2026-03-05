@@ -191,9 +191,11 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   // Field has unique constraint
   QSet<QString> setColumnUnique;
   {
-    const QString sql2 { QStringLiteral( "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC"
-                                         " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
-                                         " WHERE TC.CONSTRAINT_SCHEMA = %1 AND TC.TABLE_NAME = %2 AND TC.CONSTRAINT_TYPE = 'unique'" )
+    const QString sql2 { QStringLiteral(
+                           "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC"
+                           " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
+                           " WHERE TC.CONSTRAINT_SCHEMA = %1 AND TC.TABLE_NAME = %2 AND TC.CONSTRAINT_TYPE = 'unique'"
+    )
                            .arg( QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( tableName ) ) };
     if ( !LoggedExec( query, sql2 ) )
     {
@@ -224,8 +226,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( details.geometryColumnName.isEmpty() && ( sqlTypeName == "geometry"_L1 || sqlTypeName == "geography"_L1 ) )
-         || colName == details.geometryColumnName )
+    if ( ( details.geometryColumnName.isEmpty() && ( sqlTypeName == "geometry"_L1 || sqlTypeName == "geography"_L1 ) ) || colName == details.geometryColumnName )
     {
       details.geometryColumnName = colName;
       details.geometryColumnType = sqlTypeName;
@@ -313,8 +314,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
     {
       query.clear();
       query.setForwardOnly( true );
-      const QString sql5 { u"select count(distinct [%1]), count([%1]) from [%2].[%3]"_s
-                             .arg( pk, schema, tableName ) };
+      const QString sql5 { u"select count(distinct [%1]), count([%1]) from [%2].[%3]"_s.arg( pk, schema, tableName ) };
       if ( !LoggedExec( query, sql5 ) )
       {
         QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
@@ -393,8 +393,7 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == "geometry"_L1 || systemTypeName == "geography"_L1 ) )
-         || ( !name.isEmpty() && name == details.geometryColumnName ) )
+    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == "geometry"_L1 || systemTypeName == "geography"_L1 ) ) || ( !name.isEmpty() && name == details.geometryColumnName ) )
     {
       details.geometryColumnName = name;
       details.geometryColumnType = systemTypeName;
@@ -452,9 +451,16 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
       // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
       // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
-      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [threadSafeConnectionName] {
-        const QMutexLocker locker( &sMutex );
-        QSqlDatabase::removeDatabase( threadSafeConnectionName ); }, Qt::DirectConnection );
+      QObject::connect(
+        QThread::currentThread(),
+        &QThread::finished,
+        QThread::currentThread(),
+        [threadSafeConnectionName] {
+          const QMutexLocker locker( &sMutex );
+          QSqlDatabase::removeDatabase( threadSafeConnectionName );
+        },
+        Qt::DirectConnection
+      );
     }
   }
   else

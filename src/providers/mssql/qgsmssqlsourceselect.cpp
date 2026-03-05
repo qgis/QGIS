@@ -60,34 +60,11 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   if ( index.column() == QgsMssqlTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    for ( const Qgis::WkbType type :
-          {
-            Qgis::WkbType::Point,
-            Qgis::WkbType::PointZ,
-            Qgis::WkbType::PointM,
-            Qgis::WkbType::PointZM,
-            Qgis::WkbType::LineString,
-            Qgis::WkbType::LineStringZ,
-            Qgis::WkbType::LineStringM,
-            Qgis::WkbType::LineStringZM,
-            Qgis::WkbType::Polygon,
-            Qgis::WkbType::PolygonZ,
-            Qgis::WkbType::PolygonM,
-            Qgis::WkbType::PolygonZM,
-            Qgis::WkbType::MultiPoint,
-            Qgis::WkbType::MultiPointZ,
-            Qgis::WkbType::MultiPointM,
-            Qgis::WkbType::MultiPointZM,
-            Qgis::WkbType::MultiLineString,
-            Qgis::WkbType::MultiLineStringZ,
-            Qgis::WkbType::MultiLineStringM,
-            Qgis::WkbType::MultiLineStringZM,
-            Qgis::WkbType::MultiPolygon,
-            Qgis::WkbType::MultiPolygonZ,
-            Qgis::WkbType::MultiPolygonM,
-            Qgis::WkbType::MultiPolygonZM,
-            Qgis::WkbType::NoGeometry
-          } )
+    for ( const Qgis::WkbType type : { Qgis::WkbType::Point,        Qgis::WkbType::PointZ,          Qgis::WkbType::PointM,           Qgis::WkbType::PointZM,          Qgis::WkbType::LineString,
+                                       Qgis::WkbType::LineStringZ,  Qgis::WkbType::LineStringM,     Qgis::WkbType::LineStringZM,     Qgis::WkbType::Polygon,          Qgis::WkbType::PolygonZ,
+                                       Qgis::WkbType::PolygonM,     Qgis::WkbType::PolygonZM,       Qgis::WkbType::MultiPoint,       Qgis::WkbType::MultiPointZ,      Qgis::WkbType::MultiPointM,
+                                       Qgis::WkbType::MultiPointZM, Qgis::WkbType::MultiLineString, Qgis::WkbType::MultiLineStringZ, Qgis::WkbType::MultiLineStringM, Qgis::WkbType::MultiLineStringZM,
+                                       Qgis::WkbType::MultiPolygon, Qgis::WkbType::MultiPolygonZ,   Qgis::WkbType::MultiPolygonM,    Qgis::WkbType::MultiPolygonZM,   Qgis::WkbType::NoGeometry } )
     {
       cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
     }
@@ -206,8 +183,7 @@ void QgsMssqlSourceSelect::btnNew_clicked()
 
 void QgsMssqlSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -498,9 +474,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       //expand all the toplevel items
       for ( int i = 0; i < numTopLevelItems; ++i )
       {
-        mTablesTreeView->expand( proxyModel()->mapFromSource(
-          mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) )
-        ) );
+        mTablesTreeView->expand( proxyModel()->mapFromSource( mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
       }
     }
   }
@@ -586,7 +560,9 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   }
 }
 
-void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling )
+void QgsMssqlSourceSelect::addSearchGeometryColumn(
+  const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling
+)
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
