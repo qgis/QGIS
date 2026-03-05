@@ -24,6 +24,7 @@
 #include <QString>
 
 class QgsMapSettings;
+class QgsRectangle;
 
 /**
  * \ingroup core
@@ -68,6 +69,14 @@ class CORE_EXPORT QgsMapSettingsUtils
      * \note Uses 17 places of precision for all numbers output
      */
     static QString worldFileContent( const QgsMapSettings &mapSettings );
+
+    /**
+     * Returns TRUE if an \a extent is a valid extent which can be used
+     * by QgsMapSettings.
+     *
+     * \since QGIS 4.0
+     */
+    static bool isValidExtent( const QgsRectangle &extent );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettingsUtils::EffectsCheckFlags )
