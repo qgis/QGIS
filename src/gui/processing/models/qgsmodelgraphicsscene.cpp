@@ -184,16 +184,10 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
-    connect( item, &QgsModelChildAlgorithmGraphicItem::runFromHere, this, [this, childId] {
-      emit runFromChild( childId );
-    } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::runFromHere, this, [this, childId] { emit runFromChild( childId ); } );
     connect( item, &QgsModelChildAlgorithmGraphicItem::runSelected, this, &QgsModelGraphicsScene::runSelected );
-    connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId] {
-      emit showChildAlgorithmOutputs( childId );
-    } );
-    connect( item, &QgsModelChildAlgorithmGraphicItem::showLog, this, [this, childId] {
-      emit showChildAlgorithmLog( childId );
-    } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId] { emit showChildAlgorithmOutputs( childId ); } );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::showLog, this, [this, childId] { emit showChildAlgorithmLog( childId ); } );
 
     addCommentItemForComponent( model, it.value(), item );
   }
@@ -224,11 +218,29 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
             {
-              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
+              arrow = new QgsModelArrowItem(
+                link.item,
+                QgsModelArrowItem::Marker::NoMarker,
+                mChildAlgorithmItems.value( it.value().childId() ),
+                parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge,
+                parameter->isDestination() ? bottomIdx : topIdx,
+                QgsModelArrowItem::Marker::Circle
+              );
             }
             else
             {
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::NoMarker );
+              arrow = new QgsModelArrowItem(
+                link.item,
+                link.edge,
+                link.linkIndex,
+                true,
+                QgsModelArrowItem::Marker::NoMarker,
+                mChildAlgorithmItems.value( it.value().childId() ),
+                parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge,
+                parameter->isDestination() ? bottomIdx : topIdx,
+                true,
+                QgsModelArrowItem::Marker::NoMarker
+              );
             }
             addItem( arrow );
 
@@ -250,7 +262,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     {
       if ( depend.conditionalBranch.isEmpty() || !model->childAlgorithm( depend.childId ).algorithm() )
       {
-        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+        addItem(
+          new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead )
+        );
       }
       else
       {
@@ -268,7 +282,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
           i++;
         }
         if ( found )
-          addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+          addItem(
+            new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead )
+          );
       }
     }
   }
@@ -486,7 +502,9 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
   emit requestRebuildRequired();
 }
 
-QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
+QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue(
+  QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context
+) const
 {
   QList<QgsModelGraphicsScene::LinkSource> res;
   if ( value.userType() == QMetaType::Type::QVariantList )

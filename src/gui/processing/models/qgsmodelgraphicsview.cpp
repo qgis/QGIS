@@ -77,9 +77,7 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
-       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
-       || event->mimeData()->hasText() )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -95,9 +93,7 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     QString algorithmId;
     stream >> algorithmId;
 
-    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId] {
-      emit algorithmDropped( algorithmId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId] { emit algorithmDropped( algorithmId, dropPoint ); } );
     event->accept();
   }
   else if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) )
@@ -107,17 +103,13 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     QString paramTypeId;
     stream >> paramTypeId;
 
-    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] {
-      emit inputDropped( paramTypeId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] { emit inputDropped( paramTypeId, dropPoint ); } );
     event->accept();
   }
   else if ( event->mimeData()->hasText() )
   {
     const QString itemId = event->mimeData()->text();
-    QTimer::singleShot( 0, this, [this, dropPoint, itemId] {
-      emit inputDropped( itemId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, itemId] { emit inputDropped( itemId, dropPoint ); } );
     event->accept();
   }
   else
@@ -128,9 +120,7 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
-       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
-       || event->mimeData()->hasText() )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -372,10 +362,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     }
     event->accept();
   }
-  else if ( event->key() == Qt::Key_Left
-            || event->key() == Qt::Key_Right
-            || event->key() == Qt::Key_Up
-            || event->key() == Qt::Key_Down )
+  else if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down )
   {
     QgsModelGraphicsScene *s = modelScene();
     const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
@@ -843,7 +830,9 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
           pastedBounds = pastedBounds.united( QRectF( newOutput.position() - QPointF( newOutput.size().width() / 2.0, newOutput.size().height() / 2.0 ), newOutput.size() ) );
 
           if ( !alg.comment()->description().isEmpty() )
-            pastedBounds = pastedBounds.united( QRectF( newOutput.comment()->position() - QPointF( newOutput.comment()->size().width() / 2.0, newOutput.comment()->size().height() / 2.0 ), newOutput.comment()->size() ) );
+            pastedBounds = pastedBounds.united(
+              QRectF( newOutput.comment()->position() - QPointF( newOutput.comment()->size().width() / 2.0, newOutput.comment()->size().height() / 2.0 ), newOutput.comment()->size() )
+            );
         }
         alg.setModelOutputs( pastedOutputs );
 
@@ -885,7 +874,12 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
           for ( auto it = outputs.begin(); it != outputs.end(); ++it )
           {
             modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).position() + offset );
-            modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->position() + offset );
+            modelScene()
+              ->model()
+              ->childAlgorithm( pastedAlg )
+              .modelOutput( it.key() )
+              .comment()
+              ->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->position() + offset );
           }
         }
       }
