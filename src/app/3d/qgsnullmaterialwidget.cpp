@@ -32,8 +32,7 @@ QgsMaterialSettingsWidget *QgsNullMaterialWidget::create()
 }
 
 void QgsNullMaterialWidget::setSettings( const QgsAbstractMaterialSettings *, QgsVectorLayer * )
-{
-}
+{}
 
 QgsAbstractMaterialSettings *QgsNullMaterialWidget::settings()
 {

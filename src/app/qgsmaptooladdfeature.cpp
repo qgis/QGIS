@@ -46,8 +46,7 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDig
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddFeature( canvas, QgisApp::instance()->cadDockWidget(), mode )
-{
-}
+{}
 
 std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLayer *layer, const QgsFeature &f )
 {

@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
   : QValidator( parent )
-{
-}
+{}
 
 QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) const
 {

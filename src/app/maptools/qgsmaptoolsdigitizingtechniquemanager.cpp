@@ -40,9 +40,13 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( u"technique"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
-const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( u"current"_s, sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
-const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForCategory = new QgsSettingsEntryString( u"default"_s, sTreeShapeMapToolsCategories, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
+const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<
+  Qgis::CaptureTechnique>( u"technique"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue )
+  SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent
+  = new QgsSettingsEntryString( u"current"_s, sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForCategory
+  = new QgsSettingsEntryString( u"default"_s, sTreeShapeMapToolsCategories, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
 
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )
@@ -262,9 +266,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
   }
 
   mInitializedTools.insert( tool );
-  connect( tool, &QObject::destroyed, this, [this, tool] {
-    mInitializedTools.remove( tool );
-  } );
+  connect( tool, &QObject::destroyed, this, [this, tool] { mInitializedTools.remove( tool ); } );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis::CaptureTechnique technique )
@@ -386,9 +388,7 @@ void QgsMapToolsDigitizingTechniqueManager::createNurbsDegreeWidget()
   QLabel *label = new QLabel( tr( "NURBS Degree" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( spinBox, 1, 1 );
-  connect( spinBox, qOverload<int>( &QSpinBox::valueChanged ), this, []( int value ) {
-    QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( value );
-  } );
+  connect( spinBox, qOverload<int>( &QSpinBox::valueChanged ), this, []( int value ) { QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( value ); } );
 
   mNurbsDegreeWidget = new QWidget( QgisApp::instance() );
   mNurbsDegreeWidget->setLayout( gLayout );
@@ -428,9 +428,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
-  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, []( int value ) {
-    QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( value );
-  } );
+  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, []( int value ) { QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( value ); } );
 
   QWidget *w = new QWidget( parent );
   w->setLayout( gLayout );

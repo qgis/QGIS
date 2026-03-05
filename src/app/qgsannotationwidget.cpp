@@ -37,7 +37,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate = new QgsSettingsEntryBool( u"live-update"_s, QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
+const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate
+  = new QgsSettingsEntryBool( u"live-update"_s, QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
 
 
 QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )

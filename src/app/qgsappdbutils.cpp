@@ -58,9 +58,7 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
 
   connect( clearButton, &QPushButton::clicked, this, &QgsQueryHistoryDialog::clearHistory );
   connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/create_layers.html#sql-history"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/create_layers.html#sql-history"_s ); } );
   vl->addWidget( mButtonBox );
 
   setLayout( vl );

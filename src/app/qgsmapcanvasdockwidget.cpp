@@ -135,7 +135,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mActionShowCursor->setChecked( true );
   connect( mActionShowCursor, &QAction::toggled, this, [this]( bool checked ) { mXyMarker->setVisible( checked ); } );
   mActionShowExtent->setChecked( false );
-  connect( mActionShowExtent, &QAction::toggled, this, [this]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
+  connect( mActionShowExtent, &QAction::toggled, this, [this]( bool checked ) {
+    mExtentRubberBand->setVisible( checked );
+    updateExtentRect();
+  } );
   mActionShowLabels->setChecked( true );
   connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
@@ -247,13 +250,12 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvasDockWidget::currentMapThemeRenamed );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+  mDockableWidgetHelper
+    = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 2D Map View" ) );
   mToolbar->addWidget( toggleButton );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
-    close();
-  } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
 }
 
 QgsMapCanvasDockWidget::~QgsMapCanvasDockWidget()
@@ -544,8 +546,7 @@ void QgsMapCanvasDockWidget::updateExtentRect()
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
   mExtentRubberBand->setToGeometry( g, nullptr );
 }

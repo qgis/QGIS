@@ -120,10 +120,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
     const QgsPointXY mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
     annotation->setMapPosition( mapPos );
     annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
-    annotation->setRelativePosition( QPointF(
-      static_cast<double>( e->pos().x() ) / mCanvas->width(),
-      static_cast<double>( e->pos().y() ) / mCanvas->height()
-    ) );
+    annotation->setRelativePosition( QPointF( static_cast<double>( e->pos().x() ) / mCanvas->width(), static_cast<double>( e->pos().y() ) / mCanvas->height() ) );
     annotation->setFrameSizeMm( QSizeF( 50, 25 ) );
 
     QgsProject::instance()->annotationManager()->addAnnotation( annotation );
@@ -236,21 +233,29 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
       double relPosX = annotation->relativePosition().x();
       double relPosY = annotation->relativePosition().y();
 
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRight || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRight
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         xmax += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
         xmin += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
         relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / static_cast<double>( mCanvas->width() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         ymin += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
         relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / static_cast<double>( mCanvas->height() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
       {
         ymax += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
       }

@@ -32,7 +32,8 @@
 using namespace Qt::StringLiterals;
 
 QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent )
-  : QStyledItemDelegate( parent ) {}
+  : QStyledItemDelegate( parent )
+{}
 
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -99,9 +100,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setPen( Qt::red );
   }
 
-  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == "upgradeable"_L1
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == "new"_L1 )
+  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty() || index.data( PLUGIN_STATUS_ROLE ).toString() == "upgradeable"_L1 || index.data( PLUGIN_STATUS_ROLE ).toString() == "new"_L1 )
   {
     QFont font = painter->font();
     font.setBold( true );

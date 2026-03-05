@@ -64,8 +64,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 {
   mPlacement = TopLeft;
   mMarginUnit = Qgis::RenderUnit::Millimeters;
-  mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
-               << tr( "Bar" ) << tr( "Box" );
+  mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" ) << tr( "Bar" ) << tr( "Box" );
 
   setDisplayName( tr( "Scale Bar" ) );
   mConfigurationName = u"ScaleBar"_s;
@@ -413,7 +412,9 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setNumberOfSegments( mStyleIndex == 3 ? 2 : 1 );
   mSettings.setUnitsPerSegment( mStyleIndex == 3 ? unitsPerSegment / 2 : unitsPerSegment );
   mSettings.setUnitLabel( scaleBarUnitLabel );
-  mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment : Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
+  mSettings.setLabelHorizontalPlacement(
+    mPlacement == TopCenter || mPlacement == BottomCenter ? Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment : Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge
+  );
 
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSizeInMm / 2 : segmentSizeInMm;

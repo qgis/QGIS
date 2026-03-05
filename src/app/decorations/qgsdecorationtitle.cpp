@@ -162,51 +162,45 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   switch ( mPlacement )
   {
     case BottomLeft: // Bottom Left, xOffset is set above
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       break;
     case TopLeft: // Top left, xOffset is set above
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       break;
     case TopRight: // Top Right
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case BottomRight: // Bottom Right
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case TopCenter: // Top Center
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     case BottomCenter: // Bottom Center
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;

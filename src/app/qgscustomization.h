@@ -176,8 +176,7 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns child item with has the name \a name, nullptr if not found
          */
-        template<class T>
-        T *getChild( const QString &name ) const { return dynamic_cast<T *>( getChild( name ) ); }
+        template<class T> T *getChild( const QString &name ) const { return dynamic_cast<T *>( getChild( name ) ); }
 
         /**
          * Returns child item with has the name \a name, nullptr if not found
@@ -187,8 +186,7 @@ class APP_EXPORT QgsCustomization
         /**
          * Return last child item, nullptr if the list is empty
          */
-        template<class T>
-        T *lastChild() const { return dynamic_cast<T *>( lastChild() ); }
+        template<class T> T *lastChild() const { return dynamic_cast<T *>( lastChild() ); }
 
         /**
          * Return last child item, nullptr if the list is empty
@@ -820,11 +818,7 @@ class APP_EXPORT QgsCustomization
      * items name representing the returned item in its hierarchy
      * Returns nullptr if the item is not found or not the appropriate type
      */
-    template<class T>
-    T *getItem( const QString &path ) const
-    {
-      return dynamic_cast<T *>( getItem( path ) );
-    }
+    template<class T> T *getItem( const QString &path ) const { return dynamic_cast<T *>( getItem( path ) ); }
 
     /**
      * Returns customization item according to its \a path. \a path is a '/' separated list of
@@ -955,8 +949,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Update menu \a widget visibility based on \a item
      */
-    template<class WidgetType>
-    static void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget );
+    template<class WidgetType> static void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget );
 
     /**
      * Returns QWidget corresponding to \a path. Path is a '/' separated list of
