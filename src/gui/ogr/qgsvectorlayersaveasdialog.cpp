@@ -178,6 +178,7 @@ void QgsVectorLayerSaveAsDialog::setup()
   mCrsSelector->setLayerCrs( mSelectedCrs );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
+  mUserDefinedCrs = mSelectedCrs;
 
   mEncodingComboBox->setCurrentIndex( idx );
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
@@ -653,7 +654,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
   typedef QPair<QLabel *, QWidget *> LabelControlPair;
 
-  if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
+  if ( QgsVectorFileWriter::driverMetadata( sFormat, driverMetaData ) )
   {
     if ( !driverMetaData.driverOptions.empty() )
     {
@@ -684,6 +685,16 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       for ( LabelControlPair control : constControls )
       {
         layerOptionsLayout->addRow( control.first, control.second );
+      }
+
+      // for GeoiJSON we need to track changes of the RFC7946 option to update CRS accordingly
+      if ( sFormat == "GeoJSON"_L1 )
+      {
+        QComboBox *cmbRfc7946 = mLayerOptionsGroupBox->findChild<QComboBox *>( "RFC7946"_L1 );
+        if ( cmbRfc7946 )
+        {
+          connect( cmbRfc7946, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::setCrsForFormat );
+        }
       }
     }
     else
@@ -730,6 +741,9 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       mAddToCanvas->setEnabled( true );
     }
   }
+
+  // update CRS selector based on the selected format and layer creation options
+  setCrsForFormat();
 }
 
 void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int state )
@@ -910,7 +924,15 @@ void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *
 
 void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( mCrsDefinedByFormat )
+  {
+    // this should never happen as CRS selector should be disabled, but let's be safe and
+    // avoid overwriting user defined CRS with the CRS required by the output format
+    return;
+  }
+
   mSelectedCrs = crs;
+  mUserDefinedCrs = crs;
   mExtentGroupBox->setOutputCrs( mSelectedCrs );
 }
 
@@ -1275,4 +1297,37 @@ void QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 void QgsVectorLayerSaveAsDialog::showHelp()
 {
   QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer"_s );
+}
+
+void QgsVectorLayerSaveAsDialog::setCrsForFormat()
+{
+  const QString outputFormat = format();
+
+  bool force4326 = ( outputFormat == "KML"_L1 || outputFormat == "LIBKML"_L1 || outputFormat == "GPX"_L1 );
+
+  // GeoJSON with RFC7946=YES should use EPSG:4326
+  if ( outputFormat == "GeoJSON"_L1 )
+  {
+    QComboBox *cmb = mLayerOptionsGroupBox->findChild<QComboBox *>( u"RFC7946"_s );
+    if ( cmb && cmb->currentText() == "YES"_L1 )
+    {
+      force4326 = true;
+    }
+  }
+
+  if ( force4326 && !mCrsDefinedByFormat )
+  {
+    mUserDefinedCrs = mCrsSelector->crs();
+    mCrsDefinedByFormat = true;
+    mCrsSelector->setEnabled( false );
+    mSelectedCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
+    whileBlocking( mCrsSelector )->setCrs( mSelectedCrs );
+    mExtentGroupBox->setOutputCrs( mSelectedCrs );
+  }
+  else if ( !force4326 && mCrsDefinedByFormat )
+  {
+    mCrsDefinedByFormat = false;
+    mCrsSelector->setEnabled( true );
+    mCrsSelector->setCrs( mUserDefinedCrs );
+  }
 }
