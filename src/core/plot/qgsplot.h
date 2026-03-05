@@ -549,6 +549,7 @@ class CORE_EXPORT QgsPlotAxis
      * \since QGIS 4.0
      */
     static void copyProperties( const QgsPlotAxis &source, QgsPlotAxis &destination );
+
   private:
 #ifdef SIP_RUN
     QgsPlotAxis( const QgsPlotAxis &other );

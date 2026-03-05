@@ -531,6 +531,7 @@ Copies all properties from ``source`` axis to ``destination`` axis.
 
 .. versionadded:: 4.0
 %End
+
   private:
     QgsPlotAxis( const QgsPlotAxis &other );
 };

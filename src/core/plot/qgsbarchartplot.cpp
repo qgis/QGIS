@@ -264,7 +264,6 @@ void QgsBarChartPlot::initFromPlot( const QgsPlot *plot )
   }
   else if ( const Qgs2DPlot *plotPie = dynamic_cast<const Qgs2DPlot *>( plot ) )
   {
-
     Qgs2DPlot::copyCommonProperties( plotPie );
   }
 }
