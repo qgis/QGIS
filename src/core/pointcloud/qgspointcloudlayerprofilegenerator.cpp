@@ -381,11 +381,10 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
     indexes.append( mIndex );
 
   // Gather all relevant sub-indexes
-  const QgsRectangle profileCurveBbox = mProfileCurve->boundingBox();
   for ( const QgsPointCloudSubIndex &subidx : mSubIndexes )
   {
     QgsPointCloudIndex index = subidx.index();
-    if ( index && index.isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )
+    if ( index && index.isValid() && curve.intersects( subidx.polygonBounds().constGet() ) )
       indexes.append( subidx.index() );
   }
 
