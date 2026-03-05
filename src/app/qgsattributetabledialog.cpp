@@ -62,7 +62,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, false, u"If true, attribute tables will be docked by default."_s );
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked
+  = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, false, u"If true, attribute tables will be docked by default."_s );
 
 const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
 
@@ -70,8 +71,7 @@ const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTa
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  expContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -115,7 +115,9 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression )
+QgsAttributeTableDialog::QgsAttributeTableDialog(
+  QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression
+)
   : QDialog( parent, flags )
   , mLayer( layer )
 {
@@ -172,9 +174,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeTable );
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeForm );
   mActionAddFeature->setIcon(
-    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == u"attributeForm"_s
-      ? mActionAddFeatureViaAttributeForm->icon()
-      : mActionAddFeatureViaAttributeTable->icon()
+    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == u"attributeForm"_s ? mActionAddFeatureViaAttributeForm->icon() : mActionAddFeatureViaAttributeTable->icon()
   );
 
   // Fix selection color on losing focus (Windows)
@@ -296,14 +296,13 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [] { QgisApp::instance()->saveEdits(); } );
 
-  QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
+  QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked
+                                                                                                                           : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
   mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
-    close();
-  } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::dockModeToggled, this, [this]( bool docked ) {
     if ( docked )
     {
@@ -648,11 +647,7 @@ void QgsAttributeTableDialog::layerActionTriggered()
       const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
       if ( !allowed )
       {
-        QgisApp::instance()->messageBar()->pushMessage(
-          tr( "Security warning" ),
-          tr( "The action contains an embedded script which has been denied execution." ),
-          Qgis::MessageLevel::Warning
-        );
+        QgisApp::instance()->messageBar()->pushMessage( tr( "Security warning" ), tr( "The action contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
         return;
       }
       break;
@@ -829,8 +824,7 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 
     QgsFeatureStore featureStore;
     featureStore.setFields( fields );
-    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
-                                                   .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) ).setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
     QgsFeatureMap featureMap;
     QgsFeature feature;
     while ( it.nextFeature( feature ) )
@@ -1102,7 +1096,12 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ), tr( "Delete of feature on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ), QMessageBox::Yes | QMessageBox::No );
+    int res = QMessageBox::question(
+      this,
+      tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+      tr( "Delete of feature on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
+      QMessageBox::Yes | QMessageBox::No
+    );
     if ( res != QMessageBox::Yes )
       return;
   }
