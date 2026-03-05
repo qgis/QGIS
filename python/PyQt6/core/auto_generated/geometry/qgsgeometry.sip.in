@@ -383,7 +383,7 @@ always return ``True`` for :py:func:`~QgsGeometry.isEmpty`.
 Returns ``True`` if WKB of the geometry is of WKBMulti* type
 %End
 
- bool equals( const QgsGeometry &geometry ) const /Deprecated="Since 4.0. Will be removed in QGIS 5.0. Use isExactlyEqual which accepts Qgis.GeometryBackend."/;
+ bool equals( const QgsGeometry &geometry ) const /Deprecated="Since 4.2. Will be removed in QGIS 5.0. Use isExactlyEqual which accepts Qgis.GeometryBackend."/;
 %Docstring
 Test if this geometry is exactly equal to another ``geometry``.
 
@@ -397,12 +397,12 @@ test performed by :py:func:`~QgsGeometry.isGeosEqual`.
 
    Comparing two null geometries will return ``False``.
 
-.. deprecated:: 4.0
+.. deprecated:: 4.2
 
    Will be removed in QGIS 5.0. Use isExactlyEqual which accepts :py:class:`Qgis`.GeometryBackend.
 %End
 
- bool isGeosEqual( const QgsGeometry & ) const /Deprecated="Since 4.0. Will be removed in QGIS 5.0. Use isTopologicallyEqual which accepts Qgis.GeometryBackend."/;
+ bool isGeosEqual( const QgsGeometry & ) const /Deprecated="Since 4.2. Will be removed in QGIS 5.0. Use isTopologicallyEqual which accepts Qgis.GeometryBackend."/;
 %Docstring
 Compares the geometry with another geometry using GEOS.
 
@@ -418,7 +418,7 @@ Consider using the much faster, stricter equality test performed by
 
    Comparing two null geometries will return ``False``.
 
-.. deprecated:: 4.0
+.. deprecated:: 4.2
 
    Will be removed in QGIS 5.0. Use isTopologicallyEqual which accepts :py:class:`Qgis`.GeometryBackend.
 %End
@@ -445,7 +445,9 @@ The QGIS internal implementation is chosen by default.
 
    Comparing two null geometries will return ``False``.
 
-.. versionadded:: 4.0
+:raises QgsNotSupportedException: when backend is not supported
+
+.. versionadded:: 4.2
 %End
 
     bool isTopologicallyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::GEOS ) const;
@@ -471,7 +473,9 @@ The GEOS implementation is chosen by default.
 
    Comparing two null geometries will return ``False``.
 
-.. versionadded:: 4.0
+:raises QgsNotSupportedException: when backend is not supported
+
+.. versionadded:: 4.2
 %End
 
     bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
@@ -494,7 +498,9 @@ The QGIS internal implementation is chosen by default.
 
    Comparing two null geometries will return ``False``.
 
-.. versionadded:: 4.0
+:raises QgsNotSupportedException: when backend is not supported
+
+.. versionadded:: 4.2
 %End
 
     bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;

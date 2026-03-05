@@ -5314,7 +5314,16 @@ static QVariant fcnIsExactlyEqual( const QVariantList &values, const QgsExpressi
   if ( !ok )
     SET_EVAL_ERROR( u"Geometry backend '%1' does not exist!"_s.arg( backendStr ) );
 
-  return fGeom.isExactlyEqual( sGeom, backend ) ? TVL_True : TVL_False;
+  QVariant ret = TVL_False;
+  try
+  {
+    ret = fGeom.isExactlyEqual( sGeom, backend ) ? TVL_True : TVL_False;
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    SET_EVAL_ERROR( e.what() );
+  }
+  return ret;
 }
 
 static QVariant fcnIsTopologicallyEqual( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5352,9 +5361,17 @@ static QVariant fcnIsFuzzyEqual( const QVariantList &values, const QgsExpression
     SET_EVAL_ERROR( u"Geometry backend '%1' does not exist!"_s.arg( backendStr ) );
 
   double epsilon = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
-  qDebug() << "fcnIsFuzzyEqual epsilon:" << epsilon;
 
-  return fGeom.isFuzzyEqual( sGeom, epsilon, backend ) ? TVL_True : TVL_False;
+  QVariant ret = TVL_False;
+  try
+  {
+    ret = fGeom.isFuzzyEqual( sGeom, epsilon, backend ) ? TVL_True : TVL_False;
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    SET_EVAL_ERROR( e.what() );
+  }
+  return ret;
 }
 
 static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -8906,35 +8923,25 @@ static QVariant executeGeomOverlay(
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.intersects( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.intersects( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.contains( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.contains( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction );
 }
 
 static QVariant fcnGeomOverlayCrosses( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.crosses( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.crosses( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction );
 }
 
 static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool {
     return geometry.isExactlyEqual( other, Qgis::GeometryBackend::QGIS );
   };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
@@ -8942,8 +8949,7 @@ static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpre
 
 static QVariant fcnGeomOverlayExactlyEqual( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool
-  {
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool {
     return geometry.isExactlyEqual( other, backend );
   };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
@@ -8951,8 +8957,7 @@ static QVariant fcnGeomOverlayExactlyEqual( const QVariantList &values, const Qg
 
 static QVariant fcnGeomOverlayTopologicallyEqual( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool
-  {
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool {
     return geometry.isTopologicallyEqual( other, backend );
   };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
@@ -8967,8 +8972,7 @@ static QVariant fcnGeomOverlayFuzzyEqual( const QVariantList &values, const QgsE
   ENSURE_NO_EVAL_ERROR
   double epsilon = QgsExpressionUtils::getDoubleValue( epsilonValue, parent );
 
-  RelationFunction geomFunction = [epsilon]( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool
-  {
+  RelationFunction geomFunction = [epsilon]( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool {
     return geometry.isFuzzyEqual( other, epsilon, backend );
   };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
@@ -8976,35 +8980,25 @@ static QVariant fcnGeomOverlayFuzzyEqual( const QVariantList &values, const QgsE
 
 static QVariant fcnGeomOverlayTouches( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.touches( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.touches( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
 }
 
 static QVariant fcnGeomOverlayWithin( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.within( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.within( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction );
 }
 
 static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry & geometry, const QgsGeometry & other, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
-    return geometry.intersects( other );
-  };
+  RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend ) -> bool { return geometry.intersects( other ); };
   return executeGeomOverlay( values, context, parent, geomFunction, true, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  RelationFunction geomFunction = []( const QgsGeometry &, const QgsGeometry &, const QVariantList &, Qgis::GeometryBackend ) -> bool
-  {
+  RelationFunction geomFunction = []( const QgsGeometry &, const QgsGeometry &, const QVariantList &, Qgis::GeometryBackend ) -> bool {
     return true; // does nothing on purpose
   };
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0, true );
@@ -9772,7 +9766,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     while ( i.hasNext() )
     {
       i.next();
-      QString defaultBackend = i.key() == u"overlay_equals"_s ? QString( "QGIS" ) : QString( "GEOS" );
+      QString defaultBackend = i.key() == "overlay_equals"_L1 ? QString( "QGIS" ) : QString( "GEOS" );
       QgsStaticExpressionFunction *fcnGeomOverlayFunc = new QgsStaticExpressionFunction(
         i.key(),
         QgsExpressionFunction::ParameterList()
@@ -9949,7 +9943,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnWithin, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnEquals, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
-           u"isExactlyEqual"_s,
+           u"exactly_equals"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
@@ -9958,7 +9952,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"isTopologicallyEqual"_s,
+           u"topologically_equals"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
@@ -9967,7 +9961,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"isFuzzyEqual"_s,
+           u"fuzzy_equals"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
