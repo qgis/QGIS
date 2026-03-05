@@ -512,7 +512,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << u"\"Pilots\" - 2"_s << u"\"Cabin Crew\" - 2"_s;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\" - 2" ) << QStringLiteral( "\"Cabin Crew\" - 2" );
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -528,7 +528,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 4 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( u"Cabin Crew"_s );
+      dr->setClassificationField( QStringLiteral( "Cabin Crew" ) );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -563,7 +563,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << u"\"Pilots\" - 2"_s << u"\"Cabin Crew\" - 2"_s;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\" - 2" ) << QStringLiteral( "\"Cabin Crew\" - 2" );
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -576,8 +576,8 @@ class TestQgsDiagram : public QgsTest
       ds.setShowAxis( true );
 
       QVariantMap props;
-      props.insert( u"width"_s, u"2"_s );
-      props.insert( u"color"_s, u"#ff00ff"_s );
+      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
+      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -585,7 +585,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 4 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( u"Cabin Crew"_s );
+      dr->setClassificationField( QStringLiteral( "Cabin Crew" ) );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
