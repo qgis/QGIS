@@ -45,12 +45,9 @@ class QgsDelimitedTextFileScanTask : public QgsTask
   public:
     QgsDelimitedTextFileScanTask( const QString &dataSource )
       : QgsTask( u"delimited text scan %1"_s.arg( dataSource ) )
-      , mDataSource( dataSource ) {
-      };
+      , mDataSource( dataSource ) {};
 
-    ~QgsDelimitedTextFileScanTask() override
-    {
-    }
+    ~QgsDelimitedTextFileScanTask() override {}
 
     // QThread interface
   protected:

@@ -144,9 +144,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
       const auto spatial = extent["spatial"];
       if ( spatial.is_object() && spatial.contains( "bbox" ) )
       {
-        QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-          OAPIF_PROVIDER_DEFAULT_CRS
-        ) );
+        QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) );
         if ( spatial.contains( "crs" ) )
         {
           const auto jCrs = spatial["crs"];
@@ -226,9 +224,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
         {
           mBbox.set( values[0], values[1], values[2], values[3] );
           QgsLayerMetadata::SpatialExtent spatialExtent;
-          spatialExtent.extentCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-            OAPIF_PROVIDER_DEFAULT_CRS
-          );
+          spatialExtent.extentCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
           mLayerMetadata.setCrs( spatialExtent.extentCrs );
           metadataExtent.setSpatialExtents( QList<QgsLayerMetadata::SpatialExtent>() << spatialExtent );
         }
@@ -393,9 +389,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 
   if ( mCrsList.isEmpty() )
   {
-    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-      OAPIF_PROVIDER_DEFAULT_CRS
-    );
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
     mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs.authid() ) );
     mCrsList.append( crs.authid() );
   }
@@ -415,7 +409,8 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 // -----------------------------------------
 
 QgsOapifCollectionsRequest::QgsOapifCollectionsRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -538,7 +533,8 @@ void QgsOapifCollectionsRequest::processReply()
 // -----------------------------------------
 
 QgsOapifCollectionRequest::QgsOapifCollectionRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main

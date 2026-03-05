@@ -51,8 +51,7 @@ using namespace Qt::StringLiterals;
 
 QgsArcGisRestBrowserProxyModel::QgsArcGisRestBrowserProxyModel( QObject *parent )
   : QgsBrowserProxyModel( parent )
-{
-}
+{}
 
 void QgsArcGisRestBrowserProxyModel::setConnectionName( const QString &name )
 {
@@ -112,8 +111,7 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
 }
 
 QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
-{
-}
+{}
 
 void QgsArcGisRestSourceSelect::populateImageEncodings( const QString &formats )
 {
@@ -249,8 +247,7 @@ void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
 {
   const QString selectedConnection = cmbConnections->currentText();
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( selectedConnection );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( selectedConnection );
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
