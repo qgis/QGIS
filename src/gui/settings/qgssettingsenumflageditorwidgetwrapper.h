@@ -37,8 +37,7 @@ using namespace Qt::StringLiterals;
  *
  * \since QGIS 3.32
  */
-template<class ENUM, class FLAGS>
-class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<FLAGS>, QComboBox, FLAGS>
+template<class ENUM, class FLAGS> class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<FLAGS>, QComboBox, FLAGS>
 {
   public:
     //! Constructor
@@ -56,10 +55,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent ); }
 
-    QString id() const override
-    {
-      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
-    }
+    QString id() const override { return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() ); }
 
     QVariant variantValueFromWidget() const override
     {
@@ -145,8 +141,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
  *
  * \since QGIS 3.32
  */
-template<class ENUM>
-class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
+template<class ENUM> class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
 {
   public:
     //! Constructor
@@ -163,10 +158,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       } );
     }
 
-    QString id() const override
-    {
-      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
-    }
+    QString id() const override { return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() ); }
 
     /**
      * This will set the display strings so they can be readable and translatable.

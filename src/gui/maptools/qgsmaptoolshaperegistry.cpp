@@ -20,8 +20,7 @@
 #include "moc_qgsmaptoolshaperegistry.cpp"
 
 QgsMapToolShapeRegistry::QgsMapToolShapeRegistry()
-{
-}
+{}
 
 QgsMapToolShapeRegistry::~QgsMapToolShapeRegistry()
 {

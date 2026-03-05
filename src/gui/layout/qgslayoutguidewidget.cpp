@@ -60,9 +60,7 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutGuideWidget::updatePageCount );
   updatePageCount();
-  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
-    setCurrentPage( mPageNumberComboBox->currentData().toInt() );
-  } );
+  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { setCurrentPage( mPageNumberComboBox->currentData().toInt() ); } );
 
   connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::setCurrentPage );
   setCurrentPage( 0 );
@@ -169,8 +167,7 @@ void QgsLayoutGuideWidget::updatePageCount()
 
 QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
@@ -194,8 +191,7 @@ void QgsLayoutGuidePositionDelegate::setModelData( QWidget *editor, QAbstractIte
 
 QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {

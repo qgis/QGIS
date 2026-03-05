@@ -31,7 +31,8 @@ SIP_NO_FILE
  * \brief Configuration widget for value map widgets.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueMapWidget
+class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget,
+                                        private Ui::QgsValueMapWidget
 {
     Q_OBJECT
 

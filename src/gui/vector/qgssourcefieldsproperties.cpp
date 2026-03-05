@@ -136,8 +136,7 @@ void QgsSourceFieldsProperties::updateExpression()
   const QString exp = mLayer->expressionField( index );
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, u"generic"_s, context );
 
@@ -241,15 +240,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  QList<int> notEditableCols = QList<int>()
-                               << AttrIdCol
-                               << AttrNameCol
-                               << AttrAliasCol
-                               << AttrTypeCol
-                               << AttrTypeNameCol
-                               << AttrLengthCol
-                               << AttrPrecCol
-                               << AttrCommentCol;
+  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol;
 
   const auto constNotEditableCols = notEditableCols;
   for ( const int i : constNotEditableCols )

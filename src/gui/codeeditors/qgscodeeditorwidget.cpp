@@ -45,11 +45,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCodeEditorWidget::QgsCodeEditorWidget(
-  QgsCodeEditor *editor,
-  QgsMessageBar *messageBar,
-  QWidget *parent
-)
+QgsCodeEditorWidget::QgsCodeEditorWidget( QgsCodeEditor *editor, QgsMessageBar *messageBar, QWidget *parent )
   : QgsPanelWidget( parent )
   , mEditor( editor )
   , mMessageBar( messageBar )
@@ -334,23 +330,14 @@ void QgsCodeEditorWidget::addWarning( int lineNumber, const QString &warning )
 {
   mEditor->addWarning( lineNumber, warning );
 
-  mHighlightController->addHighlight(
-    QgsScrollBarHighlight(
-      HighlightCategory::Warning,
-      lineNumber,
-      QColor( 255, 0, 0 ),
-      QgsScrollBarHighlight::Priority::HighestPriority
-    )
-  );
+  mHighlightController->addHighlight( QgsScrollBarHighlight( HighlightCategory::Warning, lineNumber, QColor( 255, 0, 0 ), QgsScrollBarHighlight::Priority::HighestPriority ) );
 }
 
 void QgsCodeEditorWidget::clearWarnings()
 {
   mEditor->clearWarnings();
 
-  mHighlightController->removeHighlights(
-    HighlightCategory::Warning
-  );
+  mHighlightController->removeHighlights( HighlightCategory::Warning );
 }
 
 void QgsCodeEditorWidget::showSearchBar()
@@ -520,8 +507,7 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
     if ( fi.exists() )
     {
       const QString command = fi.fileName();
-      const bool isTerminalEditor = command.compare( "nano"_L1, Qt::CaseInsensitive ) == 0
-                                    || command.contains( "vim"_L1, Qt::CaseInsensitive );
+      const bool isTerminalEditor = command.compare( "nano"_L1, Qt::CaseInsensitive ) == 0 || command.contains( "vim"_L1, Qt::CaseInsensitive );
 
       if ( !isTerminalEditor && QProcess::startDetached( editorCommand, { mFilePath }, dir.absolutePath() ) )
       {
@@ -597,11 +583,7 @@ bool QgsCodeEditorWidget::shareOnGist( bool isPublic )
   const QString filename = mFilePath.isEmpty() ? defaultFileName : QFileInfo( mFilePath ).fileName();
 
   const QString contents = mEditor->hasSelectedText() ? mEditor->selectedText() : mEditor->text();
-  const QVariantMap data {
-    { u"description"_s, "Gist created by PyQGIS Console" },
-    { u"public"_s, isPublic },
-    { u"files"_s, QVariantMap { { filename, QVariantMap { { u"content"_s, contents } } } } }
-  };
+  const QVariantMap data { { u"description"_s, "Gist created by PyQGIS Console" }, { u"public"_s, isPublic }, { u"files"_s, QVariantMap { { filename, QVariantMap { { u"content"_s, contents } } } } } };
 
   QNetworkRequest request;
   request.setUrl( QUrl( u"https://api.github.com/gists"_s ) );

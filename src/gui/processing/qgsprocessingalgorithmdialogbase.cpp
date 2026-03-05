@@ -338,9 +338,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   }
   else
   {
-    title = mAlgorithm->group().isEmpty()
-              ? mAlgorithm->displayName()
-              : u"%1 - %2"_s.arg( mAlgorithm->group(), mAlgorithm->displayName() );
+    title = mAlgorithm->group().isEmpty() ? mAlgorithm->displayName() : u"%1 - %2"_s.arg( mAlgorithm->group(), mAlgorithm->displayName() );
   }
 
   setWindowTitle( title );
@@ -350,12 +348,14 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     textShortHelp->hide();
   else
   {
-    textShortHelp->document()->setDefaultStyleSheet( QStringLiteral( ".summary { margin-left: 10px; margin-right: 10px; }\n"
-                                                                     "h2 { color: #555555; padding-bottom: 15px; }\n"
-                                                                     "a { text - decoration: none; color: #3498db; font-weight: bold; }\n"
-                                                                     "p, ul, li { color: #666666; }\n"
-                                                                     "b { color: #333333; }\n"
-                                                                     "dl dd { margin - bottom: 5px; }" ) );
+    textShortHelp->document()->setDefaultStyleSheet( QStringLiteral(
+      ".summary { margin-left: 10px; margin-right: 10px; }\n"
+      "h2 { color: #555555; padding-bottom: 15px; }\n"
+      "a { text - decoration: none; color: #3498db; font-weight: bold; }\n"
+      "p, ul, li { color: #666666; }\n"
+      "b { color: #333333; }\n"
+      "dl dd { margin - bottom: 5px; }"
+    ) );
     textShortHelp->setHtml( algHelp );
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
     textShortHelp->show();
@@ -490,15 +490,16 @@ void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
 }
 
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
-{
-}
+{}
 
 void QgsProcessingAlgorithmDialogBase::openHelp()
 {
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() && mAlgorithm->provider() )
   {
-    algHelp = QgsHelp::helpUrl( u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) ) );
+    algHelp = QgsHelp::helpUrl(
+      u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) )
+    );
   }
 
   if ( !algHelp.isEmpty() )
@@ -741,8 +742,7 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 }
 
 void QgsProcessingAlgorithmDialogBase::runAlgorithm()
-{
-}
+{}
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
@@ -862,8 +862,7 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
 }
 
 void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
-{
-}
+{}
 
 void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
 {
@@ -877,8 +876,7 @@ void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
 }
 
 void QgsProcessingAlgorithmDialogBase::blockAdditionalControlsWhileRunning()
-{
-}
+{}
 
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()
 {
@@ -983,8 +981,7 @@ QTextEdit *QgsProcessingAlgorithmProgressDialog::logTextEdit()
 }
 
 void QgsProcessingAlgorithmProgressDialog::reject()
-{
-}
+{}
 
 
 //
@@ -1010,8 +1007,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), static_cast<int>( Qgis::ProcessingLogLevel::ModelDebug ) );
 
   mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
-  for ( Qgis::DistanceUnit unit :
-        {
+  for ( Qgis::DistanceUnit unit : {
           Qgis::DistanceUnit::Meters,
           Qgis::DistanceUnit::Kilometers,
           Qgis::DistanceUnit::Centimeters,
@@ -1038,8 +1034,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   }
 
   mAreaUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::AreaUnit::Unknown ) );
-  for ( Qgis::AreaUnit unit :
-        {
+  for ( Qgis::AreaUnit unit : {
           Qgis::AreaUnit::SquareMeters,
           Qgis::AreaUnit::Hectares,
           Qgis::AreaUnit::SquareKilometers,

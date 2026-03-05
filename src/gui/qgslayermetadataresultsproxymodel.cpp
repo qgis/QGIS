@@ -21,8 +21,7 @@
 
 QgsLayerMetadataResultsProxyModel::QgsLayerMetadataResultsProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 void QgsLayerMetadataResultsProxyModel::setFilterExtent( const QgsRectangle &extent )
 {
@@ -65,7 +64,9 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
     if ( result && !mFilterExtent.isEmpty() )
     {
       // Exclude aspatial from extent filter
-      result = result && ( metadataResult.geometryType() != Qgis::GeometryType::Unknown && metadataResult.geometryType() != Qgis::GeometryType::Null ) && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
+      result = result
+               && ( metadataResult.geometryType() != Qgis::GeometryType::Unknown && metadataResult.geometryType() != Qgis::GeometryType::Null )
+               && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
     }
 
     if ( result && mFilterMapLayerTypeEnabled )

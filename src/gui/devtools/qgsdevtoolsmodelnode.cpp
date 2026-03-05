@@ -55,8 +55,7 @@ QList<QAction *> QgsDevToolsModelNode::actions( QObject * )
 
 QgsDevToolsModelGroup::QgsDevToolsModelGroup( const QString &title )
   : mGroupTitle( title )
-{
-}
+{}
 
 QgsDevToolsModelGroup::~QgsDevToolsModelGroup() = default;
 
@@ -74,9 +73,7 @@ QgsDevToolsModelNode *QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToo
 int QgsDevToolsModelGroup::indexOf( QgsDevToolsModelNode *child ) const
 {
   Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p ) {
-    return p.get() == child;
-  } );
+  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p ) { return p.get() == child; } );
   if ( it != mChildren.end() )
     return std::distance( mChildren.begin(), it );
   return -1;
@@ -127,8 +124,7 @@ QgsDevToolsModelValueNode::QgsDevToolsModelValueNode( const QString &key, const 
   : mKey( key )
   , mValue( value )
   , mColor( color )
-{
-}
+{}
 
 QVariant QgsDevToolsModelValueNode::data( int role ) const
 {
@@ -157,9 +153,7 @@ QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
   QList<QAction *> res;
 
   QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
-  QObject::connect( copyAction, &QAction::triggered, copyAction, [this] {
-    QApplication::clipboard()->setText( u"%1: %2"_s.arg( mKey, mValue ) );
-  } );
+  QObject::connect( copyAction, &QAction::triggered, copyAction, [this] { QApplication::clipboard()->setText( u"%1: %2"_s.arg( mKey, mValue ) ); } );
 
   res << copyAction;
 

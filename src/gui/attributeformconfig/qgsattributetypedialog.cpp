@@ -84,14 +84,16 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->setLayer( mLayer );
 
   mEditableExpressionButton->registerExpressionContextGenerator( this );
-  mEditableExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Editable ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
+  mEditableExpressionButton
+    ->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Editable ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
   mEditableExpressionButton->registerLinkedWidget( isFieldEditableCheckBox );
   connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Editable, mEditableExpressionButton->toProperty() );
   } );
 
   mAliasExpressionButton->registerExpressionContextGenerator( this );
-  mAliasExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Alias ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
+  mAliasExpressionButton
+    ->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Alias ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
   connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
   } );
@@ -602,7 +604,9 @@ void QgsAttributeTypeDialog::updateReuseLastValuePolicyLabel()
       break;
 
     case Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff:
-      helperText = tr( "The last value can be reused, however it will not be by default. A pin button is added to toggle the behavior. When active, the last value will take priority over the default value." );
+      helperText = tr(
+        "The last value can be reused, however it will not be by default. A pin button is added to toggle the behavior. When active, the last value will take priority over the default value."
+      );
       break;
   }
   mReuseLastValuePolicyDescriptionLabel->setText( u"<i>%1</i>"_s.arg( helperText ) );

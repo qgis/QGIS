@@ -92,8 +92,7 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
         g.transform( ct );
       }
       catch ( QgsCsException & )
-      {
-      }
+      {}
     }
     mAreaCanvas->setCanvasRect( g.boundingBox() );
   }
@@ -288,7 +287,8 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
-    const QColor codeColor( static_cast<int>( active.red() * 0.6 + disabled.red() * 0.4 ), static_cast<int>( active.green() * 0.6 + disabled.green() * 0.4 ), static_cast<int>( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
+    const QColor
+      codeColor( static_cast<int>( active.red() * 0.6 + disabled.red() * 0.4 ), static_cast<int>( active.green() * 0.6 + disabled.green() * 0.4 ), static_cast<int>( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
     const QString toolTipString = u"<b>%1</b>"_s.arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? u"<p>%1</p>"_s.arg( opText.at( 0 ) ) : u"<ul>%1</ul>"_s.arg( opText.join( QString() ) ) ) : QString() )
                                   + ( !areasOfUse.empty() ? u"<p><b>%1</b>: %2</p>"_s.arg( tr( "Area of use" ), areasOfUse.join( ", "_L1 ) ) : QString() )

@@ -301,8 +301,7 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled && mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
-       && mMapItem->layout()->reportContext().layer()->wkbType() != Qgis::WkbType::NoGeometry )
+  if ( atlasEnabled && mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer() && mMapItem->layout()->reportContext().layer()->wkbType() != Qgis::WkbType::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -548,9 +547,7 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
     }
     QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
     const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
-    connect( action, &QAction::triggered, this, [this, extent] {
-      setToCustomExtent( extent );
-    } );
+    connect( action, &QAction::triggered, this, [this, extent] { setToCustomExtent( extent ); } );
     destMenu->addAction( action );
   }
 
@@ -836,8 +833,7 @@ void QgsLayoutMapWidget::setToMapCanvasExtent()
   QgsRectangle newExtent = mMapCanvas->mapSettings().visibleExtent();
 
   //transform?
-  if ( mMapCanvas->mapSettings().destinationCrs()
-       != mMapItem->crs() )
+  if ( mMapCanvas->mapSettings().destinationCrs() != mMapItem->crs() )
   {
     try
     {
@@ -972,9 +968,7 @@ void QgsLayoutMapWidget::updateGuiElements()
   mMapRotationSpinBox->setValue( mMapItem->mapRotation( QgsLayoutObject::OriginalValue ) );
 
   // follow preset checkbox
-  mFollowVisibilityPresetCheckBox->setCheckState(
-    mMapItem->followVisibilityPreset() ? Qt::Checked : Qt::Unchecked
-  );
+  mFollowVisibilityPresetCheckBox->setCheckState( mMapItem->followVisibilityPreset() ? Qt::Checked : Qt::Unchecked );
   const int presetModelIndex = mFollowVisibilityPresetCombo->findText( mMapItem->followVisibilityPresetName() );
   mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
 
@@ -1679,7 +1673,9 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
 
   mOverviewPositionComboBox->setCurrentIndex( mOverviewPositionComboBox->findData( overview->stackingPosition() ) );
   mOverviewStackingLayerComboBox->setLayer( overview->stackingLayer() );
-  mOverviewStackingLayerComboBox->setEnabled( mOverviewPositionComboBox->isEnabled() && ( overview->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLayer || overview->stackingPosition() == QgsLayoutItemMapItem::StackBelowMapLayer ) );
+  mOverviewStackingLayerComboBox->setEnabled(
+    mOverviewPositionComboBox->isEnabled() && ( overview->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLayer || overview->stackingPosition() == QgsLayoutItemMapItem::StackBelowMapLayer )
+  );
 
   mOverviewFrameStyleButton->setSymbol( overview->frameSymbol()->clone() );
 
@@ -2337,8 +2333,7 @@ void QgsLayoutMapClippingWidget::atlasLayerChanged( QgsVectorLayer *layer )
 
 void QgsLayoutMapClippingWidget::atlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled && mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
-       && mMapItem->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Polygon )
+  if ( atlasEnabled && mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer() && mMapItem->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Polygon )
   {
     mClipToAtlasCheckBox->setEnabled( true );
   }

@@ -163,8 +163,10 @@ bool QgsAuthCertInfo::populateCertChain()
   if ( valid != QCA::ValidityGood && valid != QCA::ErrorInvalidCA )
   {
     // invalid CAs are skipped to allow an incomplete chain
-    setupError( tr( "Invalid population of QCA certificate chain.<br><br>"
-                    "Validity message: %1" )
+    setupError( tr(
+                  "Invalid population of QCA certificate chain.<br><br>"
+                  "Validity message: %1"
+    )
                   .arg( QgsAuthCertUtils::qcaValidityMessage( valid ) ) );
     return false;
   }
@@ -223,8 +225,7 @@ void QgsAuthCertInfo::setCertHierarchy()
       }
       else if ( mConnectionCAs.contains( cert ) )
       {
-        cert_source += u" (%1)"_s
-                         .arg( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::Connection, true ) );
+        cert_source += u" (%1)"_s.arg( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::Connection, true ) );
       }
     }
 
@@ -300,22 +301,14 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   treeDetails->setWordWrap( true );
 
   // add root items
-  mSecGeneral = new QTreeWidgetItem(
-    treeDetails,
-    QStringList( tr( "General" ) ),
-    static_cast<int>( DetailsSection )
-  );
+  mSecGeneral = new QTreeWidgetItem( treeDetails, QStringList( tr( "General" ) ), static_cast<int>( DetailsSection ) );
   QgsAuthGuiUtils::setItemBold( mSecGeneral );
   mSecGeneral->setFirstColumnSpanned( true );
   mSecGeneral->setFlags( Qt::ItemIsEnabled );
   mSecGeneral->setExpanded( true );
   treeDetails->insertTopLevelItem( 0, mSecGeneral );
 
-  mSecDetails = new QTreeWidgetItem(
-    treeDetails,
-    QStringList( tr( "Details" ) ),
-    static_cast<int>( DetailsSection )
-  );
+  mSecDetails = new QTreeWidgetItem( treeDetails, QStringList( tr( "Details" ) ), static_cast<int>( DetailsSection ) );
   QgsAuthGuiUtils::setItemBold( mSecDetails );
   mSecDetails->setFirstColumnSpanned( true );
   mSecDetails->setFlags( Qt::ItemIsEnabled );
@@ -329,11 +322,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mGrpPkey = addGroupItem( mSecDetails, tr( "Public Key Info" ) );
   mGrpExts = addGroupItem( mSecDetails, tr( "Extensions" ) );
 
-  mSecPemText = new QTreeWidgetItem(
-    treeDetails,
-    QStringList( tr( "PEM Text" ) ),
-    static_cast<int>( DetailsSection )
-  );
+  mSecPemText = new QTreeWidgetItem( treeDetails, QStringList( tr( "PEM Text" ) ), static_cast<int>( DetailsSection ) );
   QgsAuthGuiUtils::setItemBold( mSecPemText );
   mSecPemText->setFirstColumnSpanned( true );
   mSecPemText->setFlags( Qt::ItemIsEnabled );
@@ -353,11 +342,7 @@ void QgsAuthCertInfo::populateCertInfo()
 
 QTreeWidgetItem *QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const QString &group )
 {
-  QTreeWidgetItem *grpitem = new QTreeWidgetItem(
-    parent,
-    QStringList( group ),
-    static_cast<int>( DetailsGroup )
-  );
+  QTreeWidgetItem *grpitem = new QTreeWidgetItem( parent, QStringList( group ), static_cast<int>( DetailsGroup ) );
 
   grpitem->setFirstColumnSpanned( true );
   grpitem->setFlags( Qt::ItemIsEnabled );
@@ -378,11 +363,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
   if ( value.isEmpty() )
     return;
 
-  QTreeWidgetItem *item = new QTreeWidgetItem(
-    parent,
-    QStringList() << field << ( wdgt == NoWidget ? value : QString() ),
-    static_cast<int>( DetailsField )
-  );
+  QTreeWidgetItem *item = new QTreeWidgetItem( parent, QStringList() << field << ( wdgt == NoWidget ? value : QString() ), static_cast<int>( DetailsField ) );
 
   item->setTextAlignment( 0, Qt::AlignRight );
   item->setTextAlignment( 1, Qt::AlignLeft );
@@ -444,9 +425,7 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   const bool isselfsigned = mCurrentACert.isSelfSigned();
   const QString selfsigned( tr( "self-signed" ) );
 
-  const QList<QgsAuthCertUtils::CertUsageType> usagetypes(
-    QgsAuthCertUtils::certificateUsageTypes( mCurrentQCert )
-  );
+  const QList<QgsAuthCertUtils::CertUsageType> usagetypes( QgsAuthCertUtils::certificateUsageTypes( mCurrentQCert ) );
   const bool isca = usagetypes.contains( QgsAuthCertUtils::CertAuthorityUsage );
   const bool isissuer = usagetypes.contains( QgsAuthCertUtils::CertIssuerUsage );
   const bool issslserver = usagetypes.contains( QgsAuthCertUtils::TlsServerUsage );
@@ -466,8 +445,7 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   }
   if ( ( isissuer || isca ) && isselfsigned )
   {
-    certype = u"%1 %2"_s
-                .arg( tr( "Root" ), QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
+    certype = u"%1 %2"_s.arg( tr( "Root" ), QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
   }
   if ( isselfsigned )
   {
@@ -640,8 +618,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
   // Extensions
   QStringList basicconst;
-  basicconst << tr( "Certificate Authority: %1" ).arg( mCurrentACert.isCA() ? tr( "Yes" ) : tr( "No" ) )
-             << tr( "Chain Path Limit: %1" ).arg( mCurrentACert.pathLimit() );
+  basicconst << tr( "Certificate Authority: %1" ).arg( mCurrentACert.isCA() ? tr( "Yes" ) : tr( "No" ) ) << tr( "Chain Path Limit: %1" ).arg( mCurrentACert.pathLimit() );
   addFieldItem( mGrpExts, tr( "Basic constraints" ), basicconst.join( QLatin1Char( '\n' ) ), TextEdit );
 
   QStringList keyusage;
@@ -679,11 +656,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   if ( mCurrentQCert.isNull() )
     return;
 
-  QTreeWidgetItem *item = new QTreeWidgetItem(
-    mSecPemText,
-    QStringList( QString() ),
-    static_cast<int>( DetailsField )
-  );
+  QTreeWidgetItem *item = new QTreeWidgetItem( mSecPemText, QStringList( QString() ), static_cast<int>( DetailsField ) );
 
   item->setFirstColumnSpanned( true );
 
@@ -752,8 +725,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert, QgsAuth
   {
     item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateTrusted.svg"_s ) );
   }
-  else if ( trustpolicy == QgsAuthCertUtils::Untrusted
-            || ( trustpolicy == QgsAuthCertUtils::DefaultTrust && mDefaultTrustPolicy == QgsAuthCertUtils::Untrusted ) )
+  else if ( trustpolicy == QgsAuthCertUtils::Untrusted || ( trustpolicy == QgsAuthCertUtils::DefaultTrust && mDefaultTrustPolicy == QgsAuthCertUtils::Untrusted ) )
   {
     item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
   }

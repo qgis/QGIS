@@ -19,8 +19,7 @@
 
 QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
   : QLabel( parent )
-{
-}
+{}
 
 void QgsPixmapLabel::setPixmap( const QPixmap &p )
 {

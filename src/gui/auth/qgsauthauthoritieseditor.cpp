@@ -100,42 +100,25 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 void QgsAuthAuthoritiesEditor::setupCaCertsTree()
 {
   treeWidgetCAs->setColumnCount( 4 );
-  treeWidgetCAs->setHeaderLabels(
-    QStringList() << tr( "Common Name" )
-                  << tr( "Serial #" )
-                  << tr( "Expiry Date" )
-                  << tr( "Trust Policy" )
-  );
+  treeWidgetCAs->setHeaderLabels( QStringList() << tr( "Common Name" ) << tr( "Serial #" ) << tr( "Expiry Date" ) << tr( "Trust Policy" ) );
   treeWidgetCAs->setColumnWidth( 0, 300 );
   treeWidgetCAs->setColumnWidth( 1, 75 );
   treeWidgetCAs->setColumnWidth( 2, 200 );
 
   // add root sections
-  mDbCaSecItem = new QTreeWidgetItem(
-    treeWidgetCAs,
-    QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::InDatabase ) ),
-    static_cast<int>( QgsAuthAuthoritiesEditor::Section )
-  );
+  mDbCaSecItem = new QTreeWidgetItem( treeWidgetCAs, QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::InDatabase ) ), static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mDbCaSecItem );
   mDbCaSecItem->setFlags( Qt::ItemIsEnabled );
   mDbCaSecItem->setExpanded( true );
   treeWidgetCAs->insertTopLevelItem( 0, mDbCaSecItem );
 
-  mFileCaSecItem = new QTreeWidgetItem(
-    treeWidgetCAs,
-    QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::FromFile ) ),
-    static_cast<int>( QgsAuthAuthoritiesEditor::Section )
-  );
+  mFileCaSecItem = new QTreeWidgetItem( treeWidgetCAs, QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::FromFile ) ), static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mFileCaSecItem );
   mFileCaSecItem->setFlags( Qt::ItemIsEnabled );
   mFileCaSecItem->setExpanded( true );
   treeWidgetCAs->insertTopLevelItem( 0, mFileCaSecItem );
 
-  mRootCaSecItem = new QTreeWidgetItem(
-    treeWidgetCAs,
-    QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::SystemRoot ) ),
-    static_cast<int>( QgsAuthAuthoritiesEditor::Section )
-  );
+  mRootCaSecItem = new QTreeWidgetItem( treeWidgetCAs, QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::SystemRoot ) ), static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mRootCaSecItem );
   mRootCaSecItem->setFlags( Qt::ItemIsEnabled );
   mRootCaSecItem->setExpanded( false );
@@ -206,9 +189,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> 
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap<QString, QList<QSslCertificate>> orgcerts(
-    QgsAuthCertUtils::certsGroupedByOrg( certs )
-  );
+  const QMap<QString, QList<QSslCertificate>> orgcerts( QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
   QMap<QString, QList<QSslCertificate>>::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
@@ -264,11 +245,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     {
       policy = QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted );
     }
-    else if ( untrustedids.contains( id )
-              || cert.isBlacklisted()
-              || cert.isNull()
-              || cert.expiryDate() <= QDateTime::currentDateTime()
-              || cert.effectiveDate() > QDateTime::currentDateTime() )
+    else if ( untrustedids.contains( id ) || cert.isBlacklisted() || cert.isNull() || cert.expiryDate() <= QDateTime::currentDateTime() || cert.effectiveDate() > QDateTime::currentDateTime() )
     {
       policy = QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted );
     }
@@ -277,10 +254,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
-    if ( cert.isBlacklisted()
-         || cert.isNull()
-         || cert.expiryDate() <= QDateTime::currentDateTime()
-         || cert.effectiveDate() > QDateTime::currentDateTime() )
+    if ( cert.isBlacklisted() || cert.isNull() || cert.expiryDate() <= QDateTime::currentDateTime() || cert.effectiveDate() > QDateTime::currentDateTime() )
     {
       item->setForeground( 2, redb );
       item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
@@ -289,10 +263,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     if ( trustedids.contains( id ) )
     {
       item->setForeground( 3, greenb );
-      if ( !cert.isBlacklisted()
-           && !cert.isNull()
-           && cert.expiryDate() > QDateTime::currentDateTime()
-           && cert.effectiveDate() <= QDateTime::currentDateTime() )
+      if ( !cert.isBlacklisted() && !cert.isNull() && cert.expiryDate() > QDateTime::currentDateTime() && cert.effectiveDate() <= QDateTime::currentDateTime() )
       {
         item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateTrusted.svg"_s ) );
       }
@@ -341,9 +312,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   const QString digest( item->data( 0, Qt::UserRole ).toString() );
 
-  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> cacertscache(
-    QgsApplication::authManager()->caCertsCache()
-  );
+  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> cacertscache( QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
   {
@@ -478,9 +447,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
     return;
   }
 
-  const QMap<QString, QSslCertificate> mappedcerts(
-    QgsApplication::authManager()->mappedDatabaseCAs()
-  );
+  const QMap<QString, QSslCertificate> mappedcerts( QgsApplication::authManager()->mappedDatabaseCAs() );
 
   if ( !mappedcerts.contains( digest ) )
   {
@@ -489,10 +456,13 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove Certificate Authority" ),
-         tr( "Are you sure you want to remove the selected "
-             "Certificate Authority from the database?\n\n"
-             "Operation can NOT be undone!" ),
+         this,
+         tr( "Remove Certificate Authority" ),
+         tr(
+           "Are you sure you want to remove the selected "
+           "Certificate Authority from the database?\n\n"
+           "Operation can NOT be undone!"
+         ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel
        )
@@ -565,8 +535,10 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   hlayout->addWidget( lblwarn );
 
   QLabel *lbltxt = new QLabel( dlg );
-  lbltxt->setText( tr( "Changing the default certificate authority trust policy to 'Untrusted' "
-                       "can cause unexpected SSL network connection results." ) );
+  lbltxt->setText( tr(
+    "Changing the default certificate authority trust policy to 'Untrusted' "
+    "can cause unexpected SSL network connection results."
+  ) );
   lbltxt->setWordWrap( true );
   hlayout->addWidget( lbltxt );
 
@@ -580,8 +552,9 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
   QComboBox *cmbpolicy = new QComboBox( dlg );
   QList<QPair<QgsAuthCertUtils::CertTrustPolicy, QString>> policies;
-  policies << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-           << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+  policies
+    << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+    << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
@@ -609,9 +582,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   dlg->setMaximumSize( 500, 300 );
   if ( dlg->exec() )
   {
-    const QgsAuthCertUtils::CertTrustPolicy trustpolicy(
-      ( QgsAuthCertUtils::CertTrustPolicy ) cmbpolicy->currentData().toInt()
-    );
+    const QgsAuthCertUtils::CertTrustPolicy trustpolicy( ( QgsAuthCertUtils::CertTrustPolicy ) cmbpolicy->currentData().toInt() );
     if ( mDefaultTrustPolicy != trustpolicy )
     {
       defaultTrustPolicyChanged( trustpolicy );

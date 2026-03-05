@@ -174,7 +174,10 @@ void QgsLabelLineAnchorWidget::updateAnchorTextPointHint()
       hint = tr( "Labels are placed so that the end of their text is placed at the anchor point." );
       break;
     case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
-      hint = tr( "The text justification is determined based on the anchor point. Anchors close to the start of the line will use the start of the text, anchors close to the end will use the end of the text, and central values will use the center of the text." );
+      hint = tr(
+        "The text justification is determined based on the anchor point. Anchors close to the start of the line will use the start of the text, anchors close to the end will use the end of the text, "
+        "and central values will use the center of the text."
+      );
       break;
   }
   mAnchorTextPointHintLabel->setText( hint );

@@ -56,7 +56,8 @@ namespace
        * \param symbolLayerId symbol layer id to search
        */
       QgsSymbolLayerFinder( const QString &symbolLayerId )
-        : mSymbolLayerId( symbolLayerId ) {}
+        : mSymbolLayerId( symbolLayerId )
+      {}
 
       bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
       {
@@ -85,8 +86,7 @@ namespace
           }
 
           // recurse over sub symbols
-          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
-               subSymbol && !visitSymbol( subSymbol ) )
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol(); subSymbol && !visitSymbol( subSymbol ) )
           {
             return false;
           }
@@ -452,7 +452,8 @@ void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
       const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Area );
       if ( !m.isValid() )
       {
-        emit messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
+        emit
+          messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
         return;
       }
 
@@ -510,7 +511,14 @@ void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
           if ( distanceFromStart < distanceFromEnd )
           {
             // start point become end point because we always edit end point
-            mEditedBlankSegment->setPoints( currentBlankSegment->getPartIndex(), currentBlankSegment->getRingIndex(), currentBlankSegment->getEndIndex(), currentBlankSegment->getStartIndex(), currentBlankSegment->getEndPoint(), currentBlankSegment->getStartPoint() );
+            mEditedBlankSegment->setPoints(
+              currentBlankSegment->getPartIndex(),
+              currentBlankSegment->getRingIndex(),
+              currentBlankSegment->getEndIndex(),
+              currentBlankSegment->getStartIndex(),
+              currentBlankSegment->getEndPoint(),
+              currentBlankSegment->getStartPoint()
+            );
           }
 
           mState = State::BlankSegmentModificationStarted;
@@ -756,9 +764,7 @@ void QgsMapToolEditBlankSegmentsBase::updateHoveredBlankSegment( const QPoint &p
   double distance = -1;
   int iBlankSegment = closestBlankSegmentIndex( pos, distance );
 
-  if ( mHoveredBlankSegmentIndex > -1
-       && mHoveredBlankSegmentIndex < static_cast<int>( mBlankSegments.size() )
-       && mHoveredBlankSegmentIndex != mCurrentBlankSegmentIndex )
+  if ( mHoveredBlankSegmentIndex > -1 && mHoveredBlankSegmentIndex < static_cast<int>( mBlankSegments.size() ) && mHoveredBlankSegmentIndex != mCurrentBlankSegmentIndex )
   {
     mBlankSegments.at( mHoveredBlankSegmentIndex )->setHighlighted( false );
   }
@@ -783,8 +789,7 @@ void QgsMapToolEditBlankSegmentsBase::setCurrentBlankSegment( int currentBlankSe
 {
   // copy current blank segment so we can edit it later (and hide the original one)
 
-  if ( mCurrentBlankSegmentIndex > -1
-       && mCurrentBlankSegmentIndex < static_cast<int>( mBlankSegments.size() ) )
+  if ( mCurrentBlankSegmentIndex > -1 && mCurrentBlankSegmentIndex < static_cast<int>( mBlankSegments.size() ) )
   {
     mBlankSegments.at( mCurrentBlankSegmentIndex )->setVisible( true );
     mBlankSegments.at( mCurrentBlankSegmentIndex )->setHighlighted( false );
@@ -961,7 +966,9 @@ QgsMapToolEditBlankSegmentsBase::QgsBlankSegmentRubberBand::QgsBlankSegmentRubbe
   setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
 }
 
-QgsMapToolEditBlankSegmentsBase::QgsBlankSegmentRubberBand::QgsBlankSegmentRubberBand( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points )
+QgsMapToolEditBlankSegmentsBase::QgsBlankSegmentRubberBand::QgsBlankSegmentRubberBand(
+  int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points
+)
   : QgsBlankSegmentRubberBand( canvas, points )
 {
   setPoints( partIndex, ringIndex, startIndex, endIndex, startPt, endPt );

@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsListWidgetFactory::QgsListWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsListWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
@@ -92,5 +91,8 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
       }
     }
   }
-  return ( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList || field.type() == QMetaType::Type::QVariantMap ) && field.subType() != QMetaType::Type::UnknownType ? 20 : 0;
+  return ( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList || field.type() == QMetaType::Type::QVariantMap )
+             && field.subType() != QMetaType::Type::UnknownType
+           ? 20
+           : 0;
 }

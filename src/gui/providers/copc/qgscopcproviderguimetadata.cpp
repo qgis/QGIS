@@ -27,7 +27,6 @@ using namespace Qt::StringLiterals;
 
 QgsCopcProviderGuiMetadata::QgsCopcProviderGuiMetadata()
   : QgsProviderGuiMetadata( u"copc"_s )
-{
-}
+{}
 
 ///@endcond

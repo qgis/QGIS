@@ -100,14 +100,10 @@ QList<QgsExpressionContextScope> QgsSymbolWidgetContext::additionalExpressionCon
 QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const
 {
   QList<QgsExpressionContextScope *> scopes;
-  scopes << QgsExpressionContextUtils::globalScope()
-         << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-         << QgsExpressionContextUtils::atlasScope( nullptr );
+  scopes << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-           << mMapCanvas->defaultExpressionContextScope()
-           << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+    scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) << mMapCanvas->defaultExpressionContextScope() << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
 
     if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast<const QgsExpressionContextScopeGenerator *>( mMapCanvas->temporalController() ) )
     {

@@ -145,8 +145,7 @@ class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
   public:
     QgsPalettedRendererProxyModel( QObject *parent = nullptr )
       : QSortFilterProxyModel( parent )
-    {
-    }
+    {}
 
     //! Return sorted class data
     QgsPalettedRasterRenderer::ClassData classData() const;

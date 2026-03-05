@@ -65,7 +65,8 @@ class QgsProcessingTinInputLayersDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     QgsProcessingTinInputLayersDelegate( QObject *parent )
-      : QStyledItemDelegate( parent ) {}
+      : QStyledItemDelegate( parent )
+    {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;

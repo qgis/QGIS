@@ -152,7 +152,9 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
+    QgsLabelSettingsDialog(
+      const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown
+    );
 
     QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
 

@@ -119,15 +119,12 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   Q_ASSERT( layout );
   auto addExpression = [&callback]( QMenu *menu, const QString &name, const QString &expression ) {
     QAction *action = new QAction( name, menu );
-    connect( action, &QAction::triggered, action, [callback, expression] {
-      callback( expression );
-    } );
+    connect( action, &QAction::triggered, action, [callback, expression] { callback( expression ); } );
     menu->addAction( action );
   };
 
   QMenu *dateMenu = new QMenu( tr( "Current Date" ), menu );
-  for ( const std::pair<QString, QString> &expression :
-        {
+  for ( const std::pair<QString, QString> &expression : {
           std::make_pair( tr( "ISO Format (%1)" ).arg( QDateTime::currentDateTime().toString( u"yyyy-MM-dd"_s ) ), u"format_date(now(), 'yyyy-MM-dd')"_s ),
           std::make_pair( tr( "Day/Month/Year (%1)" ).arg( QDateTime::currentDateTime().toString( u"dd/MM/yyyy"_s ) ), u"format_date(now(), 'dd/MM/yyyy')"_s ),
           std::make_pair( tr( "Month/Day/Year (%1)" ).arg( QDateTime::currentDateTime().toString( u"MM/dd/yyyy"_s ) ), u"format_date(now(), 'MM/dd/yyyy')"_s ),
@@ -147,8 +144,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
       continue;
 
     QMenu *mapMenu = new QMenu( map->displayName(), mapsMenu );
-    for ( const std::pair<QString, QString> &expression :
-          {
+    for ( const std::pair<QString, QString> &expression : {
             std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), u"format_number(item_variables('%1')['map_scale'], places:=6, omit_group_separators:=true, trim_trailing_zeroes:=true)"_s.arg( map->id() ) ),
             std::make_pair( tr( "Rotation (%1)" ).arg( map->rotation() ), u"item_variables('%1')['map_rotation']"_s.arg( map->id() ) ),
           } )
@@ -156,8 +152,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
       addExpression( mapMenu, expression.first, expression.second );
     }
     mapMenu->addSeparator();
-    for ( const std::pair<QString, QString> &expression :
-          {
+    for ( const std::pair<QString, QString> &expression : {
             std::make_pair( tr( "CRS Identifier (%1)" ).arg( map->crs().authid() ), u"item_variables('%1')['map_crs']"_s.arg( map->id() ) ),
             std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ), u"item_variables('%1')['map_crs_description']"_s.arg( map->id() ) ),
             std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ), u"item_variables('%1')['map_crs_ellipsoid']"_s.arg( map->id() ) ),
@@ -171,8 +166,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
 
     const QgsRectangle mapExtent = map->extent();
     const QgsPointXY center = mapExtent.center();
-    for ( const std::pair<QString, QString> &expression :
-          {
+    for ( const std::pair<QString, QString> &expression : {
             std::make_pair( tr( "Center (X) (%1)" ).arg( center.x() ), u"x(item_variables('%1')['map_extent_center'])"_s.arg( map->id() ) ),
             std::make_pair( tr( "Center (Y) (%1)" ).arg( center.y() ), u"y(item_variables('%1')['map_extent_center'])"_s.arg( map->id() ) ),
             std::make_pair( tr( "X Minimum (%1)" ).arg( mapExtent.xMinimum() ), u"x_min(item_variables('%1')['map_extent'])"_s.arg( map->id() ) ),
@@ -184,8 +178,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
       addExpression( mapMenu, expression.first, expression.second );
     }
     mapMenu->addSeparator();
-    for ( const std::pair<QString, QString> &expression :
-          {
+    for ( const std::pair<QString, QString> &expression : {
             std::make_pair( tr( "Layer Credits" ), u"array_to_string(map_credits('%1'))"_s.arg( map->id() ) ),
           } )
     {
@@ -211,31 +204,21 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   }
 
   for ( const std::pair<QString, QString> &expression :
-        {
-          std::make_pair( tr( "Layout Name" ), u"@layout_name"_s ),
+        { std::make_pair( tr( "Layout Name" ), u"@layout_name"_s ),
           std::make_pair( tr( "Layout Page Number" ), u"@layout_page"_s ),
           std::make_pair( tr( "Layout Page Count" ), u"@layout_numpages"_s ),
-          std::make_pair( tr( "Layer Credits" ), u"array_to_string(map_credits())"_s )
-        } )
+          std::make_pair( tr( "Layer Credits" ), u"array_to_string(map_credits())"_s ) } )
   {
     addExpression( menu, expression.first, expression.second );
   }
   menu->addSeparator();
   for ( const std::pair<QString, QString> &expression :
-        {
-          std::make_pair( tr( "Project Author" ), u"@project_author"_s ),
-          std::make_pair( tr( "Project Title" ), u"@project_title"_s ),
-          std::make_pair( tr( "Project Path" ), u"@project_path"_s )
-        } )
+        { std::make_pair( tr( "Project Author" ), u"@project_author"_s ), std::make_pair( tr( "Project Title" ), u"@project_title"_s ), std::make_pair( tr( "Project Path" ), u"@project_path"_s ) } )
   {
     addExpression( menu, expression.first, expression.second );
   }
   menu->addSeparator();
-  for ( const std::pair<QString, QString> &expression :
-        {
-          std::make_pair( tr( "Current User Name" ), u"@user_full_name"_s ),
-          std::make_pair( tr( "Current User Account" ), u"@user_account_name"_s )
-        } )
+  for ( const std::pair<QString, QString> &expression : { std::make_pair( tr( "Current User Name" ), u"@user_full_name"_s ), std::make_pair( tr( "Current User Account" ), u"@user_account_name"_s ) } )
   {
     addExpression( menu, expression.first, expression.second );
   }

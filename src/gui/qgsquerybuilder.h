@@ -77,14 +77,13 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
      * \since QGIS 3.18
      */
     QgsCodeEditor *codeEditorWidget() const;
-    SIP_END
-    SIP_IF_FEATURE( !HAVE_QSCI_SIP )
+    SIP_END SIP_IF_FEATURE( !HAVE_QSCI_SIP )
 
-    /**
+      /**
      * Returns the code editor widget for the SQL.
      * \since QGIS 3.18
      */
-    QWidget *codeEditorWidget() const;
+      QWidget *codeEditorWidget() const;
     SIP_END
 #else
 

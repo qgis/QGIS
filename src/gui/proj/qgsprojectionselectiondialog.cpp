@@ -76,9 +76,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [this] {
-    emit crsDoubleClicked( projectionSelector->crs() );
-  } );
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [this] { emit crsDoubleClicked( projectionSelector->crs() ); } );
 
   connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [this]() {
     if ( !mBlockSignals )
@@ -286,8 +284,14 @@ void QgsProjectionSelectionDialog::setMessage( const QString &message )
 
 void QgsProjectionSelectionDialog::showNoCrsForLayerMessage()
 {
-  setMessage( tr( "This layer appears to have no projection specification." ) + ' ' + tr( "By default, this layer will now have its projection set to that of the project, "
-                                                                                          "but you may override this by selecting a different projection below." ) );
+  setMessage(
+    tr( "This layer appears to have no projection specification." )
+    + ' '
+    + tr(
+      "By default, this layer will now have its projection set to that of the project, "
+      "but you may override this by selecting a different projection below."
+    )
+  );
 }
 
 void QgsProjectionSelectionDialog::setShowNoProjection( bool show )
@@ -310,9 +314,7 @@ void QgsProjectionSelectionDialog::setRequireValidSelection()
   mRequireValidSelection = true;
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 
-  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [this]( bool isValid ) {
-    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
-  } );
+  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [this]( bool isValid ) { mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid ); } );
 }
 
 bool QgsProjectionSelectionDialog::hasValidSelection() const

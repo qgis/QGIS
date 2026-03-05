@@ -256,23 +256,92 @@ void QgsTextFormatWidget::initWidget()
   {
     unitWidget->setMapCanvas( mMapCanvas );
   }
-  mFontSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Points << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Inches );
-  mBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mMaskBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mShapeOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mShapeStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mShadowRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mPointOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mMaximumDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mLabelMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mTabDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mFontSizeUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Points << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Inches
+  );
+  mBufferUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList()
+    << Qgis::RenderUnit::Millimeters
+    << Qgis::RenderUnit::MetersInMapUnits
+    << Qgis::RenderUnit::MapUnits
+    << Qgis::RenderUnit::Pixels
+    << Qgis::RenderUnit::Points
+    << Qgis::RenderUnit::Inches
+    << Qgis::RenderUnit::Percentage
+  );
+  mMaskBufferUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList()
+    << Qgis::RenderUnit::Millimeters
+    << Qgis::RenderUnit::MetersInMapUnits
+    << Qgis::RenderUnit::MapUnits
+    << Qgis::RenderUnit::Pixels
+    << Qgis::RenderUnit::Points
+    << Qgis::RenderUnit::Inches
+    << Qgis::RenderUnit::Percentage
+  );
+  mShapeSizeUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mShapeOffsetUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mShapeRadiusUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList()
+    << Qgis::RenderUnit::Millimeters
+    << Qgis::RenderUnit::MetersInMapUnits
+    << Qgis::RenderUnit::MapUnits
+    << Qgis::RenderUnit::Pixels
+    << Qgis::RenderUnit::Percentage
+    << Qgis::RenderUnit::Points
+    << Qgis::RenderUnit::Inches
+  );
+  mShapeStrokeWidthUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mShadowOffsetUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList()
+    << Qgis::RenderUnit::Millimeters
+    << Qgis::RenderUnit::MetersInMapUnits
+    << Qgis::RenderUnit::MapUnits
+    << Qgis::RenderUnit::Pixels
+    << Qgis::RenderUnit::Points
+    << Qgis::RenderUnit::Inches
+    << Qgis::RenderUnit::Percentage
+  );
+  mShadowRadiusUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList()
+    << Qgis::RenderUnit::Millimeters
+    << Qgis::RenderUnit::MetersInMapUnits
+    << Qgis::RenderUnit::MapUnits
+    << Qgis::RenderUnit::Pixels
+    << Qgis::RenderUnit::Points
+    << Qgis::RenderUnit::Inches
+    << Qgis::RenderUnit::Percentage
+  );
+  mPointOffsetUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mLineDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mMaximumDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mRepeatDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mOverrunDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mLabelMarginUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mLineHeightUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
+  mTabDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
   mFontLineHeightSpinBox->setClearValue( 100.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );
   mShapeOffsetXSpnBx->setClearValue( 0.0 );
@@ -472,165 +541,158 @@ void QgsTextFormatWidget::initWidget()
   setDockMode( false );
 
   QList<QWidget *> widgets;
-  widgets << btnBufferColor
-          << btnTextColor
-          << mComboMultipartBehavior
-          << chkLineAbove
-          << chkLineBelow
-          << chkLineOn
-          << chkLineOrientationDependent
-          << chkMergeLines
-          << chkPreserveRotation
-          << comboBlendMode
-          << comboBufferBlendMode
-          << mBufferDrawChkBx
-          << mBufferJoinStyleComboBox
-          << mBufferTranspFillChbx
-          << mBufferOpacityWidget
-          << mCentroidInsideCheckBox
-          << mChkNoObstacle
-          << mCoordRotationUnitComboBox
-          << mDirectSymbChkBx
-          << mDirectSymbLeftLineEdit
-          << mDirectSymbRevChkBx
-          << mDirectSymbRightLineEdit
-          << mFitInsidePolygonCheckBox
-          << mFontCapitalsComboBox
-          << mFontLetterSpacingSpinBox
-          << mFontLimitPixelChkBox
-          << mFontLineHeightSpinBox
-          << mLineHeightUnitWidget
-          << mFontMaxPixelSpinBox
-          << mFontMinPixelSpinBox
-          << mFontMultiLineAlignComboBox
-          << mFontSizeSpinBox
-          << mFontStyleComboBox
-          << mTextOrientationComboBox
-          << mTextOpacityWidget
-          << mSpinStretch
-          << mFontWordSpacingSpinBox
-          << mFormatNumChkBx
-          << mFormatNumDecimalsSpnBx
-          << mFormatNumPlusSignChkBx
-          << mLimitLabelChkBox
-          << mLimitLabelSpinBox
-          << mLineDistanceSpnBx
-          << mLineDistanceUnitWidget
-          << mMaximumDistanceSpnBx
-          << mMaximumDistanceUnitWidget
-          << mMaxCharAngleInDSpinBox
-          << mMaxCharAngleOutDSpinBox
-          << mMinSizeSpinBox
-          << mOffsetTypeComboBox
-          << mCheckAllowDegradedPlacement
-          << mComboOverlapHandling
-          << mPointAngleSpinBox
-          << mPointOffsetUnitWidget
-          << mPointOffsetXSpinBox
-          << mPointOffsetYSpinBox
-          << mPreviewBackgroundBtn
-          << mPreviewTextEdit
-          << mPrioritySlider
-          << mRepeatDistanceSpinBox
-          << mRepeatDistanceUnitWidget
-          << mOverrunDistanceSpinBox
-          << mOverrunDistanceUnitWidget
-          << mLabelMarginSpinBox
-          << mLabelMarginUnitWidget
-          << mScaleBasedVisibilityChkBx
-          << mMaxScaleWidget
-          << mMinScaleWidget
-          << mShadowBlendCmbBx
-          << mShadowColorBtn
-          << mShadowDrawChkBx
-          << mShadowOffsetAngleSpnBx
-          << mShadowOffsetGlobalChkBx
-          << mShadowOffsetSpnBx
-          << mShadowOffsetUnitWidget
-          << mShadowRadiusAlphaChkBx
-          << mShadowRadiusDblSpnBx
-          << mShadowRadiusUnitWidget
-          << mShadowScaleSpnBx
-          << mShadowOpacityWidget
-          << mShadowUnderCmbBx
-          << mShapeBlendCmbBx
-          << mShapeStrokeColorBtn
-          << mShapeStrokeWidthSpnBx
-          << mShapeStrokeWidthUnitWidget
-          << mShapeDrawChkBx
-          << mShapeFillColorBtn
-          << mShapeOffsetXSpnBx
-          << mShapeOffsetYSpnBx
-          << mShapeOffsetUnitWidget
-          << mShapeRadiusXDbSpnBx
-          << mShapeRadiusYDbSpnBx
-          << mShapeRotationCmbBx
-          << mShapeRotationDblSpnBx
-          << mShapeRadiusUnitWidget
-          << mShapeSVGPathLineEdit
-          << mShapeSizeCmbBx
-          << mShapeSizeUnitWidget
-          << mShapeSizeXSpnBx
-          << mShapeSizeYSpnBx
-          << mBackgroundOpacityWidget
-          << mShapeTypeCmbBx
-          << mZIndexSpinBox
-          << spinBufferSize
-          << wrapCharacterEdit
-          << mAutoWrapLengthSpinBox
-          << mAutoWrapTypeComboBox
-          << mCentroidRadioVisible
-          << mCentroidRadioWhole
-          << mDirectSymbRadioBtnAbove
-          << mDirectSymbRadioBtnBelow
-          << mDirectSymbRadioBtnLR
-          << mUpsidedownRadioAll
-          << mUpsidedownRadioDefined
-          << mUpsidedownRadioOff
-          << mPlacementModeComboBox
-          << mFieldExpressionWidget
-          << mCheckBoxSubstituteText
-          << mGeometryGeneratorGroupBox
-          << mGeometryGenerator
-          << mGeometryGeneratorType
-          << mBackgroundMarkerSymbolButton
-          << mBackgroundFillSymbolButton
-          << mCalloutsDrawCheckBox
-          << mCalloutStyleComboBox
-          << mKerningCheckBox
-          << mEnableMaskChkBx
-          << mMaskJoinStyleComboBox
-          << mMaskBufferSizeSpinBox
-          << mMaskOpacityWidget
-          << mCheckAllowLabelsOutsidePolygons
-          << mHtmlFormattingCheckBox
-          << mPrioritizationComboBox
-          << mComboCurvedLabelMode
-          << mTabDistanceUnitWidget
-          << mTabStopDistanceSpin
-          << mChkNoDuplicates
-          << mCheckWhitespaceIsNotACollision;
+  widgets
+    << btnBufferColor
+    << btnTextColor
+    << mComboMultipartBehavior
+    << chkLineAbove
+    << chkLineBelow
+    << chkLineOn
+    << chkLineOrientationDependent
+    << chkMergeLines
+    << chkPreserveRotation
+    << comboBlendMode
+    << comboBufferBlendMode
+    << mBufferDrawChkBx
+    << mBufferJoinStyleComboBox
+    << mBufferTranspFillChbx
+    << mBufferOpacityWidget
+    << mCentroidInsideCheckBox
+    << mChkNoObstacle
+    << mCoordRotationUnitComboBox
+    << mDirectSymbChkBx
+    << mDirectSymbLeftLineEdit
+    << mDirectSymbRevChkBx
+    << mDirectSymbRightLineEdit
+    << mFitInsidePolygonCheckBox
+    << mFontCapitalsComboBox
+    << mFontLetterSpacingSpinBox
+    << mFontLimitPixelChkBox
+    << mFontLineHeightSpinBox
+    << mLineHeightUnitWidget
+    << mFontMaxPixelSpinBox
+    << mFontMinPixelSpinBox
+    << mFontMultiLineAlignComboBox
+    << mFontSizeSpinBox
+    << mFontStyleComboBox
+    << mTextOrientationComboBox
+    << mTextOpacityWidget
+    << mSpinStretch
+    << mFontWordSpacingSpinBox
+    << mFormatNumChkBx
+    << mFormatNumDecimalsSpnBx
+    << mFormatNumPlusSignChkBx
+    << mLimitLabelChkBox
+    << mLimitLabelSpinBox
+    << mLineDistanceSpnBx
+    << mLineDistanceUnitWidget
+    << mMaximumDistanceSpnBx
+    << mMaximumDistanceUnitWidget
+    << mMaxCharAngleInDSpinBox
+    << mMaxCharAngleOutDSpinBox
+    << mMinSizeSpinBox
+    << mOffsetTypeComboBox
+    << mCheckAllowDegradedPlacement
+    << mComboOverlapHandling
+    << mPointAngleSpinBox
+    << mPointOffsetUnitWidget
+    << mPointOffsetXSpinBox
+    << mPointOffsetYSpinBox
+    << mPreviewBackgroundBtn
+    << mPreviewTextEdit
+    << mPrioritySlider
+    << mRepeatDistanceSpinBox
+    << mRepeatDistanceUnitWidget
+    << mOverrunDistanceSpinBox
+    << mOverrunDistanceUnitWidget
+    << mLabelMarginSpinBox
+    << mLabelMarginUnitWidget
+    << mScaleBasedVisibilityChkBx
+    << mMaxScaleWidget
+    << mMinScaleWidget
+    << mShadowBlendCmbBx
+    << mShadowColorBtn
+    << mShadowDrawChkBx
+    << mShadowOffsetAngleSpnBx
+    << mShadowOffsetGlobalChkBx
+    << mShadowOffsetSpnBx
+    << mShadowOffsetUnitWidget
+    << mShadowRadiusAlphaChkBx
+    << mShadowRadiusDblSpnBx
+    << mShadowRadiusUnitWidget
+    << mShadowScaleSpnBx
+    << mShadowOpacityWidget
+    << mShadowUnderCmbBx
+    << mShapeBlendCmbBx
+    << mShapeStrokeColorBtn
+    << mShapeStrokeWidthSpnBx
+    << mShapeStrokeWidthUnitWidget
+    << mShapeDrawChkBx
+    << mShapeFillColorBtn
+    << mShapeOffsetXSpnBx
+    << mShapeOffsetYSpnBx
+    << mShapeOffsetUnitWidget
+    << mShapeRadiusXDbSpnBx
+    << mShapeRadiusYDbSpnBx
+    << mShapeRotationCmbBx
+    << mShapeRotationDblSpnBx
+    << mShapeRadiusUnitWidget
+    << mShapeSVGPathLineEdit
+    << mShapeSizeCmbBx
+    << mShapeSizeUnitWidget
+    << mShapeSizeXSpnBx
+    << mShapeSizeYSpnBx
+    << mBackgroundOpacityWidget
+    << mShapeTypeCmbBx
+    << mZIndexSpinBox
+    << spinBufferSize
+    << wrapCharacterEdit
+    << mAutoWrapLengthSpinBox
+    << mAutoWrapTypeComboBox
+    << mCentroidRadioVisible
+    << mCentroidRadioWhole
+    << mDirectSymbRadioBtnAbove
+    << mDirectSymbRadioBtnBelow
+    << mDirectSymbRadioBtnLR
+    << mUpsidedownRadioAll
+    << mUpsidedownRadioDefined
+    << mUpsidedownRadioOff
+    << mPlacementModeComboBox
+    << mFieldExpressionWidget
+    << mCheckBoxSubstituteText
+    << mGeometryGeneratorGroupBox
+    << mGeometryGenerator
+    << mGeometryGeneratorType
+    << mBackgroundMarkerSymbolButton
+    << mBackgroundFillSymbolButton
+    << mCalloutsDrawCheckBox
+    << mCalloutStyleComboBox
+    << mKerningCheckBox
+    << mEnableMaskChkBx
+    << mMaskJoinStyleComboBox
+    << mMaskBufferSizeSpinBox
+    << mMaskOpacityWidget
+    << mCheckAllowLabelsOutsidePolygons
+    << mHtmlFormattingCheckBox
+    << mPrioritizationComboBox
+    << mComboCurvedLabelMode
+    << mTabDistanceUnitWidget
+    << mTabStopDistanceSpin
+    << mChkNoDuplicates
+    << mCheckWhitespaceIsNotACollision;
 
   connectValueChanged( widgets );
 
   connect( mQuadrantBtnGrp, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateBufferFrameStatus );
-  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
-    updateBufferFrameStatus();
-  } );
+  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) { updateBufferFrameStatus(); } );
   connect( mShapeDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShapeFrameStatus );
-  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
-    updateShapeFrameStatus();
-  } );
+  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) { updateShapeFrameStatus(); } );
   connect( mShadowDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShadowFrameStatus );
-  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
-    updateShadowFrameStatus();
-  } );
+  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) { updateShadowFrameStatus(); } );
   connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
-  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [this]( int ) {
-    updateCalloutFrameStatus();
-  } );
+  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [this]( int ) { updateCalloutFrameStatus(); } );
 
   mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Polygon ), tr( "Polygon / MultiPolygon" ), static_cast<int>( Qgis::GeometryType::Polygon ) );
   mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::LineString ), tr( "LineString / MultiLineString" ), static_cast<int>( Qgis::GeometryType::Line ) );
@@ -969,8 +1031,10 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   updateDataDefinedAlignment();
 
   // rendering
-  const QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
-                                     "Value of 0 disables the specific limit." );
+  const QString ddScaleVisInfo = tr(
+    "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
+    "Value of 0 disables the specific limit."
+  );
   registerDataDefinedButton( mScaleBasedVisibilityDDBtn, QgsPalLayerSettings::Property::ScaleVisibility );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );
   registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::Property::MinimumScale );
@@ -1525,12 +1589,12 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showWhitespaceCollisionFrame = false;
 
   const Qgis::LabelPlacement currentPlacement = static_cast<Qgis::LabelPlacement>( mPlacementModeComboBox->currentData().toInt() );
-  const bool showPolygonPlacementOptions = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
+  const bool showPolygonPlacementOptions
+    = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
 
   bool enableMultiLinesFrame = true;
 
-  if ( currentPlacement == Qgis::LabelPlacement::AroundPoint
-       && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
+  if ( currentPlacement == Qgis::LabelPlacement::AroundPoint && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
   {
     showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showDistanceFrame = true;
@@ -1538,8 +1602,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     //showRotationFrame = true; // TODO: uncomment when supported
     showQuadrantFrame = currentGeometryType == Qgis::GeometryType::Point;
   }
-  else if ( currentPlacement == Qgis::LabelPlacement::OverPoint
-            && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
+  else if ( currentPlacement == Qgis::LabelPlacement::OverPoint && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
   {
     showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showQuadrantFrame = true;
@@ -1595,7 +1658,10 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mWhitespaceCollisionFrame->setVisible( showWhitespaceCollisionFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon && ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
+  mPlacementRepeatGroupBox->setVisible(
+    currentGeometryType == Qgis::GeometryType::Line
+    || ( currentGeometryType == Qgis::GeometryType::Polygon && ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) )
+  );
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
   mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
@@ -1637,11 +1703,14 @@ void QgsTextFormatWidget::updatePlacementWidgets()
       break;
     case Qgis::LabelPlacement::Free:
       if ( currentGeometryType == Qgis::GeometryType::Polygon )
-        helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred." );
+        helperText = tr(
+          "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred."
+        );
       break;
     case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       if ( currentGeometryType == Qgis::GeometryType::Point )
-        helperText = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
+        helperText
+          = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
       break;
     case Qgis::LabelPlacement::PerimeterCurved:
       if ( currentGeometryType == Qgis::GeometryType::Polygon )
@@ -2362,10 +2431,11 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( mLayer )

@@ -41,12 +41,10 @@ QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
 }
 
 void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
-{
-}
+{}
 
 void QgsLayoutItemAbstractGuiMetadata::handleDoubleClick( QgsLayoutItem *, Qgis::MouseHandlesAction )
-{
-}
+{}
 
 void QgsLayoutItemGuiMetadata::handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action )
 {
@@ -57,8 +55,7 @@ void QgsLayoutItemGuiMetadata::handleDoubleClick( QgsLayoutItem *item, Qgis::Mou
 
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsLayoutItemGuiRegistry::~QgsLayoutItemGuiRegistry()
 {

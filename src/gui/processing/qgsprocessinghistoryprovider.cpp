@@ -44,8 +44,7 @@
 using namespace Qt::StringLiterals;
 
 QgsProcessingHistoryProvider::QgsProcessingHistoryProvider()
-{
-}
+{}
 
 QString QgsProcessingHistoryProvider::id() const
 {
@@ -140,35 +139,23 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
     {
       if ( !mPythonCommand.isEmpty() )
       {
-        QAction *pythonAction = new QAction(
-          QObject::tr( "Copy as Python Command" ), menu
-        );
+        QAction *pythonAction = new QAction( QObject::tr( "Copy as Python Command" ), menu );
         pythonAction->setIcon( QgsApplication::getThemeIcon( u"mIconPythonFile.svg"_s ) );
-        QObject::connect( pythonAction, &QAction::triggered, menu, [this] {
-          copyText( mPythonCommand );
-        } );
+        QObject::connect( pythonAction, &QAction::triggered, menu, [this] { copyText( mPythonCommand ); } );
         menu->addAction( pythonAction );
       }
       if ( !mProcessCommand.isEmpty() )
       {
-        QAction *processAction = new QAction(
-          QObject::tr( "Copy as qgis_process Command" ), menu
-        );
+        QAction *processAction = new QAction( QObject::tr( "Copy as qgis_process Command" ), menu );
         processAction->setIcon( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ) );
-        QObject::connect( processAction, &QAction::triggered, menu, [this] {
-          copyText( mProcessCommand );
-        } );
+        QObject::connect( processAction, &QAction::triggered, menu, [this] { copyText( mProcessCommand ); } );
         menu->addAction( processAction );
       }
       if ( !mInputs.isEmpty() )
       {
-        QAction *inputsAction = new QAction(
-          QObject::tr( "Copy as JSON" ), menu
-        );
+        QAction *inputsAction = new QAction( QObject::tr( "Copy as JSON" ), menu );
         inputsAction->setIcon( QgsApplication::getThemeIcon( u"mActionEditCopy.svg"_s ) );
-        QObject::connect( inputsAction, &QAction::triggered, menu, [this] {
-          copyText( QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump( 2 ) ) );
-        } );
+        QObject::connect( inputsAction, &QAction::triggered, menu, [this] { copyText( QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump( 2 ) ) ); } );
         menu->addAction( inputsAction );
       }
 
@@ -179,12 +166,8 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
           menu->addSeparator();
         }
 
-        QAction *createTestAction = new QAction(
-          QObject::tr( "Create Test…" ), menu
-        );
-        QObject::connect( createTestAction, &QAction::triggered, menu, [this] {
-          mProvider->emitCreateTest( mPythonCommand );
-        } );
+        QAction *createTestAction = new QAction( QObject::tr( "Create Test…" ), menu );
+        QObject::connect( createTestAction, &QAction::triggered, menu, [this] { mProvider->emitCreateTest( mPythonCommand ); } );
         menu->addAction( createTestAction );
       }
     }
@@ -377,10 +360,7 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
       addChild( new ProcessingHistoryJsonNode( mEntry, mProvider ) );
     }
 
-    void setEntry( const QgsHistoryEntry &entry )
-    {
-      mEntry = entry;
-    }
+    void setEntry( const QgsHistoryEntry &entry ) { mEntry = entry; }
 
     QVariant data( int role = Qt::DisplayRole ) const override
     {
@@ -411,10 +391,7 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
       return QVariant();
     }
 
-    QString html( const QgsHistoryWidgetContext & ) const override
-    {
-      return mEntry.entry.value( u"log"_s ).toString();
-    }
+    QString html( const QgsHistoryWidgetContext & ) const override { return mEntry.entry.value( u"log"_s ).toString(); }
 
     QString mDescription;
     mutable QgsProcessingAlgorithmInformation mAlgorithmInformation;

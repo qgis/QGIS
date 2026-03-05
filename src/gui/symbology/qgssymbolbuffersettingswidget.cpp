@@ -36,7 +36,9 @@ QgsSymbolBufferSettingsWidget::QgsSymbolBufferSettingsWidget( QWidget *parent )
 
   mEnabledGroup->setChecked( false );
 
-  mSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mSizeUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
   mSizeUnitWidget->setUnit( Qgis::RenderUnit::Millimeters );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );

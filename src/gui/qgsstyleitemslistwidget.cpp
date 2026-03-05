@@ -38,18 +38,15 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent )
   : QgsStyleProxyModel( sourceModel, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
 {
@@ -76,8 +73,7 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
 
 QgsStyleModelDelegate::QgsStyleModelDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -240,8 +236,7 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
-  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this )
-                                              : new QgsReadOnlyStyleModel( mStyle, this );
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this ) : new QgsReadOnlyStyleModel( mStyle, this );
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
@@ -257,12 +252,8 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 
   mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStyleItemsListWidget::onSelectionChanged );
-  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
-  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
+  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
+  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
 
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleItemsListWidget::groupsCombo_currentIndexChanged );
@@ -548,9 +539,7 @@ void QgsStyleItemsListWidget::openStyleManager()
   // open as part of a modal dialog, then we MUST use another modal dialog or the result will
   // not be focusable!
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( !panel || !panel->dockMode()
-       || !QgsGui::windowManager()
-       || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
+  if ( !panel || !panel->dockMode() || !QgsGui::windowManager() || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
     std::unique_ptr< QgsStyleManagerDialog > dlg;

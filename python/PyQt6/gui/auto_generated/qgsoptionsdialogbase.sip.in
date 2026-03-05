@@ -124,7 +124,9 @@ to ``title``.
 .. versionadded:: 3.14
 %End
 
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before, const QStringList &path = QStringList(), const QString &key = QString() );
+    void insertPage(
+      const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before, const QStringList &path = QStringList(), const QString &key = QString()
+    );
 %Docstring
 Inserts a new page into the dialog pages.
 

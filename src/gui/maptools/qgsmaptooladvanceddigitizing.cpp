@@ -162,7 +162,14 @@ bool QgsMapToolAdvancedDigitizing::useSnappingIndicator() const
   return static_cast<bool>( mSnapIndicator.get() );
 }
 
-void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString )
+void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures(
+  const QgsReferencedGeometry &geometry,
+  const QgsCoordinateReferenceSystem &destinationCrs,
+  Qgis::CadMeasurementDisplayType areaType,
+  Qgis::CadMeasurementDisplayType totalLengthType,
+  QString &areaString,
+  QString &totalLengthString
+)
 {
   areaString = QString();
   totalLengthString = QString();
