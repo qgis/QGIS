@@ -3739,8 +3739,7 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
         return false;
 
       // avoid calling geos for trivial point case
-      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point
-           && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
+      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
         return *d->geometry == *g.d->geometry;
 
       QgsGeos geos( d->geometry.get() );
@@ -3781,8 +3780,7 @@ bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBack
     case Qgis::GeometryBackend::GEOS:
     {
       // avoid calling geos for trivial point case
-      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point
-           && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
+      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
         return *d->geometry == *g.d->geometry;
 
       QgsGeos geos( d->geometry.get() );

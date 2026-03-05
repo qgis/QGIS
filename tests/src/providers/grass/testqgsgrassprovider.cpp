@@ -58,7 +58,10 @@ class TestQgsGrassFeature : public QgsFeature
   public:
     TestQgsGrassFeature() { setValid( true ); }
     explicit TestQgsGrassFeature( int type )
-      : grassType( type ) { setValid( true ); }
+      : grassType( type )
+    {
+      setValid( true );
+    }
 
     int grassType = 0;
 };
@@ -194,7 +197,8 @@ class TestQgsGrassProvider : public QgsTest
 
   public:
     TestQgsGrassProvider()
-      : QgsTest( u"Grass provider tests"_s ) {}
+      : QgsTest( u"Grass provider tests"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -647,8 +651,7 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     {
       if ( error )
       {
-        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to create directory '%1'." )
-                   .arg( QDir::toNativeSeparators( tgtFilePath ) );
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to create directory '%1'." ).arg( QDir::toNativeSeparators( tgtFilePath ) );
         return false;
       }
     }
@@ -656,10 +659,8 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     QStringList fileNames = sourceDir.entryList( QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System );
     for ( const QString &fileName : fileNames )
     {
-      const QString newSrcFilePath
-        = srcFilePath + '/'_L1 + fileName;
-      const QString newTgtFilePath
-        = tgtFilePath + '/'_L1 + fileName;
+      const QString newSrcFilePath = srcFilePath + '/'_L1 + fileName;
+      const QString newTgtFilePath = tgtFilePath + '/'_L1 + fileName;
       if ( !copyRecursively( newSrcFilePath, newTgtFilePath, error ) )
         return false;
     }
@@ -670,8 +671,7 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     {
       if ( error )
       {
-        *error = QCoreApplication::translate( "Utils::FileUtils", "Could not copy file '%1' to '%2'." )
-                   .arg( QDir::toNativeSeparators( srcFilePath ), QDir::toNativeSeparators( tgtFilePath ) );
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Could not copy file '%1' to '%2'." ).arg( QDir::toNativeSeparators( srcFilePath ), QDir::toNativeSeparators( tgtFilePath ) );
       }
       return false;
     }
@@ -700,8 +700,7 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
     {
       if ( error )
       {
-        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove directory '%1'." )
-                   .arg( QDir::toNativeSeparators( filePath ) );
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove directory '%1'." ).arg( QDir::toNativeSeparators( filePath ) );
       }
       return false;
     }
@@ -712,8 +711,7 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
     {
       if ( error )
       {
-        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove file '%1'." )
-                   .arg( QDir::toNativeSeparators( filePath ) );
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove file '%1'." ).arg( QDir::toNativeSeparators( filePath ) );
       }
       return false;
     }
@@ -1392,10 +1390,7 @@ void TestQgsGrassProvider::edit()
       {
         if ( grassLayer->undoStack()->count() != editCommands.size() || grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
-          reportRow( u"Different undo stack size: %1, expected: %2, editCommands: %3"_s
-                       .arg( grassLayer->undoStack()->count() )
-                       .arg( expectedLayer->undoStack()->count() )
-                       .arg( editCommands.size() ) );
+          reportRow( u"Different undo stack size: %1, expected: %2, editCommands: %3"_s.arg( grassLayer->undoStack()->count() ).arg( expectedLayer->undoStack()->count() ).arg( editCommands.size() ) );
           commandOk = false;
         }
         else
@@ -1418,10 +1413,7 @@ void TestQgsGrassProvider::edit()
       {
         if ( grassLayer->undoStack()->count() != editCommands.size() || grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
-          reportRow( u"Different undo stack size: %1, expected: %2, editCommands: %3"_s
-                       .arg( grassLayer->undoStack()->count() )
-                       .arg( expectedLayer->undoStack()->count() )
-                       .arg( editCommands.size() ) );
+          reportRow( u"Different undo stack size: %1, expected: %2, editCommands: %3"_s.arg( grassLayer->undoStack()->count() ).arg( expectedLayer->undoStack()->count() ).arg( editCommands.size() ) );
           commandOk = false;
         }
         else
@@ -1524,8 +1516,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     indexes.remove( index );
     if ( feature.attribute( index ) != expectedFeature.attribute( i ) )
     {
-      reportRow( u"Attribute name %1, value: '%2' does not match expected value: '%3'"_s
-                   .arg( name, feature.attribute( index ).toString(), expectedFeature.attribute( i ).toString() ) );
+      reportRow( u"Attribute name %1, value: '%2' does not match expected value: '%3'"_s.arg( name, feature.attribute( index ).toString(), expectedFeature.attribute( i ).toString() ) );
       return false;
     }
   }

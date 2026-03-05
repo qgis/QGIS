@@ -125,7 +125,12 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineM );
 
   QgsPolyline line2;
-  line2 << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 0 ) << QgsPoint( Qgis::WkbType::PointM, 2, 1, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 3, 2, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 0 );
+  line2
+    << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 0 )
+    << QgsPoint( Qgis::WkbType::PointM, 2, 1, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 3, 2, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 0 );
   QgsFeature lineF2;
   lineF2.setGeometry( QgsGeometry::fromPolyline( line2 ) );
 
@@ -148,7 +153,9 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
 
   mLayerTopoM->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringM ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
+  topoFeat.setGeometry(
+    QgsGeometry::fromWkt( "MultiLineStringM ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" )
+  );
 
   mLayerTopoM->addFeature( topoFeat );
   QCOMPARE( mLayerTopoM->featureCount(), ( long ) 1 );
@@ -246,7 +253,8 @@ void TestQgsMapToolAddFeatureLineM::testTopologicalEditingM()
 
   QString wkt = "MultiLineStringM((6 6.5 333, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333))";
   QCOMPARE( mLayerTopoM->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringM ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
+  wkt = "MultiLineStringM ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 "
+        "6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
   QCOMPARE( mLayerTopoM->getFeature( qgis::setToList( oldFids ).constLast() ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();

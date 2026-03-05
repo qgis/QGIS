@@ -67,10 +67,12 @@ void QgsDeleteDuplicateGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm finds duplicated geometries and removes them.\n\nAttributes are not checked, "
-                      "so in case two features have identical geometries but different attributes, only one of "
-                      "them will be added to the result layer.\n\n"
-                      "Optionally, these duplicate features can be saved to a separate output for analysis." );
+  return QObject::tr(
+    "This algorithm finds duplicated geometries and removes them.\n\nAttributes are not checked, "
+    "so in case two features have identical geometries but different attributes, only one of "
+    "them will be added to the result layer.\n\n"
+    "Optionally, these duplicate features can be saved to a separate output for analysis."
+  );
 }
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::shortDescription() const
