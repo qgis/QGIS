@@ -75,7 +75,12 @@ void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( u"OVERVIEW"_s, QObject::tr( "Build overview point cloud" ), false ) );
 
   auto convertParam = std::make_unique<QgsProcessingParameterBoolean>( u"CONVERT_COPC"_s, QObject::tr( "Convert individual files to COPC format" ), false );
-  convertParam->setHelp( QObject::tr( "When enabled, all the individual files in the virtual point cloud will also be converted to COPC format to allow rendering of their points in QGIS.\nWhen disabled, the format of each individual file will be preserved. This is faster, however only the extent will be rendered for files using formats other than COPC and EPT." ) );
+  convertParam->setHelp(
+    QObject::tr(
+      "When enabled, all the individual files in the virtual point cloud will also be converted to COPC format to allow rendering of their points in QGIS.\nWhen disabled, the format of each "
+      "individual file will be preserved. This is faster, however only the extent will be rendered for files using formats other than COPC and EPT."
+    )
+  );
   addParameter( convertParam.release() );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Virtual point cloud" ) ) );

@@ -57,8 +57,10 @@ QString QgsProjectPointCartesianAlgorithm::outputName() const
 
 QString QgsProjectPointCartesianAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm projects point geometries by a specified distance and bearing (azimuth), creating a new point layer with the projected points.\n\n"
-                      "The distance is specified in layer units, and the bearing in degrees clockwise from North." );
+  return QObject::tr(
+    "This algorithm projects point geometries by a specified distance and bearing (azimuth), creating a new point layer with the projected points.\n\n"
+    "The distance is specified in layer units, and the bearing in degrees clockwise from North."
+  );
 }
 
 QString QgsProjectPointCartesianAlgorithm::shortDescription() const

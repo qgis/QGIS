@@ -55,22 +55,26 @@ QString QgsAlgorithmRemoveDuplicateVertices::outputName() const
 
 QString QgsAlgorithmRemoveDuplicateVertices::shortHelpString() const
 {
-  return QObject::tr( "This algorithm removes duplicate vertices from features, wherever removing the vertices does "
-                      "not result in a degenerate geometry.\n\n"
-                      "The tolerance parameter specifies the tolerance for coordinates when determining whether "
-                      "vertices are identical.\n\n"
-                      "By default, z values are not considered when detecting duplicate vertices. E.g. two vertices "
-                      "with the same x and y coordinate but different z values will still be considered "
-                      "duplicate and one will be removed. If the Use Z Value parameter is true, then the z values are "
-                      "also tested and vertices with the same x and y but different z will be maintained.\n\n"
-                      "Note that duplicate vertices are not tested between different parts of a multipart geometry. E.g. "
-                      "a multipoint geometry with overlapping points will not be changed by this method." );
+  return QObject::tr(
+    "This algorithm removes duplicate vertices from features, wherever removing the vertices does "
+    "not result in a degenerate geometry.\n\n"
+    "The tolerance parameter specifies the tolerance for coordinates when determining whether "
+    "vertices are identical.\n\n"
+    "By default, z values are not considered when detecting duplicate vertices. E.g. two vertices "
+    "with the same x and y coordinate but different z values will still be considered "
+    "duplicate and one will be removed. If the Use Z Value parameter is true, then the z values are "
+    "also tested and vertices with the same x and y but different z will be maintained.\n\n"
+    "Note that duplicate vertices are not tested between different parts of a multipart geometry. E.g. "
+    "a multipoint geometry with overlapping points will not be changed by this method."
+  );
 }
 
 QString QgsAlgorithmRemoveDuplicateVertices::shortDescription() const
 {
-  return QObject::tr( "Removes duplicate vertices from features, wherever removing the vertices does "
-                      "not result in a degenerate geometry." );
+  return QObject::tr(
+    "Removes duplicate vertices from features, wherever removing the vertices does "
+    "not result in a degenerate geometry."
+  );
 }
 
 QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::createInstance() const

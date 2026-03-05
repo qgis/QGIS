@@ -62,9 +62,11 @@ QString QgsFixGeometryMultipartAlgorithm::groupId() const
 
 QString QgsFixGeometryMultipartAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm converts multipart geometries that consists of only one geometry "
-                      "into singlepart geometries, based on an error layer from the \"Strict multipart\" algorithm in the \"Check geometry\" section.\n\n"
-                      "This algorithm does not change the layer geometry type, which will remain multipart." );
+  return QObject::tr(
+    "This algorithm converts multipart geometries that consists of only one geometry "
+    "into singlepart geometries, based on an error layer from the \"Strict multipart\" algorithm in the \"Check geometry\" section.\n\n"
+    "This algorithm does not change the layer geometry type, which will remain multipart."
+  );
 }
 
 QgsFixGeometryMultipartAlgorithm *QgsFixGeometryMultipartAlgorithm::createInstance() const
@@ -76,30 +78,23 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
 {
   Q_UNUSED( configuration )
 
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
-    u"id"_s, u"ERRORS"_s
-  ) );
-
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Strictly-multipart layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"REPORT"_s, QObject::tr( "Report layer from fixing multiparts" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
   );
+  addParameter( new QgsProcessingParameterFeatureSource( u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ), u"id"_s, u"ERRORS"_s ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Strictly-multipart layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"REPORT"_s, QObject::tr( "Report layer from fixing multiparts" ), Qgis::ProcessingSourceType::VectorPoint ) );
+
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -129,9 +124,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
@@ -139,9 +132,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
   reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
-    parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
@@ -188,12 +179,8 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
 
     else
     {
-      QgsGeometryCheckError checkError = QgsGeometryCheckError(
-        &check,
-        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
-        errorFeature.geometry().asPoint(),
-        QgsVertexId()
-      );
+      QgsGeometryCheckError checkError
+        = QgsGeometryCheckError( &check, QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ), errorFeature.geometry().asPoint(), QgsVertexId() );
       for ( const QgsGeometryCheck::Changes &changes : std::as_const( changesList ) )
         checkError.handleChanges( changes );
 

@@ -55,8 +55,10 @@ QString QgsAspectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates the aspect of the Digital Terrain Model in input." )
          + u"\n\n"_s
-         + QObject::tr( "The final aspect raster layer contains values from 0 to 360 that express "
-                        "the slope direction: starting from North (0°) and continuing clockwise." );
+         + QObject::tr(
+           "The final aspect raster layer contains values from 0 to 360 that express "
+           "the slope direction: starting from North (0°) and continuing clockwise."
+         );
 }
 
 QString QgsAspectAlgorithm::shortDescription() const
@@ -75,10 +77,7 @@ void QgsAspectAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
-  zFactorParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
-    }
-  );
+  zFactorParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } ) } );
   addParameter( zFactorParam.release() );
 
   auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );

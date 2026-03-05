@@ -34,7 +34,9 @@ using namespace Qt::StringLiterals;
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
-    QgsGeometryContainedCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QgsGeometryCheckerUtils::LayerFeature &containingFeature )
+    QgsGeometryContainedCheckError(
+      const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QgsGeometryCheckerUtils::LayerFeature &containingFeature
+    )
       : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), containingFeature.id(), ValueOther )
       , mContainingFeature( qMakePair( containingFeature.layer()->id(), containingFeature.feature().id() ) )
     {}
@@ -64,9 +66,12 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     };
 
     explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( context, configuration ) {}
+      : QgsGeometryCheck( context, configuration )
+    {}
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()
+    ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString id() const override { return factoryId(); }

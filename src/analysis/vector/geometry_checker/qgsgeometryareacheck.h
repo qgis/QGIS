@@ -49,7 +49,9 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
       , mAreaThreshold( configurationValue<double>( "areaThreshold" ) )
     {}
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()
+    ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString id() const override { return factoryId(); }
@@ -64,7 +66,9 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
     static QString factoryId() { return u"QgsGeometryAreaCheck"_s; }
     static QString factoryDescription() { return tr( "Minimal area" ); }
     virtual bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const;
-    bool mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;
+    bool mergeWithNeighbor(
+      const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg
+    ) const;
 
     const double mAreaThreshold;
 };

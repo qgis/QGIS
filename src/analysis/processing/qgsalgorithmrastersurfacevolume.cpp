@@ -57,7 +57,11 @@ void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
   addParameter( new QgsProcessingParameterNumber( u"LEVEL"_s, QObject::tr( "Base level" ), Qgis::ProcessingNumberParameterType::Double, 0 ) );
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Count Only Above Base Level" ) << QObject::tr( "Count Only Below Base Level" ) << QObject::tr( "Subtract Volumes Below Base Level" ) << QObject::tr( "Add Volumes Below Base Level" ) ) );
+  addParameter( new QgsProcessingParameterEnum(
+    u"METHOD"_s,
+    QObject::tr( "Method" ),
+    QStringList() << QObject::tr( "Count Only Above Base Level" ) << QObject::tr( "Count Only Below Base Level" ) << QObject::tr( "Subtract Volumes Below Base Level" ) << QObject::tr( "Add Volumes Below Base Level" )
+  ) );
 
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Surface volume report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_TABLE"_s, QObject::tr( "Surface volume table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
@@ -69,19 +73,21 @@ void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRasterSurfaceVolumeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the volume under a raster grid's surface.\n\n"
-                      "Several methods of volume calculation are available, which control whether "
-                      "only values above or below the specified base level are considered, or "
-                      "whether volumes below the base level should be added or subtracted from the total volume.\n\n"
-                      "The algorithm outputs the calculated volume, the total area, and the total number of pixels analysed. "
-                      "If the 'Count Only Above Base Level' or 'Count Only Below Base Level' methods are used, "
-                      "then the calculated area and pixel count only includes pixels which are above or below the "
-                      "specified base level respectively.\n\n"
-                      "Units of the calculated volume are dependent on the coordinate reference system of "
-                      "the input raster file. For a CRS in meters, with a DEM height in meters, the calculated "
-                      "value will be in meters³. If instead the input raster is in a geographic coordinate system "
-                      "(e.g. latitude/longitude values), then the result will be in degrees² × meters, and an "
-                      "appropriate scaling factor will need to be applied in order to convert to meters³." );
+  return QObject::tr(
+    "This algorithm calculates the volume under a raster grid's surface.\n\n"
+    "Several methods of volume calculation are available, which control whether "
+    "only values above or below the specified base level are considered, or "
+    "whether volumes below the base level should be added or subtracted from the total volume.\n\n"
+    "The algorithm outputs the calculated volume, the total area, and the total number of pixels analysed. "
+    "If the 'Count Only Above Base Level' or 'Count Only Below Base Level' methods are used, "
+    "then the calculated area and pixel count only includes pixels which are above or below the "
+    "specified base level respectively.\n\n"
+    "Units of the calculated volume are dependent on the coordinate reference system of "
+    "the input raster file. For a CRS in meters, with a DEM height in meters, the calculated "
+    "value will be in meters³. If instead the input raster is in a geographic coordinate system "
+    "(e.g. latitude/longitude values), then the result will be in degrees² × meters, and an "
+    "appropriate scaling factor will need to be applied in order to convert to meters³."
+  );
 }
 
 QString QgsRasterSurfaceVolumeAlgorithm::shortDescription() const

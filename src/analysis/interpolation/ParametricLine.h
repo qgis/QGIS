@@ -78,8 +78,7 @@ class ANALYSIS_EXPORT ParametricLine
 inline ParametricLine::ParametricLine( ParametricLine *par, QVector<QgsPoint *> *controlpoly )
   : mParent( par )
   , mControlPoly( controlpoly )
-{
-}
+{}
 
 #endif
 

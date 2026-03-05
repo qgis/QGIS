@@ -50,8 +50,7 @@ struct Tile
 
 struct MetaTile
 {
-    MetaTile()
-    {}
+    MetaTile() {}
 
     void addTile( const int row, const int col, Tile tileToAdd )
     {

@@ -78,22 +78,12 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "URL" ), QVariant(), false, false ) );
 
-  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
-    u"METHOD"_s,
-    QObject::tr( "Method" ),
-    QStringList()
-      << QObject::tr( "GET" )
-      << QObject::tr( "POST" ),
-    false,
-    0
-  );
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "GET" ) << QObject::tr( "POST" ), false, 0 );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( methodParam.release() );
 
-  auto dataParam = std::make_unique<QgsProcessingParameterString>(
-    u"DATA"_s, tr( "Data" ), QVariant(), false, true
-  );
+  auto dataParam = std::make_unique<QgsProcessingParameterString>( u"DATA"_s, tr( "Data" ), QVariant(), false, true );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   dataParam->setFlags( dataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dataParam.release() );
@@ -125,7 +115,10 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
 
   QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true, httpMethod, data.toUtf8() );
   connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
-  connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
+  connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList &e ) {
+    errors = e;
+    loop.exit();
+  } );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
   connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
   connect( downloader, &QgsFileDownloader::downloadExited, this, [&loop]() { loop.exit(); } );

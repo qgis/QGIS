@@ -99,7 +99,9 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
   {
     mStats |= STATS.at( s );
     mSelectedStats << STATS.at( s );
-    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == Qgis::Statistic::Count || STATS.at( s ) == Qgis::Statistic::Variety ? QMetaType::Type::Int : QMetaType::Type::Double ) );
+    mNewFields.append(
+      QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == Qgis::Statistic::Count || STATS.at( s ) == Qgis::Statistic::Variety ? QMetaType::Type::Int : QMetaType::Type::Double )
+    );
   }
 
   return true;
@@ -150,12 +152,8 @@ bool QgsExtractZMValuesAlgorithmBase::supportInPlaceEdit( const QgsMapLayer *lay
 
 QgsExtractZValuesAlgorithm::QgsExtractZValuesAlgorithm()
 {
-  mExtractValFunc = []( const QgsPoint &p ) -> double {
-    return p.z();
-  };
-  mTestGeomFunc = []( const QgsGeometry &g ) -> bool {
-    return QgsWkbTypes::hasZ( g.wkbType() );
-  };
+  mExtractValFunc = []( const QgsPoint &p ) -> double { return p.z(); };
+  mTestGeomFunc = []( const QgsGeometry &g ) -> bool { return QgsWkbTypes::hasZ( g.wkbType() ); };
   mDefaultFieldPrefix = u"z_"_s;
 }
 
@@ -181,9 +179,11 @@ QStringList QgsExtractZValuesAlgorithm::tags() const
 
 QString QgsExtractZValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Extracts z values from geometries into feature attributes.\n\n"
-                      "By default only the z value from the first vertex of each feature is extracted, however the algorithm "
-                      "can optionally calculate statistics on all of the geometry's z values, including sums, means, and minimums and maximums" );
+  return QObject::tr(
+    "Extracts z values from geometries into feature attributes.\n\n"
+    "By default only the z value from the first vertex of each feature is extracted, however the algorithm "
+    "can optionally calculate statistics on all of the geometry's z values, including sums, means, and minimums and maximums"
+  );
 }
 
 QString QgsExtractZValuesAlgorithm::shortDescription() const
@@ -198,12 +198,8 @@ QString QgsExtractZValuesAlgorithm::shortDescription() const
 
 QgsExtractMValuesAlgorithm::QgsExtractMValuesAlgorithm()
 {
-  mExtractValFunc = []( const QgsPoint &p ) -> double {
-    return p.m();
-  };
-  mTestGeomFunc = []( const QgsGeometry &g ) -> bool {
-    return QgsWkbTypes::hasM( g.wkbType() );
-  };
+  mExtractValFunc = []( const QgsPoint &p ) -> double { return p.m(); };
+  mTestGeomFunc = []( const QgsGeometry &g ) -> bool { return QgsWkbTypes::hasM( g.wkbType() ); };
   mDefaultFieldPrefix = u"m_"_s;
 }
 
@@ -229,9 +225,11 @@ QStringList QgsExtractMValuesAlgorithm::tags() const
 
 QString QgsExtractMValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Extracts m values from geometries into feature attributes.\n\n"
-                      "By default only the m value from the first vertex of each feature is extracted, however the algorithm "
-                      "can optionally calculate statistics on all of the geometry's m values, including sums, means, and minimums and maximums" );
+  return QObject::tr(
+    "Extracts m values from geometries into feature attributes.\n\n"
+    "By default only the m value from the first vertex of each feature is extracted, however the algorithm "
+    "can optionally calculate statistics on all of the geometry's m values, including sums, means, and minimums and maximums"
+  );
 }
 
 QString QgsExtractMValuesAlgorithm::shortDescription() const

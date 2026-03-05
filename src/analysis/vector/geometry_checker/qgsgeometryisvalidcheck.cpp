@@ -42,9 +42,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
 
   QgsGeometryValidator validator( geometry, &errors, method );
 
-  QObject::connect( &validator, &QgsGeometryValidator::errorFound, &validator, [&errors]( const QgsGeometry::Error &error ) {
-    errors.append( error );
-  } );
+  QObject::connect( &validator, &QgsGeometryValidator::errorFound, &validator, [&errors]( const QgsGeometry::Error &error ) { errors.append( error ); } );
 
   // We are already on a thread here normally, no reason to start yet another one. Run synchronously.
   validator.run();
@@ -100,8 +98,7 @@ QgsGeometryCheck::CheckType QgsGeometryIsValidCheck::factoryCheckType()
 QgsGeometryIsValidCheckError::QgsGeometryIsValidCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QString &errorDescription )
   : QgsSingleGeometryCheckError( check, geometry, errorLocation )
   , mDescription( errorDescription )
-{
-}
+{}
 
 QString QgsGeometryIsValidCheckError::description() const
 {

@@ -67,7 +67,9 @@ void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) + u"\n\n"_s + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." )
+         + u"\n\n"_s
+         + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortDescription() const
@@ -116,15 +118,13 @@ QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeat
     const QgsGeometry outputGeometry = f.geometry().minimalEnclosingCircle( center, radius, mSegments );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
-    attrs << radius
-          << M_PI * radius * radius;
+    attrs << radius << M_PI * radius * radius;
     f.setAttributes( attrs );
   }
   else
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant();
     f.setAttributes( attrs );
   }
   return QgsFeatureList() << f;
