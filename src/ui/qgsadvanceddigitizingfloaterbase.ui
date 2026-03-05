@@ -123,12 +123,6 @@
      <property name="frame">
       <bool>false</bool>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
     </widget>
    </item>
    <item row="5" column="0" colspan="2">
@@ -208,12 +202,6 @@
      <property name="frame">
       <bool>false</bool>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
     </widget>
    </item>
    <item row="3" column="3">
@@ -259,12 +247,6 @@
     <widget class="QLineEdit" name="mBearingLineEdit">
      <property name="frame">
       <bool>false</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
      </property>
     </widget>
    </item>
@@ -324,12 +306,6 @@
      </property>
      <property name="frame">
       <bool>false</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
      </property>
     </widget>
    </item>
