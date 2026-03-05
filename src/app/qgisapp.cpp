@@ -83,6 +83,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
@@ -2906,7 +2907,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 {
   QgsSettings settings;
   canvas->enableAntiAliasing( settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
   canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );

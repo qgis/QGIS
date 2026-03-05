@@ -887,7 +887,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   setZoomFactorValue();
   spinZoomFactor->setClearValue( 200 );
-  reverseWheelZoom->setChecked( mSettings->value( u"/qgis/reverse_wheel_zoom"_s, false ).toBool() );
+  reverseWheelZoom->setChecked( QgsSettingsRegistryGui::settingsReverseWheelZoom->value() );
 
   // predefined scales for scale combobox
   const QStringList scalePaths = QgsSettingsRegistryCore::settingsMapScales->value();
@@ -1802,8 +1802,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/default_measure_color_green"_s, myColor.green() );
   mSettings->setValue( u"/qgis/default_measure_color_blue"_s, myColor.blue() );
 
-  mSettings->setValue( u"/qgis/zoom_factor"_s, zoomFactorValue() );
-  mSettings->setValue( u"/qgis/reverse_wheel_zoom"_s, reverseWheelZoom->isChecked() );
+  QgsSettingsRegistryGui::settingsZoomFactor->setValue( zoomFactorValue() );
+  QgsSettingsRegistryGui::settingsReverseWheelZoom->setValue( reverseWheelZoom->isChecked() );
 
   //digitizing
   QgsSettingsRegistryCore::settingsDigitizingLineWidth->setValue( mLineWidthSpinBox->value() );
@@ -2842,13 +2842,13 @@ double QgsOptions::zoomFactorValue()
 void QgsOptions::setZoomFactorValue()
 {
   // Set the percent value for zoom factor spin box. This function is for converting the decimal zoom factor value in the qgis setting to the percent zoom factor value.
-  if ( mSettings->value( u"/qgis/zoom_factor"_s, 2 ).toDouble() <= 1.01 )
+  if ( QgsSettingsRegistryGui::settingsZoomFactor->value() <= 1.01 )
   {
     spinZoomFactor->setValue( spinZoomFactor->minimum() );
   }
   else
   {
-    int percentValue = mSettings->value( u"/qgis/zoom_factor"_s, 2 ).toDouble() * 100;
+    int percentValue = QgsSettingsRegistryGui::settingsZoomFactor->value() * 100;
     spinZoomFactor->setValue( percentValue );
   }
 }
