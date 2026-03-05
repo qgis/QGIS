@@ -132,18 +132,17 @@ void QgsMapSettings::updateDerived()
     return;
   }
 
-  const double myHeight = mSize.height();
-  const double myWidth = mSize.width();
-
-  if ( !myWidth || !myHeight )
+  const int widthPixels = mSize.width();
+  const int heightPixels = mSize.height();
+  if ( widthPixels == 0 || heightPixels == 0 )
   {
     mValid = false;
     return;
   }
 
   // calculate the translation and scaling parameters
-  const double mapUnitsPerPixelY = mExtent.height() / myHeight;
-  const double mapUnitsPerPixelX = mExtent.width() / myWidth;
+  const double mapUnitsPerPixelY = mExtent.height() / static_cast< double >( heightPixels );
+  const double mapUnitsPerPixelX = mExtent.width() / static_cast< double >( widthPixels );
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
@@ -151,13 +150,13 @@ void QgsMapSettings::updateDerived()
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
-    whitespace = ( ( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
+    whitespace = ( ( widthPixels * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
     dxmin -= whitespace;
     dxmax += whitespace;
   }
   else
   {
-    whitespace = ( ( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
+    whitespace = ( ( heightPixels * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
     dymin -= whitespace;
     dymax += whitespace;
   }
@@ -166,33 +165,32 @@ void QgsMapSettings::updateDerived()
 
   // update the scale
   mScaleCalculator.setDpi( mDpi );
-  mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
+  mScale = mScaleCalculator.calculate( mVisibleExtent, widthPixels );
 
   bool ok = true;
   mMapToPixel.setParameters( mapUnitsPerPixel(), visibleExtent().center().x(), visibleExtent().center().y(), outputSize().width(), outputSize().height(), mRotation, &ok );
 
   mValid = ok;
 
-#if 1 // set visible extent taking rotation in consideration
-  if ( mRotation )
+  // set visible extent taking rotation in consideration
+  if ( !qgsDoubleNear( mRotation, 0 ) )
   {
     const QgsPointXY p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
-    const QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
-    const QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
-    const QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
+    const QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, heightPixels ) );
+    const QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( widthPixels, 0 ) );
+    const QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( widthPixels, heightPixels ) );
     dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
     dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
     dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
     dymax = std::max( p1.y(), std::max( p2.y(), std::max( p3.y(), p4.y() ) ) );
     mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
   }
-#endif
 
   QgsDebugMsgLevel( u"Map units per pixel (x,y) : %1, %2"_s.arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
-  QgsDebugMsgLevel( u"Pixmap dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
+  QgsDebugMsgLevel( u"Pixmap dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( widthPixels ), qgsDoubleToString( heightPixels ) ), 5 );
   QgsDebugMsgLevel( u"Extent dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
   QgsDebugMsgLevel( mExtent.toString(), 5 );
-  QgsDebugMsgLevel( u"Adjusted map units per pixel (x,y) : %1, %2"_s.arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
+  QgsDebugMsgLevel( u"Adjusted map units per pixel (x,y) : %1, %2"_s.arg( qgsDoubleToString( mVisibleExtent.width() / widthPixels ), qgsDoubleToString( mVisibleExtent.height() / heightPixels ) ), 5 );
   QgsDebugMsgLevel( u"Recalced pixmap dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
   QgsDebugMsgLevel( u"Scale (assuming meters as map units) = 1:%1"_s.arg( qgsDoubleToString( mScale ) ), 5 );
   QgsDebugMsgLevel( u"Rotation: %1 degrees"_s.arg( mRotation ), 5 );
