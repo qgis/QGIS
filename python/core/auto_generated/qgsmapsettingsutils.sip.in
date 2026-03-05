@@ -64,6 +64,13 @@ Creates the content of a world file.
    Uses 17 places of precision for all numbers output
 %End
 
+    static bool isValidExtent( const QgsRectangle &extent );
+%Docstring
+Returns ``True`` if an ``extent`` is a valid extent which can be used by
+:py:class:`QgsMapSettings`.
+
+.. versionadded:: 4.0
+%End
 };
 
 QFlags<QgsMapSettingsUtils::EffectsCheckFlag> operator|(QgsMapSettingsUtils::EffectsCheckFlag f1, QFlags<QgsMapSettingsUtils::EffectsCheckFlag> f2);
