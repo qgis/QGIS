@@ -3729,21 +3729,22 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
   if ( type() != g.type() )
     return false;
 
-  //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
-  if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
-    return false;
-
   mLastError.clear();
   switch ( backend )
   {
     case Qgis::GeometryBackend::GEOS:
     {
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
+
       // avoid calling geos for trivial point case
       if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point
            && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
         return *d->geometry == *g.d->geometry;
 
       QgsGeos geos( d->geometry.get() );
+      // fuzzy check call, with near zero epsilon, will behave as an exact comparison
       return geos.isFuzzyEqual( g.d->geometry.get(), 1e-8, &mLastError );
     }
 
@@ -3752,9 +3753,6 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
       // slower check - actually test the geometries
       return *d->geometry == *g.d->geometry;
     }
-
-    default:
-      throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
   }
 }
 
@@ -3791,7 +3789,7 @@ bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBack
       return geos.isEqual( g.d->geometry.get(), &mLastError );
     }
 
-    default:
+    case Qgis::GeometryBackend::QGIS:
       throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
   }
 }
@@ -3825,9 +3823,6 @@ bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::Geom
       // slower check - actually test the geometries
       return d->geometry->fuzzyEqual( *g.d->geometry, epsilon );
     }
-
-    default:
-      throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
   }
 }
 

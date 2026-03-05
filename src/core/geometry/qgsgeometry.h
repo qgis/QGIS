@@ -477,9 +477,10 @@ class CORE_EXPORT QgsGeometry
      * \param geometry geometry to compare with
      * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
      * \since QGIS 4.0
      */
-    bool isExactlyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+    bool isExactlyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Compares the geometry with another geometry using the specified \a backend.
@@ -495,9 +496,10 @@ class CORE_EXPORT QgsGeometry
      * \param geometry geometry to compare with
      * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
      * \since QGIS 4.0
      */
-    bool isTopologicallyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::GEOS ) const;
+    bool isTopologicallyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::GEOS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Compares the geometry with another geometry within the tolerance \a epsilon using the specified \a backend.
@@ -513,9 +515,10 @@ class CORE_EXPORT QgsGeometry
      * \param epsilon maximum difference for coordinates between the objects
      * \param backend backend implementation
      * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
      * \since QGIS 4.0
      */
-    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks validity of the geometry using GEOS.

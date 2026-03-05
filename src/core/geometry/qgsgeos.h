@@ -383,14 +383,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     double length( QString *errorMsg = nullptr ) const override;
     bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
 
-    /**
-     * Check if geometries that are topologically equivalent
-     * \param geom other geom to compare with
-     * \param errorMsg will be set to descriptive error string if the operation fails
-     * \return true if topologically equivalent, else false
-     */
     bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-
     bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr ) const override;
 
     bool isEmpty( QString *errorMsg = nullptr ) const override;

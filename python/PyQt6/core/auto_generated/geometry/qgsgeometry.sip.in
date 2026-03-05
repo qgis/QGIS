@@ -445,6 +445,8 @@ The QGIS internal implementation is chosen by default.
 
    Comparing two null geometries will return ``False``.
 
+:raises QgsNotSupportedException: when backend is not supported
+
 .. versionadded:: 4.0
 %End
 
@@ -471,6 +473,8 @@ The GEOS implementation is chosen by default.
 
    Comparing two null geometries will return ``False``.
 
+:raises QgsNotSupportedException: when backend is not supported
+
 .. versionadded:: 4.0
 %End
 
@@ -493,6 +497,8 @@ The QGIS internal implementation is chosen by default.
 .. note::
 
    Comparing two null geometries will return ``False``.
+
+:raises QgsNotSupportedException: when backend is not supported
 
 .. versionadded:: 4.0
 %End

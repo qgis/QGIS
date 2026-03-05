@@ -282,8 +282,13 @@ error location.
 
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
-Checks if this is equal to ``geom``. If both are Null geometries,
-```False``` is returned.
+Check if geometries that are topologically equivalent
+
+:param geom: other geom to compare with
+:param errorMsg: will be set to descriptive error string if the
+                 operation fails
+
+:return: true if topologically equivalent, else false
 %End
 
     virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = 0 ) const = 0;
@@ -293,10 +298,14 @@ the distance tolerance of the corresponding vertex in ``geom``. If both
 are Null geometries, ```False``` is returned.
 
 :param geom: geometry to compare with
-:param epsilon: maximum difference for coordinates between the objects
+:param epsilon: maximum difference for coordinates between the objects.
+                With a near zreo epsilon, this function will behave as
+                an exact comparison.
 :param errorMsg: destination storage for any error message
 
 :return: true if fuzzy equivalent, else false
+
+.. versionadded:: 4.0
 %End
 
     virtual bool isEmpty( QString *errorMsg ) const = 0;
