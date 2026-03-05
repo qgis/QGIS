@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssettingsregistryapp.h"
+#include "qgsattributetabledialog.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgspluginmanager.h"
 #include "qgssettingsentryimpl.h"
@@ -47,6 +48,9 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
+  // added in 3.44
+  QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->copyValueFromKey( QStringLiteral( "qgis/dockAttributeTable" ) );
+
   // single settings - added in 3.30
   QgsIdentifyResultsDialog::settingHideNullValues->copyValueFromKey( QStringLiteral( "Map/hideNullValues" ), true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( QStringLiteral( "plugins/automatically-check-for-updates" ), true );
@@ -70,4 +74,7 @@ QgsSettingsRegistryApp::~QgsSettingsRegistryApp()
   QgsPluginManager::settingsSeenPlugins->copyValueFromKey( QStringLiteral( "app/plugin_installer/seen_plugins" ), true );
   QgsPluginManager::settingsLastZipDirectory->copyValueFromKey( QStringLiteral( "app/plugin_installer/lastZipDirectory" ), true );
   QgsPluginManager::settingsShowInstallFromZipWarning->copyValueFromKey( QStringLiteral( "app/plugin_installer/showInstallFromZipWarning" ), true );
+
+  // added in 3.44
+  QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->copyValueToKey( QStringLiteral( "qgis/dockAttributeTable" ) );
 }
