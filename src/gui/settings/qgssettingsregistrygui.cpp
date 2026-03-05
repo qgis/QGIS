@@ -26,6 +26,9 @@ using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"respect-screen-dpi"_s, QgsSettingsTree::sTreeGui, false );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsCadFloaterActive
+  = new QgsSettingsEntryBool( u"floater-active"_s, QgsSettingsTree::sTreeCad, false, u"Whether the CAD floater widget is active"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -36,6 +39,9 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
   // single settings - added in 3.30
   settingsRespectScreenDPI->copyValueFromKey( u"gui/qgis/respect_screen_dpi"_s, {}, true );
+
+  // single settings - added in 4.2
+  settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
