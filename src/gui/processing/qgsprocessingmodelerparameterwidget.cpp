@@ -43,7 +43,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent )
+QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
+  QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent
+)
   : QWidget( parent )
   , mModel( model )
   , mChildId( childId )
@@ -232,9 +234,7 @@ QVariant QgsProcessingModelerParameterWidget::value() const
       if ( v.userType() == QMetaType::Type::QVariantList )
       {
         const QVariantList vList = v.toList();
-        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant &val ) {
-               return val.userType() == qMetaTypeId<QgsProcessingModelChildParameterSource>();
-             } ) )
+        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant &val ) { return val.userType() == qMetaTypeId<QgsProcessingModelChildParameterSource>(); } ) )
         {
           return v;
         }
@@ -300,8 +300,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
 
   const SourceType currentSource = currentSourceType();
 
-  if ( mParameterDefinition->isDestination()
-       && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::ModelOutput ) ) )
+  if ( mParameterDefinition->isDestination() && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::ModelOutput ) ) )
   {
     QAction *modelOutputAction = mSourceMenu->addAction( tr( "Model Output" ) );
     modelOutputAction->setCheckable( currentSource == ModelOutput );
@@ -309,8 +308,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
     modelOutputAction->setData( QVariant::fromValue( Qgis::ProcessingModelChildParameterSource::ModelOutput ) );
   }
 
-  if ( mHasStaticWrapper
-       && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::StaticValue ) ) )
+  if ( mHasStaticWrapper && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::StaticValue ) ) )
   {
     QAction *fixedValueAction = mSourceMenu->addAction( tr( "Value" ) );
     fixedValueAction->setCheckable( currentSource == StaticValue );

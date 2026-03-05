@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
 
-{
-}
+{}
 
 QWidget *QgsValueMapSearchWidgetWrapper::createWidget( QWidget *parent )
 {
@@ -162,8 +161,7 @@ void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
-  str = u"%1 = '%2'"_s
-          .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+  str = u"%1 = '%2'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
 
   mExpression = str;
 }

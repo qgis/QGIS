@@ -33,8 +33,7 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
   , mCanvas( canvas )
   , mMessageBar( messageBar )
 
-{
-}
+{}
 
 QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 {

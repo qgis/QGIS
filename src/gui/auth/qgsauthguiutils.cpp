@@ -83,7 +83,14 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
   const QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Enter a password to encrypt the configuration file:" ), QLineEdit::Password );
   if ( password.isEmpty() )
   {
-    if ( QMessageBox::warning( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+    if ( QMessageBox::warning(
+           msgbar,
+           QObject::tr( "Export Authentication Configurations" ),
+           QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ),
+           QMessageBox::Ok | QMessageBox::Cancel,
+           QMessageBox::Cancel
+         )
+         == QMessageBox::Cancel )
     {
       return;
     }
@@ -263,9 +270,16 @@ void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, QWidge
   if ( QgsAuthGuiUtils::isDisabled( msgbar ) )
     return;
 
-  if ( QMessageBox::warning( parent, QObject::tr( "Remove Configurations" ), QObject::tr( "Are you sure you want to remove ALL authentication configurations?\n\n"
-                                                                                          "Operation can NOT be undone!" ),
-                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+  if ( QMessageBox::warning(
+         parent,
+         QObject::tr( "Remove Configurations" ),
+         QObject::tr(
+           "Are you sure you want to remove ALL authentication configurations?\n\n"
+           "Operation can NOT be undone!"
+         ),
+         QMessageBox::Ok | QMessageBox::Cancel,
+         QMessageBox::Cancel
+       )
        == QMessageBox::Cancel )
   {
     return;
@@ -292,9 +306,11 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, QWidge
   const QMessageBox::StandardButton btn = QMessageBox::warning(
     parent,
     QObject::tr( "Erase Database" ),
-    QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                 "Operation can NOT be undone!\n\n"
-                 "(Current database will be backed up and new one created.)" ),
+    QObject::tr(
+      "Are you sure you want to ERASE the entire authentication database?\n\n"
+      "Operation can NOT be undone!\n\n"
+      "(Current database will be backed up and new one created.)"
+    ),
     QMessageBox::Ok | QMessageBox::Cancel,
     QMessageBox::Cancel
   );
@@ -356,7 +372,9 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
 
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent )
 {
-  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::
+         warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }
@@ -369,8 +387,7 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   }
   else
   {
-    msg = QObject::tr( "Master password was successfully deleted from the %1" )
-            .arg( QgsAuthManager::passwordHelperDisplayName() );
+    msg = QObject::tr( "Master password was successfully deleted from the %1" ).arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
   }
@@ -381,10 +398,8 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
 void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar )
 {
   QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
-  const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::passwordHelperDisplayName() )
-                              : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::passwordHelperDisplayName() );
+  const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." ).arg( QgsAuthManager::passwordHelperDisplayName() )
+                              : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." ).arg( QgsAuthManager::passwordHelperDisplayName() );
   msgbar->clearWidgets();
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info );
 }

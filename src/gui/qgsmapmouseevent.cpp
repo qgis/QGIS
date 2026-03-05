@@ -27,8 +27,7 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event 
   , mMapPoint( mOriginalMapPoint )
   , mPixelPoint( event->pos() )
   , mMapCanvas( mapCanvas )
-{
-}
+{}
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
   : QMouseEvent( type, pos, button, buttons, modifiers )
@@ -37,8 +36,7 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, 
   , mMapPoint( mOriginalMapPoint )
   , mPixelPoint( pos )
   , mMapCanvas( mapCanvas )
-{
-}
+{}
 
 QgsPointXY QgsMapMouseEvent::snapPoint()
 {

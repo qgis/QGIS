@@ -49,8 +49,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   setMultiLine( false );
 
   mExpressionContext = QgsExpressionContext();
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
 QgsExpressionLineEdit::~QgsExpressionLineEdit() = default;

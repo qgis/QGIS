@@ -95,10 +95,14 @@ void QgsScaleMethodWidget::updateWarning()
     case Qgis::ScaleCalculationMethod::AtEquator:
     {
       mWarningLabelContainer->show();
-      const QString warning = u"<p>%1</p><p>%2</p>"_s.arg( tr( "This method will calculate misleading scales when the map extent is not close to the "
-                                                               "equator, however it ensures that the scale remains constant and does not "
-                                                               "change as the map is panned." ),
-                                                           tr( "This setting is valid for maps in a geographic (latitude/longitude) CRS only." ) );
+      const QString warning = u"<p>%1</p><p>%2</p>"_s.arg(
+        tr(
+          "This method will calculate misleading scales when the map extent is not close to the "
+          "equator, however it ensures that the scale remains constant and does not "
+          "change as the map is panned."
+        ),
+        tr( "This setting is valid for maps in a geographic (latitude/longitude) CRS only." )
+      );
       mWarningLabel->setToolTip( warning );
 
       break;

@@ -51,8 +51,7 @@ QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget 
   : QDialog( parent, fl )
   , mOptsKey( settingsKey )
   , mSettings( settings )
-{
-}
+{}
 
 QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
@@ -233,9 +232,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   QAbstractItemView *optView = mOptListWidget ? static_cast<QAbstractItemView *>( mOptListWidget ) : static_cast<QAbstractItemView *>( mOptTreeView );
   if ( optView )
   {
-    optView->setMaximumWidth(
-      QgsVariantUtils::isNull( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ) ) ? 150 : 16777215
-    );
+    optView->setMaximumWidth( QgsVariantUtils::isNull( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ) ) ? 150 : 16777215 );
     // get rid of annoying outer focus rect on Mac
     optView->setAttribute( Qt::WA_MacShowFocusRect, false );
   }
@@ -259,8 +256,7 @@ void QgsOptionsDialogBase::restoreLastPage()
   int curIndx = mSettings->value( u"/Windows/%1/tab"_s.arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
-  if ( mOptStackedWidget->count() < curIndx + 1
-       || !mOptStackedWidget->widget( curIndx )->isEnabled() )
+  if ( mOptStackedWidget->count() < curIndx + 1 || !mOptStackedWidget->widget( curIndx )->isEnabled() )
   {
     curIndx = 0;
     for ( int i = 0; i < mOptStackedWidget->count(); i++ )
@@ -365,8 +361,7 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
         for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
         {
           const QModelIndex index = mOptTreeModel->index( row, 0, parent );
-          if ( index.data().toString().compare( parentPath, Qt::CaseInsensitive ) == 0
-               || index.data( Qt::UserRole + 1 ).toString().compare( parentPath, Qt::CaseInsensitive ) == 0 )
+          if ( index.data().toString().compare( parentPath, Qt::CaseInsensitive ) == 0 || index.data( Qt::UserRole + 1 ).toString().compare( parentPath, Qt::CaseInsensitive ) == 0 )
           {
             thisParent = index;
             break;
@@ -453,8 +448,7 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
           QString thisPath = parentPaths.takeFirst();
           QModelIndex sourceIndex = !sourceBeforeIndices.isEmpty() ? sourceBeforeIndices.takeFirst() : QModelIndex();
 
-          if ( sourceIndex.data().toString().compare( thisPath, Qt::CaseInsensitive ) == 0
-               || sourceIndex.data( Qt::UserRole + 1 ).toString().compare( thisPath, Qt::CaseInsensitive ) == 0 )
+          if ( sourceIndex.data().toString().compare( thisPath, Qt::CaseInsensitive ) == 0 || sourceIndex.data( Qt::UserRole + 1 ).toString().compare( thisPath, Qt::CaseInsensitive ) == 0 )
           {
             parentIndex = sourceIndex;
             parentItem = mOptTreeModel->itemFromIndex( parentIndex );
@@ -754,8 +748,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
                                                                                     : QString();
   if ( !itemText.isEmpty() )
   {
-    setWindowTitle( u"%1 %2 %3"_s
-                      .arg( mDialogTitle )
+    setWindowTitle( u"%1 %2 %3"_s.arg( mDialogTitle )
                       .arg( QChar( 0x2014 ) ) // em-dash unicode
                       .arg( itemText ) );
   }
@@ -850,10 +843,16 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
 {
-  QMessageBox::warning( nullptr, tr( "Missing Objects" ), tr( "Base options dialog could not be initialized.\n\n"
-                                                              "Missing some of the .ui template objects:\n" )
-                                                            + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
-                        QMessageBox::Ok, QMessageBox::Ok );
+  QMessageBox::warning(
+    nullptr,
+    tr( "Missing Objects" ),
+    tr(
+      "Base options dialog could not be initialized.\n\n"
+      "Missing some of the .ui template objects:\n"
+    ) + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
+    QMessageBox::Ok,
+    QMessageBox::Ok
+  );
 }
 
 

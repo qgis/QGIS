@@ -23,9 +23,9 @@
 #include "moc_qgsabstractdatasourcewidget.cpp"
 
 QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl ), mWidgetMode( widgetMode )
-{
-}
+  : QDialog( parent, fl )
+  , mWidgetMode( widgetMode )
+{}
 
 QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
 {
@@ -61,12 +61,10 @@ void QgsAbstractDataSourceWidget::setBrowserModel( QgsBrowserModel *model )
 }
 
 void QgsAbstractDataSourceWidget::addButtonClicked()
-{
-}
+{}
 
 void QgsAbstractDataSourceWidget::reset()
-{
-}
+{}
 
 bool QgsAbstractDataSourceWidget::configureFromUri( const QString &uri )
 {

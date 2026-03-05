@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsDateTimeEditFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

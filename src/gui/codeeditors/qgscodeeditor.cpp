@@ -406,8 +406,7 @@ bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 }
 
 void QgsCodeEditor::initializeLexer()
-{
-}
+{}
 
 QColor QgsCodeEditor::lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const
 {
@@ -718,8 +717,7 @@ void QgsCodeEditor::updateHistory( const QStringList &commands, bool skipSoftHis
 }
 
 void QgsCodeEditor::populateContextMenu( QMenu * )
-{
-}
+{}
 
 QString QgsCodeEditor::reformatCodeString( const QString &string )
 {
@@ -854,8 +852,7 @@ bool QgsCodeEditor::checkSyntax()
 }
 
 void QgsCodeEditor::toggleComment()
-{
-}
+{}
 
 void QgsCodeEditor::toggleLineComments( const QString &commentPrefix )
 {

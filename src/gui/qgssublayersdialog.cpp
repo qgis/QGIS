@@ -149,7 +149,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << ( item.count == static_cast<int>( Qgis::FeatureCountState::Uncounted ) || item.count == static_cast<int>( Qgis::FeatureCountState::UnknownCount ) ? tr( "Unknown" ) : QString::number( item.count ) );
+      elements
+        << ( item.count == static_cast<int>( Qgis::FeatureCountState::Uncounted ) || item.count == static_cast<int>( Qgis::FeatureCountState::UnknownCount ) ? tr( "Unknown" )
+                                                                                                                                                             : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     if ( mShowDescription )

@@ -224,9 +224,7 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 
   featureFormatComboBox()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
   featureFormatDetectButton()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
-  mComboWfsFeatureMode->setEnabled(
-    index != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0
-  );
+  mComboWfsFeatureMode->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
@@ -239,9 +237,7 @@ void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
 void QgsNewHttpConnection::featureFormatCurrentIndexChanged( int index )
 {
   Q_UNUSED( index );
-  mComboWfsFeatureMode->setEnabled(
-    wfsVersionComboBox()->currentIndex() != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0
-  );
+  mComboWfsFeatureMode->setEnabled( wfsVersionComboBox()->currentIndex() != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0 );
 }
 
 QString QgsNewHttpConnection::name() const
@@ -281,12 +277,25 @@ bool QgsNewHttpConnection::validate()
   bool urlExists = QgsOwsConnection::settingsUrl->exists( { mServiceName.toLower(), newConnectionName } );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newConnectionName, Qt::CaseInsensitive ) != 0 ) && urlExists && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newConnectionName, Qt::CaseInsensitive ) != 0 )
+       && urlExists
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel )
+            == QMessageBox::Cancel )
   {
     return false;
   }
 
-  if ( !mAuthSettings->password().isEmpty() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !mAuthSettings->password().isEmpty()
+       && QMessageBox::question(
+            this,
+            tr( "Saving Passwords" ),
+            tr(
+              "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to "
+              "avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add "
+              "your credentials in an HTTP Basic Authentication method and store them in an encrypted database."
+            ),
+            QMessageBox::Ok | QMessageBox::Cancel
+          ) == QMessageBox::Cancel )
   {
     return false;
   }

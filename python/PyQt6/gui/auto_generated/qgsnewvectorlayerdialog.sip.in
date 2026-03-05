@@ -19,7 +19,9 @@ A dialog for configuring the properties of a new vector layer.
 #include "qgsnewvectorlayerdialog.h"
 %End
   public:
- static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString() ) /Deprecated="Since 3.4.5. Use execAndCreateLayer() instead."/;
+ static QString runAndCreateLayer(
+      QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString()
+    ) /Deprecated="Since 3.4.5. Use execAndCreateLayer() instead."/;
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 
@@ -33,7 +35,13 @@ default to the specified filename.
    Use :py:func:`~QgsNewVectorLayerDialog.execAndCreateLayer` instead.
 %End
 
-    static QString execAndCreateLayer( QString &errorMessage /Out/, QWidget *parent = 0, const QString &initialPath = QString(), QString *encoding /Out/ = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QString execAndCreateLayer(
+      QString &errorMessage /Out/,
+      QWidget *parent = 0,
+      const QString &initialPath = QString(),
+      QString *encoding /Out/ = 0,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem()
+    );
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 

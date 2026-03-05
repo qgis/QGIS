@@ -38,7 +38,8 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( u"tree-height"_s, sTreeGuiLocator, 20, u"Number of rows to show in the locator tree (requires a restart)"_s, Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
+const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight
+  = new QgsSettingsEntryInteger( u"tree-height"_s, sTreeGuiLocator, 20, u"Number of rows to show in the locator tree (requires a restart)"_s, Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
 ///@endcond PRIVATE
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
@@ -126,9 +127,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   connect( mMenu, &QMenu::aboutToShow, this, &QgsLocatorWidget::configMenuAboutToShow );
 
   mModelBridge->setTransformContext( QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
-    mModelBridge->setTransformContext( QgsProject::instance()->transformContext() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] { mModelBridge->setTransformContext( QgsProject::instance()->transformContext() ); } );
 }
 
 QgsLocator *QgsLocatorWidget::locator()
@@ -152,9 +151,9 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   {
     mModelBridge->updateCanvasExtent( mMapCanvas->mapSettings().visibleExtent() );
     mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );
-    mCanvasConnections
-      << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [this]() { mModelBridge->updateCanvasExtent( mMapCanvas->mapSettings().visibleExtent() ); } )
-      << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this]() { mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() ); } );
+    mCanvasConnections << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [this]() {
+      mModelBridge->updateCanvasExtent( mMapCanvas->mapSettings().visibleExtent() );
+    } ) << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this]() { mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() ); } );
   }
 }
 

@@ -44,7 +44,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent, Qt::WindowFlags f )
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog(
+  QgsRasterLayer *rasterLayer,
+  QgsRasterDataProvider *sourceProvider,
+  const QgsRectangle &currentExtent,
+  const QgsCoordinateReferenceSystem &layerCrs,
+  const QgsCoordinateReferenceSystem &currentCrs,
+  QWidget *parent,
+  Qt::WindowFlags f
+)
   : QDialog( parent, f )
   , mRasterLayer( rasterLayer )
   , mDataProvider( sourceProvider )
@@ -152,8 +160,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
   mCrsSelector->setShowAccuracyWarnings( true );
 
   mCrsSelector->setLayerCrs( mLayerCrs );
@@ -235,7 +242,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
         if ( files.isEmpty() )
           break;
 
-        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", "_L1 ) ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", "_L1 ) ), QMessageBox::Ok | QMessageBox::Cancel )
+             == QMessageBox::Ok )
           break;
 
         fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), tmplFileInfo.absolutePath() );
@@ -989,16 +997,29 @@ void QgsRasterLayerSaveAsDialog::accept()
 
     if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
     {
-      QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ), QMessageBox::Ok );
+      QMessageBox::warning(
+        this,
+        tr( "Save Raster Layer" ),
+        tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." )
+          .arg( u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
+        QMessageBox::Ok
+      );
       return;
     }
   }
 
-  if ( outputFormat() == "GPKG"_L1 && outputLayerExists() && QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
-                                                                                                                        "Do you want to overwrite the whole file?" )
-                                                                                                                      .arg( outputLayerName() ),
-                                                                                   QMessageBox::Yes | QMessageBox::No )
-                                                               == QMessageBox::No )
+  if ( outputFormat() == "GPKG"_L1
+       && outputLayerExists()
+       && QMessageBox::warning(
+            this,
+            tr( "Save Raster Layer" ),
+            tr(
+              "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
+              "Do you want to overwrite the whole file?"
+            )
+              .arg( outputLayerName() ),
+            QMessageBox::Yes | QMessageBox::No
+          ) == QMessageBox::No )
   {
     return;
   }

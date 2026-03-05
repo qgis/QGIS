@@ -53,8 +53,10 @@
 
 using namespace Qt::StringLiterals;
 
-const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( u"attribute-table-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of conditional formatting splitter's layout so it could be restored when opening attribute table view."_s );
-const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<QgsSettingsEntryVariant>( u"attribute-editor-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of attribute editor splitter's layout so it could be restored when opening attribute editor view."_s );
+const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<
+  QgsSettingsEntryVariant>( u"attribute-table-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of conditional formatting splitter's layout so it could be restored when opening attribute table view."_s );
+const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<
+  QgsSettingsEntryVariant>( u"attribute-editor-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of attribute editor splitter's layout so it could be restored when opening attribute editor view."_s );
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
@@ -123,8 +125,7 @@ QgsDualView::QgsDualView( QWidget *parent )
 }
 
 QgsDualView::~QgsDualView()
-{
-}
+{}
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context, bool loadFeatures, bool showFirstFeature )
 {
@@ -137,9 +138,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
 
   // Keep fields order in sync: force config reset
-  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
-    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
-  } );
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] { mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true ); } );
 
   mEditorContext = context;
 
@@ -148,7 +147,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   const QgsExpression sortingExpression = QgsExpression( mConfig.sortExpression() );
 
-  const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() || !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
+  const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry()
+                             || !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
                              || emptyForm.needsGeometry()
                              || sortingExpression.needsGeometry();
@@ -269,14 +269,10 @@ void QgsDualView::columnBoxInit()
   sortMenuAction->setMenu( sortMenu );
 
   QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( u"sort.svg"_s ), tr( "By Display Name (Ascending)" ), this );
-  connect( sortByPreviewExpressionAsc, &QAction::triggered, this, [this]() {
-    mFeatureListModel->setSortByDisplayExpression( true, Qt::AscendingOrder );
-  } );
+  connect( sortByPreviewExpressionAsc, &QAction::triggered, this, [this]() { mFeatureListModel->setSortByDisplayExpression( true, Qt::AscendingOrder ); } );
   sortMenu->addAction( sortByPreviewExpressionAsc );
   QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( u"sort-reverse.svg"_s ), tr( "By Display Name (Descending)" ), this );
-  connect( sortByPreviewExpressionDesc, &QAction::triggered, this, [this]() {
-    mFeatureListModel->setSortByDisplayExpression( true, Qt::DescendingOrder );
-  } );
+  connect( sortByPreviewExpressionDesc, &QAction::triggered, this, [this]() { mFeatureListModel->setSortByDisplayExpression( true, Qt::DescendingOrder ); } );
   sortMenu->addAction( sortByPreviewExpressionDesc );
   QAction *sortByPreviewExpressionCustom = new QAction( QgsApplication::getThemeIcon( u"mIconExpressionPreview.svg"_s ), tr( "By Custom Expression" ), this );
   connect( sortByPreviewExpressionCustom, &QAction::triggered, this, [this]() {
@@ -354,9 +350,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
   const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry() || QgsExpression( mConfig.sortExpression() ).needsGeometry();
 
-  const bool requiresTableReload = ( request.filterType() != Qgis::Qgis::FeatureRequestFilterType::NoFilter || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
-                                   || ( needsGeometry && request.flags() & Qgis::FeatureRequestFlag::NoGeometry )                                                                 // no geometry for last request
-                                   || ( mMasterModel->rowCount() == 0 );                                                                                                          // no features
+  const bool requiresTableReload = ( request.filterType() != Qgis::Qgis::FeatureRequestFilterType::NoFilter
+                                     || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )        // previous request was subset
+                                   || ( needsGeometry && request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) // no geometry for last request
+                                   || ( mMasterModel->rowCount() == 0 );                                          // no features
 
   request.setFlags( request.flags().setFlag( Qgis::FeatureRequestFlag::NoGeometry, !needsGeometry ) );
   request.setFilterFids( QgsFeatureIds() );
@@ -608,18 +605,12 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
     if ( mBrowsingAutoPanScaleAllowed )
     {
       if ( mAutoPanButton->isChecked() )
-        QTimer::singleShot( 0, this, [this, featureset, canvas]() {
-          canvas->panToFeatureIds( mLayer, featureset, false );
-        } );
+        QTimer::singleShot( 0, this, [this, featureset, canvas]() { canvas->panToFeatureIds( mLayer, featureset, false ); } );
       else if ( mAutoZoomButton->isChecked() )
-        QTimer::singleShot( 0, this, [this, featureset, canvas]() {
-          canvas->zoomToFeatureIds( mLayer, featureset );
-        } );
+        QTimer::singleShot( 0, this, [this, featureset, canvas]() { canvas->zoomToFeatureIds( mLayer, featureset ); } );
     }
     if ( mFlashButton->isChecked() )
-      QTimer::singleShot( 0, this, [this, featureset, canvas]() {
-        canvas->flashFeatureIds( mLayer, featureset );
-      } );
+      QTimer::singleShot( 0, this, [this, featureset, canvas]() { canvas->flashFeatureIds( mLayer, featureset ); } );
     mLastFeatureSet = featureset;
   }
 }
@@ -874,9 +865,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
 
     QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content (%1)" ).arg( previewDisplayValue ) );
     menu->addAction( copyContentAction );
-    connect( copyContentAction, &QAction::triggered, this, [displayValue] {
-      QApplication::clipboard()->setText( displayValue.toString() );
-    } );
+    connect( copyContentAction, &QAction::triggered, this, [displayValue] { QApplication::clipboard()->setText( displayValue.toString() ); } );
   }
 
   const QVariant rawValue = mMasterModel->data( masterIndex, Qt::EditRole );
@@ -892,9 +881,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
 
     QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Value (%1)" ).arg( previewRawValue ) );
     menu->addAction( copyRawContentAction );
-    connect( copyRawContentAction, &QAction::triggered, this, [rawValue] {
-      QApplication::clipboard()->setText( rawValue.toString() );
-    } );
+    connect( copyRawContentAction, &QAction::triggered, this, [rawValue] { QApplication::clipboard()->setText( rawValue.toString() ); } );
   }
 
   QgsVectorLayer *vl = mFilterModel->layer();

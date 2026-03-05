@@ -96,8 +96,7 @@ void QgsPlotToolTemporaryMousePan::activate()
 
 QgsPlotToolTemporaryKeyZoom::QgsPlotToolTemporaryKeyZoom( QgsPlotCanvas *canvas )
   : QgsPlotToolZoom( canvas )
-{
-}
+{}
 
 void QgsPlotToolTemporaryKeyZoom::plotReleaseEvent( QgsPlotMouseEvent *event )
 {

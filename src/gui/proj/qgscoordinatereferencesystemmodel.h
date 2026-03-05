@@ -266,10 +266,12 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
       Deprecated SIP_MONKEYPATCH_COMPAT_NAME( RoleDeprecated ) = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
       Type SIP_MONKEYPATCH_COMPAT_NAME( RoleType ) = Qt::UserRole + 4,             //!< The coordinate reference system type
       GroupId SIP_MONKEYPATCH_COMPAT_NAME( RoleGroupId ) = Qt::UserRole + 5,       //!< The node ID (for group nodes)
-      Wkt SIP_MONKEYPATCH_COMPAT_NAME( RoleWkt ) = Qt::UserRole + 6,               //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
-      Proj SIP_MONKEYPATCH_COMPAT_NAME( RoleProj ) = Qt::UserRole + 7,             //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
-      Group = Qt::UserRole + 8,                                                    //!< Group name. \since QGIS 3.42
-      Projection = Qt::UserRole + 9,                                               //!< Projection name. \since QGIS 3.42
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME( RoleWkt ) = Qt::UserRole
+                                                   + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Proj SIP_MONKEYPATCH_COMPAT_NAME( RoleProj ) = Qt::UserRole
+                                                     + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Group = Qt::UserRole + 8,                           //!< Group name. \since QGIS 3.42
+      Projection = Qt::UserRole + 9,                      //!< Projection name. \since QGIS 3.42
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

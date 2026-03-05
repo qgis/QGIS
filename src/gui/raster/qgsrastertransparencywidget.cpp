@@ -95,10 +95,11 @@ QgsExpressionContext QgsRasterTransparencyWidget::createExpressionContext() cons
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( mRasterLayer )
@@ -120,8 +121,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( provider )
   {
-    if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32
-         || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
+    if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32 || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
     {
       gboxNoDataValue->setEnabled( false );
       gboxCustomTransparency->setEnabled( false );
@@ -318,11 +318,15 @@ void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
           myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
           for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
           {
-            myOutputStream << '\n'
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Red ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Green ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Blue ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Opacity ) ) );
+            myOutputStream
+              << '\n'
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Red ) ) )
+              << "\t"
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Green ) ) )
+              << "\t"
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Blue ) ) )
+              << "\t"
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Opacity ) ) );
           }
           break;
         }
@@ -332,10 +336,13 @@ void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 
           for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
           {
-            myOutputStream << '\n'
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::From ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::To ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::Opacity ) ) );
+            myOutputStream
+              << '\n'
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::From ) ) )
+              << "\t"
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::To ) ) )
+              << "\t"
+              << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::Opacity ) ) );
           }
           break;
         }
@@ -518,7 +525,15 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
           const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Opacity ) ) / 100.0;
           const double tolerance = transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Tolerance ) );
           myTransparentThreeValuePixelList.append(
-            QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity, !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(), !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(), !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon() )
+            QgsRasterTransparency::TransparentThreeValuePixel(
+              red,
+              green,
+              blue,
+              opacity,
+              !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
+              !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
+              !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon()
+            )
           );
         }
         rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
@@ -534,9 +549,7 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
           const double max = transparencyCellValue( myListRunner, static_cast<int>( SingleBandTableColumns::To ) );
           const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast<int>( SingleBandTableColumns::Opacity ) ) / 100.0;
 
-          myTransparentSingleValuePixelList.append(
-            QgsRasterTransparency::TransparentSingleValuePixel( min, max, opacity )
-          );
+          myTransparentSingleValuePixelList.append( QgsRasterTransparency::TransparentSingleValuePixel( min, max, opacity ) );
         }
         rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
         break;

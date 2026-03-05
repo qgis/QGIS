@@ -119,7 +119,8 @@ class QgsCaseInsensitiveLexerSQL : public QsciLexerSQL
   public:
     //! constructor
     explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr )
-      : QsciLexerSQL( parent ) {}
+      : QsciLexerSQL( parent )
+    {}
 
     bool caseSensitive() const override { return false; }
 };

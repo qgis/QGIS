@@ -28,11 +28,11 @@ QgsCoordinateReferenceSystemModel.RoleGroupId.__doc__ = "The node ID (for group 
 QgsCoordinateReferenceSystemModel.RoleWkt = QgsCoordinateReferenceSystemModel.CustomRole.Wkt
 QgsCoordinateReferenceSystemModel.Roles.RoleWkt = QgsCoordinateReferenceSystemModel.CustomRole.Wkt
 QgsCoordinateReferenceSystemModel.RoleWkt.is_monkey_patched = True
-QgsCoordinateReferenceSystemModel.RoleWkt.__doc__ = "The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database)."
+QgsCoordinateReferenceSystemModel.RoleWkt.__doc__ = ""
 QgsCoordinateReferenceSystemModel.RoleProj = QgsCoordinateReferenceSystemModel.CustomRole.Proj
 QgsCoordinateReferenceSystemModel.Roles.RoleProj = QgsCoordinateReferenceSystemModel.CustomRole.Proj
 QgsCoordinateReferenceSystemModel.RoleProj.is_monkey_patched = True
-QgsCoordinateReferenceSystemModel.RoleProj.__doc__ = "The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database)."
+QgsCoordinateReferenceSystemModel.RoleProj.__doc__ = ""
 QgsCoordinateReferenceSystemModel.Group = QgsCoordinateReferenceSystemModel.CustomRole.Group
 QgsCoordinateReferenceSystemModel.Group.is_monkey_patched = True
 QgsCoordinateReferenceSystemModel.Group.__doc__ = "Group name. \n.. versionadded:: 3.42"
@@ -71,11 +71,11 @@ QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
 
   Available as ``QgsCoordinateReferenceSystemModel.RoleGroupId`` in older QGIS releases.
 
-* ``Wkt``: The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+* ``Wkt``: 
 
   Available as ``QgsCoordinateReferenceSystemModel.RoleWkt`` in older QGIS releases.
 
-* ``Proj``: The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+* ``Proj``: 
 
   Available as ``QgsCoordinateReferenceSystemModel.RoleProj`` in older QGIS releases.
 

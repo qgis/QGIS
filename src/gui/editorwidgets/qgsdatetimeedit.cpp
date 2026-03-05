@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
-{
-}
+{}
 
 ///@cond PRIVATE
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
@@ -416,8 +415,7 @@ QDate QgsDateTimeEdit::date() const
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
-{
-}
+{}
 
 void QgsTimeEdit::setTime( const QTime &time )
 {
@@ -452,8 +450,7 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
-{
-}
+{}
 
 void QgsDateEdit::setDate( const QDate &date )
 {

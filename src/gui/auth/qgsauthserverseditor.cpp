@@ -79,20 +79,12 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
 void QgsAuthServersEditor::setupSslConfigsTree()
 {
   treeServerConfigs->setColumnCount( 3 );
-  treeServerConfigs->setHeaderLabels(
-    QStringList() << tr( "Common Name" )
-                  << tr( "Host" )
-                  << tr( "Expiry Date" )
-  );
+  treeServerConfigs->setHeaderLabels( QStringList() << tr( "Common Name" ) << tr( "Host" ) << tr( "Expiry Date" ) );
   treeServerConfigs->setColumnWidth( 0, 275 );
   treeServerConfigs->setColumnWidth( 1, 200 );
 
   // add root sections
-  mRootSslConfigItem = new QTreeWidgetItem(
-    treeServerConfigs,
-    QStringList( tr( "SSL Server Configurations" ) ),
-    static_cast<int>( QgsAuthServersEditor::Section )
-  );
+  mRootSslConfigItem = new QTreeWidgetItem( treeServerConfigs, QStringList( tr( "SSL Server Configurations" ) ), static_cast<int>( QgsAuthServersEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mRootSslConfigItem );
   mRootSslConfigItem->setFlags( Qt::ItemIsEnabled );
   mRootSslConfigItem->setExpanded( true );
@@ -134,9 +126,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap<QString, QList<QgsAuthConfigSslServer>> orgconfigs(
-    QgsAuthCertUtils::sslConfigsGroupedByOrg( configs )
-  );
+  const QMap<QString, QList<QgsAuthConfigSslServer>> orgconfigs( QgsAuthCertUtils::sslConfigsGroupedByOrg( configs ) );
 
   QMap<QString, QList<QgsAuthConfigSslServer>>::const_iterator it = orgconfigs.constBegin();
   for ( ; it != orgconfigs.constEnd(); ++it )
@@ -287,16 +277,18 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugError( u"SSL custom config does not exist in database for host:port, id %1:"_s
-                     .arg( hostport, digest ) );
+    QgsDebugError( u"SSL custom config does not exist in database for host:port, id %1:"_s.arg( hostport, digest ) );
     return;
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove SSL Custom Configuration" ),
-         tr( "Are you sure you want to remove the selected "
-             "SSL custom configuration from the database?\n\n"
-             "Operation can NOT be undone!" ),
+         this,
+         tr( "Remove SSL Custom Configuration" ),
+         tr(
+           "Are you sure you want to remove the selected "
+           "SSL custom configuration from the database?\n\n"
+           "Operation can NOT be undone!"
+         ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel
        )

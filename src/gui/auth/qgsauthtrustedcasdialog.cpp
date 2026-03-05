@@ -73,20 +73,12 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent, const QList<Q
 void QgsAuthTrustedCAsDialog::setupCaCertsTree()
 {
   treeTrustedCAs->setColumnCount( 3 );
-  treeTrustedCAs->setHeaderLabels(
-    QStringList() << tr( "Common Name" )
-                  << tr( "Serial #" )
-                  << tr( "Expiry Date" )
-  );
+  treeTrustedCAs->setHeaderLabels( QStringList() << tr( "Common Name" ) << tr( "Serial #" ) << tr( "Expiry Date" ) );
   treeTrustedCAs->setColumnWidth( 0, 300 );
   treeTrustedCAs->setColumnWidth( 1, 75 );
 
   // add root section
-  mRootCaSecItem = new QTreeWidgetItem(
-    treeTrustedCAs,
-    QStringList( tr( "Authorities/Issuers" ) ),
-    static_cast<int>( QgsAuthTrustedCAsDialog::Section )
-  );
+  mRootCaSecItem = new QTreeWidgetItem( treeTrustedCAs, QStringList( tr( "Authorities/Issuers" ) ), static_cast<int>( QgsAuthTrustedCAsDialog::Section ) );
   QgsAuthGuiUtils::setItemBold( mRootCaSecItem );
   mRootCaSecItem->setFlags( Qt::ItemIsEnabled );
   mRootCaSecItem->setExpanded( true );
@@ -128,9 +120,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToGroup( const QList<QSslCertificate> &
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap<QString, QList<QSslCertificate>> orgcerts(
-    QgsAuthCertUtils::certsGroupedByOrg( certs )
-  );
+  const QMap<QString, QList<QSslCertificate>> orgcerts( QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
   QMap<QString, QList<QSslCertificate>>::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
@@ -198,9 +188,7 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
 
   const QString digest( item->data( 0, Qt::UserRole ).toString() );
 
-  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> cacertscache(
-    QgsApplication::authManager()->caCertsCache()
-  );
+  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> cacertscache( QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
   {

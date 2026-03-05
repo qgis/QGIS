@@ -59,7 +59,14 @@ Find the best editor widget and its configuration for a given field.
 :return: The id of the widget type to use and its config
 %End
 
-    QgsEditorWidgetWrapper *create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent /TransferThis/ ) /Factory/;
+    QgsEditorWidgetWrapper *create(
+      const QString &widgetId,
+      QgsVectorLayer *vl,
+      int fieldIdx,
+      const QVariantMap &config,
+      QWidget *editor,
+      QWidget *parent /TransferThis/
+    ) /Factory/;
 %Docstring
 Create an attribute editor widget wrapper of a given type for a given
 field. The editor may be ``None`` if you want the widget wrapper to
@@ -80,7 +87,8 @@ create a default widget.
 :return: A new widget wrapper
 %End
 
-    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent /TransferThis/ ) /Factory/;
+    QgsEditorWidgetWrapper *create(
+    ) /Factory/;
 %Docstring
 Create an attribute editor widget wrapper of the best type for a given
 field. The editor may be ``None`` if you want the widget wrapper to
@@ -97,7 +105,13 @@ create a default widget.
 :return: A new widget wrapper
 %End
 
-    QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent /TransferThis/ ) /Factory/;
+    QgsSearchWidgetWrapper *createSearchWidget(
+      const QString &widgetId,
+      QgsVectorLayer *vl,
+      int fieldIdx,
+      const QVariantMap &config,
+      QWidget *parent /TransferThis/
+    ) /Factory/;
 
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring

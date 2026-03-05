@@ -23,8 +23,7 @@
 
 QgsProviderGuiMetadata::QgsProviderGuiMetadata( const QString &key )
   : mKey( key )
-{
-}
+{}
 
 QgsProviderGuiMetadata::~QgsProviderGuiMetadata() = default;
 
@@ -64,5 +63,4 @@ QString QgsProviderGuiMetadata::key() const
 }
 
 void QgsProviderGuiMetadata::registerGui( QMainWindow * )
-{
-}
+{}

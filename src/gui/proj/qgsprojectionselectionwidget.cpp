@@ -55,9 +55,7 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
     mDefaultCrs.updateDefinition();
   } );
 
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [this] {
-    mProjectCrs = QgsProject::instance()->crs();
-  } );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [this] { mProjectCrs = QgsProject::instance()->crs(); } );
 }
 
 Qt::ItemFlags StandardCoordinateReferenceSystemsModel::flags( const QModelIndex &index ) const
@@ -355,12 +353,10 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
     // a recent crs
     // these are only shown if they aren't duplicates of a standard item already shown in the list
     for ( QgsProjectionSelectionWidget::CrsOption standardOption :
-          {
-            QgsProjectionSelectionWidget::CrsOption::CurrentCrs,
+          { QgsProjectionSelectionWidget::CrsOption::CurrentCrs,
             QgsProjectionSelectionWidget::CrsOption::DefaultCrs,
             QgsProjectionSelectionWidget::CrsOption::LayerCrs,
-            QgsProjectionSelectionWidget::CrsOption::ProjectCrs
-          } )
+            QgsProjectionSelectionWidget::CrsOption::ProjectCrs } )
     {
       const QModelIndexList standardItemIndex = mModel->match( mModel->index( 0, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption, static_cast<int>( standardOption ) );
       if ( standardItemIndex.empty() )

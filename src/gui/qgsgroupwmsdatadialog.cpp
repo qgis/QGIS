@@ -24,8 +24,7 @@
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsGroupWmsDataDialog( QgsMapLayerServerProperties(), parent, fl )
-{
-}
+{}
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties &serverProperties, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
