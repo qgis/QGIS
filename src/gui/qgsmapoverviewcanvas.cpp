@@ -167,7 +167,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent *e )
 void QgsMapOverviewCanvas::wheelEvent( QWheelEvent *e )
 {
   QgsSettings settings;
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? e->angleDelta().y() < 0 : e->angleDelta().y() > 0;
   double zoomFactor = zoomIn ? 1. / mMapCanvas->zoomInFactor() : mMapCanvas->zoomOutFactor();
 
