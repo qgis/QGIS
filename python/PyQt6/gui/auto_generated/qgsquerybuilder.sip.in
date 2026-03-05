@@ -60,9 +60,11 @@ Returns the code editor widget for the SQL.
 
 .. versionadded:: 3.18
 %End
-%End SIP_IF_FEATURE( !HAVE_QSCI_SIP )
+%End
 
-      QWidget *codeEditorWidget() const;
+%If (!HAVE_QSCI_SIP)
+
+    QWidget *codeEditorWidget() const;
 %Docstring
 Returns the code editor widget for the SQL.
 
