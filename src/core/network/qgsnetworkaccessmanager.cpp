@@ -208,8 +208,13 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
 
   if ( !nam->mInitialized )
   {
+    QgsDebugMsgLevel( u"Initializing new network access manager for %1thread: %2"_s.arg( QThread::currentThread() == qApp->thread() ? u"MAIN "_s : QString() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ), 2 );
     nam->setupDefaultProxyAndCache( connectionType );
     nam->setCacheDisabled( sMainNAM->cacheDisabled() );
+  }
+  else
+  {
+    QgsDebugMsgLevel( u"Network access manager retrieved for %1thread: %2"_s.arg( QThread::currentThread() == qApp->thread() ? u"MAIN "_s : QString() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ), 4 );
   }
 
   return nam;
@@ -313,6 +318,8 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
 
 QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
+  QgsDebugMsgLevel( u"Creating new network request on thread: %1 for %2"_s.arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( req.url().toString() ), 3 );
+
   const QgsSettings s;
 
   // copy request so we can modify it
