@@ -154,15 +154,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      *        by OpenCL program
      * \param params vector of parameters passed to OpenCL algorithm
      */
-    virtual void addExtraRasterParams( std::vector<float> &params )
-    {
-      Q_UNUSED( params )
-    }
+    virtual void addExtraRasterParams( std::vector<float> &params ) { Q_UNUSED( params ) }
 
-    virtual const QString openClProgramBaseName() const
-    {
-      return QString();
-    }
+    virtual const QString openClProgramBaseName() const { return QString(); }
 
 #endif
 

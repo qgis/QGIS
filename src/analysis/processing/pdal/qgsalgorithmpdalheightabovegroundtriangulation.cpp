@@ -55,7 +55,10 @@ QString QgsPdalHeightAboveGroundTriangulationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a Delaunay triangulation algorithm." )
          + u"\n\n"_s
-         + QObject::tr( "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above this surface for all points." )
+         + QObject::tr(
+           "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above "
+           "this surface for all points."
+         )
          + u"\n\n"_s
          + QObject::tr( "The output adds a HeightAboveGround dimension to the point cloud. If 'Replace Z values' is enabled, the Z coordinate will be replaced with the height above ground value." );
 }
@@ -102,7 +105,8 @@ QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::createArgumentLists(
     replaceZ = "true";
   }
 
-  QStringList args = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=delaunay"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--delaunay-count=%1"_s.arg( count ) };
+  QStringList args
+    = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=delaunay"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--delaunay-count=%1"_s.arg( count ) };
 
   applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );

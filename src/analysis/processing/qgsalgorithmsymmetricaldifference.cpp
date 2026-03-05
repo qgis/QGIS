@@ -50,9 +50,11 @@ QString QgsSymmetricalDifferenceAlgorithm::groupId() const
 
 QString QgsSymmetricalDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the portions of features from both the Input and Overlay layers that do not overlap. "
-                      "Overlapping areas between the two layers are removed. The attribute table of the Symmetrical Difference layer "
-                      "contains original attributes from both the Input and Overlay layers." );
+  return QObject::tr(
+    "This algorithm extracts the portions of features from both the Input and Overlay layers that do not overlap. "
+    "Overlapping areas between the two layers are removed. The attribute table of the Symmetrical Difference layer "
+    "contains original attributes from both the Input and Overlay layers."
+  );
 }
 
 QString QgsSymmetricalDifferenceAlgorithm::shortDescription() const
@@ -101,7 +103,10 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   const Qgis::WkbType geomTypeB = QgsWkbTypes::promoteNonPointTypesToMulti( sourceB->wkbType() );
 
   if ( geomTypeA != geomTypeB )
-    feedback->pushWarning( QObject::tr( "Performing symmetrical difference between layers with different geometry types (INPUT has %1 and OVERLAY has %2) can lead to unexpected results" ).arg( QgsWkbTypes::displayString( sourceA->wkbType() ), QgsWkbTypes::displayString( sourceB->wkbType() ) ) );
+    feedback->pushWarning(
+      QObject::tr( "Performing symmetrical difference between layers with different geometry types (INPUT has %1 and OVERLAY has %2) can lead to unexpected results" )
+        .arg( QgsWkbTypes::displayString( sourceA->wkbType() ), QgsWkbTypes::displayString( sourceB->wkbType() ) )
+    );
 
   const QString overlayFieldsPrefix = parameterAsString( parameters, u"OVERLAY_FIELDS_PREFIX"_s, context );
   const QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );

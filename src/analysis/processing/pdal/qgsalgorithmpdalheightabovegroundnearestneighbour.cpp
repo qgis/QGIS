@@ -106,7 +106,15 @@ QStringList QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::createArgumentLis
     replaceZ = "true";
   }
 
-  QStringList args = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=nn"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--nn-count=%1"_s.arg( count ), u"--nn-max-distance=%1"_s.arg( maxDistance ) };
+  QStringList args = {
+    u"height_above_ground"_s,
+    u"--input=%1"_s.arg( layer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
+    u"--algorithm=nn"_s,
+    u"--replace-z=%1"_s.arg( replaceZ ),
+    u"--nn-count=%1"_s.arg( count ),
+    u"--nn-max-distance=%1"_s.arg( maxDistance )
+  };
 
   applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );

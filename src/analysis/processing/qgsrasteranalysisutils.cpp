@@ -32,7 +32,9 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent )
+void QgsRasterAnalysisUtils::cellInfoForBBox(
+  const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent
+)
 {
   //get intersecting bbox
   const QgsRectangle intersectBox = rasterBBox.intersect( featureBBox );
@@ -58,10 +60,22 @@ void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, co
   nCellsX = std::min( offsetX + nCellsX, rasterWidth ) - offsetX;
   nCellsY = std::min( offsetY + nCellsY, rasterHeight ) - offsetY;
 
-  rasterBlockExtent = QgsRectangle( rasterBBox.xMinimum() + offsetX * cellSizeX, rasterBBox.yMaximum() - offsetY * cellSizeY, rasterBBox.xMinimum() + ( nCellsX + offsetX ) * cellSizeX, rasterBBox.yMaximum() - ( nCellsY + offsetY ) * cellSizeY );
+  rasterBlockExtent
+    = QgsRectangle( rasterBBox.xMinimum() + offsetX * cellSizeX, rasterBBox.yMaximum() - offsetY * cellSizeY, rasterBBox.xMinimum() + ( nCellsX + offsetX ) * cellSizeX, rasterBBox.yMaximum() - ( nCellsY + offsetY ) * cellSizeY );
 }
 
-void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, const QgsPointXY & )> &addValue, bool skipNodata )
+void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest(
+  QgsRasterInterface *rasterInterface,
+  int rasterBand,
+  const QgsGeometry &poly,
+  int nCellsX,
+  int nCellsY,
+  double cellSizeX,
+  double cellSizeY,
+  const QgsRectangle &rasterBBox,
+  const std::function<void( double, const QgsPointXY & )> &addValue,
+  bool skipNodata
+)
 {
   if ( !poly.constGet() )
     return;
@@ -103,7 +117,18 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
   }
 }
 
-void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, double, const QgsPointXY & )> &addValue, bool skipNodata )
+void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection(
+  QgsRasterInterface *rasterInterface,
+  int rasterBand,
+  const QgsGeometry &poly,
+  int nCellsX,
+  int nCellsY,
+  double cellSizeX,
+  double cellSizeY,
+  const QgsRectangle &rasterBBox,
+  const std::function<void( double, double, const QgsPointXY & )> &addValue,
+  bool skipNodata
+)
 {
   QgsGeometry pixelRectGeometry;
 
@@ -229,7 +254,20 @@ Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
   return sDataTypes.value( choice ).second;
 }
 
-void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount )
+void QgsRasterAnalysisUtils::applyRasterLogicOperator(
+  const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs,
+  std::unique_ptr<QgsRasterDataProvider> destinationRaster,
+  double outputNoDataValue,
+  const bool treatNoDataAsFalse,
+  int width,
+  int height,
+  const QgsRectangle &extent,
+  QgsFeedback *feedback,
+  std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc,
+  qgssize &noDataCount,
+  qgssize &trueCount,
+  qgssize &falseCount
+)
 {
   destinationRaster->setEditable( true );
   QgsRasterIterator outputIter( destinationRaster.get() );

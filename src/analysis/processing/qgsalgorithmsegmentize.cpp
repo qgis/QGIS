@@ -55,16 +55,20 @@ QString QgsSegmentizeByMaximumDistanceAlgorithm::outputName() const
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm segmentizes a geometry by converting curved sections to linear sections.\n\n"
-                      "The segmentization is performed by specifying the maximum allowed offset distance between the original "
-                      "curve and the segmentized representation.\n\n"
-                      "Non-curved geometries will be retained without change." );
+  return QObject::tr(
+    "This algorithm segmentizes a geometry by converting curved sections to linear sections.\n\n"
+    "The segmentization is performed by specifying the maximum allowed offset distance between the original "
+    "curve and the segmentized representation.\n\n"
+    "Non-curved geometries will be retained without change."
+  );
 }
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Segmentizes a geometry by converting curved sections to linear sections, "
-                      "given the maximum allowed offset distance between the original curve and the segmentized representation." );
+  return QObject::tr(
+    "Segmentizes a geometry by converting curved sections to linear sections, "
+    "given the maximum allowed offset distance between the original curve and the segmentized representation."
+  );
 }
 
 QgsSegmentizeByMaximumDistanceAlgorithm *QgsSegmentizeByMaximumDistanceAlgorithm::createInstance() const
@@ -150,17 +154,21 @@ QString QgsSegmentizeByMaximumAngleAlgorithm::outputName() const
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm segmentizes a geometry by converting curved sections to linear sections.\n\n"
-                      "The segmentization is performed by specifying the maximum allowed radius angle between vertices "
-                      "on the straightened geometry (e.g the angle of the arc created from the original arc center to consecutive "
-                      "output vertices on the linearized geometry).\n\n"
-                      "Non-curved geometries will be retained without change." );
+  return QObject::tr(
+    "This algorithm segmentizes a geometry by converting curved sections to linear sections.\n\n"
+    "The segmentization is performed by specifying the maximum allowed radius angle between vertices "
+    "on the straightened geometry (e.g the angle of the arc created from the original arc center to consecutive "
+    "output vertices on the linearized geometry).\n\n"
+    "Non-curved geometries will be retained without change."
+  );
 }
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Segmentizes a geometry by converting curved sections to linear sections, "
-                      "given the maximum allowed radius angle between vertices on the straightened geometry." );
+  return QObject::tr(
+    "Segmentizes a geometry by converting curved sections to linear sections, "
+    "given the maximum allowed radius angle between vertices on the straightened geometry."
+  );
 }
 
 QgsSegmentizeByMaximumAngleAlgorithm *QgsSegmentizeByMaximumAngleAlgorithm::createInstance() const

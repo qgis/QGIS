@@ -36,7 +36,17 @@ void QgsDistanceWithinAlgorithm::addDistanceParameter()
   addParameter( distanceParam.release() );
 }
 
-void QgsDistanceWithinAlgorithm::process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext )
+void QgsDistanceWithinAlgorithm::process(
+  const QgsProcessingContext &context,
+  QgsFeatureSource *targetSource,
+  QgsFeatureSource *referenceSource,
+  double distance,
+  const QgsProperty &distanceProperty,
+  const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+  bool onlyRequireTargetIds,
+  QgsProcessingFeedback *feedback,
+  QgsExpressionContext &expressionContext
+)
 {
   // By default we will iterate over the reference source and match back
   // to the target source. We do this on the assumption that the most common
@@ -92,7 +102,17 @@ void QgsDistanceWithinAlgorithm::process( const QgsProcessingContext &context, Q
   }
 }
 
-void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, const double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext )
+void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource(
+  const QgsProcessingContext &context,
+  QgsFeatureSource *targetSource,
+  QgsFeatureSource *referenceSource,
+  const double distance,
+  const QgsProperty &distanceProperty,
+  const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+  bool onlyRequireTargetIds,
+  QgsProcessingFeedback *feedback,
+  QgsExpressionContext &expressionContext
+)
 {
   if ( referenceSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
@@ -141,7 +161,15 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsPr
   }
 }
 
-void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, const double distance, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback )
+void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource(
+  const QgsProcessingContext &context,
+  QgsFeatureSource *targetSource,
+  QgsFeatureSource *referenceSource,
+  const double distance,
+  const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+  bool onlyRequireTargetIds,
+  QgsProcessingFeedback *feedback
+)
 {
   if ( targetSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
@@ -194,14 +222,17 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource( const Qg
 
 void QgsSelectWithinDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  const QStringList methods = QStringList() << QObject::tr( "creating new selection" )
-                                            << QObject::tr( "adding to current selection" )
-                                            << QObject::tr( "selecting within current selection" )
-                                            << QObject::tr( "removing from current selection" );
+  const QStringList methods = QStringList()
+                              << QObject::tr( "creating new selection" )
+                              << QObject::tr( "adding to current selection" )
+                              << QObject::tr( "selecting within current selection" )
+                              << QObject::tr( "removing from current selection" );
 
   addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Select features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) )
+  );
   addDistanceParameter();
 
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Modify current selection by" ), methods, false, 0 ) );
@@ -239,8 +270,10 @@ QString QgsSelectWithinDistanceAlgorithm::groupId() const
 
 QString QgsSelectWithinDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a selection in a vector layer. Features are selected wherever they are within "
-                      "the specified maximum distance from the features in an additional reference layer." );
+  return QObject::tr(
+    "This algorithm creates a selection in a vector layer. Features are selected wherever they are within "
+    "the specified maximum distance from the features in an additional reference layer."
+  );
 }
 
 QString QgsSelectWithinDistanceAlgorithm::shortDescription() const
@@ -273,9 +306,7 @@ QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMa
   expressionContext.appendScope( selectLayer->createExpressionContextScope() );
 
   QgsFeatureIds selectedIds;
-  auto addToSelection = [&]( const QgsFeature &feature ) {
-    selectedIds.insert( feature.id() );
-  };
+  auto addToSelection = [&]( const QgsFeature &feature ) { selectedIds.insert( feature.id() ); };
   process( context, selectLayer, referenceSource.get(), distance, distanceProperty, addToSelection, true, feedback, expressionContext );
 
   selectLayer->selectByIds( selectedIds, method );
@@ -292,7 +323,9 @@ QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMa
 void QgsExtractWithinDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Extract features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) )
+  );
   addDistanceParameter();
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (location)" ) ) );
@@ -325,15 +358,19 @@ QString QgsExtractWithinDistanceAlgorithm::groupId() const
 
 QString QgsExtractWithinDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an "
-                      "input layer. Features are copied wherever they are within "
-                      "the specified maximum distance from the features in an additional reference layer." );
+  return QObject::tr(
+    "This algorithm creates a new vector layer that only contains matching features from an "
+    "input layer. Features are copied wherever they are within "
+    "the specified maximum distance from the features in an additional reference layer."
+  );
 }
 
 QString QgsExtractWithinDistanceAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a new vector layer with features that are within "
-                      "a specified distance from features in another layer." );
+  return QObject::tr(
+    "Creates a new vector layer with features that are within "
+    "a specified distance from features in another layer."
+  );
 }
 
 QgsExtractWithinDistanceAlgorithm *QgsExtractWithinDistanceAlgorithm::createInstance() const

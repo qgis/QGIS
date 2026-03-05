@@ -55,9 +55,11 @@ QString QgsExtendLinesAlgorithm::outputName() const
 
 QString QgsExtendLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extends line geometries by a specified amount at the start and end "
-                      "of the line. Lines are extended using the bearing of the first and last segment "
-                      "in the line." );
+  return QObject::tr(
+    "This algorithm extends line geometries by a specified amount at the start and end "
+    "of the line. Lines are extended using the bearing of the first and last segment "
+    "in the line."
+  );
 }
 
 QString QgsExtendLinesAlgorithm::shortDescription() const

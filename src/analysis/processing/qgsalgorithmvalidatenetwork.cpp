@@ -74,25 +74,28 @@ QString QgsValidateNetworkAlgorithm::shortDescription() const
 
 QString QgsValidateNetworkAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm analyzes a network vector layer to identify data and topology errors "
-                      "that may affect network analysis tools (like shortest path).\n\n"
-                      "Optional checks include:\n\n"
-                      "1. Validating the 'Direction' field to ensure all direction field values in the input layer "
-                      "match the configured forward/backward/both values. Errors will be reported if the direction field "
-                      "value is non-null and does not match one of the configured values.\n"
-                      "2. Checking node-to-node separation. This check identifies nodes from the network graph that "
-                      "are closer to other nodes than the specified tolerance distance. This often indicates missed "
-                      "snaps or short segments in the input layer. In the case that a node violates this condition with multiple other "
-                      "nodes, only the closest violation will be reported.\n"
-                      "3. Checking node-to-segment separation: This check identifies nodes that are closer to a line "
-                      "segment (e.g. a graph edge) than the specified tolerance distance, without being connected to it. In the case "
-                      "that a node violates this condition with multiple other edges, only the closest violation will be reported.\n\n"
-                      "Topology checks (node-to-node and node-to-segment) can optionally be restricted to only evaluate nodes that are topological dead-ends (connected to only one other distinct node). This is useful for specifically targeting dangles or undershoots.\n\n"
-                      "Two layers are output by this algorithm:\n"
-                      "1. An output containing features from the original network layer which failed the direction validation checks.\n"
-                      "2. An output representing the problematic node locations with a 'error' field explaining the error. This is "
-                      "a line layer, where the output features join the problematic node to the node or "
-                      "segment which failed the tolerance checks." );
+  return QObject::tr(
+    "This algorithm analyzes a network vector layer to identify data and topology errors "
+    "that may affect network analysis tools (like shortest path).\n\n"
+    "Optional checks include:\n\n"
+    "1. Validating the 'Direction' field to ensure all direction field values in the input layer "
+    "match the configured forward/backward/both values. Errors will be reported if the direction field "
+    "value is non-null and does not match one of the configured values.\n"
+    "2. Checking node-to-node separation. This check identifies nodes from the network graph that "
+    "are closer to other nodes than the specified tolerance distance. This often indicates missed "
+    "snaps or short segments in the input layer. In the case that a node violates this condition with multiple other "
+    "nodes, only the closest violation will be reported.\n"
+    "3. Checking node-to-segment separation: This check identifies nodes that are closer to a line "
+    "segment (e.g. a graph edge) than the specified tolerance distance, without being connected to it. In the case "
+    "that a node violates this condition with multiple other edges, only the closest violation will be reported.\n\n"
+    "Topology checks (node-to-node and node-to-segment) can optionally be restricted to only evaluate nodes that are topological dead-ends (connected to only one other distinct node). This is useful "
+    "for specifically targeting dangles or undershoots.\n\n"
+    "Two layers are output by this algorithm:\n"
+    "1. An output containing features from the original network layer which failed the direction validation checks.\n"
+    "2. An output representing the problematic node locations with a 'error' field explaining the error. This is "
+    "a line layer, where the output features join the problematic node to the node or "
+    "segment which failed the tolerance checks."
+  );
 }
 
 QgsValidateNetworkAlgorithm *QgsValidateNetworkAlgorithm::createInstance() const
@@ -106,24 +109,36 @@ void QgsValidateNetworkAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto separationNodeNodeParam = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE_NODE_NODE"_s, QObject::tr( "Minimum separation between nodes" ), QVariant(), u"INPUT"_s, true );
   separationNodeNodeParam->setFlags( separationNodeNodeParam->flags() | Qgis::ProcessingParameterFlag::Optional );
-  separationNodeNodeParam->setHelp( QObject::tr( "The minimum allowed distance between two distinct graph nodes.\n\n"
-                                                 "Nodes closer than this distance (but not identical) will be flagged as errors.\n\n"
-                                                 "Leave empty to disable this check." ) );
+  separationNodeNodeParam->setHelp(
+    QObject::tr(
+      "The minimum allowed distance between two distinct graph nodes.\n\n"
+      "Nodes closer than this distance (but not identical) will be flagged as errors.\n\n"
+      "Leave empty to disable this check."
+    )
+  );
   addParameter( separationNodeNodeParam.release() );
 
-  auto separationNodeSegmentParam = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE_NODE_SEGMENT"_s, QObject::tr( "Minimum separation between nodes and non-noded segments" ), QVariant(), u"INPUT"_s, true );
+  auto separationNodeSegmentParam
+    = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE_NODE_SEGMENT"_s, QObject::tr( "Minimum separation between nodes and non-noded segments" ), QVariant(), u"INPUT"_s, true );
   separationNodeSegmentParam->setFlags( separationNodeSegmentParam->flags() | Qgis::ProcessingParameterFlag::Optional );
-  separationNodeSegmentParam->setHelp( QObject::tr( "The minimum allowed distance between a graph node and a graph edge (segment) "
-                                                    "that is not connected to the node.\n\n"
-                                                    "Nodes closer to a segment than this distance "
-                                                    "will be flagged. Leave empty to disable this check." ) );
+  separationNodeSegmentParam->setHelp(
+    QObject::tr(
+      "The minimum allowed distance between a graph node and a graph edge (segment) "
+      "that is not connected to the node.\n\n"
+      "Nodes closer to a segment than this distance "
+      "will be flagged. Leave empty to disable this check."
+    )
+  );
   addParameter( separationNodeSegmentParam.release() );
 
   auto endpointsOnlyParam = std::make_unique<QgsProcessingParameterBoolean>( u"ENDPOINTS_ONLY"_s, QObject::tr( "Only check for errors at end points" ), false );
-  endpointsOnlyParam->setHelp( QObject::tr( "If checked, topology checks (node-to-node and node-to-segment) will only be evaluated for nodes that are topological dead-ends (connected to only one other distinct node)." ) );
+  endpointsOnlyParam->setHelp(
+    QObject::tr( "If checked, topology checks (node-to-node and node-to-segment) will only be evaluated for nodes that are topological dead-ends (connected to only one other distinct node)." )
+  );
   addParameter( endpointsOnlyParam.release() );
 
-  auto directionField = std::make_unique<QgsProcessingParameterField>( u"DIRECTION_FIELD"_s, QObject::tr( "Direction field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto directionField
+    = std::make_unique<QgsProcessingParameterField>( u"DIRECTION_FIELD"_s, QObject::tr( "Direction field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
   directionField->setHelp( QObject::tr( "The attribute field specifying the direction of traffic flow for each segment." ) );
   addParameter( directionField.release() );
 
@@ -143,16 +158,26 @@ void QgsValidateNetworkAlgorithm::initAlgorithm( const QVariantMap & )
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 
-  auto invalidNetworkOutput = std::make_unique< QgsProcessingParameterFeatureSink >( u"OUTPUT_INVALID_NETWORK"_s, QObject::tr( "Invalid network features" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true );
-  invalidNetworkOutput->setHelp( QObject::tr( "Output line layer containing geometries representing features from the network layer with validity errors.\n\n"
-                                              "This output includes an attribute explaining why each feature is invalid." ) );
+  auto invalidNetworkOutput
+    = std::make_unique< QgsProcessingParameterFeatureSink >( u"OUTPUT_INVALID_NETWORK"_s, QObject::tr( "Invalid network features" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true );
+  invalidNetworkOutput->setHelp(
+    QObject::tr(
+      "Output line layer containing geometries representing features from the network layer with validity errors.\n\n"
+      "This output includes an attribute explaining why each feature is invalid."
+    )
+  );
   addParameter( invalidNetworkOutput.release() );
 
   addOutput( new QgsProcessingOutputNumber( u"COUNT_INVALID_NETWORK_FEATURES"_s, QObject::tr( "Count of invalid network features" ) ) );
 
-  auto invalidNodeOutput = std::make_unique< QgsProcessingParameterFeatureSink >( u"OUTPUT_INVALID_NODES"_s, QObject::tr( "Invalid network nodes" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true );
-  invalidNodeOutput->setHelp( QObject::tr( "Output line layer containing geometries representing nodes from the network layer with validity errors.\n\n"
-                                           "This output includes an attribute explaining why each node is invalid." ) );
+  auto invalidNodeOutput
+    = std::make_unique< QgsProcessingParameterFeatureSink >( u"OUTPUT_INVALID_NODES"_s, QObject::tr( "Invalid network nodes" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true );
+  invalidNodeOutput->setHelp(
+    QObject::tr(
+      "Output line layer containing geometries representing nodes from the network layer with validity errors.\n\n"
+      "This output includes an attribute explaining why each node is invalid."
+    )
+  );
   addParameter( invalidNodeOutput.release() );
 
   addOutput( new QgsProcessingOutputNumber( u"COUNT_INVALID_NODES"_s, QObject::tr( "Count of invalid network nodes" ) ) );
@@ -193,7 +218,9 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
   const QgsFields networkErrorFields = QgsProcessingUtils::combineFields( networkSource->fields(), newNetworkErrorFields );
 
   QString networkErrorDest;
-  std::unique_ptr<QgsFeatureSink> networkErrorSink( parameterAsSink( parameters, u"OUTPUT_INVALID_NETWORK"_s, context, networkErrorDest, networkErrorFields, networkSource->wkbType(), networkSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> networkErrorSink(
+    parameterAsSink( parameters, u"OUTPUT_INVALID_NETWORK"_s, context, networkErrorDest, networkErrorFields, networkSource->wkbType(), networkSource->sourceCrs() )
+  );
 
   QgsFields nodeErrorFields;
   nodeErrorFields.append( QgsField( u"error"_s, QMetaType::Type::QString ) );
@@ -385,9 +412,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
     {
       const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &fidsFirstNode = director.sourcesForVertex( i );
 
-      const QList<QgsSpatialIndexKDBushData> candidates = nodeIndex.intersects(
-        QgsRectangle::fromCenterAndSize( pt, toleranceNodeToNode * 2, toleranceNodeToNode * 2 )
-      );
+      const QList<QgsSpatialIndexKDBushData> candidates = nodeIndex.intersects( QgsRectangle::fromCenterAndSize( pt, toleranceNodeToNode * 2, toleranceNodeToNode * 2 ) );
 
       // only keep the closest violation
       NodeError closestError;

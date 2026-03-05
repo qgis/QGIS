@@ -54,15 +54,21 @@ QString QgsSplitWithLinesAlgorithm::groupId() const
 
 void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"LINES"_s, QObject::tr( "Split layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
+  );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"LINES"_s, QObject::tr( "Split layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
+  );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Split" ) ) );
 }
 
 QString QgsSplitWithLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines or polygon rings in another layer to define the breaking points. "
-                      "Intersection between geometries in both layers are considered as split points." );
+  return QObject::tr(
+    "This algorithm splits the lines or polygons in one layer using the lines or polygon rings in another layer to define the breaking points. "
+    "Intersection between geometries in both layers are considered as split points."
+  );
 }
 
 QString QgsSplitWithLinesAlgorithm::shortDescription() const
@@ -112,7 +118,9 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   bool sameLayer = parameters.value( u"INPUT"_s ) == parameters.value( u"LINES"_s );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink(
+    parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey )
+  );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 

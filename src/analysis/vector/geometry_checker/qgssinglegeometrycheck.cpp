@@ -19,7 +19,9 @@ email                : matthias@opengis.ch
 #include "qgsgeometrycheckcontext.h"
 #include "qgspoint.h"
 
-QgsGeometryCheck::Result QgsSingleGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsSingleGeometryCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   Q_UNUSED( messages )
   QMap<QString, QSet<QVariant>> uniqueIds;
@@ -63,10 +65,7 @@ void QgsSingleGeometryCheckError::update( const QgsSingleGeometryCheckError *oth
 
 bool QgsSingleGeometryCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return mGeometry.equals( other->mGeometry )
-         && mCheck == other->mCheck
-         && mErrorLocation.equals( other->mErrorLocation )
-         && mVertexId == other->mVertexId;
+  return mGeometry.equals( other->mGeometry ) && mCheck == other->mCheck && mErrorLocation.equals( other->mErrorLocation ) && mVertexId == other->mVertexId;
 }
 
 bool QgsSingleGeometryCheckError::handleChanges( const QList<QgsGeometryCheck::Change> &changes )
@@ -98,8 +97,7 @@ QgsVertexId QgsSingleGeometryCheckError::vertexId() const
 QgsGeometryCheckErrorSingle::QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *error, const QgsGeometryCheckerUtils::LayerFeature &layerFeature )
   : QgsGeometryCheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to QgsGeometryCheckError
   , mError( error )
-{
-}
+{}
 
 QgsSingleGeometryCheckError *QgsGeometryCheckErrorSingle::singleError() const
 {

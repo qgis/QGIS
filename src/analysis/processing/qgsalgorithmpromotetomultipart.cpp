@@ -57,11 +57,17 @@ QString QgsPromoteToMultipartAlgorithm::outputName() const
 
 QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
-                      "multipart. Input features which are already multipart features will remain unchanged." )
-         + u"\n\n"_s + QObject::tr( "This algorithm can be used to force geometries to multipart types in order to be compatible with data providers "
-                                    "with strict singlepart/multipart compatibility checks." )
-         + u"\n\n"_s + QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
+  return QObject::tr(
+           "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
+           "multipart. Input features which are already multipart features will remain unchanged."
+         )
+         + u"\n\n"_s
+         + QObject::tr(
+           "This algorithm can be used to force geometries to multipart types in order to be compatible with data providers "
+           "with strict singlepart/multipart compatibility checks."
+         )
+         + u"\n\n"_s
+         + QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
 QString QgsPromoteToMultipartAlgorithm::shortDescription() const

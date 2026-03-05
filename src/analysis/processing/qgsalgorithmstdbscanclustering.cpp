@@ -82,11 +82,14 @@ void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsStDbscanClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Clusters point features based on a 2D implementation of spatiotemporal density-based clustering of applications with noise (ST-DBSCAN) algorithm.\n\n"
-                      "For more details, please see the following papers:\n"
-                      "* Ester, M., H. P. Kriegel, J. Sander, and X. Xu, \"A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise\". In: Proceedings of the 2nd International Conference on Knowledge Discovery and Data Mining, Portland, OR, AAAI Press, pp. 226-231. 1996\n"
-                      "* Birant, Derya, and Alp Kut. \"ST-DBSCAN: An algorithm for clustering spatial–temporal data.\" Data & Knowledge Engineering 60.1 (2007): 208-221.\n"
-                      "* Peca, I., Fuchs, G., Vrotsou, K., Andrienko, N. V., & Andrienko, G. L. (2012). Scalable Cluster Analysis of Spatial Events. In EuroVA@ EuroVis." );
+  return QObject::tr(
+    "Clusters point features based on a 2D implementation of spatiotemporal density-based clustering of applications with noise (ST-DBSCAN) algorithm.\n\n"
+    "For more details, please see the following papers:\n"
+    "* Ester, M., H. P. Kriegel, J. Sander, and X. Xu, \"A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise\". In: Proceedings of the 2nd International "
+    "Conference on Knowledge Discovery and Data Mining, Portland, OR, AAAI Press, pp. 226-231. 1996\n"
+    "* Birant, Derya, and Alp Kut. \"ST-DBSCAN: An algorithm for clustering spatial–temporal data.\" Data & Knowledge Engineering 60.1 (2007): 208-221.\n"
+    "* Peca, I., Fuchs, G., Vrotsou, K., Andrienko, N. V., & Andrienko, G. L. (2012). Scalable Cluster Analysis of Spatial Events. In EuroVA@ EuroVis."
+  );
 }
 
 QgsStDbscanClusteringAlgorithm *QgsStDbscanClusteringAlgorithm::createInstance() const

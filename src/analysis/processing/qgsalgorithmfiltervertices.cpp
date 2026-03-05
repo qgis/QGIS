@@ -43,20 +43,21 @@ QString QgsFilterVerticesAlgorithmBase::outputName() const
 
 QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
 {
-  return QObject::tr( "Filters away vertices based on their %1, returning geometries with only "
-                      "vertex points that have a %1 ≥ the specified minimum value and ≤ "
-                      "the maximum value.\n\n"
-                      "If the minimum value is not specified then only the maximum value is tested, "
-                      "and similarly if the maximum value is not specified then only the minimum value is tested.\n\n"
-                      "Depending on the input geometry attributes and the filters used, "
-                      "the resultant geometries created by this algorithm may no longer be valid." )
+  return QObject::tr(
+           "Filters away vertices based on their %1, returning geometries with only "
+           "vertex points that have a %1 ≥ the specified minimum value and ≤ "
+           "the maximum value.\n\n"
+           "If the minimum value is not specified then only the maximum value is tested, "
+           "and similarly if the maximum value is not specified then only the minimum value is tested.\n\n"
+           "Depending on the input geometry attributes and the filters used, "
+           "the resultant geometries created by this algorithm may no longer be valid."
+  )
     .arg( componentString() );
 }
 
 QString QgsFilterVerticesAlgorithmBase::shortDescription() const
 {
-  return QObject::tr( "Filters away vertices based on their %1 value." )
-    .arg( componentString() );
+  return QObject::tr( "Filters away vertices based on their %1 value." ).arg( componentString() );
 }
 
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
@@ -159,10 +160,7 @@ QString QgsFilterVerticesByM::componentString() const
 
 void QgsFilterVerticesByM::filter( QgsGeometry &geometry, double min, double max ) const
 {
-  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool {
-    return ( std::isnan( min ) || point.m() >= min )
-           && ( std::isnan( max ) || point.m() <= max );
-  } );
+  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool { return ( std::isnan( min ) || point.m() >= min ) && ( std::isnan( max ) || point.m() <= max ); } );
 }
 
 
@@ -208,10 +206,7 @@ QString QgsFilterVerticesByZ::componentString() const
 
 void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max ) const
 {
-  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool {
-    return ( std::isnan( min ) || point.z() >= min )
-           && ( std::isnan( max ) || point.z() <= max );
-  } );
+  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool { return ( std::isnan( min ) || point.z() >= min ) && ( std::isnan( max ) || point.z() <= max ); } );
 }
 
 ///@endcond

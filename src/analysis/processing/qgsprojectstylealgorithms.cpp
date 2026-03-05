@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 QgsSaveToStyleVisitor::QgsSaveToStyleVisitor( QgsStyle *style, const QList<QgsStyle::StyleEntity> &objects )
   : mStyle( style )
   , mObjects( objects )
-{
-}
+{}
 
 bool QgsSaveToStyleVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity )
 {
@@ -115,15 +114,13 @@ QgsStyleFromProjectAlgorithm::~QgsStyleFromProjectAlgorithm() = default;
 
 void QgsStyleFromProjectAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input project (leave blank to use current)" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), true, QObject::tr( "QGIS files" ) + u" (*.qgs *.qgz *.QGS)"_s ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input project (leave blank to use current)" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), true, QObject::tr( "QGIS files" ) + u" (*.qgs *.qgz *.QGS)"_s )
+  );
 
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
 
-  const QStringList options = QStringList()
-                              << QObject::tr( "Symbols" )
-                              << QObject::tr( "Color ramps" )
-                              << QObject::tr( "Text formats" )
-                              << QObject::tr( "Label settings" );
+  const QStringList options = QStringList() << QObject::tr( "Symbols" ) << QObject::tr( "Color ramps" ) << QObject::tr( "Text formats" ) << QObject::tr( "Label settings" );
   addParameter( new QgsProcessingParameterEnum( u"OBJECTS"_s, QObject::tr( "Objects to extract" ), options, true, QVariantList() << 0 << 1 << 2 << 3 ) );
   addOutput( new QgsProcessingOutputNumber( u"SYMBOLS"_s, QObject::tr( "Symbol count" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"COLORRAMPS"_s, QObject::tr( "Color ramp count" ) ) );
@@ -158,8 +155,10 @@ QString QgsStyleFromProjectAlgorithm::groupId() const
 
 QString QgsStyleFromProjectAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts all style objects (including symbols, color ramps, text formats and label settings) from a QGIS project.\n\n"
-                      "The extracted symbols are saved to a QGIS style database (XML format), which can be managed and imported via the Style Manager dialog." );
+  return QObject::tr(
+    "This algorithm extracts all style objects (including symbols, color ramps, text formats and label settings) from a QGIS project.\n\n"
+    "The extracted symbols are saved to a QGIS style database (XML format), which can be managed and imported via the Style Manager dialog."
+  );
 }
 
 QString QgsStyleFromProjectAlgorithm::shortDescription() const

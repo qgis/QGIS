@@ -53,7 +53,15 @@ QString QgsExtractVerticesAlgorithm::groupId() const
 
 QString QgsExtractVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points representing the vertices of the input geometries. The attributes associated to each point are the same ones associated to the feature that the point belongs to." ) + u"\n\n"_s + QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
+  return QObject::tr(
+           "This algorithm takes a vector layer and generates a point layer with points representing the vertices of the input geometries. The attributes associated to each point are the same ones "
+           "associated to the feature that the point belongs to."
+         )
+         + u"\n\n"_s
+         + QObject::tr(
+           "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along "
+           "original geometry and bisector angle of vertex for original geometry."
+         );
 }
 
 QString QgsExtractVerticesAlgorithm::shortDescription() const
@@ -141,15 +149,12 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
   if ( inputGeom.isEmpty() )
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant();
     if ( mGeometryType == Qgis::GeometryType::Polygon )
     {
       attrs << QVariant();
     }
-    attrs << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant();
 
     f.clearGeometry();
     f.setAttributes( attrs );
@@ -165,15 +170,12 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
       const QgsVertexId vertexId = vi.vertexId();
       const double angle = inputGeom.constGet()->vertexAngle( vertexId ) * 180 / M_PI;
       QgsAttributes attrs = f.attributes();
-      attrs << vertexPos
-            << vertexId.part;
+      attrs << vertexPos << vertexId.part;
       if ( mGeometryType == Qgis::GeometryType::Polygon )
       {
         attrs << vertexId.ring;
       }
-      attrs << vertexId.vertex
-            << cumulativeDistance
-            << angle;
+      attrs << vertexId.vertex << cumulativeDistance << angle;
 
       QgsFeature outputFeature = QgsFeature();
       outputFeature.setAttributes( attrs );

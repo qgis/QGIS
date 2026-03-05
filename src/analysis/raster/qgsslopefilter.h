@@ -39,10 +39,7 @@ class ANALYSIS_EXPORT QgsSlopeFilter : public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-    const QString openClProgramBaseName() const override
-    {
-      return u"slope"_s;
-    }
+    const QString openClProgramBaseName() const override { return u"slope"_s; }
 #endif
 };
 

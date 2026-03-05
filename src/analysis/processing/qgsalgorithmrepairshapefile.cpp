@@ -70,7 +70,9 @@ QgsRepairShapefileAlgorithm *QgsRepairShapefileAlgorithm::createInstance() const
 
 void QgsRepairShapefileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input Shapefile" ), Qgis::ProcessingFileParameterBehavior::File, u"shp"_s, QVariant(), false, QObject::tr( "ESRI Shapefile" ) + u" (*.shp *.SHP)"_s ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input Shapefile" ), Qgis::ProcessingFileParameterBehavior::File, u"shp"_s, QVariant(), false, QObject::tr( "ESRI Shapefile" ) + u" (*.shp *.SHP)"_s )
+  );
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Repaired layer" ) ) );
 }
