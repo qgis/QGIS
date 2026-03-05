@@ -32,6 +32,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
+  // TODO: remove in QGIS 4.4 (after LTR 4.2)
+
   // single settings - added in 3.30
   settingsRespectScreenDPI->copyValueFromKey( u"gui/qgis/respect_screen_dpi"_s, {}, true );
 
@@ -43,8 +45,4 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 }
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()
-{
-  // TODO QGIS 5.0: Remove
-  // backward compatibility for settings
-  settingsRespectScreenDPI->copyValueToKeyIfChanged( u"gui/qgis/respect_screen_dpi"_s );
-}
+{}
