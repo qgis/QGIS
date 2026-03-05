@@ -30,10 +30,9 @@ class QgsLayout;
  * \ingroup core
  * \brief Base class for commands to undo/redo layout and layout object changes.
 */
-class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
+class CORE_EXPORT QgsAbstractLayoutUndoCommand : public QUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutUndoCommand.
      * The \a id argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
@@ -79,7 +78,6 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
     virtual bool containsChange() const;
 
   protected:
-
     /**
      * Saves the state of the object to the specified \a stateDoc.
      *
@@ -107,7 +105,6 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
     bool mFirstRun = true;
 
   private:
-
     //! XML that saves the state before executing the command
     QDomDocument mBeforeState;
 
@@ -116,7 +113,6 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
 
     //! Command id
     int mId = 0;
-
 };
 
 /**
@@ -126,7 +122,6 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
 class CORE_EXPORT QgsLayoutUndoObjectInterface
 {
   public:
-
     virtual ~QgsLayoutUndoObjectInterface() = default;
 
     /**

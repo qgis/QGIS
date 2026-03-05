@@ -28,7 +28,6 @@ A simple pie chart class.
 #include "qgspiechartplot.h"
 %End
   public:
-
     QgsPieChartPlot();
     ~QgsPieChartPlot();
 

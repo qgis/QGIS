@@ -35,7 +35,6 @@ class QgsProcessingModelComment;
  */
 class CORE_EXPORT QgsProcessingModelComponent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsProcessingModelChildAlgorithm *>( sipCpp ) != NULL )
@@ -50,7 +49,7 @@ class CORE_EXPORT QgsProcessingModelComponent
       sipType = sipType_QgsProcessingModelParameter;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -153,7 +152,6 @@ class CORE_EXPORT QgsProcessingModelComponent
     virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
 
   protected:
-
     //! Only subclasses can be created
     QgsProcessingModelComponent( const QString &description = QString() );
 
@@ -186,7 +184,6 @@ class CORE_EXPORT QgsProcessingModelComponent
     void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
 
   private:
-
     static constexpr double DEFAULT_COMPONENT_WIDTH = 200;
     static constexpr double DEFAULT_COMPONENT_HEIGHT = 30;
 
@@ -200,7 +197,6 @@ class CORE_EXPORT QgsProcessingModelComponent
 
     bool mTopEdgeLinksCollapsed = true;
     bool mBottomEdgeLinksCollapsed = true;
-
 };
 
 ///@endcond

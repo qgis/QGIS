@@ -88,9 +88,9 @@ void QgsLayoutGridSettings::loadFromSettings()
   }
 
   mGridResolution = QgsLayoutMeasurement( s.value( u"LayoutDesigner/defaultSnapGridResolution"_s, 10.0, QgsSettings::Gui ).toDouble(), Qgis::LayoutUnit::Millimeters );
-//  mSnapToleranceSpinBox->setValue( mSettings->value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt() );
-  mGridOffset = QgsLayoutPoint( s.value( u"LayoutDesigner/defaultSnapGridOffsetX"_s, 0, QgsSettings::Gui ).toDouble(),
-                                s.value( u"LayoutDesigner/defaultSnapGridOffsetY"_s, 0, QgsSettings::Gui ).toDouble(), Qgis::LayoutUnit::Millimeters );
+  //  mSnapToleranceSpinBox->setValue( mSettings->value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt() );
+  mGridOffset
+    = QgsLayoutPoint( s.value( u"LayoutDesigner/defaultSnapGridOffsetX"_s, 0, QgsSettings::Gui ).toDouble(), s.value( u"LayoutDesigner/defaultSnapGridOffsetY"_s, 0, QgsSettings::Gui ).toDouble(), Qgis::LayoutUnit::Millimeters );
 }
 
 bool QgsLayoutGridSettings::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
@@ -134,4 +134,3 @@ bool QgsLayoutGridSettings::readXml( const QDomElement &e, const QDomDocument &,
 
   return true;
 }
-

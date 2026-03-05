@@ -8,7 +8,7 @@
 
 
 
-class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
+class QgsTicksScaleBarRenderer : QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
 A scale bar that draws segments using short ticks.
@@ -18,7 +18,6 @@ A scale bar that draws segments using short ticks.
 #include "qgsticksscalebarrenderer.h"
 %End
   public:
-
     enum TickPosition /BaseType=IntEnum/
     {
       TicksUp,
@@ -42,9 +41,8 @@ Constructor for QgsTicksScaleBarRenderer.
     virtual QgsTicksScaleBarRenderer *clone() const /Factory/;
 
 
-     virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+
 
     void setTickPosition( TickPosition position );
 %Docstring

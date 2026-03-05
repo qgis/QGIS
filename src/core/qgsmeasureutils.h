@@ -37,7 +37,6 @@ class CORE_EXPORT QgsMeasureUtils
     Q_GADGET
 
   public:
-
     /**
      * Formats an \a area measurement (with the specified \a unit) for use with a \a project, respecting the project's
      * area unit settings.
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsMeasureUtils
      * distance unit settings.
      */
     Q_INVOKABLE static QString formatDistanceForProject( QgsProject *project, double distance, Qgis::DistanceUnit unit );
-
 };
 
 

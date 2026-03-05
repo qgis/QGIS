@@ -20,7 +20,6 @@ Task to copy a file on disk.
 #include "qgscopyfiletask.h"
 %End
   public:
-
     QgsCopyFileTask( const QString &source, const QString &destination );
 %Docstring
 Creates a task that copy ``source`` file to ``destination``

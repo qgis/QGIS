@@ -28,8 +28,7 @@
 QgsSelectiveMaskingSourceSetManagerModel::QgsSelectiveMaskingSourceSetManagerModel( QgsSelectiveMaskingSourceSetManager *manager, QObject *parent )
   : QgsProjectStoredObjectManagerModel( manager, parent )
 {
-  connect( manager, &QgsSelectiveMaskingSourceSetManager::setRenamed, this, [this]( const QString &, const QString & newName )
-  {
+  connect( manager, &QgsSelectiveMaskingSourceSetManager::setRenamed, this, [this]( const QString &, const QString &newName ) {
     QgsSelectiveMaskingSourceSet *sourceSet = mObjectManager->objectByName( newName );
     objectRenamedInternal( sourceSet, newName );
   } );
@@ -101,5 +100,4 @@ QVariant QgsSelectiveMaskingSourceSetManagerModel::data( const QModelIndex &inde
 
 QgsSelectiveMaskingSourceSetManagerProxyModel::QgsSelectiveMaskingSourceSetManagerProxyModel( QObject *parent )
   : QgsProjectStoredObjectManagerProxyModel( parent )
-{
-}
+{}

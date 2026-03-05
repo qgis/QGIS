@@ -33,9 +33,7 @@ class QgsAbstractProfileGenerator;
  */
 class CORE_EXPORT QgsAbstractProfileSource
 {
-
   public:
-
     virtual ~QgsAbstractProfileSource();
 
     /**
@@ -69,7 +67,6 @@ class CORE_EXPORT QgsAbstractProfileSource
 
   private:
     QString mSourceId = QUuid::createUuid().toString(); // Support legacy sources with a uuid
-
 };
 
 #endif // QGSABSTRACTPROFILESOURCE_H

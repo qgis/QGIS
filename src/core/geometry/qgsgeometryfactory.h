@@ -55,7 +55,6 @@ typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
-
     /**
      * Construct geometry from a WKB string.
      * Updates position of the passed WKB pointer.

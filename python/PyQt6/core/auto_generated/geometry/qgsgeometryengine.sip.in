@@ -15,7 +15,7 @@
 #include <qgsgeos.h>
 %End
 
-class QgsGeometryEngine
+  class QgsGeometryEngine
 {
 %Docstring(signature="appended")
 A geometry engine is a low-level representation of a
@@ -292,10 +292,9 @@ Checks if this is equal to ``geom``. If both are Null geometries,
 Determines whether the geometry is simple (according to OGC definition).
 %End
 
-    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QVector<QgsGeometry > &newGeometries /Out/,
-        bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry > &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false
+    ) const;
 %Docstring
 Splits this geometry according to a given line.
 

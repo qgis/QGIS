@@ -25,12 +25,11 @@
  * \brief An abstract layout item that provides generic methods for node based
  * shapes such as polygon or polylines.
  */
-class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutNodesItem : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Sets the \a nodes the shape consists of.
      * \see nodes()
@@ -123,7 +122,6 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     virtual bool isValid() const = 0;
 
   protected:
-
     /**
      * Constructor for QgsLayoutNodesItem, attached to the specified \a layout.
      */
@@ -184,7 +182,6 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     virtual void updateBoundingRect();
 
   private:
-
     void init();
 
     //! The index of the node currently selected.
@@ -199,7 +196,6 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     //! Draw nodes
     void drawNodes( QgsLayoutItemRenderContext &context ) const;
     void drawSelectedNode( QgsLayoutItemRenderContext &context ) const;
-
 };
 
 #endif // QGSLAYOUTITEMNODEITEM_H

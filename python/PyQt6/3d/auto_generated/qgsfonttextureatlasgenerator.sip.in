@@ -128,8 +128,7 @@ Returns the number of textures in the atlas.
         Returns the number of textures in the atlas.
 %End
 %MethodCode
-        sipRes
-      = sipCpp->count();
+        sipRes = sipCpp->count();
 %End
 
 };

@@ -20,17 +20,11 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacCollection::QgsStacCollection( const QString &id,
-                                      const QString &version,
-                                      const QString &description,
-                                      const QVector< QgsStacLink > &links,
-                                      const QString &license,
-                                      const QgsStacExtent &extent )
+QgsStacCollection::QgsStacCollection( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links, const QString &license, const QgsStacExtent &extent )
   : QgsStacCatalog( id, version, description, links )
   , mLicense( license )
   , mExtent( extent )
-{
-}
+{}
 
 Qgis::StacObjectType QgsStacCollection::type() const
 {
@@ -64,7 +58,7 @@ QString QgsStacCollection::toHtml() const
     html += "</ul>\n"_L1;
   }
 
-  if ( ! mConformanceClasses.isEmpty() )
+  if ( !mConformanceClasses.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Conformance Classes"_L1 );
     html += "<ul>\n"_L1;
@@ -75,7 +69,7 @@ QString QgsStacCollection::toHtml() const
     html += "</ul>\n"_L1;
   }
 
-  if ( ! mProviders.isEmpty() )
+  if ( !mProviders.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Providers"_L1 );
     QTextDocument descr;
@@ -97,7 +91,7 @@ QString QgsStacCollection::toHtml() const
   if ( mExtent.spatialExtent().is3D() )
     extentString = mExtent.spatialExtent().toString();
   else
-    extentString =  mExtent.spatialExtent().toRectangle().toString();
+    extentString = mExtent.spatialExtent().toRectangle().toString();
   html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"overall"_s, extentString );
 
 
@@ -110,7 +104,7 @@ QString QgsStacCollection::toHtml() const
       if ( extent.is3D() )
         extentString = extent.toString();
       else
-        extentString =  extent.toRectangle().toString();
+        extentString = extent.toRectangle().toString();
       html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"detailed"_s, extentString );
     }
   }
@@ -137,7 +131,7 @@ QString QgsStacCollection::toHtml() const
     }
   }
 
-  if ( ! mSummaries.isEmpty() )
+  if ( !mSummaries.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Summaries"_L1 );
     html += "<table class=\"list-view\">\n"_L1;
@@ -159,7 +153,7 @@ QString QgsStacCollection::toHtml() const
     html += "</table><br/>\n"_L1;
   }
 
-  if ( ! mAssets.isEmpty() )
+  if ( !mAssets.isEmpty() )
   {
     QTextDocument descr;
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );

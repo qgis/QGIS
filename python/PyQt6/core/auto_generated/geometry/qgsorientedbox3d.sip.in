@@ -29,7 +29,6 @@ Represents a oriented (rotated) box in 3 dimensions.
 #include "qgsorientedbox3d.h"
 %End
   public:
-
     QgsOrientedBox3D();
 %Docstring
 Constructor for a null oriented box.

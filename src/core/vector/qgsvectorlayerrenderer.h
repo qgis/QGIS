@@ -38,7 +38,7 @@ class QgsMapClippingRegion;
 typedef QList<int> QgsAttributeList;
 
 #include "qgis_sip.h"
-#include "qgsfields.h"  // QgsFields
+#include "qgsfields.h" // QgsFields
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsfeedback.h"
@@ -76,7 +76,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void setLayerRenderingTimeHint( int time ) override;
 
   private:
-
     /**
      * Registers label and diagram layer
      * \param layer diagram layer
@@ -102,7 +101,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool renderInternal( QgsFeatureRenderer *renderer, int rendererIndex );
 
   private:
-
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     //! The rendered layer
@@ -165,7 +163,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     quint64 mPreparationTime = 0;
 
     std::unique_ptr< QgsSymbol > mSelectionSymbol;
-
 };
 
 

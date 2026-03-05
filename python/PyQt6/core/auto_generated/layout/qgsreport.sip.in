@@ -29,7 +29,6 @@ Reports consist of multiple sections, represented by
 #include "qgsreport.h"
 %End
   public:
-
     QgsReport( QgsProject *project );
 %Docstring
 Constructor for QgsReport, associated with the specified ``project``.

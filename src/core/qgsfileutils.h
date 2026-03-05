@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsFileUtils
 {
   public:
-
     /**
      * Returns the human size from bytes
      */
@@ -178,7 +177,9 @@ class CORE_EXPORT QgsFileUtils
      *
      * \since QGIS 3.22
      */
-    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+    static bool renameDataset(
+      const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile
+    );
 
     /**
      * Returns the limit of simultaneously opened files by the process.
@@ -236,7 +237,6 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.30
      */
     static QString uniquePath( const QString &path );
-
     /**
      * Recursively copies a whole directory.
      *

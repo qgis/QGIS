@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     void setCheckedLayers( const QList<QgsMapLayer *> layers );
 
     //! Returns the checked layers
-    QList<QgsMapLayer *> checkedLayers() const {return mCheckedLayers;}
+    QList<QgsMapLayer *> checkedLayers() const { return mCheckedLayers; }
 
     //! Returns the map layer at a given index
     QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
@@ -115,7 +115,6 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
     /**
      * Reimplement to determine which layer are shown in the model
      * \note even when reimplemented, the layer type filter and the filter text will respected.

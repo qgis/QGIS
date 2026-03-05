@@ -41,7 +41,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
     Q_PROPERTY( QVariantList extraIdentifierValues READ extraIdentifierValues WRITE setExtraIdentifierValues NOTIFY extraIdentifierValuesChanged )
 
   public:
-
     /**
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
      */

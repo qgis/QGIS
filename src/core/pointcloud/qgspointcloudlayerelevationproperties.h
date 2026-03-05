@@ -35,11 +35,9 @@
  */
 class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointCloudLayerElevationProperties, with the specified \a parent object.
      */

@@ -29,16 +29,16 @@ removed from the map layer registry.
 #include "qgslayertreeregistrybridge.h"
 %End
   public:
-
     struct InsertionPoint
     {
-      InsertionPoint( QgsLayerTreeGroup *group, int position );
+        InsertionPoint( QgsLayerTreeGroup *group, int position );
 %Docstring
 Constructs an insertion point as layer tree group with its corresponding
 position.
 %End
-      QgsLayerTreeGroup *group;
-      int position;
+
+        QgsLayerTreeGroup *group;
+        int position;
     };
 
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent /TransferThis/ = 0 );

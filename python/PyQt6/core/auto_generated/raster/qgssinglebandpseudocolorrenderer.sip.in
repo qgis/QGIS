@@ -10,7 +10,7 @@
 
 
 
-class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
+class QgsSingleBandPseudoColorRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Raster renderer pipe for single band pseudocolor.
@@ -20,7 +20,6 @@ Raster renderer pipe for single band pseudocolor.
 #include "qgssinglebandpseudocolorrenderer.h"
 %End
   public:
-
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader /Transfer/ = 0 );
 %Docstring
 Note: takes ownership of :py:class:`QgsRasterShader`
@@ -51,15 +50,17 @@ Returns the raster shader
 Returns the raster shader
 %End
 
-    virtual bool canCreateRasterAttributeTable( ) const;
+    virtual bool canCreateRasterAttributeTable() const;
 
 
-    void createShader( QgsColorRamp *colorRamp /Transfer/ = 0,
-                       Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
-                       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
-                       int classes = 0,
-                       bool clip = false,
-                       const QgsRectangle &extent = QgsRectangle() );
+    void createShader(
+      QgsColorRamp *colorRamp /Transfer/ = 0,
+      Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
+      int classes = 0,
+      bool clip = false,
+      const QgsRectangle &extent = QgsRectangle()
+    );
 %Docstring
 Creates a color ramp shader
 

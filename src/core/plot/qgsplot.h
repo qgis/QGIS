@@ -83,7 +83,7 @@ class CORE_EXPORT QgsPlot
     {
       sipType = NULL;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -93,21 +93,21 @@ class CORE_EXPORT QgsPlot
      * \since QGIS 4.0
      */
     enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPlot, Property ) : int
-      {
-      MarginLeft, //!< Left margin
-      MarginTop, //!< Top margin
-      MarginRight, //!< Right margin
-      MarginBottom, //!< Bottom margin
+    {
+      MarginLeft,         //!< Left margin
+      MarginTop,          //!< Top margin
+      MarginRight,        //!< Right margin
+      MarginBottom,       //!< Bottom margin
       XAxisMajorInterval, //!< Major grid line interval for X axis
       XAxisMinorInterval, //!< Minor grid line interval for X axis
       XAxisLabelInterval, //!< Label interval for X axis
       YAxisMajorInterval, //!< Major grid line interval for Y axis
       YAxisMinorInterval, //!< Minor grid line interval for Y axis
       YAxisLabelInterval, //!< Label interval for Y axis
-      XAxisMinimum, //!< Minimum X axis value
-      XAxisMaximum, //!< Maximum X axis value
-      YAxisMinimum, //!< Minimum Y axis value
-      YAxisMaximum, //!< Maximum Y axis value
+      XAxisMinimum,       //!< Minimum X axis value
+      XAxisMaximum,       //!< Maximum X axis value
+      YAxisMinimum,       //!< Minimum Y axis value
+      YAxisMaximum,       //!< Maximum Y axis value
     };
 
     QgsPlot() = default;
@@ -183,7 +183,6 @@ class CORE_EXPORT QgsPlot
 class CORE_EXPORT QgsPlotRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPlotRenderContext.
      */
@@ -219,7 +218,7 @@ class CORE_EXPORT QgsAbstractPlotSeries
     {
       sipType = NULL;
     }
-    SIP_END
+  SIP_END
 #endif
   public:
 
@@ -242,7 +241,6 @@ class CORE_EXPORT QgsAbstractPlotSeries
     virtual QgsAbstractPlotSeries *clone() const = 0 SIP_FACTORY;
 
   private:
-
     QString mName;
 };
 
@@ -257,7 +255,6 @@ class CORE_EXPORT QgsAbstractPlotSeries
 class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
 {
   public:
-
     QgsXyPlotSeries() = default;
     ~QgsXyPlotSeries() override = default;
 
@@ -284,7 +281,6 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QgsAbstractPlotSeries *clone() const override SIP_FACTORY;
 
   private:
-
     QList<std::pair<double, double>> mData;
 };
 
@@ -299,7 +295,6 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
 class CORE_EXPORT QgsPlotData
 {
   public:
-
     QgsPlotData() = default;
     ~QgsPlotData();
 
@@ -336,7 +331,6 @@ class CORE_EXPORT QgsPlotData
     void setCategories( const QStringList &categories );
 
   private:
-
     QList<QgsAbstractPlotSeries *> mSeries;
     QStringList mCategories;
 };
@@ -352,7 +346,6 @@ class CORE_EXPORT QgsPlotData
 class CORE_EXPORT QgsPlotAxis
 {
   public:
-
     QgsPlotAxis();
     ~QgsPlotAxis();
 
@@ -526,7 +519,6 @@ class CORE_EXPORT QgsPlotAxis
     void setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement );
 
   private:
-
 #ifdef SIP_RUN
     QgsPlotAxis( const QgsPlotAxis &other );
 #endif
@@ -547,7 +539,6 @@ class CORE_EXPORT QgsPlotAxis
     std::unique_ptr< QgsLineSymbol > mGridMinorSymbol;
 
     QgsTextFormat mLabelTextFormat;
-
 };
 
 /**
@@ -561,7 +552,6 @@ class CORE_EXPORT QgsPlotAxis
 class CORE_EXPORT Qgs2DPlot : public QgsPlot
 {
   public:
-
     /**
      * Constructor for Qgs2DPlot.
      */
@@ -630,12 +620,10 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setMargins( const QgsMargins &margins );
 
   protected:
-
     //! Applies 2D plot data-defined properties
     void applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const;
 
   private:
-
 #ifdef SIP_RUN
     Qgs2DPlot( const Qgs2DPlot &other );
 #endif
@@ -660,7 +648,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
 {
   public:
-
     /**
      * Constructor for Qgs2DXyPlot.
      */
@@ -821,12 +808,22 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
     void setFlipAxes( bool flipAxes );
 
   protected:
-
     //! Applies 2D XY plot data-defined properties
-    void applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
+    void applyDataDefinedProperties(
+      QgsRenderContext &context,
+      double &minX,
+      double &maxX,
+      double &minY,
+      double &maxY,
+      double &majorIntervalX,
+      double &minorIntervalX,
+      double &labelIntervalX,
+      double &majorIntervalY,
+      double &minorIntervalY,
+      double &labelIntervalY
+    ) const;
 
   private:
-
 #ifdef SIP_RUN
     Qgs2DXyPlot( const Qgs2DXyPlot &other );
 #endif
@@ -856,7 +853,6 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
 class CORE_EXPORT QgsPlotDefaultSettings
 {
   public:
-
     /**
      * Returns the default numeric format to use for plot axis labels.
      */

@@ -22,7 +22,6 @@ label positions and reduces the number of displayed labels.
 #include "qgslabelthinningsettings.h"
 %End
   public:
-
     bool limitNumberOfLabelsEnabled() const;
 %Docstring
 Returns ``True`` if the number of labels drawn for the layer should be

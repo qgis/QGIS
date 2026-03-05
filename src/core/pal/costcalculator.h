@@ -78,9 +78,7 @@ namespace pal
    */
   class CandidatePolygonRingDistanceCalculator
   {
-
     public:
-
       /**
        * Constructor for PolygonRingDistanceCalculator, for the specified label \a candidate.
        */
@@ -98,11 +96,10 @@ namespace pal
       double minimumDistance() const;
 
     private:
-
       double mPx;
       double mPy;
       double mMinDistance = std::numeric_limits<double>::max();
   };
-}
+} //namespace pal
 
 #endif // COSTCALCULATOR_H

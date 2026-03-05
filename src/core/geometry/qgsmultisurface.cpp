@@ -75,9 +75,7 @@ QgsMultiSurface *QgsMultiSurface::toCurveType() const
 
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt,
-  { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon },
-  u"Polygon"_s );
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon }, u"Polygon"_s );
 }
 
 QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
@@ -126,13 +124,13 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiSurface::asJsonObject( int precision ) const
 {
-  json polygons( json::array( ) );
+  json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
-      json coordinates( json::array( ) );
-      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
+      json coordinates( json::array() );
+      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
@@ -149,11 +147,7 @@ json QgsMultiSurface::asJsonObject( int precision ) const
       polygons.push_back( coordinates );
     }
   }
-  return
-  {
-    {  "type",  "MultiPolygon" },
-    {  "coordinates", polygons }
-  };
+  return { { "type", "MultiPolygon" }, { "coordinates", polygons } };
 }
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )

@@ -27,12 +27,12 @@
 using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
-  :  QgsFeaturePickerModelBase( parent )
+  : QgsFeaturePickerModelBase( parent )
 {
   setFetchGeometry( true );
   setExtraIdentifierValueUnguarded( nullIdentifier() );
 
-  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [this]() {emit featureChanged( feature() );} );
+  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [this]() { emit featureChanged( feature() ); } );
 }
 
 void QgsFeaturePickerModel::requestToReloadCurrentFeature( QgsFeatureRequest &request )
@@ -85,4 +85,3 @@ QgsFeatureExpressionValuesGatherer *QgsFeaturePickerModel::createValuesGatherer(
 {
   return new QgsFeatureExpressionValuesGatherer( sourceLayer(), displayExpression(), request );
 }
-

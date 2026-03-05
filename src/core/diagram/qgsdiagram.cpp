@@ -19,7 +19,8 @@
 
 #include <QPainter>
 
-QgsDiagram::QgsDiagram( const QgsDiagram & ): mExpressions{}
+QgsDiagram::QgsDiagram( const QgsDiagram & )
+  : mExpressions {}
 {
   // do not copy the cached expression map - the expressions need to be created and prepared with getExpression(...) call
 }
@@ -96,8 +97,7 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
   //interpolate size
   const double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
 
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
+  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ), is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
 
   // Scale, if extension is smaller than the specified minimum
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )

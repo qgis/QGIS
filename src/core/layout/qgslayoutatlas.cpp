@@ -41,9 +41,8 @@ QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   , mLayout( layout )
   , mFilenameExpressionString( u"'output_'||@atlas_featurenumber"_s )
 {
-
   //listen out for layer removal
-  connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
+  connect( mLayout->project(), static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
 
   if ( QgsVariantUtils::isNull( mLayout->customProperty( u"singleFile"_s ) ) )
     mLayout->setCustomProperty( u"singleFile"_s, true );
@@ -59,7 +58,7 @@ QgsLayout *QgsLayoutAtlas::layout()
   return mLayout;
 }
 
-const QgsLayout *QgsLayoutAtlas::layout() const  // cppcheck-suppress duplInheritedMember
+const QgsLayout *QgsLayoutAtlas::layout() const // cppcheck-suppress duplInheritedMember
 {
   return mLayout.data();
 }
@@ -264,8 +263,7 @@ class AtlasFeatureSorter
 
     bool operator()( const QPair< QgsFeatureId, QString > &id1, const QPair< QgsFeatureId, QString > &id2 )
     {
-      return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) )
-             : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
+      return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) ) : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
     }
 
   private:
@@ -546,8 +544,7 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope();
   if ( mLayout )
-    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() )
-                      << QgsExpressionContextUtils::layoutScope( mLayout );
+    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() ) << QgsExpressionContextUtils::layoutScope( mLayout );
 
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
 
@@ -560,9 +557,9 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
     {
       expressionContext.lastScope()->setFeature( mCurrentFeature );
     }
-    else if ( mCoverageLayer )  // Create an empty feature for the expression validation
+    else if ( mCoverageLayer ) // Create an empty feature for the expression validation
     {
-      QgsFeature feature{ mCoverageLayer->fields() };
+      QgsFeature feature { mCoverageLayer->fields() };
       feature.setValid( true );
       expressionContext.lastScope()->setFeature( feature );
     }
@@ -601,7 +598,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     evalResult = evalFeatureFilename( expressionContext );
   }
 
-  if ( ! evalResult )
+  if ( !evalResult )
   {
     error = mFilenameExpressionError;
   }
@@ -651,7 +648,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   mCurrentFeatureNo = featureI;
 
   // retrieve the next feature, based on its id
-  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature ) )
+  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[featureI].first ) ).nextFeature( mCurrentFeature ) )
     return false;
 
   mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
@@ -674,4 +671,3 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
 
   return mCurrentFeature.isValid();
 }
-

@@ -32,7 +32,6 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
 
   public:
-
     /**
      * Constructor for QgsPrintLayout.
      */
@@ -71,7 +70,6 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
     void nameChanged( const QString &name );
 
   private:
-
     QString mName;
     QgsLayoutAtlas *mAtlas = nullptr;
 

@@ -27,13 +27,12 @@ using namespace Qt::StringLiterals;
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
   constexpr double z0xMin = -20037508.3427892;
-  constexpr double z0yMax =  20037508.3427892;
+  constexpr double z0yMax = 20037508.3427892;
 
   return fromCustomDef( zoomLevel, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsPointXY( z0xMin, z0yMax ), 2 * z0yMax );
 }
 
-QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
-    const QgsPointXY &z0TopLeftPoint, double z0Dimension, int z0MatrixWidth, int z0MatrixHeight )
+QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs, const QgsPointXY &z0TopLeftPoint, double z0Dimension, int z0MatrixWidth, int z0MatrixHeight )
 {
   // Square extent calculation
   double z0xMin = z0TopLeftPoint.x();
@@ -43,7 +42,7 @@ QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateRe
 
   // Constant for scale denominator calculation
   constexpr double TILE_SIZE = 256.0;
-  constexpr double PIXELS_TO_M = 2.8 / 10000.0;  // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
+  constexpr double PIXELS_TO_M = 2.8 / 10000.0; // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
   const double unitToMeters = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
   // Scale denominator calculation
   const double scaleDenom0 = ( z0Dimension / TILE_SIZE ) * ( unitToMeters / PIXELS_TO_M );
@@ -78,7 +77,7 @@ QgsTileMatrix QgsTileMatrix::fromTileMatrix( const int zoomLevel, const QgsTileM
   tm.mTileXSpan = aExtent.width() / tm.mMatrixWidth;
   tm.mTileYSpan = aExtent.height() / tm.mMatrixHeight;
   tm.mExtent = aExtent;
-  tm.mScaleDenom = tileMatrix.scale() * pow( 2, aZoomLevel )  / pow( 2, zoomLevel );
+  tm.mScaleDenom = tileMatrix.scale() * pow( 2, aZoomLevel ) / pow( 2, zoomLevel );
   return tm;
 }
 
@@ -105,7 +104,7 @@ QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r ) const
   double x1 = std::clamp( r.xMaximum(), mExtent.xMinimum(), mExtent.xMaximum() );
   double y1 = std::clamp( r.yMaximum(), mExtent.yMinimum(), mExtent.yMaximum() );
   if ( x0 >= x1 || y0 >= y1 )
-    return QgsTileRange();   // nothing to display
+    return QgsTileRange(); // nothing to display
 
   double tileX1 = ( x0 - mExtent.xMinimum() ) / mTileXSpan;
   double tileX2 = ( x1 - mExtent.xMinimum() ) / mTileXSpan;
@@ -136,7 +135,10 @@ QPointF QgsTileMatrix::mapToTileCoordinates( const QgsPointXY &mapPoint ) const
 QgsTileMatrixSet::QgsTileMatrixSet()
 {
   mTileAvailabilityFunction = []( QgsTileXYZ ) { return Qgis::TileAvailability::Available; };
-  mTileReplacementFunction = []( QgsTileXYZ id, QgsTileXYZ & replacement ) { replacement = id; return Qgis::TileAvailability::Available; };
+  mTileReplacementFunction = []( QgsTileXYZ id, QgsTileXYZ &replacement ) {
+    replacement = id;
+    return Qgis::TileAvailability::Available;
+  };
 }
 
 bool QgsTileMatrixSet::isEmpty() const
@@ -302,17 +304,13 @@ int QgsTileMatrixSet::scaleToZoomLevel( double scale, bool clamp ) const
 
 double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context ) const
 {
-  return calculateTileScaleForMap( context.rendererScale(),
-                                   context.coordinateTransform().destinationCrs(),
-                                   context.mapExtent(),
-                                   context.outputSize(),
-                                   context.painter()->device()->logicalDpiX() );
+  return calculateTileScaleForMap( context.rendererScale(), context.coordinateTransform().destinationCrs(), context.mapExtent(), context.outputSize(), context.painter()->device()->logicalDpiX() );
 }
 
 double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const
 {
   switch ( mScaleToTileZoomMethod )
-    // cppcheck-suppress missingReturn
+  // cppcheck-suppress missingReturn
   {
     case Qgis::ScaleToTileZoomLevelMethod::MapBox:
       return actualMapScale;
@@ -349,17 +347,13 @@ bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext 
 
   mScaleToTileZoomMethod = qgsEnumKeyToValue( element.attribute( u"scaleToZoomMethod"_s ), Qgis::ScaleToTileZoomLevelMethod::MapBox );
 
-  auto readMatrixFromElement = []( const QDomElement & matrixElement )->QgsTileMatrix
-  {
+  auto readMatrixFromElement = []( const QDomElement &matrixElement ) -> QgsTileMatrix {
     QgsTileMatrix matrix;
     matrix.mZoomLevel = matrixElement.attribute( u"zoomLevel"_s ).toInt();
     matrix.mMatrixWidth = matrixElement.attribute( u"matrixWidth"_s ).toInt();
     matrix.mMatrixHeight = matrixElement.attribute( u"matrixHeight"_s ).toInt();
     matrix.mExtent = QgsRectangle(
-      matrixElement.attribute( u"xMin"_s ).toDouble(),
-      matrixElement.attribute( u"yMin"_s ).toDouble(),
-      matrixElement.attribute( u"xMax"_s ).toDouble(),
-      matrixElement.attribute( u"yMax"_s ).toDouble()
+      matrixElement.attribute( u"xMin"_s ).toDouble(), matrixElement.attribute( u"yMin"_s ).toDouble(), matrixElement.attribute( u"xMax"_s ).toDouble(), matrixElement.attribute( u"yMax"_s ).toDouble()
     );
 
     matrix.mScaleDenom = matrixElement.attribute( u"scale"_s ).toDouble();
@@ -397,8 +391,7 @@ QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWri
   QDomElement setElement = document.createElement( u"matrixSet"_s );
   setElement.setAttribute( u"scaleToZoomMethod"_s, qgsEnumValueToKey( mScaleToTileZoomMethod ) );
 
-  auto writeMatrixToElement = [&document]( const QgsTileMatrix & matrix, QDomElement & matrixElement )
-  {
+  auto writeMatrixToElement = [&document]( const QgsTileMatrix &matrix, QDomElement &matrixElement ) {
     matrixElement.setAttribute( u"zoomLevel"_s, matrix.zoomLevel() );
     matrixElement.setAttribute( u"matrixWidth"_s, matrix.matrixWidth() );
     matrixElement.setAttribute( u"matrixHeight"_s, matrix.matrixHeight() );
@@ -456,4 +449,3 @@ QVector<QgsTileXYZ> QgsTileMatrixSet::tilesInRange( QgsTileRange range, int zoom
   }
   return tiles;
 }
-

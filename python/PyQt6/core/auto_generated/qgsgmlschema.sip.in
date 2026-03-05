@@ -20,7 +20,6 @@ Description of feature class in GML.
 #include "qgsgmlschema.h"
 %End
   public:
-
     QgsGmlFeatureClass();
     QgsGmlFeatureClass( const QString &name, const QString &path );
 

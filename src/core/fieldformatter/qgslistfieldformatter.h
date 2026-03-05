@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter
 {
   public:
-
     QgsListFieldFormatter() = default;
     QString id() const override;
 

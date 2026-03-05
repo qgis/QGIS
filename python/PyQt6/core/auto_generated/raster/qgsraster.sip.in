@@ -21,7 +21,6 @@ Raster namespace.
 %End
   public:
 
-
     static double representableValue( double value, Qgis::DataType dataType );
 %Docstring
 Gets value representable by given data type. Supported are numerical
@@ -34,8 +33,6 @@ value is representable in the output data type. This can be checked with
 :param dataType: 
 %End
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -46,7 +46,6 @@ class QgsMapBoxGlStyleConversionContext;
 class CORE_EXPORT QgsVectorTileUtils
 {
   public:
-
     /**
      * Parses the style URL to update the source URLs in the \a uri.
      * If \a forceUpdate is TRUE, any existing source will be updated.
@@ -107,7 +106,6 @@ class CORE_EXPORT QgsVectorTileUtils
     static QVariantList parseStyleSourceContentUrl( const QString &sourceUrl, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &authCfg = QString() );
 
     friend class TestQgsVectorTileUtils;
-
 };
 
 #endif // QGSVECTORTILEUTILS_H

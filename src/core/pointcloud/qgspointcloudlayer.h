@@ -49,29 +49,27 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 {
     Q_OBJECT
   public:
-
     /**
      * Setting options for loading point cloud layers.
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -82,18 +80,18 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
        * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
        * layer.
        */
-      bool skipCrsValidation = false;
+        bool skipCrsValidation = false;
 
-      /**
+        /**
        * Set to TRUE if point cloud index generation should be skipped.
        */
-      bool skipIndexGeneration = false;
+        bool skipIndexGeneration = false;
 
-      /**
+        /**
        * Set to true if the statistics calculation for this point cloud is disabled
        * \since QGIS 3.26
        */
-      bool skipStatisticsCalculation = false;
+        bool skipStatisticsCalculation = false;
     };
 
 
@@ -103,19 +101,18 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     enum class PointCloudStatisticsCalculationState : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NotStarted = 0, //!< The statistics calculation task has not been started
+      NotStarted = 0,       //!< The statistics calculation task has not been started
       Calculating = 1 << 0, //!< The statistics calculation task is running
-      Calculated = 1 << 1 //!< The statistics calculation task is done and statistics are available
+      Calculated = 1 << 1   //!< The statistics calculation task is done and statistics are available
     };
     Q_ENUM( PointCloudStatisticsCalculationState )
 
     /**
      * Constructor - creates a point cloud layer
      */
-    explicit QgsPointCloudLayer( const QString &uri = QString(),
-                                 const QString &baseName = QString(),
-                                 const QString &providerLib = u"pointcloud"_s,
-                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
+    explicit QgsPointCloudLayer(
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = u"pointcloud"_s, const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
+    );
 
     ~QgsPointCloudLayer() override;
 
@@ -123,19 +120,21 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudLayer &operator=( QgsPointCloudLayer const &rhs ) = delete;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsPointCloudLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QgsPointCloudLayer *clone() const override SIP_FACTORY;
+      QgsPointCloudLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-    QgsAbstractProfileSource *profileSource() override {return this;}
-    QString profileSourceId() const override {return id();}
-    QString profileSourceName() const override {return name();}
+    QgsAbstractProfileSource *profileSource() override { return this; }
+    QString profileSourceId() const override { return id(); }
+    QString profileSourceName() const override { return name(); }
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     QgsPointCloudDataProvider *dataProvider() override;
@@ -149,12 +148,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
-    bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) final;
 
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override;
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const final;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
@@ -406,8 +403,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
   private:
-
-    bool isReadOnly() const override {return true;}
+    bool isReadOnly() const override { return true; }
 
     void calculateStatistics();
 

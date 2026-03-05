@@ -35,7 +35,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT Qgs3DRendererAbstractMetadata
 {
   public:
-
     virtual ~Qgs3DRendererAbstractMetadata() = default;
 
     /**
@@ -50,7 +49,6 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
   protected:
-
     /**
      * Constructor of the base class
      */
@@ -71,7 +69,6 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 class CORE_EXPORT Qgs3DRendererRegistry
 {
   public:
-
     Qgs3DRendererRegistry() = default;
 
     ~Qgs3DRendererRegistry();

@@ -24,27 +24,26 @@ Contains configuration settings for an editor form.
     static const QMetaObject staticMetaObject;
 
   public:
-
     struct GroupData
     {
-      GroupData();
-      GroupData( const QString &name, const QList<QString> &fields );
-      QString mName;
-      QList<QString> mFields;
+        GroupData();
+        GroupData( const QString &name, const QList<QString> &fields );
+        QString mName;
+        QList<QString> mFields;
     };
 
     struct TabData
     {
-      TabData();
-      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups );
-      QString mName;
-      QList<QString> mFields;
-      QList<QgsEditFormConfig::GroupData> mGroups;
+        TabData();
+        TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups );
+        QString mName;
+        QList<QString> mFields;
+        QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
 
     enum class DataDefinedProperty /BaseType=IntEnum/
-      {
+    {
       NoProperty,
       AllProperties,
       Alias,
@@ -301,7 +300,9 @@ Read XML information Deserialize on project load
 Write XML information Serialize on project save
 %End
 
- QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Deprecated="Since 3.18. Use QgsAttributeEditorElement.create instead."/;
+ QgsAttributeEditorElement *attributeEditorElementFromDomElement(
+      QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext()
+    ) /Deprecated="Since 3.18. Use QgsAttributeEditorElement.create instead."/;
 %Docstring
 Deserialize drag and drop designer elements.
 

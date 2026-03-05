@@ -36,16 +36,15 @@
 class CORE_EXPORT QgsLegendStyle
 {
   public:
-
     // TODO QGIS 5.0 - use Qt enum instead
 
     //! Margin sides
     enum Side
     {
-      Top = 0, //!< Top side
+      Top = 0,    //!< Top side
       Bottom = 1, //!< Bottom side
-      Left = 2, //!< Left side
-      Right = 3, //!< Right side
+      Left = 2,   //!< Left side
+      Right = 3,  //!< Right side
     };
 
     QgsLegendStyle();

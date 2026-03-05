@@ -68,6 +68,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
+    float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }

@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 class QgsMessageLogConsole;
 
-void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser,
-                                const char *file, const char *function, int line, Qgis::StringFormat format )
+void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser, const char *file, const char *function, int line, Qgis::StringFormat format )
 {
 #ifndef QGISDEBUG
   Q_UNUSED( file )
@@ -45,14 +44,12 @@ void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::Success:
     case Qgis::MessageLevel::NoLevel:
-      QgsDebugMsgLevelLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
-                           1, file, function, line );
+      QgsDebugMsgLevelLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ), 1, file, function, line );
       break;
 
     case Qgis::MessageLevel::Warning:
     case Qgis::MessageLevel::Critical:
-      QgsDebugErrorLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
-                        file, function, line );
+      QgsDebugErrorLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ), file, function, line );
       break;
   }
 
@@ -71,8 +68,12 @@ void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgi
 QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithFormat ),
-           this, static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage ) );
+  connect(
+    QgsApplication::messageLog(),
+    static_cast< void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithFormat ),
+    this,
+    static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage )
+  );
 }
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
@@ -91,9 +92,7 @@ void QgsMessageLogConsole::logMessage( const QString &message, const QString &ta
 QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) const
 {
   const QString time = QTime::currentTime().toString();
-  const QString levelStr = level == Qgis::MessageLevel::Info ? u"INFO"_s :
-                           level == Qgis::MessageLevel::Warning ? u"WARNING"_s :
-                           u"CRITICAL"_s;
+  const QString levelStr = level == Qgis::MessageLevel::Info ? u"INFO"_s : level == Qgis::MessageLevel::Warning ? u"WARNING"_s : u"CRITICAL"_s;
   const QString pid = QString::number( QCoreApplication::applicationPid() );
   return u"%1 %2 %3[%4]: %5\n"_s.arg( time, levelStr, tag, pid, message );
 }

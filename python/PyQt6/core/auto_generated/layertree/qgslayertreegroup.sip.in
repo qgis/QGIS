@@ -29,7 +29,6 @@ of a :py:class:`QgsProject`, they can optionally be associated with a
 #include "qgslayertreegroup.h"
 %End
   public:
-
     QgsLayerTreeGroup( const QString &name = QString(), bool checked = true );
 %Docstring
 Constructor
@@ -42,7 +41,7 @@ Constructor
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QString name() const;
+        virtual QString name() const;
 
 %Docstring
 Returns the group's name.
@@ -420,7 +419,6 @@ returned.
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
-
     void updateChildVisibilityMutuallyExclusive();
 %Docstring
 Set check state of children - if mutually exclusive

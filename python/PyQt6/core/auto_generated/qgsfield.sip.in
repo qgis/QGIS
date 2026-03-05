@@ -35,14 +35,7 @@ name, type length, and if applicable, precision.
     static const QMetaObject staticMetaObject;
 
   public:
-
-    QgsField( const QString &name = QString(),
-              QMetaType::Type type = QMetaType::Type::UnknownType,
-              const QString &typeName = QString(),
-              int len = 0,
-              int prec = 0,
-              const QString &comment = QString(),
-              QMetaType::Type subType = QMetaType::Type::UnknownType ) /HoldGIL/;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) /HoldGIL/;
 %Docstring
 Constructor. Constructs a new QgsField object.
 

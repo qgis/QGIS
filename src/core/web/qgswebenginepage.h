@@ -46,7 +46,6 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsWebEnginePage, with the specified \a parent widget.
      */
@@ -147,7 +146,6 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
     void loadFinished( bool ok );
 
   private:
-
     void handlePostBlockingLoadOperations();
 
     std::unique_ptr< QWebEnginePage > mPage;

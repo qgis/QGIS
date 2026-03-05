@@ -147,7 +147,6 @@ Ownership is transferred to the caller.
 %End
 
   protected:
-
     QgsProcessingModelComponent( const QString &description = QString() );
 %Docstring
 Only subclasses can be created

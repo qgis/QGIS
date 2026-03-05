@@ -23,9 +23,7 @@ Contains utility functions for working with colors.
 #include "qgscolorutils.h"
 %End
   public:
-
-    static void writeXml( const QColor &color, const QString &identifier,
-                          QDomDocument &document, QDomElement &element, const QgsReadWriteContext &context );
+    static void writeXml( const QColor &color, const QString &identifier, QDomDocument &document, QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Writes a ``color`` to an XML ``element``, storing it under the specified
 ``identifier``.
@@ -111,7 +109,6 @@ Save color space ``colorSpace`` to an ICC profile file
 
 .. versionadded:: 3.40
 %End
-
 
 
 

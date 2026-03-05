@@ -110,7 +110,6 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 #include "qgssymbollayerreference.h"
 %End
   public:
-
     QgsSymbolLayerReference();
 
  QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated="Since 3.30. "/;

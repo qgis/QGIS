@@ -91,39 +91,22 @@ class CORE_EXPORT QgsProcessingParameterAlignRasterLayers : public QgsProcessing
 class CORE_EXPORT QgsProcessingParameterTypeAlignRasterLayers : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterAlignRasterLayers( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterAlignRasterLayers( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "An input allowing selection of multiple raster layers to align." );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "An input allowing selection of multiple raster layers to align." ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "Align raster Layers" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "Align raster Layers" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterAlignRasterLayers::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterAlignRasterLayers::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterAlignRasterLayers"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterAlignRasterLayers"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterAlignRasterLayers"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterAlignRasterLayers"_s; }
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterAlignRasterLayers docs" )
+      return QStringList()
+             << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterAlignRasterLayers docs" )
              << QObject::tr( "list[str]: list of layer IDs" )
              << QObject::tr( "list[str]: list of layer names" )
              << QObject::tr( "list[str]: list of layer sources" )

@@ -58,8 +58,6 @@ gathered.
 %End
 
   protected:
-
-
 };
 
 
@@ -75,15 +73,14 @@ An vector layer plot data gatherer class for XY series.
 #include "qgsvectorlayerplotdatagatherer.h"
 %End
   public:
-
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &name, const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() );
+        explicit XySeriesDetails( const QString &name, const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() );
 
-      QString name;
-      QString xExpression;
-      QString yExpression;
-      QString filterExpression;
+        QString name;
+        QString xExpression;
+        QString yExpression;
+        QString filterExpression;
     };
 
     explicit QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval );
@@ -118,7 +115,6 @@ the categories used when gathering the data.
 
 
   protected:
-
 
 };
 

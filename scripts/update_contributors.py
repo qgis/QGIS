@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import subprocess
@@ -17,8 +18,19 @@ GREY = "#303030"
 GREEN = "#5d9933"
 TILE_SIZE = 400
 
-ALTERNATE_AVATARS_DIR = "alternate-avatars"
-QGIS_ICON_PATH = "../../icons/qgis_icon.svg"
+MOSAIC_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "../contributors_mosaic"
+)
+AVATARS_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "../contributors_avatars"
+)
+ALTERNATE_AVATARS_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "../contributors-alternate-avatars"
+)
+
+QGIS_ICON_PATH = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "../images/icons/qgis_icon.svg"
+)
 
 
 def check_font_exists(font_name):
@@ -36,7 +48,7 @@ def check_font_exists(font_name):
 
 def download_avatars():
     for t in range(NUMBER_OF_TILES):
-        tile_dir = f"avatars_{t:02d}"
+        tile_dir = f"{AVATARS_DIR}/avatars_{t:02d}"
         shutil.rmtree(tile_dir, ignore_errors=True)
         os.makedirs(tile_dir, exist_ok=True)
 
@@ -66,7 +78,7 @@ def download_avatars():
         print(f"Downloading avatar {i + 1}/{NUMBER_OF_AVATARS} for {login} from {url}")
 
         t = i // AVATARS_PER_TILE
-        tile_dir = f"avatars_{t:02d}"
+        tile_dir = f"{AVATARS_DIR}/avatars_{t:02d}"
         output = os.path.join(tile_dir, f"{i:04d}.png")
 
         alternate_path = os.path.join(ALTERNATE_AVATARS_DIR, f"{login}.png")
@@ -86,14 +98,13 @@ def download_avatars():
 
 
 def create_tiles():
-    mosaic_dir = "mosaic"
-    shutil.rmtree(mosaic_dir, ignore_errors=True)
-    os.makedirs(mosaic_dir, exist_ok=True)
+    shutil.rmtree(MOSAIC_DIR, ignore_errors=True)
+    os.makedirs(MOSAIC_DIR, exist_ok=True)
 
     for t in range(NUMBER_OF_TILES):
         print(f"Generating tile {t + 1}/{NUMBER_OF_TILES}")
-        tile_dir = f"avatars_{t:02d}"
-        output_file = os.path.join(mosaic_dir, f"mosaic{t:02d}0.png")
+        tile_dir = f"{AVATARS_DIR}/avatars_{t:02d}"
+        output_file = os.path.join(MOSAIC_DIR, f"mosaic{t:02d}0.png")
         input_files = os.path.join(tile_dir, "*.png")
 
         command = [
@@ -109,7 +120,7 @@ def create_tiles():
         ]
         subprocess.run(command)
 
-    qgis_block_file = os.path.join(mosaic_dir, "mosaic071.png")
+    qgis_block_file = os.path.join(MOSAIC_DIR, "mosaic071.png")
     command = [
         "convert",
         "-background",
@@ -127,7 +138,7 @@ def create_tiles():
     ]
     subprocess.run(command)
 
-    dev_block_file = os.path.join(mosaic_dir, "mosaic072.png")
+    dev_block_file = os.path.join(MOSAIC_DIR, "mosaic072.png")
     command = [
         "convert",
         "-size",
@@ -151,7 +162,7 @@ def create_tiles():
 
 def compute_and_resize_mosaic():
     mosaic_file = "mosaic.png"
-    input_files = "mosaic/*.png"
+    input_files = f"{MOSAIC_DIR}/*.png"
 
     command = [
         "montage",
@@ -169,7 +180,9 @@ def compute_and_resize_mosaic():
     mosaic_width = TILE_SIZE * MOSAIC_WIDTH_TILES
     mosaic_height = TILE_SIZE * MOSAIC_HEIGHT_TILES + TILE_SIZE // TILE_SIDE
 
-    final_output_path = "../splash.png"
+    final_output_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "../images/splash/splash.png"
+    )
 
     command = [
         "convert",
@@ -187,7 +200,34 @@ def compute_and_resize_mosaic():
     subprocess.run(command)
 
 
+def update_contributors_map():
+    json_url = "https://www.qgis.org/data/contributors/contributors_map.json"
+    headers = {"Accept": "application/vnd.github.v3+json"}
+
+    print(f"fetching {json_url}")
+    try:
+        response = requests.get(json_url, headers=headers)
+        response.raise_for_status()
+        contributors_map_data = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading contributors JSON: {e}")
+        sys.exit(1)
+
+    if "_automated_warning" in contributors_map_data:
+        contributors_map_data["_automated_warning"].pop("generated_by", None)
+        contributors_map_data["_automated_warning"].pop("how_to_update", None)
+        contributors_map_data["_automated_warning"].pop("documentation", None)
+
+    final_output_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "../resources/data/contributors.json",
+    )
+    with open(final_output_path, "w") as json_file:
+        json.dump(contributors_map_data, json_file, indent=2)
+
+
 def main():
+    # Refresh splash screen
     keep_avatars = False
     if len(sys.argv) > 1 and sys.argv[1] == "--keep-avatars":
         keep_avatars = True
@@ -200,6 +240,9 @@ def main():
     create_tiles()
 
     compute_and_resize_mosaic()
+
+    # Refresh contributors map
+    update_contributors_map()
 
 
 if __name__ == "__main__":

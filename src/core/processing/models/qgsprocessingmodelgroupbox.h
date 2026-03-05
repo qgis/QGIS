@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponent
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelGroupBox with the specified \a description.
      */
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponen
     QString uuid() const;
 
   private:
-
     QString mUuid;
 };
 

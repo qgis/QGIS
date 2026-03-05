@@ -41,9 +41,8 @@ using namespace Qt::StringLiterals;
 #include <GeographicLib/Constants.hpp>
 #endif
 
-QString QgsCommandLineUtils::allVersions( )
+QString QgsCommandLineUtils::allVersions()
 {
-
   // QGIS main version
   QString versionString = u"QGIS %1 '%2' (%3)\n"_s.arg( VERSION, RELEASE_NAME, QGSVERSION );
 
@@ -66,8 +65,8 @@ QString QgsCommandLineUtils::allVersions( )
   }
 
   // Qt version
-  const QString qtVersionCompiled{ QT_VERSION_STR };
-  const QString qtVersionRunning{ qVersion() };
+  const QString qtVersionCompiled { QT_VERSION_STR };
+  const QString qtVersionRunning { qVersion() };
   if ( qtVersionCompiled != qtVersionRunning )
   {
     versionString += u"Compiled against Qt %1\n"_s.arg( qtVersionCompiled );

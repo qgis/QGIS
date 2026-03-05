@@ -665,6 +665,9 @@ if(WITH_CORE)
     if(NOT WITH_INTERNAL_QWT)
       find_package(Qwt 6.2)
       if(NOT QWT_FOUND)
+        if(WITH_VCPKG)
+          message(FATAL_ERROR "Qwt >=6.2 not found in vcpkg installed packages. Ensure qwt is available in the vcpkg SDK or set WITH_INTERNAL_QWT to TRUE.")
+        endif()
         set(WITH_INTERNAL_QWT TRUE)
         message(STATUS "Qwt >=6.2 not found - using internal Qwt")
       endif()
@@ -703,9 +706,6 @@ if(WITH_CORE)
 endif()
 
 set(CMAKE_AUTOMOC ON)
-
-# build our version of astyle
-set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -1267,10 +1267,6 @@ if (WITH_CORE)
   endif()
 
   install(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
-endif()
-
-if (WITH_ASTYLE)
-  add_subdirectory(external/astyle)
 endif()
 
 if (ENABLE_TESTS)
