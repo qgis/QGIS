@@ -239,5 +239,4 @@ void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
 }
 
 void QgsBrowserDockWidget::splitterMoved()
-{
-}
+{}

@@ -544,8 +544,7 @@ std::list<int> QgsAggregateMappingWidget::selectedRows()
 
 QgsAggregateMappingDelegate::QgsAggregateMappingDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsAggregateMappingDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex & ) const
 {
@@ -594,8 +593,7 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
   static QStringList sAggregates;
   static std::once_flag initialized;
   std::call_once( initialized, []() {
-    sAggregates << u"first_value"_s
-                << u"last_value"_s;
+    sAggregates << u"first_value"_s << u"last_value"_s;
 
     const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
     for ( const QgsExpressionFunction *function : functions )
@@ -605,8 +603,7 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
 
       if ( function->groups().contains( "Aggregates"_L1 ) )
       {
-        if ( function->name() == "aggregate"_L1
-             || function->name() == "relation_aggregate"_L1 )
+        if ( function->name() == "aggregate"_L1 || function->name() == "relation_aggregate"_L1 )
           continue;
 
         sAggregates.append( function->name() );

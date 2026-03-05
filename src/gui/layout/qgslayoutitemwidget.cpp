@@ -196,8 +196,7 @@ QgsLayoutItemBaseWidget::QgsLayoutItemBaseWidget( QWidget *parent, QgsLayoutObje
   : QgsPanelWidget( parent )
   , mConfigObject( new QgsLayoutConfigObject( this, layoutObject ) )
   , mObject( layoutObject )
-{
-}
+{}
 
 QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
 {
@@ -227,8 +226,7 @@ bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
 }
 
 void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
-{
-}
+{}
 
 void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
 {
@@ -245,8 +243,7 @@ void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *
 }
 
 void QgsLayoutItemBaseWidget::setMasterLayout( QgsMasterLayoutInterface * )
-{
-}
+{}
 
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
@@ -802,9 +799,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
         existingGroups.append( groupName );
     }
 
-    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool {
-      return a.localeAwareCompare( b ) < 0;
-    } );
+    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool { return a.localeAwareCompare( b ) < 0; } );
 
     whileBlocking( mExportGroupNameCombo )->clear();
     whileBlocking( mExportGroupNameCombo )->addItems( existingGroups );

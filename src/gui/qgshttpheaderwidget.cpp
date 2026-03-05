@@ -49,8 +49,7 @@ void QgsHttpHeaderWidget::addQueryPairRow( const QString &key, const QString &va
   const int rowCnt = tblwdgQueryPairs->rowCount();
   tblwdgQueryPairs->insertRow( rowCnt );
 
-  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                  | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItem = new QTableWidgetItem( key );
   keyItem->setFlags( itemFlags );

@@ -32,8 +32,10 @@ A tree model for display of known coordinate reference systems.
       Deprecated,
       Type,
       GroupId,
-      Wkt,
-      Proj,
+      Wkt
+                                                   + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Proj
+                                                     + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
       Group,
       Projection,
     };

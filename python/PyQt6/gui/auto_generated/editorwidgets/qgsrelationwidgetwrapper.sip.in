@@ -19,23 +19,12 @@ A widget wrapper for relation widgets.
 #include "qgsrelationwidgetwrapper.h"
 %End
   public:
-    QgsRelationWidgetWrapper(
-      QgsVectorLayer *vl,
-      const QgsRelation &relation,
-      QWidget *editor /Constrained/ = 0,
-      QWidget *parent /TransferThis,Constrained/ = 0
-    );
+    QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor /Constrained/ = 0, QWidget *parent /TransferThis,Constrained/ = 0 );
 %Docstring
 Constructor for QgsRelationWidgetWrapper
 %End
 
-    QgsRelationWidgetWrapper(
-      const QString &relationEditorName,
-      QgsVectorLayer *vl,
-      const QgsRelation &relation,
-      QWidget *editor = 0,
-      QWidget *parent /TransferThis/ = 0
-    );
+    QgsRelationWidgetWrapper( const QString &relationEditorName, QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRelationWidgetWrapper
 %End

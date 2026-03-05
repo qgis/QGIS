@@ -258,10 +258,7 @@ class EditBlockerDelegate : public QStyledItemDelegate
       : QStyledItemDelegate( parent )
     {}
 
-    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
-    {
-      return nullptr;
-    }
+    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override { return nullptr; }
 };
 
 

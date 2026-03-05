@@ -79,20 +79,12 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
 void QgsAuthIdentitiesEditor::setupIdentitiesTree()
 {
   treeIdentities->setColumnCount( 3 );
-  treeIdentities->setHeaderLabels(
-    QStringList() << tr( "Common Name" )
-                  << tr( "Serial #" )
-                  << tr( "Expiry Date" )
-  );
+  treeIdentities->setHeaderLabels( QStringList() << tr( "Common Name" ) << tr( "Serial #" ) << tr( "Expiry Date" ) );
   treeIdentities->setColumnWidth( 0, 300 );
   treeIdentities->setColumnWidth( 1, 75 );
 
   // add root sections
-  mRootCertIdentItem = new QTreeWidgetItem(
-    treeIdentities,
-    QStringList( tr( "Certificate Bundles" ) ),
-    static_cast<int>( QgsAuthIdentitiesEditor::Section )
-  );
+  mRootCertIdentItem = new QTreeWidgetItem( treeIdentities, QStringList( tr( "Certificate Bundles" ) ), static_cast<int>( QgsAuthIdentitiesEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mRootCertIdentItem );
   mRootCertIdentItem->setFlags( Qt::ItemIsEnabled );
   mRootCertIdentItem->setExpanded( true );
@@ -134,9 +126,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap<QString, QList<QSslCertificate>> orgcerts(
-    QgsAuthCertUtils::certsGroupedByOrg( certs )
-  );
+  const QMap<QString, QList<QSslCertificate>> orgcerts( QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
   QMap<QString, QList<QSslCertificate>>::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
@@ -316,10 +306,13 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove Certificate Identity" ),
-         tr( "Are you sure you want to remove the selected "
-             "certificate identity from the database?\n\n"
-             "Operation can NOT be undone!" ),
+         this,
+         tr( "Remove Certificate Identity" ),
+         tr(
+           "Are you sure you want to remove the selected "
+           "certificate identity from the database?\n\n"
+           "Operation can NOT be undone!"
+         ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel
        )

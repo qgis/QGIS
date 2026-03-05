@@ -25,8 +25,7 @@
 
 QgsProcessingModelConfigWidget::QgsProcessingModelConfigWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-{
-}
+{}
 
 void QgsProcessingModelConfigWidget::apply()
 {

@@ -47,7 +47,10 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      * shown in the widget. The default is to show all horizontal and compound CRS in order to match
      * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    QgsCrsSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    QgsCrsSelectionWidget(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound
+    );
 
     ~QgsCrsSelectionWidget() override;
 
@@ -193,7 +196,11 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * shown in the dialog. The default is to show all horizontal and compound CRS in order to match
      * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    QgsProjectionSelectionDialog(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound
+    );
 
     /**
      * Returns the CRS currently selected in the widget.

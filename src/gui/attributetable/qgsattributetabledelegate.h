@@ -47,8 +47,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      */
     QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QItemDelegate( parent )
-    {
-    }
+    {}
 
     /**
      * Used to create an editor for when the user tries to

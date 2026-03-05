@@ -53,7 +53,13 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
      * will instead be appended to the end of the geospatial PDF layer list
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, bool allowGeospatialPdfExport = true, const QString &geospatialPdfReason = QString(), const QStringList &geospatialPdfLayerOrder = QStringList(), Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsLayoutPdfExportOptionsDialog(
+      QWidget *parent = nullptr,
+      bool allowGeospatialPdfExport = true,
+      const QString &geospatialPdfReason = QString(),
+      const QStringList &geospatialPdfLayerOrder = QStringList(),
+      Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 
     //! Sets the text render format
     void setTextRenderFormat( Qgis::TextRenderFormat format );

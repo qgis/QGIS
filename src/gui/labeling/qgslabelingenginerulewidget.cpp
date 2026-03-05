@@ -50,9 +50,7 @@ QgsLabelingEngineRuleDialog::QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleW
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s ); } );
 }
 
 void QgsLabelingEngineRuleDialog::setRule( const QgsAbstractLabelingEngineRule *rule )
@@ -130,7 +128,9 @@ QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::HasGeometry );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
@@ -198,7 +198,9 @@ QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::HasGeometry );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
@@ -267,7 +269,9 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::QgsLabelingEngineRuleMin
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );

@@ -64,7 +64,13 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
      * associated with the parameter.
      */
-    QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingAbstractParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -148,7 +154,14 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
      * associated with the parameter.
      *
      */
-    QgsProcessingParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -210,7 +223,14 @@ class GUI_EXPORT QgsProcessingParameterDefinitionPanelWidget : public QgsProcess
      * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
      * associated with the parameter.
      */
-    QgsProcessingParameterDefinitionPanelWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinitionPanelWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -289,7 +309,14 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      * associated with the parameter.
      *
      */
-    QgsProcessingParameterDefinitionDialog( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinitionDialog(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.

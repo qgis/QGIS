@@ -65,9 +65,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   const double topMargin = mLayout->customProperty( u"resizeToContentsTopMargin"_s ).toDouble();
   const double bottomMargin = mLayout->customProperty( u"resizeToContentsBottomMargin"_s ).toDouble();
   const double rightMargin = mLayout->customProperty( u"resizeToContentsRightMargin"_s ).toDouble();
-  const Qgis::LayoutUnit marginUnit = static_cast<Qgis::LayoutUnit>(
-    mLayout->customProperty( u"imageCropMarginUnit"_s, static_cast<int>( Qgis::LayoutUnit::Millimeters ) ).toInt()
-  );
+  const Qgis::LayoutUnit marginUnit = static_cast<Qgis::LayoutUnit>( mLayout->customProperty( u"imageCropMarginUnit"_s, static_cast<int>( Qgis::LayoutUnit::Millimeters ) ).toInt() );
 
   const bool exportWorldFile = mLayout->customProperty( u"exportWorldFile"_s, false ).toBool();
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
@@ -275,9 +273,7 @@ void QgsLayoutPropertiesWidget::updateVariables()
     return;
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::layoutScope( mLayout );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::layoutScope( mLayout );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );
 }

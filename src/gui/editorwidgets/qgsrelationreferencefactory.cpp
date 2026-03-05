@@ -26,8 +26,7 @@ QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString &name, Q
   : QgsEditorWidgetFactory( name, icon )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsRelationReferenceFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

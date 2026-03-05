@@ -167,7 +167,9 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
 void QgsNumericFormatSelectorWidget::updateSampleText()
 {
   const double sampleValue = mCurrentFormat->suggestSampleValue();
-  mSampleLabel->setText( u"%1 %2 <b>%3</b>"_s.arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ).arg( QChar( 0x2192 ) ).arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
+  mSampleLabel->setText(
+    u"%1 %2 <b>%3</b>"_s.arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ).arg( QChar( 0x2192 ) ).arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
+  );
 }
 
 //

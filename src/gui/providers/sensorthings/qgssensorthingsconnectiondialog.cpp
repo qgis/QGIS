@@ -42,9 +42,7 @@ QgsSensorThingsConnectionDialog::QgsSensorThingsConnectionDialog( QWidget *paren
   mConnectionGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s ); } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsSensorThingsConnectionDialog::updateOkButtonState );
   connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::validChanged, this, &QgsSensorThingsConnectionDialog::updateOkButtonState );
 }

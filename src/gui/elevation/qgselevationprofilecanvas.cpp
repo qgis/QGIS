@@ -61,10 +61,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       xAxis().setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels );
     }
 
-    void setRenderer( QgsProfilePlotRenderer *renderer )
-    {
-      mRenderer = renderer;
-    }
+    void setRenderer( QgsProfilePlotRenderer *renderer ) { mRenderer = renderer; }
 
     void updateRect()
     {
@@ -99,10 +96,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       return true;
     }
 
-    QRectF boundingRect() const override
-    {
-      return mRect;
-    }
+    QRectF boundingRect() const override { return mRect; }
 
     QString distanceSuffix() const
     {
@@ -305,8 +299,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
     QgsElevationProfileCrossHairsItem( QgsElevationProfileCanvas *canvas, QgsElevationProfilePlotItem *plotItem )
       : QgsPlotCanvasItem( canvas )
       , mPlotItem( plotItem )
-    {
-    }
+    {}
 
     void updateRect()
     {
@@ -323,10 +316,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       update();
     }
 
-    QRectF boundingRect() const override
-    {
-      return mRect;
-    }
+    QRectF boundingRect() const override { return mRect; }
 
     using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
@@ -353,8 +343,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       // also render current point text
       QgsNumericFormatContext numericContext;
 
-      const QString xCoordinateText = mPlotItem->xAxis().numericFormat()->formatDouble( mPoint.distance() / mPlotItem->mXScaleFactor, numericContext )
-                                      + mPlotItem->distanceSuffix();
+      const QString xCoordinateText = mPlotItem->xAxis().numericFormat()->formatDouble( mPoint.distance() / mPlotItem->mXScaleFactor, numericContext ) + mPlotItem->distanceSuffix();
 
       const QString yCoordinateText = mPlotItem->yAxis().numericFormat()->formatDouble( mPoint.elevation(), numericContext );
 
@@ -798,8 +787,10 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
 {
   const QRectF intersected = rect.intersected( mPlotItem->plotArea() );
 
-  double minX = ( intersected.left() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor + mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
-  double maxX = ( intersected.right() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor + mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
+  double minX = ( intersected.left() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor
+                + mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
+  double maxX = ( intersected.right() - mPlotItem->plotArea().left() ) / mPlotItem->plotArea().width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor
+                + mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
   double minY = ( mPlotItem->plotArea().bottom() - intersected.bottom() ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
   double maxY = ( mPlotItem->plotArea().bottom() - intersected.top() ) / mPlotItem->plotArea().height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
 
@@ -1201,10 +1192,7 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 
   // filter list, removing null layers and invalid layers
   auto filteredList = layers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) {
-                        return !layer || !layer->isValid();
-                      } ),
-                      filteredList.end() );
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) { return !layer || !layer->isValid(); } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
@@ -1463,8 +1451,7 @@ class QgsElevationProfilePlot : public Qgs2DXyPlot
   public:
     QgsElevationProfilePlot( QgsProfilePlotRenderer *renderer )
       : mRenderer( renderer )
-    {
-    }
+    {}
 
     void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {

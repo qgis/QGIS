@@ -36,7 +36,8 @@
 using namespace Qt::StringLiterals;
 
 QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent )
-  : QgsPanelWidget( parent ), mCanvas( canvas )
+  : QgsPanelWidget( parent )
+  , mCanvas( canvas )
 {
   setupUi( this );
 

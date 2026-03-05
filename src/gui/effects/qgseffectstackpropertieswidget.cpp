@@ -59,10 +59,7 @@ class EffectItem : public QStandardItem
 
     int type() const override { return EFFECT_ITEM_TYPE; }
 
-    QgsPaintEffect *effect()
-    {
-      return mEffect;
-    }
+    QgsPaintEffect *effect() { return mEffect; }
 
     QVariant data( int role ) const override
     {

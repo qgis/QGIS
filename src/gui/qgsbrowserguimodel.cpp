@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsBrowserGuiModel::QgsBrowserGuiModel( QObject *parent )
   : QgsBrowserModel( parent )
-{
-}
+{}
 
 QgsDataItemGuiContext QgsBrowserGuiModel::createDataItemContext() const
 {
@@ -156,8 +155,7 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
-       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )

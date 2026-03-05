@@ -45,10 +45,11 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )
@@ -77,10 +78,14 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   {
     //setup blank dialog
     mRenderer = nullptr;
-    QLabel *label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
-                                    "'%1' is not a point layer and cannot be rendered as a heatmap." )
-                                  .arg( layer->name() ),
-                                this );
+    QLabel *label = new QLabel(
+      tr(
+        "The heatmap renderer only applies to point and multipoint layers. \n"
+        "'%1' is not a point layer and cannot be rendered as a heatmap."
+      )
+        .arg( layer->name() ),
+      this
+    );
     if ( !layout() )
       setLayout( new QGridLayout() );
     layout()->addWidget( label );
@@ -94,7 +99,9 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   connect( mQualitySlider, &QSlider::valueChanged, this, &QgsHeatmapRendererWidget::mQualitySlider_valueChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mRadiusUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mRadiusUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
   mWeightExpressionWidget->setAllowEmptyFieldName( true );
 

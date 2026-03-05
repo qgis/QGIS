@@ -208,9 +208,7 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 
     panel->openPanel( mPanelWidget );
 
-    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [this] {
-      setValue( mPanelWidget->table() );
-    } );
+    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [this] { setValue( mPanelWidget->table() ); } );
   }
 }
 

@@ -169,7 +169,9 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      *
      * The optional \a providerId and \a backends arguments can be used to filter entries.
      */
-    QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+    QList<QgsHistoryEntry> queryEntries(
+      const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile
+    ) const;
 
     /**
      * Returns the path to user's local history database.
