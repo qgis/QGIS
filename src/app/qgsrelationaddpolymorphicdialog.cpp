@@ -45,9 +45,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddPolymorphicDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_vector/attribute_table.html#defining-polymorphic-relations"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/attribute_table.html#defining-polymorphic-relations"_s ); } );
 
   const QVector<QgsVectorLayer *> layers = QgsProject::instance()->layers<QgsVectorLayer *>();
   for ( const QgsMapLayer *vl : layers )
@@ -60,9 +58,11 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
 
   mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast<int>( Qgis::RelationshipStrength::Association ) );
   mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast<int>( Qgis::RelationshipStrength::Composition ) );
-  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will also be duplicated and deleted.\n"
-                                             "Duplications are made by the feature duplication action.\n"
-                                             "The default actions are activated in the Action section of the layer properties." ) );
+  mRelationStrengthComboBox->setToolTip( tr(
+    "When composition is selected the child features will also be duplicated and deleted.\n"
+    "Duplications are made by the feature duplication action.\n"
+    "The default actions are activated in the Action section of the layer properties."
+  ) );
 
   mFieldsMappingWidget->setEnabled( false );
   addFieldsRow();
@@ -74,7 +74,10 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   connect( mFieldsMappingAddButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::addFieldsRow );
   connect( mFieldsMappingRemoveButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::removeFieldsRow );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
-  connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
+  connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
+    Q_UNUSED( index );
+    updateDialogButtons();
+  } );
   connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
   connect( mReferencedLayersComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsRelationAddPolymorphicDialog::referencedLayersChanged );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox );

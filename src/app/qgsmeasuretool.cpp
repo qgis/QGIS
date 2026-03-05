@@ -77,14 +77,20 @@ void QgsMeasureTool::activate()
   // map CRS is set to a geographic one, warn them.
   if ( mCanvas->mapSettings().destinationCrs().isValid() && mCanvas->mapSettings().destinationCrs().isGeographic() && ( mCanvas->extent().height() > 360 || mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( nullptr, tr( "Incorrect Measure Results" ), tr( "<p>This map is defined with a geographic coordinate system "
-                                                                          "(latitude/longitude) "
-                                                                          "but the map extents suggests that it is actually a projected "
-                                                                          "coordinate system (e.g., Mercator). "
-                                                                          "If so, the results from line or area measurements will be "
-                                                                          "incorrect.</p>"
-                                                                          "<p>To fix this, explicitly set an appropriate map coordinate "
-                                                                          "system using the <tt>Settings:Project Properties</tt> menu." ) );
+    QMessageBox::warning(
+      nullptr,
+      tr( "Incorrect Measure Results" ),
+      tr(
+        "<p>This map is defined with a geographic coordinate system "
+        "(latitude/longitude) "
+        "but the map extents suggests that it is actually a projected "
+        "coordinate system (e.g., Mercator). "
+        "If so, the results from line or area measurements will be "
+        "incorrect.</p>"
+        "<p>To fix this, explicitly set an appropriate map coordinate "
+        "system using the <tt>Settings:Project Properties</tt> menu."
+      )
+    );
     mWrongProjectProjection = true;
   }
 }

@@ -170,7 +170,8 @@ void QgsContributorsMapFloatingPanel::setText( const QString &text )
 QgsContributorsMapCanvas::QgsContributorsMapCanvas( QWidget *parent )
   : QgsMapCanvas( parent )
 {
-  mContributorsMapBaseLayer = std::make_unique<QgsRasterLayer>( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  mContributorsMapBaseLayer
+    = std::make_unique<QgsRasterLayer>( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
   mContributorsMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + u"/resources/data/contributors.json"_s, tr( "Contributors" ), "ogr"_L1 );
   bool ok = false;
   mContributorsMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + u"/resources/data/contributors_map.qml"_s, ok );

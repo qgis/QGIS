@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsVersionInfo::checkVersion()
 {

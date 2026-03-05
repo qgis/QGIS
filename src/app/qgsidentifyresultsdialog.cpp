@@ -111,9 +111,11 @@ using namespace Qt::StringLiterals;
 constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeMap, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
+  = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeMap, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations
+  = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
@@ -294,16 +296,14 @@ QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &f
   , mFields( fields )
   , mFeature( feature )
   , mCrs( crs )
-{
-}
+{}
 
 QgsIdentifyResultsRelationItem::QgsIdentifyResultsRelationItem( const QStringList &strings, const QgsRelation &relation, bool isReferencedRole, const QgsFeature &topFeature )
   : QTreeWidgetItem( strings )
   , mRelation( relation )
   , mIsReferencedRole( isReferencedRole )
   , mTopFeature( topFeature )
-{
-}
+{}
 
 void QgsIdentifyResultsWebViewItem::setHtml( const QString &html )
 {
@@ -501,8 +501,7 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   mSelectModeButton = new QToolButton( mIdentifyToolbar );
   mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction *> selectActions;
-  selectActions << mActionSelectFeatures << mActionSelectFeaturesOnMouseOver << mActionSelectPolygon
-                << mActionSelectFreehand << mActionSelectRadius;
+  selectActions << mActionSelectFeatures << mActionSelectFeaturesOnMouseOver << mActionSelectPolygon << mActionSelectFreehand << mActionSelectRadius;
 
   QActionGroup *group = new QActionGroup( this );
   group->addAction( mActionSelectFeatures );
@@ -595,9 +594,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   mFeatures << f;
   layItem->setFirstColumnSpanned( true );
 
-  const QString countSuffix = layItem->childCount() > 1
-                                ? u" [%1]"_s.arg( layItem->childCount() )
-                                : QString();
+  const QString countSuffix = layItem->childCount() > 1 ? u" [%1]"_s.arg( layItem->childCount() ) : QString();
   layItem->setText( 0, u"%1 %2"_s.arg( vlayer->name(), countSuffix ) );
 
 
@@ -946,8 +943,7 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
   QVector<QPointF> myData;
   int i = 1;
 
-  for ( QMap<QString, QString>::const_iterator it = attributes.begin();
-        it != attributes.end(); ++it )
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     bool ok;
     const double val { it.value().toDouble( &ok ) };
@@ -1005,7 +1001,15 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer *vlayer, const 
 
 
 // Raster variant of addFeature
-void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes, const QgsFields &fields, const QgsFeature &feature, const QMap<QString, QVariant> &params )
+void QgsIdentifyResultsDialog::addFeature(
+  QgsRasterLayer *layer,
+  const QString &label,
+  const QMap<QString, QString> &attributes,
+  const QMap<QString, QString> &derivedAttributes,
+  const QgsFields &fields,
+  const QgsFeature &feature,
+  const QMap<QString, QVariant> &params
+)
 {
   QgsDebugMsgLevel( u"feature.isValid() = %1"_s.arg( feature.isValid() ), 2 );
   QTreeWidgetItem *layItem = layerItem( layer );
@@ -1026,12 +1030,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer, const QString 
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
     const Qgis::RasterInterfaceCapabilities capabilities = layer->dataProvider()->capabilities();
-    static const QList<Qgis::RasterIdentifyFormat> formats {
-      Qgis::RasterIdentifyFormat::Html,
-      Qgis::RasterIdentifyFormat::Feature,
-      Qgis::RasterIdentifyFormat::Text,
-      Qgis::RasterIdentifyFormat::Value
-    };
+    static const QList<Qgis::RasterIdentifyFormat> formats { Qgis::RasterIdentifyFormat::Html, Qgis::RasterIdentifyFormat::Feature, Qgis::RasterIdentifyFormat::Text, Qgis::RasterIdentifyFormat::Value };
     for ( const auto &f : formats )
     {
       if ( !( capabilities & QgsRasterDataProvider::identifyFormatToCapability( f ) ) )
@@ -1300,9 +1299,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer, const QStr
   layItem->addChild( featItem );
   layItem->setFirstColumnSpanned( true );
 
-  const QString countSuffix = layItem->childCount() > 1
-                                ? u" [%1]"_s.arg( layItem->childCount() )
-                                : QString();
+  const QString countSuffix = layItem->childCount() > 1 ? u" [%1]"_s.arg( layItem->childCount() ) : QString();
   layItem->setText( 0, u"%1 %2"_s.arg( layer->name(), countSuffix ) );
 
   if ( derivedAttributes.size() >= 0 && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
@@ -1408,9 +1405,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer, const QStr
   layItem->addChild( featItem );
 
   layItem->setFirstColumnSpanned( true );
-  const QString countSuffix = layItem->childCount() > 1
-                                ? u" [%1]"_s.arg( layItem->childCount() )
-                                : QString();
+  const QString countSuffix = layItem->childCount() > 1 ? u" [%1]"_s.arg( layItem->childCount() ) : QString();
   layItem->setText( 0, u"%1 %2"_s.arg( layer->name(), countSuffix ) );
 
   // derived attributes
@@ -1458,9 +1453,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsTiledSceneLayer *layer, const QStr
   layItem->addChild( featItem );
 
   layItem->setFirstColumnSpanned( true );
-  const QString countSuffix = layItem->childCount() > 1
-                                ? u" [%1]"_s.arg( layItem->childCount() )
-                                : QString();
+  const QString countSuffix = layItem->childCount() > 1 ? u" [%1]"_s.arg( layItem->childCount() ) : QString();
   layItem->setText( 0, u"%1 %2"_s.arg( layer->name(), countSuffix ) );
 
   // TODO: support attributes in future
@@ -1678,11 +1671,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   {
     if ( vlayer )
     {
-      mActionPopup->addAction(
-        QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s ),
-        vlayer->isEditable() ? tr( "Edit Feature Form…" ) : tr( "View Feature Form…" ),
-        this, &QgsIdentifyResultsDialog::featureForm
-      );
+      mActionPopup->addAction( QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s ), vlayer->isEditable() ? tr( "Edit Feature Form…" ) : tr( "View Feature Form…" ), this, &QgsIdentifyResultsDialog::featureForm );
     }
 
     if ( featItem->feature().isValid() )
@@ -1955,11 +1944,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QUuid &act
       const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
       if ( !allowed )
       {
-        QgisApp::instance()->messageBar()->pushMessage(
-          tr( "Security warning" ),
-          tr( "The action contains an embedded script which has been denied execution." ),
-          Qgis::MessageLevel::Warning
-        );
+        QgisApp::instance()->messageBar()->pushMessage( tr( "Security warning" ), tr( "The action contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
         return;
       }
       break;

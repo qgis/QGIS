@@ -93,8 +93,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   } );
 
   for ( const Qgis::TemporalUnit u :
-        {
-          Qgis::TemporalUnit::Milliseconds,
+        { Qgis::TemporalUnit::Milliseconds,
           Qgis::TemporalUnit::Seconds,
           Qgis::TemporalUnit::Minutes,
           Qgis::TemporalUnit::Hours,
@@ -104,8 +103,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
           Qgis::TemporalUnit::Years,
           Qgis::TemporalUnit::Decades,
           Qgis::TemporalUnit::Centuries,
-          Qgis::TemporalUnit::IrregularStep
-        } )
+          Qgis::TemporalUnit::IrregularStep } )
   {
     mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), static_cast<int>( u ) );
   }
@@ -127,9 +125,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsAnimationExportDialog::setToProjectTime );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"map_views/map_view.html#maptimecontrol"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"map_views/map_view.html#maptimecontrol"_s ); } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [this] {
     emit startExport();
@@ -267,9 +263,7 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
 }

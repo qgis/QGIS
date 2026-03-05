@@ -62,13 +62,9 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( u"/mActionDeleteSelected.svg"_s ) );
 
   if ( dialog->layerCount() < layers.size() )
-    QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Handle unavailable layers" ),
-      tr( "%1 of %2 unavailable layers were not fixable." )
-        .arg( layers.size() - dialog->layerCount() )
-        .arg( layers.size() ),
-      Qgis::MessageLevel::Warning
-    );
+    QgisApp::instance()
+      ->messageBar()
+      ->pushMessage( tr( "Handle unavailable layers" ), tr( "%1 of %2 unavailable layers were not fixable." ).arg( layers.size() - dialog->layerCount() ).arg( layers.size() ), Qgis::MessageLevel::Warning );
 
   if ( dialog->layerCount() > 0 )
   {
@@ -489,7 +485,14 @@ void QgsHandleBadLayers::apply()
 
 void QgsHandleBadLayers::accept()
 {
-  if ( mLayerList->rowCount() > 0 && QMessageBox::warning( this, tr( "Unhandled layer will be lost." ), tr( "There are still %n unhandled layer(s). If they are not fixed, they will be disabled/deactivated until the project is opened again.", "unhandled layers", mLayerList->rowCount() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( mLayerList->rowCount() > 0
+       && QMessageBox::warning(
+            this,
+            tr( "Unhandled layer will be lost." ),
+            tr( "There are still %n unhandled layer(s). If they are not fixed, they will be disabled/deactivated until the project is opened again.", "unhandled layers", mLayerList->rowCount() ),
+            QMessageBox::Ok | QMessageBox::Cancel,
+            QMessageBox::Cancel
+          ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -604,7 +607,8 @@ void QgsHandleBadLayers::autoFind()
       if ( filesFound.length() > 1 )
       {
         bool ok;
-        datasource = QInputDialog::getItem( nullptr, QObject::tr( "Select layer source" ), QObject::tr( "Many files were found, please select the source for %1 " ).arg( fileName ), filesFound, 0, false, &ok, Qt::Popup );
+        datasource
+          = QInputDialog::getItem( nullptr, QObject::tr( "Select layer source" ), QObject::tr( "Many files were found, please select the source for %1 " ).arg( fileName ), filesFound, 0, false, &ok, Qt::Popup );
         if ( !ok )
           datasource = filesFound.at( 0 );
       }

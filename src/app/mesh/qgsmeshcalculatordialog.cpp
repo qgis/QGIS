@@ -116,9 +116,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMa
 
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_mesh/mesh_properties.html#mesh-calculator"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_mesh/mesh_properties.html#mesh-calculator"_s ); } );
 
   const QgsSettings settings;
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
@@ -219,14 +217,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          driver(),
-          groupName(),
-          outputFile(),
-          outputExtent(),
-          startTime(),
-          endTime(),
-          meshLayer()
+          formulaString(), driver(), groupName(), outputFile(), outputExtent(), startTime(), endTime(), meshLayer()
 
         );
       }
@@ -234,14 +225,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          driver(),
-          groupName(),
-          outputFile(),
-          maskGeometry(),
-          startTime(),
-          endTime(),
-          meshLayer()
+          formulaString(), driver(), groupName(), outputFile(), maskGeometry(), startTime(), endTime(), meshLayer()
 
         );
       }
@@ -251,13 +235,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          groupName(),
-          outputExtent(),
-          destination,
-          meshLayer(),
-          startTime(),
-          endTime()
+          formulaString(), groupName(), outputExtent(), destination, meshLayer(), startTime(), endTime()
 
         );
       }
@@ -265,13 +243,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          groupName(),
-          maskGeometry(),
-          destination,
-          meshLayer(),
-          startTime(),
-          endTime()
+          formulaString(), groupName(), maskGeometry(), destination, meshLayer(), startTime(), endTime()
 
         );
       }
@@ -301,11 +273,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   QgsMeshDriverMetadata::MeshDriverCapability requiredCapability;
 
   // expression is valid
-  const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid(
-    formulaString(),
-    meshLayer(),
-    requiredCapability
-  );
+  const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid( formulaString(), meshLayer(), requiredCapability );
   const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
@@ -351,7 +319,9 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
     else if ( !filePathValid && !notInFile )
       mExpressionValidLabel->setText( tr( "Invalid file path" ) );
     else if ( !driverValid && !notInFile )
-      mExpressionValidLabel->setText( tr( "Selected driver cannot store data defined on %1" ).arg( requiredCapability == QgsMeshDriverMetadata::CanWriteFaceDatasets ? tr( " faces " ) : tr( " vertices " ) ) );
+      mExpressionValidLabel->setText(
+        tr( "Selected driver cannot store data defined on %1" ).arg( requiredCapability == QgsMeshDriverMetadata::CanWriteFaceDatasets ? tr( " faces " ) : tr( " vertices " ) )
+      );
     else if ( !groupNameValid )
       mExpressionValidLabel->setText( tr( "Invalid group name" ) );
   }
@@ -543,8 +513,7 @@ QString QgsMeshCalculatorDialog::controlSuffix( const QString &fileName ) const
   const QString appropriateSuffix = currentOutputSuffix();
 
   const QString existingSuffix = fileInfo.suffix();
-  if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() )
-       && existingSuffix != appropriateSuffix )
+  if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() ) && existingSuffix != appropriateSuffix )
   {
     const int pos = fileName.lastIndexOf( '.' );
     QString ret = fileName.left( pos + 1 );
@@ -574,7 +543,9 @@ void QgsMeshCalculatorDialog::getMeshDrivers()
     const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
     for ( const QgsMeshDriverMetadata &meta : allDrivers )
     {
-      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
+      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
+           || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets )
+           || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
         mMeshDrivers[meta.name()] = meta;
     }
   }

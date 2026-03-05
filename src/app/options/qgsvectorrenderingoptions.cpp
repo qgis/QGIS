@@ -40,7 +40,9 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   QgsSettings settings;
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( u"/qgis/simplifyDrawingHints"_s, Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked(
+    settings.enumValue( u"/qgis/simplifyDrawingHints"_s, Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification
+  );
   mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol->value() );
   mSimplifyDrawingAtProvider->setChecked( !QgsVectorLayer::settingsSimplifyLocal->value() );
 
@@ -114,8 +116,7 @@ void QgsVectorRenderingOptionsWidget::apply()
 //
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), u"vector"_s )
-{
-}
+{}
 
 QIcon QgsVectorRenderingOptionsFactory::icon() const
 {

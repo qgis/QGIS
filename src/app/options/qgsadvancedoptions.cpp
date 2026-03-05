@@ -64,8 +64,7 @@ QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
 }
 
 QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
-{
-}
+{}
 
 QString QgsAdvancedSettingsWidget::helpKey() const
 {
@@ -104,8 +103,7 @@ void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool o
 //
 QgsAdvancedSettingsOptionsFactory::QgsAdvancedSettingsOptionsFactory()
   : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon(), u"advanced"_s )
-{
-}
+{}
 
 QIcon QgsAdvancedSettingsOptionsFactory::icon() const
 {
