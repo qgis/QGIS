@@ -71,6 +71,8 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( u"authentication"_s );
     static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( u"database"_s );
     static inline QgsSettingsTreeNode *sTree3DMap = treeRoot()->createChildNode( u"3dmap"_s );
+    static inline QgsSettingsTreeNode *sTreeRasterHistogram = sTreeRaster->createChildNode( u"histogram"_s );
+    static inline QgsSettingsTreeNode *sTreeCad = sTreeDigitizing->createChildNode( u"cad"_s );
 
 #endif
 
