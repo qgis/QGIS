@@ -66,8 +66,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
   , mIndex( index )
-{
-}
+{}
 
 void QgsTiledSceneChunkLoader::start()
 {
@@ -196,12 +195,7 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 ///
 
 QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
-  const Qgs3DRenderContext &context,
-  const QgsTiledSceneIndex &index,
-  QgsCoordinateReferenceSystem tileCrs,
-  QgsCoordinateReferenceSystem layerCrs,
-  double zValueScale,
-  double zValueOffset
+  const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
 )
   : mRenderContext( context )
   , mIndex( index )
@@ -267,9 +261,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // XXX: This check doesn't work for Quantized Mesh layers and possibly some
     // Cesium 3D tiles as well. For now this hack is in place to make sure both
     // work in practice.
-    if ( t.metadata()["contentFormat"] == u"cesiumtiles"_s
-         && mRenderContext.crs().type() != Qgis::CrsType::Geocentric
-         && hasLargeBounds( t, mBoundsTransform ) )
+    if ( t.metadata()["contentFormat"] == "cesiumtiles"_L1 && mRenderContext.crs().type() != Qgis::CrsType::Geocentric && hasLargeBounds( t, mBoundsTransform ) )
     {
       // if the tile is huge, let's try to see if our scene is actually inside
       // (if not, let' skip this child altogether!)
@@ -280,12 +272,14 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       const QgsVector3D ecef2 = cEcef - obb.center();
       const double *half = obb.halfAxes();
       // this is an approximate check anyway, no need for double precision matrix/vector
+      // clang-format off
       QMatrix4x4 rot(
         half[0], half[3], half[6], 0,
         half[1], half[4], half[7], 0,
         half[2], half[5], half[8], 0,
         0, 0, 0, 1
       );
+      // clang-format on
       QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
       if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 || aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
       {
@@ -345,9 +339,7 @@ void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, Q
     emit childrenPrepared( origNode );
     futureWatcher->deleteLater();
   } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
-    mIndex.fetchHierarchy( nodeId );
-  } ) );
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] { mIndex.fetchHierarchy( nodeId ); } ) );
 }
 
 void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )

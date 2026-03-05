@@ -54,8 +54,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   , mFactory( factory )
   , mRenderContext( factory->mRenderContext )
   , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
-{
-}
+{}
 
 void QgsVectorLayerChunkLoader::start()
 {
@@ -88,9 +87,7 @@ void QgsVectorLayerChunkLoader::start()
   // only a subset of data to be queried
   const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
-  req.setCoordinateTransform(
-    QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() )
-  );
+  req.setCoordinateTransform( QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() ) );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
   req.setFilterRect( rect );
 
@@ -232,7 +229,9 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
 ///////////////
 
 
-QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol )
+QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity(
+  Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol
+)
   : QgsChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   mTransform = new Qt3DCore::QTransform;
@@ -309,7 +308,9 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3
   return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }
 
-QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
+QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection(
+  const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin
+)
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( u"Ray cast on vector layer"_s, 2 );

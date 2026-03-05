@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"mesh"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -43,8 +42,7 @@ QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomEleme
 
 QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
   : mSymbol( s )
-{
-}
+{}
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRenderer::clone() const
 {

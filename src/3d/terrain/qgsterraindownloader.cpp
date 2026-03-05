@@ -124,7 +124,9 @@ void QgsTerrainDownloader::tileImageToHeightMap( const QImage &img, QByteArray &
 }
 
 
-QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context, QString tmpFilenameImg, QString tmpFilenameTif )
+QByteArray QgsTerrainDownloader::getHeightMap(
+  const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context, QString tmpFilenameImg, QString tmpFilenameTif
+)
 {
   if ( !mOnlineDtm || !mOnlineDtm->isValid() )
   {

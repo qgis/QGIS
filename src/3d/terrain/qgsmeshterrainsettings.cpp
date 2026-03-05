@@ -30,8 +30,7 @@ QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 
 QgsMeshTerrainSettings::QgsMeshTerrainSettings()
   : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
-{
-}
+{}
 
 QgsMeshTerrainSettings::~QgsMeshTerrainSettings() = default;
 
