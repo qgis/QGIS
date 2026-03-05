@@ -29,6 +29,27 @@ const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = n
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsCadFloaterActive
   = new QgsSettingsEntryBool( u"floater-active"_s, QgsSettingsTree::sTreeCad, false, u"Whether the CAD floater widget is active"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramShowMarkers
+  = new QgsSettingsEntryBool( u"show-markers"_s, QgsSettingsTree::sTreeRasterHistogram, false, u"Whether to show markers on the raster histogram"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramZoomToMinMax
+  = new QgsSettingsEntryBool( u"zoom-to-min-max"_s, QgsSettingsTree::sTreeRasterHistogram, false, u"Whether to zoom the raster histogram to min/max values"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramUpdateStyleToMinMax
+  = new QgsSettingsEntryBool( u"update-style-to-min-max"_s, QgsSettingsTree::sTreeRasterHistogram, true, u"Whether to update the style when histogram changes to min/max values"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramDrawLines
+  = new QgsSettingsEntryBool( u"draw-lines"_s, QgsSettingsTree::sTreeRasterHistogram, true, u"Whether to draw the raster histogram as lines"_s );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsZoomFactor
+  = new QgsSettingsEntryDouble( u"zoom-factor"_s, QgsSettingsTree::sTreeQgis, 2.0, u"Zoom factor for map canvas and other views"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsReverseWheelZoom
+  = new QgsSettingsEntryBool( u"reverse-wheel-zoom"_s, QgsSettingsTree::sTreeQgis, false, u"Whether to reverse the direction of wheel zoom"_s );
+
+const QgsSettingsEntryString *QgsSettingsRegistryGui::settingsRasterDefaultPalette
+  = new QgsSettingsEntryString( u"default-palette"_s, QgsSettingsTree::sTreeRaster, QString(), u"Default color ramp palette name for raster layers"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -42,6 +63,16 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
   // single settings - added in 4.2
   settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
+  settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
+  settingsRasterHistogramZoomToMinMax->copyValueFromKey( u"Raster/histogram/zoomToMinMax"_s, true );
+  settingsRasterHistogramUpdateStyleToMinMax->copyValueFromKey( u"Raster/histogram/updateStyleToMinMax"_s, true );
+  settingsRasterHistogramDrawLines->copyValueFromKey( u"Raster/histogram/drawLines"_s, true );
+  settingsZoomFactor->copyValueFromKey( u"qgis/zoom_factor"_s, true );
+  settingsZoomFactor->copyValueFromKey( u"/qgis/zoom_factor"_s, true );
+  settingsReverseWheelZoom->copyValueFromKey( u"qgis/reverse_wheel_zoom"_s, true );
+  settingsReverseWheelZoom->copyValueFromKey( u"/qgis/reverse_wheel_zoom"_s, true );
+  settingsRasterDefaultPalette->copyValueFromKey( u"Raster/defaultPalette"_s, true );
+  settingsRasterDefaultPalette->copyValueFromKey( u"/Raster/defaultPalette"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
