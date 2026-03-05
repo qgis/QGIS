@@ -22,6 +22,7 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssettings.h"
 
+#include "qgsattributetabledialog.h"
 #include "qgsbabelformatregistry.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
