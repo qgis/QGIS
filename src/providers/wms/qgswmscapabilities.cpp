@@ -1043,7 +1043,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
         operationType->allowedEncodings.clear();
         for ( QDomElement childNodeElement = get.firstChildElement( u"ows:Constraint"_s ).firstChildElement( u"ows:AllowedValues"_s ).firstChildElement( u"ows:Value"_s );
               !childNodeElement.isNull();
-              childNodeElement = nodeElement.nextSiblingElement( u"ows:Value"_s ) )
+              childNodeElement = childNodeElement.nextSiblingElement( u"ows:Value"_s ) )
         {
           operationType->allowedEncodings << childNodeElement.text();
         }
