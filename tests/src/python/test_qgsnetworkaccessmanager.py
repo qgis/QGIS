@@ -20,7 +20,7 @@ from functools import partial
 from qgis.core import (
     QgsNetworkAccessManager,
 )
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QUrl
 from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
@@ -170,6 +170,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             reply.request().url().toString(),
             "http://testhost.com/qgis_local_server/index.html",
         )
+        reply.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
         # HTTP request with non-default port 8080
         request = QNetworkRequest(
@@ -187,6 +189,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             reply.request().url().toString(),
             "http://testhost.com:8080/qgis_local_server/index.html",
         )
+        reply.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
         # HTTPS request with redundant default port 443
         request = QNetworkRequest(
@@ -205,6 +209,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             reply.request().url().toString(),
             "https://testhost.com/qgis_local_server/index.html",
         )
+        reply.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
         # HTTPS request with non-default port 8080
         request = QNetworkRequest(
@@ -222,6 +228,8 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             reply.request().url().toString(),
             "https://testhost.com:8080/qgis_local_server/index.html",
         )
+        reply.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
 
 if __name__ == "__main__":
