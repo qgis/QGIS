@@ -670,7 +670,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
             }
             else
             {
-              exportAsValue = ( exportField && isFormatForFieldsAsDisplayedValues && ( widgetId == "ValueMap"_L1 || widgetId == "ValueRelation"_L1 || widgetId == "CheckBox"_L1 || widgetId == "RelationReference"_L1 ) );
+              exportAsValue
+                = ( exportField && isFormatForFieldsAsDisplayedValues && ( widgetId == "ValueMap"_L1 || widgetId == "ValueRelation"_L1 || widgetId == "CheckBox"_L1 || widgetId == "RelationReference"_L1 ) );
             }
             item->setFlags( ( exportField ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );
             item->setCheckState( exportAsValue ? Qt::Checked : Qt::Unchecked );
