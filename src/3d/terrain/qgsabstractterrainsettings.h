@@ -57,7 +57,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
       sipType = sipType_QgsQuantizedMeshTerrainSettings;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
