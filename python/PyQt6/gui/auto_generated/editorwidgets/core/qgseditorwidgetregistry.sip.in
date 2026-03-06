@@ -87,8 +87,7 @@ create a default widget.
 :return: A new widget wrapper
 %End
 
-    QgsEditorWidgetWrapper *create(
-    ) /Factory/;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring
 Create an attribute editor widget wrapper of the best type for a given
 field. The editor may be ``None`` if you want the widget wrapper to
