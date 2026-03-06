@@ -1692,20 +1692,11 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
       QString currentEpsg = mImageCrs.mid( mImageCrs.lastIndexOf( ':' ) + 1 );
       if ( currentEpsg != epsgCode )
       {
-        QgsMessageLog::logMessage(
-          tr( "Warning: Bbox placeholder EPSG:%1 does not match current CRS %2" )
-            .arg( epsgCode, mImageCrs ),
-          tr( "WMS" ),
-          Qgis::MessageLevel::Warning
-        );
+        QgsMessageLog::logMessage( tr( "Warning: Bbox placeholder EPSG:%1 does not match current CRS %2" ).arg( epsgCode, mImageCrs ), tr( "WMS" ), Qgis::MessageLevel::Warning );
       }
 
       QgsRectangle tileRect = tm->tileRect( tile.col, tile.row );
-      QString bboxStr = QString( "%1,%2,%3,%4" )
-                          .arg( tileRect.xMinimum(), 0, 'f', 6 )
-                          .arg( tileRect.yMinimum(), 0, 'f', 6 )
-                          .arg( tileRect.xMaximum(), 0, 'f', 6 )
-                          .arg( tileRect.yMaximum(), 0, 'f', 6 );
+      QString bboxStr = QString( "%1,%2,%3,%4" ).arg( tileRect.xMinimum(), 0, 'f', 6 ).arg( tileRect.yMinimum(), 0, 'f', 6 ).arg( tileRect.xMaximum(), 0, 'f', 6 ).arg( tileRect.yMaximum(), 0, 'f', 6 );
 
       turl.replace( bboxRegex, bboxStr );
     }
