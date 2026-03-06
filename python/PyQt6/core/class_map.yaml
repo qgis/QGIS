@@ -10754,9 +10754,9 @@ QgsMeshSigmaAveragingMethod.startFraction: src/core/mesh/qgsmesh3daveraging.h#L2
 QgsMeshSigmaAveragingMethod.writeXml: src/core/mesh/qgsmesh3daveraging.h#L247
 QgsMeshSigmaAveragingMethod: src/core/mesh/qgsmesh3daveraging.h#L233
 QgsMeshSpatialIndex.QgsMeshSpatialIndex: src/core/mesh/qgsmeshspatialindex.h#L67
-QgsMeshSpatialIndex.addFace: src/core/mesh/qgsmeshspatialindex.h#L105
-QgsMeshSpatialIndex.elementType: src/core/mesh/qgsmeshspatialindex.h#L100
-QgsMeshSpatialIndex.removeFace: src/core/mesh/qgsmeshspatialindex.h#L110
+QgsMeshSpatialIndex.addFace: src/core/mesh/qgsmeshspatialindex.h#L106
+QgsMeshSpatialIndex.elementType: src/core/mesh/qgsmeshspatialindex.h#L101
+QgsMeshSpatialIndex.removeFace: src/core/mesh/qgsmeshspatialindex.h#L111
 QgsMeshSpatialIndex: src/core/mesh/qgsmeshspatialindex.h#L49
 QgsMeshTerrainProvider.clone: src/core/elevation/qgsterrainprovider.h#L278
 QgsMeshTerrainProvider.crs: src/core/elevation/qgsterrainprovider.h#L276
