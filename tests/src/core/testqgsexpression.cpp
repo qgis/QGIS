@@ -2270,6 +2270,13 @@ class TestQgsExpression : public QObject
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
       QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
       QTest::newRow( "concat function with NULL" ) << "concat(NULL,'a','b')" << false << QVariant( "ab" );
+      QTest::newRow( "concat_ws no args" ) << "concat_ws()" << true << QVariant();
+      QTest::newRow( "concat_ws one arg" ) << "concat_ws(' ')" << true << QVariant();
+      QTest::newRow( "concat_ws comma" ) << "concat_ws(',', 'b', NULL, 'd')" << false << QVariant( "b,d" );
+      QTest::newRow( "concat_ws comma multichar" ) << "concat_ws(', ', 'b', NULL, 'd', 'efg', NULL, 'hij')" << false << QVariant( "b, d, efg, hij" );
+      QTest::newRow( "concat_ws all NULL" ) << "concat_ws(',', NULL, NULL, NULL)" << false << QVariant( "" );
+      QTest::newRow( "concat_ws function single" ) << "concat_ws(',', 'a')" << false << QVariant( "a" );
+      QTest::newRow( "concat_ws function with NULL" ) << "concat_ws(NULL,'a','b')" << false << QVariant( "ab" );
       QTest::newRow( "array_to_string" ) << "array_to_string(array(1,2,3),',')" << false << QVariant( "1,2,3" );
       QTest::newRow( "array_to_string with custom empty value" ) << "array_to_string(array(1,'',3),',','*')" << false << QVariant( "1,*,3" );
       QTest::newRow( "array_to_string fail passing non-array" ) << "array_to_string('non-array',',')" << true << QVariant();
