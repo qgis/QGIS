@@ -120,16 +120,10 @@ class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidg
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsStringLineEditWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( parent )
-    {}
+    QgsSettingsStringLineEditWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringLineEditWrapper( parent ); }
@@ -164,36 +158,19 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
     };
 
     //! Constructor of the factory
-    QgsSettingsStringComboBoxWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( parent )
-    {}
+    QgsSettingsStringComboBoxWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
-      , mMode( mode )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() );
 
     /**
      * Constructor of the wrapper for a given \a setting and its widget \a editor
      * \since QGIS 3.44.3
      */
-    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
-      , mMode( mode )
-      , mDataRole( role )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringComboBoxWrapper( parent ); }
 
@@ -224,16 +201,10 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsBoolCheckBoxWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( parent )
-    {}
+    QgsSettingsBoolCheckBoxWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsBoolCheckBoxWrapper( parent ); }
 
@@ -259,16 +230,10 @@ class GUI_EXPORT QgsSettingsBoolGroupBoxWrapper : public QgsSettingsEditorWidget
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsBoolGroupBoxWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( parent )
-    {}
+    QgsSettingsBoolGroupBoxWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsBoolGroupBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsBoolGroupBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsBoolGroupBoxWrapper( parent ); }
 
@@ -297,16 +262,10 @@ class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidg
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsIntegerSpinBoxWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( parent )
-    {}
+    QgsSettingsIntegerSpinBoxWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsIntegerSpinBoxWrapper( parent ); }
 
@@ -333,16 +292,10 @@ class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidge
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsDoubleSpinBoxWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( parent )
-    {}
+    QgsSettingsDoubleSpinBoxWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsDoubleSpinBoxWrapper( parent ); }
 
@@ -369,16 +322,10 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
     Q_OBJECT
   public:
     //! Constructor of the factory
-    QgsSettingsColorButtonWrapper( QObject *parent = nullptr )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( parent )
-    {}
+    QgsSettingsColorButtonWrapper( QObject *parent = nullptr );
 
     //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
-      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( editor )
-    {
-      configureEditor( editor, setting, dynamicKeyPartList );
-    }
+    QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsColorButtonWrapper( parent ); }
 

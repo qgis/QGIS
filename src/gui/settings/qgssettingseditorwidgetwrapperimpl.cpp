@@ -32,6 +32,16 @@ using namespace Qt::StringLiterals;
 // String with line edit (= default)
 // *******
 
+QgsSettingsStringLineEditWrapper::QgsSettingsStringLineEditWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( parent )
+{}
+
+QgsSettingsStringLineEditWrapper::QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
 QString QgsSettingsStringLineEditWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::String ) ) );
@@ -86,6 +96,31 @@ QString QgsSettingsStringLineEditWrapper::valueFromWidget() const
 // *******
 // String with combo box
 // *******
+
+QgsSettingsStringComboBoxWrapper::QgsSettingsStringComboBoxWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( parent )
+{}
+
+QgsSettingsStringComboBoxWrapper::QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
+QgsSettingsStringComboBoxWrapper::QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
+  , mMode( mode )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
+QgsSettingsStringComboBoxWrapper::QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor )
+  , mMode( mode )
+  , mDataRole( role )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
 
 QString QgsSettingsStringComboBoxWrapper::id() const
 {
@@ -155,6 +190,16 @@ QString QgsSettingsStringComboBoxWrapper::valueFromWidget() const
 // Boolean
 // *******
 
+QgsSettingsBoolCheckBoxWrapper::QgsSettingsBoolCheckBoxWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( parent )
+{}
+
+QgsSettingsBoolCheckBoxWrapper::QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
 QString QgsSettingsBoolCheckBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Bool ) ) );
@@ -210,6 +255,16 @@ bool QgsSettingsBoolCheckBoxWrapper::valueFromWidget() const
 // ******************
 // Boolean (GroupBox)
 // ******************
+
+QgsSettingsBoolGroupBoxWrapper::QgsSettingsBoolGroupBoxWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( parent )
+{}
+
+QgsSettingsBoolGroupBoxWrapper::QgsSettingsBoolGroupBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
 
 QString QgsSettingsBoolGroupBoxWrapper::id() const
 {
@@ -272,6 +327,16 @@ void QgsSettingsBoolGroupBoxWrapper::configureEditorPrivateImplementation()
 // Integer
 // *******
 
+QgsSettingsIntegerSpinBoxWrapper::QgsSettingsIntegerSpinBoxWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( parent )
+{}
+
+QgsSettingsIntegerSpinBoxWrapper::QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
 QString QgsSettingsIntegerSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Integer ) ) );
@@ -328,6 +393,16 @@ int QgsSettingsIntegerSpinBoxWrapper::valueFromWidget() const
 // Double
 // *******
 
+QgsSettingsDoubleSpinBoxWrapper::QgsSettingsDoubleSpinBoxWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( parent )
+{}
+
+QgsSettingsDoubleSpinBoxWrapper::QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
+
 QString QgsSettingsDoubleSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Double ) ) );
@@ -382,6 +457,16 @@ double QgsSettingsDoubleSpinBoxWrapper::valueFromWidget() const
 // *******
 // Color
 // *******
+
+QgsSettingsColorButtonWrapper::QgsSettingsColorButtonWrapper( QObject *parent )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( parent )
+{}
+
+QgsSettingsColorButtonWrapper::QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList )
+  : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( editor )
+{
+  configureEditor( editor, setting, dynamicKeyPartList );
+}
 
 QString QgsSettingsColorButtonWrapper::id() const
 {
