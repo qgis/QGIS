@@ -69,6 +69,13 @@ Creates the content of a world file.
 Returns ``True`` if an ``extent`` is a valid extent which can be used by
 :py:class:`QgsMapSettings`.
 
+An extent will be considered invalid if it:
+
+- is empty
+- is non-finite
+- is so small it can't be accurately represented using double precision
+  values
+
 .. versionadded:: 4.0
 %End
 };
