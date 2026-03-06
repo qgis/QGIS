@@ -5,7 +5,6 @@ about=Exposes selected GRASS GIS algorithms and tools for use within the QGIS Pr
 category=Analysis
 version=2.12.99
 qgisMinimumVersion=4.0
-supportsQt6=yes
 
 icon=:/images/themes/default/providerGrass.svg
 
