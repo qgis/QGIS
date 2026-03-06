@@ -18,6 +18,7 @@
 #include "qgsfielddomain.h"
 #include "qgsvariantutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include <QDialogButtonBox>
 #include <QPushButton>
 
@@ -440,9 +441,12 @@ QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget 
   mWidget = new QgsFieldDomainWidget( type );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/supported_data.rst#field-domain" ) );
+  } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );

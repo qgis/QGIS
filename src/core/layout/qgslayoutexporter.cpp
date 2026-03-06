@@ -1997,6 +1997,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           layoutItemLayerIdx++;
         }
         layerDetails.mapLayerId.clear();
+        layerDetails.mapTheme.clear();
         Q_NOWARN_DEPRECATED_PUSH
         mLayout->renderContext().setCurrentExportLayer( -1 );
         Q_NOWARN_DEPRECATED_POP

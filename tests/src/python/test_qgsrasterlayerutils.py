@@ -11,10 +11,12 @@ import os
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 from qgis.core import (
     Qgis,
-    QgsRasterLayerUtils,
-    QgsRasterLayer,
-    QgsDoubleRange,
     QgsDateTimeRange,
+    QgsDoubleRange,
+    QgsPointXY,
+    QgsRasterLayer,
+    QgsRasterLayerUtils,
+    QgsRectangle,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -337,6 +339,49 @@ class TestQgsRasterLayerUtils(QgisTestCase):
         )
         self.assertEqual(band, -1)
         self.assertFalse(matched)
+
+    def test_alignRasterExtent(self):
+
+        # nominal case
+        grid_origin = QgsPointXY(100, 200)
+        xres = 10
+        yres = 20
+        extent = QgsRectangle(209, 419, 301, 601)
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, QgsRectangle(200, 400, 310, 620))
+
+        # test with extent already aligned
+        extent = QgsRectangle(200, 400, 310, 620)
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, extent)
+
+        # test with negative coordinates
+        grid_origin = QgsPointXY(-100, -200)
+        extent = QgsRectangle(-91, -179, -81, -161)
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, QgsRectangle(-100, -180, -80, -160))
+
+        # test with out of bounds extent
+        grid_origin = QgsPointXY(0, 0)
+        extent = QgsRectangle(-15, -25, 15, 25)
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, QgsRectangle(-20, -40, 20, 40))
+
+        # test with zero resolution (should return original extent)
+        grid_origin = QgsPointXY(0, 0)
+        xres = 0
+        yres = 0
+        extent = QgsRectangle(10, 20, 30, 40)
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, extent)
+
+        # test with empty extent
+        grid_origin = QgsPointXY(0, 0)
+        xres = 10
+        yres = 10
+        extent = QgsRectangle()
+        aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
+        self.assertEqual(aligned, QgsRectangle())
 
 
 if __name__ == "__main__":

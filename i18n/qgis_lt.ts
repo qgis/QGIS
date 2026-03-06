@@ -20757,6 +20757,67 @@ Tai gali būti netikėtų rezultatų priežastis.</translation>
         <source>&amp;Model Designer…</source>
         <translation>&amp;Modelių dizaineris…</translation>
     </message>
+    <message>
+        <source>&amp;Analysis Tools</source>
+        <translation>&amp;Analizės įrankiai</translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation>&amp;Tyrimo įrankiai</translation>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing Tools</source>
+        <translation>&amp;Geoapdorojimo įrankiai</translation>
+    </message>
+    <message>
+        <source>G&amp;eometry Tools</source>
+        <translation>G&amp;eometrijos įrankiai</translation>
+    </message>
+    <message>
+        <source>&amp;Data Management Tools</source>
+        <translation>&amp;Duomenų valdymo įrankiai</translation>
+    </message>
+    <message>
+        <source>Projections</source>
+        <translation>Projekcijos</translation>
+    </message>
+    <message>
+        <source>Conversion</source>
+        <translation>Keitimas</translation>
+    </message>
+    <message>
+        <source>Extraction</source>
+        <translation>Ištraukimas</translation>
+    </message>
+    <message>
+        <source>Analysis</source>
+        <translation>Analizė</translation>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
+        <translation>Įvairūs</translation>
+    </message>
+    <message>
+        <source>Invalid algorithm ID for menu: {}</source>
+        <translation>Netinkamas algoritmo ID meniu: {}</translation>
+    </message>
+    <message>
+        <source>Missing Algorithm</source>
+        <translation>Trūkstamas algoritmas</translation>
+    </message>
+    <message>
+        <source>The algorithm &quot;{}&quot; is no longer available. (Perhaps a plugin was uninstalled?)</source>
+        <translation>Algoritmo „{}“ daugiau nebėra. (Galbūt buvo pašalintas priedas?)</translation>
+    </message>
+    <message>
+        <source>Missing Dependency</source>
+        <translation>Trūkstama priklausomybė</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
+{0}</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ProcessingToolbox</name>
@@ -21583,12 +21644,12 @@ Konsolėje jūs galite įrašyti šias specialias komandas:
         <translation>Masyvo suvestinė</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
         <source>Locator</source>
         <translation>Atradėjas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
         <source>GPU acceleration</source>
         <translation>GPU greitinimas</translation>
     </message>
@@ -26506,30 +26567,30 @@ stderr: %4</translation>
         <translation>Nepavyksta įterpti, sakinys: &apos;%1&apos; klaida: &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2229"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2294"/>
         <source>Loading of the MSSQL provider failed</source>
         <translation>Nepavyko įkelti MSSQL tiekėją</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2364"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2429"/>
         <source>Error connecting to database: %1</source>
         <translation>Klaida jungiantis prie stoties: %s</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2374"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2439"/>
         <source>Could not check if layer_styles table exists: %1</source>
         <translation>Nepavyko patikrinti, ar egzistuoja lentelė layer_styles: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2401"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2466"/>
         <source>Checking for style failed: %1</source>
         <translation>Stiliaus tikrinimas nepavyko: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="845"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1803"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2268"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3346"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2333"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3392"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4682"/>
         <source>Unsupported type for field %1</source>
         <translation>Nepalaikomas lauko %1 tipas</translation>
@@ -26566,8 +26627,8 @@ stderr: %4</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1818"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2281"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3358"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2346"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3404"/>
         <source>Creation of fields failed</source>
         <translation>Nepavyko sukurti laukus</translation>
     </message>
@@ -26887,7 +26948,7 @@ prašome nurodyti kitokį pavadinimą:</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="712"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6509"/>
         <source>Cannot open transaction on %1, since it is not currently opened</source>
         <translation>Negalima atverti %1 transakcijos, nes ji šiuo metu neatidaryta</translation>
     </message>
@@ -27005,8 +27066,8 @@ Klaida: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="301"/>
         <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="540"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4012"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4027"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4058"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4073"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
@@ -27015,7 +27076,7 @@ Klaida: %2</translation>
         <location filename="../src/providers/hana/qgshanaconnection.cpp" line="236"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1659"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="51"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3095"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3141"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4420"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5166"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5226"/>
@@ -27023,27 +27084,27 @@ Klaida: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2472"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2527"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2695"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2499"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2554"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2722"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6025"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6100"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6275"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6334"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6439"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6105"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6280"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6444"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="186"/>
         <source>Connection to database failed</source>
         <translation>Susijungimas su duomenų baze nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3106"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3152"/>
         <source>No owner name found</source>
         <translation>Nerastas savininko vardas</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3236"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3282"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4602"/>
         <source>Creation of data source %1 failed: 
 %2</source>
@@ -27052,13 +27113,13 @@ Klaida: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1780"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3274"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3320"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4622"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Nepavyko įkelti sluoksnį %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3313"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3359"/>
         <source>Field name clash found (%1 not remappable)</source>
         <translation>Aptiktas laukų pavadinimų susidūrimas (%1 nepersiejamas)</translation>
     </message>
@@ -27089,78 +27150,78 @@ Klaida: %2</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3651"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3701"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3856"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3912"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3980"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3697"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3747"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3902"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3958"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4026"/>
         <source>Could not connect to database</source>
         <translation>Nepavyko prisijungti prie duomenų bazės</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3734"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3780"/>
         <source>Unable to create layer style table [%1]</source>
         <translation>Nepavyko sukurti sluoksnio stiliaus lentelės [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3676"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3756"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3722"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3802"/>
         <source>Unable to check style existence [%1]</source>
         <translation>Nepavyko patikrinti stiliaus egzistavimo [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3635"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3681"/>
         <source>Unable to find layer style table [%1]</source>
         <translation>Nepavyko rasti sluoksnio stiliaus lentelės [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3988"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4034"/>
         <source>Could not load layer style table [%1]</source>
         <translation>Nepavyko įkelti sluoksnio stiliaus lentelės [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3799"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3845"/>
         <source>Cannot fetch new layer style id.</source>
         <translation>Nepavyko gauti naujo sluoksnio stiliaus id.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3124"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3170"/>
         <source>Cannot create a table with no columns</source>
         <translation>Negalima sukurti lentelės be stulpelių</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3372"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3418"/>
         <source>Remove of temporary column &apos;%1&apos; failed</source>
         <translation>Nepavyko pašalinti laikino stulpelio „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3811"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3857"/>
         <source>Could not execute insert/update [%1]</source>
         <translation>Nepavyko įvykdyti įterpimo/pakeitimo [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3829"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3875"/>
         <source>Could not reset default status [%1]</source>
         <translation>Nepavyko atstatyti numatytosios būsenos [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3885"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3931"/>
         <source>Could not retrieve style [%1]</source>
         <translation>Nepavyko ištraukti stiliaus [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3889"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3935"/>
         <source>Style not found</source>
         <translation>Stilius nerastas</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3930"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3955"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3976"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4001"/>
         <source>Could not execute select [%1]</source>
         <translation>Nepavyko įvykdyti užklausos [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3992"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4038"/>
         <source>No styles found in layer table [%1]</source>
         <translation>Sluoksnio lentelėje nerasta stilių [%1]</translation>
     </message>
@@ -27224,12 +27285,12 @@ Duomenų bazės klaida: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2535"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2562"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Nepavyko įrašyti sluoksnio stilių. Neįmanoma sukurti paskirties lentelę duombazėje. Taip gali būti dėl lentelės teisių (naudotojas=%1). Prašome susisiekti su duomenų bazės administratoriumi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2461"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2526"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions. Please contact your database admin</source>
         <translation>Nepavyko įrašyti sluoksnio stilių. Neįmanoma sukurti paskirties lentelę duombazėje. Taip gali būti dėl lentelės teisių. Prašome susisiekti su duomenų bazės administratoriumi</translation>
     </message>
@@ -27242,7 +27303,7 @@ Duomenų bazės klaida: %2</translation>
         <translation>Išsaugoti stilių į duomenų bazę</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2567"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2632"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions. Please contact your database administrator.</source>
         <translation>Nepavyko įrašyti sluoksnio stilių. Neįmanoma įrašyti naują įrašą į stiliaus lentelę. Taip gali būti dėl lentelės teisių. Prašome susisiekti su jūsų duomenų bazės administratoriumi.</translation>
     </message>
@@ -27262,13 +27323,13 @@ Duomenų bazės klaida: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2547"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2574"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Nepavyko pridėti stulpelio tipo į lentelę layer_styles. Gali būti, kad neturite teisių lentelei (naudotojas=%1). Prašome susisiekti su duombazės administratoriumi</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2673"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2700"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Nepavyko įrašyti sluoksnio stilių. Neįmanoma įrašyti naują įrašą į stiliaus lentelę. Taip gali būti dėl lentelės teisių (naudotojas=%1). Prašome susisiekti su jūsų duomenų bazės administratoriumi.</translation>
     </message>
@@ -27276,9 +27337,9 @@ Duomenų bazės klaida: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2769"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2859"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2894"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2796"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2886"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2921"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Nepavyko prisijungti prie duomenų bazės naudotoju: %1</translation>
     </message>
@@ -27287,45 +27348,45 @@ Duomenų bazės klaida: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2806"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2874"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2910"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6080"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6246"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2860"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2901"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2937"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
         <translation>Klaida vykdant užklausą: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2807"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Klaida vykdant užklausą susijusiems stiliams. Užklausa įrašyta į žurnalą</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6412"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2861"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Klaida vykdant užklausą nesusijusiems stiliams. Užklausa įrašyta į žurnalą</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2875"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2902"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Klaida vykdant trynimo užklausą. Užklausa žurnalizuota</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2911"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6463"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Klaida vykdant užklausą. Užklausa įrašyta į žurnalą</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2906"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6457"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2933"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Loginė klaida lentelėje „%1“. Stiliaus id turi būti unikalus</translation>
     </message>
@@ -27359,14 +27420,14 @@ SQL: %1</translation>
         <translation>nepavyko sukurti laukų</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6048"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6122"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6204"/>
         <source>Error executing query %1: %2</source>
         <translation>Klaida vykdant užklausą %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6509"/>
         <source>spatialite</source>
         <translation>spatialite</translation>
     </message>
@@ -27398,24 +27459,24 @@ SQL: %1</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6466"/>
         <source>Style with id %1 not found in %2 (Query: %3)</source>
         <translation>Stilius su id %1 nerastas %2 (Užklausa: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="3063"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6045"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6119"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6201"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6247"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6352"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6050"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6124"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6206"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6252"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6357"/>
         <source>Error looking for style. The query was logged</source>
         <translation>Klaida ieškant stiliaus. Užklausa įrašyta į žurnalą</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2901"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2964"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6153"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6158"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
         <translation>Nepavyko įrašyti sluoksnio stiliaus. Neįmanoma sukurti paskirties lentelės duomenų bazėje.</translation>
     </message>
@@ -27451,7 +27512,7 @@ SQL: %1</translation>
         <translation>Nepavyko atverti %1.</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6311"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6316"/>
         <source>Error executing loading style. The query was logged</source>
         <translation>Klaida vykdant stiliaus įkėlimą. Užklausa įrašyta į žurnalą</translation>
     </message>
@@ -27460,12 +27521,12 @@ SQL: %1</translation>
         <location filename="../src/core/qgsogrutils.cpp" line="2658"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2769"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2830"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6366"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6371"/>
         <source>No styles available on DB</source>
         <translation>Duombazėje nėra stilių</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6386"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6391"/>
         <source>Error loading styles. The query was logged</source>
         <translation>Klaida įkeliant stilius. Užklausa buvo įrašyta</translation>
     </message>
@@ -32429,7 +32490,7 @@ Išvesties atributai skaičiuojami priklausomai nuo kiekvieno nurodyto agregato 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaggregate.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="261"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="179"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="589"/>
         <source>Evaluation error in expression &quot;%1&quot;: %2</source>
         <translation>Įvertinimo klaida išraiškoje &quot;%1&quot;: %2</translation>
@@ -47532,12 +47593,12 @@ Daugiau informacijos apie QGIS išraiškų funkcijas rasite konkrečių funkcij�
         <translation>Geometrijos išraiška</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="143"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="145"/>
         <source>Evaluation error: %1</source>
         <translation>Įvertinimo klaida: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="161"/>
         <source>%1 is not a geometry</source>
         <translation>%1 nėra geometrija</translation>
     </message>
@@ -51148,7 +51209,7 @@ Sukurtas taškų sluoksnis turės tą  pačią erdvinę atskaitos sistemą kaip 
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2067"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2076"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: Stiliaus sluoksnis neturi išdėstymo savybės, praleidžiama</translation>
     </message>
@@ -51168,204 +51229,209 @@ Sukurtas taškų sluoksnis turės tą  pačią erdvinę atskaitos sistemą kaip 
         <translation>%1: Praleidžiamas nepalaikomas teksto tarpo tarp raidžių tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1303"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1305"/>
         <source>%1: Skipping unsupported text-font type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto šrifto tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1333"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1342"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2708"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2717"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2759"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2767"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2726"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2768"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2776"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: Interpoliacijos funkcijos išraiška nepalaikoma, praleidžiama.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1360"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1374"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1426"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1362"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1376"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1428"/>
         <source>%1: Referenced font %2 is not available on system</source>
         <translation>%1: Nurodomas šriftas %2 neprieinamas sistemoje</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1450"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1452"/>
         <source>%1: Skipping unsupported text-color type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto spalvos tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1481"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1483"/>
         <source>%1: Skipping unsupported text-halo-color type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto apibrėžimo spalvos tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1515"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1517"/>
         <source>%1: Skipping unsupported text-halo-width type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto apibrėžimo pločio tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1566"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1568"/>
         <source>%1: Skipping unsupported text-halo-blur type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto apibrėžimo išblukinimo tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1685"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1694"/>
         <source>%1: Skipping unsupported text-field dictionary</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto lauko žodynas</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1691"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1700"/>
         <source>%1: Skipping unsupported text-field type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto lauko tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1725"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1734"/>
         <source>%1: Skipping unsupported text-rotate map content (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto-pasukimo žemėlapio turinys (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1730"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1739"/>
         <source>%1: Skipping unsupported text-rotate type (%2)</source>
         <translation>%1:Praleidžiamas nepalaikomas teksto-pasukimo tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1800"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1950"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1809"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1959"/>
         <source>%1: Skipping unsupported text-offset type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto poslinkio tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1854"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1863"/>
         <source>%1: Skipping unsupported text-justify type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto lygiavimo tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1907"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1916"/>
         <source>%1: Skipping unsupported text-anchor type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas teksto inkaro tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2098"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2107"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas tarpo tarp simbolių tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2145"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2329"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2154"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2338"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas piktogramos pasukimo tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2000"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2205"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2288"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2214"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2297"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation>%1: Praleidžiamas neįgyvendintas piktogramos dydžio tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2356"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2365"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation>%1: Praleidžiamas nepalaikomas piktogramos nepermatomumo tipas (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2632"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2641"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2650"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: Praleidžiamas nepalaikomas poslinkio interpoliavimo tipas (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2794"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2802"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2803"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2811"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2831"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: Sąrašai užrašų interpoliavimo funkcijoje nepalaikomi, praleidžiama.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2873"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3724"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2882"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3748"/>
         <source>%1: Could not interpret match list</source>
         <translation>%1: Nepavyko interpretuoti atitikmenų sąrašo</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3035"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3508"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3799"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3044"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3532"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3823"/>
         <source>%1: Could not interpret step list</source>
         <translation>%1: Nepavyko interpretuoti žingsnių sąrašo</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3119"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3128"/>
         <source>%1: Could not interpret value list</source>
         <translation>%1: Nepavyko interpretuoti reikšmių sąrašo</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3131"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3140"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation>%1: Kubinė-bezje interpoliacija nepalaikoma, vietoje jos naudojama tiesinė</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3136"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3145"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: Praleidžiamas neįgyvendintas interpoliavimo metodas %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3142"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3151"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: Praleidžiamas neįgyvendinta interpoliavimo įvestis %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3171"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3180"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation>%1: Praleidžiamas nepalaikomas skaitinis masyvas interpoliacijoje</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3200"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: Nepavyko išnagrinėti ne tekstinės spalvos %2, praleidžiama</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3308"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3374"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3428"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3297"/>
+        <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
+        <translation>%1: Operatoriui %2 reikia lygiai dviejų operandų, praleidžiami pertekliniai operandai</translation>
+    </message>
+    <message>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3332"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3398"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3452"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: Praleidžiama nepalaikoma išraiška</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3531"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3555"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation>%1: Praleidžiama nepalaikoma išraiška „%2“</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3563"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3570"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3580"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3587"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3594"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3604"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation>%1: Nepavyko atsisiųsti piešinio „%2“</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3848"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3872"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: Nepavyko interpretuoti piešinio reikšmės sąrašo su metodu %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3762"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3854"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3786"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3878"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation>%1: Praleidžiamas nepalaikomas piešinio tipas (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3892"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3916"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: Praleidžiama nepalaikoma išraiškos dalis</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4044"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4068"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>Netinkamas šaltinio tipas „%1“ šaltiniui „%2“</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4205"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4229"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>%1 schema nepalaikoma rastro šaltiniui %2</translation>
     </message>
@@ -53485,7 +53551,7 @@ Daugiau informacijos rasite šiuose straipsniuose:
         <translation>Braižytojo nepermatomumas</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgslinesymbollayer.cpp" line="3103"/>
+        <location filename="../src/core/symbology/qgslinesymbollayer.cpp" line="3096"/>
         <source>Could not allocate sufficient memory for raster line symbol</source>
         <translation>Nepavyko skirti pakankamai atminties rastro linijos simboliui</translation>
     </message>
@@ -56457,52 +56523,52 @@ Išvesties sluoksnis yra įvesties sluoksnio kopija su papildomais laukais, kuri
         <translation>Įvesties sluoksnyje turi būti bent 3 taškai.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="196"/>
         <source>Creating Delaunay triangles…</source>
         <translation>Kuriami Delaunay trikampiai...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="207"/>
         <source>Failed to compute concave hull: Delaunay triangulation algorithm not found!</source>
         <translation>Nepavyko paskaičiuoti išgaubto korpuso: nerastas Delaunay trianguliacijos algoritmas!</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="217"/>
         <source>Failed to compute Delaunay triangulation.</source>
         <translation>Nepavyko paskaičiuoti Delaunay trianguliacijos.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="217"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="222"/>
         <source>No Delaunay triangles created.</source>
         <translation>Nesukurtas nei vienas Delaunay trikampis.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="220"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="225"/>
         <source>Computing edges max length…</source>
         <translation>Skaičiuojamas maksimalus kraštinės ilgis...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="255"/>
         <source>Removing features…</source>
         <translation>Šalinami geoobjektai...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="272"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="277"/>
         <source>Dissolving Delaunay triangles…</source>
         <translation>Tirpinami Delaunay trikampiai...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="285"/>
         <source>Failed to compute concave hull: Dissolve algorithm not found!</source>
         <translation>Nepavyko paskaičiuoti išgaubto korpuso: nerastas tirpinimo algoritmas!</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="287"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="292"/>
         <source>Failed to dissolve Delaunay triangles.</source>
         <translation>Nepavyko ištirpinti Delaunay trikampių.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="291"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="296"/>
         <source>There are no features in the dissolved layer.</source>
         <translation>Ištirpintame sluoksnyje nėra geoobjektų.</translation>
     </message>
@@ -58902,7 +58968,7 @@ Jei rastro duomenų krūvoje naudojami kelių juostų rastrai, algoritmas visada
         <translation>Klaida bandant nustatyti objectIdFieldName ir/ar objectIds</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2586"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Nepavyko pridėti stulpelio r_raster_column į lentelę layer_styles. Gali būti, kad neturite teisių lentelei (naudotojas=%1). Prašome susisiekti su duombazės administratoriumi</translation>
     </message>
@@ -65275,7 +65341,7 @@ Trinti šiuos geoobjektus?</numerusform></translation>
 <context>
     <name>QgsAppElevationProfileLayerTreeView</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1173"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1177"/>
         <source>Properties…</source>
         <translation>Savybės...</translation>
     </message>
@@ -67821,7 +67887,7 @@ Paspaudus mygtuką galėsite parinkti veiksmui naudojamą aplikaciją</translati
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="462"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="467"/>
         <source>Update All</source>
         <translation>Atnaujinti viską</translation>
     </message>
@@ -67936,13 +68002,13 @@ Paspaudus mygtuką galėsite parinkti veiksmui naudojamą aplikaciją</translati
         <translation>Sąlyginis formatavimas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="306"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="311"/>
         <source>Dock Attribute Table</source>
         <translation>Pridėti atributų lentelę kaip skydelį</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="243"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="244"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="247"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="248"/>
         <source>Actions</source>
         <translation>Veiksmai</translation>
     </message>
@@ -67967,117 +68033,117 @@ Paspaudus mygtuką galėsite parinkti veiksmui naudojamą aplikaciją</translati
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="525"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation>Bandant atnaujinti lauką %1 įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="609"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Vertinant skaičiavimo eilutę įvyko klaida:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="525"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="609"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
         <source>Update Attributes</source>
         <translation>Atnaujinti atributus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="454"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="459"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation>%1 — Iš viso geoobjektų: %L2, Filtruotų: %L3, Pažymėtų: %L4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="968"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>Nepavyko pridėti lauką „%1“ tipo „%2“. Ar lauko pavadinimas unikalus?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="464"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="469"/>
         <source>Update Filtered</source>
         <translation>Atnaujinti filtruotus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="428"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="433"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation>Multiedit nepalaikomas naudojant savo UI formas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="430"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="435"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation>Paieška nepalaikoma naudojant savas UI formas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="567"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="572"/>
         <source>Calculating field</source>
         <translation>Skaičiuojamas laukas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="737"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="742"/>
         <source>Feature Added</source>
         <translation>Geoobjektas pridėtas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="955"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="960"/>
         <source>Attribute added</source>
         <translation>Atributas pridėtas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="968"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
         <source>Add Field</source>
         <translation>Pridėti lauką</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="996"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1001"/>
         <source>Deleted attribute</source>
         <translation>Atributas panaikintas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>Nepavyko panaikinti atributų</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
         <source>Attribute error</source>
         <translation>Atributo klaida</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1057"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1062"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>%n geoobjektas sluoksnyje „%1“, </numerusform><numerusform>%n geoobjektai sluoksnyje „%1“, </numerusform><numerusform>%n geoobjektų sluoksnyje „%1“, </numerusform><numerusform>%n geoobjektai sluoksnyje „%1“, </numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation><numerusform>Trinti bent %n geoobjektą kitame sluoksnyje(iuose)</numerusform><numerusform>Trinti bent %n geoobjektus kitame sluoksnyje(iuose)</numerusform><numerusform>Trinti bent %n geoobjektų kitame sluoksnyje(iuose)</numerusform><numerusform>Trinti bent %n geoobjektus kitame sluoksnyje(iuose)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation>Trinti geoobjektą sluoksnyje „%1“, %2 taip pat ir visus jo vaikus.
 Trinti šiuos geoobjektus?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1079"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1084"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n geoobjektas ištrintas: %1</numerusform><numerusform>%n geoobjektai ištrinti: %1</numerusform><numerusform>%n geoobjektų ištrinta: %1</numerusform><numerusform>%n geoobjektai ištrinti: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1076"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1081"/>
         <source>%1 on layer %2. </source>
         <translation>%1 sluoksnyje %2. </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1087"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1092"/>
         <source>Delete Feature</source>
         <translation>Trinti geoobjektą</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="706"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="711"/>
         <source>Geometryless feature added</source>
         <translation>Pridėtas objektas be geometrijos</translation>
     </message>
@@ -72597,7 +72663,8 @@ Veiksmo NEGALIMA atstatyti!</translation>
         <location filename="../src/providers/wfs/qgsbasenetworkrequest.cpp" line="737"/>
         <source>
 Server response: %1</source>
-        <translation type="unfinished"/>
+        <translation>
+Serverio atsakas: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgsbasenetworkrequest.cpp" line="760"/>
@@ -74563,12 +74630,12 @@ Ar esamos klasės turėtų būti panaikintos prieš vykdant klasifikaciją?</tra
 <context>
     <name>QgsCodedValueTableModel</name>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="280"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="281"/>
         <source>Code</source>
         <translation>Kodas</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="282"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="283"/>
         <source>Value</source>
         <translation>Reikšmė</translation>
     </message>
@@ -76493,53 +76560,53 @@ ir dabartinis failas yra [%3]</translation>
 <context>
     <name>QgsCreateRasterAttributeTableDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="52"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="53"/>
         <source>The data provider supports attribute table storage but some drivers do not support &apos;thematic&apos; types, for this reason the option is disabled.</source>
         <translation>Duomenų teikėjas palaiko atributų lentelės saugojimą, bet kai kurios tvarkyklės nepalaiko „tematinių“ tipų, todėl ši parinktis išjungta.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="56"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="57"/>
         <source>Raster band %1 already has an associated attribute table at %2.</source>
         <translation>Rastro juosta %1 jau turi susijusią atributų lentelę %2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="60"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="61"/>
         <source>Raster band %1 already has an associated attribute table.</source>
         <translation>Rastro juosta %1 jau turi susijusią atributų lentelę.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="138"/>
         <source>Error Creating Raster Attribute Table</source>
         <translation>Klaida kuriant rastro atributų lentelę</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="138"/>
         <source>The raster attribute table could not be created.</source>
         <translation>Nepavyko sukurti rastro atributų lentelės.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="145"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="149"/>
         <source>Confirm Overwrite</source>
         <translation>Perrašymo patvirtinimas</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="145"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="149"/>
         <source>Are you sure you want to overwrite the existing attribute table at &apos;%1&apos;?</source>
         <translation>Ar tikrai norite perrašyti esamą atributų lentelę „%1“?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="150"/>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="160"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="154"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="164"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>Klaida įrašant rastro atributų lentelę</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="168"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>Raster Attribute Table Saved</source>
         <translation>Rastro atributų lentelė įrašyta</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="168"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>The new Raster Attribute Table was successfully created.</source>
         <translation>Nauja rastro atributų lentelė buvo sėkmingai sukurta.</translation>
     </message>
@@ -82457,17 +82524,17 @@ Klaida: %2</translation>
 <context>
     <name>QgsElevationProfilePdfExportDialog</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="37"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="42"/>
         <source>Portrait</source>
         <translation>Stačias</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="38"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="43"/>
         <source>Landscape</source>
         <translation>Gulsčias</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="45"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="50"/>
         <source>Custom</source>
         <translation>Savas</translation>
     </message>
@@ -82521,223 +82588,223 @@ Klaida: %2</translation>
 <context>
     <name>QgsElevationProfileWidget</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="193"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="197"/>
         <source>Add Layers</source>
         <translation>Pridėti sluoksnius</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="198"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="202"/>
         <source>Show Layer Tree</source>
         <translation>Rodyti sluoksnių medį</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="210"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="214"/>
         <source>Capture Curve</source>
         <translation>Užfiksuoti kreivę</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="225"/>
         <source>Capture Curve From Feature</source>
         <translation>Užfiksuoti kreivę iš geoobjekto</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="232"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="236"/>
         <source>Nudge Left</source>
         <translation>Stumtelėti kairėn</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="238"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="242"/>
         <source>Nudge Right</source>
         <translation>Stumtelėti dešinėn</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="251"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="255"/>
         <source>Clear</source>
         <translation>Valyti</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="258"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="262"/>
         <source>Identify Features</source>
         <translation>Identifikuoti geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="266"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="270"/>
         <source>Pan</source>
         <translation>Paslinkti</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="274"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="278"/>
         <source>Zoom X Axis</source>
         <translation>Didinti X ašį</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="281"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="285"/>
         <source>Zoom</source>
         <translation>Priartinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="288"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="292"/>
         <source>Zoom Full</source>
         <translation>Pilnai padidinti</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="293"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="297"/>
         <source>Enable Snapping</source>
         <translation>Įjungti pritraukimą</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="302"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="306"/>
         <source>Measure Distances</source>
         <translation>Matuoti atstumus</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="313"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="317"/>
         <source>Export as PDF</source>
         <translation>Eksportuoti kaip PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="318"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="322"/>
         <source>Export as Image</source>
         <translation>Eksportuoti kaip piešinį</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="325"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="329"/>
         <source>Export 3D Features…</source>
         <translation>Eksportuoti 3D geoobjektus...</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="329"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="333"/>
         <source>Export 2D Profile…</source>
         <translation>Eksportuoti 2D profilį...</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="333"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="337"/>
         <source>Export Distance/Elevation Table…</source>
         <translation>Eksportuoti Atstumo/Aukščio lentelę...</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="339"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="343"/>
         <source>Export Results</source>
         <translation>Eksportuoti rezultatus</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="351"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="355"/>
         <source>Lock Distance/Elevation Scales</source>
         <translation>Užrakinti atstumo/aukščio mastelius</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="357"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="361"/>
         <source>Distance Units</source>
         <translation>Atstumo vienetai</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="421"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="425"/>
         <source>Show Subsections Indicator</source>
         <translation>Rodyti poskilčių indikatorių</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="428"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="432"/>
         <source>Subsections Symbology…</source>
         <translation>Poskilčių simbologija...</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="435"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="439"/>
         <source>Rename Profile…</source>
         <translation>Pervadinti profilį...</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="441"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="445"/>
         <source>Options</source>
         <translation>Parinktys</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="484"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="488"/>
         <source>Dock Elevation Profile View</source>
         <translation>Prisegti aukščio profilio vaizdą</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="772"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="776"/>
         <source>Export to PDF</source>
         <translation>Eksportuoti į PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="774"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="778"/>
         <source>PDF Format</source>
         <translation>PDF formatas</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="803"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="821"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="807"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="825"/>
         <source>Save as PDF</source>
         <translation>Įrašyti kaip PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="803"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="807"/>
         <source>Could not create %1</source>
         <translation>Nepavyko sukurti %1</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="821"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="873"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="937"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="943"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="825"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="877"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="941"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="947"/>
         <source>Successfully saved the profile to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Profilis sėkmingai įrašytas į &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="833"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="837"/>
         <source>Save Plot As</source>
         <translation>Įrašyti brėžinį kaip</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="852"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="873"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="856"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="877"/>
         <source>Save as Image</source>
         <translation>Įrašyti kaip piešinį</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="852"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="856"/>
         <source>Could not create image</source>
         <translation>Nepavyko sukurti piešinio</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="899"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="903"/>
         <source>Select Output File</source>
         <translation>Parinkite išvesties failą</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="937"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="943"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="941"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="947"/>
         <source>Exported Profile</source>
         <translation>Profilis eksportuotas</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="953"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="957"/>
         <source>Export Failed</source>
         <translation>Eksportas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="953"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="957"/>
         <source>The elevation profile could not be exported</source>
         <translation>Nepavyko eksportuoti aukščio profilio</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="989"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="993"/>
         <source>elevation profile</source>
         <translation>aukščio profilis</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="990"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="994"/>
         <source>Rename Elevation Profile</source>
         <translation>Pervadinti aukščio profilį</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="991"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="995"/>
         <source>Enter a new elevation profile title</source>
         <translation>Įveskite naujo aukščio profilio antraštę</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1019"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1023"/>
         <source>Subsections Symbol Selector</source>
         <translation>Poskilčių simbolių parinkėjas</translation>
     </message>
@@ -82745,7 +82812,7 @@ Klaida: %2</translation>
 <context>
     <name>QgsElevationProfileWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1149"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1153"/>
         <source>Tolerance</source>
         <translation>Tolerancija</translation>
     </message>
@@ -88078,8 +88145,28 @@ p, li { white-space: pre-wrap; }
         <translation>predicate,st_disjoint,disjoint,current,target,array,geos,underlying,features</translation>
     </message>
     <message>
+        <source>an array of names, for the regions exactly equal to the current feature</source>
+        <translation>masyvas pavadinimų apskričių, kuriuos tiksliai tapačios dabartiniam geoobjektui</translation>
+    </message>
+    <message>
+        <source>a string as a comma separated list of names, for the regions exactly equal to the current feature</source>
+        <translation>kableliais atskirtų pavadinimų eilutė apskritims, kurios tiksliai tapačios dabartiniam geoobjektui</translation>
+    </message>
+    <message>
+        <source>an ordered array of names, for the regions exactly equal to the current feature and with a population greater than 10000</source>
+        <translation>rikiuotas pavadinimų masyvas apskritims, tiksliai tapačioms dabartiniam geoobjektui, kurių gyventojų skaičius didesnis už 10000</translation>
+    </message>
+    <message>
         <source>overlay_equals(layer:=&apos;regions&apos;, expression:= geom_to_wkt(@geometry), limit:=2)</source>
         <translation>overlay_equals(layer:=&apos;apskritys&apos;, expression:= geom_to_wkt(@geometry), limit:=2)</translation>
+    </message>
+    <message>
+        <source>an array of geometries (in WKT), for up to two regions exactly equal to the current feature</source>
+        <translation>masyvas geometrijų (WKT) apskričių, tiksliai tapačių dabartiniam geoobjektui, bet ne daugiau dviejų įrašų</translation>
+    </message>
+    <message>
+        <source>predicate,current,equals,equal,target,array,exactly,described,underlying,features</source>
+        <translation>predicate,current,equals,equal,target,array,exactly,described,underlying,features,dabartinis,lygu,aprašyti,aprašymas,geoobjektas</translation>
     </message>
     <message>
         <source>Set this to true to return a list of maps containing (key names in quotes) the feature &apos;id&apos;, the expression &apos;result&apos; and the &apos;overlap&apos; value (of the largest element in case of multipart). The &apos;radius&apos; of the maximum inscribed circle is also returned when the target layer is a polygon. Only valid when used with the expression parameter</source>
@@ -88107,7 +88194,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>array_to_string(overlay_touches(&apos;regions&apos;, name))</source>
-        <translation type="unfinished"/>
+        <translation>array_to_string(overlay_touches(&apos;regions&apos;, name))</translation>
     </message>
     <message>
         <source>overlay_touches(layer:=&apos;regions&apos;, expression:= geom_to_wkt(@geometry), limit:=2)</source>
@@ -88864,10 +88951,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>share,tests,contained,overlaps,same,dimension,space</source>
         <translation>share,tests,contained,overlaps,same,dimension,space</translation>
-    </message>
-    <message>
-        <source>predicate,current,equals,equal,target,array,geos,st_equals,described,underlying,features</source>
-        <translation>predicate,current,equals,equal,target,array,geos,st_equals,described,underlying,features</translation>
     </message>
     <message>
         <source>algorithm,parameter,processing</source>
@@ -93742,8 +93825,8 @@ p, li { white-space: pre-wrap; }
         <translation>masyvas geometrijų (WKT) apskričių, erdviškai nesusijusių su dabartiniu geoobjektu, bet ne daugiau dviejų įrašų</translation>
     </message>
     <message>
-        <source>Returns whether the current feature spatially equals to at least one feature from a target layer, or an array of expression-based results for the features in the target layer that are spatially equal to the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Equals&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Equals.html&apos;&gt;ST_Equals&lt;/a&gt; function.</source>
-        <translation>Grąžina ar dabartinis geoobjektas erdviškai tapatus bet vienam geoobjektui iš paskirties sluoksnio arba išraiška paremtos paskirties sluoksnio geoobjektų aibės.&lt;br&gt;&lt;br&gt;Daugiau informacijos apie GEOS funkciją „Equals“ skaitykite PostGIS funkcijos &lt;a href=&apos;https://postgis.net/docs/ST_Equals.html&apos;&gt;ST_Equals&lt;/a&gt; dokumentacijoje.</translation>
+        <source>Returns whether the current feature&apos;s geometry is exactly equal to at least one feature&apos;s geometry from a target layer, or an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature&apos;s geometry. Note that the order of vertices matters.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>overlay_equals</source>
@@ -93754,36 +93837,32 @@ p, li { white-space: pre-wrap; }
         <translation>overlay_equals(&apos;apskritys&apos;)</translation>
     </message>
     <message>
+        <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region</source>
+        <translation>TRUE, jei dabartinio geoobjekto geometrija yra lygiai tokia pati, kaip apskrities geometrija</translation>
+    </message>
+    <message>
         <source>overlay_equals(&apos;regions&apos;, filter:= population &gt; 10000)</source>
         <translation>overlay_equals(&apos;apskritys&apos;, filter:= gyventoju_sk &gt; 10000)</translation>
+    </message>
+    <message>
+        <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region whose population is greater than 10000</source>
+        <translation>TRUE, jei dabartinio geoobjekto geometrija yra lygiai tokia pati, kaip ir apskrities, kurios gyventojų skaičius didesnis už 10000, geometrija</translation>
     </message>
     <message>
         <source>overlay_equals(&apos;regions&apos;, name)</source>
         <translation>overlay_equals(&apos;apskritys&apos;, pavadinimas)</translation>
     </message>
     <message>
-        <source>an array of names, for the regions spatially equal to the current feature</source>
-        <translation>masyvas pavadinimų apskričių, kuriuos erdviškai tapačios dabartiniam geoobjektui</translation>
-    </message>
-    <message>
         <source>array_to_string(overlay_equals(&apos;regions&apos;, name))</source>
         <translation>array_to_string(overlay_equals(&apos;apskritys&apos;, pavadinimas))</translation>
-    </message>
-    <message>
-        <source>a string as a comma separated list of names, for the regions spatially equal to the current feature</source>
-        <translation>kableliais atskirtų pavadinimų eilutė apskritims, kurios erdviškai tapačios dabartiniam geoobjektui</translation>
     </message>
     <message>
         <source>array_sort(overlay_equals(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
         <translation>array_sort(overlay_equals(layer:=&apos;apskritys&apos;, expression:=&quot;pavadinimas&quot;, filter:= gyventoju_sk &gt; 10000))</translation>
     </message>
     <message>
-        <source>an ordered array of names, for the regions spatially equal to the current feature and with a population greater than 10000</source>
-        <translation>rikiuotas pavadinimų masyvas apskritims, erdviškai tapačioms dabartiniam geoobjektui, kurių gyventojų skaičius didesnis už 10000</translation>
-    </message>
-    <message>
-        <source>an array of geometries (in WKT), for up to two regions spatially equal to the current feature</source>
-        <translation>masyvas geometrijų (WKT) apskričių, erdviškai tapačių dabartiniam geoobjektui, bet ne daugiau dviejų įrašų</translation>
+        <source>This function requires exact equality of geometries, meaning that the geometries &apos;LINESTRING( 0 0, 1 1 )&apos; and &apos;LINESTRING( 1 1, 0 0 )&apos; are different.</source>
+        <translation>Šiai funkcijai reikia tikslaus geometrijų sutapimo, tai reiškia, kad geometrijos „LINESTRING( 0 0, 1 1 )“ ir „LINESTRING( 1 1, 0 0 )“ yra skirtingos.</translation>
     </message>
     <message>
         <source>Returns whether the current feature spatially intersects at least one feature from a target layer, or an array of expression-based results for the features in the target layer intersected by the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Intersects&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Intersects.html&apos;&gt;ST_Intersects&lt;/a&gt; function.</source>
@@ -95880,14 +95959,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>TRUE if the current feature is spatially disjoint from all the regions with a population greater than 10000</source>
         <translation>TRUE, jei dabartinis geoobjektas erdviškai nesusijęs su visomis apskritimis su gyventojų skaičiumi didesniu už 10000</translation>
-    </message>
-    <message>
-        <source>TRUE if the current feature is spatially equal to a region</source>
-        <translation>TRUE, jei dabartinis geoobjektas erdviškai sutampa su apskritimi</translation>
-    </message>
-    <message>
-        <source>TRUE if the current feature is spatially equal to a region with a population greater than 10000</source>
-        <translation>TRUE, jei dabartinis geoobjektas erdviškai tapatus su apskritimi turinčia gyventojų daugiau nei 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region</source>
@@ -98148,28 +98219,28 @@ Pakeiskite scenarijaus failo pavadinimą ir įrašykite, kad leistumėte QGIS au
 <context>
     <name>QgsFieldDomainWidget</name>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="346"/>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="350"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="347"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="351"/>
         <source>Default Value</source>
         <translation>Numatytoji reikšmė</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="347"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="348"/>
         <source>Duplicate</source>
         <translation>Dublikatas</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="348"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="349"/>
         <source>Ratio of Geometries</source>
         <translation>Geometrijų santykis</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="351"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="352"/>
         <source>Sum</source>
         <translation>Suma</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="352"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="353"/>
         <source>Geometry Weighted Average</source>
         <translation>Geometrijų svertinis vidurkis</translation>
     </message>
@@ -121356,34 +121427,34 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLoadRasterAttributeTableDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="81"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="85"/>
         <source>Invalid Raster Band</source>
         <translation>Netinkama rastro juosta</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="81"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="85"/>
         <source>The selected raster band %1 is not valid.</source>
         <translation>Parinkta rastro juosta %1 nėra tinkama.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="92"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>Error Loading Raster Attribute Table </source>
         <translation>Klaida įkeliant rastro atributų lentelę</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="92"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>The raster attribute table could not be loaded.
 %1</source>
         <translation>Nepavyko įkelti rastro atributų lentelės.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="98"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
         <source>Invalid Raster Attribute Table</source>
         <translation>Netinkama rastro atributų lentelė</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="98"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
         <source>The raster attribute table is not valid:
 %1
 Load anyway?</source>
@@ -121392,22 +121463,22 @@ Load anyway?</source>
 Vis tiek įkelti?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="114"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
         <source>Confirm Attribute Table Replacement</source>
         <translation>Patvirtinkite atributų lentelės pakeitimą</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="114"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
         <source>Raster band %1 already has an associated attribute table loaded from &apos;%2&apos;. Are you sure you want to replace the existing raster attribute table?</source>
         <translation>Rastro juosta %1 jau turi susijusią atributų lentelę, įkeltą iš „%2“. Ar tikrai norite pakeisti esamą rastro atributų lentelę?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="131"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>Raster Attribute Table Loaded</source>
         <translation>Rastro atributų lentelė įkelta</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="131"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>The new raster attribute table was successfully loaded.</source>
         <translation>Nauja rastro atributų lentelė sėkmingai įkelta.</translation>
     </message>
@@ -130340,59 +130411,59 @@ Išjunkite įrašymą, jei nenorite, kad tai būtų padaryta.</translation>
 <context>
     <name>QgsMssqlProvider</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="195"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="193"/>
         <source>Invalid primary key from geometry_columns table for layer &apos;%1&apos;, get primary key from the layer.</source>
         <translation>Netinkamas pirminis raktas lentelėje geometry_columns sluoksniui „%1“, gauti pirminį raktą iš sluoksnio.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="195"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="193"/>
         <source>MS SQL Server</source>
         <translation>MS SQL serveris</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="215"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="713"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="213"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="719"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="215"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="213"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>Nerastas rakto laukas „%1“ rodiniui/užklausai.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="428"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="434"/>
         <source>Could not execute query: %1</source>
         <translation>Nepavyko įvykdyti užklausos: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="436"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="442"/>
         <source>Could not fetch next query value: %1</source>
         <translation>Nepavyko ištraukti kitos užklausos reikšmės: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="713"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="719"/>
         <source>Invalid extent from geometry_columns table for layer &apos;%1&apos;, get extent from the layer.</source>
         <translation>Netinkama sluoksnio „%1“ apimtis lentelėje geometry_columns, gauti apimtį iš sluoksnio.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="968"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1033"/>
         <source>Could not add feature with geometry type %1 to layer of type %2</source>
         <translation>Nepavyko pridėti geoobjekto su geometrijos tipu %1 į sluoksnį su tipu %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1628"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1667"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1693"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1732"/>
         <source>Only %1 of %2 features deleted</source>
         <translation>Ištrinta tik %1 iš %2 objektų</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1880"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1945"/>
         <source>SQL Server WHERE clause</source>
         <translation>SQL Serverio WHERE sąlyga</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2182"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2247"/>
         <source>Table [%1].[%2] already exists</source>
         <translation>Lentelė [%1].[%2] jau yra</translation>
     </message>
@@ -130400,21 +130471,21 @@ Išjunkite įrašymą, jei nenorite, kad tai būtų padaryta.</translation>
 <context>
     <name>QgsMssqlProviderMetadata</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2589"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2751"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2654"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2816"/>
         <source>Cannot connect to database: %1</source>
         <translation>Negalima prisijungti prie duombazės: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2601"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2762"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2666"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2827"/>
         <source>Could not check if layer_styles table exists: %1</source>
         <translation>Nepavyko patikrinti, ar lentelė layer_styles yra: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2607"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2768"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2788"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2672"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2833"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2853"/>
         <source>Style does not exist</source>
         <translation>Stiliaus nėra</translation>
     </message>
@@ -130726,8 +130797,8 @@ didinimas</translation>
 <context>
     <name>QgsNetworkContentFetcher</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="187"/>
-        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="200"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="190"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="203"/>
         <source>HTTP fetch %1 failed with error %2</source>
         <translation>HTTP gavimas %1 nepavyko su klaida %2</translation>
     </message>
@@ -130735,7 +130806,7 @@ didinimas</translation>
 <context>
     <name>QgsNetworkContentFetcherTask</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkcontentfetchertask.cpp" line="31"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetchertask.cpp" line="33"/>
         <source>Fetching %1</source>
         <translation>Gaunamas %1</translation>
     </message>
@@ -132644,48 +132715,48 @@ Klaidos pranešimas: %1</translation>
         <translation>Visada naudoti tinklą</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="297"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="298"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Ar tikrai norite panaikinti jungtį %1 ir visus susijusius nustatymus?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="317"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="318"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML failai (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="652"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="653"/>
         <source>Add WMS Servers</source>
         <translation>Pridėti WMS stotis</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="652"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="653"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the Internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Kelios WMS stotys buvo pridėtos į stočių sąrašą. Pastebėtina, kad jei į internetą išeinate per šliuzą, jums reikės nurodyti šliuzo nustatymus QGIS parinkčių dialoge.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="317"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="318"/>
         <source>Load Connections</source>
         <translation>Įkelti jungtis</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="299"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="300"/>
         <source>Remove Connection</source>
         <translation>Išimti jungtį</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="441"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="442"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation><numerusform>Koordinačių sistema (%n prieinama)</numerusform><numerusform>Koordinačių sistema (%n prieinama)</numerusform><numerusform>Koordinačių sistema (%n prieinama)</numerusform><numerusform>Koordinačių sistema (%n prieinama)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="486"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="487"/>
         <source>Coordinate Reference System</source>
         <translation>Koordinačių atskaitos sistema</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="602"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="603"/>
         <source>Could not understand the response:
 %1</source>
         <translation>Nepavyko suprasti atsako:
@@ -134289,665 +134360,665 @@ Visada naudoti tinklą: visada įkelti iš tinklo ir niekada netikrinti, ar pod�
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="320"/>
         <source>not present</source>
         <translation>nėra</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="325"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="326"/>
         <source>System value: %1</source>
         <translation>Sisteminė reikšmė: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="516"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="517"/>
         <source>All</source>
         <translation>Visi</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="519"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="520"/>
         <source>Always</source>
         <translation>Visada</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="230"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="521"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="231"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="522"/>
         <source>Never</source>
         <translation>Niekada</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="231"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="232"/>
         <source>Ask</source>
         <translation>Klausti</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="536"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="537"/>
         <source>No</source>
         <translation>Ne</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="572"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="573"/>
         <source>No projection (or unknown/non-Earth projection)</source>
         <translation>Nėra projekcijos (arba nežinoma/nežemiška projekcija)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="575"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="576"/>
         <source>&lt;h1&gt;Default projection for new projects&lt;/h1&gt;Select a projection that should be used for new projects that are created in QGIS.</source>
         <translation>&lt;h1&gt;Numatytoji naujų projektų projekcija&lt;/h1&gt;Parinkite projekciją, kuri turėtų būti naudojama naujai sukurtuose QGIS projektuose.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="609"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="610"/>
         <source>Meters</source>
         <translation>Metrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="610"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="611"/>
         <source>Kilometers</source>
         <translation>Kilometrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="611"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="612"/>
         <source>Feet</source>
         <translation>Pėdos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="612"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="613"/>
         <source>Yards</source>
         <translation>Jardai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="613"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="614"/>
         <source>Miles</source>
         <translation>Mylios</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="615"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="616"/>
         <source>Centimeters</source>
         <translation>Centimetrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="616"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="617"/>
         <source>Millimeters</source>
         <translation>Milimetrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="618"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="646"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="619"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="647"/>
         <source>Degrees</source>
         <translation>Laipsniai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="632"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="633"/>
         <source>Hectares</source>
         <translation>Hektarai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="633"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="634"/>
         <source>Acres</source>
         <translation>Akrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="647"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="648"/>
         <source>Radians</source>
         <translation>Radianai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="648"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="649"/>
         <source>Gon/gradians</source>
         <translation>Gonai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="651"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="652"/>
         <source>Turns/revolutions</source>
         <translation>Sūkiai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="761"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="762"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="793"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="794"/>
         <source>Set Selection Color</source>
         <translation>Nustatyti pažymėjimo spalvą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="803"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="804"/>
         <source>Set Canvas Color</source>
         <translation>Nustatyti drobės spalvą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="812"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="813"/>
         <source>Set Measuring Tool Color</source>
         <translation>Nustatyti matavimo įrankio spalvą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="996"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="997"/>
         <source>Select Grid Color</source>
         <translation>Parinkite tinklelio spalvą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1159"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1160"/>
         <source>Dialog</source>
         <translation>Dialogas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1160"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1161"/>
         <source>Dock</source>
         <translation>Prijungtas langas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1164"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1165"/>
         <source>Miter</source>
         <translation>Mitra</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1391"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1402"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1406"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1392"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1403"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1407"/>
         <source>Save Default Project</source>
         <translation>Įrašyti numatytąjį projektą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1986"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1987"/>
         <source>Restore UI Defaults</source>
         <translation>Atstatyti numatytuosius nustatymus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2479"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2480"/>
         <source>Drivers Disabled</source>
         <translation>Tvarkyklės išjungtos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2479"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2480"/>
         <source>One or more drivers have been disabled. This will only take effect after QGIS is restarted.</source>
         <translation>Viena ar daugiau tvarkyklių išjungtos. Tai įsigalios tik iš naujo paleidus QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2591"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2592"/>
         <source>Choose a Directory</source>
         <translation>Parinkite aplanką</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2695"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2696"/>
         <source>Sample date: %1 money: %2 int: %3 float: %4</source>
         <translation>Pavyzdinė data: %1 pinigai: %2 sveikas: %3 realus: %4</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2734"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2735"/>
         <source>Set Scale</source>
         <translation>Parinkti mastelį</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1004"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1823"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1005"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1824"/>
         <source>Solid</source>
         <translation>Ištisinis</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1005"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1827"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1006"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1828"/>
         <source>Dots</source>
         <translation>Taškai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1006"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1831"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1007"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1832"/>
         <source>Crosses</source>
         <translation>Kryžiukai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1033"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1034"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Aptikta aktyvi jūsų sistemos lokalė: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1104"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1114"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1105"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1115"/>
         <source>map units</source>
         <translation>žemėlapio vienetai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1108"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1118"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1109"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1119"/>
         <source>pixels</source>
         <translation>taškai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1130"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1145"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1769"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1146"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1770"/>
         <source>Cross</source>
         <translation>Kryžiukas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1131"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1149"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1773"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1150"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1774"/>
         <source>None</source>
         <translation>Jokio</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1460"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1461"/>
         <source>QGIS files</source>
         <translation>QGIS failai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2572"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2573"/>
         <source>Select color</source>
         <translation>Parinkite spalvą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2734"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2735"/>
         <source>The text you entered is not a valid scale.</source>
         <translation>Jūsų įvestas tekstas nėra tinkamas mastelis.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1134"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1135"/>
         <source>Off</source>
         <translation>Išj</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="236"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="237"/>
         <source>Identify Highlight Color</source>
         <translation>Identifikavimo paryškinimo spalva</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1135"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1136"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1136"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1137"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1163"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1172"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1164"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1173"/>
         <source>Round</source>
         <translation>Apvalus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1165"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1166"/>
         <source>Bevel</source>
         <translation>Kampas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1391"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1392"/>
         <source>You must set a default project</source>
         <translation>Turite nustatyti numatytąjį projektą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1402"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1403"/>
         <source>Current project saved as default</source>
         <translation>Dabartinis projektas įrašytas kaip numatytasis</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1406"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1407"/>
         <source>Error saving current project as default</source>
         <translation>Klaida saugant dabartinį projektą kaip numatytąjį</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1422"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1423"/>
         <source>Choose a directory to store project template files</source>
         <translation>Pasirinkite aplanką kur saugosite projekto šablono failus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="228"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="229"/>
         <source>QGIS restart required</source>
         <translation>reikia iš naujo paleisti QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="110"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="111"/>
         <source>CRS and Transforms</source>
         <translation>CRS ir transformacijos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="232"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="233"/>
         <source>For This Session Only</source>
         <translation>Tik šiai sesijai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="233"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="234"/>
         <source>Not During This Session</source>
         <translation>Ne šioje sesijoje</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="234"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="235"/>
         <source>Always (Not Recommended)</source>
         <translation>Visada (nerekomenduojama)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="503"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="504"/>
         <source>Show All Features</source>
         <translation>Rodyti visus geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="504"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="505"/>
         <source>Show Selected Features</source>
         <translation>Rodyti pažymėtus geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="505"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="506"/>
         <source>Show Features Visible on Map</source>
         <translation>Rodyti žemėlapyje matomus geoobjektus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="509"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="510"/>
         <source>Remember Last View</source>
         <translation>Atsiminti paskutinį vaizdą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="510"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="511"/>
         <source>Table View</source>
         <translation>Lentelės vaizdas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="511"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="512"/>
         <source>Form View</source>
         <translation>Formos vaizdas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="520"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="521"/>
         <source>If Needed</source>
         <translation>Jei reikia</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="522"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="523"/>
         <source>Load All</source>
         <translation>Įkelti visus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="527"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="528"/>
         <source>Check File Contents</source>
         <translation>Tikrinti failo turinį</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="528"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="529"/>
         <source>Check Extension</source>
         <translation>Tikrinti praplėtimą</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="538"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="539"/>
         <source>Basic Scan</source>
         <translation>Paprastas tikrinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="539"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="540"/>
         <source>Full Scan</source>
         <translation>Pilnas tikrinimas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="594"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="595"/>
         <source>Always show</source>
         <translation>Visada rodyti</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="614"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="615"/>
         <source>Nautical Miles</source>
         <translation>Jūrmylės</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="617"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="618"/>
         <source>Inches</source>
         <translation>Coliai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="619"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="639"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="620"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="640"/>
         <source>Map Units</source>
         <translation>Žemėlapio vienetai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="627"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="628"/>
         <source>Square Meters</source>
         <translation>Kvadratiniai metrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="628"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="629"/>
         <source>Square Kilometers</source>
         <translation>Kvadratiniai kilometrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="629"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="630"/>
         <source>Square Feet</source>
         <translation>Kvadratinės pėdos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="630"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="631"/>
         <source>Square Yards</source>
         <translation>Kvadratiniai jardai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="631"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="632"/>
         <source>Square Miles</source>
         <translation>Kvadratinės mylios</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="634"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="635"/>
         <source>Square Nautical Miles</source>
         <translation>Kvadratinės jūrmylės</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="635"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="636"/>
         <source>Square Centimeters</source>
         <translation>Kvadratiniai centimetrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="636"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="637"/>
         <source>Square Millimeters</source>
         <translation>Kvadratiniai milimetrai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="637"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="638"/>
         <source>Square Inches</source>
         <translation>Kvadratiniai coliai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="638"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="639"/>
         <source>Square Degrees</source>
         <translation>Kvadratiniai laipsniai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="649"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="650"/>
         <source>Minutes of Arc</source>
         <translation>Minutės</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="650"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="651"/>
         <source>Seconds of Arc</source>
         <translation>Sekundės</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="652"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="653"/>
         <source>Milliradians (SI Definition)</source>
         <translation>Miliradianai (SI apibrėžimas)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="653"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="654"/>
         <source>Mil (NATO/military Definition)</source>
         <translation>Mil (NATO/karinis apibrėžimas)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="758"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="759"/>
         <source>Plain Text, No Geometry</source>
         <translation>Paprastas tekstas, be geometrijos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="759"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="760"/>
         <source>Plain Text, WKT Geometry</source>
         <translation>Paprastas tekstas, WKT geometrija</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="760"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="761"/>
         <source>Plain Text, WKB Geometry</source>
         <translation>Paprastas tekstas, WKB geometrija</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="767"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="768"/>
         <source>Above currently selected layer</source>
         <translation>Virš dabar pažymėto sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="768"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="769"/>
         <source>Always on top of the layer tree</source>
         <translation>Visada sluoksnių medžių viršuje</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="769"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="770"/>
         <source>Optimal index within current layer tree group</source>
         <translation>Optimalus indeksas dabartinėje sluoksnių medžio grupėje</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="773"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="774"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="775"/>
         <source>none</source>
         <translation>jokios</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="829"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="830"/>
         <source>Absolute</source>
         <translation>Absoliutus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="830"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="831"/>
         <source>Relative</source>
         <translation>Santykinis</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1129"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1141"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1765"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1130"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1142"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1766"/>
         <source>Semi Transparent Circle</source>
         <translation>Pusiau permatomas apskritimas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1173"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1174"/>
         <source>Flat</source>
         <translation>Nukirstas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1174"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1175"/>
         <source>Square</source>
         <translation>Kvadratas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1252"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1253"/>
         <source>No OpenCL compatible devices were found on your system.&lt;br&gt;You may need to install additional libraries in order to enable OpenCL.&lt;br&gt;Please check your logs for further details.</source>
         <translation>Jūsų sistemoje nerasta su OpenCL suderinamų įrenginių.&lt;br&gt;Jums gali reikėti įdiegti papildomas bibliotekas, kad įjungtumėte OpenCL.&lt;br&gt;Daugiau detalių rasite žurnale.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1280"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1281"/>
         <source>QGIS is compiled without OpenCL support. GPU acceleration is not available.</source>
         <translation>QGIS sukompiliuotas be OpenCL palaikymo. GPU greitinimas negalimas.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1460"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1461"/>
         <source>Choose project file to open at launch</source>
         <translation>Parinkite projekto failą atidarymui paleidus</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1942"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1943"/>
         <source>Create Options - %1 Driver</source>
         <translation>Kūrimo parinktys - %1 Tvarkyklė</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1944"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1945"/>
         <source>Create Options - pyramids</source>
         <translation>Kūrimo parinktys - piramidės</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1986"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1987"/>
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation>Ar tikrai norite atstatyti naudotojo sąsają į numatytąją (reikės paleisti iš naujo)?</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2004"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2005"/>
         <source>Overwrite</source>
         <translation>Perrašyti</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2005"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2006"/>
         <source>If Undefined</source>
         <translation>Jei nenustatyta</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2006"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2007"/>
         <source>Unset</source>
         <translation>Panaikinti</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2007"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2008"/>
         <source>Prepend</source>
         <translation>Pridėti priekyje</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2008"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2009"/>
         <source>Append</source>
         <translation>Pridėti gale</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2009"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2010"/>
         <source>Skip</source>
         <translation>Praleisti</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2071"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2151"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2178"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2227"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2072"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2152"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2179"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2228"/>
         <source>Choose a directory</source>
         <translation>Pasirinkite aplanką</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2255"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2261"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2256"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2262"/>
         <source>Clear Cache</source>
         <translation>Valyti podėlį</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2255"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2256"/>
         <source>Content cache has been cleared.</source>
         <translation>Turinio podėlis išvalytas.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2261"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2262"/>
         <source>Connection authentication cache has been cleared.</source>
         <translation>Prisijungimų autentikacijos podėlis išvalytas.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2488"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2489"/>
         <source>Enter scale</source>
         <translation>Įveskite mastelį</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2489"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2490"/>
         <source>Scale denominator</source>
         <translation>Mastelio vardiklis</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2522"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2523"/>
         <source>Load scales</source>
         <translation>Įkelti mastelius</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2522"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2544"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2523"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2545"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML failai (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2544"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2545"/>
         <source>Save scales</source>
         <translation>Įrašyti mastelius</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2859"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2860"/>
         <source>Bearing Format</source>
         <translation>Krypties formatas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2869"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2870"/>
         <source>Coordinate Format</source>
         <translation>Koordinačių formatas</translation>
     </message>
@@ -134966,102 +135037,102 @@ Visada naudoti tinklą: visada įkelti iš tinklo ir niekada netikrinti, ar pod�
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="105"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
         <location filename="../src/app/qgisapp.cpp" line="12471"/>
         <source>General</source>
         <translation>Bendra</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
         <location filename="../src/app/qgisapp.cpp" line="12472"/>
         <source>System</source>
         <translation>Sistema</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="108"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="109"/>
         <source>CRS and Transforms</source>
         <translation>CRS ir transformacijos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
         <location filename="../src/app/qgisapp.cpp" line="12473"/>
         <source>CRS Handling</source>
         <translation>CRS valdymas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
         <source>General CRS handling</source>
         <translation>Bendras CRS valdymas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
         <source>Coordinate transformations and operations</source>
         <translation>Koordinačių transformacijos ir veiksmai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
         <location filename="../src/app/qgisapp.cpp" line="12474"/>
         <source>Coordinate Transforms</source>
         <translation>Koordinačių transformacijos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
         <location filename="../src/app/qgisapp.cpp" line="12475"/>
         <source>Data Sources</source>
         <translation>Duomenų šaltiniai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
         <source>Data sources</source>
         <translation>Duomenų šaltiniai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
         <source>Canvas and legend</source>
         <translation>Drobė ir ženklai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
         <source>Map tools</source>
         <translation>Žemėlapio įrankiai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="126"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
         <location filename="../src/app/qgisapp.cpp" line="12480"/>
         <source>Colors</source>
         <translation>Spalvos</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
         <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>Canvas &amp; Legend</source>
         <translation>Drobė ir Legenda</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
         <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>Map Tools</source>
         <translation>Įrankiai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="124"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
         <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Digitizing</source>
         <translation>Skaitmeninimas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="118"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
         <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
         <source>Print layouts</source>
         <translation>Spausdinimo išdėstymai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
         <location filename="../src/app/qgisapp.cpp" line="12484"/>
         <source>Network</source>
         <translation>Tinklas</translation>
@@ -135208,13 +135279,13 @@ Visada naudoti tinklą: visada įkelti iš tinklo ir niekada netikrinti, ar pod�
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
         <location filename="../src/app/qgisapp.cpp" line="12483"/>
         <source>Authentication</source>
         <translation>Autentifikacija</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
         <location filename="../src/app/qgisapp.cpp" line="12482"/>
         <source>Variables</source>
         <translation>Kintamieji</translation>
@@ -135276,13 +135347,13 @@ Visada naudoti tinklą: visada įkelti iš tinklo ir niekada netikrinti, ar pod�
         <translation>NULL reikšmių vaizdavimas</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
         <location filename="../src/app/qgisapp.cpp" line="12481"/>
         <source>Layouts</source>
         <translation>Išdėstymai</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
         <location filename="../src/app/qgisapp.cpp" line="12485"/>
         <source>Locator</source>
         <translation>Atradėjas</translation>
@@ -135298,7 +135369,7 @@ Visada naudoti tinklą: visada įkelti iš tinklo ir niekada netikrinti, ar pod�
         <translation>Aptikta aktyvi jūsų sistemos lokalė</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
         <location filename="../src/app/qgisapp.cpp" line="12486"/>
         <source>Acceleration</source>
         <translation>Greitinimas</translation>
@@ -137158,19 +137229,21 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1963"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2417"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2761"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2801"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2833"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2838"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2859"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2864"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2972"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2987"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3011"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3231"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3242"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3251"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3488"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3493"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2793"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2798"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2824"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2856"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2861"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2882"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2887"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3018"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3033"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3057"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3277"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3288"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3297"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3534"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3539"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
@@ -137270,7 +137343,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1768"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1831"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2371"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3167"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3213"/>
         <source>Could not start transaction</source>
         <translation>Nepavyko pradėti transakcijos</translation>
     </message>
@@ -137302,7 +137375,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1787"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1952"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2406"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3231"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3277"/>
         <source>Could not commit transaction</source>
         <translation>Nepavyko patvirtinti transakcijos</translation>
     </message>
@@ -137319,7 +137392,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1798"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1963"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2417"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3242"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3288"/>
         <source>Could not rollback transaction</source>
         <translation>Nepavyko atšaukti transakcijos</translation>
     </message>
@@ -137423,7 +137496,28 @@ Klaidos pranešimas iš duomenų bazės:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2972"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2793"/>
+        <source>Could not determine geometry column name: No SDO_GEOMETRY results found for %1.%2 in ALL_TAB_COLUMNS</source>
+        <translation>Nepavyko nustatyti geometrijos stulpelio pavadinimą: Nerasta SDO_GEOMETRY rezultatų tinkančių %1.%2 lentelėje ALL_TAB_COLUMNS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2798"/>
+        <source>Could not determine geometry column name.
+The error message from the database was:
+%1.
+SQL: %2</source>
+        <translation>Nepavyko nustatyti geometrijos stulpelio pavadinimo.
+Iš duomenų bazės buvo gautas klaidos pranešimas:
+%1.
+SQL: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2856"/>
+        <source>Could not retrieve SRID of %1.%2 (%3): No matches found in all_sdo_geom_metadata</source>
+        <translation>Nepavyko gauti %1.%2 (%3) SRID&apos;o: Nerasta atitikmenų all_sdo_geom_metadata</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3018"/>
         <source>Could not update metadata for %1.%2.
 SQL: %3
 Error: %4</source>
@@ -137432,7 +137526,7 @@ SQL: %3
 Klaida: %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2987"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3033"/>
         <source>Could not insert metadata for %1.%2.
 SQL: %3
 Error: %4</source>
@@ -137441,7 +137535,7 @@ SQL: %3
 Klaida: %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3011"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3057"/>
         <source>Rebuild of spatial index failed.
 SQL: %1
 Error: %2</source>
@@ -137450,7 +137544,7 @@ SQL: %1
 Klaida: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3251"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3297"/>
         <source>Drop created table %1 failed.
 SQL: %2
 Error: %3</source>
@@ -137459,12 +137553,12 @@ SQL: %2
 Klaida: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3456"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3502"/>
         <source>Cannot insert geometry metadata for table &apos;%1&apos; and geometry column &apos;%2&apos;. Both needs to be uppercase</source>
         <translation>Negalima įterpti geometrijos metaduomenų lentelei „%1“ ir geometrijos laukui „%2“. Abu turi būti didžiosiomis raidėmis</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3493"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3539"/>
         <source>Lookup of Oracle SRID %1 failed.
 SQL: %2
 Error: %3</source>
@@ -137511,7 +137605,7 @@ SQL: %2</source>
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2801"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2824"/>
         <source>Could not execute query.
 The error message from the database was:
 %1.
@@ -137522,18 +137616,7 @@ Duomenų bazės klaidos pranešimas:
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2833"/>
-        <source>Could not retrieve SRID of %1.
-The error message from the database was:
-%2.
-SQL: %3</source>
-        <translation>Nepavyko gauti %1 SRID&apos;o.
-Klaidos pranešimas iš db buvo:
-%2.
-SQL: %3</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2838"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2861"/>
         <source>Could not determine SRID of %1.
 The error message from the database was:
 %2.
@@ -137544,14 +137627,14 @@ Klaidos pranešimas iš db buvo:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2859"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2882"/>
         <source>%1 has no valid geometry types.
 SQL: %2</source>
         <translation>%1 neturi tinkamų geometrijos tipų.
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2864"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2887"/>
         <source>Could not determine geometry type of %1.
 The error message from the database was:
 %2.
@@ -137562,57 +137645,57 @@ Klaidos pranešimas iš db buvo:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2898"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2921"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Tuščio lauko %1 iš %2 geometrijos tipas ir srid neapibrėžti.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2923"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2952"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>%1 iš %2 geoobjekto tipo ar srid nepavyko nustatyti arba nepaprašyta.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3175"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3221"/>
         <source>Could not determine table existence.</source>
         <translation>Nepavyko nustatyti lentelės egzistavimo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3192"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3238"/>
         <source>Table %1 could not be dropped.</source>
         <translation>Lentelės %1 negalima išmesti.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3197"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3243"/>
         <source>Table %1 already exists.</source>
         <translation>Lentelė %1 jau yra.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3221"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3267"/>
         <source>Table creation failed.</source>
         <translation>Lentelės kūrimas nepavyko.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3422"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3468"/>
         <source>Could not lookup WKT.</source>
         <translation>Nepavyko rasti WKT.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3437"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3483"/>
         <source>Could not determine new srid.</source>
         <translation>Nepavyko nustatyti naujo srid.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3450"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3496"/>
         <source>CRS not found and could not be created.</source>
         <translation>CRS nerasta ir negali būti sukurta.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3462"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3508"/>
         <source>Could not insert metadata.</source>
         <translation>Nepavyko įterpti metaduomenis.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3488"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3534"/>
         <source>Oracle SRID %1 not found.</source>
         <translation>Oracle SRID %1 nerastas.</translation>
     </message>
@@ -140558,27 +140641,27 @@ Didinant šią reikšmę bus braižoma daugiau trūkstamų gabalų, o ją mažin
         <translation>Keisti &amp;dydį...</translation>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="645"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="655"/>
         <source>Select Color</source>
         <translation>Parinkite spalvą</translation>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="681"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="691"/>
         <source>Opacity</source>
         <translation>Nepermatomumas</translation>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="681"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="691"/>
         <source>Change symbol opacity [%]</source>
         <translation>Keisti simbolio nepermatomumą [%]</translation>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="705"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="715"/>
         <source>Point Size</source>
         <translation>Taško dydis</translation>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="705"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="715"/>
         <source>Change point size (set to 0 to reset to default point size)</source>
         <translation>Keisti taško dydį (nustatykite 0, jei norite atstatyti pradinį taško dydį)</translation>
     </message>
@@ -143322,52 +143405,52 @@ PostGIS %2</translation>
 <context>
     <name>QgsPostgresRasterProvider</name>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="106"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="107"/>
         <source>Invalid PostgreSQL raster layer</source>
         <translation>Netinkamas PostgreSQL rastro sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="106"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="146"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="215"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="224"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="297"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="463"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="477"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="501"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="525"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="548"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="558"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="568"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1004"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1718"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1834"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1855"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1861"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2074"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2112"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2146"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2182"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="107"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="225"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="298"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="114"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="115"/>
         <source>Requested SRID (%1) and detected SRID (%2) differ</source>
         <translation>Prašytas SRID (%1) ir aptiktas SRID (%2) skiriasi</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="146"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="147"/>
         <source>PostgreSQL raster layer metadata loaded from the database.</source>
         <translation>PostgreSQL rastro sluoksnio metaduomenys įkelti iš duomenų bazės.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="215"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="297"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="298"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -143378,7 +143461,7 @@ Klaidos pranešimas iš duombazės buvo:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="224"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="225"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) standby server).
 Write accesses will be denied.</source>
@@ -143387,349 +143470,349 @@ Write accesses will be denied.</source>
 Rašymas bus uždraustas.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="260"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="261"/>
         <source>Invalid band number &apos;%1</source>
         <translation>Netinkamas juostos numeris „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="267"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="268"/>
         <source>Requested extent is not valid</source>
         <translation>Paprašyta netinkama apimtis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="319"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="320"/>
         <source>Cannot convert identified value to byte</source>
         <translation>Negalima keisti identifikuotos reikšmės į baitą</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="330"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="331"/>
         <source>Cannot convert identified value to unsigned int</source>
         <translation>Negalima keisti identifikuotos reikšmės į sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="341"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="342"/>
         <source>Cannot convert identified value to unsigned long</source>
         <translation>Negalima keisti identifikuotos reikšmės į sveiką skaičių be ženklo</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="352"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="353"/>
         <source>Cannot convert identified value to int</source>
         <translation>Negalima keisti identifikuotos reikšmės į sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="363"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="364"/>
         <source>Cannot convert identified value to long</source>
         <translation>Negalima keisti identifikuotos reikšmės į ilgą sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="374"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="375"/>
         <source>Cannot convert identified value to float</source>
         <translation>Negalima keisti identifikuotos reikšmės į trupmeninį skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="385"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="386"/>
         <source>Cannot convert identified value to double</source>
         <translation>Negalima konvertuoti identifikuotos reikšmės į dvigubo tikslumo trupmeninį skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="393"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="394"/>
         <source>Unknown identified data type</source>
         <translation>Nežinomas identifikuotas duomenų tipas</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1119"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1120"/>
         <source>Band count and NoData items count differ</source>
         <translation>Juostų skaičius ir „NėraDuomenų“ elementų skaičius skiriasi</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1137"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1138"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation>Negalima keisti „NėraDuomenų“ reikšmės „%1“ į dvigubo tikslumo trupmeninį skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1404"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1405"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation>Negalima keisti „NėraDuomenų“ reikšmės „%1“ į dvigubo tikslumo trupmeninį skaičių, numatytoji reikšmė: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2182"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>Nerastas vaizdo/užklausos raktinis laukas „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>Rodinio/užklausos pirminio rakto laukas „%1“ nėra unikalus.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
         <source>Keys for view/query undefined.</source>
         <translation>Rodinio/užklausos raktai neapibrėžti.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
         <source>No key field for view/query given.</source>
         <translation>Rodiniui/užklausai nenurodytas rakto laukas.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
         <source>Unable to create temporary raster for tiles from %1</source>
         <translation>Nepavyko sukurti rastro kaladėlėms iš %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="525"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
         <source>Unable to write tile to temporary raster from %1: %2</source>
         <translation>Nepavyksta rašyti kaladėlės į laikiną rastrą iš %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="463"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="548"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
         <source>Unable to create destination raster for tiles from %1: %2</source>
         <translation>Nepavyko sukurti paskirties rastro kaladėlėms iš %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="558"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
         <source>Unable to resample and transform destination raster for tiles from %1: %2</source>
         <translation>Nepavyko keisti raiškos ir transformuoti rastro kaladėlėms iš %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="477"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="568"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
         <source>Unable to write raster to block from %1: %2</source>
         <translation>Nepavyko rašyti rastro į bloką iš %1: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="748"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="749"/>
         <source>Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %n item(s)</source>
         <translation><numerusform>Duomenų tipo dydis juostai %1 nerastas: juostų skaičius yra: %2, o tipo dydžio atitikmenų lentelėje yra: %n elementas</numerusform><numerusform>Duomenų tipo dydis juostai %1 nerastas: juostų skaičius yra: %2, o tipo dydžio atitikmenų lentelėje yra: %n elementai</numerusform><numerusform>Duomenų tipo dydis juostai %1 nerastas: juostų skaičius yra: %2, o tipo dydžio atitikmenų lentelėje yra: %n elementų</numerusform><numerusform>Duomenų tipo dydis juostai %1 nerastas: juostų skaičius yra: %2, o tipo dydžio atitikmenų lentelėje yra: %n elementai</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="825"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
         <source>Is Tiled</source>
         <translation>Iš kaladėlių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
         <source>Where Clause SQL</source>
         <translation>Where sąlygos SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
         <source>Pixel Size</source>
         <translation>Taško dydis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
         <source>Overviews</source>
         <translation>Peržiūros</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
         <source>Primary Keys SQL</source>
         <translation>Pirminių raktų SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
         <source>Temporal Column</source>
         <translation>Laikinas stulpelis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="832"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
         <source>Additional information</source>
         <translation>Papildoma informacija</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="876"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="877"/>
         <source>PostgreSQL WHERE clause</source>
         <translation>PostgreSQL WHERE sąlyga</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1004"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>PostgreSQL rastro sluoksnis neturi pirminio rakto.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1098"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1381"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1099"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1382"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>Negalima sukurti CRS iš EPSG: „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1106"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1107"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>Negalima gauti juostų skaičiaus iš reikšmės: „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1128"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1394"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1129"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1395"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>Nepalaikomas duomenų tipas: „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1172"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1319"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1173"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1320"/>
         <source>Cannot get extent from raster</source>
         <translation>Negalima gauti rastro apimties</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1183"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1336"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1184"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>Negalima konvertuoti pločio „%1“ į sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1190"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1344"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1191"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1345"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>Negalima konvertuoti aukščio „%1“ į sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1198"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1352"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1353"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>Negalima konvertuoti mastelio X „%1“ į trupmeninį skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1205"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1360"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1361"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>Negalima konvertuoti mastelio Y „%1“ į trupmeninį skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1220"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>Traukiant rastro metaduomenis lentelei %1 įvyko klaida: %2
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1225"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>Traukiant rastro metaduomenis %1 įvyko klaida, po jos vyksta (tikriausiai labai lėta) rastro duomenų analizė: %2
 Prašome apsvarstyti pridėti rastro apribojimus su PostGIS funkcija AddRasterConstraints.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1250"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1251"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>Aptikti keli rastro stulpeliai, naudojamas pirmasis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1256"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1257"/>
         <source>An error occurred while fetching raster column</source>
         <translation>Traukiant rastro stulpelį įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1325"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1326"/>
         <source>Cannot get metadata from raster</source>
         <translation>Negalima gauti rastro metaduomenų</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1416"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1417"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>Traukiant rastro metaduomenis įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1428"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1429"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>Traukiant rastro laukų informaciją įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1476"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1477"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>Netinkama numatytoji data rastro laiko galimybėse laukui %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1498"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>Lauko %1 rastro laiko galimybėse nerasta laiko diapazonų: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1503"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>Netinkamas laiko periodas rastro laiko galimybėse laukui %1: %2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1508"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>Traukiant rastro laiko galimybes laukui įvyko klaida: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1513"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>Netinkamas lauko indeksas rastro laiko galimybėms: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1718"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1803"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1804"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>Netikėtas formatuoto lauko tipas „%1“ laukui %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1834"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1855"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Laukas %1 ignoruotas dėl nepalaikomo tipo %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1861"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Rasta lauko %1 kopija
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2066"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2067"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>Pirminis raktas yra ctid - esamų geoobjektų keitimas išjungtas (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2074"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>Lentelėje nėra lauko, kurį būtų galima naudoti kaip raktą. QGIS lentelėms reikia pirminio rakto, PostgreSQL oid lauko arba ctdit.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
         <source>Unexpected relation type.</source>
         <translation>Netikėtas ryšio tipas.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2112"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>Unikalus stulpelis „%1“ neturi NOT NULL apribojimo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2146"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>Ignoruojamas rakto kandidatas, dėl NULL reikšmių ar paveldėtos lentelės</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2270"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2271"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>Nepavyksta keisti peržiūros faktoriaus „%1“ į sveiką skaičių</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2277"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2278"/>
         <source>Table or schema is empty</source>
         <translation>Lentelė ar schema yra tuščia</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2285"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2286"/>
         <source>Error fetching overviews information: %1</source>
         <translation>Klaida traukiant peržiūros informaciją: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2289"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2290"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>Nerasta peržiūrų, greitaveika gali būti įtakota %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2331"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2332"/>
         <source>Data type is unknown</source>
         <translation>Duomenų tipas nežinomas</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2414"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2441"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>Klaida traukiant %1 statistiką: %2
@@ -151512,32 +151595,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterAttributeTableAddColumnDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="38"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="42"/>
         <source>String</source>
         <translation>Tekstas</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="39"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="43"/>
         <source>Integer</source>
         <translation>Sveikas skaičius</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="40"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="44"/>
         <source>Long Integer</source>
         <translation>Ilgas sveikas skaičius</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="41"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="45"/>
         <source>Double</source>
         <translation>Dvigubas realus</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="125"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="129"/>
         <source>A field name cannot be blank.</source>
         <translation>Lauko pavadinimas negali būti tuščias.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="138"/>
         <source>A field with this name already exists.</source>
         <translation>Laukas tokiu pavadinimu jau yra.</translation>
     </message>
@@ -153327,11 +153410,11 @@ Spauskite pagalbos mygtuką, kad gautumėte tinkamas šio formato kūrimo parink
         <translation>Parinkite spalvą</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1041"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1045"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1050"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1054"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1058"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1043"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1047"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1052"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1056"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1060"/>
         <source>Building Pyramids</source>
         <translation>Kuriamos piramidės</translation>
     </message>
@@ -153347,28 +153430,28 @@ Spauskite pagalbos mygtuką, kad gautumėte tinkamas šio formato kūrimo parink
         <translation>Jokio</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1041"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1043"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>Nepavyko įrašyti. Sutvarkykite failo prieigos teises ir bandykite dar kartą.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1045"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1047"/>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Negalima įrašyti į failą. Kai kurie formatai nepalaiko piramidžių peržiūros. Jei abejojate - pasitikrinkite GDAL dokumentacijoje.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1050"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1058"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1052"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1060"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Piramidžių apibendrinimo kūrimas nepalaikomas tokio tipo rastrui.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1054"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1056"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>Jūsų dabartinė libtiff biblioteka nepalaiko vidinių piramidžių kūrimo rastro sluoksniams su JPEG suspaudimu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1104"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1106"/>
         <source>Select Transformation</source>
         <translation>Parinkti transformaciją</translation>
     </message>
@@ -154612,67 +154695,65 @@ standartinis nuokrypis</translation>
         <translation>neapibrėžta</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="365"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="296"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
         <source>Textfile</source>
         <translation>Tekstinis failas</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="296"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="341"/>
         <source>Save Pixel Values as File</source>
         <translation>Įrašyti taškų reikšmes kaip failą</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="320"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGIS generuotas permatomo taško reikšmės eksporto failas</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="735"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="728"/>
         <source>Red</source>
         <translation>Raudona</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="736"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="729"/>
         <source>Green</source>
         <translation>Žalia</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="737"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="730"/>
         <source>Blue</source>
         <translation>Mėlyna</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="338"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="739"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="747"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="326"/>
         <source>Percent Transparent</source>
         <translation>Procentų permatomumo</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="338"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="326"/>
         <source>Value</source>
         <translation>Reikšmė</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="365"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="453"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="458"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="441"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="446"/>
         <source>Load Pixel Values from File</source>
         <translation>Įkelti taškų reikšmes iš failo</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="738"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="731"/>
         <source>Tolerance</source>
         <translation>Tolerancija</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="341"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -154686,7 +154767,7 @@ standartinis nuokrypis</translation>
         <translation>Parinkti NėraDuomenų spalvą</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="453"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="441"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -154695,7 +154776,7 @@ standartinis nuokrypis</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="458"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="446"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -154704,12 +154785,18 @@ standartinis nuokrypis</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="745"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="732"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="743"/>
+        <source>Opacity [%]</source>
+        <translation>Nepermatomumas [%]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="741"/>
         <source>From</source>
         <translation>Nuo</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="746"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="742"/>
         <source>To</source>
         <translation>Iki</translation>
     </message>
@@ -159387,121 +159474,121 @@ Turėkite omenyje, kad ši parinktis bus pritaikyta visoms keičiamų geometrij�
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="626"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="826"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="842"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1066"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1207"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1304"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3926"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3982"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4026"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4055"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4780"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4948"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5029"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5082"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5094"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="631"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="831"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="847"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1071"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1212"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3931"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3987"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4031"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4060"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4785"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4953"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5034"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5087"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5099"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5141"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5161"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5181"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5820"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="626"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="631"/>
         <source>Error closing transaction for %1</source>
         <translation>Klaida uždarant transakciją %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="826"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="831"/>
         <source>Retrieval of spatialite version failed: %1</source>
         <translation>Nepavyko gauti spatialite versijos: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="842"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="847"/>
         <source>Could not parse spatialite version string &apos;%1&apos;</source>
         <translation>Nepavyko išnagrinėti spatialite versijos eilutės: „%1“</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="980"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1056"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1089"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4221"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="985"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1061"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1094"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4226"/>
         <source>Autogenerate</source>
         <translation>Automatinis</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1207"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1304"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3926"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3982"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4026"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4055"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4323"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4432"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4780"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4948"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5094"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1212"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3931"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3987"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4031"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4060"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4328"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4437"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4785"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4953"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5099"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5141"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5161"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5181"/>
         <source>SQLite error: %2
 SQL: %1</source>
         <translation>SQLite klaida: %2
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4323"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4328"/>
         <source>unknown cause</source>
         <translation>nežinoma priežastis</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3675"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3680"/>
         <source>SpatiaLite WHERE clause</source>
         <translation>SpatiaLite WHERE sąlyga</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4642"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4647"/>
         <source>JSON value must be an array</source>
         <translation>JSON reikšmė turi būti masyvas</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4649"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4654"/>
         <source>Field type is JSON but the value cannot be converted to JSON array: %1</source>
         <translation>Lauko tipas yra JSON, o reikšmė negali būti konvertuota į JSON masyvą: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5029"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5034"/>
         <source>SQLite composite keys are not supported in query layer, using the first component only. %1</source>
         <translation>SQLite sudėtiniai raktai nepalaikomi užklausos sluoksnyje, naudojamas tik pirmas komponentas. %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5082"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5087"/>
         <source>SQLite error while trying to inject ROWID: %2
 SQL: %1</source>
         <translation>SQLite klaida bandant įdėti ROWID: %2
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5766"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5771"/>
         <source>Spatialite: unexpected number of rows (%1) from aggregate query
 SQL: %2</source>
         <translation>Spatialite: netikėtas įrašų skaičius (%1) gautas iš agregavimo užklausos
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5820"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>KLAIDA: Laukas %1 nerastas.</translation>
     </message>
@@ -159549,9 +159636,13 @@ Tai gali ilgai užtrukti (priklausomai nuo DB dydžio), bet po to turėtų veikt
         <translation>Klaida atnaujinant vidinę statistiką: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="156"/>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="523"/>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="531"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="436"/>
+        <source>Error when creating a layer. Check message log for more details.</source>
+        <translation>Klaida kuriant sluoksnį. Daugiau informacijos rasite pranešimų žurnale.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="522"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="530"/>
         <source>@</source>
         <translation>@</translation>
     </message>
@@ -159652,6 +159743,7 @@ prašome nurodyti kitokį pavadinimą:</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="371"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="436"/>
         <source>SpatiaLite Error</source>
         <translation>SpatiaLite klaida</translation>
     </message>
@@ -168574,23 +168666,23 @@ Klaida: %2</translation>
         <translation>Automatinis</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="748"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="776"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
         <source>Modified names</source>
         <translation>Pakeisti pavadinimai</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="863"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
         <source>Empty export name</source>
         <translation>Tuščias eksporto pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="863"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
         <source>Empty export name are not allowed.</source>
         <translation>Tuščias eksporto pavadinimas neleidžiamas.</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1191"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1193"/>
         <source>No symbology</source>
         <translation>Be simbologijos</translation>
     </message>
@@ -168600,48 +168692,48 @@ Klaida: %2</translation>
         <translation>Įrašyti sluoksnį kaip</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="330"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="363"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="418"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="431"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
         <source>Save Vector Layer As</source>
         <translation>Įrašyti vektorinį sluoksnį kaip</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="376"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="378"/>
         <source>The layer already exists. Do you want to overwrite the whole file or overwrite the layer?</source>
         <translation>Sluoksnis jau yra. Ar norite perrašyti visą failą ar perrašyti sluoksnį?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="364"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="451"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
         <source>Overwrite File</source>
         <translation>Perrašyti failą</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
         <source>Overwrite Layer</source>
         <translation>Perrašyti sluoksnį</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="382"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="418"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="384"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation>Failas jau yra. Ar norite jį perrašyti?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="387"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="389"/>
         <source>The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?</source>
         <translation>Sluoksnis jau yra. Ar norite perrašyti visą failą, perrašyti sluoksnį ar pridėti geoobjektus į  sluoksnį?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
         <source>Append to Layer</source>
         <translation>Pridėti prie sluoksnio</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="394"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="396"/>
         <source>The layer already exists. Do you want to overwrite the whole file or append features to the layer?</source>
         <translation>Sluoksnis jau yra. Ar norite perrašyti visą failą, ar pridėti geoobjektus į sluoksnį?</translation>
     </message>
@@ -168666,35 +168758,35 @@ Klaida: %2</translation>
         <translation>Simbolių sluoksnio simbologija</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="330"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
         <source>The layer contains at least one 64-bit integer field, which, with the current settings, can only be exported as a Real field. It could be exported as a 64-bit integer field if the TARGET_ARCGIS_VERSION layer option is set to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation>Sluoksnyje yra bent vienas 64-bitų sveiko skaičiaus laukas, kuris su dabartiniais nustatymais gali būti eksportuojamas tik kaip Realus laukas. Jį galima būtų eksportuoti kaip 64-bitų sveiką skaičių, jei būtų nurodyta TARGET_ARCGIS_VERSION nustatymo reikšmė ARCGIS_PRO_3_2_OR_LATER. Ar norite tęsti ir eksportuoti kaip Realų lauką?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
         <source>The layer contains at least one 64-bit integer field, which cannot be exported as such when using this output driver. 64-bit integer fields could be supported by selecting the %1 format and setting its TARGET_ARCGIS_VERSION layer option to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation>Sluoksnyje yra bent vienas 64-bitų sveiko skaičiaus laukas, kurio negalima eksportuoti kaip tokio naudojant šią išvesties tvarkyklę. 64-bitų sveikų skaičių laukai palaikomi parinkus %1 formatą ir nurodžius jo sluoksnio parinkčiai TARGET_ARCGIS_VERSION reikšmę ARCGIS_PRO_3_2_OR_LATER. Ar norite tęsti ir eksportuoti kaip Realų lauką?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="480"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="482"/>
         <source>ESRI File Geodatabase</source>
         <translation>ESRI Failų Geoduombazė</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="431"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
         <source>The existing layer has additional fields. Do you want to add the missing fields to the layer?</source>
         <translation>Esamas sluoksnis turi skirtingus laukus. Ar norite pridėti trūkstamus laukus į sluoksnį?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="452"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
         <source>This file contains %1 layers that will be lost!
 </source>
         <translation>Šiame faile yra %1 sluoksniai, kurie bus prarasti!
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
         <source>The following layers will be permanently lost:
 
 %1</source>
@@ -168703,38 +168795,38 @@ Klaida: %2</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="552"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="554"/>
         <source>new_layer</source>
         <translation>naujas_sluoksnis</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Name</source>
         <translation>Pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Type</source>
         <translation>Tipas</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Replace with displayed values</source>
         <translation>Pakeisti rodomomis reikšmėmis</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Export name</source>
         <translation>Eksporto pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="605"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="607"/>
         <source>Use %1</source>
         <translation>Naudoti %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="748"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="776"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
         <source>Some names were modified and will be overridden. Do you want to continue?</source>
         <translation>Kai kurie pavadinimai pakeisti ir bus perrašyti. Ar tikrai norite tęsti?</translation>
     </message>
@@ -171543,89 +171635,89 @@ Atsakas buvo:
 <context>
     <name>QgsWcsDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1675"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1687"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1726"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1734"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1750"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1780"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1798"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1808"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1818"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1833"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1857"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1895"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1908"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1677"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1689"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1728"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1736"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1752"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1782"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1800"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1810"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1820"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1835"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1839"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1859"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1897"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1910"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1914"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1675"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1726"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1677"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1728"/>
         <source>Network request update failed for authentication config</source>
         <translation>Autentifikavimo konfigūracijos tinklo užklausos atnaujinimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1687"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1734"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1895"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1689"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1736"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1897"/>
         <source>Network reply update failed for authentication config</source>
         <translation>Autentifikavimo konfigūracijos tinklo atsakymo atnaujinimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1750"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1752"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL: %3)</source>
         <translation>Žemėlapio užklausos klaida (Būsena: %1; Priežasties frazė: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1775"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1777"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
         <translation>Žemėlapio užklausos klaida:&lt;br&gt;Kaladėlė: %1&lt;br&gt;Klaida: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1780"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1782"/>
         <source>Map request error (Status: %1; Response: %2; URL: %3)</source>
         <translation>Žemėlapio užklausos klaida (Būsena: %1; Atsakas: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1833"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1835"/>
         <source>Map request error (Title: %1; Error: %2; URL: %3)</source>
         <translation>Žemėlapio užklausos klaida (Pavadinimas: %1; Klaida: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1839"/>
         <source>Map request error (Response: %1; URL: %2)</source>
         <translation>Žemėlapio užklausos klaida (Atsakas: %1; URL: %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1908"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1910"/>
         <source>Map request failed [error: %1 url: %2]</source>
         <translation>Žemėlapio užklausa nepavyko [klaida: %1 url: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1798"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1800"/>
         <source>Cannot parse multipart response: %1</source>
         <translation>Nepavyko išnagrinėti kelių dalių atsako: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1808"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1810"/>
         <source>Expected 2 parts, %1 received</source>
         <translation>Laukta 2 dalių, gautos %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1818"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1820"/>
         <source>More than 2 parts (%1) received</source>
         <translation>Gautos daugiau nei 2 dalys (%1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1857"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1859"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
         <translation>Content-Transfer-Encoding %1 nepalaikomas</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1914"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Neįrašoma daugiau nei 100 užklausos klaidų.</translation>
     </message>
@@ -171648,48 +171740,48 @@ Atsakas buvo:
         <translation>Nepavyksta apskaičiuoti apimties</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="211"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="213"/>
         <source>Cannot get test dataset.</source>
         <translation>Nepavyksta gauti bandomo duomenų rinkinio.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="589"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="591"/>
         <source>Received coverage has wrong extent %1 (expected %2)</source>
         <translation>Gautas padengimas turi blogą apimtį %1 (tikėtasi %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="589"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="646"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="818"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="838"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="848"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1071"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1206"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="591"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="648"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="820"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="840"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="850"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1208"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="646"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="648"/>
         <source>Received coverage has wrong size %1 x %2 (expected %3 x %4)</source>
         <translation>Gautas padengimas turi blogą dydį %1 x %2 (tikėtasi %3 x %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="818"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="820"/>
         <source>No data received</source>
         <translation>Negauta jokių duomenų</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="838"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="840"/>
         <source>Cannot create memory file</source>
         <translation>Negalima sukurti atminties failo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="974"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="976"/>
         <source>Dom Exception</source>
         <translation>Dom klaida</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="975"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="977"/>
         <source>Could not get WCS Service Exception at %1 at line %2 column %3
 
 Response was:
@@ -171702,246 +171794,246 @@ Gautas atsakas:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1012"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1014"/>
         <source>Service Exception</source>
         <translation>Paslaugos išimtis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1021"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1023"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Užklausoje yra formatas, kurio serveris nesiūlo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1022"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
         <source>Request is for a Coverage not offered by the service instance.</source>
         <translation>Užklausa padengimui, kurio paslauga nesiūlo.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1023"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1025"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>(Neprivalomo) UpdateSequence parametro reikšmė GetCapabilities užklausoje lygi dabartiniam paslaugos metaduomenų atnaujinimo sekos numeriui.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1026"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>(Neprivalomo) UpdateSequence parametro reikšmė GetCapabilities užklausoje yra didesnė už dabartinį paslaugos metaduomenų atnaujinimo sekos numerį.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1026"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1028"/>
         <source>Request does not include a parameter value, and the server instance did not declare a default value for that dimension.</source>
         <translation>Užklausoje nėra parametro reikšmės, o serveris neapibrėžė numatytosios šios dimensijos reikšmės.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1027"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1029"/>
         <source>Request contains an invalid parameter value.</source>
         <translation>Užklausoje yra netinkama parametro reikšmė.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1029"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
         <source>No other exceptionCode specified by this service and server applies to this exception.</source>
         <translation>Paslauga neturi kitos nurodytas exceptionCode, o serveris taiko šią išimtį.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1030"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1032"/>
         <source>Operation request contains an output CRS that can not be used within the output format.</source>
         <translation>Veiksmo užklausoje yra išvesties CRS, kurio negalima naudoti išvesties formate.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1033"/>
         <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
         <translation>Veiksmo užklausa nurodo „įrašyti“ rezultatą, bet nepakanka vietos tam padaryti.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1057"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1059"/>
         <source>(No error code was reported)</source>
         <translation>(Nepranešta apie klaidos kodą)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1065"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1067"/>
         <source>(Unknown error code)</source>
         <translation>(Nežinomas klaidos kodas)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1068"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1070"/>
         <source>The WCS vendor also reported: </source>
         <translation>WCS tiekėjas taip pat pranešė:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
         <source>composed error message &apos;%1&apos;.</source>
         <translation>sukurtas klaidos pranešimas „%1“.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1206"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1208"/>
         <source>Cannot verify coverage full extent: %1</source>
         <translation>Negalima patikrinti pilnos apimties padengimo: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1238"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1325"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1240"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1327"/>
         <source>Property</source>
         <translation>Savybė</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1241"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1328"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1243"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1330"/>
         <source>Value</source>
         <translation>Reikšmė</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1244"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1246"/>
         <source>Name (identifier)</source>
         <translation>Pavadinimas (identifikatorius)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1245"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1332"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1247"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1334"/>
         <source>Title</source>
         <translation>Pavadinimas</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1246"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1333"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1248"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1335"/>
         <source>Abstract</source>
         <translation>Santrauka</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1252"/>
         <source>Metadata Type</source>
         <translation>Metaduomenų tipas</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1251"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1253"/>
         <source>Metadata Link</source>
         <translation>Metaduomenų nuoroda</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1256"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1258"/>
         <source>Fixed Width</source>
         <translation>Fiksuotas plotis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1257"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1259"/>
         <source>Fixed Height</source>
         <translation>Fiksuotas aukštis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1258"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1260"/>
         <source>Native CRS</source>
         <translation>Savas CRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1259"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1261"/>
         <source>Native Bounding Box</source>
         <translation>Savas apibrėžties stačiakampis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1262"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1264"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS 84 apibrėžties stačiakampis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1270"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1275"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1272"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1277"/>
         <source>Available in CRS</source>
         <translation>Galima CRS</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1275"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1285"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1277"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1287"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation><numerusform>(ir %n dar)</numerusform><numerusform>(ir %n dar)</numerusform><numerusform>(ir %n dar)</numerusform><numerusform>(ir %n dar)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1280"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1285"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1282"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1287"/>
         <source>Available in format</source>
         <translation>Galima formatu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1299"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1301"/>
         <source>WCS Info</source>
         <translation>WCS Info</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1302"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1355"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1304"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1357"/>
         <source>Coverages</source>
         <translation>Padengimai</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1308"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1310"/>
         <source>Cache Stats</source>
         <translation>Podėlio būsena</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1316"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1318"/>
         <source>Server Properties</source>
         <translation>Serverio savybės</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1336"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1338"/>
         <source>Keywords</source>
         <translation>Raktažodžiai</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1337"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1339"/>
         <source>Online Resource</source>
         <translation>Tinklo resursas</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1338"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1340"/>
         <source>Contact Person</source>
         <translation>Kontaktinis asmuo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1342"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1344"/>
         <source>Fees</source>
         <translation>Mokesčiai</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1343"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1345"/>
         <source>Access Constraints</source>
         <translation>Prieigos apribojimai</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1344"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1346"/>
         <source>Image Formats</source>
         <translation>Piešinių formatai</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1345"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
         <source>GetCapabilitiesUrl</source>
         <translation>GetCapabilitiesUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1349"/>
         <source>Get Coverage Url</source>
         <translation>Gauti padengimo Url</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1349"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(reklamuotas bet ignoruotas)&lt;/font&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1371"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1373"/>
         <source>And %n more coverage(s)</source>
         <translation><numerusform>Ir dar %n padengimas</numerusform><numerusform>Ir dar %n padengimai</numerusform><numerusform>Ir dar %n padengimų</numerusform><numerusform>Ir dar %n padengimai</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1397"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1399"/>
         <source>Format not supported</source>
         <translation>Nepalaikomas formatas</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1506"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1508"/>
         <source>Read data error</source>
         <translation>Duomenų skaitymo klaida</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1532"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1534"/>
         <source>RasterIO error: </source>
         <translation>RastroIO klaida:</translation>
     </message>
@@ -174519,6 +174611,24 @@ Priežasties frazė: %2</translation>
         <source>Specified path does not exist:
 {0}</source>
         <translation>Nurodytas kelias neegzistuoja:
+{0}</translation>
+    </message>
+    <message>
+        <source>Specified path is not writable:
+{0}</source>
+        <translation>Negalima rašyti nurodyto kelio:
+{0}</translation>
+    </message>
+    <message>
+        <source>Specified path does not exist nor its parent:
+{0}</source>
+        <translation>Neegzistuoja nei nurodytas kelias, nei jo tėvas:
+{0}</translation>
+    </message>
+    <message>
+        <source>Specified path does not exist and parent is not writable:
+{0}</source>
+        <translation>Nurodytas kelias neegzistuoja, o jo tėvo negalima rašyti:
 {0}</translation>
     </message>
 </context>

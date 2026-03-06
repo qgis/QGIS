@@ -20743,6 +20743,67 @@ This can cause unexpected results.</source>
         <source>&amp;Model Designer…</source>
         <translation>Trình Thiết kế &amp;Mô hình...</translation>
     </message>
+    <message>
+        <source>&amp;Analysis Tools</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing Tools</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>G&amp;eometry Tools</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Data Management Tools</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Projections</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Conversion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Extraction</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Analysis</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Invalid algorithm ID for menu: {}</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Missing Algorithm</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The algorithm &quot;{}&quot; is no longer available. (Perhaps a plugin was uninstalled?)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Missing Dependency</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
+{0}</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ProcessingToolbox</name>
@@ -21568,12 +21629,12 @@ Từ bàn giao tiếp, bạn có thể gõ các lệnh đặc biệt sau:
         <translation>Tổ hợp Mảng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
         <source>Locator</source>
         <translation>Trình định vị</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
         <source>GPU acceleration</source>
         <translation>Tăng tốc nhờ GPU</translation>
     </message>
@@ -26470,30 +26531,30 @@ stderr: %4</translation>
         <translation>Không thể chèn, câu lệnh: &apos;%1&apos; lỗi: &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2229"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2294"/>
         <source>Loading of the MSSQL provider failed</source>
         <translation>Thất bại khi nạp nhà cung cấp MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2364"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2429"/>
         <source>Error connecting to database: %1</source>
         <translation>Lỗi kết nối đến csdl: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2374"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2439"/>
         <source>Could not check if layer_styles table exists: %1</source>
         <translation>Không thể kiểm tra xem bảng kiểu_lớp có tồn tại hay không: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2401"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2466"/>
         <source>Checking for style failed: %1</source>
         <translation>Kiểm tra kiểu thất bại: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="845"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1803"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2268"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3346"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2333"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3392"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4682"/>
         <source>Unsupported type for field %1</source>
         <translation>Trường %1 có kiểu không được hỗ trợ</translation>
@@ -26530,8 +26591,8 @@ stderr: %4</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1818"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2281"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3358"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2346"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3404"/>
         <source>Creation of fields failed</source>
         <translation>Tạo trường thất bại</translation>
     </message>
@@ -26851,7 +26912,7 @@ vui lòng cung cấp tên mới:</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="712"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6509"/>
         <source>Cannot open transaction on %1, since it is not currently opened</source>
         <translation type="unfinished"/>
     </message>
@@ -26969,8 +27030,8 @@ Lỗi: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="301"/>
         <location filename="../src/providers/oracle/qgsoraclefeatureiterator.cpp" line="540"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4012"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4027"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4058"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4073"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
@@ -26979,7 +27040,7 @@ Lỗi: %2</translation>
         <location filename="../src/providers/hana/qgshanaconnection.cpp" line="236"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1659"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="51"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3095"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3141"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4420"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5166"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5226"/>
@@ -26987,27 +27048,27 @@ Lỗi: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2472"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2527"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2695"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2499"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2554"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2722"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6025"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6100"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6275"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6334"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6439"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6105"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6280"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6444"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="186"/>
         <source>Connection to database failed</source>
         <translation>Kết nối vào CSDL thất bại</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3106"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3152"/>
         <source>No owner name found</source>
         <translation>Không tìm thấy tên chủ sở hữu</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3236"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3282"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4602"/>
         <source>Creation of data source %1 failed: 
 %2</source>
@@ -27016,13 +27077,13 @@ Lỗi: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1780"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3274"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3320"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4622"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Nạp lớp %1 thất bại</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3313"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3359"/>
         <source>Field name clash found (%1 not remappable)</source>
         <translation>Tìm thấy mâu thuẫn tên trường (không thể chạy ánh xạ %1)</translation>
     </message>
@@ -27053,78 +27114,78 @@ Lỗi: %2</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3651"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3701"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3856"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3912"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3980"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3697"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3747"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3902"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3958"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4026"/>
         <source>Could not connect to database</source>
         <translation>Không thể kết nối đến csdl</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3734"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3780"/>
         <source>Unable to create layer style table [%1]</source>
         <translation>Không thể tạo bảng kiểu lớp [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3676"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3756"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3722"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3802"/>
         <source>Unable to check style existence [%1]</source>
         <translation>Không thể kiểm tra sự hiện diện của kiểu [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3635"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3681"/>
         <source>Unable to find layer style table [%1]</source>
         <translation>Không thể tìm thấy bảng kiểu lớp [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3988"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4034"/>
         <source>Could not load layer style table [%1]</source>
         <translation>Không thể nạp bảng kiểu lớp [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3799"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3845"/>
         <source>Cannot fetch new layer style id.</source>
         <translation>Không thể lấy về nhận diện/id kiểu lớp mới.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3124"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3170"/>
         <source>Cannot create a table with no columns</source>
         <translation>Không thể tạo một bảng không có cột</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3372"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3418"/>
         <source>Remove of temporary column &apos;%1&apos; failed</source>
         <translation>Loại bỏ cột tạm thời &apos;%1&apos; thất bại</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3811"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3857"/>
         <source>Could not execute insert/update [%1]</source>
         <translation>Không thể thực thi chèn/cập nhật [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3829"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3875"/>
         <source>Could not reset default status [%1]</source>
         <translation>Không thể tái thiết lập trạng thái mặc định [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3885"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3931"/>
         <source>Could not retrieve style [%1]</source>
         <translation>Không thể lấy về kiểu [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3889"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3935"/>
         <source>Style not found</source>
         <translation>Không tìm thấy kiểu</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3930"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3955"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3976"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4001"/>
         <source>Could not execute select [%1]</source>
         <translation>Không thể thực thi chọn [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3992"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="4038"/>
         <source>No styles found in layer table [%1]</source>
         <translation>Không có các kiểu nào được tìm thấy trong bảng lớp [%1]</translation>
     </message>
@@ -27188,12 +27249,12 @@ Lỗi CSDL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2535"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2562"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Không thể lưu kiểu của lớp. Không thể tạo bảng đích trên CSDL. Có thể điều này là do quyền đối với bảng (người dùng=%1). Liên hệ với quản trị CSDL của bạn</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2461"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2526"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions. Please contact your database admin</source>
         <translation>Không thể lưu style của lớp. Không thể tạo bảng mới trong cơ sở dữ liệu. Điều này có thể do hạn chế quyền của bảng. Hãy liên hệ với người quản trị cơ sở dữ liệu của bạn.</translation>
     </message>
@@ -27206,7 +27267,7 @@ Lỗi CSDL: %2</translation>
         <translation>Lưu kiểu vào cơ sở dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2567"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2632"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions. Please contact your database administrator.</source>
         <translation>Không thể lưu kiểu của lớp. Không thể thêm bản ghi mới vào bảng kiểu. Điều này có thể do hạn chế quyền của bảng. Hãy liên hệ với người quản trị cơ sở dữ liệu của bạn.</translation>
     </message>
@@ -27226,13 +27287,13 @@ Lỗi CSDL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2547"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2574"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Không thể thêm kiểu cột cho bảng kiểu_lớp. Điều này có thể là do quyền đối với bảng (người_dùng=%1). Vui lòng liên hệ với quản trị viên csdl.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2673"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2700"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Không thể lưu kiểu của lớp. Không thể chèn một bản ghi mới vào bảng kiểu. Có thể lý do là quyền đối với bảng (người dùng=%1). Vui lòng liên hệ người quản trị CSDL.</translation>
     </message>
@@ -27240,9 +27301,9 @@ Lỗi CSDL: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2769"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2859"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2894"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2796"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2886"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2921"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Kết nối vào CSDL thất bại với tên người dùng: %1</translation>
     </message>
@@ -27251,45 +27312,45 @@ Lỗi CSDL: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2806"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2874"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2910"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6080"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6246"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2860"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2901"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2937"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
         <translation>Lỗi khi thực thi truy vấn: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2807"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn đối với các kiểu liên quan. Phép truy vấn này đã được ghi nhận lại.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6412"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2861"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn đối với các kiểu không liên quan. Phép truy vấn này đã được ghi nhận lại.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2875"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2902"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Lỗi xóa truy vấn. Truy vấn đã được lưu vào bản ghi vết</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2911"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6463"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn. Phép truy vấn này đã được lưu vào bản ghi vết.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2906"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6457"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2933"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Lỗi nhất quán trong bảng &apos;%1&apos;. Nhận diện kiểu phải không được trùng</translation>
     </message>
@@ -27323,14 +27384,14 @@ SQL: %1</translation>
         <translation>Tạo các trường thất bại</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6048"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6122"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6204"/>
         <source>Error executing query %1: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6509"/>
         <source>spatialite</source>
         <translation>spatialite</translation>
     </message>
@@ -27359,24 +27420,24 @@ SQL: %1</translation>
         <translation>Không thể xóa bảng %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6466"/>
         <source>Style with id %1 not found in %2 (Query: %3)</source>
         <translation>Không tìm thấy kiểu với nhận diện %1 trong %2 (Truy vấn: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="3063"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6045"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6119"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6201"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6247"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6352"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6050"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6124"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6206"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6252"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6357"/>
         <source>Error looking for style. The query was logged</source>
         <translation>Lỗi khi tìm kiểu. Phép truy vấn này đã được lưu vào bản ghi vết</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2901"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2964"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6153"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6158"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
         <translation>Không thể lưu kiểu của lớp. Không thể tạo bảng đích trong CSDL.</translation>
     </message>
@@ -27412,7 +27473,7 @@ SQL: %1</translation>
         <translation>Không thể mở %1.</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6311"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6316"/>
         <source>Error executing loading style. The query was logged</source>
         <translation>Lỗi khi thực thi nạp kiểu. Phép truy vấn này đã được lưu vào bản ghi vết</translation>
     </message>
@@ -27421,12 +27482,12 @@ SQL: %1</translation>
         <location filename="../src/core/qgsogrutils.cpp" line="2658"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2769"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2830"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6366"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6371"/>
         <source>No styles available on DB</source>
         <translation>Không có kiểu nào sẵn dùng trong cơ sở dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6386"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6391"/>
         <source>Error loading styles. The query was logged</source>
         <translation>Lỗi khi nạp kiểu. Phép truy vấn này đã được lưu vào bản ghi vết</translation>
     </message>
@@ -32346,7 +32407,7 @@ Output attributes are computed depending on each given aggregate definition.</so
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaggregate.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="261"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="179"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="589"/>
         <source>Evaluation error in expression &quot;%1&quot;: %2</source>
         <translation>Lỗi đánh giá trong biểu thức &quot;%1&quot;: %2</translation>
@@ -47350,12 +47411,12 @@ Về phần trợ giúp với các chức năng biểu thức QGIS, xem phần t
         <translation>Biểu thức hình học</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="143"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="145"/>
         <source>Evaluation error: %1</source>
         <translation>Lỗi đánh giá: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="161"/>
         <source>%1 is not a geometry</source>
         <translation>%1 không phải là một hình học</translation>
     </message>
@@ -50946,7 +51007,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2067"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2076"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: Lớp kiểu không có tính chất trình bày, bỏ qua</translation>
     </message>
@@ -50966,204 +51027,209 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>%1: Bỏ qua kiểu khoảng cách giữa ký tự không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1303"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1305"/>
         <source>%1: Skipping unsupported text-font type (%2)</source>
         <translation>%1: Bỏ qua kiểu phông chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1333"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1342"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2708"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2717"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2759"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2767"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2726"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2768"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2776"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: Các biểu thức trong hàm nội suy không được hỗ trợ, bỏ qua.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1360"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1374"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1426"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1362"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1376"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1428"/>
         <source>%1: Referenced font %2 is not available on system</source>
         <translation>%1: Phông chữ được tham chiếu %2 không có trên hệ thống</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1450"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1452"/>
         <source>%1: Skipping unsupported text-color type (%2)</source>
         <translation>%1: Bỏ qua kiểu màu chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1481"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1483"/>
         <source>%1: Skipping unsupported text-halo-color type (%2)</source>
         <translation>%1: Bỏ qua kiểu màu quầng chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1515"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1517"/>
         <source>%1: Skipping unsupported text-halo-width type (%2)</source>
         <translation>%1: Bỏ qua kiểu chiều rộng quầng chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1566"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1568"/>
         <source>%1: Skipping unsupported text-halo-blur type (%2)</source>
         <translation>%1: Bỏ qua kiểu làm mờ quầng chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1685"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1694"/>
         <source>%1: Skipping unsupported text-field dictionary</source>
         <translation>%1: Bỏ qua từ điển trường chữ không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1691"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1700"/>
         <source>%1: Skipping unsupported text-field type (%2)</source>
         <translation>%1: Bỏ qua kiểu trường chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1725"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1734"/>
         <source>%1: Skipping unsupported text-rotate map content (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1730"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1739"/>
         <source>%1: Skipping unsupported text-rotate type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1800"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1950"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1809"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1959"/>
         <source>%1: Skipping unsupported text-offset type (%2)</source>
         <translation>%1: Bỏ qua kiểu căn lệch chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1854"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1863"/>
         <source>%1: Skipping unsupported text-justify type (%2)</source>
         <translation>%1: Bỏ qua kiểu canh thẳng chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1907"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1916"/>
         <source>%1: Skipping unsupported text-anchor type (%2)</source>
         <translation>%1: Bỏ qua kiểu neo chữ không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2098"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2107"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation>%1: Bỏ qua kiểu khoảng cách biểu tượng không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2145"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2329"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2154"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2338"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation>%1: Bỏ qua kiểu xoay biểu tượng không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2000"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2205"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2288"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2214"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2297"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation>%1: Bỏ qua kiểu kích thước biểu tượng chưa được ứng dụng (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2356"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2365"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation>%1: Bỏ qua kiểu độ đục biểu tượng không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2632"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2641"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2650"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: Bỏ qua kiểu nội suy căn lệch không được hỗ trợ (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2794"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2802"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2803"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2811"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2831"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: Các danh sách trong hàm nội suy nhãn không được hỗ trợ, bỏ qua.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2873"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3724"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2882"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3748"/>
         <source>%1: Could not interpret match list</source>
         <translation>%1: Không thể diễn giải danh sách khớp</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3035"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3508"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3799"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3044"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3532"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3823"/>
         <source>%1: Could not interpret step list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3119"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3128"/>
         <source>%1: Could not interpret value list</source>
         <translation>%1: Không thể diễn giải danh sách giá trị</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3131"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3140"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation>%1: Phép nội suy Bezier bậc ba không được hỗ trợ, dùng tuyến tính thay vào.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3136"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3145"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: Bỏ qua phương pháp nội suy chưa được thực thi %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3142"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3151"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: Bỏ qua đầu vào nội suy chưa được thực thi %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3171"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3180"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3200"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: Không thể phân tách màu không phải dạng chuỗi %2, bỏ qua</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3308"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3374"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3428"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3297"/>
+        <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3332"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3398"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3452"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: Bỏ qua biểu thức không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3531"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3555"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3563"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3570"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3580"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3587"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3594"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3604"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation>%1: Không thể lấy hình sprit &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3848"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3872"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: Không thể diễn giải danh sách giá trị sprit bằng phương pháp %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3762"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3854"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3786"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3878"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation>%1: Bỏ qua kiểu sprit không được hỗ trợ (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3892"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3916"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: Bỏ qua phần biểu thức không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4044"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4068"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>Kiểu nguồn &quot;%1&quot; không hợp lệ đối với nguồn &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4205"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4229"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>Lược đồ %1 không được hỗ trợ đối với nguồn raster %2</translation>
     </message>
@@ -53281,7 +53347,7 @@ For more details, please see the following papers:
         <translation>Trình thể hiện độ đục</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgslinesymbollayer.cpp" line="3103"/>
+        <location filename="../src/core/symbology/qgslinesymbollayer.cpp" line="3096"/>
         <source>Could not allocate sufficient memory for raster line symbol</source>
         <translation>Không thể cấp phát bộ nhớ cho biểu tượng đường raster</translation>
     </message>
@@ -56200,52 +56266,52 @@ The output layer is a copy of the input layer with additional fields that contai
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="196"/>
         <source>Creating Delaunay triangles…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="207"/>
         <source>Failed to compute concave hull: Delaunay triangulation algorithm not found!</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="217"/>
         <source>Failed to compute Delaunay triangulation.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="217"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="222"/>
         <source>No Delaunay triangles created.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="220"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="225"/>
         <source>Computing edges max length…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="255"/>
         <source>Removing features…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="272"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="277"/>
         <source>Dissolving Delaunay triangles…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="285"/>
         <source>Failed to compute concave hull: Dissolve algorithm not found!</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="287"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="292"/>
         <source>Failed to dissolve Delaunay triangles.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="291"/>
+        <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="296"/>
         <source>There are no features in the dissolved layer.</source>
         <translation type="unfinished"/>
     </message>
@@ -58618,7 +58684,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2586"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation type="unfinished"/>
     </message>
@@ -64976,7 +65042,7 @@ Delete these features?</source>
 <context>
     <name>QgsAppElevationProfileLayerTreeView</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1173"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1177"/>
         <source>Properties…</source>
         <translation>Các Tính chất...</translation>
     </message>
@@ -67510,7 +67576,7 @@ Clicking the button will let you select an application to use as the action</sou
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="462"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="467"/>
         <source>Update All</source>
         <translation>Cập nhật tất cả</translation>
     </message>
@@ -67625,13 +67691,13 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Định dạng có điều kiện</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="306"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="311"/>
         <source>Dock Attribute Table</source>
         <translation>Gắn ụ Bảng Thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="243"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="244"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="247"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="248"/>
         <source>Actions</source>
         <translation>Hành động</translation>
     </message>
@@ -67656,116 +67722,116 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="525"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation>Đã xảy ra một lỗi khi cố gắng cập nhật trường %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="609"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Đã xảy ra một lỗi khi đánh giá chuỗi tính toán:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="525"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="609"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
         <source>Update Attributes</source>
         <translation>Cập nhật các Thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="454"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="459"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation> %1 — Đối tượng Tổng số: %L2, Được lọc: %L3, Được chọn: %L4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="968"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>Thất bại khi thêm trường &apos;%1&apos; có kiểu &apos;%2&apos;. Tên trường có không bị trùng chứ?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="464"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="469"/>
         <source>Update Filtered</source>
         <translation>Cập nhật phần được lọc</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="428"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="433"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation>Chỉnh sửa nhiều lần không được hỗ trợ khi dùng các biểu mẫu giao diện người dùng tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="430"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="435"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation>Tìm kiếm không được hỗ trợ khi dùng các biểu mẫu giao diện người dùng tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="567"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="572"/>
         <source>Calculating field</source>
         <translation>Trường tính toán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="737"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="742"/>
         <source>Feature Added</source>
         <translation>Đối tượng được thêm vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="955"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="960"/>
         <source>Attribute added</source>
         <translation>Thuộc tính được thêm vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="968"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
         <source>Add Field</source>
         <translation>Thêm Trường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="996"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1001"/>
         <source>Deleted attribute</source>
         <translation>Thuộc tính bị xoá</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>(Các) thuộc tính không thể xoá được</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
         <source>Attribute error</source>
         <translation>Lỗi thuộc tính</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1057"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1062"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>%n đối tượng trong lớp &quot;%1&quot;,</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1079"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1084"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n đối tượng bị xóa: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1076"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1081"/>
         <source>%1 on layer %2. </source>
         <translation>%1 trong lớp %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1087"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1092"/>
         <source>Delete Feature</source>
         <translation>Xóa Đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="706"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="711"/>
         <source>Geometryless feature added</source>
         <translation>Đối tượng không có hình học được thêm vào</translation>
     </message>
@@ -74253,12 +74319,12 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
 <context>
     <name>QgsCodedValueTableModel</name>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="280"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="281"/>
         <source>Code</source>
         <translation>Mã</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="282"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="283"/>
         <source>Value</source>
         <translation>Giá trị</translation>
     </message>
@@ -76184,53 +76250,53 @@ và tập tin hiện tại là [%3]</translation>
 <context>
     <name>QgsCreateRasterAttributeTableDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="52"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="53"/>
         <source>The data provider supports attribute table storage but some drivers do not support &apos;thematic&apos; types, for this reason the option is disabled.</source>
         <translation>Nhà cung cấp dữ liệu hỗ trợ lưu trữ bảng thuộc tính raster nhưng một số trình điều khiển không hỗ trợ các kiểu &apos;chủ đề&apos;, vì lý do này tùy chọn này bị bất hoạt.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="56"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="57"/>
         <source>Raster band %1 already has an associated attribute table at %2.</source>
         <translation>Băng raster %1 đã có bảng thuộc tính liên quan tại %2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="60"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="61"/>
         <source>Raster band %1 already has an associated attribute table.</source>
         <translation>Băng raster %1 đã có bảng thuộc tính liên quan.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="138"/>
         <source>Error Creating Raster Attribute Table</source>
         <translation>Lỗi khi Tạo Bảng Thuộc tính Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="138"/>
         <source>The raster attribute table could not be created.</source>
         <translation>Không thể tạo bảng thuộc tính raster.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="145"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="149"/>
         <source>Confirm Overwrite</source>
         <translation>Xác nhận Ghi đè</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="145"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="149"/>
         <source>Are you sure you want to overwrite the existing attribute table at &apos;%1&apos;?</source>
         <translation>Có chắc bạn muốn ghi đè bảng thuộc tính hiện có tại &apos;%1&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="150"/>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="160"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="154"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="164"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>Lỗi khi Lưu Bảng Thuộc tính Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="168"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>Raster Attribute Table Saved</source>
         <translation>Bảng Thuộc tính Raster đã được Lưu</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="168"/>
+        <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>The new Raster Attribute Table was successfully created.</source>
         <translation>Bảng Thuộc tính Raster mới đã được tạo thành công.</translation>
     </message>
@@ -82146,17 +82212,17 @@ Lỗi: %2</translation>
 <context>
     <name>QgsElevationProfilePdfExportDialog</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="37"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="42"/>
         <source>Portrait</source>
         <translation>Kiểu chân dung</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="38"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="43"/>
         <source>Landscape</source>
         <translation>Kiểu phong cảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="45"/>
+        <location filename="../src/app/elevation/qgselevationprofilepdfexportdialog.cpp" line="50"/>
         <source>Custom</source>
         <translation>Tùy chỉnh</translation>
     </message>
@@ -82210,223 +82276,223 @@ Lỗi: %2</translation>
 <context>
     <name>QgsElevationProfileWidget</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="193"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="197"/>
         <source>Add Layers</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="198"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="202"/>
         <source>Show Layer Tree</source>
         <translation>Hiển thị Sơ đồ hình Cây của Lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="210"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="214"/>
         <source>Capture Curve</source>
         <translation>Bắt Đường cong</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="225"/>
         <source>Capture Curve From Feature</source>
         <translation>Bắt đường Cong từ Đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="232"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="236"/>
         <source>Nudge Left</source>
         <translation>Nhích trái</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="238"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="242"/>
         <source>Nudge Right</source>
         <translation>Nhích phải</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="251"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="255"/>
         <source>Clear</source>
         <translation>Xóa</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="258"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="262"/>
         <source>Identify Features</source>
         <translation>Nhận diện Các Đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="266"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="270"/>
         <source>Pan</source>
         <translation>Di chuyển</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="274"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="278"/>
         <source>Zoom X Axis</source>
         <translation>Phóng Trục X</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="281"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="285"/>
         <source>Zoom</source>
         <translation>Phóng</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="288"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="292"/>
         <source>Zoom Full</source>
         <translation>Phóng toàn bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="293"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="297"/>
         <source>Enable Snapping</source>
         <translation>Bật Bắt dính</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="302"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="306"/>
         <source>Measure Distances</source>
         <translation>Đo Khoảng cách</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="313"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="317"/>
         <source>Export as PDF</source>
         <translation>Xuất ra dạng PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="318"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="322"/>
         <source>Export as Image</source>
         <translation>Xuất thành Ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="325"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="329"/>
         <source>Export 3D Features…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="329"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="333"/>
         <source>Export 2D Profile…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="333"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="337"/>
         <source>Export Distance/Elevation Table…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="339"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="343"/>
         <source>Export Results</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="351"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="355"/>
         <source>Lock Distance/Elevation Scales</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="357"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="361"/>
         <source>Distance Units</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="421"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="425"/>
         <source>Show Subsections Indicator</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="428"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="432"/>
         <source>Subsections Symbology…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="435"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="439"/>
         <source>Rename Profile…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="441"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="445"/>
         <source>Options</source>
         <translation>Tùy chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="484"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="488"/>
         <source>Dock Elevation Profile View</source>
         <translation>Gắn cửa sổ Phép xem Thiết diện Độ cao</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="772"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="776"/>
         <source>Export to PDF</source>
         <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="774"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="778"/>
         <source>PDF Format</source>
         <translation>Định dạng PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="803"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="821"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="807"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="825"/>
         <source>Save as PDF</source>
         <translation>Lưu thành PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="803"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="807"/>
         <source>Could not create %1</source>
         <translation>Không thể tạo %1</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="821"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="873"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="937"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="943"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="825"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="877"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="941"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="947"/>
         <source>Successfully saved the profile to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Lưu thành công thiết diện vào &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="833"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="837"/>
         <source>Save Plot As</source>
         <translation>Lưu Đồ thị dưới Dạng</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="852"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="873"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="856"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="877"/>
         <source>Save as Image</source>
         <translation>Lưu dưới dạng Ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="852"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="856"/>
         <source>Could not create image</source>
         <translation>Không thể tạo ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="899"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="903"/>
         <source>Select Output File</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="937"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="943"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="941"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="947"/>
         <source>Exported Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="953"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="957"/>
         <source>Export Failed</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="953"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="957"/>
         <source>The elevation profile could not be exported</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="989"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="993"/>
         <source>elevation profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="990"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="994"/>
         <source>Rename Elevation Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="991"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="995"/>
         <source>Enter a new elevation profile title</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1019"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1023"/>
         <source>Subsections Symbol Selector</source>
         <translation type="unfinished"/>
     </message>
@@ -82434,7 +82500,7 @@ Lỗi: %2</translation>
 <context>
     <name>QgsElevationProfileWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1149"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1153"/>
         <source>Tolerance</source>
         <translation>Dung sai</translation>
     </message>
@@ -87768,7 +87834,27 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation type="unfinished"/>
     </message>
     <message>
+        <source>an array of names, for the regions exactly equal to the current feature</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>a string as a comma separated list of names, for the regions exactly equal to the current feature</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>an ordered array of names, for the regions exactly equal to the current feature and with a population greater than 10000</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>overlay_equals(layer:=&apos;regions&apos;, expression:= geom_to_wkt(@geometry), limit:=2)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>an array of geometries (in WKT), for up to two regions exactly equal to the current feature</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>predicate,current,equals,equal,target,array,exactly,described,underlying,features</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -88554,10 +88640,6 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
     <message>
         <source>share,tests,contained,overlaps,same,dimension,space</source>
         <translation>chia xẻ,phép thử,chứa,chống,như nhau,chiều,khoảng trống</translation>
-    </message>
-    <message>
-        <source>predicate,current,equals,equal,target,array,geos,st_equals,described,underlying,features</source>
-        <translation>vị từ,hiện tại,bằng,đích,mảng,geos,st_equals,mô tả,phía dưới,đối tượng</translation>
     </message>
     <message>
         <source>algorithm,parameter,processing</source>
@@ -93432,8 +93514,8 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation>một mảng các hình học (dạng WKT), dùng cho tối đa hai vùng tách rời về mặt không gian với đối tượng hiện tại</translation>
     </message>
     <message>
-        <source>Returns whether the current feature spatially equals to at least one feature from a target layer, or an array of expression-based results for the features in the target layer that are spatially equal to the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Equals&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Equals.html&apos;&gt;ST_Equals&lt;/a&gt; function.</source>
-        <translation>Trả về kết quả đối tượng hiện tại có bằng nhau về mặt không gian với ít nhất một đối tượng của lớp đích hay không, hoặc một mảng các kết quả dựa theo biểu thức đối với các đối tượng trong lớp đích bằng nhau về mặt không gian với đối tượng hiện tại hay không.&lt;br&gt;&lt;br&gt;Xem thêm về vị từ &quot;Equals&quot; của GEOS là cơ sở của lệnh này, như được mô tả trong hàm &lt;a href=&apos;https://postgis.net/docs/ST_Contains.html&apos;&gt;ST_Equals&lt;/a&gt; của PostGIS.</translation>
+        <source>Returns whether the current feature&apos;s geometry is exactly equal to at least one feature&apos;s geometry from a target layer, or an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature&apos;s geometry. Note that the order of vertices matters.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>overlay_equals</source>
@@ -93444,36 +93526,32 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation>overlay_equals(&apos;regions&apos;)</translation>
     </message>
     <message>
+        <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>overlay_equals(&apos;regions&apos;, filter:= population &gt; 10000)</source>
         <translation>overlay_equals(&apos;regions&apos;, filter:= population &gt; 10000)</translation>
+    </message>
+    <message>
+        <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region whose population is greater than 10000</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>overlay_equals(&apos;regions&apos;, name)</source>
         <translation>overlay_equals(&apos;regions&apos;, name)</translation>
     </message>
     <message>
-        <source>an array of names, for the regions spatially equal to the current feature</source>
-        <translation>một mảng các tên, dùng cho các vùng bằng nhau về mặt không gian với đối tượng hiện tại</translation>
-    </message>
-    <message>
         <source>array_to_string(overlay_equals(&apos;regions&apos;, name))</source>
         <translation>array_to_string(overlay_equals(&apos;regions&apos;, name))</translation>
-    </message>
-    <message>
-        <source>a string as a comma separated list of names, for the regions spatially equal to the current feature</source>
-        <translation>một chuỗi dưới dạng một danh sách các tên cách nhau bởi dấu phẩy, dùng cho những vùng bằng nhau về mặt không gian với đối tượng hiện tại</translation>
     </message>
     <message>
         <source>array_sort(overlay_equals(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
         <translation>array_sort(overlay_equals(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</translation>
     </message>
     <message>
-        <source>an ordered array of names, for the regions spatially equal to the current feature and with a population greater than 10000</source>
-        <translation>một mảng gồm các tên được xếp thứ tự, dùng cho những vùng bằng nhau về mặt không gian với đối tượng hiện tại với population (dân số) lớn hơn 10000</translation>
-    </message>
-    <message>
-        <source>an array of geometries (in WKT), for up to two regions spatially equal to the current feature</source>
-        <translation>một mảng các hình học (dạng WKT), dùng cho tối đa hai vùng bằng nhau về mặt không gian với đối tượng hiện tại</translation>
+        <source>This function requires exact equality of geometries, meaning that the geometries &apos;LINESTRING( 0 0, 1 1 )&apos; and &apos;LINESTRING( 1 1, 0 0 )&apos; are different.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Returns whether the current feature spatially intersects at least one feature from a target layer, or an array of expression-based results for the features in the target layer intersected by the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Intersects&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Intersects.html&apos;&gt;ST_Intersects&lt;/a&gt; function.</source>
@@ -95570,14 +95648,6 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
     <message>
         <source>TRUE if the current feature is spatially disjoint from all the regions with a population greater than 10000</source>
         <translation>TRUE (đúng) nếu đối tượng hiện tại không liên kết về mặt không gian với tất cả các vùng có population lớn hơn 10000</translation>
-    </message>
-    <message>
-        <source>TRUE if the current feature is spatially equal to a region</source>
-        <translation>TRUE (đúng) nếu đối tượng hiện tại bằng nhau về mặt không gian với một vùng</translation>
-    </message>
-    <message>
-        <source>TRUE if the current feature is spatially equal to a region with a population greater than 10000</source>
-        <translation>TRUE (đúng) nếu đối tượng hiện tại bằng nhau về mặt không gian với một vùng có population lớn hơn 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region</source>
@@ -97812,28 +97882,28 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
 <context>
     <name>QgsFieldDomainWidget</name>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="346"/>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="350"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="347"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="351"/>
         <source>Default Value</source>
         <translation>Giá trị Mặc định</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="347"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="348"/>
         <source>Duplicate</source>
         <translation>Làm lặp lại</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="348"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="349"/>
         <source>Ratio of Geometries</source>
         <translation>Tỷ lệ của các Hình học</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="351"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="352"/>
         <source>Sum</source>
         <translation>Tổng</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="352"/>
+        <location filename="../src/gui/qgsfielddomainwidget.cpp" line="353"/>
         <source>Geometry Weighted Average</source>
         <translation>Trung bình có trọng số của hình học</translation>
     </message>
@@ -121016,34 +121086,34 @@ Lỗi đánh giá: %1</translation>
 <context>
     <name>QgsLoadRasterAttributeTableDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="81"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="85"/>
         <source>Invalid Raster Band</source>
         <translation>Băng Raster không Hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="81"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="85"/>
         <source>The selected raster band %1 is not valid.</source>
         <translation>Băng raster %1 đã chọn không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="92"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>Error Loading Raster Attribute Table </source>
         <translation>Lỗi khi Nạp Bảng Thuộc tính Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="92"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>The raster attribute table could not be loaded.
 %1</source>
         <translation>Không thể nạp bảng thuộc tính raster.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="98"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
         <source>Invalid Raster Attribute Table</source>
         <translation>Bảng Thuộc tính Raster không Hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="98"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
         <source>The raster attribute table is not valid:
 %1
 Load anyway?</source>
@@ -121052,22 +121122,22 @@ Load anyway?</source>
 Vẫn nạp?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="114"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
         <source>Confirm Attribute Table Replacement</source>
         <translation>Xác nhận Thay thế Bảng Thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="114"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
         <source>Raster band %1 already has an associated attribute table loaded from &apos;%2&apos;. Are you sure you want to replace the existing raster attribute table?</source>
         <translation>Băng raster %1 đã có bảng thuộc tính liên kết được nạp từ &apos;%2&apos;. Có chắc bạn muốn thay thế bảng thuộc tính raster hiện có?</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="131"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>Raster Attribute Table Loaded</source>
         <translation>Bảng Thuộc tính Raster được Nạp</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="131"/>
+        <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>The new raster attribute table was successfully loaded.</source>
         <translation>Bảng thuộc tính raster mới đã được nạp thành công.</translation>
     </message>
@@ -129995,59 +130065,59 @@ Untick save if you don&apos;t wish to be the case.</source>
 <context>
     <name>QgsMssqlProvider</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="195"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="193"/>
         <source>Invalid primary key from geometry_columns table for layer &apos;%1&apos;, get primary key from the layer.</source>
         <translation>Khóa chính không hợp lệ từ bảng geometry_columns dùng cho lớp &apos;%1&apos;, dùng khóa chính của lớp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="195"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="193"/>
         <source>MS SQL Server</source>
         <translation>Máy phục vụ MS SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="215"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="713"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="213"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="719"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="215"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="213"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>Không tìm thấy trường khóa &apos;%1&apos; dùng để xem/truy vấn.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="428"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="434"/>
         <source>Could not execute query: %1</source>
         <translation>Không thể thực thi truy vấn: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="436"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="442"/>
         <source>Could not fetch next query value: %1</source>
         <translation>Không thể tìm nạp giá trị truy vấn tiếp theo: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="713"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="719"/>
         <source>Invalid extent from geometry_columns table for layer &apos;%1&apos;, get extent from the layer.</source>
         <translation>Phạm vi không hợp lệ từ bảng geometry_columns dùng cho lớp &apos;%1&apos;, dùng phạm vi của lớp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="968"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1033"/>
         <source>Could not add feature with geometry type %1 to layer of type %2</source>
         <translation>Không thể thêm đối tượng với hình học kiểu %1 vào lớp có kiểu %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1628"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1667"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1693"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1732"/>
         <source>Only %1 of %2 features deleted</source>
         <translation>Chỉ có %1 trong %2 đối tượng bị xóa</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1880"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1945"/>
         <source>SQL Server WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2182"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2247"/>
         <source>Table [%1].[%2] already exists</source>
         <translation>Bảng [%1].[%2] đã có</translation>
     </message>
@@ -130055,21 +130125,21 @@ Untick save if you don&apos;t wish to be the case.</source>
 <context>
     <name>QgsMssqlProviderMetadata</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2589"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2751"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2654"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2816"/>
         <source>Cannot connect to database: %1</source>
         <translation>Không thể kết nối đến csdl: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2601"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2762"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2666"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2827"/>
         <source>Could not check if layer_styles table exists: %1</source>
         <translation>Không thể kiểm tra xem bảng layer_styles có tồn tại hay không: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2607"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2768"/>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2788"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2672"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2833"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2853"/>
         <source>Style does not exist</source>
         <translation>Kiểu không tồn tại</translation>
     </message>
@@ -130381,8 +130451,8 @@ tăng cường</translation>
 <context>
     <name>QgsNetworkContentFetcher</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="187"/>
-        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="200"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="190"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetcher.cpp" line="203"/>
         <source>HTTP fetch %1 failed with error %2</source>
         <translation>Lấy HTTP %1 thất bại với lỗi %2</translation>
     </message>
@@ -130390,7 +130460,7 @@ tăng cường</translation>
 <context>
     <name>QgsNetworkContentFetcherTask</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkcontentfetchertask.cpp" line="31"/>
+        <location filename="../src/core/network/qgsnetworkcontentfetchertask.cpp" line="33"/>
         <source>Fetching %1</source>
         <translation>Đang tìm nạp %1</translation>
     </message>
@@ -132297,48 +132367,48 @@ Thông báo lỗi: %1</translation>
         <translation>Luôn dùng Mạng</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="297"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="298"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Bạn có chắc chắn muốn gỡ bỏ kết nối %1 và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="317"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="318"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>Các tập tin XML (*.xml, *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="652"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="653"/>
         <source>Add WMS Servers</source>
         <translation>Thêm các Máy phục vụ WMS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="652"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="653"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the Internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Một số máy phục vụ WMS đã được thêm vào danh sách máy phục vụ. Lưu ý rằng nếu bạn truy cập vào internet tthông qua một mạng ủy nhiệm, bạn cần phải thiết lập ủy nhiệm trong hộp thoại tùy chọn của QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="317"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="318"/>
         <source>Load Connections</source>
         <translation>Tải kết nối</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="299"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="300"/>
         <source>Remove Connection</source>
         <translation>Loại bỏ Kết nối</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="441"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="442"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation><numerusform>Hệ tọa độ tham chiếu (%n khả dụng)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="486"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="487"/>
         <source>Coordinate Reference System</source>
         <translation>Hệ tọa độ tham chiếu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="602"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="603"/>
         <source>Could not understand the response:
 %1</source>
         <translation>Không thể hiểu phản hồi:
@@ -133939,665 +134009,665 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="320"/>
         <source>not present</source>
         <translation>không có</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="325"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="326"/>
         <source>System value: %1</source>
         <translation>Giá trị hệ thống: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="516"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="517"/>
         <source>All</source>
         <translation>Tất cả</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="519"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="520"/>
         <source>Always</source>
         <translation>Luôn luôn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="230"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="521"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="231"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="522"/>
         <source>Never</source>
         <translation>Không bao giờ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="231"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="232"/>
         <source>Ask</source>
         <translation>Hỏi</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="536"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="537"/>
         <source>No</source>
         <translation>Không</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="572"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="573"/>
         <source>No projection (or unknown/non-Earth projection)</source>
         <translation>Không có phép chiếu (hoặc phép chiếu không rõ/phi Trái Đất)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="575"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="576"/>
         <source>&lt;h1&gt;Default projection for new projects&lt;/h1&gt;Select a projection that should be used for new projects that are created in QGIS.</source>
         <translation>&lt;h1&gt;Phép chiếu mặc định dùng cho các dự án mới&lt;/h1&gt;Chọn một phép chiếu để dùng cho các dự án mới được tạo ra trong QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="609"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="610"/>
         <source>Meters</source>
         <translation>Mét</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="610"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="611"/>
         <source>Kilometers</source>
         <translation>Ki-lô-mét</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="611"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="612"/>
         <source>Feet</source>
         <translation>Bộ Anh</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="612"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="613"/>
         <source>Yards</source>
         <translation>Mét Anh</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="613"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="614"/>
         <source>Miles</source>
         <translation>Dặm</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="615"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="616"/>
         <source>Centimeters</source>
         <translation>Xen-ti-mét</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="616"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="617"/>
         <source>Millimeters</source>
         <translation>Mi-li-mét</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="618"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="646"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="619"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="647"/>
         <source>Degrees</source>
         <translation>Độ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="632"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="633"/>
         <source>Hectares</source>
         <translation>Héc-ta</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="633"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="634"/>
         <source>Acres</source>
         <translation>Mẫu Anh</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="647"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="648"/>
         <source>Radians</source>
         <translation>Radian</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="648"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="649"/>
         <source>Gon/gradians</source>
         <translation>Gon/gradian</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="651"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="652"/>
         <source>Turns/revolutions</source>
         <translation>Số lượt/vòng xoay</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="761"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="762"/>
         <source>GeoJSON</source>
         <translation>Kiểu GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="793"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="794"/>
         <source>Set Selection Color</source>
         <translation>Thiết lập Màu Phép Chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="803"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="804"/>
         <source>Set Canvas Color</source>
         <translation>Thiết lập Màu Khung Bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="812"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="813"/>
         <source>Set Measuring Tool Color</source>
         <translation>Thiết lậ Màu Công cụ Đo</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="996"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="997"/>
         <source>Select Grid Color</source>
         <translation>Chọn Màu của Lưới</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1159"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1160"/>
         <source>Dialog</source>
         <translation>Hộp thoại</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1160"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1161"/>
         <source>Dock</source>
         <translation>Bộ gá</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1164"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1165"/>
         <source>Miter</source>
         <translation>Vát góc</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1391"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1402"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1406"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1392"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1403"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1407"/>
         <source>Save Default Project</source>
         <translation>Lưu Dự án Mặc định</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1986"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1987"/>
         <source>Restore UI Defaults</source>
         <translation>Phục hồi các Giá trị Mặc định của Giao diện Người dùng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2479"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2480"/>
         <source>Drivers Disabled</source>
         <translation>Các Trình Điều khiển bị Bất hoạt</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2479"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2480"/>
         <source>One or more drivers have been disabled. This will only take effect after QGIS is restarted.</source>
         <translation>Một hoặc nhiều trình điều khiển bị bất hoạt. Điều này chỉ có tác dụng sau khi khởi động lại QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2591"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2592"/>
         <source>Choose a Directory</source>
         <translation>Chọn một Thư mục</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2695"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2696"/>
         <source>Sample date: %1 money: %2 int: %3 float: %4</source>
         <translation>Mẫu về ngày tháng: %1 tiền tệ: %2 số nguyên: %3 số thực: %4</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2734"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2735"/>
         <source>Set Scale</source>
         <translation>Đặt Tỷ lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1004"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1823"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1005"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1824"/>
         <source>Solid</source>
         <translation>Đặc</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1005"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1827"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1006"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1828"/>
         <source>Dots</source>
         <translation>Chấm</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1006"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1831"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1007"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1832"/>
         <source>Crosses</source>
         <translation>Chữ thập</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1033"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1034"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Hệ thống ngôn ngữ đang kích hoạt trên máy của bạn: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1104"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1114"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1105"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1115"/>
         <source>map units</source>
         <translation>đơn vị bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1108"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1118"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1109"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1119"/>
         <source>pixels</source>
         <translation>điểm ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1130"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1145"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1769"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1146"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1770"/>
         <source>Cross</source>
         <translation>Chữ thập</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1131"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1149"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1773"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1150"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1774"/>
         <source>None</source>
         <translation>Không có</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1460"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1461"/>
         <source>QGIS files</source>
         <translation>Các tập tin QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2572"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2573"/>
         <source>Select color</source>
         <translation>Chọn màu</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2734"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2735"/>
         <source>The text you entered is not a valid scale.</source>
         <translation>Chữ bạn nhập vào không phải tỷ lệ hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1134"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1135"/>
         <source>Off</source>
         <translation>Tắt</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="236"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="237"/>
         <source>Identify Highlight Color</source>
         <translation>Nhận diện Màu làm Nổi bật</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1135"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1136"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1136"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1137"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1163"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1172"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1164"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1173"/>
         <source>Round</source>
         <translation>Tròn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1165"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1166"/>
         <source>Bevel</source>
         <translation>Gờ nổi</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1391"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1392"/>
         <source>You must set a default project</source>
         <translation>Bạn phải thiết lập một dự án mặc định</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1402"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1403"/>
         <source>Current project saved as default</source>
         <translation>Dự án hiện tại được lưu thành mặc định</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1406"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1407"/>
         <source>Error saving current project as default</source>
         <translation>Lỗi lưu dự án hiện tại thành mặc định</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1422"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1423"/>
         <source>Choose a directory to store project template files</source>
         <translation>Chọn một thư mục để lưu trữ các tập tin mẫu của dự án</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="228"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="229"/>
         <source>QGIS restart required</source>
         <translation>Yêu cầu khởi động lại QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="110"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="111"/>
         <source>CRS and Transforms</source>
         <translation>HTCTĐ và các Chuyển đổi</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="232"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="233"/>
         <source>For This Session Only</source>
         <translation>Chỉ dùng cho Phiên Làm việc Này</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="233"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="234"/>
         <source>Not During This Session</source>
         <translation>Không dùng trong Phiên Làm việc Này</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="234"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="235"/>
         <source>Always (Not Recommended)</source>
         <translation>Luôn luôn (không Khuyến cáo)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="503"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="504"/>
         <source>Show All Features</source>
         <translation>Hiển thị tất cả các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="504"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="505"/>
         <source>Show Selected Features</source>
         <translation>Hiển thị các đối tượng được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="505"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="506"/>
         <source>Show Features Visible on Map</source>
         <translation>Hiển thị các Đối tượng Nhìn thấy được trên Bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="509"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="510"/>
         <source>Remember Last View</source>
         <translation>Nhớ Phép Xem Sau cùng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="510"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="511"/>
         <source>Table View</source>
         <translation>Xem bảng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="511"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="512"/>
         <source>Form View</source>
         <translation>Xem kiểu biểu mẫu</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="520"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="521"/>
         <source>If Needed</source>
         <translation>Nếu cần</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="522"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="523"/>
         <source>Load All</source>
         <translation>Nạp Tất cả</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="527"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="528"/>
         <source>Check File Contents</source>
         <translation>Kiểm tra Nội dung Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="528"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="529"/>
         <source>Check Extension</source>
         <translation>Kiểm tra Đuôi mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="538"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="539"/>
         <source>Basic Scan</source>
         <translation>Quét Cơ bản</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="539"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="540"/>
         <source>Full Scan</source>
         <translation>Quét Đầy đủ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="594"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="595"/>
         <source>Always show</source>
         <translation>Luôn hiển thị</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="614"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="615"/>
         <source>Nautical Miles</source>
         <translation>Hải lý</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="617"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="618"/>
         <source>Inches</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="619"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="639"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="620"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="640"/>
         <source>Map Units</source>
         <translation>Đơn vị của Bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="627"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="628"/>
         <source>Square Meters</source>
         <translation>Mét vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="628"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="629"/>
         <source>Square Kilometers</source>
         <translation>Ki-lô-mét vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="629"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="630"/>
         <source>Square Feet</source>
         <translation>Bộ vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="630"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="631"/>
         <source>Square Yards</source>
         <translation>Thước Anh vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="631"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="632"/>
         <source>Square Miles</source>
         <translation>Dặm vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="634"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="635"/>
         <source>Square Nautical Miles</source>
         <translation>Hải lý vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="635"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="636"/>
         <source>Square Centimeters</source>
         <translation>Xen-ti-mét vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="636"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="637"/>
         <source>Square Millimeters</source>
         <translation>Mi-li-mét vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="637"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="638"/>
         <source>Square Inches</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="638"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="639"/>
         <source>Square Degrees</source>
         <translation>Độ vuông</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="649"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="650"/>
         <source>Minutes of Arc</source>
         <translation>Số Phút của Cung</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="650"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="651"/>
         <source>Seconds of Arc</source>
         <translation>Số Giây của Cung</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="652"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="653"/>
         <source>Milliradians (SI Definition)</source>
         <translation>Mi-li-ra-đi-an (định nghĩa hệ SI)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="653"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="654"/>
         <source>Mil (NATO/military Definition)</source>
         <translation>Mil (Định nghĩa NATO/quân sự)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="758"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="759"/>
         <source>Plain Text, No Geometry</source>
         <translation>Văn bản Trơn, Không Hình học</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="759"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="760"/>
         <source>Plain Text, WKT Geometry</source>
         <translation>Văn bản Trơn, Hình học WKT</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="760"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="761"/>
         <source>Plain Text, WKB Geometry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="767"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="768"/>
         <source>Above currently selected layer</source>
         <translation>Phía trên lớp hiện đang được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="768"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="769"/>
         <source>Always on top of the layer tree</source>
         <translation>Luôn ở phía trên cùng của cây sơ đồ </translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="769"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="770"/>
         <source>Optimal index within current layer tree group</source>
         <translation>Chỉ mục tối ưu trong nhóm sơ đồ lớp hình cây hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="773"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="774"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="775"/>
         <source>none</source>
         <translation>Không có</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="829"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="830"/>
         <source>Absolute</source>
         <translation>Tuyệt đối</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="830"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="831"/>
         <source>Relative</source>
         <translation>Tương đối</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1129"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1141"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1765"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1130"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1142"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1766"/>
         <source>Semi Transparent Circle</source>
         <translation>Hình tròn bán trong suốt</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1173"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1174"/>
         <source>Flat</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1174"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1175"/>
         <source>Square</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1252"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1253"/>
         <source>No OpenCL compatible devices were found on your system.&lt;br&gt;You may need to install additional libraries in order to enable OpenCL.&lt;br&gt;Please check your logs for further details.</source>
         <translation>Không tìm thấy thiết bị tương thích OpenGL nào trên hệ thống của bạn.&lt;br&gt;Bạn có thể cần phải cài đặt các thư viện bổ sung để bật OpenGL.&lt;br&gt;Vui lòng kiểm tra bản ghi vết của bạn để biết thêm chi tiết.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1280"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1281"/>
         <source>QGIS is compiled without OpenCL support. GPU acceleration is not available.</source>
         <translation>QGIS được biên dịch không có hỗ trợ OpenGL. Việc tăng tốc nhờ GPU không dùng được.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1460"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1461"/>
         <source>Choose project file to open at launch</source>
         <translation>Chọn tập tin dự án để mở khi khởi động</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1942"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1943"/>
         <source>Create Options - %1 Driver</source>
         <translation>Các tùy chọn Tạo - %1 Trình điều khiển</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1944"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1945"/>
         <source>Create Options - pyramids</source>
         <translation>Các tùy chọn Tạo - các tháp</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="1986"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="1987"/>
         <source>Are you sure to reset the UI to default (needs restart)?</source>
         <translation>Có chắc bạn muốn tái lập giao diện người dùng về mặc định (phải khởi động lại)?</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2004"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2005"/>
         <source>Overwrite</source>
         <translation>Ghi đè</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2005"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2006"/>
         <source>If Undefined</source>
         <translation>Nếu không được định nghĩa</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2006"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2007"/>
         <source>Unset</source>
         <translation>Không thiết lập</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2007"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2008"/>
         <source>Prepend</source>
         <translation>Tiền tố</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2008"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2009"/>
         <source>Append</source>
         <translation>Hậu tố</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2009"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2010"/>
         <source>Skip</source>
         <translation>Bỏ qua</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2071"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2151"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2178"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2227"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2072"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2152"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2179"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2228"/>
         <source>Choose a directory</source>
         <translation>Chọn thư mục</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2255"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2261"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2256"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2262"/>
         <source>Clear Cache</source>
         <translation>Xóa Bộ đệm</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2255"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2256"/>
         <source>Content cache has been cleared.</source>
         <translation>Bộ đệm nội dung đã được xóa.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2261"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2262"/>
         <source>Connection authentication cache has been cleared.</source>
         <translation>Bộ nhớ đệm chứng thực kết nối đã được xóa.</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2488"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2489"/>
         <source>Enter scale</source>
         <translation>Nhập tỷ lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2489"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2490"/>
         <source>Scale denominator</source>
         <translation>Mẫu thức tỷ lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2522"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2523"/>
         <source>Load scales</source>
         <translation>Nạp các tỷ lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2522"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2544"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2523"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2545"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>Các tập tin XML (*.xml, *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2544"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2545"/>
         <source>Save scales</source>
         <translation>Lưu các tỷ lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2859"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2860"/>
         <source>Bearing Format</source>
         <translation>Định dạng Hướng</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="2869"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="2870"/>
         <source>Coordinate Format</source>
         <translation>Định dạng Tọa độ</translation>
     </message>
@@ -134616,102 +134686,102 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="105"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
         <location filename="../src/app/qgisapp.cpp" line="12471"/>
         <source>General</source>
         <translation>Tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
         <location filename="../src/app/qgisapp.cpp" line="12472"/>
         <source>System</source>
         <translation>Hệ thống</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="108"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="109"/>
         <source>CRS and Transforms</source>
         <translation>HTCTĐ và các Chuyển đổi</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
         <location filename="../src/app/qgisapp.cpp" line="12473"/>
         <source>CRS Handling</source>
         <translation>Xử lý HTCTĐ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
         <source>General CRS handling</source>
         <translation>Xử lý tổng quát HTCTĐ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
         <source>Coordinate transformations and operations</source>
         <translation>Các phép tính chuyển và các lệnh về tọa độ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
         <location filename="../src/app/qgisapp.cpp" line="12474"/>
         <source>Coordinate Transforms</source>
         <translation>Các Chuyển đổi Tọa độ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
         <location filename="../src/app/qgisapp.cpp" line="12475"/>
         <source>Data Sources</source>
         <translation>Nguồn dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
         <source>Data sources</source>
         <translation>Nguồn dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
         <source>Canvas and legend</source>
         <translation>Khung bản đồ và chú giải</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
         <source>Map tools</source>
         <translation>Các công cụ bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="126"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
         <location filename="../src/app/qgisapp.cpp" line="12480"/>
         <source>Colors</source>
         <translation>Các màu</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
         <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>Canvas &amp; Legend</source>
         <translation>Khung bản đồ &amp; Chú giải</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
         <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>Map Tools</source>
         <translation>Các công cụ bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="124"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
         <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Digitizing</source>
         <translation>Số hóa</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="118"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
         <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
         <source>Print layouts</source>
         <translation>Các trình bày in ấn</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
         <location filename="../src/app/qgisapp.cpp" line="12484"/>
         <source>Network</source>
         <translation>Mạng</translation>
@@ -134858,13 +134928,13 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
-        <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
         <location filename="../src/app/qgisapp.cpp" line="12483"/>
         <source>Authentication</source>
         <translation>Chứng thực</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
         <location filename="../src/app/qgisapp.cpp" line="12482"/>
         <source>Variables</source>
         <translation>Các biến</translation>
@@ -134926,13 +134996,13 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
         <translation>Biểu thị cho các giá trị rỗng (NULL)</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
         <location filename="../src/app/qgisapp.cpp" line="12481"/>
         <source>Layouts</source>
         <translation>Các Trình bày</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
         <location filename="../src/app/qgisapp.cpp" line="12485"/>
         <source>Locator</source>
         <translation>Trình Định vị</translation>
@@ -134948,7 +135018,7 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
         <translation>Ngôn ngữ đang được kích hoạt trong hệ thống của bạn là:</translation>
     </message>
     <message>
-        <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
+        <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
         <location filename="../src/app/qgisapp.cpp" line="12486"/>
         <source>Acceleration</source>
         <translation>Tăng tốc</translation>
@@ -136802,19 +136872,21 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1963"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2417"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2761"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2801"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2833"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2838"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2859"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2864"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2972"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2987"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3011"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3231"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3242"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3251"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3488"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3493"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2793"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2798"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2824"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2856"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2861"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2882"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2887"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3018"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3033"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3057"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3277"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3288"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3297"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3534"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3539"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
@@ -136914,7 +136986,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1768"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1831"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2371"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3167"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3213"/>
         <source>Could not start transaction</source>
         <translation>Không thể khởi động chuyển giao</translation>
     </message>
@@ -136946,7 +137018,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1787"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1952"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2406"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3231"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3277"/>
         <source>Could not commit transaction</source>
         <translation>Không thể cam kết chuyển giao</translation>
     </message>
@@ -136963,7 +137035,7 @@ SQL: %2</translation>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1798"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1963"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2417"/>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3242"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3288"/>
         <source>Could not rollback transaction</source>
         <translation>Không thể quay ngược chuyển giao</translation>
     </message>
@@ -137064,7 +137136,25 @@ SQL: %3</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2972"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2793"/>
+        <source>Could not determine geometry column name: No SDO_GEOMETRY results found for %1.%2 in ALL_TAB_COLUMNS</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2798"/>
+        <source>Could not determine geometry column name.
+The error message from the database was:
+%1.
+SQL: %2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2856"/>
+        <source>Could not retrieve SRID of %1.%2 (%3): No matches found in all_sdo_geom_metadata</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3018"/>
         <source>Could not update metadata for %1.%2.
 SQL: %3
 Error: %4</source>
@@ -137073,7 +137163,7 @@ SQL: %3
 Lỗi: %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2987"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3033"/>
         <source>Could not insert metadata for %1.%2.
 SQL: %3
 Error: %4</source>
@@ -137082,7 +137172,7 @@ SQL: %3
 Lỗi: %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3011"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3057"/>
         <source>Rebuild of spatial index failed.
 SQL: %1
 Error: %2</source>
@@ -137091,7 +137181,7 @@ SQL: %1
 Lỗi: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3251"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3297"/>
         <source>Drop created table %1 failed.
 SQL: %2
 Error: %3</source>
@@ -137100,12 +137190,12 @@ SQL:%2
 Lỗi:%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3456"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3502"/>
         <source>Cannot insert geometry metadata for table &apos;%1&apos; and geometry column &apos;%2&apos;. Both needs to be uppercase</source>
         <translation>Không thể chèn đặc tả dữ liệu hình học cho bảng &apos;%1&apos; và cột hình học &apos;%2&apos;. Cả hai cần phải viết hoa</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3493"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3539"/>
         <source>Lookup of Oracle SRID %1 failed.
 SQL: %2
 Error: %3</source>
@@ -137152,7 +137242,7 @@ SQL: %2</source>
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2801"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2824"/>
         <source>Could not execute query.
 The error message from the database was:
 %1.
@@ -137163,18 +137253,7 @@ Thông báo lỗi từ CSDL là:
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2833"/>
-        <source>Could not retrieve SRID of %1.
-The error message from the database was:
-%2.
-SQL: %3</source>
-        <translation>Không thể lấy SRID của %1.
-Thông báo lỗi từ CSDL là:
-%2.
-SQL: %3</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2838"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2861"/>
         <source>Could not determine SRID of %1.
 The error message from the database was:
 %2.
@@ -137185,14 +137264,14 @@ Thông báo lỗi từ CSDL là:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2859"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2882"/>
         <source>%1 has no valid geometry types.
 SQL: %2</source>
         <translation>%1 không có các kiểu hình học hợp lệ.
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2864"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2887"/>
         <source>Could not determine geometry type of %1.
 The error message from the database was:
 %2.
@@ -137203,57 +137282,57 @@ Thông báo lỗi từ CSDL là:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2898"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2921"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Kiểu hình học và srid dùng cho cột rỗng %1 của %2 không được định nghĩa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2923"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2952"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>Kiểu đối tượng hoặc srid dùng cho %1 của %2 không thể được xác định hoặc không được yêu cầu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3175"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3221"/>
         <source>Could not determine table existence.</source>
         <translation>Không thể xác định sự hiện diện của bảng.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3192"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3238"/>
         <source>Table %1 could not be dropped.</source>
         <translation>Bảng %1 không thể bỏ được.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3197"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3243"/>
         <source>Table %1 already exists.</source>
         <translation>Bảng %1 đã có.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3221"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3267"/>
         <source>Table creation failed.</source>
         <translation>Tạo bảng thất bại.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3422"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3468"/>
         <source>Could not lookup WKT.</source>
         <translation>Không thể tra cứu WKT.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3437"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3483"/>
         <source>Could not determine new srid.</source>
         <translation>Không thể xác định srid mới.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3450"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3496"/>
         <source>CRS not found and could not be created.</source>
         <translation>Không tìm thấy hệ tọa độ và không thể tạo được.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3462"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3508"/>
         <source>Could not insert metadata.</source>
         <translation>Không thể chèn lý lịch dữ liệu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3488"/>
+        <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3534"/>
         <source>Oracle SRID %1 not found.</source>
         <translation>Không tìm thấy SRID %1 của Oracle.</translation>
     </message>
@@ -140189,27 +140268,27 @@ Nâng giá trị này có thể cho phép những đoạn dữ liệu bị thi�
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="645"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="655"/>
         <source>Select Color</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="681"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="691"/>
         <source>Opacity</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="681"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="691"/>
         <source>Change symbol opacity [%]</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="705"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="715"/>
         <source>Point Size</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="705"/>
+        <location filename="../src/gui/pointcloud/qgspointcloudclassifiedrendererwidget.cpp" line="715"/>
         <source>Change point size (set to 0 to reset to default point size)</source>
         <translation type="unfinished"/>
     </message>
@@ -142942,52 +143021,52 @@ PostGIS %2</translation>
 <context>
     <name>QgsPostgresRasterProvider</name>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="106"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="107"/>
         <source>Invalid PostgreSQL raster layer</source>
         <translation>Lớp raster PostgreSQL không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="106"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="146"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="215"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="224"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="297"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="463"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="477"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="501"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="525"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="548"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="558"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="568"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1004"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1718"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1834"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1855"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1861"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2074"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2112"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2146"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2182"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="107"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="225"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="298"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="114"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="115"/>
         <source>Requested SRID (%1) and detected SRID (%2) differ</source>
         <translation>SRID (nhận diện HTCTĐ) được yêu cầu (%1) và SRID đã phát hiện (%2) khác nhau</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="146"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="147"/>
         <source>PostgreSQL raster layer metadata loaded from the database.</source>
         <translation>Đặc tả dữ liệu lớp raster PostgreSQL được nạp từ csdl.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="215"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="297"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="298"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -142998,7 +143077,7 @@ Thông báo lỗi từ CSDL là:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="224"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="225"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) standby server).
 Write accesses will be denied.</source>
@@ -143007,216 +143086,216 @@ Write accesses will be denied.</source>
 Truy cập ghi sẽ bị từ chối.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="260"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="261"/>
         <source>Invalid band number &apos;%1</source>
         <translation>Số hiệu băng &apos;%1&apos; không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="267"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="268"/>
         <source>Requested extent is not valid</source>
         <translation>Phạm vi đã yêu cầu không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="319"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="320"/>
         <source>Cannot convert identified value to byte</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành byte</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="330"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="331"/>
         <source>Cannot convert identified value to unsigned int</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số nguyên không dấu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="341"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="342"/>
         <source>Cannot convert identified value to unsigned long</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số nguyên dài không dấu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="352"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="353"/>
         <source>Cannot convert identified value to int</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="363"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="364"/>
         <source>Cannot convert identified value to long</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số nguyên dài</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="374"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="375"/>
         <source>Cannot convert identified value to float</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số thực</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="385"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="386"/>
         <source>Cannot convert identified value to double</source>
         <translation>Không thể chuyển đổi giá trị đã nhận diện thành số thập phân kiểu kép</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="393"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="394"/>
         <source>Unknown identified data type</source>
         <translation>Không rõ kiểu dữ liệu đã nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1119"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1120"/>
         <source>Band count and NoData items count differ</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1137"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1138"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1404"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1405"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2182"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>Trường khóa chính &apos;%1&apos; dùng để xem/truy vấn không độc nhất.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
         <source>Keys for view/query undefined.</source>
         <translation>Các khóa dùng để xem/truy vấn không được định nghĩa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
         <source>No key field for view/query given.</source>
         <translation>Trường khóa để xem/truy vấn không được cung cấp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
         <source>Unable to create temporary raster for tiles from %1</source>
         <translation>Không thể tạo raster tạm từ các lớp xếp liền thuộc %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="525"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
         <source>Unable to write tile to temporary raster from %1: %2</source>
         <translation>Không thể ghi lớp xếp liền vào raster tạm từ %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="463"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="548"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
         <source>Unable to create destination raster for tiles from %1: %2</source>
         <translation>Không thể tạo raster đích cho các lớp xếp liền từ %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="558"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
         <source>Unable to resample and transform destination raster for tiles from %1: %2</source>
         <translation>Không thể lấy mẫu lại và chuyển đối raster đích đối với các lớp xếp liền từ %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="477"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="568"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
         <source>Unable to write raster to block from %1: %2</source>
         <translation>Không thể ghi raster vào khối từ %1: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="748"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="749"/>
         <source>Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %n item(s)</source>
         <translation><numerusform>Không thể tìm thấy kích thước kiểu dữ liệu dùng cho băng %1: số hiệu băng là: %2 và ánh xạ kích thước kiểu dùng cho các băng chứa: %n (số) mục</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="825"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
         <source>Is Tiled</source>
         <translation>Được Xếp liền</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
         <source>Where Clause SQL</source>
         <translation>SQL Mệnh đề Where</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
         <source>Pixel Size</source>
         <translation>Kích thước điểm ảnh</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
         <source>Overviews</source>
         <translation>Các phép xem tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
         <source>Primary Keys SQL</source>
         <translation>SQL các Khóa Chính</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
         <source>Temporal Column</source>
         <translation>Cột tạm</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="832"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
         <source>Additional information</source>
         <translation>Thông tin bổ sung</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="876"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="877"/>
         <source>PostgreSQL WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1004"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>Lớp raster PostgreSQL không có khóa chính.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1098"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1381"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1099"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1382"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>Không thể tạo HTCTĐ từ EPSG: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1106"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1107"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>Không thể lấy số đếm băng từ giá trị: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1128"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1394"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1129"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1395"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>Kiểu dữ liệu không được hỗ trợ: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1172"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1319"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1173"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1320"/>
         <source>Cannot get extent from raster</source>
         <translation>Không thể lấy phạm vi từ raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1183"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1336"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1184"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi chiều rộng &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1190"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1344"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1191"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1345"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi chiều cao &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1198"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1352"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1353"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>Không thể chuyển đổi tỷ lệ X &apos;%1&apos; thành kiểu số kép</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1205"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1360"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1361"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>Không thể chuyển đổi tỷ lệ Y &apos;%1&apos; thành kiểu số kép</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1220"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster trong bảng %1:
@@ -143224,132 +143303,132 @@ SQL: %3</source>
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1225"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster cho %1, tiếp tục (có thể là rất chậm) phân tích dữ liệu raster: %2
 Vui lòng xem xét bổ sung các giới hạn raster bằng hàm PostGIS AddRasterConstraints.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1250"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1251"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>Phát hiện nhiều cột raster, dùng cái đầu tiên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1256"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1257"/>
         <source>An error occurred while fetching raster column</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp cột raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1325"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1326"/>
         <source>Cannot get metadata from raster</source>
         <translation>Không thể lấy đặc tả dữ liệu từ raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1416"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1417"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1428"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1429"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp thông tin trường raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1476"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1477"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>Ngày tháng mặc định không hợp lệ trong các năng lực thời gian raster dùng cho trường %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1498"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>Không có các miền thời gian được phát hiện trong các năng lực thời gian raster dùng cho trường %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1503"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>Miền thời gian không hợp lệ trong các năng lực thời gian raster dùng cho trường %1: %2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1508"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp các năng lực thời gian raster dùng cho trường: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1513"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>Chỉ mục trường không hợp lệ dùng cho các năng lực thời gian raster: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1718"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1803"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1804"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>Kiểu trường được định dạng không mong đợi &apos;%1&apos; dùng cho trường %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1834"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1855"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Trường %1 bị bỏ qua, lý do là kiểu không được hỗ trợ %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1861"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Tìm thấy trường lặp %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2066"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2067"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>Khóa chính là ctid - việc thay đổi các đối tượng hiện có bị bất hoạt (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2074"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>Bảng này không có cột nào thích hợp để dùng làm khóa. QGIS cần một khóa chính, một cột oid kiểu PostgreSQL hoặc một ctid dùng cho các bảng.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
         <source>Unexpected relation type.</source>
         <translation>Kiểu mối liên hệ không mong đợi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2112"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>Cột không trùng &apos;%1&apos; không có hạn chế KHÔNG RỖNG.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2146"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>Bỏ qua ứng viên khoá vì các giá trị RỖNG hoặc bảng có tính kế thừa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2270"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2271"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi hệ số tóm tắt &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2277"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2278"/>
         <source>Table or schema is empty</source>
         <translation>Bảng hoặc lược đồ rỗng</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2285"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2286"/>
         <source>Error fetching overviews information: %1</source>
         <translation>Lỗi tìm nạp thông tin tóm tắt: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2289"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2290"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>Không tìm thấy các thông tin tóm tắt, hiệu suất có thể bị ảnh hưởng đối với %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2331"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2332"/>
         <source>Data type is unknown</source>
         <translation>Kiểu dữ liệu không rõ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2414"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2441"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>Lỗi tìm nạp các thống kê cho %1: %2
@@ -151129,32 +151208,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterAttributeTableAddColumnDialog</name>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="38"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="42"/>
         <source>String</source>
         <translation>Chuỗi</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="39"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="43"/>
         <source>Integer</source>
         <translation>Số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="40"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="44"/>
         <source>Long Integer</source>
         <translation>Số nguyên Dài</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="41"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="45"/>
         <source>Double</source>
         <translation>Thập phân kiểu kép</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="125"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="129"/>
         <source>A field name cannot be blank.</source>
         <translation>Tên trường không được bỏ trống.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="134"/>
+        <location filename="../src/gui/raster/qgsrasterattributetableaddcolumndialog.cpp" line="138"/>
         <source>A field with this name already exists.</source>
         <translation>Một trường với tên này đã có.</translation>
     </message>
@@ -152944,11 +153023,11 @@ Nhắp chuột vào nút trợ giúp để lấy các tùy chọn tạo hợp l�
         <translation>Chọn màu</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1041"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1045"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1050"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1054"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1058"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1043"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1047"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1052"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1056"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1060"/>
         <source>Building Pyramids</source>
         <translation>Đang dựng các Tháp</translation>
     </message>
@@ -152964,28 +153043,28 @@ Nhắp chuột vào nút trợ giúp để lấy các tùy chọn tạo hợp l�
         <translation>Không có</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1041"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1043"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>Quyền ghi bị từ chối. Điều chỉnh lại quyền đối với tập tin và thử lại.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1045"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1047"/>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Tập tin không thể ghi được. Một số định dạng không hỗ trợ việc xem tổng quát thông qua pyramid. Xem tài liệu của GDAL nếu bạn không chắc.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1050"/>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1058"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1052"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1060"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Xây dựng vùng xem tổng quát cho tháp pyramid không được hỗ trợ đối với kiểu ảnh raster này. </translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1054"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1056"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>Xây dựng các phép xem dạng tháp nội tại không được hỗ trợ với các lớp raster có nén JPEG và thư viện libtiff hiện tại của bạn.</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1104"/>
+        <location filename="../src/gui/raster/qgsrasterlayerproperties.cpp" line="1106"/>
         <source>Select Transformation</source>
         <translation>Chọn Phép Chuyển đổi</translation>
     </message>
@@ -154230,67 +154309,65 @@ standard de&amp;viation ×</source>
         <translation>không xác định</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="365"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="296"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
         <source>Textfile</source>
         <translation>Tập tin văn bản</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="296"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="341"/>
         <source>Save Pixel Values as File</source>
         <translation>Lưu các Giá trị Điểm ảnh thành Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="320"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="308"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>Tập tin xuất có giá trị điểm ảnh trong suốt do QGIS tạo ra</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="735"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="728"/>
         <source>Red</source>
         <translation>Đỏ</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="736"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="729"/>
         <source>Green</source>
         <translation>Lục</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="737"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="730"/>
         <source>Blue</source>
         <translation>Lam</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="325"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="338"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="739"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="747"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="313"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="326"/>
         <source>Percent Transparent</source>
         <translation>Phần trăm trong suốt</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="338"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="326"/>
         <source>Value</source>
         <translation>Giá trị</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="365"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="453"/>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="458"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="441"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="446"/>
         <source>Load Pixel Values from File</source>
         <translation>Nạp các Giá trị Điểm ảnh từ Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="738"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="731"/>
         <source>Tolerance</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="353"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="341"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -154304,7 +154381,7 @@ standard de&amp;viation ×</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="453"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="441"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -154313,7 +154390,7 @@ standard de&amp;viation ×</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="458"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="446"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -154322,12 +154399,18 @@ standard de&amp;viation ×</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="745"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="732"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="743"/>
+        <source>Opacity [%]</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="741"/>
         <source>From</source>
         <translation>Từ</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="746"/>
+        <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="742"/>
         <source>To</source>
         <translation>Đến</translation>
     </message>
@@ -159003,120 +159086,120 @@ Lưu ý rằng tùy chọn này sẽ được áp dụng trên tất cả các �
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="626"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="826"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="842"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1066"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1207"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1304"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3926"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3982"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4026"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4055"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4780"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4948"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5029"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5082"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5094"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="631"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="831"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="847"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1071"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1212"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3931"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3987"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4031"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4060"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4785"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4953"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5034"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5087"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5099"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5141"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5161"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5181"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5820"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="626"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="631"/>
         <source>Error closing transaction for %1</source>
         <translation>Lỗi khi đang đóng chuyển giao đối với %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="826"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="831"/>
         <source>Retrieval of spatialite version failed: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="842"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="847"/>
         <source>Could not parse spatialite version string &apos;%1&apos;</source>
         <translation>Không thể phân tách chuỗi phiên bản spatialite &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="980"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1056"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1089"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4221"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="985"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1061"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1094"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4226"/>
         <source>Autogenerate</source>
         <translation>Tạo tự động</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1207"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1304"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3926"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3982"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4026"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4055"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4323"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4432"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4780"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4948"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5094"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1212"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3931"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3987"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4031"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4060"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4328"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4437"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4785"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4953"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5099"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5141"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5161"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5181"/>
         <source>SQLite error: %2
 SQL: %1</source>
         <translation>Lỗi SQLite: %2
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1097"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3794"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3857"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4323"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1102"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3799"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4328"/>
         <source>unknown cause</source>
         <translation>nguyên nhân không rõ</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3675"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3680"/>
         <source>SpatiaLite WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4642"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4647"/>
         <source>JSON value must be an array</source>
         <translation>Giá trị JSON phải là một mảng</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4649"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4654"/>
         <source>Field type is JSON but the value cannot be converted to JSON array: %1</source>
         <translation>Kiểu trường là JSON nhưng giá trị không thể được chuyển đổi thành mảng JSON: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5029"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5034"/>
         <source>SQLite composite keys are not supported in query layer, using the first component only. %1</source>
         <translation>Các khóa tổ hợp SQLite không được hỗ trợ trong lớp truy vấn, chỉ dùng thành phần đầu tiên. %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5082"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5087"/>
         <source>SQLite error while trying to inject ROWID: %2
 SQL: %1</source>
         <translation>Lỗi SQLite khi đang cố gắng đưa vào ROWID (nhận diện hàng): %2
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5766"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5771"/>
         <source>Spatialite: unexpected number of rows (%1) from aggregate query
 SQL: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5820"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>THẤT BẠI: Không tìm thấy trường %1. </translation>
     </message>
@@ -159165,9 +159248,13 @@ nhưng sẽ giúp tăng hiệu suất sau này.</translation>
         <translation>Lỗi khi đang cập nhật thống kê nội tại cho: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="156"/>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="523"/>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="531"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="436"/>
+        <source>Error when creating a layer. Check message log for more details.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="522"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="530"/>
         <source>@</source>
         <translation>@</translation>
     </message>
@@ -159268,6 +159355,7 @@ vui lòng cung cấp tên mới:</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="371"/>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="436"/>
         <source>SpatiaLite Error</source>
         <translation>Lỗi SpatiaLite</translation>
     </message>
@@ -168176,23 +168264,23 @@ Lỗi là: %2</translation>
         <translation>Tự động</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="748"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="776"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
         <source>Modified names</source>
         <translation>Các tên được thay đổi</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="863"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
         <source>Empty export name</source>
         <translation>tên xuất ra trống</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="863"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
         <source>Empty export name are not allowed.</source>
         <translation>Tên xuất ra bị bỏ trống không được chấp nhận.</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1191"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1193"/>
         <source>No symbology</source>
         <translation>Không có biểu tượng học</translation>
     </message>
@@ -168202,48 +168290,48 @@ Lỗi là: %2</translation>
         <translation>Lưu Lớp Thành</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="330"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="363"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="418"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="431"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
         <source>Save Vector Layer As</source>
         <translation>Lưu Lớp Véc-tơ thành...</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="376"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="378"/>
         <source>The layer already exists. Do you want to overwrite the whole file or overwrite the layer?</source>
         <translation>Lớp này đã có. Bạn muốn ghi đè toàn bộ tập tin hay ghi đè lớp này?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="364"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="451"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
         <source>Overwrite File</source>
         <translation>Ghi đè Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
         <source>Overwrite Layer</source>
         <translation>Ghi đè Lớp</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="382"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="418"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="384"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation>Tập tin đã có. Bạn có muốn ghi đè nó?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="387"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="389"/>
         <source>The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?</source>
         <translation>Lớp này đã có. Bạn muốn ghi đè toàn bộ tập tin, ghi đè lớp này hay nối các đối tượng vào lớp này?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
         <source>Append to Layer</source>
         <translation>Nối vào Lớp</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="394"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="396"/>
         <source>The layer already exists. Do you want to overwrite the whole file or append features to the layer?</source>
         <translation>Lớp này đã có. Bạn muốn ghi đè toàn bộ tập tin hay nối các đối tượng vào lớp này?</translation>
     </message>
@@ -168268,35 +168356,35 @@ Lỗi là: %2</translation>
         <translation>Bộ biểu tượng của Lớp Biểu tượng</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="330"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
         <source>The layer contains at least one 64-bit integer field, which, with the current settings, can only be exported as a Real field. It could be exported as a 64-bit integer field if the TARGET_ARCGIS_VERSION layer option is set to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
         <source>The layer contains at least one 64-bit integer field, which cannot be exported as such when using this output driver. 64-bit integer fields could be supported by selecting the %1 format and setting its TARGET_ARCGIS_VERSION layer option to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="347"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="480"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="482"/>
         <source>ESRI File Geodatabase</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="431"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
         <source>The existing layer has additional fields. Do you want to add the missing fields to the layer?</source>
         <translation>Lớp hiện tại có các trường bổ sung. Bạn có muốn thêm các trường còn thiếu vào lớp không?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="452"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
         <source>This file contains %1 layers that will be lost!
 </source>
         <translation>Tập tin này chứa %1 lớp và sẽ bị mất!
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
         <source>The following layers will be permanently lost:
 
 %1</source>
@@ -168305,38 +168393,38 @@ Lỗi là: %2</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="552"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="554"/>
         <source>new_layer</source>
         <translation>new_layer</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Name</source>
         <translation>Tên</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Type</source>
         <translation>Kiểu</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Replace with displayed values</source>
         <translation>Thay thế bằng các giá trị đã trình bày</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="560"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
         <source>Export name</source>
         <translation>Xuất tên</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="605"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="607"/>
         <source>Use %1</source>
         <translation>Dùng %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="748"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="776"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
         <source>Some names were modified and will be overridden. Do you want to continue?</source>
         <translation>Một số tên đã bị thay đổi và sẽ bị ghi đè. Bạn có muốn tiếp tục không?</translation>
     </message>
@@ -171141,89 +171229,89 @@ Phản hồi là:
 <context>
     <name>QgsWcsDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1675"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1687"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1726"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1734"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1750"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1780"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1798"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1808"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1818"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1833"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1857"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1895"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1908"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1677"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1689"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1728"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1736"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1752"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1782"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1800"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1810"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1820"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1835"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1839"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1859"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1897"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1910"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1914"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1675"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1726"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1677"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1728"/>
         <source>Network request update failed for authentication config</source>
         <translation>Cập nhật yêu cầu mạng thất bại dùng cho cấu hình chứng thực</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1687"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1734"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1895"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1689"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1736"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1897"/>
         <source>Network reply update failed for authentication config</source>
         <translation>Cập nhật trả lời mạng thất bại đối với cấu hình chứng thực</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1750"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1752"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL: %3)</source>
         <translation>Lỗi yêu cầu bản đồ (Trạng thái: %1; Mệnh đề Nguyên nhân: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1775"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1777"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
         <translation>Lỗi yêu cầu bản đồ:&lt;br&gt;Tiêu đề: %1&lt;br&gt;Lỗi: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1780"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1782"/>
         <source>Map request error (Status: %1; Response: %2; URL: %3)</source>
         <translation>Lỗi yêu cầu bản đồ (Trạng thái: %1; Phản hồi: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1833"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1835"/>
         <source>Map request error (Title: %1; Error: %2; URL: %3)</source>
         <translation>Lỗi yêu cầu bản đồ (Tiêu đề: %1; Lỗi: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1837"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1839"/>
         <source>Map request error (Response: %1; URL: %2)</source>
         <translation>Lỗi yêu cầu bản đồ (Phản hồi: %1; URL: %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1908"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1910"/>
         <source>Map request failed [error: %1 url: %2]</source>
         <translation>Yêu cầu bản đồ thất bại [lỗi: %1 url: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1798"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1800"/>
         <source>Cannot parse multipart response: %1</source>
         <translation>Không thể phân tách phản hồi nhiều phần: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1808"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1810"/>
         <source>Expected 2 parts, %1 received</source>
         <translation>Mong đợi 2 phần, nhận được %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1818"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1820"/>
         <source>More than 2 parts (%1) received</source>
         <translation>Có nhiều hơn hai phần (%1) đã nhận được</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1857"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1859"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
         <translation>Mã hóa chuyển đổi nội dung %1 không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1914"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Không ghi nhận quá 100 lỗi yêu cầu.</translation>
     </message>
@@ -171246,48 +171334,48 @@ Phản hồi là:
         <translation>Không thể tính phạm vi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="211"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="213"/>
         <source>Cannot get test dataset.</source>
         <translation>Không thể lấy bộ dữ liệu thử.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="589"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="591"/>
         <source>Received coverage has wrong extent %1 (expected %2)</source>
         <translation>Nhận được lớp phủ bị sai phạm vi %1 (mong đợi là %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="589"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="646"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="818"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="838"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="848"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1071"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1206"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="591"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="648"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="820"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="840"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="850"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1208"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="646"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="648"/>
         <source>Received coverage has wrong size %1 x %2 (expected %3 x %4)</source>
         <translation>Nhận được lớp phủ bị sai kích thước %1 x %2 (mong đợi là %3 x %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="818"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="820"/>
         <source>No data received</source>
         <translation>Không nhận được dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="838"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="840"/>
         <source>Cannot create memory file</source>
         <translation>Không thể tạo tập tin bộ nhớ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="974"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="976"/>
         <source>Dom Exception</source>
         <translation>Ngoại lệ Dom</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="975"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="977"/>
         <source>Could not get WCS Service Exception at %1 at line %2 column %3
 
 Response was:
@@ -171300,246 +171388,246 @@ Phản hồi là:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1012"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1014"/>
         <source>Service Exception</source>
         <translation>Ngoại lệ Dịch vụ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1021"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1023"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Yêu cầu có chứa một định dạng không được máy chủ cung cấp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1022"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
         <source>Request is for a Coverage not offered by the service instance.</source>
         <translation>Yêu cầu là về Lớp phủ không được cung cấp bởi phiên dịch vụ này.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1023"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1025"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Giá trị của tham số UpdateSequence (tùy chọn) trong GetCapabilities giống với giá trị hiện tại của số hiệu trình tự cập nhật metadata.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1026"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Giá trị của tham số UpdateSequence (tùy chọn) trong yêu cầu GetCapabilities lớn hơn giá trị hiện tại của số hiệu trình tự cập nhật lý lịch dữ liệu dịch vụ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1026"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1028"/>
         <source>Request does not include a parameter value, and the server instance did not declare a default value for that dimension.</source>
         <translation>Yêu cầu không chứa một giá trị tham số, và phiên bản máy chủ không khai báo giá trị mặc định cho kích thước đó.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1027"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1029"/>
         <source>Request contains an invalid parameter value.</source>
         <translation>Yêu cầu chứa giá trị tham số không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1029"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
         <source>No other exceptionCode specified by this service and server applies to this exception.</source>
         <translation>Không có mã ngoại lệ nào được chỉ định bởi dịch vụ này và máy chủ áp dụng vào ngoại lệ này.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1030"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1032"/>
         <source>Operation request contains an output CRS that can not be used within the output format.</source>
         <translation>Yêu cầu lệnh chứa một HTĐ đầu ra không thể dùng được với định dạng đầu ra.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1033"/>
         <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
         <translation>Yêu cầu lệnh chỉ định &quot;lưu trữ&quot; kết quả, nhưng không có đủ dung lượng lưu trữ để thực hiện.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1057"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1059"/>
         <source>(No error code was reported)</source>
         <translation>(Không có mã lỗi nào được báo cáo)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1065"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1067"/>
         <source>(Unknown error code)</source>
         <translation>(Mã lỗi không rõ)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1068"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1070"/>
         <source>The WCS vendor also reported: </source>
         <translation>&apos;Nhà cung cấp&apos; WCS cũng báo cáo: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
         <source>composed error message &apos;%1&apos;.</source>
         <translation>thông báo lỗi tổng hợp &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1206"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1208"/>
         <source>Cannot verify coverage full extent: %1</source>
         <translation>Không thể kiểm chứng phạm vi toàn bộ của lớp phủ: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1238"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1325"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1240"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1327"/>
         <source>Property</source>
         <translation>Đặc điểm</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1241"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1328"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1243"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1330"/>
         <source>Value</source>
         <translation>Giá trị</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1244"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1246"/>
         <source>Name (identifier)</source>
         <translation>Tên (số hiệu nhận diện)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1245"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1332"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1247"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1334"/>
         <source>Title</source>
         <translation>Tiêu đề</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1246"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1333"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1248"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1335"/>
         <source>Abstract</source>
         <translation>Tóm tắt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1252"/>
         <source>Metadata Type</source>
         <translation>Kiểu Đặc tả dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1251"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1253"/>
         <source>Metadata Link</source>
         <translation>Liên kết Đặc tả dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1256"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1258"/>
         <source>Fixed Width</source>
         <translation>Chiều ngang cố định</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1257"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1259"/>
         <source>Fixed Height</source>
         <translation>Chiều đứng cố định</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1258"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1260"/>
         <source>Native CRS</source>
         <translation>HTĐ gốc</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1259"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1261"/>
         <source>Native Bounding Box</source>
         <translation>Ô bao riêng</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1262"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1264"/>
         <source>WGS 84 Bounding Box</source>
         <translation>Ô bao theo WGS 84</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1270"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1275"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1272"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1277"/>
         <source>Available in CRS</source>
         <translation>Dùng được theo HTĐ</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1275"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1285"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1277"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1287"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation><numerusform>(và thêm %n)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1280"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1285"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1282"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1287"/>
         <source>Available in format</source>
         <translation>Dùng được theo định dạng</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1299"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1301"/>
         <source>WCS Info</source>
         <translation>Thông tin WCS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1302"/>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1355"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1304"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1357"/>
         <source>Coverages</source>
         <translation>Các lớp phủ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1308"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1310"/>
         <source>Cache Stats</source>
         <translation>Thống kê bộ nhớ đệm</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1316"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1318"/>
         <source>Server Properties</source>
         <translation>Các đặc điểm của máy chủ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1336"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1338"/>
         <source>Keywords</source>
         <translation>Các từ khóa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1337"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1339"/>
         <source>Online Resource</source>
         <translation>Tài nguyên trực tuyến</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1338"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1340"/>
         <source>Contact Person</source>
         <translation>Người liên hệ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1342"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1344"/>
         <source>Fees</source>
         <translation>Lệ phí</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1343"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1345"/>
         <source>Access Constraints</source>
         <translation>Các ràng buộc truy cập</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1344"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1346"/>
         <source>Image Formats</source>
         <translation>Các định dạng ảnh</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1345"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
         <source>GetCapabilitiesUrl</source>
         <translation>Url lấy khả năng</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1349"/>
         <source>Get Coverage Url</source>
         <translation>Url lấy lớp phủ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1347"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1349"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(được thông báo nhưng bỏ qua)&lt;/font&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1371"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1373"/>
         <source>And %n more coverage(s)</source>
         <translation><numerusform>Và thêm %1 (số) báo cáo tổng quan</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1397"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1399"/>
         <source>Format not supported</source>
         <translation>Định dạng không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1506"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1508"/>
         <source>Read data error</source>
         <translation>Lỗi đọc dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1532"/>
+        <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1534"/>
         <source>RasterIO error: </source>
         <translation>Lỗi RasterIO: </translation>
     </message>
@@ -174116,6 +174204,21 @@ Mệnh đề nguyên nhân: %2</translation>
 {0}</source>
         <translation>Đường dẫn chỉ định không tồn tại:
 {0}</translation>
+    </message>
+    <message>
+        <source>Specified path is not writable:
+{0}</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Specified path does not exist nor its parent:
+{0}</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Specified path does not exist and parent is not writable:
+{0}</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

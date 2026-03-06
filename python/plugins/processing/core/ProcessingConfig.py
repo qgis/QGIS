@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import tempfile
+from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (
@@ -421,15 +422,53 @@ class Setting:
                         )
 
                 validator = checkInt
-            elif self.valuetype in [self.FILE, self.FOLDER]:
+            elif self.valuetype == self.FILE:
 
-                def checkFileOrFolder(v):
-                    if v and not os.path.exists(v):
-                        raise ValueError(
-                            self.tr("Specified path does not exist:\n{0}").format(v)
-                        )
+                def checkFile(v):
+                    if v:
+                        if os.path.exists(v):
+                            if not os.access(v, os.R_OK | os.W_OK):
+                                raise ValueError(
+                                    self.tr(
+                                        "Specified path is not writable:\n{0}"
+                                    ).format(v)
+                                )
+                        else:
+                            raise ValueError(
+                                self.tr("Specified path does not exist:\n{0}").format(v)
+                            )
 
-                validator = checkFileOrFolder
+                validator = checkFile
+            elif self.valuetype == self.FOLDER:
+
+                def checkFolder(v):
+                    if v:
+                        if os.path.exists(v):
+                            if not os.access(v, os.R_OK | os.W_OK | os.X_OK):
+                                raise ValueError(
+                                    self.tr(
+                                        "Specified path is not writable:\n{0}"
+                                    ).format(v)
+                                )
+                        else:
+                            # folder does not exist, at least check if we will be able to create it later
+                            parentFolder = Path(v).parent
+                            if not os.path.exists(parentFolder):
+                                raise ValueError(
+                                    self.tr(
+                                        "Specified path does not exist nor its parent:\n{0}"
+                                    ).format(v)
+                                )
+                            elif not os.access(
+                                parentFolder, os.R_OK | os.W_OK | os.X_OK
+                            ):
+                                raise ValueError(
+                                    self.tr(
+                                        "Specified path does not exist and parent is not writable:\n{0}"
+                                    ).format(v)
+                                )
+
+                validator = checkFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
 
                 def checkMultipleFolders(v):

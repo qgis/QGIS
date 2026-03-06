@@ -89,7 +89,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       continue;
     }
 
-    //this var is not useful right now except for the copy constructor
+    // mRasterLayers owns the layer lifetime, freed in the destructor
     mRasterLayers << rProvidedLayer;
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
@@ -126,6 +126,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   for ( const auto &it : other.mRasterLayers )
   {
     QgsRasterLayer *rcProvidedLayer = it->clone();
+    mRasterLayers << rcProvidedLayer;
     for ( int j = 0; j < rcProvidedLayer->bandCount(); ++j )
     {
       QgsRasterCalculatorEntry entry;

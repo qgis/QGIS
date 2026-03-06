@@ -108,11 +108,19 @@ QAbstractSpinBox::up-arrow
     height: 1.2em;
 }
 
+QAbstractSpinBox::up-arrow:disabled {
+    image: url(@theme_path/icons/arrow-up-disabled.svg);
+}
+
 QAbstractSpinBox::down-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
     width: 0.8em;
     height: 1.2em;
+}
+
+QAbstractSpinBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
 }
 
 QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover {
@@ -138,6 +146,7 @@ QAbstractSpinBox::drop-down:hover {
 }
 QAbstractSpinBox::drop-down:disabled {
     background-color: transparent !important;
+    border-color: @itemdarkbackground;
 }
 /* ==================================================================================== */
 /* CALENDAR                                                                             */
@@ -444,6 +453,10 @@ QComboBox::down-arrow
     image: url(@theme_path/icons/arrow-down.svg);
     width: 0.8em;
     height: 1.2em;
+}
+
+QComboBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
 }
 
 QComboBox:item {
@@ -822,7 +835,7 @@ QCheckBox::indicator:checked {
 }
 
 QCheckBox::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -988,7 +1001,7 @@ QAbstractItemView::indicator:checked, QListView::indicator:checked {
 QAbstractItemView::indicator:checked:disabled, QListView::indicator:checked:disabled {
     border: 1px solid @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
     background-color: @toggleoff;
@@ -1060,7 +1073,7 @@ QTreeView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
 QTreeView::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -1163,7 +1176,7 @@ QTableView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
 QTableView::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -1222,9 +1235,17 @@ QHeaderView::down-arrow {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
+QHeaderView::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
 QHeaderView::up-arrow {
     width: 1.2em;
     image: url(@theme_path/icons/arrow-up.svg);
+}
+
+QHeaderView::up-arrow:disabled {
+    image: url(@theme_path/icons/arrow-up-disabled.svg);
 }
 
 /* ==================================================================================== */

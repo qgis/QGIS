@@ -162,6 +162,7 @@ QgsFeatureList QgsRefactorFieldsAlgorithm::processFeature( const QgsFeature &fea
       if ( it->isValid() )
         it->prepare( &mExpressionContext );
     }
+    mExpressionsPrepared = true;
   }
 
   QgsAttributes attributes;

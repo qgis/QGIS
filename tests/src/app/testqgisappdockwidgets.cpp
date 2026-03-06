@@ -20,6 +20,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDockWidget>
+#include <QTest>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -56,6 +57,7 @@ class TestQgisAppDockWidgets : public QObject
 
   private:
     QgisApp *mQgisApp = nullptr;
+    static constexpr int ADD_DOCK_WAIT_TIMEOUT = 100;
 };
 
 TestQgisAppDockWidgets::TestQgisAppDockWidgets() = default;
@@ -102,6 +104,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetEmptyArea()
 
   QDockWidget *dw = new QDockWidget();
   mQgisApp->addTabifiedDockWidget( area, dw );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw->isVisible() );
 
   int count = 0;
@@ -123,6 +126,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetEmptyArea()
 
   QgsDockWidget *dw = new QgsDockWidget();
   mQgisApp->addTabifiedDockWidget( area, dw );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw->isUserVisible() );
   QVERIFY( dw->isVisible() );
 
@@ -146,12 +150,14 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
   const QString dockName = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw = new QDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
@@ -201,12 +207,14 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
   const QString dockName = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw = new QDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw, QStringList(), true );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
@@ -256,12 +264,14 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
   const QString dockName = QStringLiteral( "QgsDockWidget 1" );
   QgsDockWidget *dw = new QgsDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
@@ -311,12 +321,15 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
   const QString dockName = QStringLiteral( "QgsDockWidget 1" );
   QgsDockWidget *dw = new QgsDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw, QStringList(), true );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
+
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
@@ -369,10 +382,12 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );
   mQgisApp->addDockWidget( area, mLayerOrderDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerOrderDock->isVisible() );
 
   // Check that they are not tabified
@@ -383,6 +398,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw1->isVisible() );
 
   // Which one is tabified now?
@@ -393,6 +409,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   const QString dockName2 = QStringLiteral( "QDockWidget 2" );
   QDockWidget *dw2 = new QDockWidget( dockName2 );
   mQgisApp->addTabifiedDockWidget( area, dw2, QStringList() << objectName2 );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw2->isVisible() );
 
   // Check tabified docks
@@ -460,10 +477,12 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );
   mQgisApp->addDockWidget( area, mLayerOrderDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerOrderDock->isVisible() );
 
   // Check that they are not tabified
@@ -474,6 +493,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1, true );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw1->isVisible() );
 
   // Which one is tabified now?
@@ -484,6 +504,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   const QString dockName2 = QStringLiteral( "QDockWidget 2" );
   QDockWidget *dw2 = new QDockWidget( dockName2 );
   mQgisApp->addTabifiedDockWidget( area, dw2, QStringList() << objectName2, true );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw2->isVisible() );
 
   // Check tabified docks
@@ -558,11 +579,13 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   mLayerTreeDock->hide(); // This one will be hidden
   QVERIFY( !mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );
   mQgisApp->addDockWidget( area, mLayerOrderDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerOrderDock->isVisible() );
 
   // Check that they are not tabified
@@ -573,6 +596,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
   const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 << objectName2 );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw1->isVisible() );
 
   // Which one is tabified now?
@@ -630,11 +654,13 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   mLayerTreeDock->hide(); // This one will be hidden
   QVERIFY( !mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );
   mQgisApp->addDockWidget( area, mLayerOrderDock );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( mLayerOrderDock->isVisible() );
 
   // Check that they are not tabified
@@ -645,6 +671,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()
   const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 << objectName2, true );
+  QTest::qWait( ADD_DOCK_WAIT_TIMEOUT );
   QVERIFY( dw1->isVisible() );
 
   // Which one is tabified now?

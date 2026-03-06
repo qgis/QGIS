@@ -813,6 +813,12 @@ void TestQgsDataSourceUri::checkRemovePassword()
 
   const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
   QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+
+  const QString uri3 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
+  QCOMPARE( uri3, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
+
+  const QString uri4 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ), true );
+  QCOMPARE( uri4, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
 }
 
 void TestQgsDataSourceUri::checkUnicodeUri()

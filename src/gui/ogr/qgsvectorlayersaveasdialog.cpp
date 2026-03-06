@@ -322,9 +322,10 @@ void QgsVectorLayerSaveAsDialog::accept()
     }
     if ( targetAll )
     {
-      for ( int i = 0; i < mLayer->fields().size(); ++i )
+      const QgsAttributeList attributesSelected = selectedAttributes();
+      for ( int i = 0; i < attributesSelected.size(); ++i )
       {
-        QgsField fld = mLayer->fields().at( i );
+        QgsField fld = mLayer->fields().at( attributesSelected.at( i ) );
         if ( fld.type() == QMetaType::Type::LongLong )
         {
           if ( QMessageBox::question( this, tr( "Save Vector Layer As" ), tr( "The layer contains at least one 64-bit integer field, which, with the current settings, can only be exported as a Real field. It could be exported as a 64-bit integer field if the TARGET_ARCGIS_VERSION layer option is set to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?" ) ) != QMessageBox::Yes )
@@ -339,9 +340,10 @@ void QgsVectorLayerSaveAsDialog::accept()
   else if ( format() == QLatin1String( "FileGDB" ) )
   {
     // The FileGDB driver based on the ESRI SDK doesn't support 64-bit integers
-    for ( int i = 0; i < mLayer->fields().size(); ++i )
+    const QgsAttributeList attributesSelected = selectedAttributes();
+    for ( int i = 0; i < attributesSelected.size(); ++i )
     {
-      QgsField fld = mLayer->fields().at( i );
+      QgsField fld = mLayer->fields().at( attributesSelected.at( i ) );
       if ( fld.type() == QMetaType::Type::LongLong )
       {
         if ( QMessageBox::question( this, tr( "Save Vector Layer As" ), tr( "The layer contains at least one 64-bit integer field, which cannot be exported as such when using this output driver. 64-bit integer fields could be supported by selecting the %1 format and setting its TARGET_ARCGIS_VERSION layer option to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?" ).arg( tr( "ESRI File Geodatabase" ) ) ) != QMessageBox::Yes )

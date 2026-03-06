@@ -41,6 +41,7 @@ class TestQgsLayoutExporter : public QgsTest
     void cleanup();
     void testHandleLayeredExport();
     void testHandleLayeredExportCustomGroups();
+    void testHandleLayeredExportMapTheme();
 };
 
 void TestQgsLayoutExporter::initTestCase()
@@ -511,6 +512,143 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
   qDeleteAll( items );
 }
+
+void TestQgsLayoutExporter::testHandleLayeredExportMapTheme()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.renderContext().setExportThemes( { "Theme One", "Theme Two" } );
+  QgsLayoutExporter exporter( &l );
+
+  QList<unsigned int> layerIds;
+  QStringList layerNames;
+  QStringList mapLayerIds;
+  QStringList groupNames;
+  QStringList mapThemes;
+  QgsLayout *layout = &l;
+  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, &groupNames, &mapThemes, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
+    layerIds << layerId;
+    layerNames << layerDetail.name;
+    mapLayerIds << layerDetail.mapLayerId;
+    groupNames << layerDetail.groupName;
+    mapThemes << layerDetail.mapTheme;
+    QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
+    QPainter p( &im );
+    layout->render( &p );
+    p.end();
+
+    return QgsLayoutExporter::Success;
+  };
+  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString {
+    return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+  };
+
+  QList<QGraphicsItem *> items;
+  QStringList expectedGroupNames;
+  QgsLayoutExporter::ExportResult res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QVERIFY( layerIds.isEmpty() );
+  QVERIFY( layerNames.isEmpty() );
+  QVERIFY( groupNames.isEmpty() );
+  QVERIFY( mapLayerIds.isEmpty() );
+  QVERIFY( mapThemes.isEmpty() );
+
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  items << page;
+  expectedGroupNames << QString();
+  res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) );
+  QCOMPARE( groupNames, expectedGroupNames );
+  QCOMPARE( mapLayerIds, QStringList() << QString() );
+  QCOMPARE( mapThemes, QStringList() << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  groupNames.clear();
+  mapLayerIds.clear();
+  mapThemes.clear();
+
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  items << label;
+  expectedGroupNames << QString();
+  res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( groupNames, expectedGroupNames );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
+  QCOMPARE( mapThemes, QStringList() << QString() << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  groupNames.clear();
+  mapLayerIds.clear();
+  mapThemes.clear();
+
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  items << shape;
+  res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) << QStringLiteral( "Label, Shape" ) );
+  QCOMPARE( groupNames, expectedGroupNames );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
+  QCOMPARE( mapThemes, QStringList() << QString() << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  groupNames.clear();
+  mapLayerIds.clear();
+  mapThemes.clear();
+
+  // with an item which has sublayers
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+
+  p.addMapLayer( linesLayer );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( false );
+  map->setBackgroundEnabled( false );
+  map->setCrs( linesLayer->crs() );
+  map->zoomToExtent( linesLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << linesLayer );
+
+  items << map;
+  expectedGroupNames << QString() << QString();
+  res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Map 1 (Theme One): lines" ) << QStringLiteral( "Map 1 (Theme Two): lines" ) );
+  QCOMPARE( groupNames, expectedGroupNames );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << linesLayer->id() << linesLayer->id() );
+  QCOMPARE( mapThemes, QStringList() << QString() << QString() << QStringLiteral( "Theme One" ) << QStringLiteral( "Theme Two" ) );
+  layerIds.clear();
+  layerNames.clear();
+  groupNames.clear();
+  mapLayerIds.clear();
+  mapThemes.clear();
+
+  QgsLayoutItemLabel *label4 = new QgsLayoutItemLabel( &l );
+  items << label4;
+  label4->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "more labels" ) );
+  expectedGroupNames << QStringLiteral( "more labels" );
+  res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Map 1 (Theme One): lines" ) << QStringLiteral( "Map 1 (Theme Two): lines" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( groupNames, expectedGroupNames );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << linesLayer->id() << linesLayer->id() << QString() );
+  QCOMPARE( mapThemes, QStringList() << QString() << QString() << QStringLiteral( "Theme One" ) << QStringLiteral( "Theme Two" ) << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  groupNames.clear();
+  mapLayerIds.clear();
+  mapThemes.clear();
+
+  qDeleteAll( items );
+}
+
 
 QGSTEST_MAIN( TestQgsLayoutExporter )
 #include "testqgslayoutexporter.moc"

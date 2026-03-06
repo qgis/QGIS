@@ -57,6 +57,10 @@
 #include "qgsdockwidget.h"
 #include "qgssettingsregistrycore.h"
 
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefaultDocked = new QgsSettingsEntryBool( QStringLiteral( "attribute-table-default-docked" ), QgsSettingsTree::sTreeAttributeTable, false, QStringLiteral( "If true, attribute tables will be docked by default." ) );
+
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
+
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -284,10 +288,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [=] { QgisApp::instance()->saveEdits(); } );
 
-  QgsDockableWidgetHelper::OpeningMode openingMode = QgsDockableWidgetHelper::OpeningMode::RespectSetting;
+  QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, true, Qt::BottomDockWidgetArea );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
     close();
@@ -412,7 +416,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mMainView->setView( static_cast<QgsDualView::ViewMode>( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
 
-    if ( QgsSettingsRegistryCore::settingsAutosizeAttributeTable->value() )
+    if ( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() )
     {
       mMainView->tableView()->resizeColumnsToContents();
     }

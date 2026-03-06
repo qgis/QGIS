@@ -18,6 +18,7 @@
 #include "qgsrasterattributetable.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -29,6 +30,9 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-attribute-tables" ) );
+  } );
 
   connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [=]( const QString & ) {
     updateButtons();
@@ -95,7 +99,7 @@ void QgsLoadRasterAttributeTableDialog::accept()
     {
       if ( !rat->isValid( &errorMessage ) )
       {
-        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
+        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ).arg( errorMessage ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
         {
           case QMessageBox::Cancel:
             return;

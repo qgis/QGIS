@@ -1,3 +1,774 @@
+Jürgen E. Fischer <jef@norbit.de>	2026-03-06
+
+    translation update for 3.44.8 from transifex
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-03
+
+    Extend timeout for processing executable tests
+
+    We're right at the current 60s limit for those tests, so they randomly fail
+
+    (cherry picked from commit 98af976c6e609b280f9c2ed3c2497aae9c951bda)
+
+Valentin Buira <valentin.buira@gmail.com>	2026-02-25
+
+    Fix refactor fields in the modeler: Load from layer did not work
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-03-05
+
+    Fix string literals in QgsAttributeTableDialog
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-03-05
+
+    Update qgsattributetabledialog.cpp
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-03-05
+
+    move to app
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-03-05
+
+    missing include
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-03-04
+
+    migrate setting
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-03-04
+
+    attribute table: defaults to non-docked on first use
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-02-24
+
+    respect dock/dialog setting when opening the attribute table
+
+    take 2 for #62416
+
+Benoit Ducarouge <benoit.ducarouge@oslandia.com>	2026-02-26
+
+    fix(dbmanager): fix using session_role parameter en dbmanager plugin
+
+Merge: b27540bfe53 abedf8561b9
+Alexander Bruy <alexander.bruy@gmail.com>	2026-03-01
+
+    Merge pull request #65135 from qgis/backport-65115-to-release-3_44
+
+    [Backport release-3_44] Fix broken value range when calling deprecated setComponentValue int variant
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Fix clang-tidy warning
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Correct test values
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Fix broken value range when calling deprecated setComponentValue int variant
+
+    We need to scale to 0-1 to match the range expected by the setComponentValueF method
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Improve QColor __repr__ to show full precision when required
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Actually run QgsColorWidget test
+
+Merge: cbcc7a2a33d 3f80eca620c
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-27
+
+    Merge pull request #65111 from nyalldawson/backport_65091
+
+    Update selective masking test masks for the billionth time (backport)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Update selective masking test masks for the billionth time
+
+    For some reason these change with every single minor qt version bump!
+
+    (cherry-picked from 87d4d35b1c63f33e731523a984bed44fcd3f56b1)
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-19
+
+    fix(GeoPdfExport): Avoid map theme contaminate non-map-them items
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-25
+
+    Fix test on newer Qt versions
+
+    We need to run the event loop for a couple of cycles in order
+    for the tab raising to actually take effect now
+
+    (cherry picked from commit f4e983b8fa84bc9e43dd6a3ca0b9e5a90173dd84)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-23
+
+    do not prepare already prepared expressions in the refactor fields
+    algorithm
+
+Merge: a7ab227545a 67f76350120
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-24
+
+    Merge pull request #65049 from qgis/backport-65023-to-release-3_44
+
+    [Backport release-3_44] Set selected section to the first section on focus in QgsDateTimeEdit
+
+Till Frankenbach <till.frankenbach@gmail.com>	2026-02-20
+
+    Set selected section to the first section on focus in QgsDateTimeEdit
+
+Merge: ec0571f1fdd 8a5e56ad8fe
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-20
+
+    Merge pull request #65020 from qgis/backport-64988-to-release-3_44
+
+    [Backport release-3_44] Use default classification classes when there are no statistics
+
+Merge: 107de2483af abae64dd649
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-20
+
+    Merge pull request #65018 from qgis/backport-64989-to-release-3_44
+
+    [Backport release-3_44] [pyqt5_to_pyqt6] Fix enum error message on dry-run
+
+Merge: ef40e67dde1 72fe6d65471
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-20
+
+    Merge pull request #65015 from jgrocha/backport-64631-to-release-3_44
+
+    Backport 64631 to release 3 44
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-20
+
+    Apply suggestions from code review
+
+Stefanos Natsis <uclaros@gmail.com>	2026-02-18
+
+    Use default classification classes when there are no statistics
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-18
+
+    fix(pyqt5_to_pyqt6): Fix enum error message on dry-run
+
+    Use the same method whether we are in dry-run mode or not to properly
+    retrieve correct enum name so we print an appropriate message.
+
+    Fix #64462
+
+qgis-bot <bot@qgis.org>	2026-02-20
+
+    auto sipify 🍺
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-19
+
+    QStringliteral
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-19
+
+    Add missing include
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-19
+
+    [backport][pg][raster] Fix stats calculation when extent is specified
+
+    Manual backport of #64953
+    Fixes #64917
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-17
+
+    add test
+
+    (cherry picked from commit b1677f36b7f48c0b147b250c142babd08763f476)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-17
+
+    use expression context from the algorithm context in the Geometry by
+    Expression algorithm (fix #54869)
+
+    (cherry picked from commit bdd5450e5d5b2f4179cfaa1a67729736072a004c)
+
+Jorge Gustavo Rocha <jgr@geomaster.pt>	2026-01-20
+
+    QgsDataSourceUri::removePassword unit tests
+
+Jorge Gustavo Rocha <jgr@geomaster.pt>	2026-01-20
+
+    Fix #64630 password is partially shown
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-02-17
+
+    Add help buttons to database field domain and relationship dialogs
+
+    (cherry picked from commit cefff6f723886f39c65b3c5b1c76bf26ecc7e301)
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-02-17
+
+    Add help buttons to the annotations layer properties dialog
+
+    (cherry picked from commit 59e5a5f050f2dfc9cee1b7e209a4e74665e4b8d2)
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-02-17
+
+    Add help buttons to elevation profile dialogs
+
+    (cherry picked from commit b368f8b73ff2a608fd330f2b86b7c82066bf2976)
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-01-26
+
+    Add help buttons to raster attributes table dialogs
+
+    (cherry picked from commit be3e584805cc03c50855534b1d958f444a1fc6ac)
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-02-18
+
+    correctly respect the dock widget option
+
+    partial fix for qgis#62416
+
+    Co-authored-by: Denis Rouzaud
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-17
+
+    fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-17
+
+    Apply suggestions from code review
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-15
+
+    support for curved geometries in the network analysis library (fix #64720)
+
+    Curved geometries will be segmentized when performing analysis
+
+David Signer <david@opengis.ch>	2026-01-26
+
+    Avoid the scientific notation (exponential form) for large values in search filter expressions. This fixes #64682
+
+Malik Blesius <78353871+mblesius@users.noreply.github.com>	2026-02-12
+
+    [themes] Fix border color for disabled datetime edits
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-16
+
+    make variable const
+
+    (cherry picked from commit 0bf8bb46aa1797c81be69c8f37f1212e5c834ed7)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-16
+
+    add test for constructing spatialite layer with invalid subset string
+
+    (cherry picked from commit 15c0a232ac5fca8dc44d04f517f5ce4be0d18db7)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-15
+
+    fix restoring last used spatialite connection
+
+    (cherry picked from commit 35622ba2dbdac2ef73bcdc0e8981a178fc2bbc38)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-15
+
+    notify user when spatialite layer can not be created
+
+    (cherry picked from commit c82e05034f1b6a73cade75509674ea19ff5f1c3e)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-15
+
+    do not ignore success from getTableSummary() when updating extent and
+    feature count (refs #64282)
+
+    (cherry picked from commit ba9d5b8504057d049249c6cc47628e866c204531)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-15
+
+    fix check for Z/M geometries in the spatialite provider
+
+    (cherry picked from commit d8d7a4aafe9271368f444fc26e13eb47f51bf04e)
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-13
+
+    fix(pyqt5_to_pyqt6): take care about DEDENT when parsing tokens
+
+    DEDENT position could be the same as another instruction and some fix
+    could match twice
+
+    Fix #64185
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-13
+
+    fix(pyqt5_to_pqt6): Use same import sorting as isort
+
+    So we avoid pre-commit breaking the tests
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-05
+
+    handle empty error message in the concave hull by feature algorithm
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-05
+
+    Apply suggestion from @nyalldawson
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-02
+
+    warn user if concave hull can not be computed (fix #63868)
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-13
+
+    fix(pyqt5_to_pyqt6): Correct Qt whole module import
+
+    Fix #63711
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-12
+
+    Fix test and actual issue
+
+    Rewrite the test with a working failing case
+    Also apply the patch to fix the issue
+
+    Thanks to @enzococca for the test case
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-11
+
+    [spatialite] Add test for issue #64742
+
+    I cannot reproduce the issue with this test
+    but it's probably good to have it anyway.
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-09
+
+    restore paste functionality in Python Console (fix #64070)
+
+    Use existing custom logic to correctly handle multiline text
+
+Merge: 862f1ab5689 1dcc4e1d429
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-13
+
+    Merge pull request #64928 from qgis/backport-63526-to-release-3_44
+
+    [Backport release-3_44] [PyQt5ToQt6] return valid error code for unfixed errors
+
+Merge: a1f004737d2 bb40ec0f768
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-13
+
+    Merge pull request #64929 from qgis/backport-63565-to-release-3_44
+
+    [Backport release-3_44] [PyQt5_to_PyQt6] Fix all imports coming from Qt module
+
+Merge: 3b6f52ab76b 4d512857032
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-13
+
+    Merge pull request #64927 from qgis/backport-64908-to-release-3_44
+
+    [Backport release-3_44] Fix export to File Geodatabase when there is no 64bit int field selected (Fix #64905)
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-15
+
+    fix(qt5_to_qt6): fix all imports coming from Qt module
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-15
+
+    fix(qt5Toqt6): rename script to mach convention
+
+    and clean up test dir at the end of the test script
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-13
+
+    fix(qt5_toqt6): return valid error code for unfixed errors
+
+    Fixes #62559
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-15
+
+    fix(qt5Toqt6): rename script to mach convention
+
+    and clean up test dir at the end of the test script
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-13
+
+    fix(qt5_toqt6): return valid error code for unfixed errors
+
+    Fixes #62559
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-02-11
+
+    Fix export to File Geodatabase when there is no 64bit int field selected
+
+Merge: 6071db8c0c1 675fab5160a
+Even Rouault <even.rouault@spatialys.com>	2026-02-12
+
+    Merge pull request #64909 from qgis/backport-64854-to-release-3_44
+
+    [Backport release-3_44] prevent crash in the Download vector tiles algorithm when tiles can not be downloaded (fix #64791)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-07
+
+    prevent crash in the Download vector tiles algorithm when tiles can not
+    be downloaded (fix #64791)
+
+Merge: 9e9cdc4fc0a e2510ca38d0
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-10
+
+    Merge pull request #64881 from qgis/backport-64851-to-release-3_44
+
+    [Backport release-3_44] [ui][themes] Improve night mapping icons
+
+Malik Blesius <78353871+mblesius@users.noreply.github.com>	2026-02-06
+
+    [ui][themes] fix and improve icons for disabled checkbox and radiobox
+
+Malik Blesius <78353871+mblesius@users.noreply.github.com>	2026-02-06
+
+    [ui][themes] fix and improve icons for disabled arrow indicators
+
+Merge: e4e9b01fb1f 6938e96991c
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-09
+
+    Merge pull request #64874 from qgis/backport-64848-to-release-3_44
+
+    [Backport release-3_44] return success in QgsPluginInstaller.installFromZipFile
+
+Merge: 35e983802c2 8d1f8478bef
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-09
+
+    Merge pull request #64867 from alexbruy/backport-64823-to-release-3_44
+
+    [Backport release-3_44] fix layout of the preview area in the form Text Widget (fix #63961)
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-02-06
+
+    return success in QgsPluginInstaller.installFromZipFile
+
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-09
+
+    fix layout of the preview area in the form Text Widget (fix #63961)
+
+    As preview is a QLabel we should add it directly to the scroll area
+
+Jürgen E. Fischer <jef@norbit.de>	2026-02-08
+
+    fix processing menu translations (fixes #61291; backport #64858)
+
+Merge: 7ff58c7817f 5296fff8a16
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-08
+
+    Merge pull request #64856 from qgis/backport-64828-to-release-3_44
+
+    [Backport release-3_44] Arrow symbol: fix DD with NULL data
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-05
+
+    Arrow symbol: fix DD with NULL data
+
+    Followup #64680
+
+Merge: 8fb3a10cc15 f766d836b40
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-05
+
+    Merge pull request #64810 from qgis/backport-64793-to-release-3_44
+
+    [Backport release-3_44] Fix virtual raster provider copy constructor memory leak
+
+Merge: c4cd2c05e73 1968a096826
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-05
+
+    Merge pull request #64815 from qgis/backport-64795-to-release-3_44
+
+    [Backport release-3_44] [gdal] Consider mask bands as a normal alpha band
+
+Alessandro Pasotti <elpaso@itopen.it>	2026-02-03
+
+    [gdal] Consider mask bands as a normal alpha band
+
+    Fix #64642
+
+Geojim <james.r.mcguiness@gmail.com>	2026-02-04
+
+    Update mRasterLayers comment to reflect ownership semantics
+
+Geojim <james.r.mcguiness@gmail.com>	2026-02-03
+
+    Fix virtual raster provider copy constructor memory leak
+
+    Cloned QgsRasterLayer objects in the copy constructor were never added
+    to mRasterLayers, so the destructor's qDeleteAll(mRasterLayers) never
+    freed them. Every clone() call (triggered by the rendering pipeline on
+    each pan/zoom) leaked all source raster layers.
+
+    Fixes #64559
+
+Merge: ea0fff223c4 bf79957e8b0
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-03
+
+    Merge pull request #64754 from nyalldawson/backport_64736
+
+    Fix strict curved label anchoring when placement is on line (manual backport)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-02-01
+
+    [processing] Avoid crashing on app exit when the model designer dialog is open
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-03
+
+    Qt5 test mask
+
+Merge: b593a9ddfc8 5df25e68059
+Alexander Bruy <alexander.bruy@gmail.com>	2026-02-02
+
+    Merge pull request #64773 from agiudiceandrea/backport-64764-to-release-3_44
+
+    [Backport release-3_44] [layout] Fix singleFile custom property default value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-02
+
+    Update test masks:
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-02-02
+
+    [layout] Fix singleFile custom property default value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-02
+
+    Fix build
+
+Merge: b75e40be8bd 6b1baef87af
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-31
+
+    Merge pull request #64753 from nyalldawson/backport_64738
+
+    [mssql] Automatically retrieve geometry SRID if not specified in provider uri (manual backport)
+
+Merge: 5905aa580ce e3bc2a6e7e8
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-30
+
+    Merge pull request #64750 from qgis/backport-64735-to-release-3_44
+
+    [Backport release-3_44] Automatically retrieve geometry column name if not specified in provider uri
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-01-29
+
+    Clarify that equality is about geometries in the overlay_equals function
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-30
+
+    Fix qt5 build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    Fix strict curved label anchoring when placement is on line
+
+    (cherry picked from commit aad45c1333a008b23650c9598096ddf65b2cc691)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    [mssql][api] Automatically retrieve geometry srid if not specified in provider uri
+
+    Allows creation of mssql layer URIs when the geometry column srid is
+    not known in advance (similar to what's possible for e.g. postgres
+    provider)
+
+    (cherry picked from commit 14c11311a25c0feab38732c874bd026e920414cd)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    Rename method for clarity
+
+    (cherry picked from commit 426e68139afbd2509e7753c4b3f3c27a75758bb1)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    [mssql] Consistently use -1 for unknown srid
+
+    (cherry picked from commit 048d35a7c0d145c7598a19ee9b019809a56afc32)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    [mssql] Improve debug error when attempting to query geometry_columns table
+
+    It's expected that table may not exist, so adapt SQL and error accordingly
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-30
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-01-29
+
+    [oracle][api] Automatically retrieve geometry column name if not specified in provider uri
+
+    Allows creation of oracle layer URIs when the geometry column is
+    not known in advance (similar to what's possible for e.g. postgres
+    provider)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-01-28
+
+    [ui][rasters] Fix broken handling of transparency widget's cell widgets preventing editing
+
+qgis-bot <bot@qgis.org>	2026-01-27
+
+    auto sipify 🍺
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-01-27
+
+    allow to pass headers in QgsNetworkContentFetcher (#64698)
+
+    * allow to pass headers in QgsNetworkContentFetcher
+
+    * fix rebase
+
+    * Remove duplicate QFile include in header file
+
+    Removed duplicate QFile include.
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-01-26
+
+    [mvt] add missing multiplier operator (#64694)
+
+Merge: 62456fa27d4 a877b07a856
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-24
+
+    Merge pull request #64678 from tudorbarascu/backport-64656
+
+    backport "Fix data-defined custom dash pattern not using default for NULL values"
+
+Merge: 9b814272b66 fa065272c99
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-24
+
+    Merge pull request #64672 from qgis/backport-64660-to-release-3_44
+
+    [Backport release-3_44] [RAT] Missing error message in warning dialog
+
+Merge: 5e10f940ef7 b123f26216a
+Loïc Bartoletti <loic.bartoletti@oslandia.com>	2026-01-24
+
+    Merge pull request #64669 from qgis/backport-64641-to-release-3_44
+
+    [Backport release-3_44] [espressions] Fix overlay_equals description
+
+Tudor Bărăscu <tudor.barascu@qtibia.ro>	2026-01-22
+
+    Fix data-defined custom dash pattern not using default for NULL values
+
+    Use valueAsString() with the encoded default parameter so that when
+    the expression returns NULL, the default custom dash pattern is used
+    instead of being skipped.
+
+Harrissou Sant-anna <delazj@gmail.com>	2026-01-22
+
+    Missing error message in warning dialog
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-01-21
+
+    [espressions] Fix overlay_equals description
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-14
+
+    do not enable spatial filter by default in the Add WCS Layer dialog and
+    use canvas extent instead of the CRS bounds as a current extent
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-14
+
+    use requested extent when determining GDAL data type and number
+    of bands in the WCS provider (fix #50432, fix #62528)
+
+    If spatial filter is enabled, fetching a small piece of raster to get
+    GDAL data type and number of bands can fail if there is no overlap
+    between spatial filter and requested piece.
+
+Tudor Bărăscu <tudor.barascu@qtibia.ro>	2026-01-19
+
+    Fix data-defined cap style not using default for NULL values
+
+    Similar to the fix for stroke style and join style, we now use
+    valueAsString() with the encoded default parameter.
+
+Tudor Bărăscu <tudor.barascu@qtibia.ro>	2026-01-19
+
+    Fix data-defined join style not using default for NULL values
+
+    Same problem as in the fix for stroke style in commit 4c045bc2029,
+    the join style property is using value() + a null check
+    without falling back to the default style.
+
+    This fixes it with the same logic, using a valueAsString()
+    containing fallback to the default parameter.
+
+Merge: d734901efc7 c293a0b08ef
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-19
+
+    Merge pull request #64595 from qgis/backport-64588-to-release-3_44
+
+    [Backport release-3_44] Fix data-defined stroke style not using default for NULL values
+
+Merge: 60ac6ae089b e65a96784fb
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-19
+
+    Merge pull request #64593 from qgis/backport-64562-to-release-3_44
+
+    [Backport release-3_44] [mvt] Support gzipped tiles in QgsVectorTileMVTDecoder
+
+Tudor Bărăscu <tudor.barascu@qtibia.ro>	2026-01-18
+
+    Fix data-defined stroke style not using default for NULL values
+
+    For a line layer, If I use data defined override based on some fields
+    for "stroke width" or "color", if the corresponding columns/fields are NULL
+    then the default "stroke width"/"color" get taken into account.
+
+    This currently works different for StrokeStyle as it doesn't have a fallback
+    to the default StrokeStyle and it messes up things by inheriting the style from
+    first/other? feature instead of using the default.
+
+    StrokeWidth handles this correctly by using valueAsDouble with
+    a default parameter:
+
+      valueAsDouble( Property::StrokeWidth, ..., mWidth )
+                                                 ^^^^^^ default
+
+    StrokeStyle was using value() + a null check without falling back to the default
+
+      QVariant exprVal = value( Property::StrokeStyle, ... );
+      if ( !isNull( exprVal ) )
+        pen.setStyle( decode( exprVal ) );
+
+    Now uses valueAsString() with the encoded default, like in StrokeWidth.
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-01-19
+
+    Update debug message to use QStringLiteral
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-01-16
+
+    fix narrowing conversion warning
+
+Denis Rouzaud <denis.rouzaud@opengis.ch>	2026-01-16
+
+    Support gzipped tiles in QgsVectorTileMVTDecoder
+
+Merge: ea262bc5ed8 7eee0dff671
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-18
+
+    Merge pull request #64582 from qgis/backport-64458-to-release-3_44
+
+    [Backport release-3_44] fix(ProcessingConfig): do not complain if output directory does not exist
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2026-01-06
+
+    fix(ProcessingConfig): do not complain if output directory does not exist
+
+    If output directory exists, we will check if it has the correct permissions.
+    If output directory does not exist, we will check if the parent exists and if the parent
+    has the correct permissions.
+
+    fix bug 64428
+
+Jürgen E. Fischer <jef@norbit.de>	2026-01-16
+
+    Release of 3.44.7
+
 Jürgen E. Fischer <jef@norbit.de>	2026-01-16
 
     translation update for 3.44.7 from transifex
