@@ -45,7 +45,8 @@ class TestQgsGeospatialPdfExport : public QgsTest
 
   public:
     TestQgsGeospatialPdfExport()
-      : QgsTest( u"Geospatial PDF Export Testss"_s ) {}
+      : QgsTest( u"Geospatial PDF Export Testss"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -239,12 +240,9 @@ void TestQgsGeospatialPdfExport::testComposition()
   QDomNodeList ifLayerOnList = doc.elementsByTagName( u"IfLayerOn"_s );
   QCOMPARE( ifLayerOnList.count(), 3 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 1
-                                                                                                                                                                              : 2;
-  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 1
-                                                                                                                                                                              : 2;
-  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 1
-                                                                                                                                                                              : 2;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 1 : 2;
+  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 1 : 2;
+  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 1 : 2;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( u"layerId"_s ), u"layer1"_s );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( u"Vector"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), layer1Path );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( u"Vector"_s ).at( 0 ).toElement().attribute( u"layer"_s ), layer1Layer );
@@ -847,15 +845,9 @@ void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
   QDomNodeList contentList = doc.documentElement().firstChildElement( u"Page"_s ).firstChildElement( u"Content"_s ).childNodes();
   QCOMPARE( contentList.count(), 3 );
 
-  int layer1Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group1Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group1Id ? 1
-                                                                                          : 2;
-  int layer2Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group2Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group2Id ? 1
-                                                                                          : 2;
-  int layer3Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group3Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group3Id ? 1
-                                                                                          : 2;
+  int layer1Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group1Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group1Id ? 1 : 2;
+  int layer2Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group2Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group2Id ? 1 : 2;
+  int layer3Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group3Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group3Id ? 1 : 2;
   QCOMPARE( contentList.at( layer1Idx ).toElement().attribute( u"layerId"_s ), group1Id );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().attribute( u"layerId"_s ), u"my group_layer1"_s );
