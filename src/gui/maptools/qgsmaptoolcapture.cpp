@@ -209,8 +209,7 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 bool QgsMapToolCapture::tracingEnabled()
 {
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
-  return tracer && ( !tracer->actionEnableTracing() || tracer->actionEnableTracing()->isChecked() )
-         && ( !tracer->actionEnableSnapping() || tracer->actionEnableSnapping()->isChecked() );
+  return tracer && ( !tracer->actionEnableTracing() || tracer->actionEnableTracing()->isChecked() ) && ( !tracer->actionEnableSnapping() || tracer->actionEnableSnapping()->isChecked() );
 }
 
 
@@ -387,10 +386,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::CircularGeometries ) )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
-      const QgsGeometry curved = linear.convertToCurves(
-        QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value(),
-        QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value()
-      );
+      const QgsGeometry curved
+        = linear.convertToCurves( QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value(), QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value() );
       if ( QgsWkbTypes::flatType( curved.wkbType() ) != Qgis::WkbType::CompoundCurve )
       {
         mCaptureCurve.clear();
@@ -550,8 +547,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   // Poly-Bézier mode: handle press to add anchor and start drag
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
-       && ( mode() == CaptureLine || mode() == CapturePolygon ) )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
     if ( e->button() == Qt::LeftButton )
     {
@@ -1156,8 +1152,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
   // Handle Poly-Bézier mode: delete the last anchor with its handles
   // This must be checked before the standard size() check since Poly-Bézier
   // doesn't use mCaptureCurve during capture
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
-       && mBezierData && mBezierData->anchorCount() > 0 )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier && mBezierData && mBezierData->anchorCount() > 0 )
   {
     mBezierData->deleteAnchor( mBezierData->anchorCount() - 1 );
     if ( mBezierMarker )
@@ -1465,8 +1460,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0
-       || !( capabilities() & ValidateGeometries ) )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0 || !( capabilities() & ValidateGeometries ) )
     return;
 
   if ( mValidator )
