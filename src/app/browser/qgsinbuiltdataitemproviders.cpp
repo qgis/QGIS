@@ -2012,7 +2012,6 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           {
             ( void ) ex;
           }
-          conn.reset();
 
           if ( selectedItems.count() == 1 )
           {
@@ -2025,10 +2024,11 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               }
               return;
             }
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), tableName, targetSchema, context, true );
+            bool success = moveTableToSchema( conn.get(), item->parent()->name(), tableName, targetSchema, context, true );
             if ( !success )
               return;
+
+            conn.reset();
 
             // refresh parent item (schema)
             if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
@@ -2072,8 +2072,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
             for ( const QgsDataItem *selectedItem : selectedItems )
             {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
+              bool success = moveTableToSchema( conn.get(), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
 
               if ( success )
               {
@@ -2083,6 +2082,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                   schemasToRefresh.insert( selectedItem->parent()->name() );
               }
             }
+            conn.reset();
 
             if ( !qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
               return;
@@ -2267,7 +2267,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 }
 
 bool QgsDatabaseItemGuiProvider::moveTableToSchema(
-  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser
+  QgsAbstractDatabaseProviderConnection *conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser
 )
 {
   QString errCause;
