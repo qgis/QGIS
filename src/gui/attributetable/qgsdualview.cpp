@@ -1018,22 +1018,44 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
 
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
-  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
+  int fieldIndex = -1;
+  if ( col != -1 )
+    fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
   const Qgis::FieldOrigin fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
 
   mHorizontalHeaderMenu->addSeparator();
+
+  const QgsVectorLayer *vl = mFilterModel->layer();
+  const QgsVectorDataProvider *dataProvider = vl->dataProvider();
+  const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
+  const bool layerIsReadOnly { vl->readOnly() };
+  const bool canChangeAttributeValue = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+
   bool fieldCalculatorEnabled = false;
 
-  if ( fieldOrigin == Qgis::FieldOrigin::Provider || fieldOrigin == Qgis::FieldOrigin::Edit )
-    fieldCalculatorEnabled = true;
-
-  if ( fieldOrigin == Qgis::FieldOrigin::Join )
+  switch ( fieldOrigin )
   {
-    int srcFieldIndex;
-    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
-
-    if ( info && info->isEditable() )
-      fieldCalculatorEnabled = true;
+    case Qgis::FieldOrigin::Provider:
+    case Qgis::FieldOrigin::Edit:
+      fieldCalculatorEnabled = canChangeAttributeValue;
+      break;
+    case Qgis::FieldOrigin::Join:
+    {
+      int srcFieldIndex;
+      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+      const QgsVectorLayer *joinedLayer = info->joinLayer();
+      const Qgis::VectorProviderCapabilities joinedCaps = dataProvider->capabilities();
+      const bool joinedLayerIsReadOnly { joinedLayer->readOnly() };
+      const bool joinedLayerCanChangeAttributeValue = !joinedLayerIsReadOnly && ( joinedCaps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+      if ( info && info->isEditable() )
+        fieldCalculatorEnabled = joinedLayerCanChangeAttributeValue;
+      break;
+    }
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Expression:
+      break;
+    default:
+      break;
   }
 
   QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );

@@ -137,15 +137,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent, con
     mUpdateExistingGroupBox->setCheckable( false );
   }
 
-  if ( fieldIndex != -1 )
-  {
-    mNewFieldGroupBox->setEnabled( false );
-    mUpdateExistingGroupBox->setEnabled( true );
-  }
-
   if ( mUpdateExistingGroupBox->isEnabled() )
   {
-    mUpdateExistingGroupBox->setChecked( !mNewFieldGroupBox->isEnabled() );
+    mUpdateExistingGroupBox->setChecked( !mNewFieldGroupBox->isEnabled() || ( mUpdateExistingGroupBox->isEnabled() && fieldIndex != -1 ) );
   }
   else
   {
