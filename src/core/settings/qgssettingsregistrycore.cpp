@@ -155,6 +155,9 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
   = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
 
+const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
+  Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -189,6 +192,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 4.2
   settingsMeasurePlanimetric->copyValueFromKey( u"measure/planimetric"_s, true );
+  settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
+  settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );
