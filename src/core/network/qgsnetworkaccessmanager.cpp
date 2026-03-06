@@ -397,6 +397,18 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   bool needsCachePendingRequestCleanup = false;
   if ( QgsNetworkDiskCache *diskCache = qobject_cast< QgsNetworkDiskCache * >( cache() ) )
   {
+    if ( modifiedRequest.attribute( QNetworkRequest::CacheLoadControlAttribute ) != QNetworkRequest::AlwaysNetwork )
+    {
+      // if we are going to attempt to retrieve this request from cache, first do some checks
+      // on the version in the cache
+      if ( diskCache->hasInvalidMatchForRequest( modifiedRequest ) )
+      {
+        // can't use the previously cached response for this request, so explicitly block that
+        modifiedRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+        modifiedRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+      }
+    }
+
     if ( modifiedRequest.attribute( QNetworkRequest::CacheSaveControlAttribute, true ).toBool() )
     {
       if ( diskCache->hasPendingRequestForUrl( modifiedRequest.url() ) )
