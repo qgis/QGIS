@@ -88,6 +88,21 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
      */
     void removePendingRequestForUrl( const QUrl &url ) const;
 
+    /**
+     * Returns TRUE if the cache has a matching but invalid entry for a \a request.
+     *
+     * Since QNetworkDiskCache entirely basis cache storage on URLs alone, we may
+     * get situations where there's a match for a URL in the cache but it should
+     * NOT be used for the specified \a request (e.g. when the previous response
+     * had a non-matching "Vary" attribute).
+     *
+     * If this method returns FALSE, then the request should be amended to
+     * prevent potential false-positive retrieval from cache.
+     *
+     * This method is thread-safe.
+     */
+    bool hasInvalidMatchForRequest( const QNetworkRequest &request );
+
     //! \see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
 
