@@ -91,10 +91,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
 #endif
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsSimpleLineMaterialSettings &other ) const
-    {
-      return mAmbient == other.mAmbient && dataDefinedProperties() == other.dataDefinedProperties();
-    }
+    bool operator==( const QgsSimpleLineMaterialSettings &other ) const { return mAmbient == other.mAmbient && dataDefinedProperties() == other.dataDefinedProperties(); }
 
   private:
     QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
