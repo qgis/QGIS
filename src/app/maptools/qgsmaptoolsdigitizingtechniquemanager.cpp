@@ -345,7 +345,7 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
     cit.value()->setChecked( cit.value()->isEnabled() && actualCurrentTechnique == cit.key() );
   }
 
-  if ( enabled && actualCurrentTechnique == Qgis::CaptureTechnique::NurbsCurve )
+  if ( enabled && supportedTechniques.contains( Qgis::CaptureTechnique::NurbsCurve ) && actualCurrentTechnique == Qgis::CaptureTechnique::NurbsCurve )
     createNurbsDegreeWidget();
   else
     deleteNurbsDegreeWidget();
