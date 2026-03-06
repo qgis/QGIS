@@ -633,7 +633,7 @@ QString QgsFileUtils::uniquePath( const QString &path )
   return uniquePath;
 }
 
-bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination )
+bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination, CopyFlags flags )
 {
   QDir sourceDir( source );
   if ( !sourceDir.exists() )
@@ -653,7 +653,13 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   }
 
   bool copiedAll = true;
-  const QStringList files = sourceDir.entryList( QDir::Files );
+
+  QDir::Filters fileFilters = QDir::Files;
+  if ( flags & CopyFlag::NoSymLinks )
+  {
+    fileFilters |= QDir::NoSymLinks;
+  }
+  const QStringList files = sourceDir.entryList( fileFilters );
   for ( const QString &file : files )
   {
     const QString srcFileName = sourceDir.filePath( file );
@@ -664,12 +670,18 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
       copiedAll = false;
     }
   }
-  const QStringList dirs = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
+
+  QDir::Filters dirFilters = QDir::AllDirs | QDir::NoDotAndDotDot;
+  if ( flags & CopyFlag::NoSymLinks )
+  {
+    dirFilters |= QDir::NoSymLinks;
+  }
+  const QStringList dirs = sourceDir.entryList( dirFilters );
   for ( const QString &dir : dirs )
   {
     const QString srcDirName = sourceDir.filePath( dir );
     const QString destDirName = destDir.filePath( dir );
-    if ( !copyDirectory( srcDirName, destDirName ) )
+    if ( !copyDirectory( srcDirName, destDirName, flags ) )
     {
       copiedAll = false;
     }
