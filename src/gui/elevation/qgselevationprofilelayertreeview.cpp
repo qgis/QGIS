@@ -226,9 +226,10 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
       {
         if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
         {
-          QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
-                                                                                           : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
-                                                                                                                                               : layer->name();
+          QString title = !layer->metadata().title().isEmpty()                ? layer->metadata().title()
+                          : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
+                          : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
+                                                                              : layer->name();
 
           title = "<b>" + title.toHtmlEscaped() + "</b>";
 
