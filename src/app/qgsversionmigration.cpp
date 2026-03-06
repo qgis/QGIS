@@ -377,7 +377,7 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   newProfileDir.remove( u"symbology-style.db"_s );
 
   QgsError errors;
-  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath );
+  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath, QgsFileUtils::CopyFlag::NoSymLinks );
 
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
   newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );

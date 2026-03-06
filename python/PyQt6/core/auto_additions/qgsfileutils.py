@@ -1,4 +1,18 @@
 # The following has been generated automatically from src/core/qgsfileutils.h
+# monkey patching scoped based enum
+QgsFileUtils.CopyFlag.NoSymLinks.__doc__ = "If present, indicates that symbolic links should be skipped during the copy"
+QgsFileUtils.CopyFlag.__doc__ = """Flags controlling behavior of file copy operations.
+
+.. versionadded:: 4.0.1
+
+* ``NoSymLinks``: If present, indicates that symbolic links should be skipped during the copy
+
+"""
+# --
+QgsFileUtils.CopyFlag.baseClass = QgsFileUtils
+QgsFileUtils.CopyFlags = lambda flags=0: QgsFileUtils.CopyFlag(flags)
+QgsFileUtils.CopyFlags.baseClass = QgsFileUtils
+CopyFlags = QgsFileUtils  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsFileUtils.representFileSize = staticmethod(QgsFileUtils.representFileSize)
     QgsFileUtils.extensionsFromFilter = staticmethod(QgsFileUtils.extensionsFromFilter)
