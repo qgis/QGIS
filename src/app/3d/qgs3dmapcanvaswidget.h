@@ -39,7 +39,7 @@ class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
-class Qgs3DMapToolMeasureLine;
+class Qgs3DMapToolMeasure;
 class Qgs3DMapToolPointCloudChangeAttribute;
 class Qgs3DNavigationWidget;
 class Qgs3DDebugWidget;
@@ -91,7 +91,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
+    Qgs3DMapToolMeasure *measurementLineTool() { return mMapToolMeasureLine; }
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
@@ -117,6 +117,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void toggleAnimations();
     void cameraControl();
     void identify();
+    void measureArea();
     void measureLine();
     void changePointCloudAttributeByPaintbrush();
     void changePointCloudAttributeByPolygon();
@@ -169,7 +170,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QLabel *mLabelNavigationSpeed = nullptr;
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
-    Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolMeasure *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolMeasure *mMapToolMeasureArea = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
     QgsGeometry mCrossSectionLine;
     QObjectUniquePtr<QgsRubberBand> mCrossSectionRubberBand;

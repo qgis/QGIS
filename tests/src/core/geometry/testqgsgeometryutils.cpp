@@ -103,6 +103,7 @@ class TestQgsGeometryUtils : public QObject
     void testCheckWeaklyFor3DPlane();
     void testLineByTwoAngles();
     void testInterpolateZ();
+    void testIsGeometryCoplanar();
 };
 
 
@@ -2201,6 +2202,62 @@ void TestQgsGeometryUtils::testInterpolateZ()
 
   // collinear, should produce nan
   QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 1, 1 ), std::numeric_limits<double>::quiet_NaN() );
+}
+
+void TestQgsGeometryUtils::testIsGeometryCoplanar()
+{
+  // nullptr: false
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( nullptr ) );
+
+  // QgsPoint: false
+  const QgsPoint pt( 2, 2 );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &pt ) );
+
+  // QgsGeometryCollection: false
+  QgsGeometryCollection collection;
+  QgsPolygon polygon3D;
+  polygon3D.fromWkt( u"POLYGON Z ((0 0 30, 15 0 0, 10 3.333333333 0, 0 10 0, 0 0 30))"_s );
+  QVERIFY( !polygon3D.isEmpty() );
+  collection.addGeometry( polygon3D.clone() );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &collection ) );
+
+  // 2D geometry: false
+  QgsPolygon polygon2D;
+  polygon2D.fromWkt( u"POLYGON ((5 10, 5 15, 10 15, 10 10, 5 10))"_s );
+  QVERIFY( !polygon2D.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &polygon2D ) );
+
+  // Line with less than 3 points: false
+  QgsLineString line3D;
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &line3D ) );
+  line3D.addVertex( QgsPoint( 0, 0, 0 ) );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &line3D ) );
+  line3D.addVertex( QgsPoint( 2, 0, 1 ) );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &line3D ) );
+
+  // line with 3 points: true
+  line3D.addVertex( QgsPoint( 2, 2, 2 ) );
+  QVERIFY( QgsGeometryUtils::isGeometryCoplanar( &line3D ) );
+
+  // 3D polygon: true
+  QVERIFY( QgsGeometryUtils::isGeometryCoplanar( &polygon3D ) );
+
+  // 3D Polygon with interior ring: true
+  QgsPolygon polygon3DInterior;
+  polygon3DInterior.fromWkt( u"POLYGON Z ((0 0 2, 20 0 2, 20 20 2, 0 20 2, 0 0 2),(5 5 2, 15 5 2, 15 15 2, 5 15 2, 5 5 2))"_s );
+  QVERIFY( QgsGeometryUtils::isGeometryCoplanar( &polygon3DInterior ) );
+
+  // 3D Polygon: false
+  QgsPolygon polygon3DFalse;
+  polygon3DFalse.fromWkt( u"POLYGON Z ((0 0 0, 10 0 0, 0 10 0, 10 10 5, 0 0 0))"_s );
+  QVERIFY( !polygon3DFalse.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &polygon3DFalse ) );
+
+  // 3D Polygon with interior ring: false
+  QgsPolygon polygon3DInteriorFalse;
+  polygon3DInteriorFalse.fromWkt( u"POLYGON Z ((0 0 0, 20 0 0, 20 20 0, 0 20 0, 0 0 0),(5 5 5, 15 5 5, 15 15 5, 5 15 5, 5 5 5))"_s );
+  QVERIFY( !polygon3DInteriorFalse.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::isGeometryCoplanar( &polygon3DInteriorFalse ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
