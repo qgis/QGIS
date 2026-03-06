@@ -38,7 +38,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.equals( g2 );
+    return g1.isExactlyEqual( g2 );
 }
 
 namespace QTest
@@ -274,7 +274,9 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo3 );
 
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line << mLayerTopo1 << mLayerTopo2 );
+  mCanvas->setLayers(
+    QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line << mLayerTopo1 << mLayerTopo2
+  );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -703,7 +705,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   utils.mouseClick( 2, 5.1, Qt::RightButton );
 
   const QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
-  QVERIFY( !mLayerSelfSnapLine->getFeature( newFid1 ).geometry().equals( QgsGeometry::fromWkt( targetWkt ) ) );
+  QVERIFY( !mLayerSelfSnapLine->getFeature( newFid1 ).geometry().isExactlyEqual( QgsGeometry::fromWkt( targetWkt ) ) );
   mLayerSelfSnapLine->undoStack()->undo();
 
   // With self snapping, endpoint will snap to start point
@@ -832,7 +834,8 @@ void TestQgsMapToolAddFeatureLine::testStream()
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875),(7.59375 6.296875, 7.5 5),(7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625))";
+  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875),(7.59375 6.296875, 7.5 "
+                      "5),(7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625))";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
@@ -966,7 +969,8 @@ void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59375, 7.203125 6.59375, 7.5 6.90625, 7.59375 6.296875),(7.59375 6.296875, 7.5 5),(7.5 5, 7.296875 5.09375, 7.09375 4.90625))";
+  const QString wkt
+    = "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59375, 7.203125 6.59375, 7.5 6.90625, 7.59375 6.296875),(7.59375 6.296875, 7.5 5),(7.5 5, 7.296875 5.09375, 7.09375 4.90625))";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
