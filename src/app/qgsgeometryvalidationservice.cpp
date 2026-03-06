@@ -16,6 +16,7 @@ email                : matthias@opengis.ch
 
 #include "qgsgeometryvalidationservice.h"
 
+#include "qgisapp.h"
 #include "qgsanalysis.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckfactory.h"
@@ -479,7 +480,10 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
         showMessage( tr( "Geometry errors have been found." ) );
       }
     }
-    if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
+    if ( allErrors.empty()
+         && QgisApp::instance()->tryCommitChanges( layer )
+         && mLayerChecks[layer].singleFeatureCheckErrors.empty()
+         && mLayerChecks[layer].commitPending )
     {
       mBypassChecks = true;
       layer->commitChanges( stopEditing );

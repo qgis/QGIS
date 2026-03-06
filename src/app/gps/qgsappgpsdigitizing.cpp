@@ -338,6 +338,11 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
+            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+            {
+              break;
+            }
+
             // should canvas->isDrawing() be checked?
             if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
             {
@@ -379,6 +384,11 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
+            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+            {
+              break;
+            }
+
             if ( !vlayer->commitChanges() )
             {
               QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ), tr( "Could not commit changes to layer %1\n\nErrors: %2\n" ).arg( vlayer->name(), vlayer->commitErrors().join( "\n  "_L1 ) ) );
