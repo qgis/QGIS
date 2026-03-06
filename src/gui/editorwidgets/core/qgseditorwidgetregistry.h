@@ -117,9 +117,9 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \returns A new widget wrapper
      */
-    QgsEditorWidgetWrapper *create(
-      QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent SIP_TRANSFERTHIS, const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext()
-    ) SIP_FACTORY;
+    // clang-format off
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent SIP_TRANSFERTHIS, const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
+    // clang-format on
 
     QgsSearchWidgetWrapper *createSearchWidget(
       const QString &widgetId,
