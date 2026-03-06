@@ -52,7 +52,16 @@ class TestQgs3DExporter : public QgsTest
     void test3DSceneExporterFlatTerrain();
 
   private:
-    void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
+    void do3DSceneExport(
+      const QString &testName,
+      int expectedObjectCount,
+      int expectedFeatureCount,
+      int maxFaceCount,
+      Qgs3DMapScene *scene,
+      QgsVectorLayer *layerPoly,
+      QgsOffscreen3DEngine *engine,
+      QgsTerrainEntity *terrainEntity = nullptr
+    );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
 };
@@ -88,7 +97,9 @@ void TestQgs3DExporter::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
+void TestQgs3DExporter::do3DSceneExport(
+  const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity
+)
 {
   // 3d renderer must be replaced to have the tiling updated
   QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
