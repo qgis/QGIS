@@ -168,3 +168,14 @@ void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeome
 
   dataBuffer->setData( data );
 }
+
+QColor QgsSimpleLineMaterialSettings::averageColor() const
+{
+  return ambient();
+}
+
+
+void QgsSimpleLineMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setAmbient( baseColor );
+}

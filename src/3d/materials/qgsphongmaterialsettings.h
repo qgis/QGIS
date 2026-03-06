@@ -151,6 +151,55 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     void setSpecularCoefficient( double coefficient ) { mSpecularCoefficient = coefficient; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the ambient, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see ambient()
+     * \see diffuse()
+     * \see specular()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const override;
+
+    /**
+     * Decomposes a base color into Phong material components.
+     *
+     * Sets ambient, diffuse, and specular colors from the input color.
+     * This also sets the shininess parameter based on the metallic value.
+     *
+     * \param baseColor The color to decompose
+     * \param metallic Controls how "metal-like" a material appears. Value between 0 and 1
+     *
+     * \see setAmbient()
+     * \see setDiffuse()
+     * \see setSpecular()
+     * \see setShininess()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor, float metallic );
+
+    /**
+     * Decomposes a base color into Phong material components.
+     *
+     * Sets ambient, diffuse, and specular colors from the input color.
+     * This is equivalent to calling setColorsFromBase with the metallic parameter equal to 0:
+     * setColorsFromBase(baseColor, 0).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setAmbient()
+     * \see setDiffuse()
+     * \see setSpecular()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
@@ -166,7 +215,15 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     // TODO c++20 - replace with = default
     bool operator==( const QgsPhongMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient && mDiffuse == other.mDiffuse && mOpacity == other.mOpacity && mSpecular == other.mSpecular && mShininess == other.mShininess && mAmbientCoefficient == other.mAmbientCoefficient && mDiffuseCoefficient == other.mDiffuseCoefficient && mSpecularCoefficient == other.mSpecularCoefficient && dataDefinedProperties() == other.dataDefinedProperties();
+      return mAmbient == other.mAmbient
+             && mDiffuse == other.mDiffuse
+             && mOpacity == other.mOpacity
+             && mSpecular == other.mSpecular
+             && mShininess == other.mShininess
+             && mAmbientCoefficient == other.mAmbientCoefficient
+             && mDiffuseCoefficient == other.mDiffuseCoefficient
+             && mSpecularCoefficient == other.mSpecularCoefficient
+             && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:

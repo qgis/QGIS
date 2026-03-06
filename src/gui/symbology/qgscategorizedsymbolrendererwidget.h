@@ -19,6 +19,7 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsproxystyle.h"
 #include "qgsrendererwidget.h"
+#include "qgstemplatedcategorizedrendererwidget_p.h"
 
 #include <QStandardItem>
 #include <QStyledItemDelegate>
@@ -34,47 +35,31 @@ class QgsSymbolSelectorWidget;
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
+class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QgsTemplatedCategorizedRendererModel<QgsCategorizedSymbolRenderer>
 {
     Q_OBJECT
   public:
     QgsCategorizedSymbolRendererModel( QObject *parent = nullptr, QScreen *screen = nullptr );
+
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-
-    void setRenderer( QgsCategorizedSymbolRenderer *renderer );
-
-    void addCategory( const QgsRendererCategory &cat );
-    QgsRendererCategory category( const QModelIndex &index );
-    void deleteRows( QList<int> rows );
-    void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
-    void updateSymbology();
 
   signals:
     void rowsMoved();
 
-  private:
-    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
-    QString mMimeFormat;
-    QPointer<QScreen> mScreen;
+  protected:
+    void onRowsMoved() override;
 };
 
 /**
  * \ingroup gui
  * \brief View style which shows a drop indicator line between items
  */
-class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
+class GUI_EXPORT QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
 {
     Q_OBJECT
 
@@ -88,7 +73,7 @@ class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
  * \ingroup gui
  * \brief Custom delegate for localized numeric input.
  */
-class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 

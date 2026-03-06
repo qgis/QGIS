@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsdirectionallightsettings.h"
@@ -112,6 +113,7 @@ class TestQgs3DRendering : public QgsTest
     void testMapTheme();
     void testRuleBasedRenderer();
     void testFilteredRuleBasedRenderer();
+    void testCategorizedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
     void testTexturedBillboardRendering();
@@ -509,11 +511,13 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
+  // clang-format off
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( 0.866025, -0.5, 0, 150.0 )
                                                << QVector4D( -0.866025, 0.5, 0, 150.0 )
                                                << QVector4D( 0.5, 0.866025, 0, 305.0 )
                                                << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -743,11 +747,13 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
+  // clang-format off
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( 0.866025, -0.5, 0, 150.0 )
                                                << QVector4D( -0.866025, 0.5, 0, 150.0 )
                                                << QVector4D( 0.5, 0.866025, 0, 305.0 )
                                                << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
 
@@ -885,11 +891,13 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
+  // clang-format off
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( 0.866025, -0.5, 0, 150.0 )
                                                << QVector4D( -0.866025, 0.5, 0, 150.0 )
                                                << QVector4D( 0.5, 0.866025, 0, 305.0 )
                                                << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1172,9 +1180,11 @@ void TestQgs3DRendering::testLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
+  // clang-format off
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( 0.866025, -0.5, 0, 300.0 )
                                                << QVector4D( -0.866025, 0.5, 0, 300.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1406,10 +1416,11 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
+  // clang-format off
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( -0.866025, 0.5, 0, 432.0 )
                                                << QVector4D( 0.5, 0.866025, 0, 125.0 );
-
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1639,6 +1650,80 @@ void TestQgs3DRendering::testFilteredRuleBasedRenderer()
   QGSVERIFYIMAGECHECK( "rulebased_filtered", "rulebased_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testCategorizedRenderer()
+{
+  QgsPhongMaterialSettings matterialSettingsIndus;
+  matterialSettingsIndus.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3dIndus = new QgsPolygon3DSymbol;
+  symbol3dIndus->setMaterialSettings( matterialSettingsIndus.clone() );
+  symbol3dIndus->setExtrusionHeight( 5.f );
+
+  QgsPhongMaterialSettings materialSettingsComm;
+  materialSettingsComm.setAmbient( Qt::red );
+  QgsPolygon3DSymbol *symbol3dComm = new QgsPolygon3DSymbol;
+  symbol3dComm->setMaterialSettings( materialSettingsComm.clone() );
+  symbol3dComm->setExtrusionHeight( 8.f );
+
+  QgsPhongMaterialSettings materialSettingsRes;
+  materialSettingsRes.setAmbient( Qt::blue );
+  QgsPolygon3DSymbol *symbol3dRes = new QgsPolygon3DSymbol;
+  symbol3dRes->setMaterialSettings( materialSettingsRes.clone() );
+  symbol3dRes->setExtrusionHeight( 10.f );
+
+  Qgs3DCategoryList categories;
+  categories.append( Qgs3DRendererCategory( QVariant( "industrial" ), symbol3dIndus ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "commercial" ), symbol3dComm ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "residential" ), symbol3dRes ) );
+  QgsCategorized3DRenderer *renderer3d = new QgsCategorized3DRenderer( QString( "type" ), categories );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "categorized", "categorized", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // disable a category and check that is is not displayed
+  Qgs3DRendererCategory firstCategory = categories[0];
+  firstCategory.setRenderState( false );
+  categories[0] = firstCategory;
+
+  QgsCategorized3DRenderer *newRenderer3d = new QgsCategorized3DRenderer( QString( "type" ), categories );
+  mLayerBuildings->setRenderer3D( newRenderer3d );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "categorized_renderstate", "categorized_renderstate", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  delete map;
+}
+
 void TestQgs3DRendering::testAnimationExport()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
@@ -1665,16 +1750,7 @@ void TestQgs3DRendering::testAnimationExport()
   const QString dir = QDir::temp().path();
   QString error;
 
-  const bool success = Qgs3DUtils::exportAnimation(
-    animSettings,
-    map,
-    1,
-    dir,
-    "test3danimation###.png",
-    QSize( 600, 400 ),
-    error,
-    nullptr
-  );
+  const bool success = Qgs3DUtils::exportAnimation( animSettings, map, 1, dir, "test3danimation###.png", QSize( 600, 400 ), error, nullptr );
 
   QVERIFY( success );
   QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( u"test3danimation001.png"_s ) ) ) );
@@ -1728,10 +1804,12 @@ void TestQgs3DRendering::testInstancedRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
+  // clang-format off
   QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                          << QVector4D( 0.866025, -0.5, 0, 660.0 )
                                          << QVector4D( 0.5, 0.866025, 0, 685.0 )
                                          << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
@@ -1831,10 +1909,12 @@ void TestQgs3DRendering::testModelPointRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
+  // clang-format off
   QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                          << QVector4D( 0.866025, -0.5, 0, 660.0 )
                                          << QVector4D( 0.5, 0.866025, 0, 685.0 )
                                          << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  // clang-format on
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
