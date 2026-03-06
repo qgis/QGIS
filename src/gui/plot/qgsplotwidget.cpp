@@ -304,6 +304,12 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
     emit widgetChanged();
   } );
 
+  connect( mXAxisLabelSuffix, &QLineEdit::textChanged, this, [this] {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
   mXAxisLabelsCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::NoLabels ) );
   mXAxisLabelsCombo->addItem( tr( "Every Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::EveryLabel ) );
   mXAxisLabelsCombo->addItem( tr( "First Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstLabel ) );
@@ -456,6 +462,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisNumericFormat.reset( chartPlot->yAxis().numericFormat()->clone() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffix->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -535,6 +542,7 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   chartPlot->yAxis().setNumericFormat( mYAxisNumericFormat.get()->clone() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffix->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
@@ -769,6 +777,12 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
     emit widgetChanged();
   } );
 
+  connect( mXAxisLabelSuffix, &QLineEdit::textChanged, this, [this] {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
   mXAxisLabelsCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::NoLabels ) );
   mXAxisLabelsCombo->addItem( tr( "Every Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::EveryLabel ) );
   mXAxisLabelsCombo->addItem( tr( "First Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstLabel ) );
@@ -949,6 +963,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisLabelFontButton->setTextFormat( chartPlot->yAxis().textFormat() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffix->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -1032,6 +1047,7 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   chartPlot->yAxis().setTextFormat( mYAxisLabelFontButton->textFormat() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffix->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
