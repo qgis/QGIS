@@ -215,11 +215,10 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
                 res = (self.sub_process.stdout + self.sub_process.stderr).strip()
 
                 # Use a temporary file to communicate the result to the inner interpreter
-                f = NamedTemporaryFile(delete=False)
-                name = f.name
-                f.close()
+                with NamedTemporaryFile(encoding="utf-8", mode="w", delete=False) as f:
+                    name = f.name
+                    f.write(res)
                 tmp = Path(name)
-                tmp.write_text(res, encoding="utf-8")
                 self.runsource(
                     f'{varname} = Path("{tmp}").read_text(encoding="utf-8").split("\\n")'
                 )
