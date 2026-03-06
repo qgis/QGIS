@@ -359,11 +359,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     // This list gathers all the rotation and translation operations.
     // It is used to update the appropriate parameters when successive
     // translation and rotation happen.
+    // clang-format off
     const QList<MouseOperation> mTranslateOrRotate = {
       MouseOperation::Translation,
       MouseOperation::RotationCamera,
       MouseOperation::RotationCenter
     };
+    // clang-format on
 
     // check that current sequence (current operation and new operation) is a rotation or translation
     bool isATranslationRotationSequence( MouseOperation newOperation ) const;
