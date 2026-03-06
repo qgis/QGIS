@@ -6,3 +6,4 @@
 5110dcbc695c0d4867e95449117ddd8f726b8ae1 # substitute QLatin1Char('x') with 'x'_L1
 fc7ae590e963cdc2314c5f35544419afafd9e6c8 # clang-format on src/core
 ec2cd479d61dccdd4def450d6f9f34c40a21d15d # clang-format on src/3d
+25bda3fe44a7e4f6f6f649fc68b364b2174816fe # clang-format on src/3d
