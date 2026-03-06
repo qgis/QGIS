@@ -1670,7 +1670,7 @@ void QgsOptions::saveOptions()
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( u"/qgis/legendDoubleClickAction"_s, cmbLegendDoubleClickAction->currentIndex() );
-  mSettings->setEnumValue( u"/qgis/layerTreeInsertionMethod"_s, mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
+  QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
   mSettings->setValue( u"/qgis/projOpenAtLaunch"_s, mProjectOnLaunchCmbBx->currentIndex() );

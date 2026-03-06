@@ -5917,7 +5917,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   QgsProject *prj = QgsProject::instance();
   prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
-  prj->layerTreeRegistryBridge()->setLayerInsertionMethod( settings.enumValue( u"qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+  prj->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
   //set the canvas to the default project background color
   mOverviewCanvas->setBackgroundColor( prj->backgroundColor() );
@@ -10666,7 +10666,7 @@ void QgisApp::pasteLayer()
     }
 
     QgsSettings settings;
-    Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( u"/qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+    Qgis::LayerTreeInsertionMethod insertionMethod = QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value();
     QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
     bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root, errorMessage, readWriteContext, insertionMethod, &insertionPoint );
 
@@ -12764,7 +12764,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
   if ( optionsDialog->exec() )
   {
     QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
-    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( mySettings.enumValue( u"qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
     setupLayerTreeViewFromSettings();
 

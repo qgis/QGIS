@@ -1259,7 +1259,7 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename, const Qg
       context.setProjectTranslator( QgsProject::instance() );
 
       QgsSettings settings;
-      Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( u"/qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+      Qgis::LayerTreeInsertionMethod insertionMethod = QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value();
       loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context, insertionMethod, insertPoint );
     }
   }

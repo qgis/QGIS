@@ -194,6 +194,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for whether measurements should be planimetric (ellipsoid off) or use the ellipsoid
     static const QgsSettingsEntryBool *settingsMeasurePlanimetric;
 
+    //! Settings entry for layer tree insertion method
+    static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
+
   private:
     friend class QgsApplication;
 
