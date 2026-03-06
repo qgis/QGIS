@@ -500,7 +500,7 @@ void TestQgsWmsProvider::absoluteRelativeUri()
 
 void TestQgsWmsProvider::testBboxPlaceholderReplacement()
 {
-  QString uri = "type=xyz&url=http://example.com/{bbox-epsg-3857}/{z}/{x}/{y}.png&zmin=0&zmax=18";
+  QString uri = "type=wms&url=http://example.com/{bbox-epsg-3857}&zmin=0&zmax=18";
 
   QgsWmsProvider provider( uri, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider.isValid() );
