@@ -563,7 +563,6 @@ void QgsApplication::init( QString profileFolder )
   ABISYM( mInitialized ) = true;
 }
 
-
 void QgsApplication::installTranslators()
 {
   // Remove translators if any are already installed
@@ -585,14 +584,25 @@ void QgsApplication::installTranslators()
 
   if ( *sTranslation() != "C"_L1 )
   {
+    const QLocale loc( *sTranslation() );
+    QString qgisLocale = *sTranslation();
+    // Normalizes Chinese locale (zh-CN/TW/HK) tags to 
+    // BCP-47 style (zh-Hans/Hant) to ensure QGIS translations load correctly.
+    if ( loc.language() == QLocale::Chinese )
+    {
+      qgisLocale = ( loc.script() == QLocale::TraditionalChineseScript ) ? u"zh-Hant"_s : u"zh-Hans"_s;
+      QgsDebugMsgLevel( u"qgis locale tag: %1 (original: %2)"_s
+                    .arg( qgisLocale, *sTranslation() ), 2 );
+    }
+
     mQgisTranslator = std::make_unique<QTranslator>( this );
-    if ( mQgisTranslator->load( u"qgis_"_s + *sTranslation(), i18nPath() ) )
+    if ( mQgisTranslator->load( u"qgis_"_s + qgisLocale, i18nPath() ) )
     {
       installTranslator( mQgisTranslator.get() );
     }
     else
     {
-      QgsDebugMsgLevel( u"loading of qgis translation failed %1/qgis_%2"_s.arg( i18nPath(), *sTranslation() ), 2 );
+      QgsDebugMsgLevel( u"loading of qgis translation failed %1/qgis_%2"_s.arg( i18nPath(), qgisLocale ), 2 );
     }
 
     /* Translation file for Qt.
@@ -606,8 +616,10 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
+    // Leverages QLocale in QTranslator::load() for Qt translations to improve matching reliability 
+    // and support standard Qt translation fallback mechanisms.
     mQtTranslator = std::make_unique<QTranslator>( this );
-    if ( mQtTranslator->load( u"qt_"_s + *sTranslation(), qtTranslationsPath ) )
+    if ( mQtTranslator->load( loc, u"qt"_s, u"_"_s, qtTranslationsPath ) )
     {
       installTranslator( mQtTranslator.get() );
     }
@@ -617,7 +629,7 @@ void QgsApplication::installTranslators()
     }
 
     mQtBaseTranslator = std::make_unique<QTranslator>( this );
-    if ( mQtBaseTranslator->load( u"qtbase_"_s + *sTranslation(), qtTranslationsPath ) )
+    if ( mQtBaseTranslator->load( loc, u"qtbase"_s, u"_"_s, qtTranslationsPath ) )
     {
       installTranslator( mQtBaseTranslator.get() );
     }
