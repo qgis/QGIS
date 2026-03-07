@@ -155,3 +155,37 @@ if(NOT MSVC AND NOT EMSCRIPTEN)
     DESTINATION "${QGIS_BIN_SUBDIR}")
 endif()
 
+if(WITH_CUSTOM_WIDGETS)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    install(CODE [[
+      function(fixup_qt_app APP_PACKAGE EXECUTABLE)
+        find_program(CMAKE_INSTALL_NAME_TOOL NAMES install_name_tool HINTS ${_CMAKE_TOOLCHAIN_LOCATION})
+        execute_process(COMMAND ${CMAKE_INSTALL_NAME_TOOL} "-rpath" "@loader_path/../../../../../../lib" "@loader_path/../../../Frameworks" "${APP_PACKAGE}/Contents/MacOS/${EXECUTABLE}")
+        file(WRITE "${APP_PACKAGE}/Contents/MacOS/qt.conf"
+          "[Paths]"
+          "\n"
+          "Plugins = ../../../PlugIns"
+        )
+      endfunction()
+    ]])
+    install(DIRECTORY "${VCPKG_BASE_DIR}/tools/qttools/bin/Designer.app" 
+      DESTINATION "${QGIS_BIN_SUBDIR}" 
+      FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    install(CODE
+      "fixup_qt_app(\"\${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_SUBDIR}/Designer.app\" \"Designer\")"
+    )
+    install(DIRECTORY "${VCPKG_BASE_DIR}/tools/qttools/bin/Linguist.app" 
+      DESTINATION "${QGIS_BIN_SUBDIR}" 
+      FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    install(CODE
+      "fixup_qt_app(\"\${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_SUBDIR}/Linguist.app\" \"Linguist\")"
+    )
+    install(DIRECTORY "${VCPKG_BASE_DIR}/tools/qttools/bin/pixeltool.app"
+      DESTINATION "${QGIS_BIN_SUBDIR}"
+      FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        WORLD_READ WORLD_EXECUTE GROUP_READ GROUP_EXECUTE)
+    install(CODE
+      "fixup_qt_app(\"\${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_SUBDIR}/pixeltool.app\" \"pixeltool\")"
+    )
+  endif()
+endif()
