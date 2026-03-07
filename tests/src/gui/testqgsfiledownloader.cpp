@@ -36,20 +36,11 @@ class TestQgsFileDownloader : public QObject
 
   public slots:
     //! Called when the download has completed successfully
-    void downloadCompleted()
-    {
-      mCompleted = true;
-    }
+    void downloadCompleted() { mCompleted = true; }
     //! Called when the download exits
-    void downloadExited()
-    {
-      mExited = true;
-    }
+    void downloadExited() { mExited = true; }
     //! Called when the download was canceled by the user
-    void downloadCanceled()
-    {
-      mCanceled = true;
-    }
+    void downloadCanceled() { mCanceled = true; }
     //! Called when an error makes the download fail
     void downloadError( QStringList errorMessages )
     {
@@ -218,10 +209,12 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "url" );
   QTest::addColumn<QString>( "result" );
 
-  QTest::newRow( "expired" ) << "https://expired.badssl.com/"
-                             << "SSL Errors: ;The certificate has expired";
-  QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-                                 << "SSL Errors: ;The certificate is self-signed, and untrusted";
+  QTest::newRow( "expired" )
+    << "https://expired.badssl.com/"
+    << "SSL Errors: ;The certificate has expired";
+  QTest::newRow( "self-signed" )
+    << "https://self-signed.badssl.com/"
+    << "SSL Errors: ;The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileDownloader::testSslError()

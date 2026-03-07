@@ -75,8 +75,7 @@ TestQgsAuthManager::TestQgsAuthManager()
   , mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
   , mTempDir( QDir::tempPath() + "/auth" )
   , mPass( "pass" )
-{
-}
+{}
 
 void TestQgsAuthManager::initTestCase()
 {

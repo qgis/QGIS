@@ -32,7 +32,8 @@ class TestQgsImageOperation : public QgsTest
 
   public:
     TestQgsImageOperation()
-      : QgsTest( u"Image Operation Tests"_s ) {}
+      : QgsTest( u"Image Operation Tests"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -104,12 +105,10 @@ void TestQgsImageOperation::initTestCase()
 }
 
 void TestQgsImageOperation::init()
-{
-}
+{}
 
 void TestQgsImageOperation::cleanup()
-{
-}
+{}
 
 void TestQgsImageOperation::smallImageOp()
 {

@@ -144,7 +144,8 @@ void TestQgsPostgresProvider::decodeArray2IntList()
 
 void TestQgsPostgresProvider::decode2DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}"_s, u"_text"_s, nullptr );
+  const QVariant decoded = QgsPostgresProvider::
+    convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}"_s, u"_text"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -456,8 +457,12 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 42 << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << 43 << QString( "PostGIS too!" ) );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
-                                                                                                                                                                                                                  << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
+  CHECK_OR_CLAUSE(
+    QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
+    QStringList()
+      << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
+      << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'"
+  );
 }
 
 #ifdef ENABLE_PGTEST

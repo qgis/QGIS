@@ -85,11 +85,9 @@ void TestQgsMeshContours::cleanupTestCase()
 }
 
 void TestQgsMeshContours::init()
-{
-}
+{}
 void TestQgsMeshContours::cleanup()
-{
-}
+{}
 
 void TestQgsMeshContours::equals( QgsGeometry geom, QgsGeometry expected )
 {
@@ -174,7 +172,10 @@ void TestQgsMeshContours::testQuadAndTriangleVertexScalarPoly_data()
   QTest::addColumn<QgsGeometry>( "expected" );
 
   QTest::newRow( "left" ) << 1.0 << 1.5 << QgsGeometry( QgsGeometryFactory::geomFromWkt( "PolygonZ ((1500 2500 35, 1500 2000 25, 1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35))" ) );
-  QTest::newRow( "bothinsquare" ) << 1.2 << 1.4 << QgsGeometry( QgsGeometryFactory::geomFromWkt( "PolygonZ ((1400 2400 32, 1400 2000 24, 1200 2000 22, 1200 2200 26, 1200 3000 18, 1400 3000 25.99999999999999645, 1400 2400 32))" ) );
+  QTest::newRow( "bothinsquare" )
+    << 1.2
+    << 1.4
+    << QgsGeometry( QgsGeometryFactory::geomFromWkt( "PolygonZ ((1400 2400 32, 1400 2000 24, 1200 2000 22, 1200 2200 26, 1200 3000 18, 1400 3000 25.99999999999999645, 1400 2400 32))" ) );
   QTest::newRow( "middle" ) << 1.5 << 2.0 << QgsGeometry( QgsGeometryFactory::geomFromWkt( "PolygonZ ((2000 3000 50, 2000 2000 30, 1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50))" ) );
   QTest::newRow( "right" ) << 2.0 << 2.5 << QgsGeometry( QgsGeometryFactory::geomFromWkt( "PolygonZ ((2500 2500 45, 2000 3000 50, 2000 2000 30, 2500 2000 35, 2500 2500 45))" ) );
 

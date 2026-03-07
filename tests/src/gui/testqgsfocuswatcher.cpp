@@ -36,20 +36,16 @@ class TestQgsFocusWatcher : public QObject
 };
 
 void TestQgsFocusWatcher::initTestCase()
-{
-}
+{}
 
 void TestQgsFocusWatcher::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFocusWatcher::init()
-{
-}
+{}
 
 void TestQgsFocusWatcher::cleanup()
-{
-}
+{}
 
 void TestQgsFocusWatcher::testSignals()
 {

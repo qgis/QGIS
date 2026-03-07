@@ -51,10 +51,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    QgsColorScheme *clone() const override
-    {
-      return new DummyColorScheme();
-    }
+    QgsColorScheme *clone() const override { return new DummyColorScheme(); }
 };
 
 class TestQgsColorScheme : public QObject
@@ -87,12 +84,10 @@ void TestQgsColorScheme::cleanupTestCase()
 }
 
 void TestQgsColorScheme::init()
-{
-}
+{}
 
 void TestQgsColorScheme::cleanup()
-{
-}
+{}
 
 void TestQgsColorScheme::createScheme()
 {

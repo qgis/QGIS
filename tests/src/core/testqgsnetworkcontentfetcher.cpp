@@ -58,12 +58,10 @@ void TestQgsNetworkContentFetcher::cleanupTestCase()
 }
 
 void TestQgsNetworkContentFetcher::init()
-{
-}
+{}
 
 void TestQgsNetworkContentFetcher::cleanup()
-{
-}
+{}
 
 void TestQgsNetworkContentFetcher::fetchEmptyUrl()
 {

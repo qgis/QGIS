@@ -38,7 +38,9 @@ QgsWfsDescribeFeatureTypeJson::QgsWfsDescribeFeatureTypeJson( const QgsWfsParame
   : wfsParameters( wfsParams )
 {}
 
-void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const
+void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType(
+  QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response
+) const
 {
   const QJsonDocument doc( createDescribeFeatureTypeDocument( serverIface, project, version, request ) );
 

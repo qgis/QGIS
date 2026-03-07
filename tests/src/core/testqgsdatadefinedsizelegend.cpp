@@ -43,7 +43,8 @@ class TestQgsDataDefinedSizeLegend : public QgsTest
 
   public:
     TestQgsDataDefinedSizeLegend()
-      : QgsTest( u"Data Defined Size Legend Tests"_s, u"data_defined_size_legend"_s ) {}
+      : QgsTest( u"Data Defined Size Legend Tests"_s, u"data_defined_size_legend"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

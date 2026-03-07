@@ -152,11 +152,15 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
-                                              "(10 0 0, 10 10 0),"
-                                              "(20 0 10, 20 10 10),"
-                                              "(30 0 0, 30 10 10)"
-                                              ")" ) );
+  topoFeat.setGeometry(
+    QgsGeometry::fromWkt(
+      "MultiLineStringZ ("
+      "(10 0 0, 10 10 0),"
+      "(20 0 10, 20 10 10),"
+      "(30 0 0, 30 10 10)"
+      ")"
+    )
+  );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );

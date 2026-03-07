@@ -68,12 +68,10 @@ void TestQgsTiledSceneRendererRegistry::cleanupTestCase()
 }
 
 void TestQgsTiledSceneRendererRegistry::init()
-{
-}
+{}
 
 void TestQgsTiledSceneRendererRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsTiledSceneRendererRegistry::metadata()
 {

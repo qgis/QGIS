@@ -38,7 +38,8 @@ class TestQgsLayoutManualTable : public QgsTest
 
   public:
     TestQgsLayoutManualTable()
-      : QgsTest( u"Layout Manual Table Tests"_s, u"layout_manual_table"_s ) {}
+      : QgsTest( u"Layout Manual Table Tests"_s, u"layout_manual_table"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -171,7 +172,9 @@ void TestQgsLayoutManualTable::setContents()
   row << u"A"_s << QString() << QString();
 
   expectedRows.append( row );
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) ) );
+  table->setTableContents(
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) )
+  );
   compareTable( table, expectedRows );
   QCOMPARE( table->tableContents().size(), 2 );
   QCOMPARE( table->tableContents().at( 0 ).size(), 3 );
@@ -190,7 +193,9 @@ void TestQgsLayoutManualTable::setContents()
   row << u"A"_s << u"B"_s << QString();
 
   expectedRows.append( row );
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) ) );
+  table->setTableContents(
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) )
+  );
   compareTable( table, expectedRows );
   QCOMPARE( table->tableContents().size(), 2 );
   QCOMPARE( table->tableContents().at( 0 ).size(), 3 );
@@ -210,7 +215,11 @@ void TestQgsLayoutManualTable::setContents()
   row << u"A"_s << u"B"_s << u"C"_s;
 
   expectedRows.append( row );
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) )
+  );
   compareTable( table, expectedRows );
   QCOMPARE( table->tableContents().size(), 2 );
   QCOMPARE( table->tableContents().at( 0 ).size(), 3 );
@@ -229,9 +238,7 @@ void TestQgsLayoutManualTable::setContents()
 
   //write to XML
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement tableElement = doc.createElement( u"table"_s );
   QVERIFY( table->writeXml( tableElement, doc, QgsReadWriteContext(), true ) );
@@ -287,8 +294,12 @@ void TestQgsLayoutManualTable::expressionContents()
   expectedRows.append( row );
 
   table->setTableContents(
-    QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( QgsProperty::fromExpression( u"@row_number  || ',' || @column_number"_s ) ) << QgsTableCell( QgsProperty::fromExpression( u"@row_number  || ',' || @column_number"_s ) ) )
-                       << ( QgsTableRow() << QgsTableCell( QgsProperty::fromExpression( u"@layout_name"_s ) ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
+    QgsTableContents()
+    << ( QgsTableRow()
+         << QgsTableCell( u"Jet"_s )
+         << QgsTableCell( QgsProperty::fromExpression( u"@row_number  || ',' || @column_number"_s ) )
+         << QgsTableCell( QgsProperty::fromExpression( u"@row_number  || ',' || @column_number"_s ) ) )
+    << ( QgsTableRow() << QgsTableCell( QgsProperty::fromExpression( u"@layout_name"_s ) ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
   );
   compareTable( table, expectedRows );
 
@@ -296,9 +307,7 @@ void TestQgsLayoutManualTable::expressionContents()
 
   //write to XML
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement tableElement = doc.createElement( u"table"_s );
   QVERIFY( table->writeXml( tableElement, doc, QgsReadWriteContext(), true ) );
@@ -385,7 +394,11 @@ void TestQgsLayoutManualTable::rowHeight()
   table->setHorizontalGrid( true );
   table->setVerticalGrid( true );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) )
+  );
 
   table->setRowHeights( QList<double>() << 0 << 40.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_rowheight"_s, &l );
@@ -409,7 +422,11 @@ void TestQgsLayoutManualTable::columnWidth()
   table->setHorizontalGrid( true );
   table->setVerticalGrid( true );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 0 << 10.0 << 30.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_columnwidth"_s, &l );
@@ -436,7 +453,11 @@ void TestQgsLayoutManualTable::headers()
   table->setHorizontalGrid( true );
   table->setVerticalGrid( true );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"Jet"_s ) << QgsTableCell( u"Helicopter"_s ) << QgsTableCell( u"Plane"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"B"_s ) << QgsTableCell( u"C"_s ) )
+  );
   table->setIncludeTableHeader( true );
   table->setHeaders( QgsLayoutTableColumns() << QgsLayoutTableColumn( u"header1"_s ) << QgsLayoutTableColumn( u"h2"_s ) << QgsLayoutTableColumn( u"header 3"_s ) );
 
@@ -521,7 +542,9 @@ void TestQgsLayoutManualTable::cellTextAlignment()
   c5.setHorizontalAlignment( Qt::AlignRight );
   c5.setVerticalAlignment( Qt::AlignTop );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( u"Helicopter\nHelicopter"_s ) << c3 ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << c5 << QgsTableCell( u"C"_s ) ) );
+  table->setTableContents(
+    QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( u"Helicopter\nHelicopter"_s ) << c3 ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << c5 << QgsTableCell( u"C"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 0 << 0.0 << 30.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_textalign"_s, &l );
@@ -561,7 +584,14 @@ void TestQgsLayoutManualTable::mergedCells()
   c5.setSpan( 1, 3 );
   c5.setBackgroundColor( QColor( 200, 250, 200 ) );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) ) << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 ) << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) ) << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 )
+    << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) )
+    << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 30 << 50.0 << 40.0 << 25.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_merged"_s, &l );
@@ -601,7 +631,14 @@ void TestQgsLayoutManualTable::mergedCellsVertOnly()
   c5.setSpan( 1, 3 );
   c5.setBackgroundColor( QColor( 200, 250, 200 ) );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) ) << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 ) << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) ) << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 )
+    << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) )
+    << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 30 << 50.0 << 40.0 << 25.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_merged_vert_only"_s, &l );
@@ -641,7 +678,14 @@ void TestQgsLayoutManualTable::mergedCellsHozOnly()
   c5.setSpan( 1, 3 );
   c5.setBackgroundColor( QColor( 200, 250, 200 ) );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) ) << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) ) << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 ) << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) ) << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << c1 << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"Something"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"A"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"C"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) << c3 )
+    << ( QgsTableRow() << QgsTableCell( u"D"_s ) << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) )
+    << ( QgsTableRow() << c5 << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"G"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 30 << 50.0 << 40.0 << 25.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_merged_hoz_only"_s, &l );
@@ -698,7 +742,14 @@ void TestQgsLayoutManualTable::mergedCellsBackgroundColor()
   c4.setVerticalAlignment( Qt::AlignTop );
   c4.setSpan( 2, 1 );
 
-  table->setTableContents( QgsTableContents() << ( QgsTableRow() << c1 << QgsTableCell( u"A2"_s ) << c1 << QgsTableCell( u"Something"_s ) ) << ( QgsTableRow() << QgsTableCell( u"B"_s ) << QgsTableCell( u"B2"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) ) << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"C2"_s ) << QgsTableCell( u"C3"_s ) << c3 ) << ( QgsTableRow() << c4 << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) ) << ( QgsTableRow() << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"D2"_s ) << QgsTableCell( u"D3"_s ) << QgsTableCell( u"G"_s ) ) );
+  table->setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << c1 << QgsTableCell( u"A2"_s ) << c1 << QgsTableCell( u"Something"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"B"_s ) << QgsTableCell( u"B2"_s ) << QgsTableCell( u"hidden by span"_s ) << QgsTableCell( u"hidden by span"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"C"_s ) << QgsTableCell( u"C2"_s ) << QgsTableCell( u"C3"_s ) << c3 )
+    << ( QgsTableRow() << c4 << QgsTableCell( u"E"_s ) << QgsTableCell( u"F"_s ) << QgsTableCell( u"hidden by span"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"hidden"_s ) << QgsTableCell( u"D2"_s ) << QgsTableCell( u"D3"_s ) << QgsTableCell( u"G"_s ) )
+  );
 
   table->setColumnWidths( QList<double>() << 30 << 50.0 << 40.0 << 25.0 );
   QGSVERIFYLAYOUTCHECK( u"manualtable_merged_background_color"_s, &l );

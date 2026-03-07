@@ -168,10 +168,7 @@ void TestQgsRasterBlock::testWrite()
   int nCols = mpRasterLayer->width(), nRows = mpRasterLayer->height();
   QVERIFY( nCols > 0 );
   QVERIFY( nRows > 0 );
-  double tform[] = {
-    extent.xMinimum(), extent.width() / nCols, 0.0,
-    extent.yMaximum(), 0.0, -extent.height() / nRows
-  };
+  double tform[] = { extent.xMinimum(), extent.width() / nCols, 0.0, extent.yMaximum(), 0.0, -extent.height() / nRows };
 
   // generate unique filename (need to open the file first to generate it)
   QTemporaryFile tmpFile;

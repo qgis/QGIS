@@ -69,12 +69,10 @@ void TestQgsPointCloudAttribute::cleanupTestCase()
 }
 
 void TestQgsPointCloudAttribute::init()
-{
-}
+{}
 
 void TestQgsPointCloudAttribute::cleanup()
-{
-}
+{}
 
 void TestQgsPointCloudAttribute::testAttribute()
 {
@@ -170,7 +168,12 @@ void TestQgsPointCloudAttribute::testCollection()
   QCOMPARE( offset, 6 );
 
   // populate from other attributes
-  const QgsPointCloudAttributeCollection collection2( QVector<QgsPointCloudAttribute>() << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short ) << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double ) );
+  const QgsPointCloudAttributeCollection collection2(
+    QVector<QgsPointCloudAttribute>()
+    << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short )
+    << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double )
+  );
   QCOMPARE( collection2.attributes().size(), 3 );
   QCOMPARE( collection2.count(), 3 );
   QCOMPARE( collection2.attributes().at( 0 ).name(), u"at1"_s );
@@ -189,7 +192,12 @@ void TestQgsPointCloudAttribute::testCollection()
 void TestQgsPointCloudAttribute::testCollectionFindCaseInsensitive()
 {
   int offset = 0;
-  const QgsPointCloudAttributeCollection collection( QVector<QgsPointCloudAttribute>() << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short ) << QgsPointCloudAttribute( u"AT3"_s, QgsPointCloudAttribute::DataType::Double ) );
+  const QgsPointCloudAttributeCollection collection(
+    QVector<QgsPointCloudAttribute>()
+    << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short )
+    << QgsPointCloudAttribute( u"AT3"_s, QgsPointCloudAttribute::DataType::Double )
+  );
   QCOMPARE( collection.attributes().size(), 3 );
   QCOMPARE( collection.count(), 3 );
   QCOMPARE( collection.attributes().at( 0 ).name(), u"at1"_s );
@@ -208,8 +216,20 @@ void TestQgsPointCloudAttribute::testCollectionFindCaseInsensitive()
 void TestQgsPointCloudAttribute::testCollevtionExtend()
 {
   int offset = 0;
-  QgsPointCloudAttributeCollection collection( QVector<QgsPointCloudAttribute>() << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short ) << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double ) );
-  const QgsPointCloudAttributeCollection collection2( QVector<QgsPointCloudAttribute>() << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short ) << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double ) << QgsPointCloudAttribute( u"at4"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at5"_s, QgsPointCloudAttribute::DataType::Short ) );
+  QgsPointCloudAttributeCollection collection(
+    QVector<QgsPointCloudAttribute>()
+    << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short )
+    << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double )
+  );
+  const QgsPointCloudAttributeCollection collection2(
+    QVector<QgsPointCloudAttribute>()
+    << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short )
+    << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double )
+    << QgsPointCloudAttribute( u"at4"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at5"_s, QgsPointCloudAttribute::DataType::Short )
+  );
 
   collection.extend( collection2, QSet<QString>() );
   QCOMPARE( collection.attributes().size(), 3 );
@@ -258,7 +278,12 @@ void TestQgsPointCloudAttribute::testToFields()
   QgsFields fields = QgsPointCloudAttributeCollection().toFields();
   QCOMPARE( fields.size(), 0 );
 
-  const QgsPointCloudAttributeCollection collection( QVector<QgsPointCloudAttribute>() << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float ) << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short ) << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double ) );
+  const QgsPointCloudAttributeCollection collection(
+    QVector<QgsPointCloudAttribute>()
+    << QgsPointCloudAttribute( u"at1"_s, QgsPointCloudAttribute::DataType::Float )
+    << QgsPointCloudAttribute( u"at2"_s, QgsPointCloudAttribute::DataType::Short )
+    << QgsPointCloudAttribute( u"at3"_s, QgsPointCloudAttribute::DataType::Double )
+  );
   fields = collection.toFields();
   QCOMPARE( fields.size(), 3 );
 

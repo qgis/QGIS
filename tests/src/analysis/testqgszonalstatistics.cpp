@@ -80,9 +80,7 @@ void TestQgsZonalStatistics::initTestCase()
 
   mVectorLayer = new QgsVectorLayer( mTempPath + "polys.shp", u"poly"_s, u"ogr"_s );
   mRasterLayer = new QgsRasterLayer( mTempPath + "edge_problem.asc", u"raster"_s, u"gdal"_s );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer );
 }
 
 void TestQgsZonalStatistics::cleanupTestCase()
@@ -205,7 +203,9 @@ void TestQgsZonalStatistics::testReprojection()
 
   // create a reprojected version of the layer
   auto vectorLayer = std::make_unique<QgsVectorLayer>( myTestDataPath + "polys.shp", u"poly"_s, u"ogr"_s );
-  std::unique_ptr<QgsVectorLayer> reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3785"_s ), QgsProject::instance()->transformContext() ) ) );
+  std::unique_ptr<QgsVectorLayer> reprojected(
+    vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3785"_s ), QgsProject::instance()->transformContext() ) )
+  );
 
   QCOMPARE( reprojected->featureCount(), vectorLayer->featureCount() );
   QgsZonalStatistics zs( reprojected.get(), mRasterLayer, QString(), 1, Qgis::ZonalStatistic::All );

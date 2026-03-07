@@ -110,16 +110,12 @@ class HttpException : public std::exception
      */
     HttpException( const QString &message )
       : mMessage( message )
-    {
-    }
+    {}
 
     /**
      * Returns the exception message.
      */
-    QString message() const
-    {
-      return mMessage;
-    }
+    QString message() const { return mMessage; }
 
   private:
     QString mMessage;
@@ -138,10 +134,7 @@ class TcpServerWorker : public QObject
 
       if ( !mTcpServer.listen( address, port ) )
       {
-        std::cerr << tr( "Unable to start the server: %1." )
-                       .arg( mTcpServer.errorString() )
-                       .toStdString()
-                  << std::endl;
+        std::cerr << tr( "Unable to start the server: %1." ).arg( mTcpServer.errorString() ).toStdString() << std::endl;
       }
       else
       {
@@ -330,12 +323,9 @@ class TcpServerWorker : public QObject
                 clientConnection->write( "\r\n" );
                 clientConnection->write( ex.message().toUtf8() );
 
-                std::cout << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s
-                               .arg( clientConnection->peerAddress().toString() )
-                               .arg( QDateTime::currentDateTime().toString() )
-                               .arg( ex.message() )
-                               .toStdString()
-                          << std::endl;
+                std::cout
+                  << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s.arg( clientConnection->peerAddress().toString() ).arg( QDateTime::currentDateTime().toString() ).arg( ex.message() ).toStdString()
+                  << std::endl;
 
                 clientConnection->disconnectFromHost();
               }
@@ -345,15 +335,9 @@ class TcpServerWorker : public QObject
       }
     }
 
-    ~TcpServerWorker() override
-    {
-      mTcpServer.close();
-    }
+    ~TcpServerWorker() override { mTcpServer.close(); }
 
-    bool isListening() const
-    {
-      return mIsListening;
-    }
+    bool isListening() const { return mIsListening; }
 
   public slots:
 
@@ -391,10 +375,18 @@ class TcpServerWorker : public QObject
       clientConnection->write( body );
 
       // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-      std::cout << u"\033[1;92m%1 [%2] %3 %4ms \"%5\" %6\033[0m"_s
-                     .arg( clientConnection->peerAddress().toString(), QDateTime::currentDateTime().toString(), QString::number( body.size() ), QString::number( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() ), request->httpHeader, QString::number( response.statusCode() ) )
-                     .toStdString()
-                << std::endl;
+      std::cout
+        << u"\033[1;92m%1 [%2] %3 %4ms \"%5\" %6\033[0m"_s
+             .arg(
+               clientConnection->peerAddress().toString(),
+               QDateTime::currentDateTime().toString(),
+               QString::number( body.size() ),
+               QString::number( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() ),
+               request->httpHeader,
+               QString::number( response.statusCode() )
+             )
+             .toStdString()
+        << std::endl;
 
       // This will trigger delete later on the socket object
       clientConnection->disconnectFromHost();
@@ -415,8 +407,7 @@ class TcpServerThread : public QThread
     TcpServerThread( const QString &ipAddress, const int port )
       : mIpAddress( ipAddress )
       , mPort( port )
-    {
-    }
+    {}
 
     void emitResponseReady( RequestContext *requestContext ) //#spellok
     {
@@ -476,10 +467,7 @@ class QueueMonitorThread : public QThread
 
   public slots:
 
-    void stop()
-    {
-      mIsRunning = false;
-    }
+    void stop() { mIsRunning = false; }
 
   private:
     bool mIsRunning = true;
@@ -514,9 +502,12 @@ int main( int argc, char *argv[] )
 
   if ( !withDisplay )
   {
-    QgsMessageLog::logMessage( "DISPLAY environment variable is not set, running in offscreen mode, all printing capabilities will not be available.\n"
-                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.",
-                               "Server", Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage(
+      "DISPLAY environment variable is not set, running in offscreen mode, all printing capabilities will not be available.\n"
+      "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.",
+      "Server",
+      Qgis::MessageLevel::Warning
+    );
   }
 
 #ifdef Q_OS_WIN
@@ -547,21 +538,38 @@ int main( int argc, char *argv[] )
   const QCommandLineOption versionOption( QStringList() << "v" << "version", QObject::tr( "Version of QGIS and libraries" ) );
   parser.addOption( versionOption );
 
-  parser.addPositionalArgument( u"addressAndPort"_s, QObject::tr( "Address and port (default: \"localhost:8000\")\n"
-                                                                  "address and port can also be specified with the environment\n"
-                                                                  "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT." ),
-                                u"[address:port]"_s );
-  const QCommandLineOption logLevelOption( "l", QObject::tr( "Log level (default: 0)\n"
-                                                             "0: INFO\n"
-                                                             "1: WARNING\n"
-                                                             "2: CRITICAL" ),
-                                           "logLevel", "0" );
+  parser.addPositionalArgument(
+    u"addressAndPort"_s,
+    QObject::tr(
+      "Address and port (default: \"localhost:8000\")\n"
+      "address and port can also be specified with the environment\n"
+      "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT."
+    ),
+    u"[address:port]"_s
+  );
+  const QCommandLineOption logLevelOption(
+    "l",
+    QObject::tr(
+      "Log level (default: 0)\n"
+      "0: INFO\n"
+      "1: WARNING\n"
+      "2: CRITICAL"
+    ),
+    "logLevel",
+    "0"
+  );
   parser.addOption( logLevelOption );
 
-  const QCommandLineOption projectOption( "p", QObject::tr( "Path to a QGIS project file (*.qgs or *.qgz),\n"
-                                                            "if specified it will override the query string MAP argument\n"
-                                                            "and the QGIS_PROJECT_FILE environment variable." ),
-                                          "projectPath", "" );
+  const QCommandLineOption projectOption(
+    "p",
+    QObject::tr(
+      "Path to a QGIS project file (*.qgs or *.qgz),\n"
+      "if specified it will override the query string MAP argument\n"
+      "and the QGIS_PROJECT_FILE environment variable."
+    ),
+    "projectPath",
+    ""
+  );
   parser.addOption( projectOption );
 
   parser.process( app );
@@ -596,7 +604,8 @@ int main( int argc, char *argv[] )
   {
     // Check it!
     const QString projectFilePath { parser.value( projectOption ) };
-    if ( !QgsProject::instance()->read( projectFilePath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoadLayouts | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
+    if ( !QgsProject::instance()
+            ->read( projectFilePath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoadLayouts | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }
@@ -618,9 +627,16 @@ int main( int argc, char *argv[] )
   TcpServerThread tcpServerThread { ipAddress, serverPort.toInt() };
 
   bool isTcpError = false;
-  TcpServerThread::connect( &tcpServerThread, &TcpServerThread::serverError, qApp, [&] {
-    isTcpError = true;
-    qApp->quit(); }, Qt::QueuedConnection );
+  TcpServerThread::connect(
+    &tcpServerThread,
+    &TcpServerThread::serverError,
+    qApp,
+    [&] {
+      isTcpError = true;
+      qApp->quit();
+    },
+    Qt::QueuedConnection
+  );
 
   // Monitoring thread
   QueueMonitorThread queueMonitorThread;
@@ -654,9 +670,7 @@ int main( int argc, char *argv[] )
   signal( SIGTERM, exitHandler );
   signal( SIGABRT, exitHandler );
   signal( SIGINT, exitHandler );
-  signal( SIGPIPE, []( int ) {
-    std::cerr << u"Signal SIGPIPE received: ignoring"_s.toStdString() << std::endl;
-  } );
+  signal( SIGPIPE, []( int ) { std::cerr << u"Signal SIGPIPE received: ignoring"_s.toStdString() << std::endl; } );
 
 #endif
 

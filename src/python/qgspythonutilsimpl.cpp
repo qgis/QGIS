@@ -41,8 +41,7 @@ using namespace Qt::StringLiterals;
 PyThreadState *_mainState = nullptr;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
-{
-}
+{}
 
 QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 {
@@ -63,7 +62,8 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // it is very useful for cleaning sys.path, which may have undesirable paths, or for
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
   runString( u"pyqgstart = os.getenv('PYQGIS_STARTUP')"_s );
-  runString( QStringLiteral( R""""(
+  runString(
+    QStringLiteral( R""""(
 exec(
     compile(
         """
@@ -115,8 +115,10 @@ _ssr = StartupScriptRunner()
     globals(),
 )
 )"""" )
-               .arg( pythonPath() ),
-             QObject::tr( "Couldn't create run_startup_script." ), true );
+      .arg( pythonPath() ),
+    QObject::tr( "Couldn't create run_startup_script." ),
+    true
+  );
   runString( u"is_startup_script_executed = _ssr.run_startup_script(pyqgstart)"_s );
 
 #ifdef Q_OS_WIN
@@ -174,9 +176,10 @@ _ssr = StartupScriptRunner()
 
   // import QGIS bindings
   QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + '\n' + QObject::tr( "Python support will be disabled." );
-  if ( !runString( u"from qgis.core import *"_s, error_msg )
+  if (
+    !runString( u"from qgis.core import *"_s, error_msg )
 #ifdef HAVE_GUI
-       || !runString( u"from qgis.gui import *"_s, error_msg )
+    || !runString( u"from qgis.gui import *"_s, error_msg )
 #endif
   )
   {
@@ -461,10 +464,22 @@ bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, 
   evalString( u"str(sys.path)"_s, path );
   evalString( u"sys.version"_s, version );
 
-  QString str = "<font color=\"red\">" + msgOnError + "</font><br><pre>\n" + traceback + "\n</pre>"
-                + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-                + QObject::tr( "QGIS version:" ) + "<br>" + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() ) + "<br><br>"
-                + QObject::tr( "Python path:" ) + "<br>" + path;
+  QString str = "<font color=\"red\">"
+                + msgOnError
+                + "</font><br><pre>\n"
+                + traceback
+                + "\n</pre>"
+                + QObject::tr( "Python version:" )
+                + "<br>"
+                + version
+                + "<br><br>"
+                + QObject::tr( "QGIS version:" )
+                + "<br>"
+                + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() )
+                + "<br><br>"
+                + QObject::tr( "Python path:" )
+                + "<br>"
+                + path;
   str.replace( '\n', "<br>"_L1 ).replace( "  "_L1, "&nbsp; "_L1 );
 
   qDebug() << str;
@@ -520,10 +535,22 @@ bool QgsPythonUtilsImpl::runFile( const QString &filename, const QString &messag
   evalString( u"str(sys.path)"_s, path );
   evalString( u"sys.version"_s, version );
 
-  QString str = "<font color=\"red\">" + errMsg + "</font><br><pre>\n" + traceback + "\n</pre>"
-                + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-                + QObject::tr( "QGIS version:" ) + "<br>" + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() ) + "<br><br>"
-                + QObject::tr( "Python path:" ) + "<br>" + path;
+  QString str = "<font color=\"red\">"
+                + errMsg
+                + "</font><br><pre>\n"
+                + traceback
+                + "\n</pre>"
+                + QObject::tr( "Python version:" )
+                + "<br>"
+                + version
+                + "<br><br>"
+                + QObject::tr( "QGIS version:" )
+                + "<br>"
+                + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() )
+                + "<br><br>"
+                + QObject::tr( "Python path:" )
+                + "<br>"
+                + path;
   str.replace( '\n', "<br>"_L1 ).replace( "  "_L1, "&nbsp; "_L1 );
 
   QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
@@ -588,10 +615,22 @@ bool QgsPythonUtilsImpl::setArgv( const QStringList &arguments, const QString &m
   evalString( u"str(sys.path)"_s, path );
   evalString( u"sys.version"_s, version );
 
-  QString str = "<font color=\"red\">" + errMsg + "</font><br><pre>\n" + traceback + "\n</pre>"
-                + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-                + QObject::tr( "QGIS version:" ) + "<br>" + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() ) + "<br><br>"
-                + QObject::tr( "Python path:" ) + "<br>" + path;
+  QString str = "<font color=\"red\">"
+                + errMsg
+                + "</font><br><pre>\n"
+                + traceback
+                + "\n</pre>"
+                + QObject::tr( "Python version:" )
+                + "<br>"
+                + version
+                + "<br><br>"
+                + QObject::tr( "QGIS version:" )
+                + "<br>"
+                + u"%1 '%2', %3"_s.arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() )
+                + "<br><br>"
+                + QObject::tr( "Python path:" )
+                + "<br>"
+                + path;
   str.replace( '\n', "<br>"_L1 ).replace( "  "_L1, "&nbsp; "_L1 );
 
   QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
@@ -640,7 +679,8 @@ QString QgsPythonUtilsImpl::getTraceback()
   if ( !modTB )
     TRACEBACK_FETCH_ERROR( u"can't import traceback"_s );
 
-  obResult = PyObject_CallMethod( modTB, reinterpret_cast<const char *>( "print_exception" ), reinterpret_cast<const char *>( "OOOOO" ), type, value ? value : Py_None, traceback ? traceback : Py_None, Py_None, obStringIO );
+  obResult
+    = PyObject_CallMethod( modTB, reinterpret_cast<const char *>( "print_exception" ), reinterpret_cast<const char *>( "OOOOO" ), type, value ? value : Py_None, traceback ? traceback : Py_None, Py_None, obStringIO );
 
   if ( !obResult )
     TRACEBACK_FETCH_ERROR( u"traceback.print_exception() failed"_s );
@@ -858,7 +898,8 @@ QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const 
 
 bool QgsPythonUtilsImpl::pluginHasProcessingProvider( const QString &pluginName )
 {
-  return getPluginMetadata( pluginName, u"hasProcessingProvider"_s ).compare( "yes"_L1, Qt::CaseInsensitive ) == 0 || getPluginMetadata( pluginName, u"hasProcessingProvider"_s ).compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return getPluginMetadata( pluginName, u"hasProcessingProvider"_s ).compare( "yes"_L1, Qt::CaseInsensitive ) == 0
+         || getPluginMetadata( pluginName, u"hasProcessingProvider"_s ).compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsPythonUtilsImpl::loadPlugin( const QString &packageName )
