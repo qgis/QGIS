@@ -24,14 +24,26 @@
 # http://docs.qgis.org/testing/en/docs/user_manual/
 #
 # Nødebo, August 2017
-
+#Added anchor check improvement
 prefix=${1:-http://docs.qgis.org/testing/en/docs/user_manual/}
 find .. \( -name \*.h -o -name \*.cpp \) -exec grep -H "QgsHelp::openHelp(" \{\} \; | sed 's/:[^"]\+/\t/;s/" .\+$/"/' | sort | sed 's/^\.\.\/QGIS\///' | awk -F $'\t' '{print $1 ";" $2;}' | grep -v ";$" | sed 's/"//g' | while read line; do
     file=${line%;*}
     suffix=${line##*;}
     link=$prefix$suffix
-    if ! wget --spider $link 2>/dev/null; then
-        echo "Documentation missing for: $file Key: $suffix"
+page=${link%%#*}
+anchor=${link##*#}
+
+if ! wget --spider $page 2>/dev/null; then
+    echo "Documentation missing for: $file Key: $suffix"
+else
+    #Check if the anchir (after #)exists in the page
+    anchor="${suffix#*#}"
+    if [ -n "$anchor" ]: then
+        if ! wget -q -O - "$LINK" | grep -q "$anchor"; then
+    if [[ "$link" == *"#"* ]]; then
+            echo "Anchor missing for: $file key: $suffix"
+        fi
     fi
+fi
 done
 
