@@ -242,7 +242,8 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         contents = f.read()
 
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
-    fix_pyqt_import = []  # from PyQt5.QtXXX
+    fix_pyqt_import = []  # from PyQt5.QtXXX -> qgis.PyQt
+    fix_pyqt6_import = [] # PyQt5 -> PyQt6
     fix_qt_enums = {}  # Unscoping of enums
     member_renames = {}
     token_renames = {}
@@ -487,6 +488,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 removed_imports["qgis.PyQt.Qt"].update({node_name.name})
 
     tree = ast.parse(contents, filename=filename)
+
+    QGIS_PYQT_MODULES = {m.__name__.split(".")[-1] for m in target_modules}
+
     for parent in ast.walk(tree):
         for node in ast.iter_child_nodes(parent):
             if isinstance(node, ast.ImportFrom):
@@ -574,7 +578,15 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 and node.module
                 and (node.module.startswith("PyQt5.") or node.module == "PyQt5")
             ):
-                fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+                if node.module == "PyQt5":
+                    submodule = node.names[0].name
+                else:
+                    submodule = node.module.split(".")[-1]
+
+                if submodule in QGIS_PYQT_MODULES:
+                    fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+                else:
+                    fix_pyqt6_import.append(Offset(node.lineno, node.col_offset))
 
     for module, classes in extra_imports.items():
         if module not in imported_modules:
@@ -623,6 +635,12 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 f"{filename}:{elem.line}:{elem.utf8_byte_offset} - Fix PyQT import, you must import from qgis.PyQt"
             )
 
+        for elem in fix_pyqt6_import:
+            logging.warning(
+                f"{filename}:{elem.line}:{elem.utf8_byte_offset} - Fix PyQT5 import, you must import from PyQt6"
+
+            )
+
         for elem in rename_qt_enums:
             logging.warning(
                 f"{filename}:{elem.line}:{elem.utf8_byte_offset} - This enum was renamed"
@@ -634,6 +652,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         [
             fix_qvariant_type,
             fix_pyqt_import,
+            fix_pyqt6_import,
             fix_qt_enums,
             rename_qt_enums,
             member_renames,
@@ -759,6 +778,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
             tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
+
+        if token.offset in fix_pyqt6_import:
+            assert tokens[i + 2].src == "PyQt5"
+            tokens[i + 2] = tokens[i + 2]._replace(src="PyQt6")
 
         if token.offset in function_def_renames and tokens[i].src == "def":
             tokens[i + 2] = tokens[i + 2]._replace(
