@@ -24,7 +24,7 @@
 # http://docs.qgis.org/testing/en/docs/user_manual/
 #
 # Nødebo, August 2017
-
+#Added anchor check improvement
 prefix=${1:-http://docs.qgis.org/testing/en/docs/user_manual/}
 find .. \( -name \*.h -o -name \*.cpp \) -exec grep -H "QgsHelp::openHelp(" \{\} \; | sed 's/:[^"]\+/\t/;s/" .\+$/"/' | sort | sed 's/^\.\.\/QGIS\///' | awk -F $'\t' '{print $1 ";" $2;}' | grep -v ";$" | sed 's/"//g' | while read line; do
     file=${line%;*}
