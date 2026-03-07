@@ -289,6 +289,12 @@
         "fastcgi"
       ]
     },
+    "qtwebengine": {
+      "description": "Determines whether QGIS should be built with webengine",
+      "dependencies": [
+        "qtwebengine"
+      ]
+    },
     "sfcgal": {
       "description": "Build with SFCGAL support",
       "dependencies": [
