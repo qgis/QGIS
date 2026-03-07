@@ -47,6 +47,7 @@ void QgsPdalAlgorithmBase::enableElevationPropertiesPostProcessor( bool enable )
 
 QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 {
+#if QT_CONFIG( process )
   QString wrenchExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_WRENCH_EXECUTABLE"_s );
   if ( wrenchExecutable.isEmpty() )
   {
@@ -57,6 +58,9 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 #endif
   }
   return QString( wrenchExecutable );
+#else
+  return QString();
+#endif
 }
 
 void QgsPdalAlgorithmBase::createCommonParameters()
@@ -186,6 +190,7 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
 
 void QgsPdalAlgorithmBase::runWrenchProcess( const QStringList &processArgs, QgsProcessingFeedback *feedback )
 {
+#if QT_CONFIG( process )
   const QString wrenchPath = wrenchExecutableBinary();
 
   if ( !QFileInfo::exists( wrenchPath ) )
@@ -276,6 +281,9 @@ void QgsPdalAlgorithmBase::runWrenchProcess( const QStringList &processArgs, Qgs
   {
     throw QgsProcessingException( QObject::tr( "Process returned error code %1" ).arg( res ) );
   }
+#else
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with Qt process feature enabled" ) );
+#endif
 }
 
 QVariantMap QgsPdalAlgorithmBase::getOutputs( const QVariantMap &parameters, QgsProcessingContext &context )
