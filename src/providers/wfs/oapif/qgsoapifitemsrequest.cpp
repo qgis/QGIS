@@ -165,9 +165,15 @@ void QgsOapifItemsRequest::processReply()
   {
     VSIUnlink( vsimemFilename.toUtf8().constData() );
     VSIUnlink( CPLResetExtension( vsimemFilename.toUtf8().constData(), "gfs" ) );
-    mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
-    mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Loading of items failed" ) );
+
+    // Some requests can lead to no features detected for which the JSON-FG
+    // driver returns a dataset without layers.
+    if ( extension != "json"_L1 || ( buffer.indexOf( "\"numberReturned\":0" ) < 0 && buffer.indexOf( "\"features\":[]" ) < 0 ) )
+    {
+      mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
+      mAppLevelError = ApplicationLevelError::JsonError;
+      mErrorMessage = errorMessageWithReason( tr( "Loading of items failed" ) );
+    }
     emit gotResponse();
     return;
   }
