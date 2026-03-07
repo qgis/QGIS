@@ -600,8 +600,7 @@ void TestQgsLineString::setPoints()
   QVERIFY( expectedPts.isEmpty() );
 
   //setPoints with z
-  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                           << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 );
+  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 );
   ls.setPoints( pts );
 
   QCOMPARE( ls.numPoints(), 2 );
@@ -613,8 +612,7 @@ void TestQgsLineString::setPoints()
   QCOMPARE( expectedPts, pts );
 
   //setPoints with 25d
-  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 1, 2, 4 )
-                           << QgsPoint( Qgis::WkbType::Point25D, 2, 3, 4 );
+  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 1, 2, 4 ) << QgsPoint( Qgis::WkbType::Point25D, 2, 3, 4 );
   ls.setPoints( pts );
 
   QCOMPARE( ls.numPoints(), 2 );
@@ -627,8 +625,7 @@ void TestQgsLineString::setPoints()
   QCOMPARE( expectedPts, pts );
 
   //setPoints with m
-  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
-                           << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 );
+  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 );
   ls.setPoints( pts );
 
   QCOMPARE( ls.numPoints(), 2 );
@@ -640,8 +637,7 @@ void TestQgsLineString::setPoints()
   QCOMPARE( expectedPts, pts );
 
   //setPoints with zm
-  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-                           << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 );
+  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 );
   ls.setPoints( pts );
 
   QCOMPARE( ls.numPoints(), 2 );
@@ -653,8 +649,7 @@ void TestQgsLineString::setPoints()
   QCOMPARE( expectedPts, pts );
 
   //setPoints with MIXED dimensionality of points
-  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-                           << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 );
+  pts = QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 );
   ls.setPoints( pts );
 
   QCOMPARE( ls.numPoints(), 2 );
@@ -767,7 +762,9 @@ void TestQgsLineString::appendWithZM()
 
   //check dimensionality is inherited from append line if initially empty
   toAppend = std::make_unique<QgsLineString>();
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
+  toAppend->setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 )
+  );
   ls.append( toAppend.get() );
 
   QVERIFY( ls.is3D() );
@@ -788,7 +785,9 @@ void TestQgsLineString::appendWithZM()
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
 
   toAppend = std::make_unique<QgsLineString>();
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
+  toAppend->setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 )
+  );
   ls.append( toAppend.get() );
 
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
@@ -989,7 +988,13 @@ void TestQgsLineString::close()
   QCOMPARE( ls.pointN( 4 ), QgsPoint( 1, 2 ) );
 
   // tiny differences
-  ls.setPoints( QgsPointSequence() << QgsPoint( 0.000000000000001, 0.000000000000002 ) << QgsPoint( 0.000000000000011, 0.000000000000002 ) << QgsPoint( 0.000000000000011, 0.000000000000022 ) << QgsPoint( 0.000000000000001, 0.000000000000022 ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 0.000000000000001, 0.000000000000002 )
+    << QgsPoint( 0.000000000000011, 0.000000000000002 )
+    << QgsPoint( 0.000000000000011, 0.000000000000022 )
+    << QgsPoint( 0.000000000000001, 0.000000000000022 )
+  );
   QVERIFY( !ls.isClosed() );
 
   ls.close();
@@ -999,12 +1004,24 @@ void TestQgsLineString::close()
   QGSCOMPARENEAR( ls.pointN( 4 ).y(), 0.000000000000002, 0.00000000000000001 );
 
   //test that m values aren't considered when testing for closedness
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 )
+  );
   QVERIFY( ls.isClosed() );
 
   //close with z and m
   ls = QgsLineString();
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   ls.close();
   QCOMPARE( ls.pointN( 4 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
 }
@@ -1012,7 +1029,13 @@ void TestQgsLineString::close()
 void TestQgsLineString::asQPolygonF()
 {
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
 
   QPolygonF poly = ls.asQPolygonF();
   QCOMPARE( poly.count(), 4 );
@@ -1058,7 +1081,13 @@ void TestQgsLineString::clone()
   QCOMPARE( segmentized->pointN( 3 ), ls.pointN( 3 ) );
 
   //clone with Z/M
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   cloned.reset( ls.clone() );
 
   QCOMPARE( cloned->numPoints(), 4 );
@@ -1103,7 +1132,13 @@ void TestQgsLineString::clone()
 void TestQgsLineString::toWkbFromWkb()
 {
   QgsLineString ls1;
-  ls1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  ls1.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
 
   QByteArray wkb1 = ls1.asWkb();
   QCOMPARE( wkb1.size(), ls1.wkbSize() );
@@ -1143,7 +1178,13 @@ void TestQgsLineString::toWkbFromWkb()
 void TestQgsLineString::toWktFromWkt()
 {
   QgsLineString ls1;
-  ls1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  ls1.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
 
   QString wkt = ls1.asWkt();
   QVERIFY( !wkt.isEmpty() );
@@ -2121,7 +2162,9 @@ void TestQgsLineString::sumUpArea()
   QGSCOMPARENEAR( area, -18, 4 * std::numeric_limits<double>::epsilon() );
 
   double shift = 10.0;
-  ls.setPoints( QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 ) << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 ) << QgsPoint( shift + 0, shift + 0 ) );
+  ls.setPoints(
+    QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 ) << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 ) << QgsPoint( shift + 0, shift + 0 )
+  );
   ls.sumUpArea( area );
   QGSCOMPARENEAR( area, -14, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -2133,7 +2176,9 @@ void TestQgsLineString::sumUpArea()
   for ( int accuracyMeterPow = 3; accuracyMeterPow >= -3; accuracyMeterPow-- )
   {
     area = accuracyMeterPow - 4.0;
-    ls.setPoints( QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 ) << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 ) << QgsPoint( shift + 0, shift + 0 ) );
+    ls.setPoints(
+      QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 ) << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 ) << QgsPoint( shift + 0, shift + 0 )
+    );
     ls.sumUpArea( area );
     QGSCOMPARENEAR( area, accuracyMeterPow, epsilonArea );
     shift = shift * 10.0;
@@ -2572,13 +2617,17 @@ void TestQgsLineString::swapXy()
 void TestQgsLineString::filterVertices()
 {
   QgsLineString ls;
-  auto filter = []( const QgsPoint &point ) -> bool {
-    return point.x() < 5;
-  };
+  auto filter = []( const QgsPoint &point ) -> bool { return point.x() < 5; };
 
   ls.filterVertices( filter ); // no crash
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   ls.filterVertices( filter );
 
   QCOMPARE( ls.asWkt( 2 ), u"LineString ZM (1 2 3 4, 4 12 13 14)"_s );
@@ -2587,13 +2636,17 @@ void TestQgsLineString::filterVertices()
 void TestQgsLineString::transformVertices()
 {
   QgsLineString ls;
-  auto transform = []( const QgsPoint &point ) -> QgsPoint {
-    return QgsPoint( point.x() + 5, point.y() + 6, point.z() + 7, point.m() + 8 );
-  };
+  auto transform = []( const QgsPoint &point ) -> QgsPoint { return QgsPoint( point.x() + 5, point.y() + 6, point.z() + 7, point.m() + 8 ); };
 
   ls.transformVertices( transform ); // no crash
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   ls.transformVertices( transform );
 
   QCOMPARE( ls.asWkt( 2 ), u"LineString ZM (16 8 10 12, 6 8 10 12, 9 18 20 22, 116 18 30 32)"_s );
@@ -2606,7 +2659,13 @@ void TestQgsLineString::transformVertices()
   QVERIFY( !ls.transform( nullptr ) );
   QVERIFY( ls.transform( &transformer ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
 
   QVERIFY( ls.transform( &transformer ) );
   QCOMPARE( ls.asWkt( 2 ), u"LineString ZM (33 16 8 3, 3 16 8 3, 12 26 18 13, 333 26 28 23)"_s );
@@ -2653,10 +2712,7 @@ void TestQgsLineString::curveSubstring()
   substringResult.reset( ls.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), u"LineString ZM (11 3 4 5, 11 12 13 14, 21 12 14 15)"_s );
 
-  substringResult.reset( ls.curveSubstring(
-    QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 1 ) ),
-    QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 2 ) )
-  ) );
+  substringResult.reset( ls.curveSubstring( QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 1 ) ), QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 2 ) ) ) );
   QCOMPARE( substringResult->asWkt( 2 ), u"LineString ZM (11 12 13 14, 111 12 23 24)"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 0, Qgis::WkbType::PointZ ) << QgsPoint( 11, 12, 13, 0, Qgis::WkbType::PointZ ) << QgsPoint( 111, 12, 23, 0, Qgis::WkbType::PointZ ) );
@@ -2720,9 +2776,7 @@ void TestQgsLineString::interpolatePoint()
 void TestQgsLineString::visitPoints()
 {
   QgsLineString ls;
-  ls.visitPointsByRegularDistance( 1, []( double, double, double, double, double, double, double, double, double, double, double, double ) -> bool {
-    return true;
-  } ); // no crash
+  ls.visitPointsByRegularDistance( 1, []( double, double, double, double, double, double, double, double, double, double, double, double ) -> bool { return true; } ); // no crash
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   int visitCount = 0;

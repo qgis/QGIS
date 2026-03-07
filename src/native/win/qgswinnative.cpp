@@ -43,10 +43,7 @@ using namespace Qt::StringLiterals;
 
 struct LPITEMIDLISTDeleter
 {
-    void operator()( LPITEMIDLIST pidl ) const
-    {
-      ILFree( pidl );
-    }
+    void operator()( LPITEMIDLIST pidl ) const { ILFree( pidl ); }
 };
 
 using ITEMIDLIST_unique_ptr = std::unique_ptr<std::remove_pointer_t<LPITEMIDLIST>, LPITEMIDLISTDeleter>;
@@ -133,10 +130,7 @@ class NotificationHandler : public WinToastLib::IWinToastHandler
 
     void toastActivated( int ) const override {}
 
-    void toastFailed() const override
-    {
-      qWarning() << "Error showing notification";
-    }
+    void toastFailed() const override { qWarning() << "Error showing notification"; }
 
     void toastDismissed( WinToastDismissalReason ) const override {}
 };
@@ -215,8 +209,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
       // Seen in qfilesystemwatcher_win.cpp from Qt:
       // WM_DEVICECHANGE/DBT_DEVTYP_VOLUME messages are sent to all toplevel windows. Compare a hash value to ensure
       // it is handled only once.
-      const quintptr newHash = reinterpret_cast<quintptr>( broadcastVolume ) + pWindowsMessage->wParam
-                               + quintptr( broadcastVolume->dbcv_flags ) + quintptr( broadcastVolume->dbcv_unitmask );
+      const quintptr newHash = reinterpret_cast<quintptr>( broadcastVolume ) + pWindowsMessage->wParam + quintptr( broadcastVolume->dbcv_flags ) + quintptr( broadcastVolume->dbcv_unitmask );
       if ( newHash == mLastMessageHash )
         return false;
       mLastMessageHash = newHash;

@@ -176,9 +176,11 @@ const QString QgsCrashReport::crashID() const
     return u"Not available"_s;
 
   if ( !mStackTrace->symbolsLoaded || mStackTrace->lines.isEmpty() )
-    return QStringLiteral( "ID not generated due to missing information.<br><br> "
-                           "Your version of QGIS install might not have debug information included or "
-                           "we couldn't get crash information." );
+    return QStringLiteral(
+      "ID not generated due to missing information.<br><br> "
+      "Your version of QGIS install might not have debug information included or "
+      "we couldn't get crash information."
+    );
 
   QString data = QString();
 

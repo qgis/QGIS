@@ -38,20 +38,16 @@ class TestQgsMessageBar : public QObject
 };
 
 void TestQgsMessageBar::initTestCase()
-{
-}
+{}
 
 void TestQgsMessageBar::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMessageBar::init()
-{
-}
+{}
 
 void TestQgsMessageBar::cleanup()
-{
-}
+{}
 
 void TestQgsMessageBar::dismiss()
 {

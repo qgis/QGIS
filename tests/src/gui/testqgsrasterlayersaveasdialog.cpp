@@ -58,12 +58,10 @@ void TestQgsRasterLayerSaveAsDialog::cleanupTestCase()
 }
 
 void TestQgsRasterLayerSaveAsDialog::init()
-{
-}
+{}
 
 void TestQgsRasterLayerSaveAsDialog::cleanup()
-{
-}
+{}
 
 void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
 {
@@ -137,15 +135,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   options.driverName = u"GPKG"_s;
   options.layerName = u"test_vector_layer"_s;
   QString errorMessage;
-  QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options,
-    &errorMessage,
-    nullptr,
-    nullptr
-  );
+  QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, &errorMessage, nullptr, nullptr );
   const QgsVectorLayer vl2( u"%1|layername=test_vector_layer"_s.arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName();

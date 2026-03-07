@@ -441,7 +441,8 @@ void TestQgsRasterIterator::testSubRegion()
   int subRectTop = 0;
   int subRectLeft = 0;
   // sub region is whole of raster extent
-  QgsRectangle subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497470, 7050585, 498190, 7051130 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QgsRectangle subRect
+    = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497470, 7050585, 498190, 7051130 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497470 );
   QCOMPARE( subRect.yMinimum(), 7050585 );
   QCOMPARE( subRect.xMaximum(), 498190 );
@@ -463,7 +464,8 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectTop, 0 );
 
   // sub rect inside raster extent
-  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497970.01, 7050985.05, 498030.95, 7051030.75 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  subRect
+    = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497970.01, 7050985.05, 498030.95, 7051030.75 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497970 );
   QCOMPARE( subRect.yMinimum(), 7050985.0 );
   QCOMPARE( subRect.xMaximum(), 498031 );
@@ -475,7 +477,8 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectTop, 992 );
 
   // sub rect JUST inside raster extent
-  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497370.001, 7050385.001, 498389.99999, 7051329.9999 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  subRect = QgsRasterIterator::
+    subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497370.001, 7050385.001, 498389.99999, 7051329.9999 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497470 );
   QCOMPARE( subRect.yMinimum(), 7050585 );
   QCOMPARE( subRect.xMaximum(), 498190 );

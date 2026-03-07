@@ -48,8 +48,7 @@ class TestCollectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     TestCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() )
-      : QgsDataCollectionItem( parent, name, path, providerKey ) {
-      };
+      : QgsDataCollectionItem( parent, name, path, providerKey ) {};
 
     bool layerCollection() const override { return true; };
 };

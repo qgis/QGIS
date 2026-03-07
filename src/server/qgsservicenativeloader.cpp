@@ -100,9 +100,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
     return nullptr;
   }
   // Load entry point
-  serviceEntryPoint_t *
-    entryPointFunc
-    = reinterpret_cast<serviceEntryPoint_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
+  serviceEntryPoint_t *entryPointFunc = reinterpret_cast<serviceEntryPoint_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
 
   if ( entryPointFunc )
   {

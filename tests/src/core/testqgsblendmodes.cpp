@@ -44,12 +44,10 @@ class TestQgsBlendModes : public QgsTest
 
   public:
     TestQgsBlendModes()
-      : QgsTest( u"Blending modes"_s ) {}
+      : QgsTest( u"Blending modes"_s )
+    {}
 
-    ~TestQgsBlendModes() override
-    {
-      delete mMapSettings;
-    }
+    ~TestQgsBlendModes() override { delete mMapSettings; }
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

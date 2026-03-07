@@ -41,20 +41,16 @@ class TestQgsDockWidget : public QObject
 };
 
 void TestQgsDockWidget::initTestCase()
-{
-}
+{}
 
 void TestQgsDockWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsDockWidget::init()
-{
-}
+{}
 
 void TestQgsDockWidget::cleanup()
-{
-}
+{}
 
 void TestQgsDockWidget::testSignals()
 {

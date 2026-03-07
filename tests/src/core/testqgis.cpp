@@ -48,7 +48,8 @@ class TestQgis : public QgsTest
 
   public:
     TestQgis()
-      : QgsTest( u"Qgis Tests"_s ) {}
+      : QgsTest( u"Qgis Tests"_s )
+    {}
 
   private slots:
     void init() {}    // will be called before each testfunction is executed.
@@ -561,7 +562,12 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "qvariantlist equal one element" ) << QVariant( QVariantList() << QVariant( 9 ) ) << QVariant( QVariantList() << QVariant( 9 ) ) << false << false << 0;
   QTest::newRow( "qvariantlist 3" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 4" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << false << true << 1;
-  QTest::newRow( "qvariantlist equal two element" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << false << false << 0;
+  QTest::newRow( "qvariantlist equal two element" )
+    << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) )
+    << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) )
+    << false
+    << false
+    << 0;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true << 1;
   QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false << 0;
@@ -618,15 +624,9 @@ void TestQgis::testNanCompatibleEquals()
 class ConstTester
 {
   public:
-    void doSomething()
-    {
-      mVal = 1;
-    }
+    void doSomething() { mVal = 1; }
 
-    void doSomething() const
-    {
-      mVal = 2;
-    }
+    void doSomething() const { mVal = 2; }
 
     mutable int mVal = 0;
 };

@@ -926,26 +926,14 @@ void TestQgsPoint::boundingBox3D()
 void TestQgsPoint::boundingBoxIntersects()
 {
   // 2d
-  QVERIFY( QgsPoint( 1, 2 ).boundingBoxIntersects(
-    QgsRectangle( 0, 0.5, 1.5, 3 )
-  ) );
-  QVERIFY( !QgsPoint( 1, 2 ).boundingBoxIntersects(
-    QgsRectangle( 3, 0.5, 3.5, 3 )
-  ) );
-  QVERIFY( !QgsPoint().boundingBoxIntersects(
-    QgsRectangle( 0, 0.5, 3.5, 3 )
-  ) );
+  QVERIFY( QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 0, 0.5, 1.5, 3 ) ) );
+  QVERIFY( !QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 3, 0.5, 3.5, 3 ) ) );
+  QVERIFY( !QgsPoint().boundingBoxIntersects( QgsRectangle( 0, 0.5, 3.5, 3 ) ) );
 
   // 3d
-  QVERIFY( QgsPoint( 1, 2, 3 ).boundingBoxIntersects(
-    QgsBox3D( 0, 0.5, 1.5, 3, 2.5, 4.2 )
-  ) );
-  QVERIFY( !QgsPoint( 1, 2, 3 ).boundingBoxIntersects(
-    QgsBox3D( 3, 0.5, 1.5, 3.5, 2.5, 4.5 )
-  ) );
-  QVERIFY( !QgsPoint().boundingBoxIntersects(
-    QgsBox3D( 0, 0.5, 1.5, 3.5, 2.5, 4.5 )
-  ) );
+  QVERIFY( QgsPoint( 1, 2, 3 ).boundingBoxIntersects( QgsBox3D( 0, 0.5, 1.5, 3, 2.5, 4.2 ) ) );
+  QVERIFY( !QgsPoint( 1, 2, 3 ).boundingBoxIntersects( QgsBox3D( 3, 0.5, 1.5, 3.5, 2.5, 4.5 ) ) );
+  QVERIFY( !QgsPoint().boundingBoxIntersects( QgsBox3D( 0, 0.5, 1.5, 3.5, 2.5, 4.5 ) ) );
 }
 
 void TestQgsPoint::filterVertices()
@@ -963,9 +951,7 @@ void TestQgsPoint::transformVertices()
 {
   QgsPoint pt( 1.1, 2.2, 3.3, 4.4, Qgis::WkbType::PointZM );
 
-  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint {
-    return QgsPoint( pt.x() + 2, pt.y() + 3, pt.z() + 1, pt.m() + 8 );
-  } );
+  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint { return QgsPoint( pt.x() + 2, pt.y() + 3, pt.z() + 1, pt.m() + 8 ); } );
 
   QCOMPARE( pt.x(), 3.1 );
   QCOMPARE( pt.y(), 5.2 );
@@ -974,9 +960,7 @@ void TestQgsPoint::transformVertices()
   QCOMPARE( pt.wkbType(), Qgis::WkbType::PointZM );
 
   // no dimensionality change allowed
-  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint {
-    return QgsPoint( pt.x() + 2, pt.y() + 3 );
-  } );
+  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint { return QgsPoint( pt.x() + 2, pt.y() + 3 ); } );
 
   QCOMPARE( pt.x(), 5.1 );
   QCOMPARE( pt.y(), 8.2 );
@@ -985,9 +969,7 @@ void TestQgsPoint::transformVertices()
   QCOMPARE( pt.wkbType(), Qgis::WkbType::PointZM );
 
   pt = QgsPoint( 2, 3 );
-  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint {
-    return QgsPoint( pt.x() + 2, pt.y() + 3, 7, 8 );
-  } );
+  pt.transformVertices( []( const QgsPoint &pt ) -> QgsPoint { return QgsPoint( pt.x() + 2, pt.y() + 3, 7, 8 ); } );
 
   QCOMPARE( pt.x(), 4.0 );
   QCOMPARE( pt.y(), 6.0 );
@@ -1255,8 +1237,7 @@ void TestQgsPoint::cast()
 }
 
 // compares 3D vector/point and handles nan values
-template<typename ANY_3D>
-bool isEqual3D( const ANY_3D &pt1, const ANY_3D &pt2 )
+template<typename ANY_3D> bool isEqual3D( const ANY_3D &pt1, const ANY_3D &pt2 )
 {
   bool ret = true;
   ret = pt1.x() == pt2.x() || ( std::isnan( pt1.x() ) && std::isnan( pt2.x() ) );

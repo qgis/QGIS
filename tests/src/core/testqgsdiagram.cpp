@@ -53,7 +53,8 @@ class TestQgsDiagram : public QgsTest
 
   public:
     TestQgsDiagram()
-      : QgsTest( u"Diagram Tests"_s, u"diagrams"_s ) {}
+      : QgsTest( u"Diagram Tests"_s, u"diagrams"_s )
+    {}
 
   private:
     bool mTestHasError = false;
@@ -118,9 +119,7 @@ class TestQgsDiagram : public QgsTest
     }
 
     // will be called after every testfunction.
-    void cleanup()
-    {
-    }
+    void cleanup() {}
 
     void testPieDiagram()
     {

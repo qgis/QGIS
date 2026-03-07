@@ -112,70 +112,99 @@ void TestQgsReclassifyUtils::testReclassify_data()
   QTest::addColumn<int>( "dataType" );
   QTest::addColumn<QVector<double>>( "expected" );
 
-  QTest::newRow( "no change" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                               << 3 << 2
-                               << QVector<QgsReclassifyUtils::RasterClass>()
-                               << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                               << QVector<double> { 1, 2, 3, 4, 5, 6 };
+  QTest::newRow( "no change" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << QVector<QgsReclassifyUtils::RasterClass>()
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 };
 
-  QTest::newRow( "one class" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                               << 3 << 2
-                               << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                    << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 ) )
-                               << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                               << QVector<double> { 1, 2, 3, 8, 8, 6 };
+  QTest::newRow( "one class" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { 1, 2, 3, 8, 8, 6 };
 
-  QTest::newRow( "byte type" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                               << 3 << 2
-                               << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                    << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 ) )
-                               << -9999.0 << false << static_cast<int>( Qgis::DataType::Byte )
-                               << QVector<double> { 1, 2, 3, 8, 8, 6 };
+  QTest::newRow( "byte type" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Byte )
+    << QVector<double> { 1, 2, 3, 8, 8, 6 };
 
-  QTest::newRow( "two class" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                               << 3 << 2
-                               << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                    << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 )
-                                    << QgsReclassifyUtils::RasterClass( 1, 3, QgsRasterRange::IncludeMin, -7 ) )
-                               << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                               << QVector<double> { -7, -7, 3, 8, 8, 6 };
+  QTest::newRow( "two class" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMax, 8 ) << QgsReclassifyUtils::RasterClass( 1, 3, QgsRasterRange::IncludeMin, -7 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { -7, -7, 3, 8, 8, 6 };
 
-  QTest::newRow( "infinite range" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                                    << 3 << 2
-                                    << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                         << QgsReclassifyUtils::RasterClass( 3, std::numeric_limits<double>::quiet_NaN(), QgsRasterRange::IncludeMax, 8 )
-                                         << QgsReclassifyUtils::RasterClass( 1, 3, QgsRasterRange::IncludeMin, -7 ) )
-                                    << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                                    << QVector<double> { -7, -7, 3, 8, 8, 8 };
+  QTest::newRow( "infinite range" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>()
+         << QgsReclassifyUtils::RasterClass( 3, std::numeric_limits<double>::quiet_NaN(), QgsRasterRange::IncludeMax, 8 )
+         << QgsReclassifyUtils::RasterClass( 1, 3, QgsRasterRange::IncludeMin, -7 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { -7, -7, 3, 8, 8, 8 };
 
-  QTest::newRow( "infinite range 2" ) << QVector<double> { 1, 2, 3, 4, 5, 6 }
-                                      << 3 << 2
-                                      << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                           << QgsReclassifyUtils::RasterClass( 3, 4, QgsRasterRange::IncludeMax, 8 )
-                                           << QgsReclassifyUtils::RasterClass( std::numeric_limits<double>::quiet_NaN(), 3, QgsRasterRange::IncludeMin, -7 ) )
-                                      << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                                      << QVector<double> { -7, -7, 3, 8, 5, 6 };
+  QTest::newRow( "infinite range 2" )
+    << QVector<double> { 1, 2, 3, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>()
+         << QgsReclassifyUtils::RasterClass( 3, 4, QgsRasterRange::IncludeMax, 8 )
+         << QgsReclassifyUtils::RasterClass( std::numeric_limits<double>::quiet_NaN(), 3, QgsRasterRange::IncludeMin, -7 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { -7, -7, 3, 8, 5, 6 };
 
-  QTest::newRow( "with source no data" ) << QVector<double> { 1, 2, -9999, 4, 5, 6 }
-                                         << 3 << 2
-                                         << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                              << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
-                                         << -9999.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                                         << QVector<double> { 1, 2, -9999, 8, 8, 6 };
+  QTest::newRow( "with source no data" )
+    << QVector<double> { 1, 2, -9999, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
+    << -9999.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { 1, 2, -9999, 8, 8, 6 };
 
-  QTest::newRow( "with dest no data" ) << QVector<double> { 1, 2, -9999, 4, 5, 6 }
-                                       << 3 << 2
-                                       << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                            << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
-                                       << -99.0 << false << static_cast<int>( Qgis::DataType::Float32 )
-                                       << QVector<double> { 1, 2, -99, 8, 8, 6 };
+  QTest::newRow( "with dest no data" )
+    << QVector<double> { 1, 2, -9999, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
+    << -99.0
+    << false
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { 1, 2, -99, 8, 8, 6 };
 
-  QTest::newRow( "use no data for missing" ) << QVector<double> { 1, 2, -9999, 4, 5, 6 }
-                                             << 3 << 2
-                                             << ( QVector<QgsReclassifyUtils::RasterClass>()
-                                                  << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
-                                             << -9999.0 << true << static_cast<int>( Qgis::DataType::Float32 )
-                                             << QVector<double> { -9999, -9999, -9999, 8, 8, -9999 };
+  QTest::newRow( "use no data for missing" )
+    << QVector<double> { 1, 2, -9999, 4, 5, 6 }
+    << 3
+    << 2
+    << ( QVector<QgsReclassifyUtils::RasterClass>() << QgsReclassifyUtils::RasterClass( 3, 5, QgsRasterRange::IncludeMinAndMax, 8 ) )
+    << -9999.0
+    << true
+    << static_cast<int>( Qgis::DataType::Float32 )
+    << QVector<double> { -9999, -9999, -9999, 8, 8, -9999 };
 }
 
 void TestQgsReclassifyUtils::testReclassify()
@@ -191,10 +220,7 @@ void TestQgsReclassifyUtils::testReclassify()
 
   const QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
   const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
-  double tform[] = {
-    extent.xMinimum(), extent.width() / nCols, 0.0,
-    extent.yMaximum(), 0.0, -extent.height() / nRows
-  };
+  double tform[] = { extent.xMinimum(), extent.width() / nCols, 0.0, extent.yMaximum(), 0.0, -extent.height() / nRows };
 
   // generate unique filename (need to open the file first to generate it)
   const QTemporaryDir dir;

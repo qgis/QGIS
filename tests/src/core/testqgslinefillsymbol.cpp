@@ -52,7 +52,8 @@ class TestQgsLineFillSymbol : public QgsTest
 
   public:
     TestQgsLineFillSymbol()
-      : QgsTest( u"Line Fill Symbol Tests"_s ) {}
+      : QgsTest( u"Line Fill Symbol Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -468,10 +469,7 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
 
   lineFill->setSubSymbol( lineSymbol );
   lineFill->setDistance( 6 );
-  lineFill->setDataDefinedProperty(
-    QgsSymbolLayer::Property::LineClipping,
-    QgsProperty::fromExpression( u"case when $id % 3 =0 then 'no' when $id % 3 = 1 then 'during_render' else 'before_render' end"_s )
-  );
+  lineFill->setDataDefinedProperty( QgsSymbolLayer::Property::LineClipping, QgsProperty::fromExpression( u"case when $id % 3 =0 then 'no' when $id % 3 = 1 then 'during_render' else 'before_render' end"_s ) );
 
   QVERIFY( imageCheck( u"symbol_linefill_clip_data_defined"_s, layer.get() ) );
 }

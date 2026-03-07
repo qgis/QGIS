@@ -72,34 +72,24 @@ class TestQgsExpressionContext : public QObject
     {
       public:
         GetTestValueFunction()
-          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s ) {}
+          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+        {}
 
-        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-        {
-          return 42;
-        }
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return 42; }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new GetTestValueFunction();
-        }
+        QgsScopedExpressionFunction *clone() const override { return new GetTestValueFunction(); }
     };
 
     class GetTestValueFunction2 : public QgsScopedExpressionFunction
     {
       public:
         GetTestValueFunction2()
-          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s ) {}
+          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+        {}
 
-        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-        {
-          return 43;
-        }
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return 43; }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new GetTestValueFunction2();
-        }
+        QgsScopedExpressionFunction *clone() const override { return new GetTestValueFunction2(); }
     };
 
     class ModifiableFunction : public QgsScopedExpressionFunction
@@ -118,10 +108,7 @@ class TestQgsExpressionContext : public QObject
           return ++( *mVal );
         }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new ModifiableFunction( mVal );
-        }
+        QgsScopedExpressionFunction *clone() const override { return new ModifiableFunction( mVal ); }
 
         /**
          * This function is not static, it's value changes with every invocation.
@@ -156,12 +143,10 @@ void TestQgsExpressionContext::cleanupTestCase()
 }
 
 void TestQgsExpressionContext::init()
-{
-}
+{}
 
 void TestQgsExpressionContext::cleanup()
-{
-}
+{}
 
 void TestQgsExpressionContext::contextScope()
 {
@@ -606,8 +591,7 @@ void TestQgsExpressionContext::takeScopes()
   QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( project );
 
   QgsExpressionContextScope *globalScope = QgsExpressionContextUtils::globalScope();
-  context << globalScope
-          << projectScope;
+  context << globalScope << projectScope;
 
   QCOMPARE( context.variable( "test_global" ).toString(), QString( "testval" ) );
   QCOMPARE( context.variable( "test_project" ).toString(), QString( "testval" ) );
@@ -1013,9 +997,7 @@ void TestQgsExpressionContext::description()
 void TestQgsExpressionContext::readWriteScope()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   const QDomElement rootNode = doc.createElement( u"qgis"_s );
 
