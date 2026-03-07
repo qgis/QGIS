@@ -81,7 +81,7 @@ void QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::initAlgorithm( const QVa
 
   createVpcOutputFormatParameter();
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground (nearest neighbour)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground" ) ) );
 }
 
 QStringList QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
