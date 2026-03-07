@@ -351,17 +351,12 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>mDistanceLineEdit</tabstop>
-  <tabstop>mAngleLineEdit</tabstop>
-  <tabstop>mXLineEdit</tabstop>
-  <tabstop>mYLineEdit</tabstop>
-  <tabstop>mZLineEdit</tabstop>
-  <tabstop>mMLineEdit</tabstop>
-  <tabstop>mBearingLineEdit</tabstop>
-  <tabstop>mCommonAngleSnappingLineEdit</tabstop>
-  <tabstop>mTotalAreaLineEdit</tabstop>
-  <tabstop>mTotalLengthLineEdit</tabstop>
-  <tabstop>mWeightLineEdit</tabstop>
+   <tabstop>mXLineEdit</tabstop>
+   <tabstop>mDistanceLineEdit</tabstop>
+   <tabstop>mAngleLineEdit</tabstop>
+   <tabstop>mYLineEdit</tabstop>
+   <tabstop>mZLineEdit</tabstop>
+   <tabstop>mMLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections/>
