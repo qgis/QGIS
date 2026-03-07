@@ -57,7 +57,8 @@ class TestQgsVirtualRasterProvider : public QgsTest
 
   public:
     TestQgsVirtualRasterProvider()
-      : QgsTest( u"Virtual Raster Provider Tests"_s ) {}
+      : QgsTest( u"Virtual Raster Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -108,12 +109,7 @@ void TestQgsVirtualRasterProvider::validLayer()
 {
   QgsRasterLayer::LayerOptions options;
 
-  auto layer = std::make_unique<QgsRasterLayer>(
-    mTestDataDir + u"raster/dem.tif"_s,
-    u"layer"_s,
-    u"virtualraster"_s,
-    options
-  );
+  auto layer = std::make_unique<QgsRasterLayer>( mTestDataDir + u"raster/dem.tif"_s, u"layer"_s, u"virtualraster"_s, options );
 
   QVERIFY( !layer->isValid() );
 }
@@ -126,7 +122,9 @@ void TestQgsVirtualRasterProvider::cleanupTestCase()
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
-  QgsRasterDataProvider::VirtualRasterParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri( u"?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"_s );
+  QgsRasterDataProvider::VirtualRasterParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(
+    u"?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"_s
+  );
 
   QCOMPARE( decodedParams.width, 373 );
   QCOMPARE( decodedParams.height, 350 );
@@ -173,8 +171,9 @@ void TestQgsVirtualRasterProvider::absoluteRelativeUri()
                    "height=200&"
                    "formula=%22landsat@1%22+1&"
                    "landsat:uri="
-                   + QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif&"
-                                                       "landsat:provider=gdal";
+                   + QStringLiteral( TEST_DATA_DIR )
+                   + "/landsat.tif&"
+                     "landsat:provider=gdal";
 
   QString uriRel = "?crs=EPSG:32633&"
                    "extent=781662.375,3339523.125,793062.375,3350923.125&"
@@ -311,7 +310,8 @@ void TestQgsVirtualRasterProvider::testNoData()
   //  0  NaN
   // NaN  1
   //  2  NaN
-  QString str = u"?crs=EPSG:2105&extent=415780.96899999998277053,759359.8330999999307096,415781.16899999999441206,759360.13309999997727573&width=2&height=3&formula=\"nodata@1\" ^2 / \"nodata@1\"&nodata:provider=gdal"_s;
+  QString str
+    = u"?crs=EPSG:2105&extent=415780.96899999998277053,759359.8330999999307096,415781.16899999999441206,759360.13309999997727573&width=2&height=3&formula=\"nodata@1\" ^2 / \"nodata@1\"&nodata:provider=gdal"_s;
 
   QString uri = QString( "%1&%2" ).arg( str, u"nodata:uri="_s % mTestDataDir % u"raster/no_data.tif"_s );
 

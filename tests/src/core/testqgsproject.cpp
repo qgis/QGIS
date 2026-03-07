@@ -81,8 +81,7 @@ class TestQgsProject : public QObject
 };
 
 void TestQgsProject::init()
-{
-}
+{}
 
 void TestQgsProject::cleanup()
 {
@@ -461,9 +460,7 @@ void TestQgsProject::testLayerFlags()
   // check reload of project with read fags that sets the correct layer properties
   QgsProject prj4;
   prj4.setFileName( f.fileName() );
-  Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontResolveLayers
-                                     | Qgis::ProjectReadFlag::TrustLayerMetadata
-                                     | Qgis::ProjectReadFlag::ForceReadOnlyLayers;
+  Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::TrustLayerMetadata | Qgis::ProjectReadFlag::ForceReadOnlyLayers;
   QVERIFY( prj4.read( readFlags ) );
   vlayer = qobject_cast<QgsVectorLayer *>( prj4.mapLayer( layer2id ) );
   QVERIFY( vlayer );
@@ -1009,66 +1006,68 @@ void TestQgsProject::testAsynchronousLayerLoading()
   vectorFilters << u"*.shp"_s;
 
   QStringList rasterFiles;
-  rasterFiles << u"band1_byte_attribute_table_epsg4326.tif"_s
-              << u"band1_byte_ct_epsg4326.tif"_s
-              << u"band1_byte_noct_epsg4326.tif"_s
-              << u"band1_int16_noct_epsg4326.tif"_s
-              << u"band3_byte_noct_epsg4326.tif"_s
-              << u"band3_float32_noct_epsg4326.tif"_s
-              << u"band3_int16_noct_epsg4326.tif"_s
-              << u"byte.tif"_s
-              << u"byte_with_nan_nodata.tif"_s
-              << u"dem.tif"_s
-              << u"gtiff_desc.tif"_s
-              << u"gtiff_tags.tif"_s
-              << u"raster_shading.tif"_s
-              << u"rgb_with_mask.tif"_s
-              << u"rnd_percentile_raster1_byte.tif"_s
-              << u"rnd_percentile_raster1_float64.tif"_s
-              << u"rnd_percentile_raster2_byte.tif"_s
-              << u"rnd_percentile_raster2_float64.tif"_s
-              << u"rnd_percentile_raster3_byte.tif"_s
-              << u"rnd_percentile_raster3_float64.tif"_s
-              << u"rnd_percentile_raster4_byte.tif"_s
-              << u"rnd_percentile_raster4_float64.tif"_s
-              << u"rnd_percentile_raster5_byte.tif"_s
-              << u"rnd_percentile_raster5_float64.tif"_s
-              << u"rnd_percentrank_valueraster_float64.tif"_s
-              << u"scale0ingdal23.tif"_s
-              << u"statisticsRas1_float64.asc"_s
-              << u"statisticsRas1_int32.tif"_s
-              << u"statistXXXX_XXXXXX.asc"_s //invalid name
-              << u"statisticsRas2_float64.asc"_s
-              << u"statisticsRas2_int32.tif"_s
-              << u"statisticsRas3_float64.asc"_s
-              << u"statisticsRas3_int32.tif"_s
-              << u"statisticsRas4_float64.asc"_s
-              << u"test.asc"_s
-              << u"unique_1.tif"_s
-              << u"valueRas1_float64.asc"_s
-              << u"valueRas2_float64.asc"_s
-              << u"valueRas3_float64.asc"_s
-              << u"with_color_table.tif"_s;
+  rasterFiles
+    << u"band1_byte_attribute_table_epsg4326.tif"_s
+    << u"band1_byte_ct_epsg4326.tif"_s
+    << u"band1_byte_noct_epsg4326.tif"_s
+    << u"band1_int16_noct_epsg4326.tif"_s
+    << u"band3_byte_noct_epsg4326.tif"_s
+    << u"band3_float32_noct_epsg4326.tif"_s
+    << u"band3_int16_noct_epsg4326.tif"_s
+    << u"byte.tif"_s
+    << u"byte_with_nan_nodata.tif"_s
+    << u"dem.tif"_s
+    << u"gtiff_desc.tif"_s
+    << u"gtiff_tags.tif"_s
+    << u"raster_shading.tif"_s
+    << u"rgb_with_mask.tif"_s
+    << u"rnd_percentile_raster1_byte.tif"_s
+    << u"rnd_percentile_raster1_float64.tif"_s
+    << u"rnd_percentile_raster2_byte.tif"_s
+    << u"rnd_percentile_raster2_float64.tif"_s
+    << u"rnd_percentile_raster3_byte.tif"_s
+    << u"rnd_percentile_raster3_float64.tif"_s
+    << u"rnd_percentile_raster4_byte.tif"_s
+    << u"rnd_percentile_raster4_float64.tif"_s
+    << u"rnd_percentile_raster5_byte.tif"_s
+    << u"rnd_percentile_raster5_float64.tif"_s
+    << u"rnd_percentrank_valueraster_float64.tif"_s
+    << u"scale0ingdal23.tif"_s
+    << u"statisticsRas1_float64.asc"_s
+    << u"statisticsRas1_int32.tif"_s
+    << u"statistXXXX_XXXXXX.asc"_s //invalid name
+    << u"statisticsRas2_float64.asc"_s
+    << u"statisticsRas2_int32.tif"_s
+    << u"statisticsRas3_float64.asc"_s
+    << u"statisticsRas3_int32.tif"_s
+    << u"statisticsRas4_float64.asc"_s
+    << u"test.asc"_s
+    << u"unique_1.tif"_s
+    << u"valueRas1_float64.asc"_s
+    << u"valueRas2_float64.asc"_s
+    << u"valueRas3_float64.asc"_s
+    << u"with_color_table.tif"_s;
   QStringList vectorFiles;
-  vectorFiles << u"bug5598.shp"_s
-              << u"empty_spatial_layer.shp"_s
-              << u"filter_test.shp"_s
-              << u"france_parts.shp"_s
-              << u"lines.shp"_s
-              << u"lines_cardinals.shp"_s
-              << u"lines_touching.shp"_s
-              << u"linestXXXX_XXXXXX.shp"_s //invalid name
-              << u"multipatch.shp"_s
-              << u"multipoint.shp"_s
-              << u"points.shp"_s
-              << u"points_relations.shp"_s
-              << u"polys.shp"_s
-              << u"polys_overlapping.shp"_s
-              << u"polys_overlapping_with_cat.shp"_s
-              << u"polys_overlapping_with_id.shp"_s
-              << u"polys_with_id.shp"_s
-              << u"rectangles.shp"_s
-              << u"test_852.shp"_s;
+  vectorFiles
+    << u"bug5598.shp"_s
+    << u"empty_spatial_layer.shp"_s
+    << u"filter_test.shp"_s
+    << u"france_parts.shp"_s
+    << u"lines.shp"_s
+    << u"lines_cardinals.shp"_s
+    << u"lines_touching.shp"_s
+    << u"linestXXXX_XXXXXX.shp"_s //invalid name
+    << u"multipatch.shp"_s
+    << u"multipoint.shp"_s
+    << u"points.shp"_s
+    << u"points_relations.shp"_s
+    << u"polys.shp"_s
+    << u"polys_overlapping.shp"_s
+    << u"polys_overlapping_with_cat.shp"_s
+    << u"polys_overlapping_with_id.shp"_s
+    << u"polys_with_id.shp"_s
+    << u"rectangles.shp"_s
+    << u"test_852.shp"_s;
 
 
   QList<QgsMapLayer *> layers;
@@ -1587,11 +1586,7 @@ void TestQgsProject::regression60100()
   auto project = std::make_unique<QgsProject>();
 
   // Add the local points.geojson (in PROJDIR) as a layer
-  auto layer = std::make_unique<QgsVectorLayer>(
-    projDirPath + u"/points.geojson"_s,
-    u"Test Points"_s,
-    u"ogr"_s
-  );
+  auto layer = std::make_unique<QgsVectorLayer>( projDirPath + u"/points.geojson"_s, u"Test Points"_s, u"ogr"_s );
   project->addMapLayer( layer.release() );
 
   // Write (save) the project to disk. This used to pick up the WRONG file and save it to the proj.

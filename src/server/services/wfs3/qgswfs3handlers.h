@@ -113,10 +113,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string summary() const override
-    {
-      return "WFS 3.0 Landing Page";
-    }
+    std::string summary() const override { return "WFS 3.0 Landing Page"; }
     std::string description() const override
     {
       return "The landing page provides links to the API definition, the Conformance "
@@ -167,10 +164,7 @@ class QgsWfs3CollectionsHandler : public QgsWfs3AbstractItemsHandler
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections(\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "describeCollections"; }
-    std::string summary() const override
-    {
-      return "Metadata about the feature collections shared by this API.";
-    }
+    std::string summary() const override { return "Metadata about the feature collections shared by this API."; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string description() const override
     {
@@ -241,7 +235,10 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
-    std::string description() const override { return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)."; }
+    std::string description() const override
+    {
+      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).";
+    }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }
     QStringList tags() const override { return { u"Features"_s }; }

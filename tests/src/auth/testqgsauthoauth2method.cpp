@@ -400,18 +400,14 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
   bool ok = false;
 
   qDebug() << "Verify serializeFromVariant";
-  const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant(
-    basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok
-  );
+  const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant( basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << vtxt;
   //qDebug() << baseConfigTxt( true );
   QCOMPARE( vtxt, baseConfigTxt( true ) );
 
   qDebug() << "Verify variantFromSerialized";
-  const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized(
-    baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok
-  );
+  const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );
   QCOMPARE( vmap, basevmap );

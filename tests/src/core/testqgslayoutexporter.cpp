@@ -36,7 +36,8 @@ class TestQgsLayoutExporter : public QgsTest
 
   public:
     TestQgsLayoutExporter()
-      : QgsTest( u"Layout Exporter Tests"_s ) {}
+      : QgsTest( u"Layout Exporter Tests"_s )
+    {}
 
   private slots:
     void initTestCase();
@@ -60,12 +61,10 @@ void TestQgsLayoutExporter::cleanupTestCase()
 }
 
 void TestQgsLayoutExporter::init()
-{
-}
+{}
 
 void TestQgsLayoutExporter::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutExporter::testHandleLayeredExport()
 {
@@ -89,9 +88,7 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
     return QgsLayoutExporter::Success;
   };
 
-  auto getExportGroupNameFunc = []( QgsLayoutItem * ) -> QString {
-    return QString();
-  };
+  auto getExportGroupNameFunc = []( QgsLayoutItem * ) -> QString { return QString(); };
 
   QList<QGraphicsItem *> items;
   QgsLayoutExporter::ExportResult res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
@@ -292,9 +289,7 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
     return QgsLayoutExporter::Success;
   };
-  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString {
-    return item->customProperty( u"pdfExportGroup"_s ).toString();
-  };
+  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString { return item->customProperty( u"pdfExportGroup"_s ).toString(); };
 
   QList<QGraphicsItem *> items;
   QStringList expectedGroupNames;
@@ -506,7 +501,24 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
   QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 << 14 );
-  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s << u"Label"_s << u"Label"_s );
+  QCOMPARE(
+    layerNames,
+    QStringList()
+      << u"Pages"_s
+      << u"Label, Shape"_s
+      << u"Label"_s
+      << u"Scalebar"_s
+      << u"Label"_s
+      << u"Scalebar"_s
+      << u"Scalebar"_s
+      << u"Map 1: Background"_s
+      << u"Map 1: lines"_s
+      << u"Map 1: Frame"_s
+      << u"my legend"_s
+      << u"my legend 2"_s
+      << u"Label"_s
+      << u"Label"_s
+  );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() << QString() );
   layerIds.clear();
@@ -530,7 +542,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportMapTheme()
   QStringList groupNames;
   QStringList mapThemes;
   QgsLayout *layout = &l;
-  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, &groupNames, &mapThemes, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
+  auto exportFunc =
+    [&layerIds, &layerNames, &mapLayerIds, &groupNames, &mapThemes, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
     layerIds << layerId;
     layerNames << layerDetail.name;
     mapLayerIds << layerDetail.mapLayerId;
@@ -543,9 +556,7 @@ void TestQgsLayoutExporter::testHandleLayeredExportMapTheme()
 
     return QgsLayoutExporter::Success;
   };
-  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString {
-    return item->customProperty( u"pdfExportGroup"_s ).toString();
-  };
+  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString { return item->customProperty( u"pdfExportGroup"_s ).toString(); };
 
   QList<QGraphicsItem *> items;
   QStringList expectedGroupNames;

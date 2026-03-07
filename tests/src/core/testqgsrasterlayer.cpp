@@ -64,11 +64,9 @@ class TestQgsRasterLayer : public QgsTest
     Q_OBJECT
   public:
     TestQgsRasterLayer()
-      : QgsTest( u"Raster Layer Tests"_s ) {}
-    ~TestQgsRasterLayer() override
-    {
-      delete mMapSettings;
-    }
+      : QgsTest( u"Raster Layer Tests"_s )
+    {}
+    ~TestQgsRasterLayer() override { delete mMapSettings; }
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -171,13 +169,7 @@ void TestQgsRasterLayer::initTestCase()
   mGeoJp2RasterLayer = new QgsRasterLayer( geoJp2RasterFileInfo.filePath(), geoJp2RasterFileInfo.completeBaseName() );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpRasterLayer
-                           << mpLandsatRasterLayer
-                           << mpFloat32RasterLayer
-                           << mPngRasterLayer
-                           << mGeoJp2RasterLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpRasterLayer << mpLandsatRasterLayer << mpFloat32RasterLayer << mPngRasterLayer << mGeoJp2RasterLayer );
 
   // add the test layer to the maprender
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpRasterLayer );
@@ -360,7 +352,8 @@ void TestQgsRasterLayer::checkDimensions()
 }
 void TestQgsRasterLayer::checkStats()
 {
-  QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
+  QgsRasterBandStats myStatistics
+    = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
   QCOMPARE( mpRasterLayer->width(), 10 );
   QCOMPARE( mpRasterLayer->height(), 10 );
   //QCOMPARE( myStatistics.elementCount, 100 );
@@ -372,7 +365,9 @@ void TestQgsRasterLayer::checkStats()
   QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.000001 );
 
   // limited extent
-  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
+  myStatistics
+    = mpRasterLayer->dataProvider()
+        ->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
 
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 7.0 );
@@ -380,7 +375,9 @@ void TestQgsRasterLayer::checkStats()
   QGSCOMPARENEAR( myStatistics.stdDev, 1.507557, 0.00001 );
 
   // with sample size
-  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
+  myStatistics
+    = mpRasterLayer->dataProvider()
+        ->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 7.0 );
   QCOMPARE( myStatistics.elementCount, 12ULL );
@@ -388,14 +385,18 @@ void TestQgsRasterLayer::checkStats()
   QGSCOMPARENEAR( myStatistics.stdDev, 2.153222, 0.00001 );
 
   // extremely limited extent - ~1 px size
-  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
+  myStatistics
+    = mpRasterLayer->dataProvider()
+        ->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 3.0 );
   QGSCOMPARENEAR( myStatistics.mean, 2.600000, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( myStatistics.stdDev, 0.492366, 0.00001 );
 
   // extremely limited extent - ~1 px size - with sample size
-  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
+  myStatistics
+    = mpRasterLayer->dataProvider()
+        ->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 3.0 );
   QCOMPARE( myStatistics.elementCount, 2ULL );
@@ -419,7 +420,8 @@ void TestQgsRasterLayer::checkScaleOffset()
   }
 
   QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats
-  const QgsRasterBandStats myStatistics = myRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
+  const QgsRasterBandStats myStatistics
+    = myRasterLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
 
   const QString oldReport = mReport;
 
@@ -571,12 +573,8 @@ void TestQgsRasterLayer::registry()
   QgsRasterLayer *mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(), myRasterFileInfo.completeBaseName() );
   QVERIFY( mypLayer->isValid() );
 
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mypLayer, false
-  );
-  QgsProject::instance()->removeMapLayers(
-    QStringList() << mypLayer->id()
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mypLayer, false );
+  QgsProject::instance()->removeMapLayers( QStringList() << mypLayer->id() );
 }
 
 //
@@ -628,12 +626,8 @@ void TestQgsRasterLayer::transparency()
   QVector<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
   QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
 
-  myTransparentSingleValuePixelList.append(
-    QgsRasterTransparency::TransparentSingleValuePixel( -2.5840000772112106e+38, -1.0879999684602689e+38, 0.5 )
-  );
-  myTransparentSingleValuePixelList.append(
-    QgsRasterTransparency::TransparentSingleValuePixel( 1.359999960575336e+37, 9.520000231087593e+37, 0.3 )
-  );
+  myTransparentSingleValuePixelList.append( QgsRasterTransparency::TransparentSingleValuePixel( -2.5840000772112106e+38, -1.0879999684602689e+38, 0.5 ) );
+  myTransparentSingleValuePixelList.append( QgsRasterTransparency::TransparentSingleValuePixel( 1.359999960575336e+37, 9.520000231087593e+37, 0.3 ) );
 
   rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
 
@@ -688,7 +682,8 @@ void TestQgsRasterLayer::palettedRendererNoData()
   auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, u"rl"_s );
   QVERIFY( rl->isValid() );
 
-  auto rasterRenderer = std::make_unique<QgsPalettedRasterRenderer>( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), u"class 2"_s ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), u"class 1"_s ) );
+  auto rasterRenderer = std::make_unique<
+    QgsPalettedRasterRenderer>( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), u"class 2"_s ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), u"class 1"_s ) );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 2 ) );
   rl->setRenderer( rasterRenderer.release() );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
@@ -756,7 +751,11 @@ void TestQgsRasterLayer::palettedRendererNoDataColor()
   auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, u"rl"_s );
   QVERIFY( rl->isValid() );
 
-  QgsPalettedRasterRenderer *rasterRenderer = new QgsPalettedRasterRenderer( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), u"class 2"_s ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), u"class 1"_s ) );
+  QgsPalettedRasterRenderer *rasterRenderer = new QgsPalettedRasterRenderer(
+    rl->dataProvider(),
+    1,
+    QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), u"class 2"_s ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), u"class 1"_s )
+  );
   rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
   rl->dataProvider()->setNoDataValue( 1, 2 );
   rl->setRenderer( rasterRenderer );

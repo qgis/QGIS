@@ -28,7 +28,8 @@ class TestQgsDiagramProperties : public QgsTest
 
   public:
     TestQgsDiagramProperties()
-      : QgsTest( u"Labeling Widget Tests"_s ) {}
+      : QgsTest( u"Labeling Widget Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -67,12 +68,10 @@ void TestQgsDiagramProperties::cleanupTestCase()
 }
 
 void TestQgsDiagramProperties::init()
-{
-}
+{}
 
 void TestQgsDiagramProperties::cleanup()
-{
-}
+{}
 
 void TestQgsDiagramProperties::testDataDefinedButtonsPreserved()
 {

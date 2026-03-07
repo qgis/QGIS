@@ -35,7 +35,8 @@ class TestQgsCustomization : public QgsTest
 
   public:
     TestQgsCustomization()
-      : QgsTest( u"Customization Tests"_s ) {}
+      : QgsTest( u"Customization Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -51,27 +52,15 @@ class TestQgsCustomization : public QgsTest
     void testModel();
 
   private:
-    template<class T>
-    T *getItem( QgsCustomization *customization, const QString &path ) const
-    {
-      return dynamic_cast<T *>( getItem( customization, path ) );
-    }
+    template<class T> T *getItem( QgsCustomization *customization, const QString &path ) const { return dynamic_cast<T *>( getItem( customization, path ) ); }
     QgsCustomization::QgsItem *getItem( QgsCustomization *customization, const QString &path ) const;
 
-    template<class T>
-    T *getItem( const QString &path ) const { return dynamic_cast<T *>( getItem( path ) ); }
-    QgsCustomization::QgsItem *getItem( const QString &path ) const
-    {
-      return getItem( mQgisApp->customization(), path );
-    }
+    template<class T> T *getItem( const QString &path ) const { return dynamic_cast<T *>( getItem( path ) ); }
+    QgsCustomization::QgsItem *getItem( const QString &path ) const { return getItem( mQgisApp->customization(), path ); }
 
     static QWidget *findQWidget( const QString &path );
 
-    template<class T>
-    static T *findQWidget( const QString &path )
-    {
-      return dynamic_cast<T *>( findQWidget( path ) );
-    }
+    template<class T> static T *findQWidget( const QString &path ) { return dynamic_cast<T *>( findQWidget( path ) ); }
 
     static QAction *findQAction( const QString &path );
     static long long qactionPosition( const QString &path );
@@ -123,12 +112,10 @@ long long TestQgsCustomization::qactionPosition( const QString &path )
 }
 
 void TestQgsCustomization::initTestCase()
-{
-}
+{}
 
 void TestQgsCustomization::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsCustomization::init()
 {

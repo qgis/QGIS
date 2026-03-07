@@ -36,20 +36,16 @@ class TestQgsAdvancedDigitizingToolsRegistry : public QObject
 };
 
 void TestQgsAdvancedDigitizingToolsRegistry::initTestCase()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::init()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::cleanup()
-{
-}
+{}
 
 class DummyAdvancedDigitizingTool : public QgsAdvancedDigitizingTool
 {
@@ -69,9 +65,7 @@ void TestQgsAdvancedDigitizingToolsRegistry::guiRegistry()
   QVERIFY( !registry.toolMetadata( QString( "empty" ) ) );
   QVERIFY( registry.toolMetadataNames().isEmpty() );
 
-  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * ) -> QgsAdvancedDigitizingTool * {
-    return new DummyAdvancedDigitizingTool();
-  };
+  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * ) -> QgsAdvancedDigitizingTool * { return new DummyAdvancedDigitizingTool(); };
 
   QgsAdvancedDigitizingToolMetadata *metadata = new QgsAdvancedDigitizingToolMetadata( u"dummy"_s, u"My Dummy Tool"_s, QIcon(), createTool );
   QVERIFY( registry.addTool( metadata ) );

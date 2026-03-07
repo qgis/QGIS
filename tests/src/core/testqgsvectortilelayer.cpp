@@ -51,7 +51,8 @@ class TestQgsVectorTileLayer : public QgsTest
 
   public:
     TestQgsVectorTileLayer()
-      : QgsTest( u"Vector Tile Layer Tests"_s, u"vector_tile"_s ) {}
+      : QgsTest( u"Vector Tile Layer Tests"_s, u"vector_tile"_s )
+    {}
 
   private:
     QString mDataDir;
@@ -125,11 +126,7 @@ void TestQgsVectorTileLayer::initTestCase()
   const double pointSize = Qgis::DEFAULT_POINT_SIZE;
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
-  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
-    polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
-    lineStrokeColor, lineStrokeWidth,
-    pointFillColor, pointStrokeColor, pointSize
-  ) );
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth, lineStrokeColor, lineStrokeWidth, pointFillColor, pointStrokeColor, pointSize ) );
   mLayer->setRenderer( rend ); // takes ownership
 }
 
@@ -160,9 +157,19 @@ void TestQgsVectorTileLayer::test_render()
 
 void TestQgsVectorTileLayer::test_render_withClip()
 {
-  QgsMapClippingRegion region( QgsGeometry::fromWkt( "Polygon ((-3584104.41462873760610819 9642431.51156153343617916, -3521836.1401221314445138 -3643384.67029104987159371, -346154.14028519613202661 -10787760.6154897827655077, 11515952.15322335436940193 -10530608.51481428928673267, 11982964.21202290244400501 11308099.1972544826567173, -3584104.41462873760610819 9642431.51156153343617916))" ) );
+  QgsMapClippingRegion region(
+    QgsGeometry::fromWkt(
+      "Polygon ((-3584104.41462873760610819 9642431.51156153343617916, -3521836.1401221314445138 -3643384.67029104987159371, -346154.14028519613202661 -10787760.6154897827655077, "
+      "11515952.15322335436940193 -10530608.51481428928673267, 11982964.21202290244400501 11308099.1972544826567173, -3584104.41462873760610819 9642431.51156153343617916))"
+    )
+  );
   region.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
-  QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((836943.07534032803960145 12108307.34630974195897579, 1179418.58512666448950768 -8011790.66139839310199022, 17306901.68233776465058327 -8130936.37545258551836014, 17680511.32937740534543991 14072993.65374799631536007, 836943.07534032803960145 12108307.34630974195897579))" ) );
+  QgsMapClippingRegion region2(
+    QgsGeometry::fromWkt(
+      "Polygon ((836943.07534032803960145 12108307.34630974195897579, 1179418.58512666448950768 -8011790.66139839310199022, 17306901.68233776465058327 -8130936.37545258551836014, "
+      "17680511.32937740534543991 14072993.65374799631536007, 836943.07534032803960145 12108307.34630974195897579))"
+    )
+  );
   region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
   mMapSettings->addClippingRegion( region );
   mMapSettings->addClippingRegion( region2 );
@@ -207,11 +214,7 @@ void TestQgsVectorTileLayer::test_labeling()
 
   // use a different renderer to make the labels stand out more
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
-  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
-    Qt::transparent, Qt::white, Qgis::DEFAULT_LINE_WIDTH * 2,
-    Qt::transparent, 0,
-    Qt::transparent, Qt::transparent, 0
-  ) );
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle( Qt::transparent, Qt::white, Qgis::DEFAULT_LINE_WIDTH * 2, Qt::transparent, 0, Qt::transparent, Qt::transparent, 0 ) );
   mLayer->setRenderer( rend ); // takes ownership
 
   mMapSettings->setExtent( mLayer->extent() );
@@ -313,7 +316,9 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // test that mbtilesvectortiles provider is the preferred provider for vector tile mbtiles files
-  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri(
+    u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR )
+  );
   // wms provider also reports handling this url
   int vtProviderIndex = candidates.at( 0 ).metadata()->key() == "mbtilesvectortiles"_L1 ? 0 : 1;
   QCOMPARE( candidates.size(), 2 );
@@ -469,11 +474,10 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   // vtpk uris
   QString localVtpkPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/testvtpk.vtpk"_s ) );
 
-  for ( auto uriStr : {
-          u"%1/%2"_s.arg( TEST_DATA_DIR ).arg( "testvtpk.vtpk" ), //
+  for ( auto uriStr :
+        { u"%1/%2"_s.arg( TEST_DATA_DIR ).arg( "testvtpk.vtpk" ), //
           u"type=vtpk&url=%1"_s.arg( localVtpkPath ),             //
-          u"type=vtpk&url=%1"_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/testvtpk.vtpk"_s )
-        } )
+          u"type=vtpk&url=%1"_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/testvtpk.vtpk"_s ) } )
   {
     QCOMPARE( vectorTileMetadata->priorityForUri( uriStr ), 100 );
     QCOMPARE( vectorTileMetadata->validLayerTypesForUri( uriStr ), { Qgis::LayerType::VectorTile } );

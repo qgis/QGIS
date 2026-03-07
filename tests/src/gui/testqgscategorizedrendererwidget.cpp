@@ -55,12 +55,10 @@ void TestQgsCategorizedRendererWidget::cleanupTestCase()
 }
 
 void TestQgsCategorizedRendererWidget::init()
-{
-}
+{}
 
 void TestQgsCategorizedRendererWidget::cleanup()
-{
-}
+{}
 
 void TestQgsCategorizedRendererWidget::testAddMissingCategories()
 {

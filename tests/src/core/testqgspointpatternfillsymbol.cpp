@@ -52,7 +52,8 @@ class TestQgsPointPatternFillSymbol : public QgsTest
 
   public:
     TestQgsPointPatternFillSymbol()
-      : QgsTest( u"Point Pattern Fill Tests"_s, u"symbol_pointpatternfill"_s ) {}
+      : QgsTest( u"Point Pattern Fill Tests"_s, u"symbol_pointpatternfill"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -115,9 +116,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup symbol
   mPointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -479,7 +478,8 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
   pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
-  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::MarkerClipping, QgsProperty::fromExpression( u"case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end"_s ) );
+  pointPatternFill->dataDefinedProperties()
+    .setProperty( QgsSymbolLayer::Property::MarkerClipping, QgsProperty::fromExpression( u"case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end"_s ) );
   mMapSettings.setLayers( { layer.get() } );
   mMapSettings.setExtent( layer->extent() );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_pointfill_datadefined_clip", "symbol_pointfill_datadefined_clip", mMapSettings );

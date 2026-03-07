@@ -61,8 +61,7 @@ class TestQgsHttpheaders : public QObject
 };
 
 void TestQgsHttpheaders::initTestCase()
-{
-}
+{}
 
 void TestQgsHttpheaders::equality()
 {

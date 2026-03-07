@@ -116,7 +116,14 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( *( static_cast<const QgsLineString *>( c1.geometryN( 0 ) ) ), part );
 
   //initial adding of geometry should set z/m type
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+  );
   QgsGeometryCollection c2;
   c2.addGeometry( part.clone() );
   //QVERIFY( c2.is3D() ); //no meaning for collections?
@@ -126,7 +133,14 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( c2.geometryType(), QString( "GeometryCollection" ) );
   QCOMPARE( *( static_cast<const QgsLineString *>( c2.geometryN( 0 ) ) ), part );
   QgsGeometryCollection c3;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+  );
   c3.addGeometry( part.clone() );
   //QVERIFY( !c3.is3D() ); //no meaning for collections?
   //QVERIFY( c3.isMeasure() ); //no meaning for collections?
@@ -134,7 +148,14 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( c3.wktTypeStr(), QString( "GeometryCollection" ) );
   QCOMPARE( *( static_cast<const QgsLineString *>( c3.geometryN( 0 ) ) ), part );
   QgsGeometryCollection c4;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 3, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 5, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 3, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 5, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 )
+  );
   c4.addGeometry( part.clone() );
   //QVERIFY( c4.is3D() ); //no meaning for collections?
   //QVERIFY( c4.isMeasure() ); //no meaning for collections?
@@ -155,15 +176,34 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( *static_cast<const QgsLineString *>( c6.geometryN( 1 ) ), part );
 
   QgsCoordinateSequence seq = c6.coordinateSequence();
-  QCOMPARE( seq, QgsCoordinateSequence() << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) ) ) << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 ) << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) ) ) );
+  QCOMPARE(
+    seq,
+    QgsCoordinateSequence()
+      << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) ) )
+      << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 ) << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) ) )
+  );
   QCOMPARE( c6.nCoordinates(), 10 );
 
 
   //clear
   QgsGeometryCollection c7;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+  );
   c7.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+  );
   c7.addGeometry( part.clone() );
   QCOMPARE( c7.numGeometries(), 2 );
   c7.clear();
@@ -180,10 +220,24 @@ void TestQgsGeometryCollection::geometryCollection()
   QgsGeometryCollection c11;
   std::unique_ptr<QgsGeometryCollection> cloned( c11.clone() );
   QVERIFY( cloned->isEmpty() );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 )
+  );
   c11.addGeometry( part.clone() );
   QgsLineString part2;
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   c11.addGeometry( part2.clone() );
   cloned.reset( c11.clone() );
   QCOMPARE( cloned->numGeometries(), 2 );
@@ -200,11 +254,25 @@ void TestQgsGeometryCollection::geometryCollection()
   QgsMultiPoint mp;
   QgsMultiLineString ml;
   QVERIFY( mp != ml );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+  );
   ml.addGeometry( part.clone() );
   QgsMultiLineString ml2;
   QVERIFY( ml != ml2 );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+  );
   ml2.addGeometry( part.clone() );
   QVERIFY( ml != ml2 );
 
@@ -233,9 +301,23 @@ void TestQgsGeometryCollection::geometryCollection()
 
   //to/fromWKB
   QgsGeometryCollection c16;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+    << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+    << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+    << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+    << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+  );
   c16.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+    << QgsPoint( Qgis::WkbType::Point, 1, 9 )
+    << QgsPoint( Qgis::WkbType::Point, 9, 9 )
+    << QgsPoint( Qgis::WkbType::Point, 9, 1 )
+    << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+  );
   c16.addGeometry( part2.clone() );
   QByteArray wkb16 = c16.asWkb();
   QCOMPARE( wkb16.size(), c16.wkbSize() );
@@ -249,9 +331,23 @@ void TestQgsGeometryCollection::geometryCollection()
   //parts with Z
   c16.clear();
   c17.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+  );
   c16.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+  );
   c16.addGeometry( part2.clone() );
   wkb16 = c16.asWkb();
   QgsConstWkbPtr wkb16ptr2( wkb16 );
@@ -264,9 +360,23 @@ void TestQgsGeometryCollection::geometryCollection()
   //parts with m
   c16.clear();
   c17.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+  );
   c16.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 1, 9, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 9, 9, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 9, 1, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 9, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 9, 9, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 9, 1, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 )
+  );
   c16.addGeometry( part2.clone() );
   wkb16 = c16.asWkb();
   QgsConstWkbPtr wkb16ptr3( wkb16 );
@@ -278,9 +388,23 @@ void TestQgsGeometryCollection::geometryCollection()
   // parts with ZM
   c16.clear();
   c17.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 )
+  );
   c16.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   c16.addGeometry( part2.clone() );
   wkb16 = c16.asWkb();
   QgsConstWkbPtr wkb16ptr4( wkb16 );
@@ -304,7 +428,14 @@ void TestQgsGeometryCollection::geometryCollection()
 
   //as JSON
   QgsGeometryCollection exportC;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+    << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+    << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+    << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+    << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+  );
   exportC.addGeometry( part.clone() );
 
   // GML document for compare
@@ -312,14 +443,18 @@ void TestQgsGeometryCollection::geometryCollection()
 
 
   // as GML2
-  QString expectedSimpleGML2( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedSimpleGML2(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>"_s
+  );
   QString res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
   QString expectedGML2empty( u"<MultiGeometry xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsGeometryCollection().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedSimpleGML3(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>"_s
+  );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
   QString expectedGML3empty( u"<MultiGeometry xmlns=\"gml\"/>"_s );
@@ -330,43 +465,82 @@ void TestQgsGeometryCollection::geometryCollection()
   res = exportC.asJson();
   QCOMPARE( res, expectedSimpleJson );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+    << QgsPoint( Qgis::WkbType::Point, 1, 9 )
+    << QgsPoint( Qgis::WkbType::Point, 9, 9 )
+    << QgsPoint( Qgis::WkbType::Point, 9, 1 )
+    << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+  );
   exportC.addGeometry( part.clone() );
 
-  QString expectedJson( "{\"geometries\":[{\"coordinates\":[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]],\"type\":\"LineString\"},{\"coordinates\":[[1.0,1.0],[1.0,9.0],[9.0,9.0],[9.0,1.0],[1.0,1.0]],\"type\":\"LineString\"}],\"type\":\"GeometryCollection\"}" );
+  QString expectedJson(
+    "{\"geometries\":[{\"coordinates\":[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]],\"type\":\"LineString\"},{\"coordinates\":[[1.0,1.0],[1.0,9.0],[9.0,9.0],[9.0,1.0],[1.0,1.0]],\"type\":"
+    "\"LineString\"}],\"type\":\"GeometryCollection\"}"
+  );
   res = exportC.asJson();
   QCOMPARE( res, expectedJson );
 
   QgsGeometryCollection exportFloat;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 100 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 100 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 10 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 )
+    << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 100 / 9.0 )
+    << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 100 / 9.0 )
+    << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 10 / 9.0 )
+    << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 )
+  );
   exportFloat.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 4 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 4 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 2 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 4 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 4 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 2 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 )
+  );
   exportFloat.addGeometry( part.clone() );
 
-  QString expectedJsonPrec3( "{\"geometries\":[{\"coordinates\":[[1.111,1.111],[1.111,11.111],[11.111,11.111],[11.111,1.111],[1.111,1.111]],\"type\":\"LineString\"},{\"coordinates\":[[0.667,0.667],[0.667,1.333],[1.333,1.333],[1.333,0.667],[0.667,0.667]],\"type\":\"LineString\"}],\"type\":\"GeometryCollection\"}" );
+  QString expectedJsonPrec3(
+    "{\"geometries\":[{\"coordinates\":[[1.111,1.111],[1.111,11.111],[11.111,11.111],[11.111,1.111],[1.111,1.111]],\"type\":\"LineString\"},{\"coordinates\":[[0.667,0.667],[0.667,1.333],[1.333,1.333]"
+    ",[1.333,0.667],[0.667,0.667]],\"type\":\"LineString\"}],\"type\":\"GeometryCollection\"}"
+  );
   res = exportFloat.asJson( 3 );
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedGML2(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LineString></geometryMember></MultiGeometry>"_s
+  );
   res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedGML2 );
-  QString expectedGML2prec3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedGML2prec3(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LineString></geometryMember></MultiGeometry>"_s
+  );
   res = elemToString( exportFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedGML3(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LineString></geometryMember></MultiGeometry>"_s
+  );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedGML3 );
-  QString expectedGML3prec3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LineString></geometryMember></MultiGeometry>"_s );
+  QString expectedGML3prec3(
+    u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LineString></geometryMember></MultiGeometry>"_s
+  );
   res = elemToString( exportFloat.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
   //asKML
-  QString expectedKml( u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></MultiGeometry>"_s );
+  QString expectedKml(
+    u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></MultiGeometry>"_s
+  );
   QCOMPARE( exportC.asKml(), expectedKml );
-  QString expectedKmlPrec3( u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></MultiGeometry>"_s );
+  QString expectedKmlPrec3(
+    u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></MultiGeometry>"_s
+  );
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
 
 
@@ -376,9 +550,23 @@ void TestQgsGeometryCollection::geometryCollection()
   rc.removeGeometry( -1 );
   rc.removeGeometry( 0 );
   rc.removeGeometry( 100 );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 )
+  );
   rc.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   rc.addGeometry( part2.clone() );
   // no crash
   rc.removeGeometry( -1 );
@@ -492,7 +680,13 @@ void TestQgsGeometryCollection::geometryCollection()
 
   //3d CRS transform
   QgsLineString l22;
-  l22.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 6274985, -3526584, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 5, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) );
+  l22.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6274985, -3526584, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 5, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+  );
   pTransform.clear();
   pTransform.addGeometry( l22.clone() );
   pTransform.addGeometry( l22.clone() );
@@ -638,7 +832,13 @@ void TestQgsGeometryCollection::geometryCollection()
   //QTransform transform
   QTransform qtr = QTransform::fromScale( 2, 3 );
   QgsLineString l23;
-  l23.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 12, 23, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
+  l23.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 12, 23, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+  );
   QgsGeometryCollection pTransform2;
   pTransform2.addGeometry( l23.clone() );
   pTransform2.addGeometry( l23.clone() );
@@ -886,7 +1086,13 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( p23.geometryN( 1 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast<const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
   // with m
-  lp23.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 1, 12, 0, 23 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) );
+  lp23.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 13 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 12, 0, 23 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+  );
   p23.clear();
   p23.addGeometry( lp23.clone() );
   p23.addGeometry( lp23.clone() );
@@ -1309,39 +1515,43 @@ void TestQgsGeometryCollection::geometryCollection()
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
   QCOMPARE( swapCollect.asWkt(), u"GeometryCollection (LineString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))"_s );
-  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
+  swapLine.setPoints(
+    QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM )
+  );
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
   QCOMPARE( swapCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineString ZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))"_s );
 
   // filter vertices
   QgsGeometryCollection filterCollect;
-  auto filter = []( const QgsPoint &point ) -> bool {
-    return point.x() > 5;
-  };
+  auto filter = []( const QgsPoint &point ) -> bool { return point.x() > 5; };
   QgsLineString filterLine;
   filterCollect.filterVertices( filter ); // no crash
   filterLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
   QCOMPARE( filterCollect.asWkt(), u"GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24))"_s );
-  filterLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
+  filterLine.setPoints(
+    QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM )
+  );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
   QCOMPARE( filterCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24),LineString ZM (11 2 5 6, 11.02 2.01 25 26))"_s );
 
   // transform vertices
   QgsGeometryCollection transformCollect;
-  auto transform = []( const QgsPoint &point ) -> QgsPoint {
-    return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 5 );
-  };
+  auto transform = []( const QgsPoint &point ) -> QgsPoint { return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 5 ); };
   QgsLineString transformLine;
   transformCollect.transformVertices( transform ); // no crash
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
   QCOMPARE( transformCollect.asWkt(), u"GeometryCollection (LineString ZM (3 5 7 9, 13 15 17 19, 113 15 27 29))"_s );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM )
+  );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
   QCOMPARE( transformCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (5 8 11 14, 15 18 21 24, 115 18 31 34),LineString ZM (13 5 9 11, 3.01 4.99 19 21, 13.02 5.01 29 31))"_s );
@@ -1350,11 +1560,15 @@ void TestQgsGeometryCollection::geometryCollection()
   TestTransformer transformer;
   QgsGeometryCollection transformCollect2;
   transformCollect2.transform( &transformer ); // no crash
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
   QCOMPARE( transformCollect2.asWkt(), u"GeometryCollection (LineString ZM (3 16 8 3, 33 26 18 13, 333 26 28 23))"_s );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM )
+  );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
   QCOMPARE( transformCollect2.asWkt( 2 ), u"GeometryCollection (LineString ZM (9 30 13 2, 99 40 23 12, 999 40 33 22),LineString ZM (33 16 10 5, 3.03 15.99 20 15, 33.06 16.01 30 25))"_s );
@@ -1365,7 +1579,9 @@ void TestQgsGeometryCollection::geometryCollection()
   // bounding box intersects 2d test
   QgsGeometryCollection b1;
   QVERIFY( !b1.boundingBoxIntersects( QgsRectangle( 0, 0, 0, 0 ) ) );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   b1.addGeometry( transformLine.clone() );
   QVERIFY( !b1.boundingBoxIntersects( QgsRectangle( -5, -2, 0.5, 1.5 ) ) );
   QVERIFY( b1.boundingBoxIntersects( QgsRectangle( -5, -2, 1.5, 2.5 ) ) );
@@ -1374,7 +1590,14 @@ void TestQgsGeometryCollection::geometryCollection()
 
   b1.clear();
   QVERIFY( b1.boundingBox().isNull() );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) );
+  transformLine.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 )
+  );
   b1.addGeometry( transformLine.clone() );
   QgsPolygon polygon1;
   QVERIFY( polygon1.fromWkt( "Polygon( (5 10 0, 5 15 0, 10 15 0, 10 10 0, 5 10 0) )" ) );
@@ -1383,7 +1606,9 @@ void TestQgsGeometryCollection::geometryCollection()
   // bounding box intersects 3d test
   QgsGeometryCollection b2;
   QVERIFY( !b2.boundingBoxIntersects( QgsBox3D( 0, 0, 0, 0, 0, 0 ) ) );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  transformLine.setPoints(
+    QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+  );
   b2.addGeometry( transformLine.clone() );
   QVERIFY( !b2.boundingBoxIntersects( QgsBox3D( -5, -2, 4, 0.5, 1.5, 5 ) ) );
   QVERIFY( b2.boundingBoxIntersects( QgsBox3D( -5, -2, 2, 1.5, 2.5, 8 ) ) );
@@ -1392,7 +1617,14 @@ void TestQgsGeometryCollection::geometryCollection()
 
   b2.clear();
   QVERIFY( b2.boundingBox().isNull() );
-  transformLine.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) );
+  transformLine.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 )
+  );
   b2.addGeometry( transformLine.clone() );
   QgsPolygon polygon2;
   QVERIFY( polygon2.fromWkt( "Polygon( (5 10 0, 5 15 5, 10 15 5, 10 10 5, 5 10 0) )" ) );
@@ -1405,9 +1637,23 @@ void TestQgsGeometryCollection::testfromToWkt()
   QgsLineString part2;
   //to/from WKT
   QgsGeometryCollection c18;
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 )
+  );
   c18.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   c18.addGeometry( part2.clone() );
 
   QString wkt = c18.asWkt();
@@ -1466,23 +1712,26 @@ void TestQgsGeometryCollection::testfromToWkt()
   QCOMPARE( c21.numGeometries(), 15 );
 
   QString wkt21 = c21.asWkt( 2 );
-  QCOMPARE( wkt21, "GeometryCollection ("
-                   "Point Z (0 0 1),"
-                   "LineString Z (0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1),"
-                   "Polygon Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1)),"
-                   "CircularString Z (0 0 1, 0 1 2, 0 2 3),"
-                   "CompoundCurve Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
-                   "CurvePolygon Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
-                   "MultiPoint Z ((0 0 1)),"
-                   "MultiLineString Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1)),"
-                   "MultiPolygon Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
-                   "GeometryCollection EMPTY,"
-                   "MultiCurve Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
-                   "MultiSurface Z (Polygon Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
-                   "Triangle Z ((0.1 0.1 1.1, 0 1 2, 0 2 3, 0.1 0.1 1.1)),"
-                   "PolyhedralSurface Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
-                   "TIN Z (((0.1 0.1 10.2, 1.13 0.2 10.3, 0.4 2.3 10.4, 0.1 0.1 10.2)))"
-                   ")" );
+  QCOMPARE(
+    wkt21,
+    "GeometryCollection ("
+    "Point Z (0 0 1),"
+    "LineString Z (0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1),"
+    "Polygon Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1)),"
+    "CircularString Z (0 0 1, 0 1 2, 0 2 3),"
+    "CompoundCurve Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
+    "CurvePolygon Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
+    "MultiPoint Z ((0 0 1)),"
+    "MultiLineString Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1)),"
+    "MultiPolygon Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
+    "GeometryCollection EMPTY,"
+    "MultiCurve Z (CircularString Z (0 0 1, 0 1 2, 0 2 3)),"
+    "MultiSurface Z (Polygon Z ((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
+    "Triangle Z ((0.1 0.1 1.1, 0 1 2, 0 2 3, 0.1 0.1 1.1)),"
+    "PolyhedralSurface Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
+    "TIN Z (((0.1 0.1 10.2, 1.13 0.2 10.3, 0.4 2.3 10.4, 0.1 0.1 10.2)))"
+    ")"
+  );
 
   QgsGeometryCollection c22;
   QVERIFY( c22.fromWkt( wkt21 ) );
@@ -1493,46 +1742,50 @@ void TestQgsGeometryCollection::testfromToWkt()
   }
 
   // mixed type all EMPTY
-  QString emptyWkt = QString( "GeometryCollection ("
-                              "Point EMPTY,"
-                              "LineString EMPTY,"
-                              "Polygon EMPTY,"
-                              "CircularString EMPTY,"
-                              "CompoundCurve EMPTY,"
-                              "CurvePolygon EMPTY,"
-                              "MultiPoint EMPTY,"
-                              "MultiLineString EMPTY,"
-                              "MultiPolygon EMPTY,"
-                              "GeometryCollection EMPTY,"
-                              "MultiCurve EMPTY,"
-                              "MultiSurface EMPTY,"
-                              "Triangle EMPTY,"
-                              "PolyhedralSurface EMPTY,"
-                              "TIN EMPTY"
-                              ")" );
+  QString emptyWkt = QString(
+    "GeometryCollection ("
+    "Point EMPTY,"
+    "LineString EMPTY,"
+    "Polygon EMPTY,"
+    "CircularString EMPTY,"
+    "CompoundCurve EMPTY,"
+    "CurvePolygon EMPTY,"
+    "MultiPoint EMPTY,"
+    "MultiLineString EMPTY,"
+    "MultiPolygon EMPTY,"
+    "GeometryCollection EMPTY,"
+    "MultiCurve EMPTY,"
+    "MultiSurface EMPTY,"
+    "Triangle EMPTY,"
+    "PolyhedralSurface EMPTY,"
+    "TIN EMPTY"
+    ")"
+  );
 
   QgsGeometryCollection c23;
   QVERIFY( c23.fromWkt( emptyWkt ) );
   QCOMPARE( c23.numGeometries(), 15 );
 
   // mixed type partial EMPTY
-  QString partialWkt = QString( "GeometryCollection ("
-                                "Point Z (0 0 1),"
-                                "LineString EMPTY,"
-                                "Polygon EMPTY,"
-                                "CircularString EMPTY,"
-                                "CompoundCurve EMPTY,"
-                                "CurvePolygon EMPTY,"
-                                "MultiPoint EMPTY,"
-                                "MultiLineString EMPTY,"
-                                "MultiPolygon EMPTY,"
-                                "GeometryCollection EMPTY,"
-                                "MultiCurve EMPTY,"
-                                "MultiSurface EMPTY,"
-                                "Triangle EMPTY,"
-                                "PolyhedralSurface EMPTY,"
-                                "TIN EMPTY"
-                                ")" );
+  QString partialWkt = QString(
+    "GeometryCollection ("
+    "Point Z (0 0 1),"
+    "LineString EMPTY,"
+    "Polygon EMPTY,"
+    "CircularString EMPTY,"
+    "CompoundCurve EMPTY,"
+    "CurvePolygon EMPTY,"
+    "MultiPoint EMPTY,"
+    "MultiLineString EMPTY,"
+    "MultiPolygon EMPTY,"
+    "GeometryCollection EMPTY,"
+    "MultiCurve EMPTY,"
+    "MultiSurface EMPTY,"
+    "Triangle EMPTY,"
+    "PolyhedralSurface EMPTY,"
+    "TIN EMPTY"
+    ")"
+  );
 
   QgsGeometryCollection c24;
   QVERIFY( c24.fromWkt( partialWkt ) );
@@ -1551,9 +1804,23 @@ void TestQgsGeometryCollection::testCopyConstructor()
   QgsGeometryCollection c2;
   QgsGeometryCollection c3( c2 );
   QVERIFY( c3.isEmpty() );
-  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
+  part.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+    << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 )
+  );
   c2.addGeometry( part.clone() );
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   c2.addGeometry( part2.clone() );
   QgsGeometryCollection c4( c2 );
   QCOMPARE( c4.numGeometries(), 2 );
@@ -1576,7 +1843,14 @@ void TestQgsGeometryCollection::testAssignment()
   QCOMPARE( c2.numGeometries(), 0 );
   QVERIFY( c1 != c2 );
 
-  part2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
+  part2.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 )
+  );
   c2.addGeometry( part2.clone() );
   QCOMPARE( c2.numGeometries(), 1 );
   QVERIFY( c1 != c2 );

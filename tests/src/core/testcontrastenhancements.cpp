@@ -37,7 +37,8 @@ class TestContrastEnhancements : public QgsTest
     Q_OBJECT
   public:
     TestContrastEnhancements()
-      : QgsTest( u"Raster Contrast Enhancement Tests"_s ) {}
+      : QgsTest( u"Raster Contrast Enhancement Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

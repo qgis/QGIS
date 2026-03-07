@@ -45,14 +45,8 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override;
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Catalog"_s }; }
-    std::string summary() const override
-    {
-      return "Server Landing Page";
-    }
-    std::string description() const override
-    {
-      return "The landing page provides information about available projects and services.";
-    }
+    std::string summary() const override { return "Server Landing Page"; }
+    std::string description() const override { return "The landing page provides information about available projects and services."; }
     std::string linkTitle() const override { return "Landing page"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     const QString templatePath( const QgsServerApiContext &context ) const override;
@@ -85,14 +79,8 @@ class QgsLandingPageMapHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override;
     std::string operationId() const override { return "getMap"; }
     QStringList tags() const override { return { u"Catalog"_s, u"Map Viewer"_s }; }
-    std::string summary() const override
-    {
-      return "Server Map Viewer";
-    }
-    std::string description() const override
-    {
-      return "Shows a map";
-    }
+    std::string summary() const override { return "Server Map Viewer"; }
+    std::string description() const override { return "Shows a map"; }
     std::string linkTitle() const override { return "Map Viewer"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
 

@@ -256,7 +256,12 @@ void TestQgsDistanceArea::collections()
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
   //mixed collection
-  const QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( u"GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )"_s ).release() );
+  const QgsGeometry mixed(
+    QgsGeometryFactory::geomFromWkt(
+      u"GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )"_s
+    )
+      .release()
+  );
   //measure area specifically
   result = myDa.measureArea( mixed );
   QGSCOMPARENEAR( result, 730231837632.98669, 1 );
@@ -295,13 +300,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   da.setSourceCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext() );
   da.setEllipsoid( u"NONE"_s );
   QgsPolylineXY ring;
-  ring << QgsPointXY( 0, 0 )
-       << QgsPointXY( 1, 0 )
-       << QgsPointXY( 1, 1 )
-       << QgsPointXY( 2, 1 )
-       << QgsPointXY( 2, 2 )
-       << QgsPointXY( 0, 2 )
-       << QgsPointXY( 0, 0 );
+  ring << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 2, 2 ) << QgsPointXY( 0, 2 ) << QgsPointXY( 0, 0 );
   QgsPolygonXY poly;
   poly << ring;
 
@@ -330,13 +329,14 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 
   // now try with a source CRS which is in feet
   ring.clear();
-  ring << QgsPointXY( 1850000, 4423000 )
-       << QgsPointXY( 1851000, 4423000 )
-       << QgsPointXY( 1851000, 4424000 )
-       << QgsPointXY( 1852000, 4424000 )
-       << QgsPointXY( 1852000, 4425000 )
-       << QgsPointXY( 1851000, 4425000 )
-       << QgsPointXY( 1850000, 4423000 );
+  ring
+    << QgsPointXY( 1850000, 4423000 )
+    << QgsPointXY( 1851000, 4423000 )
+    << QgsPointXY( 1851000, 4424000 )
+    << QgsPointXY( 1852000, 4424000 )
+    << QgsPointXY( 1852000, 4425000 )
+    << QgsPointXY( 1851000, 4425000 )
+    << QgsPointXY( 1850000, 4423000 );
   poly.clear();
   poly << ring;
   polygon = QgsGeometry::fromPolygonXY( poly );
@@ -384,7 +384,12 @@ void TestQgsDistanceArea::regression14675()
   QgsDistanceArea calc;
   calc.setEllipsoid( u"GRS80"_s );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( u"EPSG:2154"_s ), QgsProject::instance()->transformContext() );
-  const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( u"Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))"_s ).release() );
+  const QgsGeometry geom(
+    QgsGeometryFactory::geomFromWkt(
+      u"Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))"_s
+    )
+      .release()
+  );
   QGSCOMPARENEAR( calc.measureArea( geom ), 0.861747, 0.001 );
 }
 
@@ -393,7 +398,12 @@ void TestQgsDistanceArea::regression16820()
   QgsDistanceArea calc;
   calc.setEllipsoid( u"WGS84"_s );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( u"EPSG:32634"_s ), QgsProject::instance()->transformContext() );
-  const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( u"Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))"_s ).release() );
+  const QgsGeometry geom(
+    QgsGeometryFactory::geomFromWkt(
+      u"Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))"_s
+    )
+      .release()
+  );
   QGSCOMPARENEAR( calc.measureArea( geom ), 43.201092, 0.001 );
 }
 

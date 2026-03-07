@@ -85,12 +85,10 @@ void TestQgsValueRelationWidgetWrapper::cleanupTestCase()
 }
 
 void TestQgsValueRelationWidgetWrapper::init()
-{
-}
+{}
 
 void TestQgsValueRelationWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 {
