@@ -78,13 +78,13 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       const auto constProxyFactories = nam->proxyFactories();
       for ( QNetworkProxyFactory *f : constProxyFactories )
       {
-        QList<QNetworkProxy> systemproxies = QNetworkProxyFactory::systemProxyForQuery( query );
-        if ( !systemproxies.isEmpty() )
-          return systemproxies;
-
         QList<QNetworkProxy> proxies = f->queryProxy( query );
         if ( !proxies.isEmpty() )
           return proxies;
+        
+        QList<QNetworkProxy> systemproxies = QNetworkProxyFactory::systemProxyForQuery( query );
+        if ( !systemproxies.isEmpty() )
+          return systemproxies;
       }
 
       // no proxies from the proxy factory list check for excludes
