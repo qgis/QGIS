@@ -81,7 +81,7 @@ void QgsPdalHeightAboveGroundTriangulationAlgorithm::initAlgorithm( const QVaria
 
   createVpcOutputFormatParameter();
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground (using triangulation)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground" ) ) );
 }
 
 QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
