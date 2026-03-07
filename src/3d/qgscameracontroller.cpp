@@ -865,6 +865,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
   mCumulatedWheelY = 0;
   setMouseParameters( MouseOperation::None );
+  emit requestDepthBufferCapture(); // after additional zooming, we need to refresh the depth buffer, as it is outdated
 }
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
@@ -1440,6 +1441,8 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
   {
     handleTerrainNavigationWheelZoom();
   }
+
+  emit depthBufferChanged();
 }
 
 bool QgsCameraController::isATranslationRotationSequence( MouseOperation newOperation ) const
