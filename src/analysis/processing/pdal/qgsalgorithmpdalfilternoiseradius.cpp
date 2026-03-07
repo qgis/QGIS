@@ -78,7 +78,7 @@ void QgsPdalFilterNoiseRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 
   createVpcOutputFormatParameter();
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered (radius algorithm)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered noise" ) ) );
 }
 
 QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
