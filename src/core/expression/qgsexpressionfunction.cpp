@@ -2721,6 +2721,30 @@ static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContex
   return concat;
 }
 
+static QVariant fcnConcatWs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  if ( values.length() < 2 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function concat_ws requires at least 2 arguments" ) );
+    return QVariant();
+  }
+
+  const QString separator = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  QStringList stringValues;
+  stringValues.reserve( values.size() - 1 );
+  for ( int i = 1; i < values.size(); ++i )
+  {
+    const QVariant value = values.at( i );
+    if ( !QgsVariantUtils::isNull( value ) )
+    {
+      stringValues.append( QgsExpressionUtils::getStringValue( value, parent ) );
+    }
+  }
+
+  return stringValues.join( separator );
+}
+
 static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -9312,6 +9336,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
       << new QgsStaticExpressionFunction( u"concat"_s, -1, fcnConcat, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
+      << new QgsStaticExpressionFunction( u"concat_ws"_s, -1, fcnConcatWs, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
       << new QgsStaticExpressionFunction( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
       << new QgsStaticExpressionFunction( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
       << new QgsStaticExpressionFunction( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
