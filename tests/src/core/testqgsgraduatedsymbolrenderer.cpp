@@ -45,6 +45,7 @@ class TestQgsGraduatedSymbolRenderer : public QObject
     void rangesHaveGaps();
     void classifySymmetric();
     void testMatchingRangeForValue();
+    void updateRangeLabels();
 
   private:
 };
@@ -312,6 +313,33 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)
   QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), u"r1"_s );
   QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), u"r4"_s );
+}
+
+void TestQgsGraduatedSymbolRenderer::updateRangeLabels()
+{
+  QgsRangeList ranges;
+  QgsMarkerSymbol ms;
+  ms.setColor( QColor( 255, 0, 0 ) );
+
+  ranges << QgsRendererRange( 0.0, 10.0, ms.clone(), u"Custom Low"_s );
+  ranges << QgsRendererRange( 10.0, 20.0, ms.clone(), QString() );
+  ranges << QgsRendererRange( 20.0, 30.0, ms.clone(), u"Custom High"_s );
+
+  QgsGraduatedSymbolRenderer renderer( u"field"_s, ranges );
+
+  auto method = std::make_unique<QgsClassificationEqualInterval>();
+  renderer.setClassificationMethod( method.release() );
+
+  renderer.updateRangeLabels();
+
+  const QgsRangeList &updatedRanges = renderer.ranges();
+
+  // Custom labels should be preserved
+  QCOMPARE( updatedRanges[0].label(), u"Custom Low"_s );
+  QCOMPARE( updatedRanges[2].label(), u"Custom High"_s );
+
+  // Empty label should be auto-generated
+  QCOMPARE( updatedRanges[1].label(), QString::fromUtf8( "10 < x ≤ 20" ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
