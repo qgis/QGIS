@@ -30,8 +30,18 @@ find .. \( -name \*.h -o -name \*.cpp \) -exec grep -H "QgsHelp::openHelp(" \{\}
     file=${line%;*}
     suffix=${line##*;}
     link=$prefix$suffix
-    if ! wget --spider $link 2>/dev/null; then
-        echo "Documentation missing for: $file Key: $suffix"
+page=${link%%#*}
+anchor=${link##*#}
+
+if ! wget --spider $page 2>/dev/null; then
+    echo "Documentation missing for: $file Key: $suffix"
+else
+    if [[ "$link" == *"#"* ]]; then
+        content=$(wget -q -O - $page)
+        if ! echo "$content" | grep -q "id=\"$anchor\""; then
+            echo "Missing anchor in docs: $link"
+        fi
     fi
+fi
 done
 
