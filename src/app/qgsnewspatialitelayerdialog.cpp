@@ -381,7 +381,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
   if ( checkBoxPrimaryKey->isChecked() )
   {
-    sql += "pkuid integer primary key autoincrement"_L1;
+    sql += "id integer primary key autoincrement"_L1;
     delim = u","_s;
   }
 
