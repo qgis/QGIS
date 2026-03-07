@@ -36,10 +36,12 @@ anchor=${link##*#}
 if ! wget --spider $page 2>/dev/null; then
     echo "Documentation missing for: $file Key: $suffix"
 else
+    #Check if the anchir (after #)exists in the page
+    anchor="${suffix#*#}"
+    if [ -n "$anchor" ]: then
+        if ! wget -q -O - "$LINK" | grep -q "$anchor"; then
     if [[ "$link" == *"#"* ]]; then
-        content=$(wget -q -O - $page)
-        if ! echo "$content" | grep -q "id=\"$anchor\""; then
-            echo "Missing anchor in docs: $link"
+            echo "Anchor missing for: $file key: $suffix"
         fi
     fi
 fi
