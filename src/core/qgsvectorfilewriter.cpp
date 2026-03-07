@@ -350,8 +350,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options[ datasourceOptions.size()] = nullptr;
   }
 
-  mAttrIdxToOgrIdx.remove( 0 );
-
   // create the data source
   if ( action == CreateOrOverwriteFile )
     mDS.reset( OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options ) );
@@ -564,7 +562,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   QgsDebugMsgLevel( "creating " + QString::number( fields.size() ) + " fields", 2 );
 
   mFields = fields;
-  mAttrIdxToOgrIdx.clear();
+  mAttrIdxToProviderIdx.clear();
+  mAttrIdxToOgrLayerIdx.clear();
   QSet<int> existingIdxs;
 
   mFieldValueConverter = fieldValueConverter;
@@ -628,7 +627,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
           if ( ogrIdx >= 0 )
           {
-            mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+            mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
+            mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
             continue;
           }
         }
@@ -1008,6 +1008,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
         }
 
+        existingIdxs.insert( ogrIdx );
+        mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
+
         if ( promoteFidColumnToAttribute )
         {
           if ( ogrFidColumnName.compare( attrField.name(), Qt::CaseInsensitive ) == 0 )
@@ -1022,8 +1025,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
         }
 
-        existingIdxs.insert( ogrIdx );
-        mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+        mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
       }
     }
     break;
@@ -1036,7 +1038,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         QString name( attrField.name() );
         int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
         if ( ogrIdx >= 0 )
-          mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+        {
+          mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
+          mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
+        }
       }
     }
     break;
@@ -1049,7 +1054,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     int fidIdx = fields.lookupField( QStringLiteral( "FID" ) );
 
     if ( fidIdx >= 0 )
-      mAttrIdxToOgrIdx.remove( fidIdx );
+    {
+      mAttrIdxToProviderIdx.remove( fidIdx );
+      mAttrIdxToOgrLayerIdx.remove( fidIdx );
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Done creating fields" ), 2 );
@@ -2793,7 +2801,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 
   // attribute handling
-  for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrIdx.constBegin(); it != mAttrIdxToOgrIdx.constEnd(); ++it )
+  for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrLayerIdx.constBegin(); it != mAttrIdxToOgrLayerIdx.constEnd(); ++it )
   {
     int fldIdx = it.key();
     int ogrField = it.value();
@@ -3263,12 +3271,12 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
 void QgsVectorFileWriter::resetMap( const QgsAttributeList &attributes )
 {
-  QMap<int, int> omap( mAttrIdxToOgrIdx );
-  mAttrIdxToOgrIdx.clear();
+  QMap<int, int> omap( mAttrIdxToOgrLayerIdx );
+  mAttrIdxToOgrLayerIdx.clear();
   for ( int i = 0; i < attributes.size(); i++ )
   {
     if ( omap.find( i ) != omap.end() )
-      mAttrIdxToOgrIdx.insert( attributes[i], omap[i] );
+      mAttrIdxToOgrLayerIdx.insert( attributes[i], omap[i] );
   }
 }
 
