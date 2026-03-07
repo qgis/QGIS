@@ -81,7 +81,7 @@ void QgsPdalFilterNoiseStatisticalAlgorithm::initAlgorithm( const QVariantMap & 
 
   createVpcOutputFormatParameter();
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered noise (statistical)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered noise" ) ) );
 }
 
 QStringList QgsPdalFilterNoiseStatisticalAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
