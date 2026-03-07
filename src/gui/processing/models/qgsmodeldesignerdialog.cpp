@@ -407,12 +407,14 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
 {
-  if ( checkForUnsavedChanges() )
-    event->accept();
-  else
+  if ( !saveModel( false ) )
+  {
     event->ignore();
-}
+    return;
+  }
 
+  QMainWindow::closeEvent( event );
+}
 void QgsModelDesignerDialog::beginUndoCommand( const QString &text, const QString &id, QgsModelUndoCommand::CommandOperation operation )
 {
   if ( mBlockUndoCommands || !mUndoStack )
