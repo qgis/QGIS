@@ -107,16 +107,27 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   }
 
   Qgs3DMapSettings *map = terrain()->mapSettings();
-  QgsChunkNodeId nodeId = mNode->tileId();
-  QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  double side = extent.width();
+  const QgsChunkNodeId nodeId = mNode->tileId();
+  const QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
+  const double side = extent.width();
+
+  // work out which edges of this tile are internal edges and need skirts
+  // to hide cracks between tiles, vs which are on the outer edges of the map
+  // and don't need skirts
+  const QgsRectangle rootExtent = map->terrainGenerator()->tilingScheme().tileToExtent( 0, 0, 0 );
+  const double eps = side * 0.01;
+  Qgis::TileEdges skirtEdges;
+  skirtEdges.setFlag( Qgis::TileEdge::Left, !qgsDoubleNear( extent.xMinimum(), rootExtent.xMinimum(), eps ) );
+  skirtEdges.setFlag( Qgis::TileEdge::Right, !qgsDoubleNear( extent.xMaximum(), rootExtent.xMaximum(), eps ) );
+  skirtEdges.setFlag( Qgis::TileEdge::Top, !qgsDoubleNear( extent.yMaximum(), rootExtent.yMaximum(), eps ) );
+  skirtEdges.setFlag( Qgis::TileEdge::Bottom, !qgsDoubleNear( extent.yMinimum(), rootExtent.yMinimum(), eps ) );
 
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( nodeId );
 
   // create geometry renderer
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainSettings()->verticalScale(), mSkirtHeight, mHeightMap, mesh ) );
+  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainSettings()->verticalScale(), mSkirtHeight, mHeightMap, skirtEdges, mesh ) );
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material

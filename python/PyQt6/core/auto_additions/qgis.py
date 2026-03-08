@@ -7781,6 +7781,28 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.TileEdge.Left.__doc__ = "Left edge"
+Qgis.TileEdge.Right.__doc__ = "Right edge"
+Qgis.TileEdge.Top.__doc__ = "Top edge"
+Qgis.TileEdge.Bottom.__doc__ = "Bottom edge"
+Qgis.TileEdge.All.__doc__ = "Skirts on all edges"
+Qgis.TileEdge.__doc__ = """Tile edge flags.
+
+.. versionadded:: 4.2
+
+* ``Left``: Left edge
+* ``Right``: Right edge
+* ``Top``: Top edge
+* ``Bottom``: Bottom edge
+* ``All``: Skirts on all edges
+
+"""
+# --
+Qgis.TileEdge.baseClass = Qgis
+Qgis.TileEdges = lambda flags=0: Qgis.TileEdge(flags)
+Qgis.TileEdges.baseClass = Qgis
+TileEdges = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
 Qgis.ProfileSurfaceSymbology.FillAbove.__doc__ = "The elevation surface will be rendered using a fill symbol above the surface level \n.. versionadded:: 3.32"
