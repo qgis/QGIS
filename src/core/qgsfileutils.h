@@ -31,6 +31,8 @@
  */
 class CORE_EXPORT QgsFileUtils
 {
+    Q_GADGET
+
   public:
     /**
      * Returns the human size from bytes
@@ -237,6 +239,26 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.30
      */
     static QString uniquePath( const QString &path );
+
+    /**
+     * Flags controlling behavior of file copy operations.
+     *
+     * \since QGIS 4.0.1
+     */
+    enum class CopyFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoSymLinks = 1 << 0, //!< If present, indicates that symbolic links should be skipped during the copy
+    };
+    Q_ENUM( CopyFlag )
+
+    /**
+     * Flags controlling behavior of file copy operations.
+     *
+     * \since QGIS 4.0.1
+     */
+    Q_DECLARE_FLAGS( CopyFlags, CopyFlag )
+    Q_FLAG( CopyFlags )
+
     /**
      * Recursively copies a whole directory.
      *
@@ -244,9 +266,12 @@ class CORE_EXPORT QgsFileUtils
      *
      * \note If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
      *
+     * Since QGIS 4.0.1 the \a flags argument can be used to specify flags controlling the
+     * behavior of the copy operation.
+     *
      * \since QGIS 4.0
      */
-    static bool copyDirectory( const QString &source, const QString &destination );
+    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags() );
 
     /**
      * Replaces all occurrences of a given string in a file.
@@ -259,5 +284,7 @@ class CORE_EXPORT QgsFileUtils
      */
     static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFileUtils::CopyFlags )
 
 #endif // QGSFILEUTILS_H

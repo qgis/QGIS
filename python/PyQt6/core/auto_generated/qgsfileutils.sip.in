@@ -20,6 +20,9 @@ Contains utilities for working with files.
 #include "qgsfileutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     static QString representFileSize( qint64 bytes );
 %Docstring
 Returns the human size from bytes
@@ -233,7 +236,16 @@ already exist is found.
 
 .. versionadded:: 3.30
 %End
-    static bool copyDirectory( const QString &source, const QString &destination );
+
+    enum class CopyFlag /BaseType=IntFlag/
+    {
+      NoSymLinks,
+    };
+
+    typedef QFlags<QgsFileUtils::CopyFlag> CopyFlags;
+
+
+    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags() );
 %Docstring
 Recursively copies a whole directory.
 
@@ -243,6 +255,9 @@ were copied.
 .. note::
 
    If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+
+Since QGIS 4.0.1 the ``flags`` argument can be used to specify flags
+controlling the behavior of the copy operation.
 
 .. versionadded:: 4.0
 %End
@@ -258,6 +273,9 @@ Replacement is case-sensitive.
 .. versionadded:: 4.0
 %End
 };
+
+QFlags<QgsFileUtils::CopyFlag> operator|(QgsFileUtils::CopyFlag f1, QFlags<QgsFileUtils::CopyFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
