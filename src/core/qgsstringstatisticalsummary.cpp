@@ -79,7 +79,6 @@ void QgsStringStatisticalSummary::addValue( const QVariant &value )
   {
     mCountMissing++;
   }
-
 }
 
 void QgsStringStatisticalSummary::finalize()
