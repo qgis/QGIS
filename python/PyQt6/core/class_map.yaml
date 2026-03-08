@@ -9944,10 +9944,11 @@ QgsMapSettings.visiblePolygonWithBuffer: src/core/qgsmapsettings.h#L477
 QgsMapSettings.writeXml: src/core/qgsmapsettings.h#L642
 QgsMapSettings.zRange: src/core/qgsmapsettings.h#L839
 QgsMapSettings: src/core/qgsmapsettings.h#L90
-QgsMapSettingsUtils.containsAdvancedEffects: src/core/qgsmapsettingsutils.h#L50
-QgsMapSettingsUtils.worldFileContent: src/core/qgsmapsettingsutils.h#L70
-QgsMapSettingsUtils.worldFileParameters: src/core/qgsmapsettingsutils.h#L63
-QgsMapSettingsUtils: src/core/qgsmapsettingsutils.h#L32
+QgsMapSettingsUtils.containsAdvancedEffects: src/core/qgsmapsettingsutils.h#L51
+QgsMapSettingsUtils.isValidExtent: src/core/qgsmapsettingsutils.h#L85
+QgsMapSettingsUtils.worldFileContent: src/core/qgsmapsettingsutils.h#L71
+QgsMapSettingsUtils.worldFileParameters: src/core/qgsmapsettingsutils.h#L64
+QgsMapSettingsUtils: src/core/qgsmapsettingsutils.h#L33
 QgsMapThemeCollection.MapThemeLayerRecord.layer: src/core/qgsmapthemecollection.h#L78
 QgsMapThemeCollection.MapThemeLayerRecord.setLayer: src/core/qgsmapthemecollection.h#L81
 QgsMapThemeCollection.MapThemeLayerRecord: src/core/qgsmapthemecollection.h#L55
