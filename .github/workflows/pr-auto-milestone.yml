@@ -1,5 +1,12 @@
 name: 📅 Auto set milestone on PR
 
+# This workflow automatically assigns milestones to newly opened PRs based on:
+# - The target branch (master vs release branch)
+# - The latest released version found in git tags
+# - Master PRs get milestone +2 minor versions from latest (e.g., 4.0 latest -> 4.2 milestone)
+# - Release branch PRs get milestone +0.1 patch version (e.g., 4.0.0 latest -> 4.0.1 milestone)
+# - Works for both 3.x and 4.x release branches (major version auto-detected from branch name)
+
 on:
   workflow_call:
   pull_request_target:
@@ -10,8 +17,7 @@ permissions:
   contents: read
 
 env:
-  QGIS_MAJOR_VERSION: 3
-  LAST_MINOR_VERSION_FOR_3X: 44
+  QGIS_MAJOR_VERSION_MASTER: 4  # Major version for master branch (update when bumping to 5.x)
 
 jobs:
   pr-without-milestones:
@@ -21,7 +27,10 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      # list the tags and milestones
+      # Fetch data from GitHub API:
+      # - Recent open PRs and their milestones
+      # - Existing milestones
+      # - Recent git tags (to determine latest released version)
       - uses: octokit/graphql-action@v2.x
         id: graphql_request
         with:
@@ -62,7 +71,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # take the first unprocessed PR and determine if some remain
+      # Process PRs one at a time (to avoid race conditions when creating milestones)
+      # This step finds the first PR without a milestone and calculates which milestone it should have
       - name: Filter PR to check
         id: extract_data
         env:
@@ -76,40 +86,54 @@ jobs:
           # early exit
           [[ ${NUMBER_OF_PRS} == 0 ]] && echo "has_milestone_to_set=0" >> $GITHUB_OUTPUT && exit 0
 
-          # Take the first
+          # Take the first PR without a milestone to process
           PR_NUMBER=$(echo "${PRS_TO_PROCESS}" | jq -s '. | first')
           echo "PR_NUMBER: ${PR_NUMBER}"
 
-          # Not used for now
-          RE_RUN_JOB=$(echo "${JSON_DATA}" | jq -s '. | length > 1')
-          echo "RE_RUN_JOB: ${RE_RUN_JOB}"
-
-          # Get the base branch
+          # Determine target branch to calculate appropriate milestone
           BASE_BRANCH=$(echo "${JSON_DATA}" | jq -r ".repository.pullRequests.edges[] | select( .node.number == ${PR_NUMBER} ) | .node.baseRef.name")
           echo "BASE_BRANCH: ${BASE_BRANCH}"
 
-          # master => NOTHING, release_3-10 => _10
+          # Extract major and minor version from branch name
+          # Examples: master => major=4 (from env), minor=empty
+          #           release-3_38 => major=3, minor=_38
+          #           release-4_0 => major=4, minor=_0
+          BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
+          if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
+            # Master branch - use the environment variable
+            QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
+          else
+            # Release branch - use the detected major version
+            QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
+          fi
+          echo "QGIS_MAJOR_VERSION: ${QGIS_MAJOR_VERSION}"
+
+          # Extract minor version from release branch name
+          # Examples: master => empty, release-3_38 => _38, release-4_0 => _0, release-4_2 => _2
           MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
           echo "MINOR_VERSION: ${MINOR_VERSION}"
 
-          # get the max release from the tags
+          # Find the highest released version from git tags matching the target branch
+          # For master: looks for final-4_* tags (or final-3_* for 3.x master)
+          # For release-3_38: looks for final-3_38_* tags
+          # For release-4_0: looks for final-4_0_* tags
+          # Tags like final-4_0_1 are converted to 0.1 for math operations
           MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
           echo "MAX_RELEASE: ${MAX_RELEASE}"
 
-          # bump to QGIS 4.0 if last version
-            if [[ -z ${MINOR_VERSION} ]] && [[ ${MAX_RELEASE} =~ ^${LAST_MINOR_VERSION_FOR_3X}(\.[0-9]+)?$ ]]; then
-            MILESTONE_TITLE=4.0.0
-          else
-            # increase the number to get milestone: round+2 for master, +0.1 for release_xxx branches
-            INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
-            echo "INCREASE_OPERATION: ${INCREASE_OPERATION}"
-            MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${INCREASE_OPERATION}" | bc)
-          fi
+          # Calculate milestone version based on latest release:
+          # - Master branch: skip one minor version (e.g., 3.38 released -> 3.40 milestone, 4.0 released -> 4.2 milestone)
+          # - Release branch: increment patch version (e.g., 3.38.0 released -> 3.38.1 milestone, 4.0.0 released -> 4.0.1 milestone)
+          INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
+          echo "INCREASE_OPERATION: ${INCREASE_OPERATION}"
+          MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${INCREASE_OPERATION}" | bc)
           echo "MILESTONE_TITLE: ${MILESTONE_TITLE}"
 
+          # Check if calculated milestone already exists
           MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
           echo "MILESTONE_NUMBER: ${MILESTONE_NUMBER}"
 
+          # Flag if we need to create a new milestone
           HAS_MILESTONE_TO_CREATE=$([[ -z ${MILESTONE_NUMBER} ]] && echo "1" || echo "0" )
           echo "HAS_MILESTONE_TO_CREATE: ${HAS_MILESTONE_TO_CREATE}"
 
@@ -119,7 +143,8 @@ jobs:
           echo "milestone_number=${MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
           echo "has_milestone_to_create=${HAS_MILESTONE_TO_CREATE}" >> $GITHUB_OUTPUT
 
-      # create the milestone if needed
+      # Create milestone if it doesn't exist yet
+      # This happens when a PR is the first to target a new version
       - name: Create milestone if needed
         id: create_milestone
         if: steps.extract_data.outputs.has_milestone_to_set == 1 && steps.extract_data.outputs.has_milestone_to_create == 1
@@ -130,7 +155,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Compute the milestone number
+      # Get the milestone number (either from existing milestone or newly created one)
       - name: Compute milestone number from existing or created
         id: compute_milestone
         if: always() && steps.extract_data.outputs.has_milestone_to_set == 1
@@ -138,11 +163,12 @@ jobs:
           MILESTONE_NUMBER_EXISTING: ${{ steps.extract_data.outputs.milestone_number }}
           MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
         run: |
+          # Use existing milestone number if available, otherwise extract from creation response
           FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || echo $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq .number ))
           echo "FINAL_MILESTONE_NUMBER: ${FINAL_MILESTONE_NUMBER}"
           echo "milestone_number=${FINAL_MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
 
-      # update PR with milestone
+      # Finally, assign the milestone to the PR
       - name: update PR milestone
         if: steps.extract_data.outputs.has_milestone_to_set == 1
         uses: octokit/request-action@v2.x
