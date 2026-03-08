@@ -66,12 +66,10 @@ void TestQgsMapToolSelectAnnotation::cleanupTestCase()
 }
 
 void TestQgsMapToolSelectAnnotation::init()
-{
-}
+{}
 
 void TestQgsMapToolSelectAnnotation::cleanup()
-{
-}
+{}
 
 void TestQgsMapToolSelectAnnotation::testSelectItem()
 {
@@ -89,15 +87,21 @@ void TestQgsMapToolSelectAnnotation::testSelectItem()
   QVERIFY( layer2->isValid() );
   QgsProject::instance()->addMapLayers( { layer, layer2 } );
 
-  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) )
+  );
   item1->setZIndex( 1 );
   const QString i1id = layer->addItem( item1 );
 
-  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 1.6, 4 ), QgsPoint( 1.6, 4.6 ), QgsPoint( 1, 4.6 ), QgsPoint( 1, 4 ) } ) ) );
+  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 1.6, 4 ), QgsPoint( 1.6, 4.6 ), QgsPoint( 1, 4.6 ), QgsPoint( 1, 4 ) } ) )
+  );
   item2->setZIndex( 0 );
   const QString i2id = layer->addItem( item2 );
 
-  QgsAnnotationPolygonItem *item3 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 7, 1 ), QgsPoint( 8, 1 ), QgsPoint( 8, 2 ), QgsPoint( 7, 2 ), QgsPoint( 7, 1 ) } ) ) );
+  QgsAnnotationPolygonItem *item3 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 7, 1 ), QgsPoint( 8, 1 ), QgsPoint( 8, 2 ), QgsPoint( 7, 2 ), QgsPoint( 7, 1 ) } ) )
+  );
   item3->setZIndex( 3 );
   const QString i3id = layer2->addItem( item3 );
 
@@ -188,15 +192,21 @@ void TestQgsMapToolSelectAnnotation::testDeleteItem()
   QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayers( { layer } );
 
-  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) )
+  );
   item1->setZIndex( 1 );
   const QString i1id = layer->addItem( item1 );
 
-  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 5, 4 ), QgsPoint( 5, 9 ), QgsPoint( 1, 9 ), QgsPoint( 1, 4 ) } ) ) );
+  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 5, 4 ), QgsPoint( 5, 9 ), QgsPoint( 1, 9 ), QgsPoint( 1, 4 ) } ) )
+  );
   item2->setZIndex( 2 );
   const QString i2id = layer->addItem( item2 );
 
-  QgsAnnotationPolygonItem *item3 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 7, 1 ), QgsPoint( 8, 1 ), QgsPoint( 8, 2 ), QgsPoint( 7, 2 ), QgsPoint( 7, 1 ) } ) ) );
+  QgsAnnotationPolygonItem *item3 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 7, 1 ), QgsPoint( 8, 1 ), QgsPoint( 8, 2 ), QgsPoint( 7, 2 ), QgsPoint( 7, 1 ) } ) )
+  );
   item3->setZIndex( 3 );
   const QString i3id = layer->addItem( item3 );
 
@@ -253,7 +263,9 @@ void TestQgsMapToolSelectAnnotation::testMoveItem()
   QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayers( { layer } );
 
-  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) )
+  );
   item1->setZIndex( 1 );
   const QString i1id = layer->addItem( item1 );
   QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt(), u"Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))"_s );

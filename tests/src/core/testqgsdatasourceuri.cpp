@@ -822,7 +822,8 @@ void TestQgsDataSourceUri::checkRemovePassword()
   const QString uri3 = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
   QCOMPARE( uri3, u"dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
 
-  const QString uri4 = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s, true );
+  const QString uri4
+    = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s, true );
   QCOMPARE( uri4, u"dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
 }
 

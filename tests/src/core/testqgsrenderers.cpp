@@ -48,12 +48,10 @@ class TestQgsRenderers : public QgsTest
 
   public:
     TestQgsRenderers()
-      : QgsTest( u"Vector Renderer Tests"_s ) {}
+      : QgsTest( u"Vector Renderer Tests"_s )
+    {}
 
-    ~TestQgsRenderers() override
-    {
-      delete mMapSettings;
-    }
+    ~TestQgsRenderers() override { delete mMapSettings; }
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -99,9 +97,7 @@ void TestQgsRenderers::initTestCase()
   const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -110,9 +106,7 @@ void TestQgsRenderers::initTestCase()
   const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
 
   //
@@ -122,17 +116,13 @@ void TestQgsRenderers::initTestCase()
   const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings->setLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer
-  );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
 }
 void TestQgsRenderers::cleanupTestCase()
 {

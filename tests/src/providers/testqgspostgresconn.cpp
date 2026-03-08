@@ -191,14 +191,7 @@ class TestQgsPostgresConn : public QObject
         const auto i = layersMap.find( key );
         if ( i != layersMap.end() )
         {
-          QFAIL(
-            QString(
-              "Layer %1 returned multiple times by supportedLayers"
-            )
-              .arg( key )
-              .toUtf8()
-              .data()
-          );
+          QFAIL( QString( "Layer %1 returned multiple times by supportedLayers" ).arg( key ).toUtf8().data() );
         }
         layersMap.insert( key, l );
         QCOMPARE( l.schemaName, u"qgis_test"_s );
@@ -207,10 +200,7 @@ class TestQgsPostgresConn : public QObject
       // Test qgis_test.TopoLayer1.topogeom
       const QString key = QString( "qgis_test.TopoLayer1.topogeom" );
       const auto lit = layersMap.find( key );
-      QVERIFY2(
-        lit != layersMap.end(),
-        "Layer qgis_test.TopoLayer1.topogeom not returned by supportedLayers"
-      );
+      QVERIFY2( lit != layersMap.end(), "Layer qgis_test.TopoLayer1.topogeom not returned by supportedLayers" );
       QCOMPARE( lit->geometryColName, "topogeom" );
       QCOMPARE( lit->geometryColType, SctTopoGeometry );
       // TODO: add more tests
@@ -227,14 +217,10 @@ class TestQgsPostgresConn : public QObject
       conn->getSchemas( schemas );
 
       QList<QgsPostgresSchemaProperty> filteredSchemas;
-      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
-        return schema.name == "qgis_test"_L1;
-      } );
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) { return schema.name == "qgis_test"_L1; } );
       QCOMPARE( filteredSchemas.size(), 1 );
       filteredSchemas.clear();
-      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
-        return schema.name == "public"_L1;
-      } );
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) { return schema.name == "public"_L1; } );
       QCOMPARE( filteredSchemas.size(), 1 );
 
       // restrict to matching schemas

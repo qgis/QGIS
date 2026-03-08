@@ -49,7 +49,8 @@ class TestQgsSvgMarkerSymbol : public QgsTest
 
   public:
     TestQgsSvgMarkerSymbol()
-      : QgsTest( u"SVG Marker Tests"_s, u"symbol_svgmarker"_s ) {}
+      : QgsTest( u"SVG Marker Tests"_s, u"symbol_svgmarker"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -103,9 +104,7 @@ void TestQgsSvgMarkerSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPointsLayer );
 
   const QString defaultSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( u"/crosses/Star1.svg"_s, QgsPathResolver() );
 
@@ -341,7 +340,8 @@ void TestQgsSvgMarkerSymbol::dynamicParameters()
 {
   const QString svgPath = TEST_DATA_DIR + u"/svg/test_dynamic_svg.svg"_s;
 
-  const QMap<QString, QgsProperty> parameters { { u"text1"_s, QgsProperty::fromExpression( u"1+1"_s ) }, { u"text2"_s, QgsProperty::fromExpression( u"\"Class\""_s ) }, { u"align"_s, QgsProperty::fromExpression( u"'middle'"_s ) } };
+  const QMap<QString, QgsProperty>
+    parameters { { u"text1"_s, QgsProperty::fromExpression( u"1+1"_s ) }, { u"text2"_s, QgsProperty::fromExpression( u"\"Class\""_s ) }, { u"align"_s, QgsProperty::fromExpression( u"'middle'"_s ) } };
 
   mSvgMarkerLayer->setPath( svgPath );
   mSvgMarkerLayer->setSize( 20 );

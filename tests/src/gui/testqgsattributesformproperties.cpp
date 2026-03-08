@@ -52,12 +52,10 @@ void TestQgsAttributesFormProperties::cleanupTestCase()
 }
 
 void TestQgsAttributesFormProperties::init()
-{
-}
+{}
 
 void TestQgsAttributesFormProperties::cleanup()
-{
-}
+{}
 
 void TestQgsAttributesFormProperties::testConfigStored()
 {

@@ -132,12 +132,15 @@ void TestQgsRelationReferenceFieldFormatter::testDependencies()
 {
   // Test dependencies
 
-  const QgsEditorWidgetSetup setup { u"RelationReference"_s, {
-                                                               { u"ReferencedLayerDataSource"_s, mLayer2->publicSource() },
-                                                               { u"ReferencedLayerProviderKey"_s, mLayer2->providerType() },
-                                                               { u"ReferencedLayerId"_s, mLayer2->id() },
-                                                               { u"ReferencedLayerName"_s, mLayer2->name() },
-                                                             } };
+  const QgsEditorWidgetSetup setup {
+    u"RelationReference"_s,
+    {
+      { u"ReferencedLayerDataSource"_s, mLayer2->publicSource() },
+      { u"ReferencedLayerProviderKey"_s, mLayer2->providerType() },
+      { u"ReferencedLayerId"_s, mLayer2->id() },
+      { u"ReferencedLayerName"_s, mLayer2->name() },
+    }
+  };
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   const QList<QgsVectorLayerRef> dependencies = fieldFormatter->layerDependencies( setup.config() );
   QVERIFY( dependencies.count() == 1 );

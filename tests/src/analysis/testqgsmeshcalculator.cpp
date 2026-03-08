@@ -86,9 +86,7 @@ void TestQgsMeshCalculator::initTestCase()
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_els_face_scalar.dat" );
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_els_face_vector.dat" );
 
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpMeshLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpMeshLayer );
 }
 
 void TestQgsMeshCalculator::cleanupTestCase()
@@ -97,11 +95,9 @@ void TestQgsMeshCalculator::cleanupTestCase()
 }
 
 void TestQgsMeshCalculator::init()
-{
-}
+{}
 void TestQgsMeshCalculator::cleanup()
-{
-}
+{}
 
 void TestQgsMeshCalculator::dualOp_data()
 {

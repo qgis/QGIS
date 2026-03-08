@@ -89,11 +89,7 @@ class QgsWmsLayerInfos
      *
      * \since QGIS 3.28.0
      */
-    static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos(
-      QgsServerInterface *serverIface,
-      const QgsProject *project,
-      const QList<QgsCoordinateReferenceSystem> &outputCrsList
-    );
+    static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project, const QList<QgsCoordinateReferenceSystem> &outputCrsList );
 
     /**
      * Returns a map with CRS authid as key and the transformed extent as value
@@ -108,10 +104,7 @@ class QgsWmsLayerInfos
      * \since QGIS 3.28.0
      */
     static QMap<QString, QgsRectangle> transformExtentToCrsList(
-      const QgsRectangle &extent,
-      const QgsCoordinateReferenceSystem &source,
-      const QList<QgsCoordinateReferenceSystem> &destinations,
-      const QgsCoordinateTransformContext &context
+      const QgsRectangle &extent, const QgsCoordinateReferenceSystem &source, const QList<QgsCoordinateReferenceSystem> &destinations, const QgsCoordinateTransformContext &context
     );
 
     /**

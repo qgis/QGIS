@@ -89,12 +89,10 @@ void TestQgsFieldExpressionWidget::initTestCase()
 }
 
 void TestQgsFieldExpressionWidget::init()
-{
-}
+{}
 
 void TestQgsFieldExpressionWidget::cleanup()
-{
-}
+{}
 
 void TestQgsFieldExpressionWidget::cleanupTestCase()
 {
@@ -287,7 +285,8 @@ void TestQgsFieldExpressionWidget::testIsValid()
 
 void TestQgsFieldExpressionWidget::testFilters()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean"_s, u"x"_s, u"memory"_s );
+  QgsVectorLayer *layer
+    = new QgsVectorLayer( u"point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean"_s, u"x"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
 
   auto widget = std::make_unique<QgsFieldExpressionWidget>();

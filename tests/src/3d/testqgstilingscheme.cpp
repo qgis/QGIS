@@ -32,7 +32,8 @@ class TestQgsTilingScheme : public QgsTest
     Q_OBJECT
   public:
     TestQgsTilingScheme()
-      : QgsTest( u"Test QgsTilingScheme"_s ) {}
+      : QgsTest( u"Test QgsTilingScheme"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -45,8 +46,7 @@ class TestQgsTilingScheme : public QgsTest
 
 //runs before all tests
 void TestQgsTilingScheme::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsTilingScheme::cleanupTestCase()

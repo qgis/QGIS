@@ -40,20 +40,16 @@ class TestQgsSpinBox : public QObject
 };
 
 void TestQgsSpinBox::initTestCase()
-{
-}
+{}
 
 void TestQgsSpinBox::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsSpinBox::init()
-{
-}
+{}
 
 void TestQgsSpinBox::cleanup()
-{
-}
+{}
 
 void TestQgsSpinBox::clear()
 {

@@ -76,11 +76,9 @@ void TestQgsGeometrySnapper::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 void TestQgsGeometrySnapper::init()
-{
-}
+{}
 void TestQgsGeometrySnapper::cleanup()
-{
-}
+{}
 
 void TestQgsGeometrySnapper::snapPolygonToPolygon()
 {

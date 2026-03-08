@@ -47,7 +47,8 @@ class TestQgsSimpleMarkerSymbol : public QgsTest
 
   public:
     TestQgsSimpleMarkerSymbol()
-      : QgsTest( u"Simple Marker Tests"_s, u"symbol_simplemarker"_s ) {}
+      : QgsTest( u"Simple Marker Tests"_s, u"symbol_simplemarker"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -116,9 +117,7 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
   mSimpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();

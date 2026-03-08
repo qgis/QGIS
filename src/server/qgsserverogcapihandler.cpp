@@ -88,8 +88,7 @@ void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context )
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
 {
   const auto constContentTypes( QgsServerOgcApi::contentTypeMimes() );
-  for ( auto it = constContentTypes.constBegin();
-        it != constContentTypes.constEnd(); ++it )
+  for ( auto it = constContentTypes.constBegin(); it != constContentTypes.constEnd(); ++it )
   {
     const auto constValues = it.value();
     for ( const auto &value : constValues )
@@ -205,8 +204,7 @@ json QgsServerOgcApiHandler::schema( const QgsServerApiContext &context ) const
 json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const std::string &title ) const
 {
   json l {
-    { "href", href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) )
-    },
+    { "href", href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) },
     { "rel", QgsServerOgcApi::relToString( linkType ) },
     { "type", QgsServerOgcApi::mimeType( contentType ) },
     { "title", title != "" ? title : linkTitle() },
@@ -286,9 +284,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
 
     // For template debugging:
-    env.add_callback( "json_dump", 0, [data]( Arguments & ) {
-      return data.dump();
-    } );
+    env.add_callback( "json_dump", 0, [data]( Arguments & ) { return data.dump(); } );
 
     // Path manipulation: appends a directory path to the current url
     env.add_callback( "path_append", 1, [context]( Arguments &args ) {
@@ -405,9 +401,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
 
 
     // Returns true if a string begins with the provided string prefix, false otherwise
-    env.add_callback( "starts_with", 2, []( Arguments &args ) {
-      return string_view::starts_with( args.at( 0 )->get<std::string_view>(), args.at( 1 )->get<std::string_view>() );
-    } );
+    env.add_callback( "starts_with", 2, []( Arguments &args ) { return string_view::starts_with( args.at( 0 )->get<std::string_view>(), args.at( 1 )->get<std::string_view>() ); } );
 
     // Returns "null" string if object is null else string object representation
     env.add_callback( "if_nullptr_null_str", 1, []( Arguments &args ) {
@@ -577,11 +571,8 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollectionId( const QgsServerAp
 
 json QgsServerOgcApiHandler::defaultResponse()
 {
-  static json defRes = {
-    { "description", "An error occurred." },
-    { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/exception" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } }
-    }
-  };
+  static json defRes
+    = { { "description", "An error occurred." }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/exception" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } };
   return defRes;
 }
 

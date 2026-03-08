@@ -50,7 +50,8 @@ class TestQgsLayoutTable : public QgsTest
 
   public:
     TestQgsLayoutTable()
-      : QgsTest( u"Layout Table Tests"_s, u"composer_table"_s ) {}
+      : QgsTest( u"Layout Table Tests"_s, u"composer_table"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -453,7 +454,11 @@ void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
   //setup atlas
   auto atlasLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=EPSG:3857"_s, u"atlas"_s, u"memory"_s );
   QVERIFY( atlasLayer->isValid() );
-  const QgsGeometry atlasGeom( QgsGeometry::fromWkt( u"Polygon ((-8863916.31126776337623596 4621257.48816855065524578, -9664269.45078738406300545 5097056.938785120844841, -10049249.44194872118532658 3765399.75924854446202517, -8985488.94005555473268032 3458599.17133777122944593, -8863916.31126776337623596 4621257.48816855065524578))"_s ) );
+  const QgsGeometry atlasGeom(
+    QgsGeometry::fromWkt(
+      u"Polygon ((-8863916.31126776337623596 4621257.48816855065524578, -9664269.45078738406300545 5097056.938785120844841, -10049249.44194872118532658 3765399.75924854446202517, -8985488.94005555473268032 3458599.17133777122944593, -8863916.31126776337623596 4621257.48816855065524578))"_s
+    )
+  );
   QgsFeature f;
   f.setGeometry( atlasGeom );
   atlasLayer->dataProvider()->addFeature( f );
@@ -1308,9 +1313,7 @@ void TestQgsLayoutTable::cellStyles()
 
   //write to xml
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -1727,7 +1730,8 @@ void TestQgsLayoutTable::wrappedText()
   const QFont f;
   const QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
-  const QString wrapText = QgsTextRenderer::wrappedText( context, sourceText, context.convertToPainterUnits( 101, Qgis::RenderUnit::Millimeters ) /*columnWidth*/, QgsTextFormat::fromQFont( f ) ).join( '\n' );
+  const QString wrapText
+    = QgsTextRenderer::wrappedText( context, sourceText, context.convertToPainterUnits( 101, Qgis::RenderUnit::Millimeters ) /*columnWidth*/, QgsTextFormat::fromQFont( f ) ).join( '\n' );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }

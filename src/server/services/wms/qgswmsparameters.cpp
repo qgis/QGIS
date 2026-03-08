@@ -40,8 +40,7 @@ namespace QgsWms
   QgsWmsParameter::QgsWmsParameter( const QgsWmsParameter::Name name, const QMetaType::Type type, const QVariant defaultValue )
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
-  {
-  }
+  {}
 
   bool QgsWmsParameter::isValid() const
   {
@@ -740,8 +739,7 @@ namespace QgsWms
   {
     QString req = QgsServerParameters::request();
 
-    if ( version().compare( "1.1.1"_L1 ) == 0
-         && req.compare( "capabilities"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( version().compare( "1.1.1"_L1 ) == 0 && req.compare( "capabilities"_L1, Qt::CaseInsensitive ) == 0 )
     {
       req = u"GetCapabilities"_s;
     }
@@ -779,9 +777,7 @@ namespace QgsWms
     {
       f = Format::PNG;
     }
-    else if ( fStr.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0
-              || fStr.compare( "jpeg"_L1, Qt::CaseInsensitive ) == 0
-              || fStr.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "jpeg"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       f = Format::JPG;
     }
@@ -826,8 +822,7 @@ namespace QgsWms
       f = Format::TEXT;
     else if ( fStr.startsWith( "application/vnd.ogc.gml"_L1, Qt::CaseInsensitive ) )
       f = Format::GML;
-    else if ( fStr.startsWith( "application/json"_L1, Qt::CaseInsensitive )
-              || fStr.startsWith( "application/geo+json"_L1, Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( "application/json"_L1, Qt::CaseInsensitive ) || fStr.startsWith( "application/geo+json"_L1, Qt::CaseInsensitive ) )
       f = Format::JSON;
     else
       f = Format::NONE;
@@ -1449,17 +1444,14 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( '<'_L1 )
-           && f.endsWith( "Filter>"_L1 )
-           && i < layers.size() )
+      if ( f.startsWith( '<'_L1 ) && f.endsWith( "Filter>"_L1 ) && i < layers.size() )
       {
         QgsWmsParametersFilter filter;
         filter.mFilter = f;
         filter.mType = QgsWmsParametersFilter::OGC_FE;
         filter.mVersion = QgsOgcUtils::FILTER_OGC_1_0;
 
-        if ( filter.mFilter.contains( nsWfs2 )
-             || filter.mFilter.contains( prefixWfs2 ) )
+        if ( filter.mFilter.contains( nsWfs2 ) || filter.mFilter.contains( prefixWfs2 ) )
         {
           filter.mVersion = QgsOgcUtils::FILTER_FES_2_0;
         }

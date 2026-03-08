@@ -41,7 +41,8 @@ class TestQgsGpsIntegration : public QgsTest
     Q_OBJECT
   public:
     TestQgsGpsIntegration()
-      : QgsTest( u"GPS Integration Tests"_s ) {}
+      : QgsTest( u"GPS Integration Tests"_s )
+    {}
 
   private slots:
     void initTestCase();

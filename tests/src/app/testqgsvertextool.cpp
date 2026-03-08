@@ -266,7 +266,9 @@ void TestQgsVertexTool::init()
   mLayerNurbs = new QgsVectorLayer( u"NurbsCurve?"_s, u"layer nurbs"_s, u"memory"_s );
   QVERIFY( mLayerNurbs->isValid() );
   mLayerNurbs->setCrs( mFake27700 );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve << mLayerNurbs );
+  QgsProject::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve << mLayerNurbs
+  );
 
 
   QgsFeature lineF1, lineF2;
@@ -286,7 +288,12 @@ void TestQgsVertexTool::init()
   polygonF1.setGeometry( QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QgsFeature multiPolygonF1;
-  multiPolygonF1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+  multiPolygonF1.setGeometry(
+    QgsGeometry::fromWkt(
+      "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 "
+      "5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))"
+    )
+  );
 
   QgsFeature pointF1;
   pointF1.setGeometry( QgsGeometry::fromWkt( "Point (2 3)" ) );
@@ -427,7 +434,21 @@ void TestQgsVertexTool::init()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve << mLayerNurbs );
+  mCanvas->setLayers(
+    QList<QgsMapLayer *>()
+    << mLayerLine
+    << mLayerMultiLine
+    << mLayerLineReprojected
+    << mLayerPolygon
+    << mLayerMultiPolygon
+    << mLayerPoint
+    << mLayerPointZ
+    << mLayerLineZ
+    << mLayerLineM
+    << mLayerLineTopoPoints
+    << mLayerCompoundCurve
+    << mLayerNurbs
+  );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
@@ -2002,13 +2023,25 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   mouseClick( 1.25, 7.25, Qt::LeftButton );
 
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 2 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6.25, 1.75 5.75, 1.25 5.5),(1.25 7.25, 1.75 7, 1.75 7.5, 1.25 7.75, 1.25 7.25)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+  QCOMPARE(
+    mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(),
+    QgsGeometry::fromWkt(
+      "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6.25, 1.75 5.75, 1.25 5.5),(1.25 7.25, 1.75 7, 1.75 7.5, 1.25 7.75, 1.25 7.25)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 "
+      "5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))"
+    )
+  );
 
   // Undo and reset vertex selection
   mLayerMultiPolygon->undoStack()->undo();
   mouseClick( 0.5, 7, Qt::RightButton );
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+  QCOMPARE(
+    mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(),
+    QgsGeometry::fromWkt(
+      "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 "
+      "5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))"
+    )
+  );
 }
 
 void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
@@ -2145,10 +2178,14 @@ void TestQgsVertexTool::testMoveVertexNurbsPolyBezierSymmetric()
   // We'll drag P3 (index 3). Left handle P2 (index 2), Right handle P4 (index 4).
 
   QVector<QgsPoint> controlPoints;
-  controlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 )   // Segment 1 handles
-                << QgsPoint( 4, 1 ) << QgsPoint( 5, 0 )   // Anchor 1 (index 3) at 5,0. Left Handle (index 2) at 4,1
-                << QgsPoint( 6, -1 ) << QgsPoint( 9, -1 ) // Right Handle (index 4) at 6,-1
-                << QgsPoint( 10, 0 );
+  controlPoints
+    << QgsPoint( 0, 0 )
+    << QgsPoint( 1, 1 ) // Segment 1 handles
+    << QgsPoint( 4, 1 )
+    << QgsPoint( 5, 0 ) // Anchor 1 (index 3) at 5,0. Left Handle (index 2) at 4,1
+    << QgsPoint( 6, -1 )
+    << QgsPoint( 9, -1 ) // Right Handle (index 4) at 6,-1
+    << QgsPoint( 10, 0 );
 
   QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( 3 ); // 3 anchors -> 2 segments
   QVector<double> weights( 7, 1.0 );
