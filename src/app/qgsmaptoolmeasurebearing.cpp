@@ -23,7 +23,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgssnapindicator.h"
 

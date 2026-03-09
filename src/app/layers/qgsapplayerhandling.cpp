@@ -33,6 +33,8 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsterrainprovider.h"
 #include "qgstiledscenelayerproperties.h"

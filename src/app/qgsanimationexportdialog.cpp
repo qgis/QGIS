@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
 #include "qgsprojecttimesettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalutils.h"

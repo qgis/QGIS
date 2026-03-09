@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsunittypes.h"
 
