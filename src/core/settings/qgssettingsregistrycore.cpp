@@ -170,6 +170,9 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsScanZipInBrowser
 const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsScanItemsFastScanUris
   = new QgsSettingsEntryStringList( u"scan-items-fast-scan-uris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"URIs for fast scanning in browser"_s );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex
+  = new QgsSettingsEntryInteger( u"symbols-list-groups-index"_s, QgsSettingsTree::sTreeQgis, 0, u"Currently selected group index in symbols list"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -214,6 +217,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
+  settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
+  settingsSymbolsListGroupsIndex->copyValueFromKey( u"/qgis/symbolsListGroupsIndex"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );

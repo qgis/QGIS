@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgswindowmanagerinterface.h"
 
@@ -477,8 +478,7 @@ void QgsStyleItemsListWidget::populateGroups()
   }
   groupsCombo->blockSignals( false );
 
-  const QgsSettings settings;
-  index = settings.value( u"qgis/symbolsListGroupsIndex"_s, 0 ).toInt();
+  index = QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->value();
   groupsCombo->setCurrentIndex( index );
 
   mUpdatingGroups = false;
@@ -576,6 +576,5 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index, cons
 
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )
 {
-  QgsSettings settings;
-  settings.setValue( u"qgis/symbolsListGroupsIndex"_s, index );
+  QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( index );
 }
