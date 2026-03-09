@@ -78,6 +78,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry whether anti-aliasing is enabled for rendering
     static const QgsSettingsEntryBool *settingsEnableAntiAliasing;
 
+    //! Settings entry whether to use native color dialogs
+    static const QgsSettingsEntryBool *settingsNativeColorDialogs;
+
 #endif
 };
 

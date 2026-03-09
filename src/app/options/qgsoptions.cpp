@@ -753,7 +753,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   whileBlocking( cmbUITheme )->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
-  mNativeColorDialogsChkBx->setChecked( mSettings->value( u"/qgis/native_color_dialogs"_s, false ).toBool() );
+  mNativeColorDialogsChkBx->setChecked( QgsSettingsRegistryGui::settingsNativeColorDialogs->value() );
 
   cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
@@ -1719,7 +1719,7 @@ void QgsOptions::saveOptions()
 
   QgsSettingsRegistryGui::settingsMessageTimeout->setValue( mMessageTimeoutSpnBx->value() );
 
-  mSettings->setValue( u"/qgis/native_color_dialogs"_s, mNativeColorDialogsChkBx->isChecked() );
+  QgsSettingsRegistryGui::settingsNativeColorDialogs->setValue( mNativeColorDialogsChkBx->isChecked() );
 
   //check behavior so default projection when new layer is added with no
   //projection defined...
