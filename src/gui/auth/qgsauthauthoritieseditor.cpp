@@ -26,6 +26,7 @@
 #include "qgsauthtrustedcasdialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsvariantutils.h"
 
 #include <QAction>
@@ -721,6 +722,5 @@ QgsMessageBar *QgsAuthAuthoritiesEditor::messageBar()
 
 int QgsAuthAuthoritiesEditor::messageTimeout()
 {
-  const QgsSettings settings;
-  return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
+  return QgsSettingsRegistryGui::settingsMessageTimeout->value();
 }

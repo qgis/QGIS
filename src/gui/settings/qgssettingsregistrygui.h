@@ -22,6 +22,7 @@
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
 
 /**
@@ -70,6 +71,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
     //! Settings entry default raster color ramp palette name
     static const QgsSettingsEntryString *settingsRasterDefaultPalette;
+
+    //! Settings entry message timeout in seconds
+    static const QgsSettingsEntryInteger *settingsMessageTimeout;
 
 #endif
 };
