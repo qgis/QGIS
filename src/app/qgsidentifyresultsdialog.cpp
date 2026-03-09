@@ -115,7 +115,7 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = ne
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( QStringLiteral( "show-full-text" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to display attribute values on multiple lines instead of truncating with ellipsis in the identify feature result" ) );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( u"show-full-text"_s, QgsSettingsTree::sTreeMap, false, u"Whether to display attribute values on multiple lines instead of truncating with ellipsis in the identify feature result"_s );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
@@ -2942,7 +2942,7 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
 {
   QLabel *valueLabel = new QLabel();
   valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignTop );
-  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; padding-left: 2px; }" ) );
+  valueLabel->setStyleSheet( u"QLabel { background: transparent; padding-left: 2px; }"_s );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
 
@@ -2953,8 +2953,8 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
   valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
   QString wrapped = text;
-  wrapped.replace( u"/"_s, u"/\u00AD"_s );
-  wrapped.replace( u"\\"_s, u"\\\u00AD"_s );
+  wrapped.replace( "/"_L1, u"/\u00AD"_s );
+  wrapped.replace( "\\"_L1, u"\\\u00AD"_s );
 
   valueLabel->setText( wrapped );
   valueLabel->setTextFormat( Qt::PlainText );
