@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QPushButton>
 #include <QString>
@@ -216,7 +217,7 @@ int QgsSublayersDialog::exec()
   if ( mShowAddToGroupCheckbox )
   {
     mCbxAddToGroup->setVisible( true );
-    const bool addToGroup = settings.value( u"/qgis/openSublayersInGroup"_s, false ).toBool();
+    const bool addToGroup = QgsSettingsRegistryGui::settingsOpenSublayersInGroup->value();
     mCbxAddToGroup->setChecked( addToGroup );
   }
 
@@ -225,7 +226,7 @@ int QgsSublayersDialog::exec()
     QApplication::setOverrideCursor( cursor );
 
   if ( mShowAddToGroupCheckbox )
-    settings.setValue( u"/qgis/openSublayersInGroup"_s, mCbxAddToGroup->isChecked() );
+    QgsSettingsRegistryGui::settingsOpenSublayersInGroup->setValue( mCbxAddToGroup->isChecked() );
   return ret;
 }
 

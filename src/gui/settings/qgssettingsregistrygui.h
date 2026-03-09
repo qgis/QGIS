@@ -84,6 +84,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry whether to format layer names
     static const QgsSettingsEntryBool *settingsFormatLayerName;
 
+    //! Settings entry whether to open sublayers in a group
+    static const QgsSettingsEntryBool *settingsOpenSublayersInGroup;
+
 #endif
 };
 
