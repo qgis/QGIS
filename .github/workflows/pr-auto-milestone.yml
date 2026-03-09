@@ -6,7 +6,7 @@ name: 📅 Auto set milestone on PR
 # - Master PRs get milestone +2 minor versions from latest (e.g., 4.0 latest -> 4.2 milestone)
 # - Release branch PRs get milestone +0.1 patch version (e.g., 4.0.0 latest -> 4.0.1 milestone)
 # - Works for both 3.x and 4.x release branches (major version auto-detected from branch name)
-
+# - Special handling: queued_ltr_backports is treated as release-3_44 (temporary until 4.x has LTR)
 on:
   workflow_call:
   workflow_dispatch:
@@ -95,22 +95,29 @@ jobs:
             echo "========================================="
             echo "Processing PR #${PR_NUMBER} (branch: ${BASE_BRANCH})"
             
-            # Extract major and minor version from branch name
-            # Examples: master => major=4 (from env), minor=empty
-            #           release-3_38 => major=3, minor=_38
-            #           release-4_0 => major=4, minor=_0
-            BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
-            if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
-              # Master branch - use the environment variable
-              QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
+            # Special handling for queued_ltr_backports: treat as release-3_44 (temporary until 4.x has LTR)
+            if [[ ${BASE_BRANCH} == "queued_ltr_backports" ]]; then
+              echo "Special handling: queued_ltr_backports → treating as release-3_44"
+              QGIS_MAJOR_VERSION=3
+              MINOR_VERSION=_44
             else
-              # Release branch - use the detected major version
-              QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
-            fi
+              # Extract major and minor version from branch name
+              # Examples: master => major=4 (from env), minor=empty
+              #           release-3_38 => major=3, minor=_38
+              #           release-4_0 => major=4, minor=_0
+              BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
+              if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
+                # Master branch - use the environment variable
+                QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
+              else
+                # Release branch - use the detected major version
+                QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
+              fi
 
-            # Extract minor version from release branch name
-            # Examples: master => empty, release-3_38 => _38, release-4_0 => _0, release-4_2 => _2
-            MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
+              # Extract minor version from release branch name
+              # Examples: master => empty, release-3_38 => _38, release-4_0 => _0, release-4_2 => _2
+              MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
+            fi
 
             # Find the highest released version from git tags matching the target branch
             MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
