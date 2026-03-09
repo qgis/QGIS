@@ -1772,3 +1772,8 @@ void QgsPluginManager::showHelp()
 {
   QgsHelp::openHelp( u"plugins/plugins.html"_s );
 }
+
+void QgsPluginManager::search( const QString &searchTerm )
+{
+  leFilter->setText( searchTerm );
+}
