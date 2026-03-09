@@ -107,6 +107,9 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
   connect( mActionOpenPath, &QAction::triggered, this, &QgsBrowserWidget::openPath );
 
+  // Location bar connection
+  connect( mLeLocationBar, &QLineEdit::returnPressed, this, &QgsBrowserWidget::navigateToPath );
+
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserWidget::setFilter );
@@ -586,4 +589,20 @@ void QgsBrowserWidget::openPath()
 
 
   mBrowserView->expandPath( path, true );
+}
+
+void QgsBrowserWidget::navigateToPath()
+{
+  if ( !mLeLocationBar || !mBrowserView )
+    return;
+
+  const QString path = mLeLocationBar->text().trimmed();
+  if ( path.isEmpty() )
+    return;
+
+  // Use expandPath for navigation - it handles all the logic
+  mBrowserView->expandPath( path, true );
+
+  // Clear the location bar on successful navigation
+  mLeLocationBar->clear();
 }
