@@ -126,7 +126,8 @@ jobs:
           # - Release branch: increment patch version (e.g., 3.38.0 released -> 3.38.1 milestone, 4.0.0 released -> 4.0.1 milestone)
           INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
           echo "INCREASE_OPERATION: ${INCREASE_OPERATION}"
-          MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${INCREASE_OPERATION}" | bc)
+          MILESTONE_VERSION=$(printf "%.1f" $(echo "${INCREASE_OPERATION}" | bc))
+          MILESTONE_TITLE="${QGIS_MAJOR_VERSION}.${MILESTONE_VERSION}"
           echo "MILESTONE_TITLE: ${MILESTONE_TITLE}"
 
           # Check if calculated milestone already exists
