@@ -64,6 +64,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsNativeColorDialogs
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsFormatLayerName
   = new QgsSettingsEntryBool( u"format-layer-name"_s, QgsSettingsTree::sTreeQgis, false, u"Whether to format layer names for better readability"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsOpenSublayersInGroup
+  = new QgsSettingsEntryBool( u"open-sublayers-in-group"_s, QgsSettingsTree::sTreeQgis, false, u"Whether to open sublayers in a group"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -97,6 +100,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsNativeColorDialogs->copyValueFromKey( u"/qgis/native_color_dialogs"_s, true );
   settingsFormatLayerName->copyValueFromKey( u"qgis/formatLayerName"_s, true );
   settingsFormatLayerName->copyValueFromKey( u"/qgis/formatLayerName"_s, true );
+  settingsOpenSublayersInGroup->copyValueFromKey( u"qgis/openSublayersInGroup"_s, true );
+  settingsOpenSublayersInGroup->copyValueFromKey( u"/qgis/openSublayersInGroup"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
