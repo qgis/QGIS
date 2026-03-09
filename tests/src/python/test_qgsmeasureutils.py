@@ -25,7 +25,7 @@ class TestQgsMeasureUtils(QgisTestCase):
         start_app()
 
     def test_format_distance(self):
-        QgsSettings().setValue("qgis/measure/keepbaseunit", True)
+        QgsSettingsRegistryCore.settingsMeasureKeepBaseUnit().setValue(True)
 
         p = QgsProject()
         p.setDistanceUnits(Qgis.DistanceUnit.Feet)
@@ -82,7 +82,7 @@ class TestQgsMeasureUtils(QgisTestCase):
         )
 
     def test_format_distance_no_keep_base_unit(self):
-        QgsSettings().setValue("qgis/measure/keepbaseunit", False)
+        QgsSettingsRegistryCore.settingsMeasureKeepBaseUnit().setValue(False)
 
         p = QgsProject()
         p.setDistanceUnits(Qgis.DistanceUnit.Feet)
@@ -139,7 +139,7 @@ class TestQgsMeasureUtils(QgisTestCase):
         )
 
     def test_format_area(self):
-        QgsSettings().setValue("qgis/measure/keepbaseunit", True)
+        QgsSettingsRegistryCore.settingsMeasureKeepBaseUnit().setValue(True)
 
         p = QgsProject()
         p.setAreaUnits(Qgis.AreaUnit.SquareFeet)
@@ -190,7 +190,7 @@ class TestQgsMeasureUtils(QgisTestCase):
         )
 
     def test_format_area_no_keep_base_unit(self):
-        QgsSettings().setValue("qgis/measure/keepbaseunit", False)
+        QgsSettingsRegistryCore.settingsMeasureKeepBaseUnit().setValue(False)
 
         p = QgsProject()
         p.setAreaUnits(Qgis.AreaUnit.SquareFeet)

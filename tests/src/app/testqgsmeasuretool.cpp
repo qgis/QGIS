@@ -87,7 +87,7 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
 {
   //test length measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -154,7 +154,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
 {
   //test length measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -222,7 +222,7 @@ void TestQgsMeasureTool::testLengthCalculationNoCrs()
 {
   // test length measurement when no projection is set
   QSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem() );
@@ -249,7 +249,7 @@ void TestQgsMeasureTool::testAreaCalculationCartesian()
 {
   //test area measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -303,7 +303,7 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
 {
   //test area measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );

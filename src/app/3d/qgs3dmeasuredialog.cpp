@@ -202,7 +202,7 @@ double Qgs3DMeasureDialog::convertLength( double length, Qgis::DistanceUnit toUn
 QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
 }
 

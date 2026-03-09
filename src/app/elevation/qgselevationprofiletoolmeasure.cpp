@@ -86,7 +86,7 @@ void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance,
 
   // the distance delta HAS units!
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   Qgis::DistanceUnit distanceUnit = mCrs.mapUnits();
   const Qgis::DistanceUnit projectUnit = QgsProject::instance()->distanceUnits();
