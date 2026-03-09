@@ -466,11 +466,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mScaleMethodWidget->setScaleMethod( QgsProject::instance()->scaleMethod() );
 
   //get the color selections and set the button color accordingly
-  int myRedInt = settings.value( u"qgis/default_selection_color_red"_s, 255 ).toInt();
-  int myGreenInt = settings.value( u"qgis/default_selection_color_green"_s, 255 ).toInt();
-  int myBlueInt = settings.value( u"qgis/default_selection_color_blue"_s, 0 ).toInt();
-  int myAlphaInt = settings.value( u"qgis/default_selection_color_alpha"_s, 255 ).toInt();
-  QColor defaultSelectionColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
+  QColor defaultSelectionColor = QgsSettingsRegistryCore::settingsDefaultSelectionColor->value();
 
   pbnSelectionColor->setContext( u"gui"_s );
   pbnSelectionColor->setColor( QgsProject::instance()->selectionColor() );

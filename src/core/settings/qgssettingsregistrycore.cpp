@@ -179,6 +179,9 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsSymbolsListGroup
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDefaultCanvasColor
   = new QgsSettingsEntryColor( u"default-canvas-color"_s, QgsSettingsTree::sTreeQgis, QColor( 255, 255, 255 ), u"Default canvas background color"_s );
 
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDefaultSelectionColor
+  = new QgsSettingsEntryColor( u"default-selection-color"_s, QgsSettingsTree::sTreeQgis, QColor( 255, 255, 0, 255 ), u"Default selection color"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -229,6 +232,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"/qgis/symbolsListGroupsIndex"_s, true );
   settingsDefaultCanvasColor->copyValueFromKeys( u"qgis/default_canvas_color_red"_s, u"qgis/default_canvas_color_green"_s, u"qgis/default_canvas_color_blue"_s, QString(), true );
   settingsDefaultCanvasColor->copyValueFromKeys( u"/qgis/default_canvas_color_red"_s, u"/qgis/default_canvas_color_green"_s, u"/qgis/default_canvas_color_blue"_s, QString(), true );
+  settingsDefaultSelectionColor
+    ->copyValueFromKeys( u"qgis/default_selection_color_red"_s, u"qgis/default_selection_color_green"_s, u"qgis/default_selection_color_blue"_s, u"qgis/default_selection_color_alpha"_s, true );
+  settingsDefaultSelectionColor
+    ->copyValueFromKeys( u"/qgis/default_selection_color_red"_s, u"/qgis/default_selection_color_green"_s, u"/qgis/default_selection_color_blue"_s, u"/qgis/default_selection_color_alpha"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );
