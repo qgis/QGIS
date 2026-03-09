@@ -30,7 +30,7 @@ class QgsPointCloudSubIndexLoader : public QObject
     Q_OBJECT
   public:
     explicit QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged = false );
-    ~QgsPointCloudSubIndexLoader();
+    ~QgsPointCloudSubIndexLoader() override;
     void start();
     QgsPointCloudIndex index() const { return mIndex; }
     bool emitDataChangedWhenLoaded() const { return mEmitDataChanged; }
