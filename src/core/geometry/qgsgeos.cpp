@@ -469,6 +469,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
  *
  * \param geom geometry to combine with
  * \param errorMsg optional error message if the operation fails
+ * \param parameters additional geometry operations parameters
  * \return resulting combined geometry
  */
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
