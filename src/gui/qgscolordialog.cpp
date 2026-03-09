@@ -19,6 +19,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 
 #include <QFileDialog>

@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 
 #include <QPushButton>

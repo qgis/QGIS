@@ -23,6 +23,7 @@
 #include "qgsmapoverviewcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 

@@ -21,6 +21,7 @@
 #include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
 #include <QFileDialog>

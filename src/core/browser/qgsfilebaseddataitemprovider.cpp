@@ -28,6 +28,7 @@
 #include "qgsproviderutils.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstyle.h"
 
