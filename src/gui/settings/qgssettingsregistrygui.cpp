@@ -58,6 +58,9 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryGui::settingsMessageTimeout
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsEnableAntiAliasing
   = new QgsSettingsEntryBool( u"enable-anti-aliasing"_s, QgsSettingsTree::sTreeQgis, true, u"Whether anti-aliasing is enabled for rendering"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsNativeColorDialogs
+  = new QgsSettingsEntryBool( u"native-color-dialogs"_s, QgsSettingsTree::sTreeQgis, false, u"Whether to use native color dialogs"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -87,6 +90,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsMessageTimeout->copyValueFromKey( u"/qgis/messageTimeout"_s, true );
   settingsEnableAntiAliasing->copyValueFromKey( u"qgis/enable_anti_aliasing"_s, true );
   settingsEnableAntiAliasing->copyValueFromKey( u"/qgis/enable_anti_aliasing"_s, true );
+  settingsNativeColorDialogs->copyValueFromKey( u"qgis/native_color_dialogs"_s, true );
+  settingsNativeColorDialogs->copyValueFromKey( u"/qgis/native_color_dialogs"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
