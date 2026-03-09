@@ -796,11 +796,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() );
 
   //set the color for selections
-  int red = mSettings->value( u"/qgis/default_selection_color_red"_s, 255 ).toInt();
-  int green = mSettings->value( u"/qgis/default_selection_color_green"_s, 255 ).toInt();
-  int blue = mSettings->value( u"/qgis/default_selection_color_blue"_s, 0 ).toInt();
-  int alpha = mSettings->value( u"/qgis/default_selection_color_alpha"_s, 255 ).toInt();
-  pbnSelectionColor->setColor( QColor( red, green, blue, alpha ) );
+  pbnSelectionColor->setColor( QgsSettingsRegistryCore::settingsDefaultSelectionColor->value() );
   pbnSelectionColor->setColorDialogTitle( tr( "Set Selection Color" ) );
   pbnSelectionColor->setAllowOpacity( true );
   pbnSelectionColor->setContext( u"gui"_s );
@@ -1779,10 +1775,7 @@ void QgsOptions::saveOptions()
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
-  mSettings->setValue( u"/qgis/default_selection_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_selection_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_selection_color_blue"_s, myColor.blue() );
-  mSettings->setValue( u"/qgis/default_selection_color_alpha"_s, myColor.alpha() );
+  QgsSettingsRegistryCore::settingsDefaultSelectionColor->setValue( myColor );
 
   //set the default color for canvas background
   myColor = pbnCanvasColor->color();

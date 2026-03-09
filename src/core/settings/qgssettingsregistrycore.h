@@ -218,6 +218,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for default canvas background color
     static const QgsSettingsEntryColor *settingsDefaultCanvasColor;
 
+    //! Settings entry for default selection color
+    static const QgsSettingsEntryColor *settingsDefaultSelectionColor;
+
   private:
     friend class QgsApplication;
 

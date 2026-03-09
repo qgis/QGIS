@@ -1328,11 +1328,7 @@ void QgsProject::clear()
 
   setBackgroundColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
 
-  int red = mSettings.value( u"qgis/default_selection_color_red"_s, 255 ).toInt();
-  int green = mSettings.value( u"qgis/default_selection_color_green"_s, 255 ).toInt();
-  int blue = mSettings.value( u"qgis/default_selection_color_blue"_s, 0 ).toInt();
-  const int alpha = mSettings.value( u"qgis/default_selection_color_alpha"_s, 255 ).toInt();
-  setSelectionColor( QColor( red, green, blue, alpha ) );
+  setSelectionColor( QgsSettingsRegistryCore::settingsDefaultSelectionColor->value() );
 
   mSnappingConfig.clearIndividualLayerSettings();
 
