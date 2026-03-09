@@ -3644,7 +3644,7 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
 {
   QImage spriteImage;
 
-  if ( name.trimmed().isEmpty() )
+  if ( name.isEmpty() )
   {
     return QImage();
   }
