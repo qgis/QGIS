@@ -41,11 +41,13 @@ const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramUpdat
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRasterHistogramDrawLines
   = new QgsSettingsEntryBool( u"draw-lines"_s, QgsSettingsTree::sTreeRasterHistogram, true, u"Whether to draw the raster histogram as lines"_s );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsZoomFactor
-  = new QgsSettingsEntryDouble( u"zoom-factor"_s, QgsSettingsTree::sTreeQgis, 2.0, u"Zoom factor for map canvas and other views"_s );
+const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsZoomFactor = new QgsSettingsEntryDouble( u"zoom-factor"_s, QgsSettingsTree::sTreeQgis, 2.0, u"Zoom factor for map canvas and other views"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsReverseWheelZoom
   = new QgsSettingsEntryBool( u"reverse-wheel-zoom"_s, QgsSettingsTree::sTreeQgis, false, u"Whether to reverse the direction of wheel zoom"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsNewLayersVisible
+  = new QgsSettingsEntryBool( u"new-layers-visible"_s, QgsSettingsTree::sTreeQgis, true, u"Whether newly added layers are visible by default"_s );
 
 const QgsSettingsEntryString *QgsSettingsRegistryGui::settingsRasterDefaultPalette
   = new QgsSettingsEntryString( u"default-palette"_s, QgsSettingsTree::sTreeRaster, QString(), u"Default color ramp palette name for raster layers"_s );
@@ -71,6 +73,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsZoomFactor->copyValueFromKey( u"/qgis/zoom_factor"_s, true );
   settingsReverseWheelZoom->copyValueFromKey( u"qgis/reverse_wheel_zoom"_s, true );
   settingsReverseWheelZoom->copyValueFromKey( u"/qgis/reverse_wheel_zoom"_s, true );
+  settingsNewLayersVisible->copyValueFromKey( u"qgis/new_layers_visible"_s, true );
+  settingsNewLayersVisible->copyValueFromKey( u"/qgis/new_layers_visible"_s, true );
   settingsRasterDefaultPalette->copyValueFromKey( u"Raster/defaultPalette"_s, true );
   settingsRasterDefaultPalette->copyValueFromKey( u"/Raster/defaultPalette"_s, true );
 

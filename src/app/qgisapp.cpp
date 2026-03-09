@@ -5916,7 +5916,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
-  prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
+  prj->layerTreeRegistryBridge()->setNewLayersVisible( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
   prj->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
   //set the canvas to the default project background color
@@ -12763,7 +12763,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
   if ( optionsDialog->exec() )
   {
-    QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
+    QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
     QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
     setupLayerTreeViewFromSettings();
