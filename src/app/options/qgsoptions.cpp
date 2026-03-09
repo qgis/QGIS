@@ -740,7 +740,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mFontFamilyRadioCustom->blockSignals( false );
   mFontFamilyComboBox->blockSignals( false );
 
-  mMessageTimeoutSpnBx->setValue( mSettings->value( u"/qgis/messageTimeout"_s, 5 ).toInt() );
+  mMessageTimeoutSpnBx->setValue( QgsSettingsRegistryGui::settingsMessageTimeout->value() );
   mMessageTimeoutSpnBx->setClearValue( 5 );
 
   QString name = mSettings->value( u"/qgis/style"_s ).toString();
@@ -1717,7 +1717,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/style"_s, cmbStyle->currentText() );
   mSettings->setValue( u"/qgis/toolbarIconSize"_s, cmbIconSize->currentText() );
 
-  mSettings->setValue( u"/qgis/messageTimeout"_s, mMessageTimeoutSpnBx->value() );
+  QgsSettingsRegistryGui::settingsMessageTimeout->setValue( mMessageTimeoutSpnBx->value() );
 
   mSettings->setValue( u"/qgis/native_color_dialogs"_s, mNativeColorDialogsChkBx->isChecked() );
 

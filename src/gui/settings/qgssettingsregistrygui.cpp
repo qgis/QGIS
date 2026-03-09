@@ -52,6 +52,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsNewLayersVisible
 const QgsSettingsEntryString *QgsSettingsRegistryGui::settingsRasterDefaultPalette
   = new QgsSettingsEntryString( u"default-palette"_s, QgsSettingsTree::sTreeRaster, QString(), u"Default color ramp palette name for raster layers"_s );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryGui::settingsMessageTimeout
+  = new QgsSettingsEntryInteger( u"message-timeout"_s, QgsSettingsTree::sTreeQgis, 5, u"Timeout in seconds for message bar messages"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -77,6 +80,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsNewLayersVisible->copyValueFromKey( u"/qgis/new_layers_visible"_s, true );
   settingsRasterDefaultPalette->copyValueFromKey( u"Raster/defaultPalette"_s, true );
   settingsRasterDefaultPalette->copyValueFromKey( u"/Raster/defaultPalette"_s, true );
+  settingsMessageTimeout->copyValueFromKey( u"qgis/messageTimeout"_s, true );
+  settingsMessageTimeout->copyValueFromKey( u"/qgis/messageTimeout"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
