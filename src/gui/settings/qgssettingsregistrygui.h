@@ -18,6 +18,7 @@
 #define QGSSETTINGSREGISTRYGUI_H
 
 #include "qgis_gui.h"
+#include "qgsabstractgeometry.h"
 #include "qgssettingsregistry.h"
 
 class QgsSettingsEntryBool;
@@ -25,6 +26,7 @@ class QgsSettingsEntryColor;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup gui
@@ -99,6 +101,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
     //! Settings entry default measure tool color
     static const QgsSettingsEntryColor *settingsDefaultMeasureColor;
+
+    //! Settings entry segmentation tolerance type for curved geometries
+    static const QgsSettingsEntryEnumFlag<QgsAbstractGeometry::SegmentationToleranceType> *settingsSegmentationToleranceType;
 
 #endif
 };

@@ -83,6 +83,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
@@ -2910,7 +2911,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
   canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   canvas->setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
-  canvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle ) ) );
+  canvas->setSegmentationToleranceType( QgsSettingsRegistryGui::settingsSegmentationToleranceType->value() );
 }
 
 void QgisApp::readSettings()

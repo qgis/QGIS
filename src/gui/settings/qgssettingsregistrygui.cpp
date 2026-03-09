@@ -17,6 +17,7 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsapplication.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
@@ -80,6 +81,9 @@ const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsSegmentationTolera
 const QgsSettingsEntryColor *QgsSettingsRegistryGui::settingsDefaultMeasureColor
   = new QgsSettingsEntryColor( u"default-measure-color"_s, QgsSettingsTree::sTreeQgis, QColor( 222, 155, 67 ), u"Default measure tool color"_s );
 
+const QgsSettingsEntryEnumFlag<QgsAbstractGeometry::SegmentationToleranceType> *QgsSettingsRegistryGui::settingsSegmentationToleranceType = new QgsSettingsEntryEnumFlag<
+  QgsAbstractGeometry::SegmentationToleranceType>( u"segmentation-tolerance-type"_s, QgsSettingsTree::sTreeQgis, QgsAbstractGeometry::MaximumAngle, u"Segmentation tolerance type for curved geometries"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -123,6 +127,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsSegmentationTolerance->copyValueFromKey( u"/qgis/segmentationTolerance"_s, true );
   settingsDefaultMeasureColor->copyValueFromKeys( u"qgis/default_measure_color_red"_s, u"qgis/default_measure_color_green"_s, u"qgis/default_measure_color_blue"_s, QString(), true );
   settingsDefaultMeasureColor->copyValueFromKeys( u"/qgis/default_measure_color_red"_s, u"/qgis/default_measure_color_green"_s, u"/qgis/default_measure_color_blue"_s, QString(), true );
+  settingsSegmentationToleranceType->copyValueFromKey( u"qgis/segmentationToleranceType"_s, true );
+  settingsSegmentationToleranceType->copyValueFromKey( u"/qgis/segmentationToleranceType"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );

@@ -64,6 +64,7 @@ email                : sherman at mrcc.com
 #include "qgsruntimeprofiler.h"
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsstatusbar.h"
 #include "qgssvgcache.h"
@@ -210,10 +211,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsMapCanvas::redrawAllLayers );
 
   //segmentation parameters
-  double segmentationTolerance = QgsSettingsRegistryGui::settingsSegmentationTolerance->value();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle );
-  mSettings.setSegmentationTolerance( segmentationTolerance );
-  mSettings.setSegmentationToleranceType( toleranceType );
+  mSettings.setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
+  mSettings.setSegmentationToleranceType( QgsSettingsRegistryGui::settingsSegmentationToleranceType->value() );
 
   mWheelZoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
 
