@@ -4053,7 +4053,7 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, &QgsMapCanvas::scaleLockChanged, mMagnifierWidget, &QgsStatusBarMagnifierWidget::updateScaleLock );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::magnificationChanged, mMapCanvas, [this]( double factor ) { mMapCanvas->setMagnificationFactor( factor ); } );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
-  mMagnifierWidget->updateMagnification( QSettings().value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble() );
+  mMagnifierWidget->updateMagnification( QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value() );
   mStatusBar->addPermanentWidget( mMagnifierWidget, 0 );
 
   // add a widget to show/set current rotation
@@ -12809,7 +12809,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     }
 #endif
 
-    double factor = mySettings.value( u"qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
+    double factor = QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
   }

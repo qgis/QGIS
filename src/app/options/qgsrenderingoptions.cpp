@@ -52,7 +52,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
 
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  double magnifierVal = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
+  double magnifierVal = 100 * QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
   doubleSpinBoxMagnifierDefault->setDecimals( 0 );
@@ -80,7 +80,7 @@ void QgsRenderingOptionsWidget::apply()
   QgsSettingsRegistryGui::settingsMapUpdateInterval->setValue( spinMapUpdateInterval->value() );
 
   // magnification
-  settings.setValue( u"/qgis/magnifier_factor_default"_s, doubleSpinBoxMagnifierDefault->value() / 100 );
+  QgsSettingsRegistryGui::settingsMagnifierFactorDefault->setValue( doubleSpinBoxMagnifierDefault->value() / 100 );
 
   QgsSettingsRegistryGui::settingsEnableAntiAliasing->setValue( chkAntiAliasing->isChecked() );
 }
