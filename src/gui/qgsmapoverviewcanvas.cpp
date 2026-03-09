@@ -27,6 +27,8 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsprojectviewsettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QMouseEvent>
 #include <QPaintEvent>

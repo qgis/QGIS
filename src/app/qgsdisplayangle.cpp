@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsunittypes.h"
 

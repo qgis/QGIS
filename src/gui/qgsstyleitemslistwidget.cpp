@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgswindowmanagerinterface.h"

@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgsplotmouseevent.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsunittypes.h"

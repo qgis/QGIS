@@ -28,6 +28,7 @@
 #include "qgspoint.h"
 #include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgswindow3dengine.h"
 

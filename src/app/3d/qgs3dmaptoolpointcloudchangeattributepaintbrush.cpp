@@ -25,6 +25,7 @@
 #include "qgsguiutils.h"
 #include "qgslinestring.h"
 #include "qgsrubberband3d.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgswindow3dengine.h"
 
