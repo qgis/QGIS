@@ -467,9 +467,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
  * This method performs a geometric union between the current geometry
  * and the provided geometry using the GEOS overlay union operation.
  *
- * @param geom geometry to combine with
- * @param errorMsg optional error message if the operation fails
- * @return resulting combined geometry
+ * \param geom geometry to combine with
+ * \param errorMsg optional error message if the operation fails
+ * \return resulting combined geometry
  */
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
