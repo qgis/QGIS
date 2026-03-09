@@ -628,7 +628,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDistanceUnitsComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
 
   bool ok = false;
-  Qgis::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( u"/qgis/measure/displayunits"_s ).toString(), &ok );
+  Qgis::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value(), &ok );
   if ( !ok )
     distanceUnits = Qgis::DistanceUnit::Meters;
   mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( static_cast<int>( distanceUnits ) ) );
@@ -1751,7 +1751,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsMeasurePlanimetric->setValue( mPlanimetricMeasurementsComboBox->isChecked() );
 
   Qgis::DistanceUnit distanceUnit = static_cast<Qgis::DistanceUnit>( mDistanceUnitsComboBox->currentData().toInt() );
-  mSettings->setValue( u"/qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( distanceUnit ) );
+  QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   Qgis::AreaUnit areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
   mSettings->setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( areaUnit ) );

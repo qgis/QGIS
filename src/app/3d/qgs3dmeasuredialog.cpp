@@ -178,11 +178,10 @@ void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
 
 void Qgs3DMeasureDialog::updateSettings()
 {
-  const QgsSettings settings;
-
   mDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
-  mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit( settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString() );
+  const QString displayUnitsStr = QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value();
+  mDisplayedDistanceUnit = displayUnitsStr.isEmpty() ? Qgis::DistanceUnit::Unknown : QgsUnitTypes::decodeDistanceUnit( displayUnitsStr );
   setupTableHeader();
   mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
 }
