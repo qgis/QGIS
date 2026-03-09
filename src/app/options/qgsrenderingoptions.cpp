@@ -47,7 +47,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   else
     spinMaxThreads->clear();
 
-  spinMapUpdateInterval->setValue( settings.value( u"/qgis/map_update_interval"_s, 250 ).toInt() );
+  spinMapUpdateInterval->setValue( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   spinMapUpdateInterval->setClearValue( 250 );
 
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
@@ -77,7 +77,7 @@ void QgsRenderingOptionsWidget::apply()
   QgsApplication::setMaxThreads( maxThreads );
   settings.setValue( u"/qgis/max_threads"_s, maxThreads );
 
-  settings.setValue( u"/qgis/map_update_interval"_s, spinMapUpdateInterval->value() );
+  QgsSettingsRegistryGui::settingsMapUpdateInterval->setValue( spinMapUpdateInterval->value() );
 
   // magnification
   settings.setValue( u"/qgis/magnifier_factor_default"_s, doubleSpinBoxMagnifierDefault->value() / 100 );
