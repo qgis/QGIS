@@ -807,10 +807,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
   //set the default color for canvas background
-  red = mSettings->value( u"/qgis/default_canvas_color_red"_s, 255 ).toInt();
-  green = mSettings->value( u"/qgis/default_canvas_color_green"_s, 255 ).toInt();
-  blue = mSettings->value( u"/qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  pbnCanvasColor->setColor( QColor( red, green, blue ) );
+  pbnCanvasColor->setColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
   pbnCanvasColor->setColorDialogTitle( tr( "Set Canvas Color" ) );
   pbnCanvasColor->setContext( u"gui"_s );
   pbnCanvasColor->setDefaultColor( Qt::white );
@@ -1792,9 +1789,7 @@ void QgsOptions::saveOptions()
 
   //set the default color for canvas background
   myColor = pbnCanvasColor->color();
-  mSettings->setValue( u"/qgis/default_canvas_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_canvas_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_canvas_color_blue"_s, myColor.blue() );
+  QgsSettingsRegistryCore::settingsDefaultCanvasColor->setValue( myColor );
 
   //set the default color for the measure tool
   myColor = pbnMeasureColor->color();

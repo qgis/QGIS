@@ -1326,14 +1326,11 @@ void QgsProject::clear()
   const bool defaultRelativePaths = mSettings.value( u"/qgis/defaultProjectPathsRelative"_s, true ).toBool();
   setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
 
-  int red = mSettings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  int green = mSettings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  int blue = mSettings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  setBackgroundColor( QColor( red, green, blue ) );
+  setBackgroundColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
 
-  red = mSettings.value( u"qgis/default_selection_color_red"_s, 255 ).toInt();
-  green = mSettings.value( u"qgis/default_selection_color_green"_s, 255 ).toInt();
-  blue = mSettings.value( u"qgis/default_selection_color_blue"_s, 0 ).toInt();
+  int red = mSettings.value( u"qgis/default_selection_color_red"_s, 255 ).toInt();
+  int green = mSettings.value( u"qgis/default_selection_color_green"_s, 255 ).toInt();
+  int blue = mSettings.value( u"qgis/default_selection_color_blue"_s, 0 ).toInt();
   const int alpha = mSettings.value( u"qgis/default_selection_color_alpha"_s, 255 ).toInt();
   setSelectionColor( QColor( red, green, blue, alpha ) );
 
