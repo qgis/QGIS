@@ -144,8 +144,7 @@ class CORE_EXPORT QgsCesiumUtils
      *
      * \since QGIS 4.2
      */
-    static QVector<TileContents> extractTileContent( const QByteArray &tileContent );
-
+    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent );
 };
 
 #endif // QGSCESIUMUTILS_H

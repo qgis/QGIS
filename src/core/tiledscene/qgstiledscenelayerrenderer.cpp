@@ -425,19 +425,16 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       tinygltf::Model innerModel;
       QString gltfErrors;
       QString gltfWarnings;
-      const bool res = QgsGltfUtils::loadGltfModel( content.gltf, innerModel,
-                       &gltfErrors, &gltfWarnings );
+      const bool res = QgsGltfUtils::loadGltfModel( content.gltf, innerModel, &gltfErrors, &gltfWarnings );
       if ( !gltfErrors.isEmpty() )
       {
         if ( !mErrors.contains( gltfErrors ) )
           mErrors.append( gltfErrors );
-        QgsDebugError( u"Error raised reading %1: %2"_s
-                       .arg( contentUri, gltfErrors ) );
+        QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, gltfErrors ) );
       }
       if ( !gltfWarnings.isEmpty() )
       {
-        QgsDebugError( u"Warnings raised reading %1: %2"_s
-                       .arg( contentUri, gltfWarnings ) );
+        QgsDebugError( u"Warnings raised reading %1: %2"_s.arg( contentUri, gltfWarnings ) );
       }
       if ( !res )
       {
@@ -476,14 +473,8 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
 {
   const QString contentUri = tile.resources().value( u"content"_s ).toString();
 
-  const QgsVector3D tileTranslationEcef =
-    centerOffset +
-    QgsGltfUtils::extractTileTranslation(
-      model,
-      static_cast<Qgis::Axis>( tile.metadata()
-                               .value( u"gltfUpAxis"_s,
-                                       static_cast<int>( Qgis::Axis::Y ) )
-                               .toInt() ) );
+  const QgsVector3D tileTranslationEcef = centerOffset
+                                          + QgsGltfUtils::extractTileTranslation( model, static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() ) );
 
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
