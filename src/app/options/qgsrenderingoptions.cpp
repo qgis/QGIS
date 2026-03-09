@@ -37,7 +37,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   setupUi( this );
 
   QgsSettings settings;
-  chkAddedVisibility->setChecked( settings.value( u"/qgis/new_layers_visible"_s, true ).toBool() );
+  chkAddedVisibility->setChecked( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
 
   spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
   spinMaxThreads->setClearValue( 1, tr( "All Available (%1)" ).arg( QThread::idealThreadCount() ) );
@@ -70,7 +70,7 @@ QString QgsRenderingOptionsWidget::helpKey() const
 void QgsRenderingOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setValue( u"/qgis/new_layers_visible"_s, chkAddedVisibility->isChecked() );
+  QgsSettingsRegistryGui::settingsNewLayersVisible->setValue( chkAddedVisibility->isChecked() );
 
   const int maxThreads = spinMaxThreads->value() == spinMaxThreads->clearValue() ? -1 : spinMaxThreads->value();
   QgsApplication::setMaxThreads( maxThreads );

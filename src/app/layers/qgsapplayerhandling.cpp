@@ -879,7 +879,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   {
     // Respect if user don't want the new group of layers visible.
     QgsSettings settings;
-    const bool newLayersVisible = settings.value( u"/qgis/new_layers_visible"_s, true ).toBool();
+    const bool newLayersVisible = QgsSettingsRegistryGui::settingsNewLayersVisible->value();
     if ( !newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }

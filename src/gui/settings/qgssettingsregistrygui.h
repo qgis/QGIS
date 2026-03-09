@@ -65,6 +65,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry reverse wheel zoom
     static const QgsSettingsEntryBool *settingsReverseWheelZoom;
 
+    //! Settings entry whether newly added layers are visible
+    static const QgsSettingsEntryBool *settingsNewLayersVisible;
+
     //! Settings entry default raster color ramp palette name
     static const QgsSettingsEntryString *settingsRasterDefaultPalette;
 
