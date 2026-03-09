@@ -196,10 +196,10 @@ static QVector<QgsCesiumUtils::TileContents> extractGltfFromCmpt( const QByteArr
 {
   struct cmptHeader
   {
-    unsigned char magic[4];
-    quint32 version;
-    quint32 byteLength;
-    quint32 tilesLength;
+      unsigned char magic[4];
+      quint32 version;
+      quint32 byteLength;
+      quint32 tilesLength;
   };
 
   QVector<QgsCesiumUtils::TileContents> result;
@@ -300,9 +300,7 @@ QVector<QgsCesiumUtils::TileContents> QgsCesiumUtils::extractTileContent( const 
   }
   else
   {
-    QgsDebugError( u"extractGltfFromTileContent: unknown tile format, size=%1, magic=%2"_s
-                   .arg( tileContent.size() )
-                   .arg( QString::fromLatin1( tileContent.left( 4 ) ) ) );
+    QgsDebugError( u"extractGltfFromTileContent: unknown tile format, size=%1, magic=%2"_s.arg( tileContent.size() ).arg( QString::fromLatin1( tileContent.left( 4 ) ) ) );
   }
   return result;
 }
