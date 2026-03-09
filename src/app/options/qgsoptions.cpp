@@ -665,7 +665,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( static_cast<int>( unit ) ) );
 
   // set decimal places of the measure tool
-  int decimalPlaces = mSettings->value( u"/qgis/measure/decimalplaces"_s, 3 ).toInt();
+  int decimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mDecimalPlacesSpinBox->setClearValue( 3 );
   mDecimalPlacesSpinBox->setRange( 0, 12 );
   mDecimalPlacesSpinBox->setValue( decimalPlaces );
@@ -1760,7 +1760,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( angleUnit ) );
 
   int decimalPlaces = mDecimalPlacesSpinBox->value();
-  mSettings->setValue( u"/qgis/measure/decimalplaces"_s, decimalPlaces );
+  QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->setValue( decimalPlaces );
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
   QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( baseUnit );

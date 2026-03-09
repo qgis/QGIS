@@ -14809,7 +14809,7 @@ void QgisApp::showPanMessage( double distance, Qgis::DistanceUnit unit, double b
     return;
 
   const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
-  const int distanceDecimalPlaces = QgsSettings().value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  const int distanceDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
   mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( distanceString, bearingString ), 2000 );

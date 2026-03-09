@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgsplotmouseevent.h"
 #include "qgsproject.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
@@ -98,7 +99,7 @@ void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance,
     distanceUnit = projectUnit;
   }
 
-  int decimals = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  int decimals = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   if ( distanceUnit == Qgis::DistanceUnit::Degrees && distance < 1 )
   {
     // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's

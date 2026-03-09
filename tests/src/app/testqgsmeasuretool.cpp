@@ -19,6 +19,7 @@
 #include "qgsmeasuretool.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstest.h"
 
 #include <QString>
@@ -359,7 +360,7 @@ void TestQgsMeasureTool::degreeDecimalPlaces()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
 
   QgsSettings s;
-  s.setValue( u"qgis/measure/decimalplaces"_s, 3 );
+  QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->setValue( 3 );
 
   const std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
   auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
