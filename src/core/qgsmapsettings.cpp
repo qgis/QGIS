@@ -30,6 +30,7 @@
 #include "qgsellipsoidutils.h"
 #include "qgsunittypes.h"
 #include "qgspainting.h"
+#include "qgsmapsettingsutils.h"
 
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
