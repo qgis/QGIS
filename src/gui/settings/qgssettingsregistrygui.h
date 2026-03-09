@@ -75,6 +75,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry message timeout in seconds
     static const QgsSettingsEntryInteger *settingsMessageTimeout;
 
+    //! Settings entry whether anti-aliasing is enabled for rendering
+    static const QgsSettingsEntryBool *settingsEnableAntiAliasing;
+
 #endif
 };
 

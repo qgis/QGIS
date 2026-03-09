@@ -19,6 +19,7 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QString>
 #include <QThread>
@@ -59,7 +60,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
   doubleSpinBoxMagnifierDefault->setClearValue( 100 );
 
-  chkAntiAliasing->setChecked( settings.value( u"/qgis/enable_anti_aliasing"_s, true ).toBool() );
+  chkAntiAliasing->setChecked( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
 }
 
 QString QgsRenderingOptionsWidget::helpKey() const
@@ -81,7 +82,7 @@ void QgsRenderingOptionsWidget::apply()
   // magnification
   settings.setValue( u"/qgis/magnifier_factor_default"_s, doubleSpinBoxMagnifierDefault->value() / 100 );
 
-  settings.setValue( u"/qgis/enable_anti_aliasing"_s, chkAntiAliasing->isChecked() );
+  QgsSettingsRegistryGui::settingsEnableAntiAliasing->setValue( chkAntiAliasing->isChecked() );
 }
 
 

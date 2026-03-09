@@ -55,6 +55,9 @@ const QgsSettingsEntryString *QgsSettingsRegistryGui::settingsRasterDefaultPalet
 const QgsSettingsEntryInteger *QgsSettingsRegistryGui::settingsMessageTimeout
   = new QgsSettingsEntryInteger( u"message-timeout"_s, QgsSettingsTree::sTreeQgis, 5, u"Timeout in seconds for message bar messages"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsEnableAntiAliasing
+  = new QgsSettingsEntryBool( u"enable-anti-aliasing"_s, QgsSettingsTree::sTreeQgis, true, u"Whether anti-aliasing is enabled for rendering"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -82,6 +85,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsRasterDefaultPalette->copyValueFromKey( u"/Raster/defaultPalette"_s, true );
   settingsMessageTimeout->copyValueFromKey( u"qgis/messageTimeout"_s, true );
   settingsMessageTimeout->copyValueFromKey( u"/qgis/messageTimeout"_s, true );
+  settingsEnableAntiAliasing->copyValueFromKey( u"qgis/enable_anti_aliasing"_s, true );
+  settingsEnableAntiAliasing->copyValueFromKey( u"/qgis/enable_anti_aliasing"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
