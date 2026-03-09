@@ -23,7 +23,7 @@ class TestQgsMeasureUtils(QgisTestCase):
         QCoreApplication.setApplicationName("QGIS_TestQgsMeasureUtils")
         start_app()
         cls.setting = QgsSettingsTree.node("measure").childSetting("keep-base-unit")
-        cls.setting.clear()
+        cls.setting.remove()
 
     def test_format_distance(self):
         self.setting.setValue(True)
