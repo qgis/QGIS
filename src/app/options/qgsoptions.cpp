@@ -813,10 +813,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnCanvasColor->setDefaultColor( Qt::white );
 
   // set the default color for the measure tool
-  red = mSettings->value( u"/qgis/default_measure_color_red"_s, 222 ).toInt();
-  green = mSettings->value( u"/qgis/default_measure_color_green"_s, 155 ).toInt();
-  blue = mSettings->value( u"/qgis/default_measure_color_blue"_s, 67 ).toInt();
-  pbnMeasureColor->setColor( QColor( red, green, blue ) );
+  pbnMeasureColor->setColor( QgsSettingsRegistryGui::settingsDefaultMeasureColor->value() );
   pbnMeasureColor->setColorDialogTitle( tr( "Set Measuring Tool Color" ) );
   pbnMeasureColor->setContext( u"gui"_s );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
@@ -1793,9 +1790,7 @@ void QgsOptions::saveOptions()
 
   //set the default color for the measure tool
   myColor = pbnMeasureColor->color();
-  mSettings->setValue( u"/qgis/default_measure_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_measure_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_measure_color_blue"_s, myColor.blue() );
+  QgsSettingsRegistryGui::settingsDefaultMeasureColor->setValue( myColor );
 
   QgsSettingsRegistryGui::settingsZoomFactor->setValue( zoomFactorValue() );
   QgsSettingsRegistryGui::settingsReverseWheelZoom->setValue( reverseWheelZoom->isChecked() );

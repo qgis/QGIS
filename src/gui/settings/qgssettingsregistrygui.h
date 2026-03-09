@@ -21,6 +21,7 @@
 #include "qgssettingsregistry.h"
 
 class QgsSettingsEntryBool;
+class QgsSettingsEntryColor;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
@@ -95,6 +96,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
     //! Settings entry segmentation tolerance for curved geometries
     static const QgsSettingsEntryDouble *settingsSegmentationTolerance;
+
+    //! Settings entry default measure tool color
+    static const QgsSettingsEntryColor *settingsDefaultMeasureColor;
 
 #endif
 };

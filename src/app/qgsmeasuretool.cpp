@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgssnapindicator.h"
 
 #include <QMessageBox>
@@ -126,16 +127,12 @@ void QgsMeasureTool::restart()
 
 void QgsMeasureTool::updateSettings()
 {
-  const QgsSettings settings;
-
-  const int myRed = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
-  const int myGreen = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
-  const int myBlue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
+  const QColor measureColor = QgsSettingsRegistryGui::settingsDefaultMeasureColor->value();
+  mRubberBand->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 100 ) );
   mRubberBand->setWidth( 3 );
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
   mRubberBandPoints->setIconSize( 10 );
-  mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
+  mRubberBandPoints->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 150 ) );
 
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )

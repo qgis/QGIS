@@ -23,6 +23,7 @@
 #include "qgsplotmouseevent.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
@@ -134,11 +135,8 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   QPen pen;
   pen.setWidthF( QgsGuiUtils::scaleIconSize( 2 ) );
   pen.setCosmetic( true );
-  QgsSettings settings;
-  const int red = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
-  const int green = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
-  const int blue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
-  pen.setColor( QColor( red, green, blue, 100 ) );
+  const QColor measureColor = QgsSettingsRegistryGui::settingsDefaultMeasureColor->value();
+  pen.setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 100 ) );
   mRubberBand->setPen( pen );
 
   mRubberBand->hide();
