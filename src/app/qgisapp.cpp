@@ -2903,7 +2903,7 @@ void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
 void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 {
   QgsSettings settings;
-  canvas->enableAntiAliasing( settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
+  canvas->enableAntiAliasing( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
   double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
   canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
