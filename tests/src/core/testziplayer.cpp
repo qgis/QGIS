@@ -31,7 +31,8 @@ using namespace Qt::StringLiterals;
 #include "qgsdataitem.h"
 #include "qgsconfig.h"
 #include "qgsrasterrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
 #include "qgszipitem.h"
@@ -49,7 +50,6 @@ class TestZipLayer : public QObject
   private:
     QString mDataDir;
     QString mScanZipSetting;
-    QString mSettingsKey;
 
     // get map layer using Passthru
     QgsMapLayer *getLayer( const QString &myPath, const QString &myName, const QString &myProviderKey );
@@ -249,10 +249,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
 int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString &myProviderKey, const QString &myScanZipSetting )
 {
   int myTransparency = -1;
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, myScanZipSetting );
-  if ( myScanZipSetting != settings.value( mSettingsKey ).toString() )
-    return myTransparency;
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( myScanZipSetting );
 
   QgsMapLayer *myLayer = nullptr;
   if ( myFileName.endsWith( ".gz"_L1, Qt::CaseInsensitive ) )
@@ -299,9 +296,7 @@ void TestZipLayer::initTestCase()
   QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   // save current zipSetting value
-  QgsSettings settings;
-  mSettingsKey = u"/qgis/scanZipInBrowser2"_s;
-  mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
+  mScanZipSetting = QgsSettingsRegistryCore::settingsScanZipInBrowser->value();
 }
 
 void TestZipLayer::cleanupTestCase()
@@ -309,114 +304,100 @@ void TestZipLayer::cleanupTestCase()
   QgsApplication::exitQgis();
 
   // restore zipSetting
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, mScanZipSetting );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( mScanZipSetting );
 }
 
 void TestZipLayer::testPassthruVectorZip()
 {
-  QgsSettings settings;
   QString myFileName = mDataDir + "points2.zip";
 
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 }
 
 void TestZipLayer::testPassthruVectorTar()
 {
-  QgsSettings settings;
   QString myFileName = mDataDir + "points2.tar";
 
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 }
 
 void TestZipLayer::testPassthruVectorGzip()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
 }
 
 void TestZipLayer::testPassthruRasterZip()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
 }
 
 void TestZipLayer::testPassthruRasterTar()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
 }
 
 void TestZipLayer::testPassthruRasterGzip()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
 }
 
 void TestZipLayer::testZipItemRaster()
 {
-  QgsSettings settings;
-
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
 }
 
 void TestZipLayer::testTarItemRaster()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
 }
 
 void TestZipLayer::testZipItemVector()
 {
-  QgsSettings settings;
-
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
 }
 
 void TestZipLayer::testTarItemVector()
 {
-  QgsSettings settings;
-
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
 }
 
@@ -426,15 +407,13 @@ void TestZipLayer::testZipItemAll()
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items
   // and return child names of the invalid items
   // test file does not contain invalid items (some of dash tests failed because of them)
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, "full" );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "" ) );
 }
 
 void TestZipLayer::testTarItemAll()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, "full" );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "" ) );
 }
 
@@ -475,30 +454,26 @@ void TestZipLayer::testGzipItemRasterTransparency()
 
 void TestZipLayer::testZipItemSubfolder()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
 }
 
 void TestZipLayer::testTarItemSubfolder()
 {
-  QgsSettings settings;
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
 }
 
 
 void TestZipLayer::testZipItemVRT()
 {
-  QgsSettings settings;
-
-  settings.setValue( mSettingsKey, u"basic"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"basic"_s );
 
   QgsDataItem *zipItem = getItemFromZip( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt" );
   QVERIFY( zipItem );
@@ -522,7 +497,7 @@ void TestZipLayer::testZipItemVRT()
   QCOMPARE( sublayerItem->sublayerDetails().name(), u"landsat_b1.vrt"_s );
   QCOMPARE( sublayerItem->sublayerDetails().providerKey(), u"gdal"_s );
 
-  settings.setValue( mSettingsKey, u"full"_s );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( u"full"_s );
 
   zipItem = getItemFromZip( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt" );
   QVERIFY( zipItem );
