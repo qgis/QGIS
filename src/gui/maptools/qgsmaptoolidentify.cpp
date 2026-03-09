@@ -47,6 +47,7 @@
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
 #include "qgstiles.h"
 #include "qgsunittypes.h"

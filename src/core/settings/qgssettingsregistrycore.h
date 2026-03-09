@@ -197,6 +197,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for whether to keep base measurement units
     static const QgsSettingsEntryBool *settingsMeasureKeepBaseUnit;
 
+    //! Settings entry for number of decimal places for measurements
+    static const QgsSettingsEntryInteger *settingsMeasureDecimalPlaces;
+
     //! Settings entry for layer tree insertion method
     static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
 

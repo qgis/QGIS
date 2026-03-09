@@ -37,6 +37,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

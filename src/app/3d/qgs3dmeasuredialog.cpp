@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsunittypes.h"
 
 #include <QCloseEvent>
@@ -179,7 +180,7 @@ void Qgs3DMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, "3" ).toInt();
+  mDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit( settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString() );
   setupTableHeader();
