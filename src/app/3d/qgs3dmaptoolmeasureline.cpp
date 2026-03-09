@@ -28,6 +28,7 @@
 #include "qgspoint.h"
 #include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
+#include "qgssettingsregistrygui.h"
 #include "qgswindow3dengine.h"
 
 #include <QKeyEvent>
@@ -109,13 +110,8 @@ void Qgs3DMapToolMeasureLine::updateSettings()
 {
   if ( mRubberBand )
   {
-    const QgsSettings settings;
-    const int myRed = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
-    const int myGreen = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
-    const int myBlue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
-
     mRubberBand->setWidth( 3 );
-    mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+    mRubberBand->setColor( QgsSettingsRegistryGui::settingsDefaultMeasureColor->value() );
   }
 }
 

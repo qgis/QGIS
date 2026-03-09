@@ -17,6 +17,7 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsapplication.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 
@@ -76,6 +77,9 @@ const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsMagnifierFactorDef
 const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsSegmentationTolerance
   = new QgsSettingsEntryDouble( u"segmentation-tolerance"_s, QgsSettingsTree::sTreeQgis, 0.01745, u"Segmentation tolerance for curved geometries"_s );
 
+const QgsSettingsEntryColor *QgsSettingsRegistryGui::settingsDefaultMeasureColor
+  = new QgsSettingsEntryColor( u"default-measure-color"_s, QgsSettingsTree::sTreeQgis, QColor( 222, 155, 67 ), u"Default measure tool color"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -117,6 +121,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsMagnifierFactorDefault->copyValueFromKey( u"/qgis/magnifier_factor_default"_s, true );
   settingsSegmentationTolerance->copyValueFromKey( u"qgis/segmentationTolerance"_s, true );
   settingsSegmentationTolerance->copyValueFromKey( u"/qgis/segmentationTolerance"_s, true );
+  settingsDefaultMeasureColor->copyValueFromKeys( u"qgis/default_measure_color_red"_s, u"qgis/default_measure_color_green"_s, u"qgis/default_measure_color_blue"_s, QString(), true );
+  settingsDefaultMeasureColor->copyValueFromKeys( u"/qgis/default_measure_color_red"_s, u"/qgis/default_measure_color_green"_s, u"/qgis/default_measure_color_blue"_s, QString(), true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
