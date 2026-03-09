@@ -155,6 +155,9 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
   = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit
+  = new QgsSettingsEntryBool( u"keep-base-unit"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether to keep base measurement units instead of converting to larger units"_s );
+
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
 
@@ -192,6 +195,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 4.2
   settingsMeasurePlanimetric->copyValueFromKey( u"measure/planimetric"_s, true );
+  settingsMeasureKeepBaseUnit->copyValueFromKey( u"qgis/measure/keepbaseunit"_s, true );
+  settingsMeasureKeepBaseUnit->copyValueFromKey( u"/qgis/measure/keepbaseunit"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
 

@@ -671,7 +671,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDecimalPlacesSpinBox->setValue( decimalPlaces );
 
   // set if base unit of measure tool should be changed
-  bool baseUnit = mSettings->value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
   mKeepBaseUnitCheckBox->setChecked( baseUnit );
 
   mPlanimetricMeasurementsComboBox->setChecked( QgsSettingsRegistryCore::settingsMeasurePlanimetric->value() );
@@ -1763,7 +1763,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/measure/decimalplaces"_s, decimalPlaces );
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
-  mSettings->setValue( u"/qgis/measure/keepbaseunit"_s, baseUnit );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( baseUnit );
 
   QgsMeasureDialog::settingClipboardHeader->setValue( mIncludeHeader->isChecked() );
   QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint->setValue( mAlwaysUseDecimalPoint->isChecked() );

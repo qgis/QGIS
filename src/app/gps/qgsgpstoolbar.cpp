@@ -280,7 +280,7 @@ void QgsGpsToolBar::updateLocationLabel()
               const double measurement = component == Qgis::GpsInformationComponent::TotalTrackLength ? mDigitizing->totalTrackLength() : mDigitizing->trackDistanceFromStart();
 
               const QgsSettings settings;
-              const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+              const bool keepBaseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
               const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
 
               if ( measurement > 0 )

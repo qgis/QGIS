@@ -305,7 +305,7 @@ void QgsGpsInformationWidget::updateTrackInformation()
   const double directTrackLength = mDigitizing->trackDistanceFromStart();
 
   const QgsSettings settings;
-  const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool keepBaseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
   const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
 
   if ( totalTrackLength > 0 )
