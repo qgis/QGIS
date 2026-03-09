@@ -206,6 +206,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for zip scanning behavior in browser
     static const QgsSettingsEntryString *settingsScanZipInBrowser;
 
+    //! Settings entry for fast scan URIs in browser
+    static const QgsSettingsEntryStringList *settingsScanItemsFastScanUris;
+
   private:
     friend class QgsApplication;
 

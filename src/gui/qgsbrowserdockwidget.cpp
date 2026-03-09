@@ -21,6 +21,7 @@
 #include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QFileDialog>
 #include <QString>
@@ -183,8 +184,7 @@ void QgsBrowserDockWidget::toggleFastScan()
 
   if ( item->type() == Qgis::BrowserItemType::Directory )
   {
-    QgsSettings settings;
-    QStringList fastScanDirs = settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList();
+    QStringList fastScanDirs = QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value();
     const int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
     {
@@ -194,7 +194,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     {
       fastScanDirs << item->path();
     }
-    settings.setValue( u"qgis/scanItemsFastScanUris"_s, fastScanDirs );
+    QgsSettingsRegistryCore::settingsScanItemsFastScanUris->setValue( fastScanDirs );
   }
 }
 
