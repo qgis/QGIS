@@ -81,6 +81,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry whether to use native color dialogs
     static const QgsSettingsEntryBool *settingsNativeColorDialogs;
 
+    //! Settings entry whether to format layer names
+    static const QgsSettingsEntryBool *settingsFormatLayerName;
+
 #endif
 };
 

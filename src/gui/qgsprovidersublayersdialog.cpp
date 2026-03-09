@@ -22,6 +22,7 @@
 #include "qgsprovidersublayertask.h"
 #include "qgsproviderutils.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgstaskmanager.h"
 
 #include <QDesktopServices>
@@ -278,7 +279,7 @@ void QgsProviderSublayersDialog::setGroupName( const QString &groupNameIn )
 {
   mGroupName = groupNameIn;
   const QgsSettings settings;
-  if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+  if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
   {
     mGroupName = QgsMapLayer::formatLayerName( mGroupName );
   }

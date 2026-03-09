@@ -33,6 +33,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsterrainprovider.h"
 #include "qgstiledscenelayerproperties.h"
 #include "qgsvectorlayerproperties.h"
@@ -431,7 +432,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
       baseName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
     }
 
-    if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+    if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
     {
       baseName = QgsMapLayer::formatLayerName( baseName );
     }
@@ -585,7 +586,7 @@ template<typename L> L *QgsAppLayerHandling::addLayer( const QString &uri, const
 
   QString base( baseName );
 
-  if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+  if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
   {
     base = QgsMapLayer::formatLayerName( base );
   }
@@ -687,7 +688,7 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
     QgsSettings settings;
 
     QString base = QgsProviderUtils::suggestLayerNameFromFilePath( path );
-    if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+    if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
     {
       base = QgsMapLayer::formatLayerName( base );
     }
@@ -786,7 +787,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   }
 
   QgsSettings settings;
-  const bool formatLayerNames = settings.value( u"qgis/formatLayerName"_s, false ).toBool();
+  const bool formatLayerNames = QgsSettingsRegistryGui::settingsFormatLayerName->value();
 
   // if we aren't adding to a group, we need to add the layers in reverse order so that they maintain the correct
   // order in the layer tree!
@@ -1043,7 +1044,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::openLayer( const QString &fileName, bo
       QgsSettings settings;
 
       QString base = QgsProviderUtils::suggestLayerNameFromFilePath( fileName );
-      if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+      if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
       {
         base = QgsMapLayer::formatLayerName( base );
       }
@@ -1387,7 +1388,7 @@ template<typename T> QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::Laye
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
-  QString baseName = settings.value( u"qgis/formatLayerName"_s, false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
+  QString baseName = QgsSettingsRegistryGui::settingsFormatLayerName->value() ? QgsMapLayer::formatLayerName( name ) : name;
 
   // if the layer needs authentication, ensure the master password is set
   const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
@@ -1478,7 +1479,7 @@ template<typename T> QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::Laye
       if ( !layers.isEmpty() )
       {
         QString base( baseName );
-        if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+        if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
         {
           base = QgsMapLayer::formatLayerName( base );
         }
@@ -1500,7 +1501,7 @@ template<typename T> QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::Laye
     if ( !result.isEmpty() )
     {
       QString base( baseName );
-      if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+      if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
       {
         base = QgsMapLayer::formatLayerName( base );
       }
