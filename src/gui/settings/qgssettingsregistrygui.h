@@ -93,6 +93,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry default magnifier factor
     static const QgsSettingsEntryDouble *settingsMagnifierFactorDefault;
 
+    //! Settings entry segmentation tolerance for curved geometries
+    static const QgsSettingsEntryDouble *settingsSegmentationTolerance;
+
 #endif
 };
 

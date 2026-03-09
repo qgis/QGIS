@@ -73,6 +73,9 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryGui::settingsMapUpdateInterval
 const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsMagnifierFactorDefault
   = new QgsSettingsEntryDouble( u"magnifier-factor-default"_s, QgsSettingsTree::sTreeQgis, 1.0, u"Default magnifier factor"_s );
 
+const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsSegmentationTolerance
+  = new QgsSettingsEntryDouble( u"segmentation-tolerance"_s, QgsSettingsTree::sTreeQgis, 0.01745, u"Segmentation tolerance for curved geometries"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -112,6 +115,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsMapUpdateInterval->copyValueFromKey( u"/qgis/map_update_interval"_s, true );
   settingsMagnifierFactorDefault->copyValueFromKey( u"qgis/magnifier_factor_default"_s, true );
   settingsMagnifierFactorDefault->copyValueFromKey( u"/qgis/magnifier_factor_default"_s, true );
+  settingsSegmentationTolerance->copyValueFromKey( u"qgis/segmentationTolerance"_s, true );
+  settingsSegmentationTolerance->copyValueFromKey( u"/qgis/segmentationTolerance"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );

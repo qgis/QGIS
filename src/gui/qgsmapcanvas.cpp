@@ -210,8 +210,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsMapCanvas::redrawAllLayers );
 
   //segmentation parameters
-  QgsSettings settings;
-  double segmentationTolerance = settings.value( u"qgis/segmentationTolerance"_s, "0.01745" ).toDouble();
+  double segmentationTolerance = QgsSettingsRegistryGui::settingsSegmentationTolerance->value();
   QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
