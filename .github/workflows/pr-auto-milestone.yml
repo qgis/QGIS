@@ -5,8 +5,9 @@ name: 📅 Auto set milestone on PR
 # - The latest released version found in git tags
 # - Master PRs get milestone +2 minor versions from latest (e.g., 4.0 latest -> 4.2 milestone)
 # - Release branch PRs get milestone +0.1 patch version (e.g., 4.0.0 latest -> 4.0.1 milestone)
+# - queued_ltr_backports PRs target the current LTR + 0.2 patch (e.g., 3.44.6 → 3.44.8, 4.2.1 → 4.2.3)
+#   LTR series: 3.44, then 4.2, 4.8, 4.14, 4.20, 4.26... (every 6 minor versions starting from 4.2)
 # - Works for both 3.x and 4.x release branches (major version auto-detected from branch name)
-# - Special handling: queued_ltr_backports is treated as release-3_44 (temporary until 4.x has LTR)
 on:
   workflow_call:
   workflow_dispatch:
@@ -19,6 +20,7 @@ permissions:
 
 env:
   QGIS_MAJOR_VERSION_MASTER: 4  # Major version for master branch (update when bumping to 5.x)
+  QGIS_MAJOR_VERSION_LTR: 3     # Major version for current LTR (3 for 3.44, will be 4 when 4.2 becomes LTR)
 
 jobs:
   pr-without-milestones:
@@ -95,37 +97,65 @@ jobs:
             echo "========================================="
             echo "Processing PR #${PR_NUMBER} (branch: ${BASE_BRANCH})"
             
-            # Special handling for queued_ltr_backports: treat as release-3_44 (temporary until 4.x has LTR)
+            # Determine milestone increment (0.1 for regular releases, 0.2 for LTR backports)
+            MILESTONE_INCREMENT="0.1"
+            
+            # Handle queued_ltr_backports: targets current LTR + 0.2 patch
             if [[ ${BASE_BRANCH} == "queued_ltr_backports" ]]; then
-              echo "Special handling: queued_ltr_backports → treating as release-3_44"
-              QGIS_MAJOR_VERSION=3
-              MINOR_VERSION=_44
+              echo "Special handling: queued_ltr_backports branch"
+              MILESTONE_INCREMENT="0.2"
+              QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_LTR}
+              
+              # Find the latest LTR release based on current LTR major version
+              # For 3.x: LTR is 3.44
+              # For 4.x: LTR series are 4.2, 4.8, 4.14, 4.20, 4.26... (every 6 minor versions starting from 4.2)
+              
+              if [[ ${QGIS_MAJOR_VERSION_LTR} == 3 ]]; then
+                # 3.x LTR: final-3_44_*
+                MAX_RELEASE=$(echo "${JSON_DATA}" | jq -r '.repository.refs.edges[].node.name | select(test("^final-3_44_[0-9]+$"))' | sed -r 's/^final-3_44_([0-9]+)$/44.\1/' | sort -V | tail -1)
+              else
+                # 4.x LTR: final-4_(2|8|14|20|26|32|38|44|50)_* (pattern: 2 + 6*n)
+                MAX_RELEASE=$(echo "${JSON_DATA}" | jq -r '.repository.refs.edges[].node.name | select(test("^final-4_(2|8|14|20|26|32|38|44|50)_[0-9]+$"))' | sed -r 's/^final-4_([0-9]+)_([0-9]+)$/\1.\2/' | sort -V | tail -1)
+              fi
+              
+              if [[ -z ${MAX_RELEASE} ]]; then
+                echo "Error: No LTR release found for version ${QGIS_MAJOR_VERSION_LTR}"
+                exit 1
+              fi
+              
+              echo "Using LTR ${QGIS_MAJOR_VERSION}.${MAX_RELEASE}"
+              
             else
-              # Extract major and minor version from branch name
-              # Examples: master => major=4 (from env), minor=empty
-              #           release-3_38 => major=3, minor=_38
-              #           release-4_0 => major=4, minor=_0
+              # Regular branch handling (master or release-X_Y)
               BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
               if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
-                # Master branch - use the environment variable
+                # Master branch
                 QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
               else
-                # Release branch - use the detected major version
+                # Release branch
                 QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
               fi
 
               # Extract minor version from release branch name
-              # Examples: master => empty, release-3_38 => _38, release-4_0 => _0, release-4_2 => _2
+              # Examples: master => empty, release-3_38 => _38, release-4_0 => _0
               MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
+
+              # Find the highest released version from git tags matching the target branch
+              MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
             fi
 
-            # Find the highest released version from git tags matching the target branch
-            MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
-
             # Calculate milestone version based on latest release:
-            # - Master branch: skip one minor version (e.g., 3.38 released -> 3.40 milestone, 4.0 released -> 4.2 milestone)
-            # - Release branch: increment patch version (e.g., 3.38.0 released -> 3.38.1 milestone, 4.0.0 released -> 4.0.1 milestone)
-            INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
+            # - Master branch: skip one minor version (e.g., 4.0 → 4.2)
+            # - Release branch: increment patch by 0.1 (e.g., 4.0.0 → 4.0.1)
+            # - LTR backports: increment patch by 0.2 (e.g., 3.44.6 → 3.44.8)
+            if [[ -z ${MINOR_VERSION} ]] && [[ ${BASE_BRANCH} != "queued_ltr_backports" ]]; then
+              # Master branch: add 2.0 to minor version
+              INCREASE_OPERATION="${MAX_RELEASE%.*} + 2.0"
+            else
+              # Release or LTR branch: add to patch version
+              INCREASE_OPERATION="${MAX_RELEASE} + ${MILESTONE_INCREMENT}"
+            fi
+            
             MILESTONE_VERSION=$(printf "%.1f" $(echo "${INCREASE_OPERATION}" | bc))
             MILESTONE_TITLE="${QGIS_MAJOR_VERSION}.${MILESTONE_VERSION}"
             
