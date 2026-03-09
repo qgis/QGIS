@@ -1268,7 +1268,7 @@ void QgsProject::clear()
 
   //fallback to QGIS default measurement unit
   bool ok = false;
-  const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( u"/qgis/measure/displayunits"_s ).toString(), &ok );
+  const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value(), &ok );
   setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
   const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( u"/qgis/measure/areaunits"_s ).toString(), &ok );

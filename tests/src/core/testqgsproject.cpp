@@ -346,7 +346,7 @@ void TestQgsProject::testProjectUnits()
 
   //first set a default QGIS distance unit
   QgsSettings s;
-  s.setValue( u"/qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Feet ) );
+  QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Feet ) );
 
   QgsProject *prj = new QgsProject;
   // new project should inherit QGIS default distance unit
@@ -354,7 +354,7 @@ void TestQgsProject::testProjectUnits()
   QCOMPARE( prj->distanceUnits(), Qgis::DistanceUnit::Feet );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( u"/qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::NauticalMiles ) );
+  QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::NauticalMiles ) );
   QCOMPARE( prj->distanceUnits(), Qgis::DistanceUnit::Feet );
 
   //test setting new units for project
