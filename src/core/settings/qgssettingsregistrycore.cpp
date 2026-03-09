@@ -176,6 +176,9 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsScanItemsFast
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex
   = new QgsSettingsEntryInteger( u"symbols-list-groups-index"_s, QgsSettingsTree::sTreeQgis, 0, u"Currently selected group index in symbols list"_s );
 
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDefaultCanvasColor
+  = new QgsSettingsEntryColor( u"default-canvas-color"_s, QgsSettingsTree::sTreeQgis, QColor( 255, 255, 255 ), u"Default canvas background color"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -224,6 +227,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"/qgis/symbolsListGroupsIndex"_s, true );
+  settingsDefaultCanvasColor->copyValueFromKeys( u"qgis/default_canvas_color_red"_s, u"qgis/default_canvas_color_green"_s, u"qgis/default_canvas_color_blue"_s, QString(), true );
+  settingsDefaultCanvasColor->copyValueFromKeys( u"/qgis/default_canvas_color_red"_s, u"/qgis/default_canvas_color_green"_s, u"/qgis/default_canvas_color_blue"_s, QString(), true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );

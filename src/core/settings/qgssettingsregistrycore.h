@@ -215,6 +215,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for symbols list groups index
     static const QgsSettingsEntryInteger *settingsSymbolsListGroupsIndex;
 
+    //! Settings entry for default canvas background color
+    static const QgsSettingsEntryColor *settingsDefaultCanvasColor;
+
   private:
     friend class QgsApplication;
 

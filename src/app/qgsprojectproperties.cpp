@@ -75,6 +75,7 @@ using namespace Qt::StringLiterals;
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
 #include "qgsstylemanagerdialog.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsfileutils.h"
 
 //qt includes
@@ -478,10 +479,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnSelectionColor->setAllowOpacity( true );
 
   //get the color for map canvas background and set button color accordingly (default white)
-  myRedInt = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  myGreenInt = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  myBlueInt = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  QColor defaultCanvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   pbnCanvasColor->setContext( u"gui"_s );
   pbnCanvasColor->setColor( QgsProject::instance()->backgroundColor() );
