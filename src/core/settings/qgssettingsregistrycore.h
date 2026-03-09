@@ -209,6 +209,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for fast scan URIs in browser
     static const QgsSettingsEntryStringList *settingsScanItemsFastScanUris;
 
+    //! Settings entry for symbols list groups index
+    static const QgsSettingsEntryInteger *settingsSymbolsListGroupsIndex;
+
   private:
     friend class QgsApplication;
 
