@@ -203,6 +203,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for layer tree insertion method
     static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
 
+    //! Settings entry for zip scanning behavior in browser
+    static const QgsSettingsEntryString *settingsScanZipInBrowser;
+
   private:
     friend class QgsApplication;
 

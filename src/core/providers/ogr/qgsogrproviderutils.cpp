@@ -30,6 +30,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssqlstatement.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorfilewriter.h"
@@ -617,8 +618,7 @@ QString createFilters( const QString &type )
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
-    QgsSettings settings;
-    if ( settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString() != "no"_L1 )
+    if ( QgsSettingsRegistryCore::settingsScanZipInBrowser->value() != "no"_L1 )
     {
       sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), u"*.zip *.gz *.tar *.tar.gz *.tgz"_s ) );
       sExtensions << u"zip"_s << u"gz"_s << u"tar"_s << u"tar.gz"_s << u"tgz"_s;

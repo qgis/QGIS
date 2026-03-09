@@ -164,6 +164,9 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsMeasureDecimalPl
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
 
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsScanZipInBrowser
+  = new QgsSettingsEntryString( u"scan-zip-in-browser"_s, QgsSettingsTree::sTreeQgis, u"basic"_s, u"Zip scanning behavior in browser (no, basic, full)"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -204,6 +207,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsMeasureDecimalPlaces->copyValueFromKey( u"/qgis/measure/decimalplaces"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
+  settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
+  settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );

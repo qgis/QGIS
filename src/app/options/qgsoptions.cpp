@@ -547,7 +547,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1 - removed
   cmbScanZipInBrowser->addItem( tr( "Basic Scan" ), QVariant( "basic" ) );
   cmbScanZipInBrowser->addItem( tr( "Full Scan" ), QVariant( "full" ) );
-  index = cmbScanZipInBrowser->findData( mSettings->value( u"/qgis/scanZipInBrowser2"_s, QString() ) );
+  index = cmbScanZipInBrowser->findData( QgsSettingsRegistryCore::settingsScanZipInBrowser->value() );
   if ( index == -1 )
     index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
@@ -1652,7 +1652,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
   mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
-  mSettings->setValue( u"/qgis/scanZipInBrowser2"_s, cmbScanZipInBrowser->currentData().toString() );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( u"/qgis/monitorDirectoriesInBrowser"_s, mCheckMonitorDirectories->isChecked() );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
