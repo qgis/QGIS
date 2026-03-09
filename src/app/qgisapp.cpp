@@ -2065,6 +2065,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     updateRecentProjectPaths();
   } );
 
+  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomeScreen, mRecentProjectsMenu );
+  mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
+
   updateRecentProjectPaths();
   mWelcomeScreen->setRecentProjects( mRecentProjects );
   if ( !mProjOpen )
@@ -3422,11 +3425,7 @@ void QgisApp::createMenus()
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast<void ( QgisApp::* )( QAction *action )>( &QgisApp::openProject ) );
-  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomeScreen, mRecentProjectsMenu );
-  mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
-
   connect( mProjectFromTemplateMenu, &QMenu::triggered, this, &QgisApp::fileNewFromTemplateAction );
-
 
   // View Menu
 
