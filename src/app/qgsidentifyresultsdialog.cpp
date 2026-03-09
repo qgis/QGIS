@@ -2953,8 +2953,8 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
   valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
   QString wrapped = text;
-  wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
-  wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
+  wrapped.replace( u"/"_s, u"/\u00AD"_s );
+  wrapped.replace( u"\\"_s, u"\\\u00AD"_s );
 
   valueLabel->setText( wrapped );
   valueLabel->setTextFormat( Qt::PlainText );
