@@ -2908,7 +2908,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->setWheelFactor( zoomFactor );
   canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
-  canvas->setMapUpdateInterval( settings.value( u"qgis/map_update_interval"_s, 250 ).toInt() );
+  canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   canvas->setSegmentationTolerance( settings.value( u"qgis/segmentationTolerance"_s, "0.01745" ).toDouble() );
   canvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle ) ) );
 }

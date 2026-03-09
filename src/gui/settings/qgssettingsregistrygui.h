@@ -87,6 +87,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry whether to open sublayers in a group
     static const QgsSettingsEntryBool *settingsOpenSublayersInGroup;
 
+    //! Settings entry map update interval in milliseconds
+    static const QgsSettingsEntryInteger *settingsMapUpdateInterval;
+
 #endif
 };
 
