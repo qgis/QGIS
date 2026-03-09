@@ -90,6 +90,9 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     //! Settings entry map update interval in milliseconds
     static const QgsSettingsEntryInteger *settingsMapUpdateInterval;
 
+    //! Settings entry default magnifier factor
+    static const QgsSettingsEntryDouble *settingsMagnifierFactorDefault;
+
 #endif
 };
 

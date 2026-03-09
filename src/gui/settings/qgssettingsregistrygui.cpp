@@ -70,6 +70,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsOpenSublayersInGroup
 const QgsSettingsEntryInteger *QgsSettingsRegistryGui::settingsMapUpdateInterval
   = new QgsSettingsEntryInteger( u"map-update-interval"_s, QgsSettingsTree::sTreeQgis, 250, u"Map update interval in milliseconds"_s );
 
+const QgsSettingsEntryDouble *QgsSettingsRegistryGui::settingsMagnifierFactorDefault
+  = new QgsSettingsEntryDouble( u"magnifier-factor-default"_s, QgsSettingsTree::sTreeQgis, 1.0, u"Default magnifier factor"_s );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
@@ -107,6 +110,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsOpenSublayersInGroup->copyValueFromKey( u"/qgis/openSublayersInGroup"_s, true );
   settingsMapUpdateInterval->copyValueFromKey( u"qgis/map_update_interval"_s, true );
   settingsMapUpdateInterval->copyValueFromKey( u"/qgis/map_update_interval"_s, true );
+  settingsMagnifierFactorDefault->copyValueFromKey( u"qgis/magnifier_factor_default"_s, true );
+  settingsMagnifierFactorDefault->copyValueFromKey( u"/qgis/magnifier_factor_default"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
