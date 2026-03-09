@@ -28,6 +28,7 @@
 #include "qgsproviderutils.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsstyle.h"
 
 #include <QString>
@@ -622,7 +623,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate(
 
   // should we fast scan only?
   if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s, "extension" ).toString() == "extension"_L1 )
-       || ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( parentItem->path() ) ) )
+       || ( parentItem && QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;
   }

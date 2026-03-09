@@ -167,6 +167,9 @@ const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegis
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsScanZipInBrowser
   = new QgsSettingsEntryString( u"scan-zip-in-browser"_s, QgsSettingsTree::sTreeQgis, u"basic"_s, u"Zip scanning behavior in browser (no, basic, full)"_s );
 
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsScanItemsFastScanUris
+  = new QgsSettingsEntryStringList( u"scan-items-fast-scan-uris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"URIs for fast scanning in browser"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -209,6 +212,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
+  settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );
