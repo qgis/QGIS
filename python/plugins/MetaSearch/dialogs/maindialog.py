@@ -1057,17 +1057,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def install_proxy(self):
         """set proxy if one is set in QGIS network settings"""
 
+        proxy_node = QgsSettingsTree.node("proxy")
+
         # initially support HTTP for now
-        if self.settings.value("/proxy/proxy-enabled", False, type=bool):
-            if self.settings.value("/proxy/proxy-type") == "HttpProxy":
+        if proxy_node.childSetting("proxy-enabled").valueAsVariant():
+            if proxy_node.childSetting("proxy-type").valueAsVariant() == "HttpProxy":
                 ptype = "http"
             else:
                 return
 
-            user = self.settings.value("/proxy/proxy-user")
-            password = self.settings.value("/proxy/proxy-password")
-            host = self.settings.value("/proxy/proxy-host")
-            port = self.settings.value("/proxy/proxy-port")
+            user = proxy_node.childSetting("proxy-user").valueAsVariant() or ""
+            password = proxy_node.childSetting("proxy-password").valueAsVariant() or ""
+            host = proxy_node.childSetting("proxy-host").valueAsVariant() or ""
+            port = proxy_node.childSetting("proxy-port").valueAsVariant() or ""
 
             proxy_up = ""
             proxy_port = ""
