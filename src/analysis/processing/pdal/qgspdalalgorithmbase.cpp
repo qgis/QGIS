@@ -124,12 +124,13 @@ void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments, QgsPro
 
 QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, const QString &outputFileName, QgsProcessingContext &context )
 {
-  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
-  bool isTempOutput = outputFileName.startsWith( QgsProcessingUtils::tempFolder(), Qt::CaseInsensitive );
+  const QFileInfo ifi( inputFileName );
+  const bool inputIsVpc = ifi.suffix().compare( "vpc", Qt::CaseInsensitive ) == 0 || ifi.suffix().compare( "vpz", Qt::CaseInsensitive ) == 0;
+  const bool isTempOutput = outputFileName.startsWith( QgsProcessingUtils::tempFolder(), Qt::CaseInsensitive );
   if ( inputIsVpc && isTempOutput )
   {
-    QFileInfo fi( outputFileName );
-    QString newFileName = fi.path() + '/' + fi.completeBaseName() + u".vpc"_s;
+    const QFileInfo ofi( outputFileName );
+    const QString newFileName = u"%1/%2.%3"_s.arg( ofi.path(), ofi.completeBaseName(), ifi.suffix().toLower() );
 
     if ( context.willLoadLayerOnCompletion( outputFileName ) )
     {
@@ -145,8 +146,8 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
 
 void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, const QString &outputFileName )
 {
-  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
-  bool outputIsVpc = outputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
+  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || inputFileName.endsWith( u".vpz"_s, Qt::CaseInsensitive );
+  bool outputIsVpc = outputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || outputFileName.endsWith( u".vpz"_s, Qt::CaseInsensitive );
   if ( !inputIsVpc && outputIsVpc )
     throw QgsProcessingException(
       QObject::tr(
@@ -358,7 +359,7 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
 
 void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
+  if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || outputFilename.endsWith( u".vpz"_s, Qt::CaseInsensitive ) )
   {
     QString vpcOutputFormat = parameterAsEnumString( parameters, u"VPC_OUTPUT_FORMAT"_s, context );
 
