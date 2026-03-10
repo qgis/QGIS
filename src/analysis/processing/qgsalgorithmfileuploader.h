@@ -30,7 +30,7 @@ class QgsProcessingFeedback;
 /**
  * Native file uploader algorithm.
  *
- * \since QGIS 4.0
+ * \since QGIS 4.2
  */
 class QgsFileUploaderAlgorithm : public QObject, public QgsProcessingAlgorithm
 {

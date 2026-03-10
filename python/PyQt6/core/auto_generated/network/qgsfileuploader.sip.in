@@ -23,7 +23,7 @@ The upload is asynchronous.
 The object will destroy itself when the request completes, errors or is
 canceled. An optional authentication configuration can be specified.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
 %TypeHeaderCode

@@ -36,7 +36,7 @@
  * The object will destroy itself when the request completes, errors or is canceled.
  * An optional authentication configuration can be specified.
  *
- * \since QGIS 4.0
+ * \since QGIS 4.2
  */
 class CORE_EXPORT QgsFileUploader : public QObject
 {

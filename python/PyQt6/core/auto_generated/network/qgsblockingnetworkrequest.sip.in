@@ -143,7 +143,7 @@ This is an overloaded function.
 Performs a "post" operation on the specified ``request``, using the
 given ``data``.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
