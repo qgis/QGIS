@@ -126,7 +126,7 @@ Returns the unique name for the converter.
 
 This should be an untranslated string identifying the converter.
 
-.. seealso:: :py:func:`displayName`
+.. seealso:: :py:func:`formatName`
 %End
 
     virtual QString formatName() const = 0;
