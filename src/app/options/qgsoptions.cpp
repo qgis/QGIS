@@ -45,6 +45,7 @@
 #include "qgslocalizeddatapathregistry.h"
 #include "qgslocatoroptionswidget.h"
 #include "qgslocatorwidget.h"
+#include "qgsmaptool.h"
 #include "qgsmeasuredialog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnewsfeedparser.h"
@@ -252,7 +253,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mSettings = new QgsSettings();
 
-  double identifyValue = mSettings->value( u"/Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  double identifyValue = QgsMapTool::settingSearchRadiusMM->value();
   QgsDebugMsgLevel( u"Standard Identify radius setting read from settings file: %1"_s.arg( identifyValue ), 3 );
   if ( identifyValue <= 0.0 )
     identifyValue = Qgis::DEFAULT_SEARCH_RADIUS_MM;
@@ -1621,7 +1622,7 @@ void QgsOptions::saveOptions()
   QgisApp::instance()->namUpdate();
 
   //general settings
-  mSettings->setValue( u"/Map/searchRadiusMM"_s, spinBoxIdentifyValue->value() );
+  QgsMapTool::settingSearchRadiusMM->setValue( spinBoxIdentifyValue->value() );
   mSettings->setValue( u"/Map/highlight/color"_s, mIdentifyHighlightColorButton->color().name() );
   mSettings->setValue( u"/Map/highlight/colorAlpha"_s, mIdentifyHighlightColorButton->color().alpha() );
   mSettings->setValue( u"/Map/highlight/buffer"_s, mIdentifyHighlightBufferSpinBox->value() );
