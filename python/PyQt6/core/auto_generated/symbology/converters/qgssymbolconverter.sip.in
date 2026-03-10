@@ -23,7 +23,6 @@ conversion occurs.
 #include "qgssymbolconverter.h"
 %End
   public:
-
     QgsSymbolConverterContext( QgsReadWriteContext &rwContext );
 %Docstring
 Constructor for QgsSymbolConverterContext.
@@ -170,7 +169,6 @@ Creates a new :py:class:`QgsSymbol` from a QVariant representation.
 :raises QgsNotSupportedException: if the converter does not support
                                   deserialization of symbols.
 %End
-
 };
 
 /************************************************************************

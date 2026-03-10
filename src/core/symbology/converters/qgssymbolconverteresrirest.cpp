@@ -405,4 +405,3 @@ Qt::BrushStyle QgsSymbolConverterEsriRest::convertFillStyle( const QString &styl
   else
     return Qt::SolidPattern;
 }
-

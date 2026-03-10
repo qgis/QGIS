@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsSymbolConverterSld : public QgsAbstractSymbolConverter
 {
   public:
-
     Qgis::SymbolConverterCapabilities capabilities() const override;
     QString name() const override;
     QString formatName() const override;
