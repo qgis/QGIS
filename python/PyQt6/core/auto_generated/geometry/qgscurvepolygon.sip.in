@@ -11,7 +11,9 @@
 
 
 
-class QgsCurvePolygon: QgsSurface
+
+
+class QgsCurvePolygon : QgsSurface
 {
 %Docstring(signature="appended")
 Curve polygon geometry type.
@@ -68,6 +70,8 @@ to the caller.
 %End
 
     virtual double area() const /HoldGIL/;
+
+    virtual double area3D() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 

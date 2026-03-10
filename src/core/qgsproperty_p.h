@@ -26,7 +26,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgsexpression.h"
 #include "qgspropertytransformer.h"
@@ -34,10 +33,11 @@
 #include <QSharedData>
 #include <QVariant>
 
+#define SIP_NO_FILE
+
 class QgsPropertyPrivate : public QSharedData
 {
   public:
-
     QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
@@ -55,10 +55,7 @@ class QgsPropertyPrivate : public QSharedData
       , expressionReferencedCols( other.expressionReferencedCols )
     {}
 
-    ~QgsPropertyPrivate()
-    {
-      delete transformer;
-    }
+    ~QgsPropertyPrivate() { delete transformer; }
 
     Qgis::PropertyType type = Qgis::PropertyType::Invalid;
 

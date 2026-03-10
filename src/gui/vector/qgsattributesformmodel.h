@@ -17,7 +17,6 @@
 #define QGSATTRIBUTESFORMMODEL_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgsaction.h"
 #include "qgsaddtaborgroup.h"
@@ -28,6 +27,8 @@
 #include <QAbstractItemModel>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+
+#define SIP_NO_FILE
 
 /**
  * \brief Describes editor data contained in a QgsAttributesFormModel.
@@ -404,7 +405,13 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
      * If \a parent is specified, the item will be added as child of the parent item.
      * If it is not specified then it will be set when manually added to another item.
      */
-    explicit QgsAttributesFormItem( QgsAttributesFormData::AttributesFormItemType itemType, const QgsAttributesFormData::AttributeFormItemData &data, const QString &name, const QString &displayName = QString(), QgsAttributesFormItem *parent = nullptr );
+    explicit QgsAttributesFormItem(
+      QgsAttributesFormData::AttributesFormItemType itemType,
+      const QgsAttributesFormData::AttributeFormItemData &data,
+      const QString &name,
+      const QString &displayName = QString(),
+      QgsAttributesFormItem *parent = nullptr
+    );
 
     /**
      * \brief Access the child item located at \a row position.

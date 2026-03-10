@@ -22,9 +22,12 @@
 
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsnewvectortabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )
@@ -39,9 +42,15 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   }
   catch ( QgsProviderConnectionException &ex )
   {
-    QMessageBox::critical( nullptr, tr( "Cannot Create New Tables" ), tr( "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
-                                                                          "Error message: %1" )
-                                                                        .arg( ex.what() ) );
+    QMessageBox::critical(
+      nullptr,
+      tr( "Cannot Create New Tables" ),
+      tr(
+        "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
+        "Error message: %1"
+      )
+        .arg( ex.what() )
+    );
     QTimer::singleShot( 0, this, [this] { reject(); } );
     return;
   }
@@ -65,16 +74,14 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     catch ( QgsProviderConnectionException &ex )
     {
       // This should never happen but it's not critical, we can safely continue.
-      QgsDebugError( QStringLiteral( "Error retrieving tables from connection: %1" ).arg( ex.what() ) );
+      QgsDebugError( u"Error retrieving tables from connection: %1"_s.arg( ex.what() ) );
     }
   };
 
   // Validate on data changed
-  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [this]() {
-    validate();
-  } );
+  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [this]() { validate(); } );
 
-  mTableName->setText( QStringLiteral( "new_table_name" ) );
+  mTableName->setText( u"new_table_name"_s );
   mFieldsTableView->setModel( mFieldModel );
   QgsNewVectorTableDialogFieldsDelegate *delegate { new QgsNewVectorTableDialogFieldsDelegate( mConnection->nativeTypes(), this ) };
   mFieldsTableView->setItemDelegate( delegate );
@@ -90,9 +97,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
   {
     mSchemaCbo->addItems( mConnection->schemas() );
-    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [updateTableNames]( const QString &schema ) {
-      updateTableNames( schema );
-    } );
+    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [updateTableNames]( const QString &schema ) { updateTableNames( schema ); } );
   }
   else
   {
@@ -113,13 +118,9 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   updateTableNames( mSchemaCbo->currentText() );
 
   // Validators
-  connect( mTableName, &QLineEdit::textChanged, this, [this]( const QString & ) {
-    validate();
-  } );
+  connect( mTableName, &QLineEdit::textChanged, this, [this]( const QString & ) { validate(); } );
 
-  connect( mGeomColumn, &QLineEdit::textChanged, this, [this]( const QString & ) {
-    validate();
-  } );
+  connect( mGeomColumn, &QLineEdit::textChanged, this, [this]( const QString & ) { validate(); } );
 
   // Enable/disable geometry options and call validate
   connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
@@ -143,11 +144,9 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
   Q_NOWARN_DEPRECATED_POP
 
-  const auto addGeomItem = [this]( Qgis::WkbType type ) {
-    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
-  };
+  const auto addGeomItem = [this]( Qgis::WkbType type ) { mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) ); };
 
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), static_cast<quint32>( Qgis::WkbType::NoGeometry ) );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( u"mIconTableLayer.svg"_s ), tr( "No Geometry" ), static_cast<quint32>( Qgis::WkbType::NoGeometry ) );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePoint ) )
     addGeomItem( Qgis::WkbType::Point );
   addGeomItem( Qgis::WkbType::MultiPoint );
@@ -209,7 +208,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   // Actions
   connect( mAddFieldBtn, &QPushButton::clicked, this, [this, defaultFieldType, defaultFieldTypeName] {
     QgsFields fieldList { fields() };
-    QgsField newField { QStringLiteral( "new_field_name" ), defaultFieldType, defaultFieldTypeName };
+    QgsField newField { u"new_field_name"_s, defaultFieldType, defaultFieldTypeName };
     fieldList.append( newField );
     setFields( fieldList );
     selectRow( fieldList.count() - 1 );
@@ -416,7 +415,7 @@ void QgsNewVectorTableDialog::validate()
   const bool isValid { mValidationErrors.isEmpty() };
   if ( !isValid )
   {
-    mValidationResults->setText( mValidationErrors.join( QLatin1String( "<br>" ) ) );
+    mValidationResults->setText( mValidationErrors.join( "<br>"_L1 ) );
   }
 
   mValidationFrame->setVisible( !isValid );
@@ -437,8 +436,7 @@ void QgsNewVectorTableDialog::showEvent( QShowEvent *event )
 QgsNewVectorTableDialogFieldsDelegate::QgsNewVectorTableDialogFieldsDelegate( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QStyledItemDelegate( parent )
   , mTypeList( typeList )
-{
-}
+{}
 
 QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -551,8 +549,7 @@ void QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged( int index )
 QgsNewVectorTableFieldModel::QgsNewVectorTableFieldModel( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QgsFieldModel( parent )
   , mNativeTypes( typeList )
-{
-}
+{}
 
 int QgsNewVectorTableFieldModel::columnCount( const QModelIndex & ) const
 {
@@ -765,7 +762,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const
     }
   }
   // This should never happen!
-  QgsDebugError( QStringLiteral( "Cannot get field native type for: %1" ).arg( typeName ) );
+  QgsDebugError( u"Cannot get field native type for: %1"_s.arg( typeName ) );
   return mNativeTypes.first();
 }
 
@@ -776,7 +773,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( int r
     return nativeType( mFields.at( row ).typeName() );
   }
   // This should never happen!
-  QgsDebugError( QStringLiteral( "Cannot get field for row: %1" ).arg( row ) );
+  QgsDebugError( u"Cannot get field for row: %1"_s.arg( row ) );
   return mNativeTypes.first();
 }
 

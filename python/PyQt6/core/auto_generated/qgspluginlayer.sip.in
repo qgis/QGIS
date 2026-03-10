@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsPluginLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -35,7 +37,7 @@ attributes in layer DOM node:
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsPluginLayer *clone() const = 0;
+      virtual QgsPluginLayer *clone() const = 0;
 
 %Docstring
 Returns a new instance equivalent to this one.

@@ -25,6 +25,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayersqlitehelper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVirtualLayerFeatureIterator;
 
 class QgsVirtualLayerProvider final : public QgsVectorDataProvider
@@ -79,7 +83,7 @@ class QgsVirtualLayerProvider final : public QgsVectorDataProvider
           : layer( l )
           , name( n )
         {}
-        SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = QStringLiteral( "UTF-8" ) )
+        SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = u"UTF-8"_s )
           : name( n )
           , source( s )
           , provider( p )

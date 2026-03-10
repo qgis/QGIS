@@ -16,27 +16,27 @@
 
 #include "qgsoptionalexpression.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression )
   : QgsOptional<QgsExpression>( expression )
-{
-
-}
+{}
 
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression, bool enabled )
   : QgsOptional<QgsExpression>( expression, enabled )
-{
-
-}
+{}
 
 void QgsOptionalExpression::writeXml( QDomElement &element ) const
 {
   const QDomText exp = element.ownerDocument().createTextNode( data().expression() );
-  element.setAttribute( QStringLiteral( "enabled" ), enabled() );
+  element.setAttribute( u"enabled"_s, enabled() );
   element.appendChild( exp );
 }
 
 void QgsOptionalExpression::readXml( const QDomElement &element )
 {
-  setEnabled( element.attribute( QStringLiteral( "enabled" ) ).toInt() );
+  setEnabled( element.attribute( u"enabled"_s ).toInt() );
   setData( element.text() );
 }

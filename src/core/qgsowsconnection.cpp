@@ -32,58 +32,65 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPicture>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsowsconnection.cpp"
 
-const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeXyzConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsXyzConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeXyzConnections ) ;
-const QgsSettingsEntryInteger *QgsXyzConnectionSettings::settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeXyzConnections, -1 );
-const QgsSettingsEntryInteger *QgsXyzConnectionSettings::settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeXyzConnections, -1 );
-const QgsSettingsEntryDouble *QgsXyzConnectionSettings::settingsTilePixelRatio = new QgsSettingsEntryDouble( QStringLiteral( "tile-pixel-ratio" ), sTreeXyzConnections, 0, QStringLiteral( "0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512" ) ) ;
-const QgsSettingsEntryBool *QgsXyzConnectionSettings::settingsHidden = new QgsSettingsEntryBool( QStringLiteral( "hidden" ), sTreeXyzConnections, false ) ;
-const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsInterpretation = new QgsSettingsEntryString( QStringLiteral( "interpretation" ), sTreeXyzConnections, QString() ) ;
-const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeXyzConnections ) ;
-const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeXyzConnections ) ;
-const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeXyzConnections ) ;
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeXyzConnections, QString() );
+const QgsSettingsEntryVariantMap *QgsXyzConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeXyzConnections );
+const QgsSettingsEntryInteger *QgsXyzConnectionSettings::settingsZmin = new QgsSettingsEntryInteger( u"zmin"_s, sTreeXyzConnections, -1 );
+const QgsSettingsEntryInteger *QgsXyzConnectionSettings::settingsZmax = new QgsSettingsEntryInteger( u"zmax"_s, sTreeXyzConnections, -1 );
+const QgsSettingsEntryDouble *QgsXyzConnectionSettings::settingsTilePixelRatio
+  = new QgsSettingsEntryDouble( u"tile-pixel-ratio"_s, sTreeXyzConnections, 0, u"0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512"_s );
+const QgsSettingsEntryBool *QgsXyzConnectionSettings::settingsHidden = new QgsSettingsEntryBool( u"hidden"_s, sTreeXyzConnections, false );
+const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsInterpretation = new QgsSettingsEntryString( u"interpretation"_s, sTreeXyzConnections, QString() );
+const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeXyzConnections );
+const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeXyzConnections );
+const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeXyzConnections );
 
 
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionArcgis );
-const QgsSettingsEntryVariantMap *QgsArcGisConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrlPrefix = new QgsSettingsEntryString( QStringLiteral( "urlprefix" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsContentEndpoint = new QgsSettingsEntryString( QStringLiteral( "content-endpoint" ), sTreeConnectionArcgis );
-const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsCommunityEndpoint = new QgsSettingsEntryString( QStringLiteral( "community-endpoint" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryVariantMap *QgsArcGisConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrlPrefix = new QgsSettingsEntryString( u"urlprefix"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsContentEndpoint = new QgsSettingsEntryString( u"content-endpoint"_s, sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsCommunityEndpoint = new QgsSettingsEntryString( u"community-endpoint"_s, sTreeConnectionArcgis );
 
 
-const QgsSettingsEntryString *QgsOwsConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeOwsConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsOwsConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsVersion = new QgsSettingsEntryString( QStringLiteral( "version" ), sTreeOwsConnections, QString() ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreGetMapURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-map-uri" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreGetFeatureInfoURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-feature-info-uri" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsSmoothPixmapTransform = new QgsSettingsEntryBool( QStringLiteral( "smooth-pixmap-transform" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsReportedLayerExtents = new QgsSettingsEntryBool( QStringLiteral( "reported-layer-extents" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryEnumFlag<Qgis::DpiMode> *QgsOwsConnection::settingsDpiMode = new QgsSettingsEntryEnumFlag<Qgis::DpiMode>( QStringLiteral( "dpi-mode" ), sTreeOwsConnections, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
-const QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *QgsOwsConnection::settingsTilePixelRatio = new QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( QStringLiteral( "tile-pixel-ratio" ), sTreeOwsConnections, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "max-num-features" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsPagesize = new QgsSettingsEntryString( QStringLiteral( "page-size" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsSettingsEntryString( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, QString( "default" ) ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultFeatureFormat = new QgsSettingsEntryString( QStringLiteral( "default-feature-format" ), sTreeOwsConnections, QString( ) ) ;
-const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableFeatureFormats = new QgsSettingsEntryStringList( QStringLiteral( "available-feature-formats" ), sTreeOwsConnections, {} ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( QStringLiteral( "feature-mode" ), sTreeOwsConnections, QString( "default" ) ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsWfsForceInitialGetFeature = new QgsSettingsEntryBool( QStringLiteral( "force-initial-get-feature" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultImageFormat = new QgsSettingsEntryString( QStringLiteral( "default-image-format" ), sTreeOwsConnections, QString( ) ) ;
-const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableImageFormats = new QgsSettingsEntryStringList( QStringLiteral( "available-image-formats" ), sTreeOwsConnections, {} ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryString *QgsOwsConnection::settingsAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeOwsConnections ) ;
-const QgsSettingsEntryInteger *QgsOwsConnection::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "feature-count" ), sTreeOwsConnections, 10 );
-const QgsSettingsEntryEnumFlag<Qgis::HttpMethod> *QgsOwsConnection::settingsPreferredHttpMethod = new QgsSettingsEntryEnumFlag<Qgis::HttpMethod>( QStringLiteral( "http-method" ), sTreeOwsConnections, Qgis::HttpMethod::Get, QString() );
+const QgsSettingsEntryString *QgsOwsConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeOwsConnections, QString() );
+const QgsSettingsEntryVariantMap *QgsOwsConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeOwsConnections );
+const QgsSettingsEntryString *QgsOwsConnection::settingsVersion = new QgsSettingsEntryString( u"version"_s, sTreeOwsConnections, QString() );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreGetMapURI = new QgsSettingsEntryBool( u"ignore-get-map-uri"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreGetFeatureInfoURI = new QgsSettingsEntryBool( u"ignore-get-feature-info-uri"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsSmoothPixmapTransform = new QgsSettingsEntryBool( u"smooth-pixmap-transform"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsReportedLayerExtents = new QgsSettingsEntryBool( u"reported-layer-extents"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryEnumFlag<Qgis::DpiMode> *QgsOwsConnection::settingsDpiMode
+  = new QgsSettingsEntryEnumFlag<Qgis::DpiMode>( u"dpi-mode"_s, sTreeOwsConnections, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt );
+const QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *QgsOwsConnection::settingsTilePixelRatio
+  = new QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( u"tile-pixel-ratio"_s, sTreeOwsConnections, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt );
+const QgsSettingsEntryString *QgsOwsConnection::settingsMaxNumFeatures = new QgsSettingsEntryString( u"max-num-features"_s, sTreeOwsConnections );
+const QgsSettingsEntryString *QgsOwsConnection::settingsPagesize = new QgsSettingsEntryString( u"page-size"_s, sTreeOwsConnections );
+const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsSettingsEntryString( u"paging-enabled"_s, sTreeOwsConnections, QString( "default" ) );
+const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultFeatureFormat = new QgsSettingsEntryString( u"default-feature-format"_s, sTreeOwsConnections, QString() );
+const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableFeatureFormats = new QgsSettingsEntryStringList( u"available-feature-formats"_s, sTreeOwsConnections, {} );
+const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( u"feature-mode"_s, sTreeOwsConnections, QString( "default" ) );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( u"prefer-coordinates-for-wfs-T11"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsWfsForceInitialGetFeature = new QgsSettingsEntryBool( u"force-initial-get-feature"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultImageFormat = new QgsSettingsEntryString( u"default-image-format"_s, sTreeOwsConnections, QString() );
+const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableImageFormats = new QgsSettingsEntryStringList( u"available-image-formats"_s, sTreeOwsConnections, {} );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( u"ignore-axis-orientation"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( u"invert-axis-orientation"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeOwsConnections );
+const QgsSettingsEntryString *QgsOwsConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeOwsConnections );
+const QgsSettingsEntryString *QgsOwsConnection::settingsAuthCfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeOwsConnections );
+const QgsSettingsEntryInteger *QgsOwsConnection::settingsFeatureCount = new QgsSettingsEntryInteger( u"feature-count"_s, sTreeOwsConnections, 10 );
+const QgsSettingsEntryEnumFlag<Qgis::HttpMethod> *QgsOwsConnection::settingsPreferredHttpMethod
+  = new QgsSettingsEntryEnumFlag<Qgis::HttpMethod>( u"http-method"_s, sTreeOwsConnections, Qgis::HttpMethod::Get, QString() );
 
 QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connName )
   : mConnName( connName )
@@ -91,13 +98,13 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 {
   QgsDebugMsgLevel( "theConnName = " + connName, 4 );
 
-  const QString url = settingsUrl->value( {mService.toLower(), mConnName} );
+  const QString url = settingsUrl->value( { mService.toLower(), mConnName } );
   mConnectionInfo = url;
-  mUri.setParam( QStringLiteral( "url" ), url );
+  mUri.setParam( u"url"_s, url );
 
   // Check for credentials and prepend to the connection info
-  const QString username = settingsUsername->value( {mService.toLower(), mConnName} );
-  const QString password = settingsPassword->value( {mService.toLower(), mConnName} );
+  const QString username = settingsUsername->value( { mService.toLower(), mConnName } );
+  const QString password = settingsPassword->value( { mService.toLower(), mConnName } );
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
@@ -105,14 +112,14 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     mUri.setPassword( password );
   }
 
-  const QString authcfg = settingsAuthCfg->value( {mService.toLower(), mConnName} );
+  const QString authcfg = settingsAuthCfg->value( { mService.toLower(), mConnName } );
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  QgsHttpHeaders httpHeaders( settingsHeaders->value( {mService.toLower(), mConnName} ) );
+  QgsHttpHeaders httpHeaders( settingsHeaders->value( { mService.toLower(), mConnName } ) );
   mUri.setHttpHeaders( httpHeaders );
   const QString referer = httpHeaders[QgsHttpHeaders::KEY_REFERER].toString();
   if ( !referer.isEmpty() )
@@ -120,17 +127,16 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     mConnectionInfo.append( ",referer=" + referer );
   }
 
-  if ( mService.compare( QLatin1String( "WMS" ), Qt::CaseInsensitive ) == 0
-       || mService.compare( QLatin1String( "WCS" ), Qt::CaseInsensitive ) == 0 )
+  if ( mService.compare( "WMS"_L1, Qt::CaseInsensitive ) == 0 || mService.compare( "WCS"_L1, Qt::CaseInsensitive ) == 0 )
   {
     addWmsWcsConnectionSettings( mUri, service, connName );
   }
-  else if ( mService.compare( QLatin1String( "WFS" ), Qt::CaseInsensitive ) == 0 )
+  else if ( mService.compare( "WFS"_L1, Qt::CaseInsensitive ) == 0 )
   {
     addWfsConnectionSettings( mUri, service, connName );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ), 4 );
+  QgsDebugMsgLevel( u"encoded uri: '%1'."_s.arg( QString( mUri.encodedUri() ) ), 4 );
 }
 
 QString QgsOwsConnection::connectionName() const
@@ -162,31 +168,31 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   const QgsSettings settings;
   uri.httpHeaders().setFromSettings( settings, settingsKey );
 
-  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetMapURI" ), false ).toBool() )
+  if ( settings.value( settingsKey + u"/ignoreGetMapURI"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreGetMapUrl"_s, u"1"_s );
   }
-  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetFeatureInfoURI" ), false ).toBool() )
+  if ( settings.value( settingsKey + u"/ignoreGetFeatureInfoURI"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreGetFeatureInfoUrl"_s, u"1"_s );
   }
-  if ( settings.value( settingsKey + QStringLiteral( "/smoothPixmapTransform" ), false ).toBool() )
+  if ( settings.value( settingsKey + u"/smoothPixmapTransform"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+    uri.setParam( u"SmoothPixmapTransform"_s, u"1"_s );
   }
-  if ( settings.value( settingsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() )
+  if ( settings.value( settingsKey + u"/ignoreReportedLayerExtents"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreReportedLayerExtents"_s, u"1"_s );
   }
-  const QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
+  const QString dpiMode = settings.value( settingsKey + u"/dpiMode"_s, u"all"_s ).toString();
   if ( !dpiMode.isEmpty() )
   {
-    uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+    uri.setParam( u"dpiMode"_s, dpiMode );
   }
-  const QString tilePixelRatio = settings.value( settingsKey + QStringLiteral( "/tilePixelRatio" ), "0" ).toString();
-  if ( tilePixelRatio != QLatin1String( "0" ) )
+  const QString tilePixelRatio = settings.value( settingsKey + u"/tilePixelRatio"_s, "0" ).toString();
+  if ( tilePixelRatio != "0"_L1 )
   {
-    uri.setParam( QStringLiteral( "tilePixelRatio" ), tilePixelRatio );
+    uri.setParam( u"tilePixelRatio"_s, tilePixelRatio );
   }
 
   return uri;
@@ -196,35 +202,35 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  uri.setHttpHeaders( QgsHttpHeaders( settingsHeaders->value( {service.toLower(), connName} ) ) );
+  uri.setHttpHeaders( QgsHttpHeaders( settingsHeaders->value( { service.toLower(), connName } ) ) );
 
-  if ( settingsIgnoreGetMapURI->value( {service.toLower(), connName} ) )
+  if ( settingsIgnoreGetMapURI->value( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreGetMapUrl"_s, u"1"_s );
   }
-  if ( settingsIgnoreGetFeatureInfoURI->value( {service.toLower(), connName} ) )
+  if ( settingsIgnoreGetFeatureInfoURI->value( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreGetFeatureInfoUrl"_s, u"1"_s );
   }
-  if ( settingsSmoothPixmapTransform->value( {service.toLower(), connName} ) )
+  if ( settingsSmoothPixmapTransform->value( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+    uri.setParam( u"SmoothPixmapTransform"_s, u"1"_s );
   }
-  if ( settingsReportedLayerExtents->value( {service.toLower(), connName} ) )
+  if ( settingsReportedLayerExtents->value( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreReportedLayerExtents"_s, u"1"_s );
   }
-  if ( settingsDpiMode->exists( {service.toLower(), connName} ) )
+  if ( settingsDpiMode->exists( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( settingsDpiMode->value( {service.toLower(), connName} ) ) ) );
+    uri.setParam( u"dpiMode"_s, QString::number( static_cast<int>( settingsDpiMode->value( { service.toLower(), connName } ) ) ) );
   }
-  if ( settingsTilePixelRatio->exists( {service.toLower(), connName} ) )
+  if ( settingsTilePixelRatio->exists( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( static_cast<int>( settingsTilePixelRatio->value( {service.toLower(), connName} ) ) ) );
+    uri.setParam( u"tilePixelRatio"_s, QString::number( static_cast<int>( settingsTilePixelRatio->value( { service.toLower(), connName } ) ) ) );
   }
-  if ( settingsFeatureCount->exists( {service.toLower(), connName} ) )
+  if ( settingsFeatureCount->exists( { service.toLower(), connName } ) )
   {
-    uri.setParam( QStringLiteral( "featureCount" ), QString::number( settingsFeatureCount->value( {service.toLower(), connName} ) ) );
+    uri.setParam( u"featureCount"_s, QString::number( settingsFeatureCount->value( { service.toLower(), connName } ) ) );
   }
   // Note: settingsDefaultImageFormat is not part of the connection URI because it's an individual layer setting
   return uri;
@@ -240,13 +246,13 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
   const QString version = settings.value( settingsKey + "/version" ).toString();
   if ( !version.isEmpty() )
   {
-    uri.setParam( QStringLiteral( "version" ), version );
+    uri.setParam( u"version"_s, version );
   }
 
-  const QString maxnumfeatures = settings.value( settingsKey + QStringLiteral( "/maxnumfeatures" ) ).toString();
+  const QString maxnumfeatures = settings.value( settingsKey + u"/maxnumfeatures"_s ).toString();
   if ( !maxnumfeatures.isEmpty() )
   {
-    uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumfeatures );
+    uri.setParam( u"maxNumFeatures"_s, maxnumfeatures );
   }
 
   return uri;
@@ -256,19 +262,19 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  const QString version = settingsVersion->value( {service.toLower(), connName} );
+  const QString version = settingsVersion->value( { service.toLower(), connName } );
   if ( !version.isEmpty() )
   {
-    uri.setParam( QStringLiteral( "version" ), version );
+    uri.setParam( u"version"_s, version );
   }
 
-  const QString maxnumFeatures = settingsMaxNumFeatures->value( {service.toLower(), connName} );
+  const QString maxnumFeatures = settingsMaxNumFeatures->value( { service.toLower(), connName } );
   if ( !maxnumFeatures.isEmpty() )
   {
-    uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumFeatures );
+    uri.setParam( u"maxNumFeatures"_s, maxnumFeatures );
   }
 
-  const Qgis::HttpMethod httpMethod = settingsPreferredHttpMethod->value( {service.toLower(), connName} );
+  const Qgis::HttpMethod httpMethod = settingsPreferredHttpMethod->value( { service.toLower(), connName } );
   switch ( httpMethod )
   {
     case Qgis::HttpMethod::Get:
@@ -276,7 +282,7 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
       break;
 
     case Qgis::HttpMethod::Post:
-      uri.setParam( QStringLiteral( "httpMethod" ), QStringLiteral( "post" ) );
+      uri.setParam( u"httpMethod"_s, u"post"_s );
       break;
 
     case Qgis::HttpMethod::Head:
@@ -291,47 +297,46 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
-  return QgsOwsConnection::sTreeOwsConnections->items( {service.toLower()} );
+  return QgsOwsConnection::sTreeOwsConnections->items( { service.toLower() } );
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  return QgsOwsConnection::sTreeOwsConnections->selectedItem( {service.toLower()} );
+  return QgsOwsConnection::sTreeOwsConnections->selectedItem( { service.toLower() } );
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
-  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( name, {service.toLower()} );
+  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( name, { service.toLower() } );
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
 {
   const QgsSettings settings;
 
-  if ( settings.value( key + QStringLiteral( "/ignoreAxisOrientation" ), false ).toBool() )
+  if ( settings.value( key + u"/ignoreAxisOrientation"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreAxisOrientation"_s, u"1"_s );
   }
-  if ( settings.value( key + QStringLiteral( "/invertAxisOrientation" ), false ).toBool() )
+  if ( settings.value( key + u"/invertAxisOrientation"_s, false ).toBool() )
   {
-    uri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+    uri.setParam( u"InvertAxisOrientation"_s, u"1"_s );
   }
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connectionName )
 {
-
-  if ( settingsIgnoreAxisOrientation->value( {service.toLower(), connectionName} ) )
+  if ( settingsIgnoreAxisOrientation->value( { service.toLower(), connectionName } ) )
   {
-    uri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
+    uri.setParam( u"IgnoreAxisOrientation"_s, u"1"_s );
   }
-  if ( settingsInvertAxisOrientation->value( {service.toLower(), connectionName} ) )
+  if ( settingsInvertAxisOrientation->value( { service.toLower(), connectionName } ) )
   {
-    uri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+    uri.setParam( u"InvertAxisOrientation"_s, u"1"_s );
   }
 }
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
-  sTreeOwsConnections->deleteItem( name, {service.toLower()} );
+  sTreeOwsConnections->deleteItem( name, { service.toLower() } );
 }

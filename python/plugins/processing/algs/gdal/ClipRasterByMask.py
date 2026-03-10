@@ -21,25 +21,25 @@ __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     Qgis,
-    QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
     QgsProcessingParameterExtent,
-    QgsProcessingParameterString,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
     QgsProcessingRasterLayerDefinition,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -190,7 +190,7 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(multithreading_param)
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

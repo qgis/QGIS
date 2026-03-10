@@ -20,10 +20,13 @@
 #include "qgssettings.h"
 
 #include <QApplication>
+#include <QString>
 #include <QThread>
 #include <QUrlQuery>
 
 #include "moc_qgsnetworklogger.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )
@@ -34,7 +37,7 @@ QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *p
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
   Q_ASSERT( mNam->thread() == QApplication::instance()->thread() );
 
-  if ( QgsSettings().value( QStringLiteral( "logNetworkRequests" ), false, QgsSettings::App ).toBool() )
+  if ( QgsSettings().value( u"logNetworkRequests"_s, false, QgsSettings::App ).toBool() )
     enableLogging( true );
 }
 
@@ -347,8 +350,7 @@ bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelI
   QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
   if ( QgsNetworkLoggerRequestGroup *request = dynamic_cast<QgsNetworkLoggerRequestGroup *>( node ) )
   {
-    if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled )
-         & !mShowSuccessful )
+    if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled ) & !mShowSuccessful )
       return false;
     else if ( request->status() == QgsNetworkLoggerRequestGroup::Status::TimeOut && !mShowTimeouts )
       return false;

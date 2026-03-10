@@ -30,7 +30,11 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
 #include <QThreadStorage>
 #endif
 
@@ -92,16 +96,16 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     else
     {
 #endif
-      // If we are inside a transaction the iterator "sees" the current status
-      if ( provider && ! provider->transaction() )
-      {
-        mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
-        mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
-        mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
-        mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
-        mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
-        mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
-      }
+    // If we are inside a transaction the iterator "sees" the current status
+    if ( provider && !provider->transaction() )
+    {
+      mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
+      mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
+      mDeletedFeatureIds = QgsFeatureIds( layer->editBuffer()->deletedFeatureIds() );
+      mChangedAttributeValues = QgsChangedAttributesMap( layer->editBuffer()->changedAttributeValues() );
+      mAddedAttributes = QList<QgsField>( layer->editBuffer()->addedAttributes() );
+      mDeletedAttributeIds = QgsAttributeList( layer->editBuffer()->deletedAttributeIds() );
+    }
 #if 0
     }
 #endif
@@ -382,8 +386,7 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 class QgsThreadStackOverflowGuard
 {
   public:
-
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
     QgsThreadStackOverflowGuard( QThreadStorage<std::deque<QString>> &storage, const QString &stackFrameInformation, int maxDepth )
 #else
     QgsThreadStackOverflowGuard( std::deque<QString> &storage, const QString &stackFrameInformation, int maxDepth )
@@ -391,7 +394,7 @@ class QgsThreadStackOverflowGuard
       : mStorage( storage )
       , mMaxDepth( maxDepth )
     {
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
       if ( !storage.hasLocalData() )
       {
         storage.setLocalData( std::deque<QString>() );
@@ -405,7 +408,7 @@ class QgsThreadStackOverflowGuard
 
     ~QgsThreadStackOverflowGuard()
     {
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
       mStorage.localData().pop_back();
 #else
       mStorage.pop_back();
@@ -414,7 +417,7 @@ class QgsThreadStackOverflowGuard
 
     bool hasStackOverflow() const
     {
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
       if ( mStorage.localData().size() > mMaxDepth )
 #else
       if ( mStorage.size() > mMaxDepth )
@@ -427,7 +430,7 @@ class QgsThreadStackOverflowGuard
     QString topFrames() const
     {
       QStringList dumpStack;
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
       const std::deque<QString> &stack = mStorage.localData();
 #else
       const std::deque<QString> &stack = mStorage;
@@ -445,7 +448,7 @@ class QgsThreadStackOverflowGuard
 
     std::size_t depth() const
     {
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
       return mStorage.localData().size();
 #else
       return mStorage.size();
@@ -453,7 +456,7 @@ class QgsThreadStackOverflowGuard
     }
 
   private:
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
     QThreadStorage<std::deque<QString>> &mStorage;
 #else
     std::deque<QString> &mStorage;
@@ -470,7 +473,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mClosed )
     return false;
 
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
   static QThreadStorage<std::deque<QString>> sStack;
 #else
   static thread_local std::deque<QString> sStack;
@@ -580,7 +583,6 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 }
 
 
-
 bool QgsVectorLayerFeatureIterator::rewind()
 {
   if ( mClosed )
@@ -669,7 +671,6 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature &src, QgsF
 }
 
 
-
 bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 {
   // check if changed geometries are in rectangle
@@ -751,8 +752,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setValid( true );
   f.setFields( mSource->mFields );
 
-  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) ||
-       ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
   {
     f.setGeometry( geom );
   }
@@ -782,7 +782,6 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
 }
 
 
-
 void QgsVectorLayerFeatureIterator::rewindEditBuffer()
 {
   mFetchConsidered = mSource->mDeletedFeatureIds;
@@ -805,7 +804,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
 
   auto joinSourceIt = mSource->mJoinSources.constFind( joinInfo->joinLayerId() );
   if ( joinSourceIt == mSource->mJoinSources.constEnd() )
-    return;  // invalid join (unresolved reference to layer)
+    return; // invalid join (unresolved reference to layer)
 
   if ( !mFetchJoinInfo.contains( joinInfo ) )
   {
@@ -828,14 +827,14 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   }
 
   // store field source index - we'll need it when fetching from provider
-  mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
-  mFetchJoinInfo[ joinInfo ].attributesSourceToDestLayerMap[sourceLayerIndex] = fieldIdx;
+  mFetchJoinInfo[joinInfo].attributes.push_back( sourceLayerIndex );
+  mFetchJoinInfo[joinInfo].attributesSourceToDestLayerMap[sourceLayerIndex] = fieldIdx;
 }
 
 
 void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
   static QThreadStorage<std::deque<QString>> sStack;
 #else
   static thread_local std::deque<QString> sStack;
@@ -845,7 +844,8 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::
+      logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -856,10 +856,10 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() ); // skip-keyword-check
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );                       // skip-keyword-check
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() ); // skip-keyword-check
+  exp->setAreaUnits( QgsProject::instance()->areaUnits() );         // skip-keyword-check
 
   if ( !mExpressionContext )
     createExpressionContext();
@@ -901,9 +901,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
   mExpressionContext.reset();
 
-  mFieldsToPrepare = ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
-                     ? mRequest.subsetOfAttributes()
-                     : mSource->mFields.allAttributesList();
+  mFieldsToPrepare = ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   while ( !mFieldsToPrepare.isEmpty() )
   {
@@ -920,7 +918,6 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   {
     createOrderedJoinList();
   }
-
 }
 
 void QgsVectorLayerFeatureIterator::createOrderedJoinList()
@@ -1081,7 +1078,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature &f )
 {
   // make sure we have space for newly added attributes
   QgsAttributes attr = f.attributes();
-  attr.resize( mSource->mFields.count() );  // Provider attrs count + joined attrs count + expression attrs count
+  attr.resize( mSource->mFields.count() ); // Provider attrs count + joined attrs count + expression attrs count
   f.setAttributes( attr );
 
   // possible TODO - handle combinations of expression -> join -> expression -> join?
@@ -1127,7 +1124,7 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature &f, int a
 
     mExpressionContext->setFeature( f );
     QVariant val = exp->evaluate( mExpressionContext.get() );
-    ( void )mSource->mFields.at( attrIndex ).convertCompatible( val );
+    ( void ) mSource->mFields.at( attrIndex ).convertCompatible( val );
     f.setAttribute( attrIndex, val );
   }
   else
@@ -1166,7 +1163,6 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
 }
 
 
-
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const
 {
 #if 0 // this is not thread safe -- we cannot access the layer here as this will be called from non-main threads.
@@ -1182,11 +1178,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   const QString joinFieldName = joinInfo->joinFieldName();
 
-  subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
+  subsetString.append( u"\"%1\""_s.arg( joinFieldName ) );
 
   if ( QgsVariantUtils::isNull( joinValue ) )
   {
-    subsetString += QLatin1String( " IS NULL" );
+    subsetString += " IS NULL"_L1;
   }
   else
   {
@@ -1200,7 +1196,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QMetaType::Type::QString:
-        v.replace( '\'', QLatin1String( "''" ) );
+        v.replace( '\'', "''"_L1 );
         v.prepend( '\'' ).append( '\'' );
         break;
     }
@@ -1256,8 +1252,6 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     // no suitable join feature found, keeping empty (null) attributes
   }
 }
-
-
 
 
 bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature &f )

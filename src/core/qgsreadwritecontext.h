@@ -23,6 +23,10 @@
 #include "qgspathresolver.h"
 #include "qgsprojecttranslator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsReadWriteContextCategoryPopper;
 
 /**
@@ -33,7 +37,6 @@ class QgsReadWriteContextCategoryPopper;
 class CORE_EXPORT QgsReadWriteContext
 {
   public:
-
     /**
      * Struct for QgsReadWriteContext error or warning messages
      * \since QGIS 3.2
@@ -48,35 +51,33 @@ class CORE_EXPORT QgsReadWriteContext
         {}
 
         //! Returns the message string
-        QString message() const {return mMessage;}
+        QString message() const { return mMessage; }
 
         //! Returns the message level
-        Qgis::MessageLevel level() const {return mLevel;}
+        Qgis::MessageLevel level() const { return mLevel; }
 
         //! Returns the stack of categories of the message
-        QStringList categories() const {return mCategories;}
+        QStringList categories() const { return mCategories; }
 
         // TODO c++20 - replace with = default
 
-        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const
-        {
-          return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories;
-        }
+        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const { return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories; }
 
-        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const
-        {
-          return !( *this == other );
-        }
+        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
 
-      private:
+        // clang-format off
+        private:
+        // clang-format on
         QString mMessage;
         Qgis::MessageLevel mLevel;
         QStringList mCategories;
@@ -125,7 +126,7 @@ class CORE_EXPORT QgsReadWriteContext
      * Returns the project translator
      * \since QGIS 3.4
      */
-    const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
+    const QgsProjectTranslator *projectTranslator() const { return mProjectTranslator; }
 
     /**
      * Sets the project translator.
@@ -153,8 +154,21 @@ class CORE_EXPORT QgsReadWriteContext
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
-  private:
+    /**
+     * Returns the currently used layer id as string.
+     * \since QGIS 4.0
+     */
+    const QString currentLayerId() const { return mCurrentLayerId; }
 
+    /**
+     * Sets the current layer id.
+     * So functions are able to emit the layer that is currently relevant.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentLayerId( const QString &layerId ) { mCurrentLayerId = layerId; }
+
+  private:
     //! Pop the last category
     void leaveCategory() const;
 
@@ -164,6 +178,7 @@ class CORE_EXPORT QgsReadWriteContext
     QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
     QgsCoordinateTransformContext mCoordinateTransformContext = QgsCoordinateTransformContext();
+    QString mCurrentLayerId;
 };
 
 
@@ -180,8 +195,11 @@ class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
   public:
     //! Creates a popper
-    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context ) : mContext( context ) {}
-    ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
+    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context )
+      : mContext( context )
+    {}
+    ~QgsReadWriteContextCategoryPopper() { mContext.leaveCategory(); }
+
   private:
 #ifdef SIP_RUN
     QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );

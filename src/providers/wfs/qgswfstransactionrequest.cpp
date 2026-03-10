@@ -17,20 +17,23 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgswfstransactionrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-{
-}
+{}
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  const QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), Qgis::HttpMethod::Post ) );
+  const QUrl url( mUri.requestUrl( u"Transaction"_s, Qgis::HttpMethod::Post ) );
 
   QgsDebugMsgLevel( doc.toString(), 4 );
 
-  if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ), /*synchronous*/ true ) )
+  if ( sendPOST( url, u"text/xml"_s, doc.toByteArray( -1 ), /*synchronous*/ true ) )
   {
     QString errorMsg;
     if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )

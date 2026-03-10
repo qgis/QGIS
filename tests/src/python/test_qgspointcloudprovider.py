@@ -10,21 +10,20 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     QgsPointCloudLayer,
     QgsProviderRegistry,
     QgsStatisticalSummary,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudDataProvider(QgisTestCase):
-
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
         "EPT provider not available",

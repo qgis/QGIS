@@ -19,6 +19,10 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsFlatTerrainSettings::create()
 {
   return new QgsFlatTerrainSettings();
@@ -31,7 +35,7 @@ QgsFlatTerrainSettings *QgsFlatTerrainSettings::clone() const
 
 QString QgsFlatTerrainSettings::type() const
 {
-  return QStringLiteral( "flat" );
+  return u"flat"_s;
 }
 
 void QgsFlatTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )

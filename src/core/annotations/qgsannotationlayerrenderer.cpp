@@ -25,6 +25,10 @@
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
@@ -34,7 +38,7 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
 {
   if ( QgsMapLayer *linkedLayer = layer->linkedVisibilityLayer() )
   {
-    if ( !context.customProperties().value( QStringLiteral( "visible_layer_ids" ) ).toList().contains( linkedLayer->id() ) )
+    if ( !context.customProperties().value( u"visible_layer_ids"_s ).toList().contains( linkedLayer->id() ) )
     {
       mReadyToCompose = true;
       return;
@@ -57,16 +61,13 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   items.unite( layer->mNonIndexedItems );
 
   mItems.reserve( items.size() );
-  std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
-                  [layer]( const QString & id ) ->std::pair< QString, std::unique_ptr< QgsAnnotationItem > >
-  {
+  std::transform( items.begin(), items.end(), std::back_inserter( mItems ), [layer]( const QString &id ) -> std::pair< QString, std::unique_ptr< QgsAnnotationItem > > {
     return std::make_pair( id, std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() ) );
   } );
 
-  std::sort( mItems.begin(), mItems.end(), [](
-               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a,
-               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b )
-  { return a.second->zIndex() < b.second->zIndex(); } );
+  std::sort( mItems.begin(), mItems.end(), []( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a, const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b ) {
+    return a.second->zIndex() < b.second->zIndex();
+  } );
 
   if ( layer->paintEffect() && layer->paintEffect()->enabled() )
   {
@@ -83,7 +84,7 @@ QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 
 bool QgsAnnotationLayerRenderer::render()
 {
-  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
 
   QgsRenderContext &context = *renderContext();
 

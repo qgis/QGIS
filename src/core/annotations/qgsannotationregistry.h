@@ -16,7 +16,6 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
-#define SIP_NO_FILE
 
 #include <functional>
 
@@ -28,12 +27,16 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 // None of this is stable API!
 
 //! Creates a new annotation object
-typedef std::function < QgsAnnotation*() > QgsCreateAnnotationFunc;
+typedef std::function< QgsAnnotation *() > QgsCreateAnnotationFunc;
 
 /**
  * \class QgsAnnotationMetadata
@@ -43,7 +46,6 @@ typedef std::function < QgsAnnotation*() > QgsCreateAnnotationFunc;
 class CORE_EXPORT QgsAnnotationMetadata
 {
   public:
-
     /**
      * Constructor for QgsAnnotationMetadata. \a typeName should be a unique string
      * identifying the annotation type.
@@ -61,16 +63,14 @@ class CORE_EXPORT QgsAnnotationMetadata
     /**
      * Creates a new annotation of the associated type.
      */
-    QgsAnnotation *createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr ; }
+    QgsAnnotation *createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr; }
 
   private:
-
     QString mTypeName;
     QgsCreateAnnotationFunc mCreateFunc = nullptr;
 
     QgsAnnotationMetadata() = default;
     friend class QMap< QString, QgsAnnotationMetadata >;
-
 };
 
 /**
@@ -80,18 +80,16 @@ class CORE_EXPORT QgsAnnotationMetadata
  */
 class CORE_EXPORT QgsAnnotationRegistry
 {
-
   public:
-
     /**
      * Constructor for QgsAnnotationRegistry. The registry is automatically populated
      * with several standard annotation types.
      */
     QgsAnnotationRegistry()
     {
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "TextAnnotationItem" ), QgsTextAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "HtmlAnnotationItem" ), QgsHtmlAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "SVGAnnotationItem" ), QgsSvgAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"TextAnnotationItem"_s, QgsTextAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"HtmlAnnotationItem"_s, QgsHtmlAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"SVGAnnotationItem"_s, QgsSvgAnnotation::create ) );
     }
 
     /**
@@ -121,9 +119,7 @@ class CORE_EXPORT QgsAnnotationRegistry
     }
 
   private:
-
     QMap< QString, QgsAnnotationMetadata > mMetadata;
-
 };
 
 ///@endcond

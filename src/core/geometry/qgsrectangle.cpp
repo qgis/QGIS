@@ -34,6 +34,8 @@
 
 #include "moc_qgsrectangle.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 {
   const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
@@ -47,10 +49,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 
     if ( const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) )
     {
-      if ( exterior->numPoints() == 5
-           && qgsDoubleNear( exterior->xAt( 0 ), exterior->xAt( 4 ) )
-           && qgsDoubleNear( exterior->yAt( 0 ), exterior->yAt( 4 ) )
-           && geom.isGeosValid() )
+      if ( exterior->numPoints() == 5 && qgsDoubleNear( exterior->xAt( 0 ), exterior->xAt( 4 ) ) && qgsDoubleNear( exterior->yAt( 0 ), exterior->yAt( 4 ) ) && geom.isGeosValid() )
         return QgsRectangle( exterior->xAt( 0 ), exterior->yAt( 0 ), exterior->xAt( 2 ), exterior->yAt( 2 ) );
     }
   }
@@ -111,9 +110,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 
 QString QgsRectangle::asWktCoordinates() const
 {
-  QString rep =
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax );
+  QString rep = qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", "_L1 + qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax );
 
   return rep;
 }
@@ -122,15 +119,10 @@ QString QgsRectangle::asWktPolygon() const
 {
   if ( isNull() )
   {
-    return QStringLiteral( "Polygon EMPTY" );
+    return u"Polygon EMPTY"_s;
   }
 
-  return QStringLiteral( "Polygon ((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))" ).arg(
-           qgsDoubleToString( mXmin ),
-           qgsDoubleToString( mYmin ),
-           qgsDoubleToString( mXmax ),
-           qgsDoubleToString( mYmax )
-         );
+  return u"Polygon ((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))"_s.arg( qgsDoubleToString( mXmin ), qgsDoubleToString( mYmin ), qgsDoubleToString( mXmax ), qgsDoubleToString( mYmax ) );
 }
 
 QString QgsRectangle::toString( int precision ) const
@@ -150,15 +142,11 @@ QString QgsRectangle::toString( int precision ) const
   }
 
   if ( isNull() )
-    rep = QStringLiteral( "Null" );
+    rep = u"Null"_s;
   else
-    rep = QStringLiteral( "%1,%2 : %3,%4" )
-          .arg( mXmin, 0, 'f', precision )
-          .arg( mYmin, 0, 'f', precision )
-          .arg( mXmax, 0, 'f', precision )
-          .arg( mYmax, 0, 'f', precision );
+    rep = u"%1,%2 : %3,%4"_s.arg( mXmin, 0, 'f', precision ).arg( mYmin, 0, 'f', precision ).arg( mXmax, 0, 'f', precision ).arg( mYmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( u"Extents : %1"_s.arg( rep ), 4 );
 
   return rep;
 }
@@ -167,7 +155,7 @@ QString QgsRectangle::asPolygon() const
 {
   if ( isNull() )
   {
-    return QStringLiteral( "EMPTY" );
+    return u"EMPTY"_s;
   }
 
   QString rep;
@@ -178,15 +166,9 @@ QString QgsRectangle::asPolygon() const
   foo.setRealNumberNotation( QTextStream::FixedNotation );
   // NOTE: a polygon isn't a polygon unless its closed. In the case of
   //       a rectangle, that means 5 points (last == first)
-  foo
-      << mXmin << ' ' << mYmin << ", "
-      << mXmin << ' ' << mYmax << ", "
-      << mXmax << ' ' << mYmax << ", "
-      << mXmax << ' ' << mYmin << ", "
-      << mXmin << ' ' << mYmin;
+  foo << mXmin << ' ' << mYmin << ", " << mXmin << ' ' << mYmax << ", " << mXmax << ' ' << mYmax << ", " << mXmax << ' ' << mYmin << ", " << mXmin << ' ' << mYmin;
 
   return rep;
-
 }
 
 QgsBox3D QgsRectangle::toBox3d( double zMin, double zMax ) const
@@ -196,23 +178,18 @@ QgsBox3D QgsRectangle::toBox3d( double zMin, double zMax ) const
 
 QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const
 {
-  if ( isNull() ) return *this;
+  if ( isNull() )
+    return *this;
 
   // helper function
-  auto gridifyValue = []( double value, double spacing ) -> double
-  {
+  auto gridifyValue = []( double value, double spacing ) -> double {
     if ( spacing > 0 )
-      return  std::round( value / spacing ) * spacing;
+      return std::round( value / spacing ) * spacing;
     else
       return value;
   };
 
-  return QgsRectangle(
-           gridifyValue( mXmin, spacing ),
-           gridifyValue( mYmin, spacing ),
-           gridifyValue( mXmax, spacing ),
-           gridifyValue( mYmax, spacing )
-         );
+  return QgsRectangle( gridifyValue( mXmin, spacing ), gridifyValue( mYmin, spacing ), gridifyValue( mXmax, spacing ), gridifyValue( mYmax, spacing ) );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsRectangle &rectangle )

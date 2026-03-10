@@ -10,7 +10,6 @@ __author__ = "Nyall Dawson"
 __date__ = "2015-09"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsMapSettings,
     QgsMapUnitScale,
@@ -18,11 +17,11 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayerUtils,
 )
+from qgis.PyQt.QtCore import QSize
 from qgis.testing import unittest
 
 
 class PyQgsMapUnitScale(unittest.TestCase):
-
     def testConstructor(self):
         # test creating QgsMapUnitScale
         c = QgsMapUnitScale()

@@ -19,10 +19,14 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsrenderingoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRenderingOptionsWidget
@@ -34,7 +38,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   setupUi( this );
 
   QgsSettings settings;
-  chkAddedVisibility->setChecked( settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
+  chkAddedVisibility->setChecked( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
 
   spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
   spinMaxThreads->setClearValue( 1, tr( "All Available (%1)" ).arg( QThread::idealThreadCount() ) );
@@ -43,42 +47,42 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   else
     spinMaxThreads->clear();
 
-  spinMapUpdateInterval->setValue( settings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
+  spinMapUpdateInterval->setValue( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   spinMapUpdateInterval->setClearValue( 250 );
 
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  double magnifierVal = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  double magnifierVal = 100 * QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
   doubleSpinBoxMagnifierDefault->setDecimals( 0 );
-  doubleSpinBoxMagnifierDefault->setSuffix( QStringLiteral( "%" ) );
+  doubleSpinBoxMagnifierDefault->setSuffix( u"%"_s );
   doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
   doubleSpinBoxMagnifierDefault->setClearValue( 100 );
 
-  chkAntiAliasing->setChecked( settings.value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() );
+  chkAntiAliasing->setChecked( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
 }
 
 QString QgsRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#rendering-options" );
+  return u"introduction/qgis_configuration.html#rendering-options"_s;
 }
 
 void QgsRenderingOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
+  QgsSettingsRegistryGui::settingsNewLayersVisible->setValue( chkAddedVisibility->isChecked() );
 
   const int maxThreads = spinMaxThreads->value() == spinMaxThreads->clearValue() ? -1 : spinMaxThreads->value();
   QgsApplication::setMaxThreads( maxThreads );
-  settings.setValue( QStringLiteral( "/qgis/max_threads" ), maxThreads );
+  settings.setValue( u"/qgis/max_threads"_s, maxThreads );
 
-  settings.setValue( QStringLiteral( "/qgis/map_update_interval" ), spinMapUpdateInterval->value() );
+  QgsSettingsRegistryGui::settingsMapUpdateInterval->setValue( spinMapUpdateInterval->value() );
 
   // magnification
-  settings.setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
+  QgsSettingsRegistryGui::settingsMagnifierFactorDefault->setValue( doubleSpinBoxMagnifierDefault->value() / 100 );
 
-  settings.setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
+  QgsSettingsRegistryGui::settingsEnableAntiAliasing->setValue( chkAntiAliasing->isChecked() );
 }
 
 
@@ -86,13 +90,12 @@ void QgsRenderingOptionsWidget::apply()
 // QgsRenderingOptionsFactory
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), QStringLiteral( "rendering" ) )
-{
-}
+  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), u"rendering"_s )
+{}
 
 QIcon QgsRenderingOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/rendering.svg" ) );
+  return QgsApplication::getThemeIcon( u"propertyicons/rendering.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsRenderingOptionsFactory::createWidget( QWidget *parent ) const
@@ -102,5 +105,5 @@ QgsOptionsPageWidget *QgsRenderingOptionsFactory::createWidget( QWidget *parent 
 
 QString QgsRenderingOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageMapCanvas" );
+  return u"mOptionsPageMapCanvas"_s;
 }

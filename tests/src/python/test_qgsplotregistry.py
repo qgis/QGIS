@@ -11,19 +11,19 @@ __date__ = "20/08/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     Qgs2DPlot,
-    QgsPlotRegistry,
     QgsPlotAbstractMetadata,
+    QgsPlotRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestPlotAMetadata(QgsPlotAbstractMetadata):
-
     def __init__(self):
         super().__init__("test_plot_a", "test plot a")
 
@@ -32,7 +32,6 @@ class TestPlotAMetadata(QgsPlotAbstractMetadata):
 
 
 class TestPlotBMetadata(QgsPlotAbstractMetadata):
-
     def __init__(self):
         super().__init__("test_plot_b", "test plot b")
 
@@ -41,7 +40,6 @@ class TestPlotBMetadata(QgsPlotAbstractMetadata):
 
 
 class TestQgsPlotRegistry(QgisTestCase):
-
     def testRegistry(self):
         registry = QgsPlotRegistry()
 

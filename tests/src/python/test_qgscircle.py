@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsCircularString(QgisTestCase):
-
     def testSegmentCalculation(self):
         """Test different methods for calculating segments for circle approximation"""
 

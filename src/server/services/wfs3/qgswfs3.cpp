@@ -20,6 +20,10 @@
 #include "qgsserverstatichandler.h"
 #include "qgswfs3handlers.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup server
  * \class QgsWfsModule
@@ -33,15 +37,15 @@ class QgsWfs3Module : public QgsServiceModule
     {
       // TODO: remove when QGIS 4 is released
 #if _QGIS_VERSION_INT >= 40000
-      QString rootPath = QStringLiteral( "/ogcapi" );
+      QString rootPath = u"/ogcapi"_s;
 #else
-      QString rootPath = QStringLiteral( "/wfs3" );
+      QString rootPath = u"/wfs3"_s;
 #endif
       if ( serverIface && serverIface->serverSettings() && !serverIface->serverSettings()->apiWfs3RootPath().isEmpty() )
       {
         rootPath = serverIface->serverSettings()->apiWfs3RootPath();
       }
-      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, QStringLiteral( "OAPIF" ), QStringLiteral( "1.0.0" ) );
+      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, u"OAPIF"_s, u"OGC API Features (WFS3)"_s, u"1.0.0"_s );
       // Register handlers
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();

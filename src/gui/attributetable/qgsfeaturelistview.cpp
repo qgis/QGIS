@@ -30,8 +30,11 @@
 #include <QMenu>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsfeaturelistview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
@@ -39,16 +42,12 @@ QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mUpdateEditSelectionTimerWithSelection.setSingleShot( true );
-  connect( &mUpdateEditSelectionTimerWithSelection, &QTimer::timeout, this, [this]() {
-    updateEditSelection( true );
-  } );
+  connect( &mUpdateEditSelectionTimerWithSelection, &QTimer::timeout, this, [this]() { updateEditSelection( true ); } );
 
   mUpdateEditSelectionTimerWithSelection.setInterval( 0 );
 
   mUpdateEditSelectionTimerWithoutSelection.setSingleShot( true );
-  connect( &mUpdateEditSelectionTimerWithoutSelection, &QTimer::timeout, this, [this]() {
-    updateEditSelection( false );
-  } );
+  connect( &mUpdateEditSelectionTimerWithoutSelection, &QTimer::timeout, this, [this]() { updateEditSelection( false ); } );
 
   mUpdateEditSelectionTimerWithoutSelection.setInterval( 0 );
 }
@@ -75,9 +74,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
 
   mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
   setSelectionModel( mFeatureSelectionModel );
-  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [this]() {
-    ensureEditSelection( true );
-  } );
+  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [this]() { ensureEditSelection( true ); } );
 
   if ( mItemDelegate && mItemDelegate->parent() == this )
   {
@@ -89,7 +86,12 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   setItemDelegate( mItemDelegate );
 
   mItemDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-  connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested ) );
+  connect(
+    mFeatureSelectionModel,
+    static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ),
+    this,
+    static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested )
+  );
   connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
   connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [this] { repaintRequested(); } );
@@ -168,7 +170,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -303,7 +305,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -393,7 +395,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureWithGeometryRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, u"Feature"_s, this );
 
     // Index is from feature list model, but we need an index from the
     // filter model to be passed to listeners, using fid instead would
@@ -413,13 +415,10 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
   if ( anchor )
     mRowAnchor = row;
 
-  if ( selectionMode() != QListView::SingleSelection
-       && command.testFlag( QItemSelectionModel::Toggle ) )
+  if ( selectionMode() != QListView::SingleSelection && command.testFlag( QItemSelectionModel::Toggle ) )
   {
     if ( anchor )
-      mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
-                                 ? QItemSelectionModel::Deselect
-                                 : QItemSelectionModel::Select;
+      mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index ) ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
     command &= ~QItemSelectionModel::Toggle;
     command |= mCtrlDragSelectionFlag;
     if ( !anchor )

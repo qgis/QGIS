@@ -51,7 +51,6 @@ class QgsRenderedItemDetails;
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for QgsMapLayerRenderer, with the associated \a layerID and render \a context.
      */
@@ -155,7 +154,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     QStringList mErrors;
     QString mLayerID;
 
-    // TODO QGIS 4.0 - make false as default
+    // TODO QGIS 5.0 - make false as default
 
     /**
      * The flag must be set to false in renderer's constructor
@@ -196,8 +195,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     void appendRenderedItemDetails( QgsRenderedItemDetails *details SIP_TRANSFER );
 
   private:
-
-    // TODO QGIS 4.0 - make reference instead of pointer!
+    // TODO QGIS 5.0 - make reference instead of pointer!
 
     /**
      * Associated render context.

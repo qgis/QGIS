@@ -21,9 +21,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -94,7 +97,7 @@ void QgsLayerTreeOpacityWidget::layerTrChanged()
 
 QString QgsLayerTreeOpacityWidget::Provider::id() const
 {
-  return QStringLiteral( "transparency" );
+  return u"transparency"_s;
 }
 
 QString QgsLayerTreeOpacityWidget::Provider::name() const

@@ -18,14 +18,17 @@
 #include "qgsapplication.h"
 #include "qgslayermetadatasearchwidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayerMetadataSourceSelectProvider::QgsLayerMetadataSourceSelectProvider()
   : QgsSourceSelectProvider()
-{
-}
+{}
 
 QString QgsLayerMetadataSourceSelectProvider::providerKey() const
 {
-  return QStringLiteral( "layermetadata" );
+  return u"layermetadata"_s;
 }
 
 QString QgsLayerMetadataSourceSelectProvider::text() const
@@ -40,7 +43,7 @@ QString QgsLayerMetadataSourceSelectProvider::toolTip() const
 
 QIcon QgsLayerMetadataSourceSelectProvider::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "search.svg" ) );
+  return QgsApplication::getThemeIcon( u"search.svg"_s );
 }
 
 QgsAbstractDataSourceWidget *QgsLayerMetadataSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const

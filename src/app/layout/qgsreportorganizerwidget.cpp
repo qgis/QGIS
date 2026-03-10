@@ -28,8 +28,11 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsreportorganizerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -122,13 +125,13 @@ void QgsReportOrganizerWidget::removeSection()
   cleanup = [this, &cleanup]( QgsAbstractReportSection *section ) {
     if ( mDesigner->currentLayout() == section->header() || mDesigner->currentLayout() == section->footer() )
       mDesigner->setCurrentLayout( nullptr );
-    if ( section->type() == QLatin1String( "SectionFieldGroup" ) )
+    if ( section->type() == "SectionFieldGroup"_L1 )
     {
       QgsReportSectionFieldGroup *fieldGroup = static_cast<QgsReportSectionFieldGroup *>( section );
       if ( fieldGroup->body() == mDesigner->currentLayout() )
         mDesigner->setCurrentLayout( nullptr );
     }
-    if ( section->type() == QLatin1String( "SectionLayout" ) )
+    if ( section->type() == "SectionLayout"_L1 )
     {
       QgsReportSectionLayout *sectionLayout = static_cast<QgsReportSectionLayout *>( section );
       if ( sectionLayout->body() == mDesigner->currentLayout() )

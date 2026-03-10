@@ -22,6 +22,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_SPATIALITE
 #include <spatialite.h>
 #endif
@@ -33,7 +37,7 @@
 #include <QThread>
 static int trace_callback( unsigned, void *ctx, void *p, void * )
 {
-  sqlite3_stmt *stmt = ( sqlite3_stmt * )p;
+  sqlite3_stmt *stmt = ( sqlite3_stmt * ) p;
   char *sql = sqlite3_expanded_sql( stmt );
   qDebug() << "SPATIALITE" << QThread::currentThreadId() << ( sqlite3 * ) ctx << sql;
   sqlite3_free( sql );
@@ -84,12 +88,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
 #ifdef SPATIALITE_PRINT_ALL_SQL
   // Log all queries
-  sqlite3_trace_v2(
-    database,
-    SQLITE_TRACE_STMT,
-    trace_callback,
-    database
-  );
+  sqlite3_trace_v2( database, SQLITE_TRACE_STMT, trace_callback, database );
 #endif
 
   return result;
@@ -116,7 +115,7 @@ void QgsSpatialiteCloser::operator()( sqlite3 *handle )
   const int res = sqlite3_close_v2( handle );
   if ( res != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "sqlite3_close_v2() failed: %1" ).arg( res ) );
+    QgsDebugError( u"sqlite3_close_v2() failed: %1"_s.arg( res ) );
   }
 
 #ifdef HAVE_SPATIALITE

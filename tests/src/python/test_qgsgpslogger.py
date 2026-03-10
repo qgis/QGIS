@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "10/11/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     NULL,
     Qgis,
@@ -22,9 +22,9 @@ from qgis.core import (
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -33,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class GpsReplay(QgsNmeaConnection):
-
     def __init__(self):
         self.buffer = QBuffer()
         self.buffer.open(QBuffer.OpenModeFlag.ReadWrite)
@@ -54,7 +53,6 @@ class GpsReplay(QgsNmeaConnection):
 
 
 class TestQgsGpsLogger(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

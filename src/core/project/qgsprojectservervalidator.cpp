@@ -23,6 +23,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValidator::ValidationError error )
 {
@@ -35,7 +38,10 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
     case QgsProjectServerValidator::DuplicatedNames:
       return QObject::tr( "One or more layers or groups have the same name or short name. Both the 'name' and 'short name' for layers and groups must be unique" );
     case QgsProjectServerValidator::ProjectShortName:
-      return QObject::tr( "The project root name (either the project short name or project title) is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or underscore" );
+      return QObject::tr(
+        "The project root name (either the project short name or project title) is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or "
+        "underscore"
+      );
     case QgsProjectServerValidator::ProjectRootNameConflict:
       return QObject::tr( "The project root name (either the project short name or project title) is already used by a layer or a group" );
     case QgsProjectServerValidator::OnlyMaptipTrueButEmptyMaptip:
@@ -45,8 +51,7 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
 }
 
 //! helper method to retrieve a layer or layer tree group short name
-template <class T>
-QString getShortName( T *node )
+template<class T> QString getShortName( T *node )
 {
   const QString shortName = node->serverProperties()->shortName();
   return shortName.isEmpty() ? node->name() : shortName;
@@ -74,7 +79,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
         if ( layer->type() == Qgis::LayerType::Vector )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
-          if ( vl->dataProvider() && vl->dataProvider()->encoding() == QLatin1String( "System" ) )
+          if ( vl->dataProvider() && vl->dataProvider()->encoding() == "System"_L1 )
             encodingMessages << layer->name();
         }
         layerNames << treeLayer->name();
@@ -86,11 +91,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
 
 bool QgsProjectServerValidator::isOnlyMaptipEnabled( QgsProject *project )
 {
-  return project->readBoolEntry(
-           QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ),
-           QString(),
-           false
-         );
+  return project->readBoolEntry( u"WMSHTMLFeatureInfoUseOnlyMaptip"_s, QString(), false );
 }
 
 bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectServerValidator::ValidationResult> &results )
@@ -131,23 +132,23 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   if ( !duplicateNames.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( ", "_L1 ) );
   }
 
   if ( !regExpMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( ", "_L1 ) );
   }
 
   if ( !encodingMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( ", "_L1 ) );
   }
 
   // Determine the root layername
-  QString rootLayerName = project->readEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), "" );
+  QString rootLayerName = project->readEntry( u"WMSRootName"_s, u"/"_s, "" );
   if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
   {
     rootLayerName = project->title();
@@ -178,10 +179,8 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
     if ( !emptyLayers.isEmpty() )
     {
       result = false;
-      QString details = emptyLayers.join( QLatin1String( ", " ) ).toHtmlEscaped();
-      results << ValidationResult(
-                QgsProjectServerValidator::OnlyMaptipTrueButEmptyMaptip,
-                details );
+      QString details = emptyLayers.join( ", "_L1 ).toHtmlEscaped();
+      results << ValidationResult( QgsProjectServerValidator::OnlyMaptipTrueButEmptyMaptip, details );
     }
   }
 

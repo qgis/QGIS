@@ -23,6 +23,9 @@
 #include "qgsserverquerystringparameter.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -234,7 +237,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = u"application/json"_s ) const;
 
     /**
      * Writes \a data as HTML to the response stream in \a context using a template.
@@ -262,7 +265,12 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \param title title of the link
      * \note not available in Python bindings
      */
-    json link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self, const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON, const std::string &title = "" ) const;
+    json link(
+      const QgsServerApiContext &context,
+      const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
+      const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
+      const std::string &title = ""
+    ) const;
 
     /**
      * Returns all the links for the given request \a context.

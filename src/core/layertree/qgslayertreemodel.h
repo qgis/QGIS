@@ -25,8 +25,11 @@
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
+#include <QString>
 #include <QTimer>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -56,6 +59,7 @@ class QgsLayerTreeFilterSettings;
  */
 class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 {
+    // clang-format off
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -67,7 +71,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 #endif
 
     Q_OBJECT
+
   public:
+    // clang-format on
 
     /**
      * Construct a new tree model with given layer tree (root node must not be NULLPTR).
@@ -97,19 +103,19 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       // display flags
-      ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes
-      ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
-      DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
-      UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
-      UseTextFormatting          = 0x0020,  //!< Layer nodes will alter text appearance based on layer properties, such as scale based visibility
+      ShowLegend = 0x0001,                 //!< Add legend nodes for layer nodes
+      ShowLegendAsTree = 0x0004,           //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
+      DeferredLegendInvalidation = 0x0008, //!< Defer legend model invalidation
+      UseEmbeddedWidgets = 0x0010,         //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
+      UseTextFormatting = 0x0020,          //!< Layer nodes will alter text appearance based on layer properties, such as scale based visibility
 
       // behavioral flags
-      AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
-      AllowNodeRename            = 0x2000,  //!< Allow renaming of groups and layers
-      AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a checkbox
-      AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
-      ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
-      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread \since QGIS 3.30
+      AllowNodeReorder = 0x1000,          //!< Allow reordering with drag'n'drop
+      AllowNodeRename = 0x2000,           //!< Allow renaming of groups and layers
+      AllowNodeChangeVisibility = 0x4000, //!< Allow user to set node visibility with a checkbox
+      AllowLegendChangeState = 0x8000,    //!< Allow check boxes for legend nodes (if supported by layer's legend)
+      ActionHierarchical = 0x10000,       //!< Check/uncheck action has consequences on children (or parents for leaf node)
+      UseThreadedHitTest = 0x20000,       //!< Run legend hit tests in a background thread \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -274,7 +280,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Gets hints about map view - to be used in legend nodes. Arguments that are not NULLPTR will receive values.
      * If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
      */
-    void legendMapViewData( double *mapUnitsPerPixel SIP_OUT, int *dpi SIP_OUT, double *scale  SIP_OUT ) const;
+    void legendMapViewData( double *mapUnitsPerPixel SIP_OUT, int *dpi SIP_OUT, double *scale SIP_OUT ) const;
 
     /**
      * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
@@ -444,7 +450,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void legendInvalidateMapBasedData();
 
   protected:
-
     /**
      * Returns a temporary render context.
      *
@@ -474,10 +479,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 #ifndef SIP_RUN
     struct LayerLegendTree
     {
-      //! Pointer to parent for each active node. Top-level nodes have NULLPTR parent. Pointers are not owned.
-      QMap<QgsLayerTreeModelLegendNode *, QgsLayerTreeModelLegendNode *> parents;
-      //! List of children for each active node. Top-level nodes are under NULLPTR key. Pointers are not owned.
-      QMap<QgsLayerTreeModelLegendNode *, QList<QgsLayerTreeModelLegendNode *> > children;
+        //! Pointer to parent for each active node. Top-level nodes have NULLPTR parent. Pointers are not owned.
+        QMap<QgsLayerTreeModelLegendNode *, QgsLayerTreeModelLegendNode *> parents;
+        //! List of children for each active node. Top-level nodes are under NULLPTR key. Pointers are not owned.
+        QMap<QgsLayerTreeModelLegendNode *, QList<QgsLayerTreeModelLegendNode *> > children;
     };
 #endif
 
@@ -488,28 +493,28 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 #ifndef SIP_RUN
     struct LayerLegendData
     {
-      LayerLegendData() = default;
+        LayerLegendData() = default;
 
-      /**
+        /**
        * Active legend nodes. May have been filtered.
        * Owner of legend nodes is still originalNodes !
        */
-      QList<QgsLayerTreeModelLegendNode *> activeNodes;
+        QList<QgsLayerTreeModelLegendNode *> activeNodes;
 
-      /**
+        /**
        * A legend node that is not displayed separately, its icon is instead
        * shown within the layer node's item.
        * May be NULLPTR. if non-null, node is owned by originalNodes !
        */
-      QgsLayerTreeModelLegendNode *embeddedNodeInParent = nullptr;
+        QgsLayerTreeModelLegendNode *embeddedNodeInParent = nullptr;
 
-      /**
+        /**
        * Data structure for storage of legend nodes.
        * These are nodes as received from QgsMapLayerLegend
        */
-      QList<QgsLayerTreeModelLegendNode *> originalNodes;
-      //! Optional pointer to a tree structure - see LayerLegendTree for details
-      LayerLegendTree *tree = nullptr;
+        QList<QgsLayerTreeModelLegendNode *> originalNodes;
+        //! Optional pointer to a tree structure - see LayerLegendTree for details
+        LayerLegendTree *tree = nullptr;
     };
 #endif
 
@@ -541,6 +546,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QMap<QString, QSet<QString>> mHitTestResults;
 
+    QMap<QString, QPair<double, double>> mHitTestResultsRendererUpdatedCanvas;
+
     std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 
     double mLegendMapViewMupp = 0;
@@ -556,8 +563,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   private:
     void handleHitTestResults();
-
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )
@@ -580,7 +585,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
       // if that's possible (if there is a node without a rule key, building of tree is canceled)
-      mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
+      mRuleKey = u"embedded-widget-"_s + QUuid::createUuid().toString();
     }
 
     QVariant data( int role ) const override

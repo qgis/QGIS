@@ -38,8 +38,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgslayoutelevationprofilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<void( QgsLayoutElevationProfileWidget *, QMenu * )> QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
 
@@ -55,9 +58,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   setPanelTitle( tr( "Elevation Profile Properties" ) );
 
   mCopyFromDockMenu = new QMenu( this );
-  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] {
-    sBuildCopyMenuFunction( this, mCopyFromDockMenu );
-  } );
+  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] { sBuildCopyMenuFunction( this, mCopyFromDockMenu ); } );
 
   connect( mActionRefresh, &QAction::triggered, this, [this] {
     if ( !mProfile )
@@ -73,7 +74,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   copyFromDockButton->setToolTip( tr( "Copy From Profile" ) );
   copyFromDockButton->setMenu( mCopyFromDockMenu );
   copyFromDockButton->setPopupMode( QToolButton::InstantPopup );
-  copyFromDockButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCopyProfileSettings.svg" ) ) );
+  copyFromDockButton->setIcon( QgsApplication::getThemeIcon( u"/mActionCopyProfileSettings.svg"_s ) );
 
   mDockToolbar->addWidget( copyFromDockButton );
 
@@ -442,8 +443,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  for ( Qgis::DistanceUnit unit :
-        {
+  for ( Qgis::DistanceUnit unit : {
           Qgis::DistanceUnit::Kilometers,
           Qgis::DistanceUnit::Meters,
           Qgis::DistanceUnit::Centimeters,
@@ -581,9 +581,9 @@ QgsExpressionContext QgsLayoutElevationProfileWidget::createExpressionContext() 
 {
   QgsExpressionContext context = mProfile->createExpressionContext();
 
-  auto plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( u"plot"_s );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, 0.0, true ) );
   context.appendScope( plotScope.release() );
 
   return context;
@@ -696,7 +696,7 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
 
       source = layer->profileSource();
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
@@ -852,7 +852,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
         sources << layer->profileSource();
       }
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
@@ -875,8 +875,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
 
 void QgsLayoutElevationProfileWidget::layoutAtlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled && mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer()
-       && mProfile->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Line )
+  if ( atlasEnabled && mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer() && mProfile->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Line )
   {
     mCheckControlledByAtlas->setEnabled( true );
   }

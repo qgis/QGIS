@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsSensorThingsUtils
 {
 %Docstring(signature="appended")
@@ -20,6 +22,8 @@ Utility functions for working with OGC SensorThings API services.
 #include "qgssensorthingsutils.h"
 %End
   public:
+
+
 
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 %Docstring
@@ -167,7 +171,6 @@ The base entity type for the query must be specified.
 
 .. versionadded:: 3.38
 %End
-
 };
 
 
@@ -184,12 +187,13 @@ service should be expanded.
 #include "qgssensorthingsutils.h"
 %End
   public:
-
-    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
-                                        const QString &orderBy = QString(),
-                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
-                                        const QString &filter = QString() );
+    QgsSensorThingsExpansionDefinition(
+      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+      const QString &orderBy = QString(),
+      Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+      const QString &filter = QString()
+    );
 %Docstring
 Constructor for QgsSensorThingsExpansionDefinition, targeting the
 specified child entity type.
@@ -277,14 +281,14 @@ Set to -1 if no limit is desired.
 
     QString filter() const;
 %Docstring
-Returns the the string filter to filter expanded child entities by.
+Returns the string filter to filter expanded child entities by.
 
 .. seealso:: :py:func:`setFilter`
 %End
 
     void setFilter( const QString &filter );
 %Docstring
-Returns the the string ``filter`` to filter expanded child entities by.
+Returns the string ``filter`` to filter expanded child entities by.
 
 .. seealso:: :py:func:`filter`
 %End

@@ -18,10 +18,11 @@
 #define QGSLAYOUTVALIDITYCHECKS_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsabstractvaliditycheck.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui
@@ -110,7 +111,6 @@ class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QList<QgsValidityCheckResult> mResults;
 };
 
-#ifndef WITH_QTWEBKIT
 /**
  * \ingroup gui
  * \brief Layout HTML item validity check
@@ -131,6 +131,5 @@ class GUI_EXPORT QgsLayoutHtmlItemValidityCheck : public QgsAbstractValidityChec
   private:
     QList<QgsValidityCheckResult> mResults;
 };
-#endif
 
 #endif // QGSLAYOUTVALIDITYCHECKS_H

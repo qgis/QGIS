@@ -19,8 +19,7 @@
 
 QgsAbstract2DMapController::QgsAbstract2DMapController( QObject *parent )
   : QgsAbstractInputController( parent )
-{
-}
+{}
 
 Qgis::InputControllerType QgsAbstract2DMapController::type() const
 {

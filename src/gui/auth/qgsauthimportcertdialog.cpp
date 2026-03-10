@@ -27,9 +27,12 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
+#include <QString>
 #include <QtCrypto>
 
 #include "moc_qgsauthimportcertdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImportCertDialog::CertFilter filter, QgsAuthImportCertDialog::CertInput input )
   : QDialog( parent )
@@ -52,9 +55,7 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImport
 
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_workflows.html#authentication-authorities" ) );
-    } );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-authorities"_s ); } );
     connect( teCertText, &QPlainTextEdit::textChanged, this, &QgsAuthImportCertDialog::validateCertificates );
 
     connect( radioImportFile, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );
@@ -204,14 +205,13 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   if ( certssize > 0 )
   {
-    teValidation->setStyleSheet(
-      valid ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QTextEdit" ) )
-            : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) )
-    );
+    teValidation->setStyleSheet( valid ? QgsAuthGuiUtils::greenTextStyleSheet( u"QTextEdit"_s ) : QgsAuthGuiUtils::redTextStyleSheet( u"QTextEdit"_s ) );
   }
 
-  QString msg = tr( "Certificates found: %1\n"
-                    "Certificates valid: %2" )
+  QString msg = tr(
+                  "Certificates found: %1\n"
+                  "Certificates valid: %2"
+  )
                   .arg( certssize )
                   .arg( validcerts );
 
@@ -244,7 +244,7 @@ void QgsAuthImportCertDialog::chkAllowInvalid_toggled( bool checked )
 QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( u"UI/lastAuthImportCertOpenFileDir"_s, QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac
@@ -253,7 +253,7 @@ QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QS
 
   if ( !f.isEmpty() )
   {
-    settings.setValue( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( u"UI/lastAuthImportCertOpenFileDir"_s, QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }

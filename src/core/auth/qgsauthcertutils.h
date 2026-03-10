@@ -18,6 +18,8 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
+#include "qgsconfig.h"
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsauthconfig.h"
@@ -25,13 +27,16 @@
 #include <QFile>
 #include <QSslCertificate>
 #include <QSslError>
+
+#ifdef HAVE_AUTH
 #include <QtCrypto>
+#endif
 
 class QgsAuthConfigSslServer;
 
-#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)
+#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value( 0 )
 
-#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value(0)
+#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value( 0 )
 
 /**
  * \ingroup core
@@ -81,6 +86,7 @@ class CORE_EXPORT QgsAuthCertUtils
       ExtendedKeyUsage = 1
     };
 
+#ifdef HAVE_AUTH
 
     //! SSL Protocol name strings per enum
     static QString getSslProtocolName( QSsl::SslProtocol protocol );
@@ -128,8 +134,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param bundle2 second bundle
      * \return a list of unique certificates
      */
-    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
-                                            const QList<QSslCertificate> &bundle2 );
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1, const QList<QSslCertificate> &bundle2 );
 
     /**
      * Returns non-encrypted key from a PEM or DER formatted file
@@ -137,9 +142,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param keypass Passphrase for private key
      * \param algtype QString to set with resolved algorithm type
      */
-    static QSslKey keyFromFile( const QString &keypath,
-                                const QString &keypass = QString(),
-                                QString *algtype = nullptr );
+    static QSslKey keyFromFile( const QString &keypath, const QString &keypass = QString(), QString *algtype = nullptr );
 
     //! Returns a list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
@@ -160,10 +163,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
      * \returns certificate, private key, key's algorithm type
      */
-    static QStringList certKeyBundleToPem( const QString &certpath,
-                                           const QString &keypath,
-                                           const QString &keypass = QString(),
-                                           bool reencrypt = true );
+    static QStringList certKeyBundleToPem( const QString &certpath, const QString &keypath, const QString &keypass = QString(), bool reencrypt = true );
 
     /**
      * Determine if the PEM-encoded text of a key is PKCS#8 format
@@ -197,9 +197,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
      * \returns certificate, private key, key's algorithm type
      */
-    static QStringList pkcs12BundleToPem( const QString &bundlepath,
-                                          const QString &bundlepass = QString(),
-                                          bool reencrypt = true );
+    static QStringList pkcs12BundleToPem( const QString &bundlepath, const QString &bundlepass = QString(), bool reencrypt = true );
 
     /**
      * Returns list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
@@ -207,8 +205,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param bundlepass Passphrase for bundle
      * \returns list of certificate
      */
-    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath, const QString &bundlepass = QString() );
 
 
     /**
@@ -243,9 +240,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param issuer Whether to return cert's subject or issuer combined name
      * \note not available in Python bindings
      */
-    static QString getCertDistinguishedName( const QSslCertificate &qcert,
-        const QCA::Certificate &acert = QCA::Certificate(),
-        bool issuer = false ) SIP_SKIP;
+    static QString getCertDistinguishedName( const QSslCertificate &qcert, const QCA::Certificate &acert = QCA::Certificate(), bool issuer = false ) SIP_SKIP;
 
     //! Gets the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
@@ -302,6 +297,7 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype ) SIP_SKIP;
 
+#ifndef QT_NO_SSL
     //! Try to determine the certificates usage types
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate &cert );
 
@@ -356,9 +352,9 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param trustRootCa if TRUE the CA will be added to the trusted CAs for this validation check
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
-    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
-        const QString &hostName = QString(),
-        bool trustRootCa = false ) ;
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName = QString(), bool trustRootCa = false );
+
+#endif
 
     /**
      * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the
@@ -375,6 +371,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
 
     static QSsl::EncodingFormat sniffEncoding( const QByteArray &payload );
+#endif
 };
 
 #endif // QGSAUTHCERTUTILS_H

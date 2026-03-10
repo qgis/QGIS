@@ -15,15 +15,13 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 
 import filecmp
 import os
-from shutil import copyfile
 import tempfile
+import unittest
+from shutil import copyfile
 
 import numpy
 import numpy as np
 from osgeo import gdal
-from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
-from qgis.PyQt.QtGui import QColor, QResizeEvent
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsBilinearRasterResampler,
@@ -46,6 +44,7 @@ from qgis.core import (
     QgsProject,
     QgsProperty,
     QgsRaster,
+    QgsRasterDataProvider,
     QgsRasterHistogram,
     QgsRasterLayer,
     QgsRasterMinMaxOrigin,
@@ -55,12 +54,12 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
-    QgsRasterDataProvider,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor, QResizeEvent
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -69,7 +68,6 @@ start_app()
 
 
 class TestQgsRasterLayer(QgisTestCase):
-
     def setUp(self):
         self.iface = get_iface()
         QgsProject.instance().removeAllMapLayers()
@@ -1320,7 +1318,6 @@ class TestQgsRasterLayer(QgisTestCase):
 
 
 class TestQgsRasterLayerTransformContext(QgisTestCase):
-
     def setUp(self):
         """Prepare tc"""
         super().setUp()

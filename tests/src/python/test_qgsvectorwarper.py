@@ -11,6 +11,8 @@ __date__ = "01/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 
+import unittest
+
 from qgis.analysis import (
     QgsGcpPoint,
     QgsGcpTransformerInterface,
@@ -25,14 +27,12 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsVectorWarper(QgisTestCase):
-
     def testWarper(self):
         # create source layer
         source_layer = QgsVectorLayer(

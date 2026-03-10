@@ -471,6 +471,10 @@ public:
     /// Returns document info reference
     PDFObjectReference getDocumentInfo() const;
 
+    /// Sets document XMP metadata stream in catalog (/Metadata).
+    /// Metadata are stored as XML stream with /Type /Metadata and /Subtype /XML.
+    void setCatalogMetadata(QByteArray metadataXML);
+
     /// Copies existing annotation to another page
     /// \param pageReference Page reference (onto which is annotation copied)
     /// \param annotationReference Annotation reference

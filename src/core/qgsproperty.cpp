@@ -21,6 +21,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin, const QString &comment )
   : mName( name )
@@ -83,7 +86,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case RenderUnits:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
+      mHelpText = trString() + u"[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]"_s;
       break;
 
     case ColorWithAlpha:
@@ -98,14 +101,17 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case PenJoinStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
+      mHelpText = trString() + u"[<b>bevel</b>|<b>miter</b>|<b>round</b>]"_s;
       break;
 
     case BlendMode:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                    "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                    "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]"
+                  );
       break;
 
     case Point:
@@ -125,7 +131,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case LineStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+      mHelpText = trString() + u"[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]"_s;
       break;
 
     case StrokeWidth:
@@ -135,31 +141,37 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case FillStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                    "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                    "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]"
+                  );
       break;
 
     case CapStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+      mHelpText = trString() + u"[<b>square</b>|<b>flat</b>|<b>round</b>]"_s;
       break;
 
     case HorizontalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+      mHelpText = trString() + u"[<b>left</b>|<b>center</b>|<b>right</b>]"_s;
       break;
 
     case VerticalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+      mHelpText = trString() + u"[<b>top</b>|<b>center</b>|<b>bottom</b>]"_s;
       break;
 
     case SvgPath:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
-                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                  "project-relative|URL" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>filepath</b>] as<br>"
+                    "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                    "project-relative|URL"
+                  );
       break;
 
     case Offset:
@@ -188,8 +200,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType data
 
 bool QgsPropertyDefinition::supportsAssistant() const
 {
-  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha
-         || mStandardType == Rotation;
+  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha || mStandardType == Rotation;
 }
 
 QString QgsPropertyDefinition::trString()
@@ -259,7 +270,7 @@ QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
   : d( other.d )
 {}
 
-QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
+QgsProperty &QgsProperty::operator=( const QgsProperty &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -457,7 +468,6 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
 
     case Qgis::PropertyType::Invalid:
       return true;
-
   }
 
   return false;
@@ -501,16 +511,14 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
       return d->expressionReferencedCols;
     }
-
   }
   return QSet<QString>();
 }
 
 bool QgsProperty::isProjectColor() const
 {
-  const thread_local QRegularExpression rx( QStringLiteral( "^project_color(_object|)\\('.*'\\)$" ) );
-  return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty()
-         && rx.match( d->expressionString ).hasMatch();
+  const thread_local QRegularExpression rx( u"^project_color(_object|)\\('.*'\\)$"_s );
+  return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty() && rx.match( d->expressionString ).hasMatch();
 }
 
 QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
@@ -575,7 +583,6 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
 
     case Qgis::PropertyType::Invalid:
       return defaultValue;
-
   }
 
   return QVariant();
@@ -766,22 +773,22 @@ QVariant QgsProperty::toVariant() const
 {
   QVariantMap propertyMap;
 
-  propertyMap.insert( QStringLiteral( "active" ), d->active );
-  propertyMap.insert( QStringLiteral( "type" ), static_cast< int >( d->type ) );
+  propertyMap.insert( u"active"_s, d->active );
+  propertyMap.insert( u"type"_s, static_cast< int >( d->type ) );
 
   switch ( d->type )
   {
     case Qgis::PropertyType::Static:
-      // propertyMap.insert( QStringLiteral( "valType" ), d->staticValue.typeName() );
-      propertyMap.insert( QStringLiteral( "val" ), d->staticValue.toString() );
+      // propertyMap.insert( u"valType"_s, d->staticValue.typeName() );
+      propertyMap.insert( u"val"_s, d->staticValue.toString() );
       break;
 
     case Qgis::PropertyType::Field:
-      propertyMap.insert( QStringLiteral( "field" ), d->fieldName );
+      propertyMap.insert( u"field"_s, d->fieldName );
       break;
 
     case Qgis::PropertyType::Expression:
-      propertyMap.insert( QStringLiteral( "expression" ), d->expressionString );
+      propertyMap.insert( u"expression"_s, d->expressionString );
       break;
 
     case Qgis::PropertyType::Invalid:
@@ -791,10 +798,10 @@ QVariant QgsProperty::toVariant() const
   if ( d->transformer )
   {
     QVariantMap transformer;
-    transformer.insert( QStringLiteral( "t" ), d->transformer->transformerType() );
-    transformer.insert( QStringLiteral( "d" ), d->transformer->toVariant() );
+    transformer.insert( u"t"_s, d->transformer->transformerType() );
+    transformer.insert( u"d"_s, d->transformer->toVariant() );
 
-    propertyMap.insert( QStringLiteral( "transformer" ), transformer );
+    propertyMap.insert( u"transformer"_s, transformer );
   }
 
   return propertyMap;
@@ -805,24 +812,24 @@ bool QgsProperty::loadVariant( const QVariant &property )
   const QVariantMap propertyMap = property.toMap();
 
   d.detach();
-  d->active = propertyMap.value( QStringLiteral( "active" ) ).toBool();
-  d->type = static_cast< Qgis::PropertyType >( propertyMap.value( QStringLiteral( "type" ), static_cast< int >( Qgis::PropertyType::Invalid ) ).toInt() );
+  d->active = propertyMap.value( u"active"_s ).toBool();
+  d->type = static_cast< Qgis::PropertyType >( propertyMap.value( u"type"_s, static_cast< int >( Qgis::PropertyType::Invalid ) ).toInt() );
 
   switch ( d->type )
   {
     case Qgis::PropertyType::Static:
-      d->staticValue = propertyMap.value( QStringLiteral( "val" ) );
+      d->staticValue = propertyMap.value( u"val"_s );
       // d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
       break;
 
     case Qgis::PropertyType::Field:
-      d->fieldName = propertyMap.value( QStringLiteral( "field" ) ).toString();
+      d->fieldName = propertyMap.value( u"field"_s ).toString();
       if ( d->fieldName.isEmpty() )
         d->active = false;
       break;
 
     case Qgis::PropertyType::Expression:
-      d->expressionString = propertyMap.value( QStringLiteral( "expression" ) ).toString();
+      d->expressionString = propertyMap.value( u"expression"_s ).toString();
       if ( d->expressionString.isEmpty() )
         d->active = false;
 
@@ -834,7 +841,6 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
     case Qgis::PropertyType::Invalid:
       break;
-
   }
 
   //restore transformer if present
@@ -842,18 +848,18 @@ bool QgsProperty::loadVariant( const QVariant &property )
   d->transformer = nullptr;
 
 
-  const QVariant transform = propertyMap.value( QStringLiteral( "transformer" ) );
+  const QVariant transform = propertyMap.value( u"transformer"_s );
 
   if ( transform.isValid() )
   {
     const QVariantMap transformerMap = transform.toMap();
 
-    const QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerMap.value( QStringLiteral( "t" ), QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
+    const QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerMap.value( u"t"_s, QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
     std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
 
     if ( transformer )
     {
-      if ( transformer->loadVariant( transformerMap.value( QStringLiteral( "d" ) ) ) )
+      if ( transformer->loadVariant( transformerMap.value( u"d"_s ) ) )
         d->transformer = transformer.release();
     }
   }

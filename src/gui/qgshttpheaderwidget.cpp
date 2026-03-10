@@ -23,14 +23,18 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
 #include "moc_qgshttpheaderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
-  btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
-  btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+  btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( u"/symbologyAdd.svg"_s ) );
+  btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( u"/symbologyRemove.svg"_s ) );
   grpbxAdvanced->setCollapsed( true );
 
   // Action and interaction connections
@@ -45,8 +49,7 @@ void QgsHttpHeaderWidget::addQueryPairRow( const QString &key, const QString &va
   const int rowCnt = tblwdgQueryPairs->rowCount();
   tblwdgQueryPairs->insertRow( rowCnt );
 
-  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                  | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItem = new QTableWidgetItem( key );
   keyItem->setFlags( itemFlags );

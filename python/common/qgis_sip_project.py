@@ -13,10 +13,11 @@
 # *                                                                         *
 # ***************************************************************************
 
-from pathlib import Path
 import shutil
+from pathlib import Path
+
 from pyqtbuild import PyQtBindings, PyQtProject
-from sipbuild import Option, Bindings
+from sipbuild import Bindings, Option
 
 
 class QgisProject(PyQtProject):

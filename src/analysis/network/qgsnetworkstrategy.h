@@ -48,7 +48,7 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
       sipType = sipType_QgsNetworkSpeedStrategy;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:

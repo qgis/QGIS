@@ -3,7 +3,7 @@
                          -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,6 +22,10 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsTriangle::QgsTriangle()
 {
@@ -42,7 +46,7 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
   QVector< double > m;
   if ( p1.isMeasure() )
   {
-    m = {p1.m(), p2.m(), p3.m(), p1.m() };
+    m = { p1.m(), p2.m(), p3.m(), p1.m() };
   }
   setExteriorRing( new QgsLineString( x, y, z, m ) );
 }
@@ -52,7 +56,7 @@ QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsP
   mWkbType = Qgis::WkbType::Triangle;
 
   const QVector< double > x { p1.x(), p2.x(), p3.x(), p1.x() };
-  const QVector< double > y {p1.y(), p2.y(), p3.y(), p1.y() };
+  const QVector< double > y { p1.y(), p2.y(), p3.y(), p1.y() };
   QgsLineString *ext = new QgsLineString( x, y );
   setExteriorRing( ext );
 }
@@ -61,8 +65,8 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
 {
   mWkbType = Qgis::WkbType::Triangle;
 
-  const QVector< double > x{ p1.x(), p2.x(), p3.x(), p1.x() };
-  const QVector< double > y{ p1.y(), p2.y(), p3.y(), p1.y() };
+  const QVector< double > x { p1.x(), p2.x(), p3.x(), p1.x() };
+  const QVector< double > y { p1.y(), p2.y(), p3.y(), p1.y() };
   QgsLineString *ext = new QgsLineString( x, y );
   setExteriorRing( ext );
 }
@@ -82,9 +86,7 @@ bool QgsTriangle::operator==( const QgsAbstractGeometry &other ) const
     return false;
   }
 
-  return ( ( vertexAt( 0 ) == otherTriangle->vertexAt( 0 ) ) &&
-           ( vertexAt( 1 ) == otherTriangle->vertexAt( 1 ) ) &&
-           ( vertexAt( 2 ) == otherTriangle->vertexAt( 2 ) ) );
+  return ( ( vertexAt( 0 ) == otherTriangle->vertexAt( 0 ) ) && ( vertexAt( 1 ) == otherTriangle->vertexAt( 1 ) ) && ( vertexAt( 2 ) == otherTriangle->vertexAt( 2 ) ) );
 }
 
 bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
@@ -94,7 +96,7 @@ bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
 
 QString QgsTriangle::geometryType() const
 {
-  return QStringLiteral( "Triangle" );
+  return u"Triangle"_s;
 }
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
@@ -174,11 +176,10 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
-  const QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  const QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -220,17 +221,16 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
 QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
-
-  QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+  QDomElement elemTriangle = doc.createElementNS( ns, u"Triangle"_s );
 
   if ( isEmpty() )
     return elemTriangle;
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  QDomElement elemExterior = doc.createElementNS( ns, u"exterior"_s );
   QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
-  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  if ( curveElem.tagName() == "LineString"_L1 )
   {
-    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
+    curveElem.setTagName( u"LinearRing"_s );
   }
   elemExterior.appendChild( curveElem );
   elemTriangle.appendChild( elemExterior );
@@ -512,13 +512,13 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
   bool intersection = false;
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, intersection, lengthTolerance );
-  bis1.setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
+  bis1.setPoints( QgsPointSequence() << vertexAt( 0 ) << out );
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 1 ), incenter, vertexAt( 0 ), vertexAt( 2 ), out, intersection, lengthTolerance );
-  bis2.setPoints( QgsPointSequence() <<  vertexAt( 1 ) << out );
+  bis2.setPoints( QgsPointSequence() << vertexAt( 1 ) << out );
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 2 ), incenter, vertexAt( 0 ), vertexAt( 1 ), out, intersection, lengthTolerance );
-  bis3.setPoints( QgsPointSequence() <<  vertexAt( 2 ) << out );
+  bis3.setPoints( QgsPointSequence() << vertexAt( 2 ) << out );
 
   bis.append( bis1 );
   bis.append( bis2 );
@@ -581,12 +581,8 @@ QgsPoint QgsTriangle::inscribedCenter() const
     return QgsPoint();
 
   const QVector<double> l = lengths();
-  const double x = ( l.at( 0 ) * vertexAt( 2 ).x() +
-                     l.at( 1 ) * vertexAt( 0 ).x() +
-                     l.at( 2 ) * vertexAt( 1 ).x() ) / perimeter();
-  const double y = ( l.at( 0 ) * vertexAt( 2 ).y() +
-                     l.at( 1 ) * vertexAt( 0 ).y() +
-                     l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
+  const double x = ( l.at( 0 ) * vertexAt( 2 ).x() + l.at( 1 ) * vertexAt( 0 ).x() + l.at( 2 ) * vertexAt( 1 ).x() ) / perimeter();
+  const double y = ( l.at( 0 ) * vertexAt( 2 ).y() + l.at( 1 ) * vertexAt( 0 ).y() + l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
   QgsPoint center( x, y );
 

@@ -20,9 +20,12 @@
 #include "qgsstyle.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgssmartgroupeditordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // -------------------------- //
 // Condition Widget functions //
@@ -163,7 +166,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
 void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map )
 {
   QStringList constraints;
-  constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
+  constraints << u"tag"_s << u"name"_s << u"!tag"_s << u"!name"_s;
 
   // clear any defaults
   qDeleteAll( mConditionMap );

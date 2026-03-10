@@ -33,10 +33,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 #include <QTreeView>
 
 #include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -126,7 +129,10 @@ void QgsSingleBandPseudoColorRendererWidget::doComputations()
   mMinMaxWidget->doComputations();
 }
 
-QgsRasterMinMaxWidget *QgsSingleBandPseudoColorRendererWidget::minMaxWidget() { return mMinMaxWidget; }
+QgsRasterMinMaxWidget *QgsSingleBandPseudoColorRendererWidget::minMaxWidget()
+{
+  return mMinMaxWidget;
+}
 
 void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
@@ -178,7 +184,7 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
+  QgsDebugMsgLevel( u"theBandNo = %1 min = %2 max = %3"_s.arg( bandNo ).arg( min ).arg( max ), 2 );
 
   const QString oldMinTextvalue = mMinLineEdit->text();
   const QString oldMaxTextvalue = mMaxLineEdit->text();

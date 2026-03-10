@@ -17,11 +17,15 @@
 
 #include "qgsalgorithmmergelines.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsMergeLinesAlgorithm::name() const
 {
-  return QStringLiteral( "mergelines" );
+  return u"mergelines"_s;
 }
 
 QString QgsMergeLinesAlgorithm::displayName() const
@@ -41,7 +45,7 @@ QString QgsMergeLinesAlgorithm::group() const
 
 QString QgsMergeLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMergeLinesAlgorithm::outputName() const
@@ -61,9 +65,11 @@ Qgis::WkbType QgsMergeLinesAlgorithm::outputWkbType( Qgis::WkbType ) const
 
 QString QgsMergeLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.\n\n"
-                      "If any parts of the input MultiLineString geometries are not connected, the resultant "
-                      "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
+  return QObject::tr(
+    "This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.\n\n"
+    "If any parts of the input MultiLineString geometries are not connected, the resultant "
+    "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts."
+  );
 }
 
 QString QgsMergeLinesAlgorithm::shortDescription() const

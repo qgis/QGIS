@@ -24,6 +24,9 @@
 
 #include <QDateTime>
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -35,7 +38,6 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-
     /**
      *  Time units used to display time
      *  \since QGIS 3.12
@@ -70,9 +72,8 @@ class CORE_EXPORT QgsMeshTimeSettings
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 
   private:
-
-    QString mRelativeTimeFormat = QStringLiteral( "d hh:mm:ss" );
-    QString mAbsoluteTimeFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+    QString mRelativeTimeFormat = u"d hh:mm:ss"_s;
+    QString mAbsoluteTimeFormat = u"yyyy-MM-dd HH:mm:ss"_s;
 };
 
 Q_DECLARE_METATYPE( QgsMeshTimeSettings );

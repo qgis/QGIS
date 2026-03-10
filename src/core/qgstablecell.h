@@ -22,7 +22,10 @@
 #include "qgstextformat.h"
 
 #include <QColor>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsNumericFormat;
 class QgsReadWriteContext;
@@ -36,9 +39,7 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsTableCell
 {
-
   public:
-
     /**
      * Constructor for QgsTableCell, with the specified \a content.
      */
@@ -214,14 +215,18 @@ class CORE_EXPORT QgsTableCell
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
+    QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
     QVariant mContent;
     QColor mBackgroundColor;
@@ -234,7 +239,6 @@ class CORE_EXPORT QgsTableCell
 
     int mRowSpan = 1;
     int mColumnSpan = 1;
-
 };
 
 /**

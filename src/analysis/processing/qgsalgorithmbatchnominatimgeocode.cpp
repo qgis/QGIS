@@ -23,16 +23,19 @@
 #include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsBatchNominatimGeocodeAlgorithm::QgsBatchNominatimGeocodeAlgorithm()
   : QgsBatchGeocodeAlgorithm( &mNominatimGeocoder )
-{
-}
+{}
 
 QString QgsBatchNominatimGeocodeAlgorithm::name() const
 {
-  return QStringLiteral( "batchnominatimgeocoder" );
+  return u"batchnominatimgeocoder"_s;
 }
 
 QString QgsBatchNominatimGeocodeAlgorithm::displayName() const
@@ -47,7 +50,7 @@ QStringList QgsBatchNominatimGeocodeAlgorithm::tags() const
 
 QgsCoordinateReferenceSystem QgsBatchNominatimGeocodeAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
 {
-  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   return mOutputCrs;
 }
 
@@ -58,8 +61,10 @@ QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInst
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"#\">Nominatim</a> service against an input layer string field.\n\n"
-                      "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
+  return QObject::tr(
+    "This algorithm performs batch geocoding using the <a href=\"https://nominatim.qgis.org/\">Nominatim</a> service against an input layer string field.\n\n"
+    "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location."
+  );
 }
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
@@ -69,8 +74,12 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  feedback->pushInfo( QObject::tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "
-                                   "It is provided under the ODbL license which requires to share alike. Visit https://nominatim.org/ to learn more." ) );
+  feedback->pushInfo(
+    QObject::tr(
+      "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "
+      "It is provided under the ODbL license which requires to share alike. Visit https://nominatim.org/ to learn more."
+    )
+  );
   return QgsBatchGeocodeAlgorithm::prepareAlgorithm( parameters, context, feedback );
 }
 

@@ -23,8 +23,11 @@
 #include <QCompleter>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsfeaturelistcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -316,7 +319,7 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
         filtersAttrs << QgsExpression::createFieldEqualityExpression( identifierFields.at( i ), values.at( i ) );
       }
     }
-    const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
+    const QString expression = filtersAttrs.join( " AND "_L1 );
     return request.setFilterExpression( expression );
   }
   return request;

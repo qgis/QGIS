@@ -9,26 +9,25 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 
+from qgis.core import (
+    Qgis,
+    QgsColorRampLegendNodeSettings,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsFeatureRenderer,
+    QgsGradientColorRamp,
+    QgsHeatmapRenderer,
+    QgsMapSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsVectorLayer,
+)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    Qgis,
-    QgsHeatmapRenderer,
-    QgsGradientColorRamp,
-    QgsReadWriteContext,
-    QgsColorRampLegendNodeSettings,
-    QgsProperty,
-    QgsFeatureRenderer,
-    QgsVectorLayer,
-    QgsMapSettings,
-    QgsExpressionContext,
-    QgsExpressionContextScope,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -37,7 +36,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsHeatmapRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "heatmap_renderer"

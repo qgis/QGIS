@@ -21,21 +21,24 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthcertificatemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
   const QgsSettings settings;
-  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "AuthCertEditorsSelectedTab" ), 0, QgsSettings::Section::Auth ).toInt() );
+  tabWidget->setCurrentIndex( settings.value( u"AuthCertEditorsSelectedTab"_s, 0, QgsSettings::Section::Auth ).toInt() );
 }
 
 QgsAuthCertEditors::~QgsAuthCertEditors()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "AuthCertEditorsSelectedTab" ), tabWidget->currentIndex(), QgsSettings::Section::Auth );
+  settings.setValue( u"AuthCertEditorsSelectedTab"_s, tabWidget->currentIndex(), QgsSettings::Section::Auth );
 }
 
 

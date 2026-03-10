@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -35,11 +38,11 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
   : QgsOgrProviderConnection( name )
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
-  settings.beginGroup( QStringLiteral( "GPKG" ) );
-  settings.beginGroup( QStringLiteral( "connections" ) );
+  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
+  settings.beginGroup( u"GPKG"_s );
+  settings.beginGroup( u"connections"_s );
   settings.beginGroup( name );
-  setUri( settings.value( QStringLiteral( "path" ) ).toString() );
+  setUri( settings.value( u"path"_s ).toString() );
   setDefaultCapabilities();
 }
 
@@ -52,19 +55,19 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
 void QgsGeoPackageProviderConnection::store( const QString &name ) const
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
-  settings.beginGroup( QStringLiteral( "GPKG" ) );
-  settings.beginGroup( QStringLiteral( "connections" ) );
+  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
+  settings.beginGroup( u"GPKG"_s );
+  settings.beginGroup( u"connections"_s );
   settings.beginGroup( name );
-  settings.setValue( QStringLiteral( "path" ), uri() );
+  settings.setValue( u"path"_s, uri() );
 }
 
 void QgsGeoPackageProviderConnection::remove( const QString &name ) const
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
-  settings.beginGroup( QStringLiteral( "GPKG" ) );
-  settings.beginGroup( QStringLiteral( "connections" ) );
+  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
+  settings.beginGroup( u"GPKG"_s );
+  settings.beginGroup( u"connections"_s );
   settings.remove( name );
 }
 
@@ -79,8 +82,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnec
       return t;
     }
   }
-  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                        .arg( name, schema ) );
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( name, schema ) );
 }
 
 QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -88,7 +90,7 @@ QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const 
   const auto tableInfo { table( schema, name ) };
   if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
   {
-    return QStringLiteral( "GPKG:%1:%2" ).arg( uri(), name );
+    return u"GPKG:%1:%2"_s.arg( uri(), name );
   }
   else
   {
@@ -99,38 +101,34 @@ QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const 
 void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropRasterTable );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
-  executeGdalSqlPrivate( QStringLiteral( "DROP TABLE %1" ).arg( name ) );
+  executeGdalSqlPrivate( u"DROP TABLE %1"_s.arg( name ) );
 }
 
 void QgsGeoPackageProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
-  QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
-               .arg( QgsSqliteUtils::quotedIdentifier( name ),
-                     QgsSqliteUtils::quotedIdentifier( newName ) ) );
+  QString sql( u"ALTER TABLE %1 RENAME TO %2"_s.arg( QgsSqliteUtils::quotedIdentifier( name ), QgsSqliteUtils::quotedIdentifier( newName ) ) );
   executeGdalSqlPrivate( sql );
   // This is also done by GDAL (at least by current version)
-  sql = QStringLiteral( "UPDATE layer_styles SET f_table_name = %2 WHERE f_table_name = %1" )
-        .arg( QgsSqliteUtils::quotedString( name ),
-              QgsSqliteUtils::quotedString( newName ) );
+  sql = u"UPDATE layer_styles SET f_table_name = %2 WHERE f_table_name = %1"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( newName ) );
   try
   {
     executeGdalSqlPrivate( sql );
   }
   catch ( QgsProviderConnectionException &ex )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Warning: error while updating the styles, perhaps there are no styles stored in this GPKG: %1" ).arg( ex.what() ), 4 );
+    QgsDebugMsgLevel( u"Warning: error while updating the styles, perhaps there are no styles stored in this GPKG: %1"_s.arg( ex.what() ), 4 );
   }
 }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,10,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 10, 0 )
 void QgsGeoPackageProviderConnection::renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameRasterTable );
@@ -148,19 +146,19 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
 {
   Q_UNUSED( name );
   checkCapability( Capability::Vacuum );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
-  executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
+  executeGdalSqlPrivate( u"VACUUM"_s );
 }
 
 void QgsGeoPackageProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
 {
   checkCapability( Capability::CreateSpatialIndex );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QString geometryColumnName { options.geometryColumnName };
@@ -183,44 +181,40 @@ void QgsGeoPackageProviderConnection::createSpatialIndex( const QString &schema,
     throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
   }
 
-  executeGdalSqlPrivate( QStringLiteral( "SELECT CreateSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                         QgsSqliteUtils::quotedString( ( geometryColumnName ) ) ) );
+  executeGdalSqlPrivate( u"SELECT CreateSpatialIndex(%1, %2)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( ( geometryColumnName ) ) ) );
 }
 
 bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
 {
   checkCapability( Capability::CreateSpatialIndex );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
-  const QList<QList<QVariant> > res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                      QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
+  const QList<QList<QVariant> > res = executeGdalSqlPrivate( u"SELECT HasSpatialIndex(%1, %2)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
 void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
 {
   checkCapability( Capability::DeleteSpatialIndex );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
-  executeGdalSqlPrivate( QStringLiteral( "SELECT DisableSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                         QgsSqliteUtils::quotedString( geometryColumn ) ) );
+  executeGdalSqlPrivate( u"SELECT DisableSpatialIndex(%1, %2)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( geometryColumn ) ) );
 }
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
-
   // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
-  static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
+  static const QStringList excludedTableNames { { u"'ogr_empty_table'"_s } };
 
   checkCapability( Capability::Tables );
 
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Schema is not supported by GPKG, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;
@@ -229,9 +223,12 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   try
   {
-    const QString sql = QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) );
+    const QString sql = QStringLiteral(
+                          "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
+                          "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                          "WHERE c.table_name NOT IN (%1)"
+    )
+                          .arg( excludedTableNames.join( ',' ) );
     results = executeSql( sql );
 
     for ( const auto &row : std::as_const( results ) )
@@ -249,15 +246,15 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       property.setTableName( tableName );
       property.setPrimaryKeyColumns( { primaryKeyColumnName( tableName ) } );
       property.setGeometryColumnCount( 0 );
-      static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
+      static const QStringList aspatialTypes = { u"attributes"_s, u"aspatial"_s };
       const QString dataType = row.at( 1 ).toString();
 
       // Table type
-      if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
+      if ( dataType == "tiles"_L1 || dataType == "2d-gridded-coverage"_L1 )
       {
         property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Raster );
       }
-      else if ( dataType == QLatin1String( "features" ) )
+      else if ( dataType == "features"_L1 )
       {
         property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Vector );
         property.setGeometryColumn( row.at( 5 ).toString() );
@@ -280,47 +277,42 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
         }
 
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( srid );
-        property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
+        property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ), crs );
       }
 
       property.setComment( row.at( 2 ).toString() );
       tableInfo.push_back( property );
     }
-
   }
   catch ( QgsProviderConnectionException &ex )
   {
     errCause = ex.what();
   }
 
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( uri(), errCause ) );
   }
   // Filters
   if ( flags )
   {
-    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [ & ]( const QgsAbstractDatabaseProviderConnection::TableProperty & ti )
-    {
-      return !( ti.flags() & flags );
-    } ), tableInfo.end() );
+    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [&]( const QgsAbstractDatabaseProviderConnection::TableProperty &ti ) { return !( ti.flags() & flags ); } ), tableInfo.end() );
   }
-  return tableInfo ;
+  return tableInfo;
 }
 
 QIcon QgsGeoPackageProviderConnection::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mGeoPackage.svg" ) );
+  return QgsApplication::getThemeIcon( u"mGeoPackage.svg"_s );
 }
 
 void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 {
-  mCapabilities =
-  {
+  mCapabilities = {
     Capability::Tables,
     Capability::CreateVectorTable,
     Capability::DropVectorTable,
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,10,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 10, 0 )
     Capability::RenameRasterTable,
 #endif
     Capability::RenameVectorTable,
@@ -339,34 +331,26 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
 
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
   mCapabilities |= Capability::RetrieveFieldDomain;
   mCapabilities |= Capability::AddFieldDomain;
   mCapabilities |= Capability::SetFieldDomain;
 #endif
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
   mCapabilities |= Capability::ListFieldDomains;
 #endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   mCapabilities |= Capability::RetrieveRelationships;
 #endif
 
-  mGeometryColumnCapabilities =
-  {
-    GeometryColumnCapability::Z,
-    GeometryColumnCapability::M,
-    GeometryColumnCapability::SingleLineString,
-    GeometryColumnCapability::SinglePoint,
-    GeometryColumnCapability::SinglePolygon,
-    GeometryColumnCapability::Curves
-  };
-  mSqlLayerDefinitionCapabilities =
-  {
+  mGeometryColumnCapabilities
+    = { GeometryColumnCapability::Z, GeometryColumnCapability::M, GeometryColumnCapability::SingleLineString, GeometryColumnCapability::SinglePoint, GeometryColumnCapability::SinglePolygon, GeometryColumnCapability::Curves, GeometryColumnCapability::PolyhedralSurfaces };
+  mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   mCapabilities |= Capability::AddRelationship;
   mCapabilities |= Capability::UpdateRelationship;
   mCapabilities |= Capability::DeleteRelationship;
@@ -382,23 +366,19 @@ QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &ta
   {
     char *errMsg;
 
-    const QString sql { QStringLiteral( "PRAGMA table_info(%1)" )
-                        .arg( QgsSqliteUtils::quotedString( table ) )};
+    const QString sql { u"PRAGMA table_info(%1)"_s.arg( QgsSqliteUtils::quotedString( table ) ) };
 
     std::vector<std::string> rows;
-    auto cb = [ ](
-                void *data /* Data provided in the 4th argument of sqlite3_exec() */,
-                int /* The number of columns in row */,
-                char **argv /* An array of strings representing fields in the row */,
-                char ** /* An array of strings representing column names */ ) -> int
-    {
+    auto cb =
+      []( void *data /* Data provided in the 4th argument of sqlite3_exec() */, int /* The number of columns in row */, char **argv /* An array of strings representing fields in the row */, char ** /* An array of strings representing column names */ )
+      -> int {
       if ( std::string( argv[5] ).compare( "1" ) == 0 )
-        static_cast<std::vector<std::string>*>( data )->push_back( argv[1] );
+        static_cast<std::vector<std::string> *>( data )->push_back( argv[1] );
       return 0;
     };
 
     // Columns 'cid', 'name', 'type', 'notnull', 'dflt_value', 'pk']
-    const int ret = sqlite3_exec( sqliteHandle.get(), sql.toUtf8(), cb, ( void * )&rows, &errMsg );
+    const int ret = sqlite3_exec( sqliteHandle.get(), sql.toUtf8(), cb, ( void * ) &rows, &errMsg );
 
     if ( errMsg )
     {
@@ -414,16 +394,17 @@ QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &ta
   return pkName;
 }
 
-QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLayerMetadata(
+  const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback
+) const
 {
-
   QList<QgsLayerMetadataProviderResult> results;
-  if ( ! feedback || ! feedback->isCanceled() )
+  if ( !feedback || !feedback->isCanceled() )
   {
     try
     {
       // first check if metadata tables/extension exists
-      if ( executeSql( QStringLiteral( "SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'" ), nullptr ).isEmpty() )
+      if ( executeSql( u"SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'"_s, nullptr ).isEmpty() )
       {
         return results;
       }
@@ -446,7 +427,6 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
       const QList<QVariantList> constMetadataResults { executeSql( searchQuery, feedback ) };
       for ( const QVariantList &mdRow : std::as_const( constMetadataResults ) )
       {
-
         if ( feedback && feedback->isCanceled() )
         {
           break;
@@ -458,7 +438,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
         QgsLayerMetadata layerMetadata;
         if ( layerMetadata.readMetadataXml( doc.documentElement() ) )
         {
-          QgsLayerMetadataProviderResult result{ layerMetadata };
+          QgsLayerMetadataProviderResult result { layerMetadata };
 
           QgsRectangle extents;
           bool extentsValid = false;
@@ -466,7 +446,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           const auto cExtents { layerMetadata.extent().spatialExtents() };
           for ( const auto &ext : std::as_const( cExtents ) )
           {
-            QgsRectangle bbox {  ext.bounds.toRectangle()  };
+            QgsRectangle bbox { ext.bounds.toRectangle() };
             QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), searchContext.transformContext };
             try
             {
@@ -474,7 +454,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             }
             catch ( const QgsCsException & )
             {
-              QgsDebugError( QStringLiteral( "Layer metadata extent failed to reproject to EPSG:4326" ) );
+              QgsDebugError( u"Layer metadata extent failed to reproject to EPSG:4326"_s );
               continue;
             }
             extentsValid = true;
@@ -488,12 +468,12 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           }
 
           // Filters
-          if ( ! geographicExtent.isEmpty() && ( poly.isEmpty() || ! geographicExtent.intersects( extents ) ) )
+          if ( !geographicExtent.isEmpty() && ( poly.isEmpty() || !geographicExtent.intersects( extents ) ) )
           {
             continue;
           }
 
-          if ( ! searchString.trimmed().isEmpty() && ! result.contains( searchString ) )
+          if ( !searchString.trimmed().isEmpty() && !result.contains( searchString ) )
           {
             continue;
           }
@@ -502,20 +482,20 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           {
             result.setGeographicExtent( poly );
           }
-          result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
-          result.setDataProviderName( QStringLiteral( "ogr" ) );
+          result.setStandardUri( u"http://mrcc.com/qgis.dtd"_s );
+          result.setDataProviderName( u"ogr"_s );
           result.setAuthid( layerMetadata.crs().authid() );
           result.setUri( tableUri( QString(), mdRow[0].toString() ) );
           const QString geomType { mdRow[2].toString().toUpper() };
-          if ( geomType.contains( QStringLiteral( "POINT" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          if ( geomType.contains( u"POINT"_s, Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( Qgis::GeometryType::Point );
           }
-          else if ( geomType.contains( QStringLiteral( "POLYGON" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          else if ( geomType.contains( u"POLYGON"_s, Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( Qgis::GeometryType::Polygon );
           }
-          else if ( geomType.contains( QStringLiteral( "LINESTRING" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          else if ( geomType.contains( u"LINESTRING"_s, Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( Qgis::GeometryType::Line );
           }
@@ -529,13 +509,13 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
         }
         else
         {
-          throw QgsProviderConnectionException( QStringLiteral( "Error reading XML metdadata from connection %1" ).arg( uri() ) );
+          throw QgsProviderConnectionException( u"Error reading XML metdadata from connection %1"_s.arg( uri() ) );
         }
       }
     }
     catch ( const QgsProviderConnectionException &ex )
     {
-      throw QgsProviderConnectionException( QStringLiteral( "Error fetching metdadata from connection %1: %2" ).arg( uri(), ex.what() ) );
+      throw QgsProviderConnectionException( u"Error fetching metdadata from connection %1: %2"_s.arg( uri(), ex.what() ) );
     }
   }
   return results;
@@ -555,14 +535,14 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
 
   const QString pkname { primaryKeyColumnName( table ) };
 
-  if ( ! pkname.isEmpty() )
+  if ( !pkname.isEmpty() )
   {
-    fieldList.append( QgsField{ pkname, QMetaType::Type::LongLong } );
+    fieldList.append( QgsField { pkname, QMetaType::Type::LongLong } );
   }
 
   QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;
-  QgsVectorLayer vl { tableUri( schema, table ), QStringLiteral( "temp_layer" ), mProviderKey, options };
+  QgsVectorLayer vl { tableUri( schema, table ), u"temp_layer"_s, mProviderKey, options };
   if ( vl.isValid() )
   {
     const auto parentFields { vl.fields() };
@@ -571,22 +551,24 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
       fieldList.append( pField );
     }
     // Append name of the geometry column, the data provider does not expose this information so we need an extra query:/
-    const QString sql = QStringLiteral( "SELECT g.column_name "
-                                        "FROM gpkg_contents c CROSS JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                        "WHERE c.table_name = %1" ).arg( QgsSqliteUtils::quotedString( table ) );
+    const QString sql = QStringLiteral(
+                          "SELECT g.column_name "
+                          "FROM gpkg_contents c CROSS JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                          "WHERE c.table_name = %1"
+    )
+                          .arg( QgsSqliteUtils::quotedString( table ) );
     try
     {
       const auto results = executeSql( sql );
-      if ( ! results.isEmpty() )
+      if ( !results.isEmpty() )
       {
-        fieldList.append( QgsField{ results.first().first().toString(), QMetaType::Type::QString, QStringLiteral( "geometry" ) } );
+        fieldList.append( QgsField { results.first().first().toString(), QMetaType::Type::QString, u"geometry"_s } );
       }
     }
     catch ( QgsProviderConnectionException &ex )
     {
       throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri %1: %2" ).arg( vl.publicSource(), ex.what() ) );
     }
-
   }
   else
   {
@@ -618,453 +600,443 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
    */
 
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
-  {
-    {
-      Qgis::SqlKeywordCategory::Math, {
-        // SQL math functions
-        QStringLiteral( "Abs( x [Double precision] )" ),
-        QStringLiteral( "Acos( x [Double precision] )" ),
-        QStringLiteral( "Asin( x [Double precision] )" ),
-        QStringLiteral( "Atan( x [Double precision] )" ),
-        QStringLiteral( "Ceil( x [Double precision] )" ),
-        QStringLiteral( "Cos( x [Double precision] )" ),
-        QStringLiteral( "Cot( x [Double precision] )" ),
-        QStringLiteral( "Degrees( x [Double precision] )" ),
-        QStringLiteral( "Exp( x [Double precision] )" ),
-        QStringLiteral( "Floor( x [Double precision] )" ),
-        QStringLiteral( "Ln( x [Double precision] )" ),
-        QStringLiteral( "Log( b [Double precision] , x [Double precision] )" ),
-        QStringLiteral( "Log2( x [Double precision] )" ),
-        QStringLiteral( "Log10( x [Double precision] )" ),
-        QStringLiteral( "PI( void )" ),
-        QStringLiteral( "Pow( x [Double precision] , y [Double precision] )" ),
-        QStringLiteral( "Radians( x [Double precision] )" ),
-        QStringLiteral( "Sign( x [Double precision] )" ),
-        QStringLiteral( "Sin( x [Double precision] )" ),
-        QStringLiteral( "Sqrt( x [Double precision] )" ),
-        QStringLiteral( "Stddev_pop( x [Double precision] )" ),
-        QStringLiteral( "Stddev_samp( x [Double precision] )" ),
-        QStringLiteral( "Tan( x [Double precision] )" ),
-        QStringLiteral( "Var_pop( x [Double precision] )" ),
-        QStringLiteral( "Var_samp( x [Double precision] )" )
-      }
-    },
-    {
-      Qgis::SqlKeywordCategory::Function, {
+    { { Qgis::SqlKeywordCategory::Math,
+        { // SQL math functions
+          u"Abs( x [Double precision] )"_s,
+          u"Acos( x [Double precision] )"_s,
+          u"Asin( x [Double precision] )"_s,
+          u"Atan( x [Double precision] )"_s,
+          u"Ceil( x [Double precision] )"_s,
+          u"Cos( x [Double precision] )"_s,
+          u"Cot( x [Double precision] )"_s,
+          u"Degrees( x [Double precision] )"_s,
+          u"Exp( x [Double precision] )"_s,
+          u"Floor( x [Double precision] )"_s,
+          u"Ln( x [Double precision] )"_s,
+          u"Log( b [Double precision] , x [Double precision] )"_s,
+          u"Log2( x [Double precision] )"_s,
+          u"Log10( x [Double precision] )"_s,
+          u"PI( void )"_s,
+          u"Pow( x [Double precision] , y [Double precision] )"_s,
+          u"Radians( x [Double precision] )"_s,
+          u"Sign( x [Double precision] )"_s,
+          u"Sin( x [Double precision] )"_s,
+          u"Sqrt( x [Double precision] )"_s,
+          u"Stddev_pop( x [Double precision] )"_s,
+          u"Stddev_samp( x [Double precision] )"_s,
+          u"Tan( x [Double precision] )"_s,
+          u"Var_pop( x [Double precision] )"_s,
+          u"Var_samp( x [Double precision] )"_s
+        } },
+      { Qgis::SqlKeywordCategory::Function,
+        {
 
-        // Specific
-        QStringLiteral( "last_insert_rowid" ),
+          // Specific
+          u"last_insert_rowid"_s,
 
-        // SQL Version Info [and build options testing] functions
-        QStringLiteral( "spatialite_version( void )" ),
-        QStringLiteral( "spatialite_target_cpu( void )" ),
-        QStringLiteral( "proj4_version( void )" ),
-        QStringLiteral( "geos_version( void )" ),
-        QStringLiteral( "lwgeom_version( void )" ),
-        QStringLiteral( "libxml2_version( void )" ),
-        QStringLiteral( "HasIconv( void )" ),
-        QStringLiteral( "HasMathSQL( void )" ),
-        QStringLiteral( "HasGeoCallbacks( void )" ),
-        QStringLiteral( "HasProj( void )" ),
-        QStringLiteral( "HasGeos( void )" ),
-        QStringLiteral( "HasGeosAdvanced( void )" ),
-        QStringLiteral( "HasGeosTrunk( void )" ),
-        QStringLiteral( "HasLwGeom( void )" ),
-        QStringLiteral( "HasLibXML2( void )" ),
-        QStringLiteral( "HasEpsg( void )" ),
-        QStringLiteral( "HasFreeXL( void )" ),
-        QStringLiteral( "HasGeoPackage( void )" ),
+          // SQL Version Info [and build options testing] functions
+          u"spatialite_version( void )"_s,
+          u"spatialite_target_cpu( void )"_s,
+          u"proj4_version( void )"_s,
+          u"geos_version( void )"_s,
+          u"lwgeom_version( void )"_s,
+          u"libxml2_version( void )"_s,
+          u"HasIconv( void )"_s,
+          u"HasMathSQL( void )"_s,
+          u"HasGeoCallbacks( void )"_s,
+          u"HasProj( void )"_s,
+          u"HasGeos( void )"_s,
+          u"HasGeosAdvanced( void )"_s,
+          u"HasGeosTrunk( void )"_s,
+          u"HasLwGeom( void )"_s,
+          u"HasLibXML2( void )"_s,
+          u"HasEpsg( void )"_s,
+          u"HasFreeXL( void )"_s,
+          u"HasGeoPackage( void )"_s,
 
-        // Generic SQL functions
-        QStringLiteral( "CastToInteger( value [Generic] )" ),
-        QStringLiteral( "CastToDouble( value [Generic] )" ),
-        QStringLiteral( "CastToText( value [Generic] )" ),
-        QStringLiteral( "CastToBlob( value [Generic] )" ),
-        QStringLiteral( "ForceAsNull( val1 [Generic] , val2 [Generic])" ),
-        QStringLiteral( "CreateUUID( void )" ),
-        QStringLiteral( "MD5Checksum( BLOB | TEXT )" ),
-        QStringLiteral( "MD5TotalChecksum( BLOB | TEXT )" ),
+          // Generic SQL functions
+          u"CastToInteger( value [Generic] )"_s,
+          u"CastToDouble( value [Generic] )"_s,
+          u"CastToText( value [Generic] )"_s,
+          u"CastToBlob( value [Generic] )"_s,
+          u"ForceAsNull( val1 [Generic] , val2 [Generic])"_s,
+          u"CreateUUID( void )"_s,
+          u"MD5Checksum( BLOB | TEXT )"_s,
+          u"MD5TotalChecksum( BLOB | TEXT )"_s,
 
-        // SQL utility functions for BLOB objects
-        QStringLiteral( "IsZipBlob( content [BLOB] )" ),
-        QStringLiteral( "IsPdfBlob( content [BLOB] )" ),
-        QStringLiteral( "IsGifBlob( image [BLOB] )" ),
-        QStringLiteral( "IsPngBlob( image [BLOB] )" ),
-        QStringLiteral( "IsTiffBlob( image [BLOB] )" ),
-        QStringLiteral( "IsJpegBlob( image [BLOB] )" ),
-        QStringLiteral( "IsExifBlob( image [BLOB] )" ),
-        QStringLiteral( "IsExifGpsBlob( image [BLOB] )" ),
-        QStringLiteral( "IsWebpBlob( image [BLOB] )" ),
-        QStringLiteral( "GetMimeType( payload [BLOB] )" ),
-        QStringLiteral( "BlobFromFile( filepath [String] )" ),
-        QStringLiteral( "BlobToFile( payload [BLOB] , filepath [String] )" ),
-        QStringLiteral( "CountUnsafeTriggers( )" ),
+          // SQL utility functions for BLOB objects
+          u"IsZipBlob( content [BLOB] )"_s,
+          u"IsPdfBlob( content [BLOB] )"_s,
+          u"IsGifBlob( image [BLOB] )"_s,
+          u"IsPngBlob( image [BLOB] )"_s,
+          u"IsTiffBlob( image [BLOB] )"_s,
+          u"IsJpegBlob( image [BLOB] )"_s,
+          u"IsExifBlob( image [BLOB] )"_s,
+          u"IsExifGpsBlob( image [BLOB] )"_s,
+          u"IsWebpBlob( image [BLOB] )"_s,
+          u"GetMimeType( payload [BLOB] )"_s,
+          u"BlobFromFile( filepath [String] )"_s,
+          u"BlobToFile( payload [BLOB] , filepath [String] )"_s,
+          u"CountUnsafeTriggers( )"_s,
 
-        // SQL functions supporting XmlBLOB
-        QStringLiteral( "XB_Create(  xmlPayload [BLOB] )" ),
-        QStringLiteral( "XB_GetPayload( xmlObject [XmlBLOB] [ , indent [Integer] ] )" ),
-        QStringLiteral( "XB_GetDocument( xmlObject [XmlBLOB] [ , indent [Integer] ] )" ),
-        QStringLiteral( "XB_SchemaValidate(  xmlObject [XmlBLOB] , schemaURI [Text] [ , compressed [Boolean] ] )" ),
-        QStringLiteral( "XB_Compress( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_Uncompress( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsValid( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsCompressed( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsSchemaValidated( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsIsoMetadata( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsSldSeVectorStyle( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsSldSeRasterStyle( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_IsSvg( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetDocumentSize( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetEncoding( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetSchemaURI( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetInternalSchemaURI( xmlPayload [BLOB] )" ),
-        QStringLiteral( "XB_GetFileId( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_SetFileId( xmlObject [XmlBLOB] , fileId [String] )" ),
-        QStringLiteral( "XB_AddFileId( xmlObject [XmlBLOB] , fileId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )" ),
-        QStringLiteral( "XB_GetParentId( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_SetParentId( xmlObject [XmlBLOB] , parentId [String] )" ),
-        QStringLiteral( "XB_AddParentId( xmlObject [XmlBLOB] , parentId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )" ),
-        QStringLiteral( "XB_GetTitle( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetAbstract( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetGeometry( xmlObject [XmlBLOB] )" ),
-        QStringLiteral( "XB_GetLastParseError( [void] )" ),
-        QStringLiteral( "XB_GetLastValidateError( [void] )" ),
-        QStringLiteral( "XB_IsValidXPathExpression( expr [Text] )" ),
-        QStringLiteral( "XB_GetLastXPathError( [void] )" ),
-        QStringLiteral( "XB_CacheFlush( [void] )" ),
-        QStringLiteral( "XB_LoadXML( filepath-or-URL [String] )" ),
-        QStringLiteral( "XB_StoreXML( XmlObject [XmlBLOB] , filepath [String] )" ),
+          // SQL functions supporting XmlBLOB
+          u"XB_Create(  xmlPayload [BLOB] )"_s,
+          u"XB_GetPayload( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
+          u"XB_GetDocument( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
+          u"XB_SchemaValidate(  xmlObject [XmlBLOB] , schemaURI [Text] [ , compressed [Boolean] ] )"_s,
+          u"XB_Compress( xmlObject [XmlBLOB] )"_s,
+          u"XB_Uncompress( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsValid( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsCompressed( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSchemaValidated( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsIsoMetadata( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSldSeVectorStyle( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSldSeRasterStyle( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSvg( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetDocumentSize( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetEncoding( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetSchemaURI( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetInternalSchemaURI( xmlPayload [BLOB] )"_s,
+          u"XB_GetFileId( xmlObject [XmlBLOB] )"_s,
+          u"XB_SetFileId( xmlObject [XmlBLOB] , fileId [String] )"_s,
+          u"XB_AddFileId( xmlObject [XmlBLOB] , fileId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
+          u"XB_GetParentId( xmlObject [XmlBLOB] )"_s,
+          u"XB_SetParentId( xmlObject [XmlBLOB] , parentId [String] )"_s,
+          u"XB_AddParentId( xmlObject [XmlBLOB] , parentId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
+          u"XB_GetTitle( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetAbstract( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetGeometry( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetLastParseError( [void] )"_s,
+          u"XB_GetLastValidateError( [void] )"_s,
+          u"XB_IsValidXPathExpression( expr [Text] )"_s,
+          u"XB_GetLastXPathError( [void] )"_s,
+          u"XB_CacheFlush( [void] )"_s,
+          u"XB_LoadXML( filepath-or-URL [String] )"_s,
+          u"XB_StoreXML( XmlObject [XmlBLOB] , filepath [String] )"_s,
 
-      }
-    },
-    {
-      Qgis::SqlKeywordCategory::Geospatial, {
-        // SQL functions reporting GEOS / LWGEOM errors and warnings
-        QStringLiteral( "GEOS_GetLastWarningMsg( [void] )" ),
-        QStringLiteral( "GEOS_GetLastErrorMsg( [void] )" ),
-        QStringLiteral( "GEOS_GetLastAuxErrorMsg( [void] )" ),
-        QStringLiteral( "GEOS_GetCriticalPointFromMsg( [void] )" ),
-        QStringLiteral( "LWGEOM_GetLastWarningMsg( [void] )" ),
-        QStringLiteral( "LWGEOM_GetLastErrorMsg( [void] )" ),
+        } },
+      { Qgis::SqlKeywordCategory::Geospatial,
+        {
+          // SQL functions reporting GEOS / LWGEOM errors and warnings
+          u"GEOS_GetLastWarningMsg( [void] )"_s,
+          u"GEOS_GetLastErrorMsg( [void] )"_s,
+          u"GEOS_GetLastAuxErrorMsg( [void] )"_s,
+          u"GEOS_GetCriticalPointFromMsg( [void] )"_s,
+          u"LWGEOM_GetLastWarningMsg( [void] )"_s,
+          u"LWGEOM_GetLastErrorMsg( [void] )"_s,
 
-        // SQL length/distance unit-conversion functions
-        QStringLiteral( "CvtToKm( x [Double precision] )" ),
-        QStringLiteral( "CvtToDm( x [Double precision] )" ),
-        QStringLiteral( "CvtToCm( x [Double precision] )" ),
-        QStringLiteral( "CvtToMm( x [Double precision] )" ),
-        QStringLiteral( "CvtToKmi( x [Double precision] )" ),
-        QStringLiteral( "CvtToIn( x [Double precision] )" ),
-        QStringLiteral( "CvtToFt( x [Double precision] )" ),
-        QStringLiteral( "CvtToYd( x [Double precision] )" ),
-        QStringLiteral( "CvtToMi( x [Double precision] )" ),
-        QStringLiteral( "CvtToFath( x [Double precision] )" ),
-        QStringLiteral( "CvtToCh( x [Double precision] )" ),
-        QStringLiteral( "CvtToLink( x [Double precision] )" ),
-        QStringLiteral( "CvtToUsIn( x [Double precision] )" ),
-        QStringLiteral( "CvtToUsFt( x [Double precision] )" ),
-        QStringLiteral( "CvtToUsYd( x [Double precision] )" ),
-        QStringLiteral( "CvtToUsMi( x [Double precision] )" ),
-        QStringLiteral( "CvtToUsCh( x [Double precision] )" ),
-        QStringLiteral( "CvtToIndFt( x [Double precision] )" ),
-        QStringLiteral( "CvtToIndYd( x [Double precision] )" ),
-        QStringLiteral( "CvtToIndCh( x [Double precision] )" ),
+          // SQL length/distance unit-conversion functions
+          u"CvtToKm( x [Double precision] )"_s,
+          u"CvtToDm( x [Double precision] )"_s,
+          u"CvtToCm( x [Double precision] )"_s,
+          u"CvtToMm( x [Double precision] )"_s,
+          u"CvtToKmi( x [Double precision] )"_s,
+          u"CvtToIn( x [Double precision] )"_s,
+          u"CvtToFt( x [Double precision] )"_s,
+          u"CvtToYd( x [Double precision] )"_s,
+          u"CvtToMi( x [Double precision] )"_s,
+          u"CvtToFath( x [Double precision] )"_s,
+          u"CvtToCh( x [Double precision] )"_s,
+          u"CvtToLink( x [Double precision] )"_s,
+          u"CvtToUsIn( x [Double precision] )"_s,
+          u"CvtToUsFt( x [Double precision] )"_s,
+          u"CvtToUsYd( x [Double precision] )"_s,
+          u"CvtToUsMi( x [Double precision] )"_s,
+          u"CvtToUsCh( x [Double precision] )"_s,
+          u"CvtToIndFt( x [Double precision] )"_s,
+          u"CvtToIndYd( x [Double precision] )"_s,
+          u"CvtToIndCh( x [Double precision] )"_s,
 
-        // SQL conversion functions from DD/DMS notations (longitude/latitude)
-        QStringLiteral( "LongLatToDMS( longitude [Double precision] , latitude [Double precision] )" ),
-        QStringLiteral( "LongitudeFromDMS( dms_expression [Sting] )" ),
+          // SQL conversion functions from DD/DMS notations (longitude/latitude)
+          u"LongLatToDMS( longitude [Double precision] , latitude [Double precision] )"_s,
+          u"LongitudeFromDMS( dms_expression [Sting] )"_s,
 
-        // SQL utility functions [
-        QStringLiteral( "GeomFromExifGpsBlob( image [BLOB] )" ),
-        QStringLiteral( "ST_Point( x [Double precision] , y [Double precision]  )" ),
-        QStringLiteral( "MakeLine( pt1 [PointGeometry] , pt2 [PointGeometry] )" ),
-        QStringLiteral( "MakeLine( geom [PointGeometry] )" ),
-        QStringLiteral( "MakeLine( geom [MultiPointGeometry] , direction [Boolean] )" ),
-        QStringLiteral( "SquareGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )" ),
-        QStringLiteral( "TriangularGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )" ),
-        QStringLiteral( "HexagonalGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )" ),
-        QStringLiteral( "Extent( geom [Geometry] )" ),
-        QStringLiteral( "ToGARS( geom [Geometry] )" ),
-        QStringLiteral( "GARSMbr( code [String] )" ),
-        QStringLiteral( "MbrMinX( geom [Geometry])" ),
-        QStringLiteral( "MbrMinY( geom [Geometry])" ),
-        QStringLiteral( "MbrMaxX( geom [Geometry])" ),
-        QStringLiteral( "MbrMaxY( geom [Geometry])" ),
-        QStringLiteral( "ST_MinZ( geom [Geometry])" ),
-        QStringLiteral( "ST_MaxZ( geom [Geometry])" ),
-        QStringLiteral( "ST_MinM( geom [Geometry])" ),
-        QStringLiteral( "ST_MaxM( geom [Geometry])" ),
+          // SQL utility functions [
+          u"GeomFromExifGpsBlob( image [BLOB] )"_s,
+          u"ST_Point( x [Double precision] , y [Double precision]  )"_s,
+          u"MakeLine( pt1 [PointGeometry] , pt2 [PointGeometry] )"_s,
+          u"MakeLine( geom [PointGeometry] )"_s,
+          u"MakeLine( geom [MultiPointGeometry] , direction [Boolean] )"_s,
+          u"SquareGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"TriangularGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"HexagonalGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"Extent( geom [Geometry] )"_s,
+          u"ToGARS( geom [Geometry] )"_s,
+          u"GARSMbr( code [String] )"_s,
+          u"MbrMinX( geom [Geometry])"_s,
+          u"MbrMinY( geom [Geometry])"_s,
+          u"MbrMaxX( geom [Geometry])"_s,
+          u"MbrMaxY( geom [Geometry])"_s,
+          u"ST_MinZ( geom [Geometry])"_s,
+          u"ST_MaxZ( geom [Geometry])"_s,
+          u"ST_MinM( geom [Geometry])"_s,
+          u"ST_MaxM( geom [Geometry])"_s,
 
-        // SQL functions for constructing a geometric object given its Well-known Text Representation
-        QStringLiteral( "GeomFromText( wkt [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "ST_WKTToSQL( wkt [String] )" ),
-        QStringLiteral( "PointFromText( wktPoint [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "LineFromText( wktLineString [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "PolyFromText( wktPolygon [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MPointFromText( wktMultiPoint [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MLineFromText( wktMultiLineString [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MPolyFromText( wktMultiPolygon [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "GeomCollFromText( wktGeometryCollection [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "BdPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )" ),
-        QStringLiteral( "BdMPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )" ),
+          // SQL functions for constructing a geometric object given its Well-known Text Representation
+          u"GeomFromText( wkt [String] [ , SRID [Integer]] )"_s,
+          u"ST_WKTToSQL( wkt [String] )"_s,
+          u"PointFromText( wktPoint [String] [ , SRID [Integer]] )"_s,
+          u"LineFromText( wktLineString [String] [ , SRID [Integer]] )"_s,
+          u"PolyFromText( wktPolygon [String] [ , SRID [Integer]] )"_s,
+          u"MPointFromText( wktMultiPoint [String] [ , SRID [Integer]] )"_s,
+          u"MLineFromText( wktMultiLineString [String] [ , SRID [Integer]] )"_s,
+          u"MPolyFromText( wktMultiPolygon [String] [ , SRID [Integer]] )"_s,
+          u"GeomCollFromText( wktGeometryCollection [String] [ , SRID [Integer]] )"_s,
+          u"BdPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
+          u"BdMPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
 
-        // SQL functions for constructing a geometric object given its Well-known Binary Representation
-        QStringLiteral( "GeomFromWKB( wkbGeometry [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "ST_WKBToSQL( wkbGeometry [Binary] )" ),
-        QStringLiteral( "PointFromWKB( wkbPoint [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "LineFromWKB( wkbLineString [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "PolyFromWKB( wkbPolygon [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MPointFromWKB( wkbMultiPoint [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MLineFromWKB( wkbMultiLineString [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "MPolyFromWKB( wkbMultiPolygon [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "GeomCollFromWKB( wkbGeometryCollection [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "BdPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )" ),
-        QStringLiteral( "BdMPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )" ),
+          // SQL functions for constructing a geometric object given its Well-known Binary Representation
+          u"GeomFromWKB( wkbGeometry [Binary] [ , SRID [Integer]] )"_s,
+          u"ST_WKBToSQL( wkbGeometry [Binary] )"_s,
+          u"PointFromWKB( wkbPoint [Binary] [ , SRID [Integer]] )"_s,
+          u"LineFromWKB( wkbLineString [Binary] [ , SRID [Integer]] )"_s,
+          u"PolyFromWKB( wkbPolygon [Binary] [ , SRID [Integer]] )"_s,
+          u"MPointFromWKB( wkbMultiPoint [Binary] [ , SRID [Integer]] )"_s,
+          u"MLineFromWKB( wkbMultiLineString [Binary] [ , SRID [Integer]] )"_s,
+          u"MPolyFromWKB( wkbMultiPolygon [Binary] [ , SRID [Integer]] )"_s,
+          u"GeomCollFromWKB( wkbGeometryCollection [Binary] [ , SRID [Integer]] )"_s,
+          u"BdPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
+          u"BdMPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
 
-        // SQL functions for obtaining the Well-known Text / Well-known Binary Representation of a geometric object
-        QStringLiteral( "AsText( geom [Geometry] )" ),
-        QStringLiteral( "AsWKT( geom [Geometry] [ , precision [Integer] ] )" ),
-        QStringLiteral( "AsBinary( geom [Geometry] )" ),
+          // SQL functions for obtaining the Well-known Text / Well-known Binary Representation of a geometric object
+          u"AsText( geom [Geometry] )"_s,
+          u"AsWKT( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"AsBinary( geom [Geometry] )"_s,
 
-        // SQL functions supporting exotic geometric formats
-        QStringLiteral( "AsSVG( geom [Geometry] [ , relative [Integer] [ , precision [Integer] ] ] )" ),
-        QStringLiteral( "AsKml( geom [Geometry] [ , precision [Integer] ] )" ),
-        QStringLiteral( "GeomFromKml( KmlGeometry [String] )" ),
-        QStringLiteral( "AsGml( geom [Geometry] [ , precision [Integer] ] )" ),
-        QStringLiteral( "GeomFromGML( gmlGeometry [String] )" ),
-        QStringLiteral( "AsGeoJSON( geom [Geometry] [ , precision [Integer] [ , options [Integer] ] ] )" ),
-        QStringLiteral( "GeomFromGeoJSON( geoJSONGeometry [String] )" ),
-        QStringLiteral( "AsEWKB( geom [Geometry] )" ),
-        QStringLiteral( "GeomFromEWKB( ewkbGeometry [String] )" ),
-        QStringLiteral( "AsEWKT( geom [Geometry] )" ),
-        QStringLiteral( "GeomFromEWKT( ewktGeometry [String] )" ),
-        QStringLiteral( "AsFGF( geom [Geometry] )" ),
-        QStringLiteral( "GeomFromFGF( fgfGeometry [Binary] [ , SRID [Integer]] )" ),
+          // SQL functions supporting exotic geometric formats
+          u"AsSVG( geom [Geometry] [ , relative [Integer] [ , precision [Integer] ] ] )"_s,
+          u"AsKml( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"GeomFromKml( KmlGeometry [String] )"_s,
+          u"AsGml( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"GeomFromGML( gmlGeometry [String] )"_s,
+          u"AsGeoJSON( geom [Geometry] [ , precision [Integer] [ , options [Integer] ] ] )"_s,
+          u"GeomFromGeoJSON( geoJSONGeometry [String] )"_s,
+          u"AsEWKB( geom [Geometry] )"_s,
+          u"GeomFromEWKB( ewkbGeometry [String] )"_s,
+          u"AsEWKT( geom [Geometry] )"_s,
+          u"GeomFromEWKT( ewktGeometry [String] )"_s,
+          u"AsFGF( geom [Geometry] )"_s,
+          u"GeomFromFGF( fgfGeometry [Binary] [ , SRID [Integer]] )"_s,
 
-        // SQL functions on type Geometry
-        QStringLiteral( "Dimension( geom [Geometry] )" ),
-        QStringLiteral( "CoordDimension( geom [Geometry] )" ),
-        QStringLiteral( "ST_NDims( geom [Geometry] )" ),
-        QStringLiteral( "ST_Is3D( geom [Geometry] )" ),
-        QStringLiteral( "ST_IsMeasured( geom [Geometry] )" ),
-        QStringLiteral( "GeometryType( geom [Geometry] )" ),
-        QStringLiteral( "SRID( geom [Geometry] )" ),
-        QStringLiteral( "SetSRID( geom [Geometry] , SRID [Integer] )" ),
-        QStringLiteral( "IsEmpty( geom [Geometry] )" ),
-        QStringLiteral( "IsSimple( geom [Geometry] )" ),
-        QStringLiteral( "IsValid( geom [Geometry] )" ),
-        QStringLiteral( "IsValidReason( geom [Geometry] )" ),
-        QStringLiteral( "IsValidDetail( geom [Geometry] )" ),
-        QStringLiteral( "Boundary( geom [Geometry] )" ),
-        QStringLiteral( "Envelope( geom [Geometry] )" ),
-        QStringLiteral( "ST_Expand( geom [Geometry] , amount [Double precision] )" ),
-        QStringLiteral( "ST_NPoints( geom [Geometry] )" ),
-        QStringLiteral( "ST_NRings( geom [Geometry] )" ),
-        QStringLiteral( "ST_Reverse( geom [Geometry] )" ),
-        QStringLiteral( "ST_ForceLHR( geom [Geometry] )" ),
+          // SQL functions on type Geometry
+          u"Dimension( geom [Geometry] )"_s,
+          u"CoordDimension( geom [Geometry] )"_s,
+          u"ST_NDims( geom [Geometry] )"_s,
+          u"ST_Is3D( geom [Geometry] )"_s,
+          u"ST_IsMeasured( geom [Geometry] )"_s,
+          u"GeometryType( geom [Geometry] )"_s,
+          u"SRID( geom [Geometry] )"_s,
+          u"SetSRID( geom [Geometry] , SRID [Integer] )"_s,
+          u"IsEmpty( geom [Geometry] )"_s,
+          u"IsSimple( geom [Geometry] )"_s,
+          u"IsValid( geom [Geometry] )"_s,
+          u"IsValidReason( geom [Geometry] )"_s,
+          u"IsValidDetail( geom [Geometry] )"_s,
+          u"Boundary( geom [Geometry] )"_s,
+          u"Envelope( geom [Geometry] )"_s,
+          u"ST_Expand( geom [Geometry] , amount [Double precision] )"_s,
+          u"ST_NPoints( geom [Geometry] )"_s,
+          u"ST_NRings( geom [Geometry] )"_s,
+          u"ST_Reverse( geom [Geometry] )"_s,
+          u"ST_ForceLHR( geom [Geometry] )"_s,
 
-        // SQL functions attempting to repair malformed Geometries
-        QStringLiteral( "SanitizeGeometry( geom [Geometry] )" ),
+          // SQL functions attempting to repair malformed Geometries
+          u"SanitizeGeometry( geom [Geometry] )"_s,
 
-        // SQL Geometry-compression functions
-        QStringLiteral( "CompressGeometry( geom [Geometry] )" ),
-        QStringLiteral( "UncompressGeometry( geom [Geometry] )" ),
+          // SQL Geometry-compression functions
+          u"CompressGeometry( geom [Geometry] )"_s,
+          u"UncompressGeometry( geom [Geometry] )"_s,
 
-        // SQL Geometry-type casting functions
-        QStringLiteral( "CastToPoint( geom [Geometry] )" ),
-        QStringLiteral( "CastToLinestring( geom [Geometry] )" ),
-        QStringLiteral( "CastToPolygon( geom [Geometry] )" ),
-        QStringLiteral( "CastToMultiPoint( geom [Geometry] )" ),
-        QStringLiteral( "CastToMultiLinestring( geom [Geometry] )" ),
-        QStringLiteral( "CastToMultiPolygon( geom [Geometry] )" ),
-        QStringLiteral( "CastToGeometryCollection( geom [Geometry] )" ),
-        QStringLiteral( "CastToMulti( geom [Geometry] )" ),
-        QStringLiteral( "CastToSingle( geom [Geometry] )" ),
+          // SQL Geometry-type casting functions
+          u"CastToPoint( geom [Geometry] )"_s,
+          u"CastToLinestring( geom [Geometry] )"_s,
+          u"CastToPolygon( geom [Geometry] )"_s,
+          u"CastToMultiPoint( geom [Geometry] )"_s,
+          u"CastToMultiLinestring( geom [Geometry] )"_s,
+          u"CastToMultiPolygon( geom [Geometry] )"_s,
+          u"CastToGeometryCollection( geom [Geometry] )"_s,
+          u"CastToMulti( geom [Geometry] )"_s,
+          u"CastToSingle( geom [Geometry] )"_s,
 
-        // SQL Space-dimensions casting functions
-        QStringLiteral( "CastToXY( geom [Geometry] )" ),
-        QStringLiteral( "CastToXYZ( geom [Geometry] )" ),
-        QStringLiteral( "CastToXYM( geom [Geometry] )" ),
-        QStringLiteral( "CastToXYZM( geom [Geometry] )" ),
+          // SQL Space-dimensions casting functions
+          u"CastToXY( geom [Geometry] )"_s,
+          u"CastToXYZ( geom [Geometry] )"_s,
+          u"CastToXYM( geom [Geometry] )"_s,
+          u"CastToXYZM( geom [Geometry] )"_s,
 
-        // SQL functions on type Point
-        QStringLiteral( "X( pt [Point] )" ),
-        QStringLiteral( "Y( pt [Point] )" ),
-        QStringLiteral( "Z( pt [Point] )" ),
-        QStringLiteral( "M( pt [Point] )" ),
+          // SQL functions on type Point
+          u"X( pt [Point] )"_s,
+          u"Y( pt [Point] )"_s,
+          u"Z( pt [Point] )"_s,
+          u"M( pt [Point] )"_s,
 
-        // SQL functions on type Curve [Linestring or Ring]
-        QStringLiteral( "StartPoint( c [Curve] )" ),
-        QStringLiteral( "EndPoint( c [Curve] )" ),
-        QStringLiteral( "GLength( c [Curve] )" ),
-        QStringLiteral( "Perimeter( s [Surface] )" ),
-        QStringLiteral( "GeodesicLength( c [Curve] )" ),
-        QStringLiteral( "GreatCircleLength( c [Curve] )" ),
-        QStringLiteral( "IsClosed( c [Curve] )" ),
-        QStringLiteral( "IsRing( c [Curve] )" ),
-        QStringLiteral( "PointOnSurface( s [Surface/Curve] )" ),
-        QStringLiteral( "Simplify( c [Curve] , tolerance [Double precision] )" ),
-        QStringLiteral( "SimplifyPreserveTopology( c [Curve] , tolerance [Double precision] )" ),
+          // SQL functions on type Curve [Linestring or Ring]
+          u"StartPoint( c [Curve] )"_s,
+          u"EndPoint( c [Curve] )"_s,
+          u"GLength( c [Curve] )"_s,
+          u"Perimeter( s [Surface] )"_s,
+          u"GeodesicLength( c [Curve] )"_s,
+          u"GreatCircleLength( c [Curve] )"_s,
+          u"IsClosed( c [Curve] )"_s,
+          u"IsRing( c [Curve] )"_s,
+          u"PointOnSurface( s [Surface/Curve] )"_s,
+          u"Simplify( c [Curve] , tolerance [Double precision] )"_s,
+          u"SimplifyPreserveTopology( c [Curve] , tolerance [Double precision] )"_s,
 
-        // SQL functions on type LineString
-        QStringLiteral( "NumPoints( line [LineString] )" ),
-        QStringLiteral( "PointN( line [LineString] , n [Integer] )" ),
-        QStringLiteral( "AddPoint( line [LineString] , point [Point] [ , position [Integer] ] )" ),
-        QStringLiteral( "SetPoint( line [LineString] , position [Integer] , point [Point] )" ),
-        QStringLiteral( "RemovePoint( line [LineString] , position [Integer] )" ),
+          // SQL functions on type LineString
+          u"NumPoints( line [LineString] )"_s,
+          u"PointN( line [LineString] , n [Integer] )"_s,
+          u"AddPoint( line [LineString] , point [Point] [ , position [Integer] ] )"_s,
+          u"SetPoint( line [LineString] , position [Integer] , point [Point] )"_s,
+          u"RemovePoint( line [LineString] , position [Integer] )"_s,
 
-        // SQL functions on type Surface [Polygon or Ring]
-        QStringLiteral( "Centroid( s [Surface] )" ),
-        QStringLiteral( "Area( s [Surface] )" ),
+          // SQL functions on type Surface [Polygon or Ring]
+          u"Centroid( s [Surface] )"_s,
+          u"Area( s [Surface] )"_s,
 
-        // SQL functions on type Polygon
-        QStringLiteral( "ExteriorRing( polyg [Polygon] )" ),
-        QStringLiteral( "NumInteriorRing( polyg [Polygon] )" ),
-        QStringLiteral( "InteriorRingN( polyg [Polygon] , n [Integer] )" ),
+          // SQL functions on type Polygon
+          u"ExteriorRing( polyg [Polygon] )"_s,
+          u"NumInteriorRing( polyg [Polygon] )"_s,
+          u"InteriorRingN( polyg [Polygon] , n [Integer] )"_s,
 
-        // SQL functions on type GeomCollection
-        QStringLiteral( "NumGeometries( geom [GeomCollection] )" ),
-        QStringLiteral( "GeometryN( geom [GeomCollection] , n [Integer] )" ),
+          // SQL functions on type GeomCollection
+          u"NumGeometries( geom [GeomCollection] )"_s,
+          u"GeometryN( geom [GeomCollection] , n [Integer] )"_s,
 
-        // SQL functions that test approximate spatial relationships via MBRs
-        QStringLiteral( "MbrEqual( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrDisjoint( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrTouches( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrWithin( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrOverlaps( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrIntersects( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "ST_EnvIntersects( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "MbrContains( geom1 [Geometry] , geom2 [Geometry] )" ),
+          // SQL functions that test approximate spatial relationships via MBRs
+          u"MbrEqual( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrDisjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrTouches( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrWithin( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrOverlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_EnvIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrContains( geom1 [Geometry] , geom2 [Geometry] )"_s,
 
-        // SQL functions that test spatial relationships
-        QStringLiteral( "Equals( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Disjoint( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Touches( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Within( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Overlaps( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Crosses( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Intersects( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Contains( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Covers( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "CoveredBy( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "Relate( geom1 [Geometry] , geom2 [Geometry] , patternMatrix [String] )" ),
+          // SQL functions that test spatial relationships
+          u"Equals( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Disjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Touches( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Within( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Overlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Crosses( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Intersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Contains( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Covers( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"CoveredBy( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Relate( geom1 [Geometry] , geom2 [Geometry] , patternMatrix [String] )"_s,
 
-        // SQL functions for distance relationships
-        QStringLiteral( "Distance( geom1 [Geometry] , geom2 [Geometry] )" ),
+          // SQL functions for distance relationships
+          u"Distance( geom1 [Geometry] , geom2 [Geometry] )"_s,
 
-        // SQL functions that implement spatial operators
-        QStringLiteral( "MakeValid( geom [Geometry] )" ),
-        QStringLiteral( "MakeValidDiscarded( geom [Geometry] )" ),
-        QStringLiteral( "Segmentize( geom [Geometry], dist [Double precision]  )" ),
-        QStringLiteral( "Split( geom [Geometry], blade [Geometry]  )" ),
-        QStringLiteral( "SplitLeft( geom [Geometry], blade [Geometry]  )" ),
-        QStringLiteral( "SplitRight( geom [Geometry], blade [Geometry]  )" ),
-        QStringLiteral( "Azimuth( pt1 [Geometry], pt2 [Geometry]  )" ),
-        QStringLiteral( "Project( start_point [Geometry], distance [Double precision], azimuth [Double precision]  )" ),
-        QStringLiteral( "SnapToGrid( geom [Geometry] , size [Double precision]  )" ),
-        QStringLiteral( "GeoHash( geom [Geometry] )" ),
-        QStringLiteral( "AsX3D( geom [Geometry] )" ),
-        QStringLiteral( "MaxDistance( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "ST_3DDistance( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "ST_3DMaxDistance( geom1 [Geometry] , geom2 [Geometry] )" ),
-        QStringLiteral( "ST_Node( geom [Geometry] )" ),
-        QStringLiteral( "SelfIntersections( geom [Geometry] )" ),
+          // SQL functions that implement spatial operators
+          u"MakeValid( geom [Geometry] )"_s,
+          u"MakeValidDiscarded( geom [Geometry] )"_s,
+          u"Segmentize( geom [Geometry], dist [Double precision]  )"_s,
+          u"Split( geom [Geometry], blade [Geometry]  )"_s,
+          u"SplitLeft( geom [Geometry], blade [Geometry]  )"_s,
+          u"SplitRight( geom [Geometry], blade [Geometry]  )"_s,
+          u"Azimuth( pt1 [Geometry], pt2 [Geometry]  )"_s,
+          u"Project( start_point [Geometry], distance [Double precision], azimuth [Double precision]  )"_s,
+          u"SnapToGrid( geom [Geometry] , size [Double precision]  )"_s,
+          u"GeoHash( geom [Geometry] )"_s,
+          u"AsX3D( geom [Geometry] )"_s,
+          u"MaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_3DDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_3DMaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_Node( geom [Geometry] )"_s,
+          u"SelfIntersections( geom [Geometry] )"_s,
 
-        // SQL functions for coordinate transformations
-        QStringLiteral( "Transform( geom [Geometry] , newSRID [Integer] )" ),
-        QStringLiteral( "SridFromAuthCRS( auth_name [String] , auth_SRID [Integer] )" ),
-        QStringLiteral( "ShiftCoords( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] )" ),
-        QStringLiteral( "ST_Translate( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] , shiftZ [Double precision] )" ),
-        QStringLiteral( "ST_Shift_Longitude( geom [Geometry] )" ),
-        QStringLiteral( "NormalizeLonLat( geom [Geometry] )" ),
-        QStringLiteral( "ScaleCoords( geom [Geometry] , scaleX [Double precision] [ , scaleY [Double precision] ] )" ),
-        QStringLiteral( "RotateCoords( geom [Geometry] , angleInDegrees [Double precision] )" ),
-        QStringLiteral( "ReflectCoords( geom [Geometry] , xAxis [Integer] , yAxis [Integer] )" ),
-        QStringLiteral( "SwapCoords( geom [Geometry] )" ),
+          // SQL functions for coordinate transformations
+          u"Transform( geom [Geometry] , newSRID [Integer] )"_s,
+          u"SridFromAuthCRS( auth_name [String] , auth_SRID [Integer] )"_s,
+          u"ShiftCoords( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] )"_s,
+          u"ST_Translate( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] , shiftZ [Double precision] )"_s,
+          u"ST_Shift_Longitude( geom [Geometry] )"_s,
+          u"NormalizeLonLat( geom [Geometry] )"_s,
+          u"ScaleCoords( geom [Geometry] , scaleX [Double precision] [ , scaleY [Double precision] ] )"_s,
+          u"RotateCoords( geom [Geometry] , angleInDegrees [Double precision] )"_s,
+          u"ReflectCoords( geom [Geometry] , xAxis [Integer] , yAxis [Integer] )"_s,
+          u"SwapCoords( geom [Geometry] )"_s,
 
-        // SQL functions for Spatial-MetaData and Spatial-Index handling
-        QStringLiteral( "InitSpatialMetaData( void )" ),
-        QStringLiteral( "InsertEpsgSrid( srid [Integer] )" ),
-        QStringLiteral( "DiscardGeometryColumn( table [String] , column [String] )" ),
-        QStringLiteral( "RegisterVirtualGeometry( table [String] )" ),
-        QStringLiteral( "DropVirtualGeometry( table [String] )" ),
-        QStringLiteral( "CreateSpatialIndex( table [String] , column [String] )" ),
-        QStringLiteral( "CreateMbrCache( table [String] , column [String] )" ),
-        QStringLiteral( "DisableSpatialIndex( table [String] , column [String] )" ),
-        QStringLiteral( "CheckShadowedRowid( table [String] )" ),
-        QStringLiteral( "CheckWithoutRowid( table [String] )" ),
-        QStringLiteral( "CheckSpatialIndex( void )" ),
-        QStringLiteral( "RecoverSpatialIndex( [ no_check" ),
-        QStringLiteral( "InvalidateLayerStatistics( [ void )" ),
-        QStringLiteral( "UpdateLayerStatistics( [ void )" ),
-        QStringLiteral( "GetLayerExtent( table [String] [ , column [String] [ , mode [Boolean]] ] )" ),
-        QStringLiteral( "CreateTopologyTables( SRID [Integer] , dims" ),
-        QStringLiteral( "CreateRasterCoveragesTable( [void] )" ),
+          // SQL functions for Spatial-MetaData and Spatial-Index handling
+          u"InitSpatialMetaData( void )"_s,
+          u"InsertEpsgSrid( srid [Integer] )"_s,
+          u"DiscardGeometryColumn( table [String] , column [String] )"_s,
+          u"RegisterVirtualGeometry( table [String] )"_s,
+          u"DropVirtualGeometry( table [String] )"_s,
+          u"CreateSpatialIndex( table [String] , column [String] )"_s,
+          u"CreateMbrCache( table [String] , column [String] )"_s,
+          u"DisableSpatialIndex( table [String] , column [String] )"_s,
+          u"CheckShadowedRowid( table [String] )"_s,
+          u"CheckWithoutRowid( table [String] )"_s,
+          u"CheckSpatialIndex( void )"_s,
+          u"RecoverSpatialIndex( [ no_check"_s,
+          u"InvalidateLayerStatistics( [ void )"_s,
+          u"UpdateLayerStatistics( [ void )"_s,
+          u"GetLayerExtent( table [String] [ , column [String] [ , mode [Boolean]] ] )"_s,
+          u"CreateTopologyTables( SRID [Integer] , dims"_s,
+          u"CreateRasterCoveragesTable( [void] )"_s,
 
-        // SQL functions supporting the MetaCatalog and related Statistics
-        QStringLiteral( "CreateMetaCatalogTables( transaction [Integer] )" ),
-        QStringLiteral( "UpdateMetaCatalogStatistics( transaction [Integer] , table_name [String] , column_name [String] )" ),
+          // SQL functions supporting the MetaCatalog and related Statistics
+          u"CreateMetaCatalogTables( transaction [Integer] )"_s,
+          u"UpdateMetaCatalogStatistics( transaction [Integer] , table_name [String] , column_name [String] )"_s,
 
-        // SQL functions supporting SLD/SE Styled Layers
-        QStringLiteral( "CreateStylingTables()" ),
-        QStringLiteral( "RegisterExternalGraphic( xlink_href [String] , resource [BLOB] )" ),
-        QStringLiteral( "RegisterVectorStyledLayer( f_table_name [String] , f_geometry_column [String] , style [BLOB] )" ),
-        QStringLiteral( "RegisterRasterStyledLayer( coverage_name [String] , style [BLOB] )" ),
-        QStringLiteral( "RegisterStyledGroup( group_name [String] , f_table_name [String] , f_geometry_column [String] [ , paint_order [Integer] ] )" ),
-        QStringLiteral( "SetStyledGroupInfos( group_name [String] , title [String] , abstract [String] )" ),
-        QStringLiteral( "RegisterGroupStyle( group_name [String] , style [BLOB] )" ),
+          // SQL functions supporting SLD/SE Styled Layers
+          u"CreateStylingTables()"_s,
+          u"RegisterExternalGraphic( xlink_href [String] , resource [BLOB] )"_s,
+          u"RegisterVectorStyledLayer( f_table_name [String] , f_geometry_column [String] , style [BLOB] )"_s,
+          u"RegisterRasterStyledLayer( coverage_name [String] , style [BLOB] )"_s,
+          u"RegisterStyledGroup( group_name [String] , f_table_name [String] , f_geometry_column [String] [ , paint_order [Integer] ] )"_s,
+          u"SetStyledGroupInfos( group_name [String] , title [String] , abstract [String] )"_s,
+          u"RegisterGroupStyle( group_name [String] , style [BLOB] )"_s,
 
-        // SQL functions supporting ISO Metadata
-        QStringLiteral( "CreateIsoMetadataTables()" ),
-        QStringLiteral( "RegisterIsoMetadata( scope [String] , metadata [BLOB] )" ),
-        QStringLiteral( "GetIsoMetadataId( fileIdentifier [String] )" ),
+          // SQL functions supporting ISO Metadata
+          u"CreateIsoMetadataTables()"_s,
+          u"RegisterIsoMetadata( scope [String] , metadata [BLOB] )"_s,
+          u"GetIsoMetadataId( fileIdentifier [String] )"_s,
 
-        // SQL functions implementing FDO/OGR compatibility
-        QStringLiteral( "CheckSpatialMetaData( void )" ),
-        QStringLiteral( "AutoFDOStart( void )" ),
-        QStringLiteral( "AutoFDOStop( void )" ),
-        QStringLiteral( "InitFDOSpatialMetaData( void )" ),
-        QStringLiteral( "DiscardFDOGeometryColumn( table [String] , column [String] )" ),
+          // SQL functions implementing FDO/OGR compatibility
+          u"CheckSpatialMetaData( void )"_s,
+          u"AutoFDOStart( void )"_s,
+          u"AutoFDOStop( void )"_s,
+          u"InitFDOSpatialMetaData( void )"_s,
+          u"DiscardFDOGeometryColumn( table [String] , column [String] )"_s,
 
-        // SQL functions implementing OGC GeoPackage compatibility
-        QStringLiteral( "CheckGeoPackageMetaData( void )" ),
-        QStringLiteral( "AutoGPKGStart( void )" ),
-        QStringLiteral( "AutoGPKGStop( void )" ),
-        QStringLiteral( "gpkgCreateBaseTables( void )" ),
-        QStringLiteral( "gpkgInsertEpsgSRID( srid [Integer] )" ),
-        QStringLiteral( "gpkgAddTileTriggers( tile_table_name [String] )" ),
-        QStringLiteral( "gpkgGetNormalZoom( tile_table_name [String] , inverted_zoom_level [Integer] )" ),
-        QStringLiteral( "gpkgGetNormalRow( tile_table_name [String] , normal_zoom_level [Integer] , inverted_row_number [Integer] )" ),
-        QStringLiteral( "gpkgGetImageType( image [Blob] )" ),
-        QStringLiteral( "gpkgAddGeometryTriggers( table_name [String] , geometry_column_name [String] )" ),
-        QStringLiteral( "gpkgAddSpatialIndex( table_name [String] , geometry_column_name [String] )" ),
-        QStringLiteral( "gpkgMakePoint (x [Double precision] , y [Double precision] )" ),
-        QStringLiteral( "gpkgMakePointZ (x [Double precision] , y [Double precision] , z [Double precision] )" ),
-        QStringLiteral( "gpkgMakePointM (x [Double precision] , y [Double precision] , m [Double precision] )" ),
-        QStringLiteral( "gpkgMakePointZM (x [Double precision] , y [Double precision] , z [Double precision] , m [Double precision] )" ),
-        QStringLiteral( "IsValidGPB( geom [Blob] )" ),
-        QStringLiteral( "AsGPB( geom [BLOB encoded geometry] )" ),
-        QStringLiteral( "GeomFromGPB( geom [GPKG Blob Geometry] )" ),
-        QStringLiteral( "CastAutomagic( geom [Blob] )" ),
-        QStringLiteral( "GPKG_IsAssignable( expected_type_name [String] , actual_type_name [String] )" ),
+          // SQL functions implementing OGC GeoPackage compatibility
+          u"CheckGeoPackageMetaData( void )"_s,
+          u"AutoGPKGStart( void )"_s,
+          u"AutoGPKGStop( void )"_s,
+          u"gpkgCreateBaseTables( void )"_s,
+          u"gpkgInsertEpsgSRID( srid [Integer] )"_s,
+          u"gpkgAddTileTriggers( tile_table_name [String] )"_s,
+          u"gpkgGetNormalZoom( tile_table_name [String] , inverted_zoom_level [Integer] )"_s,
+          u"gpkgGetNormalRow( tile_table_name [String] , normal_zoom_level [Integer] , inverted_row_number [Integer] )"_s,
+          u"gpkgGetImageType( image [Blob] )"_s,
+          u"gpkgAddGeometryTriggers( table_name [String] , geometry_column_name [String] )"_s,
+          u"gpkgAddSpatialIndex( table_name [String] , geometry_column_name [String] )"_s,
+          u"gpkgMakePoint (x [Double precision] , y [Double precision] )"_s,
+          u"gpkgMakePointZ (x [Double precision] , y [Double precision] , z [Double precision] )"_s,
+          u"gpkgMakePointM (x [Double precision] , y [Double precision] , m [Double precision] )"_s,
+          u"gpkgMakePointZM (x [Double precision] , y [Double precision] , z [Double precision] , m [Double precision] )"_s,
+          u"IsValidGPB( geom [Blob] )"_s,
+          u"AsGPB( geom [BLOB encoded geometry] )"_s,
+          u"GeomFromGPB( geom [GPKG Blob Geometry] )"_s,
+          u"CastAutomagic( geom [Blob] )"_s,
+          u"GPKG_IsAssignable( expected_type_name [String] , actual_type_name [String] )"_s,
 
-      }
-    }
-  } );
+        } } }
+  );
 }
 
 QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const
 {
-  return
-  {
-    Qgis::FieldDomainType::Coded,
-    Qgis::FieldDomainType::Glob,
-    Qgis::FieldDomainType::Range
-  };
+  return { Qgis::FieldDomainType::Coded, Qgis::FieldDomainType::Glob, Qgis::FieldDomainType::Range };
 }
 
 QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const
 {
-  return QStringLiteral( "QgsGeoPackageProviderConnection" );
+  return u"QgsGeoPackageProviderConnection"_s;
 }
 
 

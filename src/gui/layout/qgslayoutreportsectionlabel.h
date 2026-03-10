@@ -18,13 +18,14 @@
 #define QGSLAYOUTREPORTSECTIONLABEL_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 
 #include <QGraphicsRectItem>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

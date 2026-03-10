@@ -24,6 +24,10 @@
 #include "qgsgeometryutils_base.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsgeometry.cpp.
@@ -45,7 +49,7 @@
  *
  * \see QgsPointXY
  */
-class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
+class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
 {
     Q_GADGET
 
@@ -55,7 +59,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     Q_PROPERTY( double m READ m WRITE setM )
 
   public:
-
     /**
      * Construct a point with the provided initial coordinate values.
      *
@@ -83,8 +86,15 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
+    QgsPoint(
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
+      double m = std::numeric_limits<double>::quiet_NaN(),
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown
+    );
 #else
+    // clang-format off
     QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
@@ -126,10 +136,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
     else // Invalid ctor arguments
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Invalid type in constructor arguments."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -147,18 +158,55 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \note Not available in Python bindings
      */
-    explicit QgsPoint( Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+    explicit QgsPoint(
+      Qgis::WkbType wkbType,
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
+      double m = std::numeric_limits<double>::quiet_NaN()
+    ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \param vect vector to copy data from
+     * \param m optional m value. NaN by default.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector4D.
+     *
+     * \param vect vector to copy data from
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QVector4D &vect ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \param vect vector to copy data from
+     * \param m optional m value. NaN by default.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QgsVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
 #ifndef SIP_RUN
   private:
-    bool fuzzyHelper( double epsilon,
-                      const QgsAbstractGeometry &other,
-                      bool is3DFlag,
-                      bool isMeasureFlag,
-                      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
-                      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
-                      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
-                      std::function<bool( double, double, double, double, double )> comparator2D ) const
+    bool fuzzyHelper(
+      double epsilon,
+      const QgsAbstractGeometry &other,
+      bool is3DFlag,
+      bool isMeasureFlag,
+      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
+      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
+      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
+      std::function<bool( double, double, double, double, double )> comparator2D
+    ) const
     {
       const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
       if ( !pt )
@@ -186,7 +234,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif // !SIP_RUN
 
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper(
                epsilon,
@@ -376,6 +426,35 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QPointF toQPointF() const SIP_HOLDGIL
     {
       return QPointF( mX, mY );
+    }
+
+    /**
+     * Returns the point as a QVector3D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
+     */
+    QVector3D toVector3D() const SIP_HOLDGIL
+    {
+      return QVector3D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ) ); //
+    }
+
+    /**
+     * Returns the point as a QVector4D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
+     */
+    QVector4D toVector4D() const SIP_HOLDGIL
+    {
+      return QVector4D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ), static_cast<float>( mM ) );
+    }
+
+    /**
+     * Returns the point as a QgsVector3D.
+     * \since QGIS 4.0
+     */
+    QgsVector3D toQgsVector3D() const SIP_HOLDGIL
+    {
+      return QgsVector3D( mX, mY, mZ );
     }
 
     /**
@@ -652,11 +731,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    QString str = u"<QgsPoint: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

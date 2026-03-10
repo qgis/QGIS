@@ -20,9 +20,13 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
 #include "qgscontrastenhancement.h"
-#include "qgsmaterial.h"
 #include "qgspointcloudclassifiedrenderer.h"
-#include "qgspointcloudlayer.h"
+
+#include <QString>
+
+class QgsMaterial;
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup qgis_3d
@@ -79,7 +83,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Returns the byte stride for the geometries used to for the vertex buffer
     virtual unsigned int byteStride() = 0;
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
-    virtual void fillMaterial( QgsMaterial *material ) = 0 SIP_SKIP;
+    virtual void fillMaterial( QgsMaterial *material ) SIP_SKIP = 0;
 
     /**
      * Returns whether points are triangulated to render solid surface
@@ -445,9 +449,9 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 #endif
 
-    QString mRedAttribute = QStringLiteral( "Red" );
-    QString mGreenAttribute = QStringLiteral( "Green" );
-    QString mBlueAttribute = QStringLiteral( "Blue" );
+    QString mRedAttribute = u"Red"_s;
+    QString mGreenAttribute = u"Green"_s;
+    QString mBlueAttribute = u"Blue"_s;
 
     std::unique_ptr<QgsContrastEnhancement> mRedContrastEnhancement;
     std::unique_ptr<QgsContrastEnhancement> mGreenContrastEnhancement;

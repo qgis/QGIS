@@ -35,9 +35,12 @@
 #include <QClipboard>
 #include <QDrag>
 #include <QMenu>
+#include <QString>
 #include <QToolTip>
 
 #include "moc_qgsfontbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -241,7 +244,7 @@ bool QgsFontButton::event( QEvent *e )
         fontSize = mFont.pointSizeF();
         break;
     }
-    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
+    toolTip = u"<b>%1</b><br>%2<br>Size: %3"_s.arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
     QToolTip::showText( helpEvent->globalPos(), toolTip );
   }
   return QToolButton::event( e );
@@ -505,7 +508,12 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
 
       double ytrans = 0.0;
       if ( tempFormat->buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat->buffer().size() / 100 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+        ytrans = std::max(
+          ytrans,
+          tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage
+            ? fontSize * tempFormat->buffer().size() / 100
+            : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() )
+        );
       if ( tempFormat->background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
@@ -618,8 +626,7 @@ void QgsFontButton::prepareMenu()
     fontAction->setFont( f );
     fontAction->setToolTip( family );
     recentFontMenu->addAction( fontAction );
-    if ( ( mMode == ModeTextRenderer && family == mFormat.font().family() )
-         || ( mMode == ModeQFont && family == mFont.family() ) )
+    if ( ( mMode == ModeTextRenderer && family == mFormat.font().family() ) || ( mMode == ModeQFont && family == mFont.family() ) )
     {
       fontAction->setCheckable( true );
       fontAction->setChecked( true );
@@ -715,7 +722,7 @@ void QgsFontButton::prepareMenu()
     QList<QgsColorScheme *>::iterator it = schemeList.begin();
     for ( ; it != schemeList.end(); ++it )
     {
-      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "labeling" ), this );
+      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, u"labeling"_s, this );
       colorAction->setBaseColor( mFormat.color() );
       mMenu->addAction( colorAction );
       connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::setColor );
@@ -934,7 +941,12 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       double ytrans = 0.0;
       if ( tempFormat.buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat.buffer().size() / 100 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+        ytrans = std::max(
+          ytrans,
+          tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
+            ? fontSize * tempFormat.buffer().size() / 100
+            : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() )
+        );
       if ( tempFormat.background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 

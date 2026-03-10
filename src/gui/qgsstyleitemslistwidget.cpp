@@ -21,12 +21,17 @@
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgswindowmanagerinterface.h"
 
 #include <QScrollBar>
+#include <QString>
 
 #include "moc_qgsstyleitemslistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsReadOnlyStyleModel
@@ -35,18 +40,15 @@
 ///@cond PRIVATE
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent )
   : QgsStyleProxyModel( sourceModel, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
 {
@@ -73,8 +75,7 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
 
 QgsStyleModelDelegate::QgsStyleModelDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -199,29 +200,29 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
     {
       mSymbolViewStackedWidget->setCurrentIndex( 0 );
       // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui );
+      QgsSettings().setValue( u"UI/symbolsList/lastIconView"_s, 0, QgsSettings::Gui );
     }
   } );
   connect( mButtonListView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 1, QgsSettings::Gui );
+      QgsSettings().setValue( u"UI/symbolsList/lastIconView"_s, 1, QgsSettings::Gui );
       mSymbolViewStackedWidget->setCurrentIndex( 1 );
     }
   } );
 
   // restore previous view
   const QgsSettings settings;
-  const int currentView = settings.value( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui ).toInt();
+  const int currentView = settings.value( u"UI/symbolsList/lastIconView"_s, 0, QgsSettings::Gui ).toInt();
   if ( currentView == 0 )
     mButtonIconView->setChecked( true );
   else
     mButtonListView->setChecked( true );
 
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
   connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this] {
     // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-    QgsSettings().setValue( QStringLiteral( "UI/symbolsList/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
+    QgsSettings().setValue( u"UI/symbolsList/treeState"_s, mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
 
   QgsFilterLineEdit *groupEdit = new QgsFilterLineEdit();
@@ -237,8 +238,7 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
-  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this )
-                                              : new QgsReadOnlyStyleModel( mStyle, this );
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this ) : new QgsReadOnlyStyleModel( mStyle, this );
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
@@ -254,19 +254,15 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 
   mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStyleItemsListWidget::onSelectionChanged );
-  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
-  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
+  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
+  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
 
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleItemsListWidget::groupsCombo_currentIndexChanged );
   connect( groupsCombo, &QComboBox::currentTextChanged, this, &QgsStyleItemsListWidget::updateModelFilters );
 
   const QgsSettings settings;
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
@@ -353,7 +349,7 @@ void QgsStyleItemsListWidget::setLayerType( Qgis::GeometryType type )
 
 QString QgsStyleItemsListWidget::currentTagFilter() const
 {
-  return groupsCombo->currentData().toString() == QLatin1String( "tag" ) ? groupsCombo->currentText() : QString();
+  return groupsCombo->currentData().toString() == "tag"_L1 ? groupsCombo->currentText() : QString();
 }
 
 QMenu *QgsStyleItemsListWidget::advancedMenu()
@@ -405,7 +401,7 @@ void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
   // are shown.
   QWidget::showEvent( event );
   const QgsSettings settings;
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::populateGroups()
@@ -483,8 +479,7 @@ void QgsStyleItemsListWidget::populateGroups()
   }
   groupsCombo->blockSignals( false );
 
-  const QgsSettings settings;
-  index = settings.value( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 ).toInt();
+  index = QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->value();
   groupsCombo->setCurrentIndex( index );
 
   mUpdatingGroups = false;
@@ -507,21 +502,21 @@ void QgsStyleItemsListWidget::updateModelFilters()
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( groupsCombo->currentText() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
+  else if ( groupsCombo->currentData().toString() == "favorite"_L1 )
   {
     mModel->setFavoritesOnly( true );
     mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
+  else if ( groupsCombo->currentData().toString() == "all"_L1 )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
+  else if ( groupsCombo->currentData().toString() == "smartgroup"_L1 )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagString( QString() );
@@ -545,9 +540,7 @@ void QgsStyleItemsListWidget::openStyleManager()
   // open as part of a modal dialog, then we MUST use another modal dialog or the result will
   // not be focusable!
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( !panel || !panel->dockMode()
-       || !QgsGui::windowManager()
-       || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
+  if ( !panel || !panel->dockMode() || !QgsGui::windowManager() || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
     std::unique_ptr< QgsStyleManagerDialog > dlg;
@@ -584,6 +577,5 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index, cons
 
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
+  QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( index );
 }

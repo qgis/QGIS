@@ -21,10 +21,11 @@
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
-SIP_IF_MODULE( HAVE_SFCGAL_SIP )
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SFCGAL_SIP )
+
 #include "qgsabstractgeometry.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
@@ -119,6 +120,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
+    // clang-format off
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
@@ -129,6 +131,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Clones the geometry by performing a deep copy
@@ -691,7 +694,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     sfcgal::shared_geom mSfcgalGeom;
     bool mIsPrimitive = false;
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
     void setPrimitiveTranslate( const QgsVector3D &translation );
     void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
     void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );

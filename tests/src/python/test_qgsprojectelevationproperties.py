@@ -11,11 +11,10 @@ __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsDoubleRange,
     QgsFlatTerrainProvider,
     QgsMeshTerrainProvider,
     QgsProject,
@@ -23,18 +22,17 @@ from qgis.core import (
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
     QgsReadWriteContext,
-    QgsDoubleRange,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsProjectElevationProperties(QgisTestCase):
-
     def testBasic(self):
         props = QgsProjectElevationProperties(None)
         self.assertIsInstance(props.terrainProvider(), QgsFlatTerrainProvider)

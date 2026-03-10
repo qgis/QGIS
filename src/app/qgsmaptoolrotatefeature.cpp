@@ -38,8 +38,11 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsmaptoolrotatefeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
@@ -524,7 +527,7 @@ void QgsMapToolRotateFeature::createRotationWidget()
 
   deleteRotationWidget();
 
-  mRotationWidget = new QgsAngleMagnetWidget( QStringLiteral( "Rotation:" ) );
+  mRotationWidget = new QgsAngleMagnetWidget( u"Rotation:"_s );
   QgisApp::instance()->addUserInputWidget( mRotationWidget );
   mRotationWidget->setFocus( Qt::TabFocusReason );
 

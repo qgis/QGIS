@@ -32,7 +32,10 @@ A widget for selecting a projection.
       CrsNotSet,
     };
 
-      explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+      explicit QgsProjectionSelectionWidget(
+        QWidget *parent /TransferThis/ = 0,
+        QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound
+      );
 %Docstring
 Constructor for QgsProjectionSelectionWidget, with the specified
 ``parent`` widget.

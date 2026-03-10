@@ -22,9 +22,9 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 from contextlib import contextmanager
 
-from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
@@ -32,9 +32,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 __author__ = "Alessandro Pasotti"
@@ -74,7 +73,6 @@ def ScopedCertAuthority(username, password, sslrootcert_path=None):
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests:

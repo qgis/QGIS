@@ -20,12 +20,16 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  */
-class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
@@ -40,6 +44,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      */
     QgsCurve *curveN( int index );
 #else
+    // clang-format off
 
     /**
      * Returns the curve with the specified \a index.
@@ -60,6 +65,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
       return sipConvertFromType( sipCpp->curveN( a0 ), sipType_QgsCurve, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -74,7 +80,9 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     const QgsCurve *curveN( int index ) const;
 #endif
 
+    // clang-format off
     QString geometryType() const override SIP_HOLDGIL;
+    // clang-format on
     QgsMultiCurve *clone() const override SIP_FACTORY;
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
@@ -140,14 +148,16 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsMultiCurve: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsMultiCurve: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 };

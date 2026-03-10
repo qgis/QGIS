@@ -23,16 +23,20 @@
 #include "qgslogger.h"
 
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsauthcerttrustpolicycombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent, QgsAuthCertUtils::CertTrustPolicy policy, QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
   : QComboBox( parent )
 {
   QList<QPair<QgsAuthCertUtils::CertTrustPolicy, QString>> policies;
-  policies << qMakePair( QgsAuthCertUtils::DefaultTrust, defaultTrustText( defaultpolicy ) )
-           << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-           << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+  policies
+    << qMakePair( QgsAuthCertUtils::DefaultTrust, defaultTrustText( defaultpolicy ) )
+    << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+    << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
@@ -86,17 +90,17 @@ void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
   {
     case QgsAuthCertUtils::Trusted:
       // ss = QgsAuthCertUtils::greenTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QComboBox:open"_s ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::Untrusted:
       // ss = QgsAuthCertUtils::redTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QComboBox:open"_s ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::DefaultTrust:
     default:
       break;
   }
-  QgsDebugMsgLevel( QStringLiteral( "Set Stylesheet to : %1" ).arg( ss ), 2 );
+  QgsDebugMsgLevel( u"Set Stylesheet to : %1"_s.arg( ss ), 2 );
   // lineEdit()->setStyleSheet( ss );
   setStyleSheet( ss );
 }
@@ -114,6 +118,5 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
       defaultpolicy = QgsAuthCertUtils::Trusted;
     }
   }
-  return QStringLiteral( "%1 (%2)" )
-    .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
+  return u"%1 (%2)"_s.arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

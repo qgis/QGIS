@@ -35,7 +35,6 @@ inexpensively copied.
 #include "qgsmeshspatialindex.h"
 %End
   public:
-
     QgsMeshSpatialIndex();
 %Docstring
 Constructor for :py:class:`QgsSpatialIndex`. Creates an empty R-tree
@@ -70,6 +69,10 @@ specified ``rectangle``.
 
    The intersection test is performed based on the face bounding boxes only, so it is necessary
    to manually test the returned faces for exact geometry intersection when required.
+
+.. note::
+
+   Since QGIS 4.0, an empty list is returned if the specified ``rectangle`` is null.
 %End
 
     QList<int> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;

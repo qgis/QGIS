@@ -34,23 +34,24 @@
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsvectordataprovider.cpp"
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+using namespace Qt::StringLiterals;
+
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mTemporalCapabilities( std::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
   , mElevationProperties( std::make_unique< QgsDataProviderElevationProperties >() )
-{
-}
+{}
 
 QString QgsVectorDataProvider::storageType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "Generic vector file" );
+  return u"Generic vector file"_s;
 }
 
 bool QgsVectorDataProvider::empty() const
@@ -234,8 +235,7 @@ bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry
   return false;
 }
 
-bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
-    const QgsGeometryMap &geometry_map )
+bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -283,7 +283,7 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
   {
     mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
   }
-  if ( !mEncoding && e != QLatin1String( "System" ) )
+  if ( !mEncoding && e != "System"_L1 )
   {
     if ( !e.isEmpty() )
     {
@@ -410,7 +410,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Feature Symbology" );
   }
 
-  return abilitiesList.join( QLatin1String( ", " ) );
+  return abilitiesList.join( ", "_L1 );
 }
 
 Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
@@ -479,20 +479,18 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "field name = %1 type = %2 length = %3 precision = %4" )
-                    .arg( field.name(),
-                          QVariant::typeToName( field.type() ) )
-                    .arg( field.length() )
-                    .arg( field.precision() ), 2 );
+  QgsDebugMsgLevel( u"field name = %1 type = %2 length = %3 precision = %4"_s.arg( field.name(), QVariant::typeToName( field.type() ) ).arg( field.length() ).arg( field.precision() ), 2 );
 
   for ( const NativeType &nativeType : mNativeTypes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
-                      .arg( QVariant::typeToName( nativeType.mType ) )
-                      .arg( nativeType.mMinLen )
-                      .arg( nativeType.mMaxLen )
-                      .arg( nativeType.mMinPrec )
-                      .arg( nativeType.mMaxPrec ), 2 );
+    QgsDebugMsgLevel(
+      u"native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5"_s.arg( QVariant::typeToName( nativeType.mType ) )
+        .arg( nativeType.mMinLen )
+        .arg( nativeType.mMaxLen )
+        .arg( nativeType.mMinPrec )
+        .arg( nativeType.mMaxPrec ),
+      2
+    );
 
     if ( field.type() != nativeType.mType )
       continue;
@@ -500,8 +498,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     if ( field.length() > 0 )
     {
       // source length limited
-      if ( ( nativeType.mMinLen > 0 && field.length() < nativeType.mMinLen ) ||
-           ( nativeType.mMaxLen > 0 && field.length() > nativeType.mMaxLen ) )
+      if ( ( nativeType.mMinLen > 0 && field.length() < nativeType.mMinLen ) || ( nativeType.mMaxLen > 0 && field.length() > nativeType.mMaxLen ) )
       {
         // source length exceeds destination limits
         continue;
@@ -511,19 +508,18 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     if ( field.precision() > 0 )
     {
       // source precision limited
-      if ( ( nativeType.mMinPrec > 0 && field.precision() < nativeType.mMinPrec ) ||
-           ( nativeType.mMaxPrec > 0 && field.precision() > nativeType.mMaxPrec ) )
+      if ( ( nativeType.mMinPrec > 0 && field.precision() < nativeType.mMinPrec ) || ( nativeType.mMaxPrec > 0 && field.precision() > nativeType.mMaxPrec ) )
       {
         // source precision exceeds destination limits
         continue;
       }
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
+    QgsDebugMsgLevel( u"native type matches"_s, 3 );
     return true;
   }
 
-  QgsDebugError( QStringLiteral( "no sufficient native type found" ) );
+  QgsDebugError( u"no sufficient native type found"_s );
   return false;
 }
 
@@ -581,7 +577,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   request.setSubsetOfAttributes( keys );
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   const QString fieldName = fields().at( index ).name();
-  request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+  request.setFilterExpression( u"\"%1\" ILIKE '%%2%'"_s.arg( fieldName, substring ) );
   QgsFeatureIterator fi = getFeatures( request );
 
   QSet<QString> set;
@@ -601,8 +597,9 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   return results;
 }
 
-QVariant QgsVectorDataProvider::aggregate( Qgis::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids ) const
+QVariant QgsVectorDataProvider::aggregate(
+  Qgis::Aggregate aggregate, int index, const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids
+) const
 {
   // non fatal for now -- the "aggregate" functions are not thread safe and call this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
@@ -651,7 +648,6 @@ void QgsVectorDataProvider::fillMinMaxCache() const
     {
       mCacheMinValues[i] = QVariant( std::numeric_limits<double>::max() );
       mCacheMaxValues[i] = QVariant( std::numeric_limits<double>::lowest() );
-
     }
     else
     {
@@ -662,8 +658,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
 
   QgsFeature f;
   const QgsAttributeList keys = mCacheMinValues.keys();
-  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys )
-                                       .setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
 
   while ( fi.nextFeature( f ) )
   {
@@ -680,61 +675,61 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         case QMetaType::Type::Int:
         {
           const int value = varValue.toInt();
-          if ( value < mCacheMinValues[ attributeIndex ].toInt() )
-            mCacheMinValues[ attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toInt() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toInt() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toInt() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         case QMetaType::Type::LongLong:
         {
           const qlonglong value = varValue.toLongLong();
-          if ( value < mCacheMinValues[ attributeIndex ].toLongLong() )
-            mCacheMinValues[ attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toLongLong() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toLongLong() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toLongLong() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         case QMetaType::Type::Double:
         {
           const double value = varValue.toDouble();
-          if ( value < mCacheMinValues[ attributeIndex ].toDouble() )
-            mCacheMinValues[attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toDouble() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toDouble() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toDouble() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         case QMetaType::Type::QDateTime:
         {
           const QDateTime value = varValue.toDateTime();
-          if ( value < mCacheMinValues[ attributeIndex ].toDateTime() || !mCacheMinValues[ attributeIndex ].isValid() )
-            mCacheMinValues[attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toDateTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toDateTime() || !mCacheMinValues[attributeIndex].isValid() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toDateTime() || !mCacheMaxValues[attributeIndex].isValid() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         case QMetaType::Type::QDate:
         {
           const QDate value = varValue.toDate();
-          if ( value < mCacheMinValues[ attributeIndex ].toDate() || !mCacheMinValues[ attributeIndex ].isValid() )
-            mCacheMinValues[attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toDate() || !mCacheMaxValues[ attributeIndex ].isValid() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toDate() || !mCacheMinValues[attributeIndex].isValid() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toDate() || !mCacheMaxValues[attributeIndex].isValid() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         case QMetaType::Type::QTime:
         {
           const QTime value = varValue.toTime();
-          if ( value < mCacheMinValues[ attributeIndex ].toTime() || !mCacheMinValues[ attributeIndex ].isValid() )
-            mCacheMinValues[attributeIndex ] = value;
-          if ( value > mCacheMaxValues[ attributeIndex ].toTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
-            mCacheMaxValues[ attributeIndex ] = value;
+          if ( value < mCacheMinValues[attributeIndex].toTime() || !mCacheMinValues[attributeIndex].isValid() )
+            mCacheMinValues[attributeIndex] = value;
+          if ( value > mCacheMaxValues[attributeIndex].toTime() || !mCacheMaxValues[attributeIndex].isValid() )
+            mCacheMaxValues[attributeIndex] = value;
           break;
         }
         default:
         {
           const QString value = varValue.toString();
-          if ( QgsVariantUtils::isNull( mCacheMinValues[ attributeIndex ] ) || value < mCacheMinValues[attributeIndex ].toString() )
+          if ( QgsVariantUtils::isNull( mCacheMinValues[attributeIndex] ) || value < mCacheMinValues[attributeIndex].toString() )
           {
             mCacheMinValues[attributeIndex] = value;
           }
@@ -786,8 +781,7 @@ static bool _removeDuplicateEncodings( const QString &s1, const QString &s2 )
 QStringList QgsVectorDataProvider::availableEncodings()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, []
-  {
+  std::call_once( initialized, [] {
     const auto codecs { QTextCodec::availableCodecs() };
     for ( const QByteArray &codec : codecs )
     {
@@ -845,7 +839,6 @@ QStringList QgsVectorDataProvider::availableEncodings()
     std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
     const auto last = std::unique( sEncodings.begin(), sEncodings.end(), _removeDuplicateEncodings );
     sEncodings.erase( last, sEncodings.end() );
-
   } );
 
   return sEncodings;
@@ -908,7 +901,6 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
 
   // Call the static version
   return QgsVectorDataProvider::convertToProviderType( geom, wkbType() );
-
 }
 
 void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes )
@@ -1059,8 +1051,7 @@ QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLaye
   return QList<QgsRelation>();
 }
 
-void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
-{
+void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * ) {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
 }

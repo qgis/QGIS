@@ -18,6 +18,10 @@
 #include "qgsgui.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup gui
  * \brief Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
@@ -90,7 +94,7 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
 
 QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
-  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
+  QgsEditorWidgetSetup result( u"TextEdit"_s, QVariantMap() );
 
   const int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )

@@ -16,18 +16,15 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
-
-#ifdef WITH_QTWEBKIT
-#include <QWebFrame>
-#else
 
 #include <QObject>
 #include <QPainter>
 #include <QUrl>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -36,20 +33,15 @@
  */
 class CORE_EXPORT QWebFrame : public QObject
 {
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
     QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
-    {
+    {}
 
-    }
-
-    void setZoomFactor( qreal factor )
-    {
-      Q_UNUSED( factor )
-    }
+    void setZoomFactor( qreal factor ) { Q_UNUSED( factor ) }
 
     void setScrollBarPolicy( Qt::Orientation orientation, Qt::ScrollBarPolicy scrollbarpolicy )
     {
@@ -64,31 +56,18 @@ class CORE_EXPORT QWebFrame : public QObject
       emit loadFinished( true );
     }
 
-    QSize contentsSize() const
-    {
-      return QSize();
-    }
+    QSize contentsSize() const { return QSize(); }
 
-    void render( QPainter *, const QRegion = QRegion() )
-    {
+    void render( QPainter *, const QRegion = QRegion() ) {}
 
-    }
+    void addToJavaScriptWindowObject( const QString &, QObject * ) {}
 
-    void addToJavaScriptWindowObject( const QString &, QObject * )
-    {
-
-    }
-
-    QVariant evaluateJavaScript( const QString & )
-    {
-      return QVariant();
-    }
+    QVariant evaluateJavaScript( const QString & ) { return QVariant(); }
 
   signals:
     void loadFinished( bool ok );
 
     void javaScriptWindowObjectCleared();
-/// @endcond
+    /// @endcond
 };
-#endif
 #endif // QGSWEBFRAME_H

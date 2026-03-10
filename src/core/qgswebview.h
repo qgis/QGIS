@@ -17,39 +17,12 @@
 #define QGSWEBVIEW_H
 
 
-#define SIP_NO_FILE
+#include "qgswebpage.h"
 
+#include <QTextBrowser>
 #include <QWidget>
 
-#ifdef WITH_QTWEBKIT
-#include <QWebView>
-#include <QDesktopWidget>
-
-#include "qgis_core.h"
-
-
-/**
- * \ingroup core
- */
-class CORE_EXPORT QgsWebView : public QWebView
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsWebView( QWidget *parent = nullptr )
-      : QWebView( parent )
-    {
-      const QDesktopWidget desktop;
-      // Apply zoom factor for HiDPI screens
-      if ( desktop.logicalDpiX() > 96 )
-      {
-        setZoomFactor( desktop.logicalDpiX() / 96 );
-      }
-    }
-};
-#else
-#include "qgswebpage.h"
-#include <QTextBrowser>
+#define SIP_NO_FILE
 
 class QPrinter;
 
@@ -58,14 +31,13 @@ class QPrinter;
  * \brief A collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
- * If QGIS is compiled WITH_QTWEBKIT This will simply be a subclass of QWebView. If it is compiled with
- * WITH_QTWEBKIT=OFF then this will be an empty QWidget. If you miss methods in here that you would like to use,
+ * QgsWebview used to be based on QtWebKit and is now a simple subclass of QTextBrowser.
+ * Without WebKit this will be an empty QWidget. If you miss methods in here that you would like to use,
  * please add additional stubs.
  */
 class CORE_EXPORT QgsWebView : public QTextBrowser
 {
-
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = nullptr )
@@ -83,35 +55,17 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       delete mPage;
     }
 
-    void setUrl( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void setUrl( const QUrl &url ) { setSource( url ); }
 
-    void load( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void load( const QUrl &url ) { setSource( url ); }
 
-    QUrl url() const
-    {
-      return source();
-    }
+    QUrl url() const { return source(); }
 
-    QWebPage *page() const
-    {
-      return mPage;
-    }
+    QWebPage *page() const { return mPage; }
 
-    QWebSettings *settings() const
-    {
-      return mSettings;
-    }
+    QWebSettings *settings() const { return mSettings; }
 
-    virtual QgsWebView *createWindow( QWebPage::WebWindowType )
-    {
-      return new QgsWebView();
-    }
+    virtual QgsWebView *createWindow( QWebPage::WebWindowType ) { return new QgsWebView(); }
 
     void setContent( const QByteArray &data, const QString &contentType, const QUrl & )
     {
@@ -124,9 +78,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       emit pageLoadFinished( true );
     }
 
-    void print( QPrinter * )
-    {
-    }
+    void print( QPrinter * ) {}
 
   signals:
     void linkClicked( const QUrl &link );
@@ -151,8 +103,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     QWebSettings *mSettings = nullptr;
     QWebPage *mPage = nullptr;
 
-/// @endcond
+    /// @endcond
 };
-#endif
 
 #endif // QGSWEBVIEW_H

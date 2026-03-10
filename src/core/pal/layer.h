@@ -30,8 +30,6 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
-#define SIP_NO_FILE
-
 
 #include <fstream>
 
@@ -42,8 +40,9 @@
 #include "qgslabelobstaclesettings.h"
 
 #include <QHash>
-#include <QLinkedList>
 #include <QMutex>
+
+#define SIP_NO_FILE
 
 class QgsLabelFeature;
 
@@ -70,7 +69,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-
       /**
        * \brief Create a new layer
        *
@@ -338,7 +336,7 @@ namespace pal
       Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
+      QHash< QPair< QgsFeatureId, int >, QgsLabelFeature *> mHashtable;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
@@ -350,7 +348,6 @@ namespace pal
 
       //! Add newly created obstacle part into r tree and to the list
       void addObstaclePart( FeaturePart *fpart );
-
   };
 
 } // end namespace pal

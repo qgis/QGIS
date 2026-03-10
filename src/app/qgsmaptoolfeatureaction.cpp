@@ -34,13 +34,15 @@
 
 #include <QSettings>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsmaptoolfeatureaction.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-{
-}
+{}
 
 void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
@@ -70,7 +72,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   QgsMapLayerActionContext context;
-  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context ).isEmpty() )
+  if ( vlayer->actions()->actions( u"Canvas"_s ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), Qgis::MessageLevel::Info );
     return;
@@ -119,7 +121,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
   }
 
   QgsFeature f;
@@ -169,7 +171,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
 void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const QgsFeature &feature, const QgsPointXY &point )
 {
-  QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
+  QgsAction defaultAction = layer->actions()->defaultAction( u"Canvas"_s );
   if ( defaultAction.isValid() )
   {
     switch ( defaultAction.type() )
@@ -182,11 +184,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
         const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
         if ( !allowed )
         {
-          QgisApp::instance()->messageBar()->pushMessage(
-            tr( "Security warning" ),
-            tr( "The action contains an embedded script which has been denied execution." ),
-            Qgis::MessageLevel::Warning
-          );
+          QgisApp::instance()->messageBar()->pushMessage( tr( "Security warning" ), tr( "The action contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
           return;
         }
         break;
@@ -203,13 +201,11 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
 
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"click_x"_s, point.x(), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"click_y"_s, point.y(), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"action_scope"_s, u"Canvas"_s, true ) );
     context << actionScope;
 
     defaultAction.run( layer, feature, context );

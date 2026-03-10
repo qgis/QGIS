@@ -29,6 +29,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
@@ -40,7 +42,6 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsDataProvider : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
@@ -65,7 +66,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
     SIP_END
 #endif
-    Q_OBJECT
+
+    // clang-format off
+  Q_OBJECT
 
   public:
 
@@ -78,9 +81,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     enum ProviderProperty
     {
-      EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
-      CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
+      EvaluateDefaultValues, //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
+      CustomData = 3000 //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
+    // clang-format on
 
     /**
      * Setting options for creating vector data providers.
@@ -91,12 +95,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -104,9 +106,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsDataProvider( const QString &uri = QString(),
-                     const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsDataProvider(
+      const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    );
 
     /**
      * Returns the coordinate system for the data source.
@@ -120,10 +122,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * \param uri source specification
      */
-    virtual void setDataSourceUri( const QString &uri )
-    {
-      mDataSourceURI = uri;
-    }
+    virtual void setDataSourceUri( const QString &uri ) { mDataSourceURI = uri; }
 
     /**
      * Gets the data source specification. This may be a path or database
@@ -136,7 +135,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg"_L1 ) )
       {
         const QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
@@ -181,29 +180,20 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Set the data source specification.
      *
      */
-    void setUri( const QgsDataSourceUri &uri )
-    {
-      mDataSourceURI = uri.uri( true );
-    }
+    void setUri( const QgsDataSourceUri &uri ) { mDataSourceURI = uri.uri( true ); }
 
     /**
      * Set the data source specification.
      *
      * \since QGIS 3.38
      */
-    void setUri( const QString &uri )
-    {
-      mDataSourceURI = uri;
-    }
+    void setUri( const QString &uri ) { mDataSourceURI = uri; }
 
     /**
      * Gets the data source specification.
      *
      */
-    QgsDataSourceUri uri() const
-    {
-      return QgsDataSourceUri( mDataSourceURI );
-    }
+    QgsDataSourceUri uri() const { return QgsDataSourceUri( mDataSourceURI ); }
 
     /**
      * Returns the generic data provider flags.
@@ -268,10 +258,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 3.36
      */
-    virtual QgsBox3D extent3D() const
-    {
-      return extent().toBox3d( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
-    }
+    virtual QgsBox3D extent3D() const { return extent().toBox3d( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ); }
 
     /**
      * Returns TRUE if this is a valid layer. It is up to individual providers
@@ -366,7 +353,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QStringList subLayers() const
     {
-      return QStringList();  // Empty
+      return QStringList(); // Empty
     }
 
     /**
@@ -378,17 +365,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QStringList subLayerStyles() const
     {
-      return QStringList();  // Empty
+      return QStringList(); // Empty
     }
 
 
     /**
      * Returns the number of layers for the current data source
      */
-    virtual uint subLayerCount() const
-    {
-      return 0;
-    }
+    virtual uint subLayerCount() const { return 0; }
 
 
     /**
@@ -452,10 +436,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      */
-    virtual QString fileVectorFilters() const
-    {
-      return QString();
-    }
+    virtual QString fileVectorFilters() const { return QString(); }
 
 
     /**
@@ -466,12 +447,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      */
-    virtual QString fileRasterFilters() const
-    {
-      return QString();
-    }
+    virtual QString fileRasterFilters() const { return QString(); }
 
-    // TODO QGIS 4 -> Make `reloadData()` non virtual. This should be implemented in `reloadProviderData()`.
+    // TODO QGIS 5 -> Make `reloadData()` non virtual. This should be implemented in `reloadProviderData()`.
 
     /**
      * Reloads the data from the source for providers with data caches to synchronize,
@@ -588,11 +566,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct PreviewContext
     {
-      //! Previous rendering time for the layer, in ms
-      double lastRenderingTimeMs = -1;
+        //! Previous rendering time for the layer, in ms
+        double lastRenderingTimeMs = -1;
 
-      //! Default maximum allowable render time, in ms
-      double maxRenderingTimeMs = Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS;
+        //! Default maximum allowable render time, in ms
+        double maxRenderingTimeMs = Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS;
     };
 #endif
 
@@ -625,7 +603,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Returns TRUE if metadata was successfully written to the data provider.
      * \see layerMetadata()
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata )
+    {
+      Q_UNUSED( metadata )
+      return false;
+    }
 
     /**
      * Returns data provider coordinate transform context
@@ -697,7 +679,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
   protected:
-
     /**
      * Timestamp of data in the moment when the data were loaded by provider.
      */
@@ -710,13 +691,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void appendError( const QgsErrorMessage &message ) { mError.append( message ); }
 
     //! Sets error message
-    void setError( const QgsError &error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error; }
 
     //! Read flags. It's up to the subclass to respect these when needed
     Qgis::DataProviderReadFlags mReadFlags;
 
   private:
-
     /**
      * Universal Resource Identifier for source data.
      * This could be a file, database, or server address.

@@ -36,7 +36,10 @@
 #include <QObject>
 #include <QRecursiveMutex>
 #include <QSet>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \class QgsAbstractContentCacheEntry
@@ -51,11 +54,10 @@
 class CORE_EXPORT QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsAbstractContentCacheEntry for an entry relating to the specified \a path.
      */
-    QgsAbstractContentCacheEntry( const QString &path ) ;
+    QgsAbstractContentCacheEntry( const QString &path );
 
     virtual ~QgsAbstractContentCacheEntry() = default;
 
@@ -88,10 +90,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
      */
     QgsAbstractContentCacheEntry *previousEntry = nullptr;
 
-    bool operator==( const QgsAbstractContentCacheEntry &other ) const
-    {
-      return other.path == path;
-    }
+    bool operator==( const QgsAbstractContentCacheEntry &other ) const { return other.path == path; }
 
     /**
      * Returns the memory usage in bytes for the entry.
@@ -104,7 +103,6 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
     virtual void dump() const = 0;
 
   protected:
-
     /**
      * Tests whether this entry matches another entry. Subclasses must take care to check
      * that the type of \a other is of a matching class, and then test extra cache-specific
@@ -116,7 +114,6 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 #ifdef SIP_RUN
     QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh );
 #endif
-
 };
 
 /**
@@ -129,12 +126,11 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
  *
  * \since QGIS 3.6
  */
-class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
+class CORE_EXPORT QgsAbstractContentCacheBase : public QObject
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractContentCacheBase, with the specified \a parent object.
      */
@@ -200,7 +196,6 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
     void remoteContentFetched( const QString &url );
 
   protected:
-
     /**
      * Runs additional checks on a network \a reply to ensure that the reply content is
      * consistent with that required by the cache.
@@ -221,7 +216,6 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      * it was not fetched successfully.
      */
     virtual void onRemoteContentFetched( const QString &url, bool success );
-
 };
 
 #ifndef SIP_RUN
@@ -239,12 +233,9 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
  * \note Not available in Python bindings.
  * \since QGIS 3.6
  */
-template<class T>
-class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
+template<class T> class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 {
-
   public:
-
     /**
      * Constructor for QgsAbstractContentCache, with the specified \a parent object.
      *
@@ -256,21 +247,14 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      * consecutive checks of whether a file's content has been modified (and existing
      * cache entries should be discarded).
      */
-    QgsAbstractContentCache( QObject *parent SIP_TRANSFERTHIS = nullptr,
-                             const QString &typeString = QString(),
-                             long maxCacheSize = 20000000,
-                             int fileModifiedCheckTimeout = 30000 )
+    QgsAbstractContentCache( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &typeString = QString(), long maxCacheSize = 20000000, int fileModifiedCheckTimeout = 30000 )
       : QgsAbstractContentCacheBase( parent )
       , mMaxCacheSize( maxCacheSize )
       , mFileModifiedCheckTimeout( fileModifiedCheckTimeout )
       , mTypeString( typeString.isEmpty() ? QObject::tr( "Content" ) : typeString )
-    {
-    }
+    {}
 
-    ~QgsAbstractContentCache() override
-    {
-      qDeleteAll( mEntryLookup );
-    }
+    ~QgsAbstractContentCache() override { qDeleteAll( mEntryLookup ); }
 
     bool invalidateCacheEntry( const QString &path ) override
     {
@@ -292,7 +276,6 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     }
 
   protected:
-
     /**
      * Removes the least used cache entries until the maximum cache size is under the predefined size limit.
      */
@@ -426,7 +409,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       {
         delete entryTemplate;
         entryTemplate = nullptr;
-        ( void )entryTemplate;
+        ( void ) entryTemplate;
         takeEntryFromList( currentEntry );
         if ( !mMostRecentEntry ) //list is empty
         {
@@ -456,7 +439,6 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     long mMaxCacheSize = 20000000;
 
   private:
-
     /**
      * Inserts a new \a entry into the cache.
      *
@@ -466,7 +448,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
-      if ( !entry->path.startsWith( QLatin1String( "base64:" ) ) )
+      if ( !entry->path.startsWith( "base64:"_L1 ) )
       {
         entry->fileModified = QFileInfo( entry->path ).lastModified();
         entry->fileModifiedLastCheckTimer.start();
@@ -528,12 +510,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     void printEntryList()
     {
-      QgsDebugMsgLevel( QStringLiteral( "****************cache entry list*************************" ), 1 );
+      QgsDebugMsgLevel( u"****************cache entry list*************************"_s, 1 );
       QgsDebugMsgLevel( "Cache size: " + QString::number( mTotalSize ), 1 );
       T *entry = mLeastRecentEntry;
       while ( entry )
       {
-        QgsDebugMsgLevel( QStringLiteral( "***Entry:" ), 1 );
+        QgsDebugMsgLevel( u"***Entry:"_s, 1 );
         entry->dump();
         entry = static_cast< T * >( entry->nextEntry );
       }

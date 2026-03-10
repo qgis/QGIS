@@ -23,6 +23,8 @@
 #include <QString>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgsopenclutils.h>
 #include <qgshillshaderenderer.h>
@@ -74,21 +76,20 @@ class TestQgsOpenClUtils : public QObject
 void TestQgsOpenClUtils::init()
 {
   // Reset to default in case some tests mess it up
-  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( u"resources/opencl_programs"_s ) );
 }
 
 void TestQgsOpenClUtils::cleanup()
-{
-}
+{}
 
 void TestQgsOpenClUtils::initTestCase()
 {
   // Runs once before any tests are run
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -149,10 +150,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
 
   const cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
 
-  auto kernel = cl::KernelFunctor<
-    cl::Buffer &,
-    cl::Buffer &,
-    cl::Buffer &>( program, "vectorAdd" );
+  auto kernel = cl::KernelFunctor< cl::Buffer &, cl::Buffer &, cl::Buffer &>( program, "vectorAdd" );
 
   kernel( cl::EnqueueArgs( queue, cl::NDRange( 3 ) ), a_buf, b_buf, c_buf );
 
@@ -167,7 +165,7 @@ void TestQgsOpenClUtils::testProgramSource()
 {
   QgsOpenClUtils::setSourcePath( QDir::tempPath() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/XXXXXX.cl" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.write( QByteArray::fromStdString( source() ) );
   tmpFile.flush();
   const QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );

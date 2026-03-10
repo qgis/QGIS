@@ -20,11 +20,15 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalInformationAlgorithm::name() const
 {
-  return QStringLiteral( "info" );
+  return u"info"_s;
 }
 
 QString QgsPdalInformationAlgorithm::displayName() const
@@ -39,7 +43,7 @@ QString QgsPdalInformationAlgorithm::group() const
 
 QString QgsPdalInformationAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalInformationAlgorithm::tags() const
@@ -64,12 +68,13 @@ QgsPdalInformationAlgorithm *QgsPdalInformationAlgorithm::createInstance() const
 
 void QgsPdalInformationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer information" ), QObject::tr( "HTML files (*.html)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Layer information" ), QObject::tr( "HTML files (*.html)" ) ) );
 }
 
 QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+#if QT_CONFIG( process )
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();
 
@@ -78,9 +83,7 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   QStringList commandOutput;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba.trimmed() );
-  } );
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba.trimmed() ); } );
   wrenchProcess.setStdOutHandler( [feedback, &commandOutput]( const QByteArray &ba ) {
     feedback->pushConsoleInfo( ba.trimmed() );
     commandOutput << ba;
@@ -108,37 +111,40 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Process returned error code %1" ).arg( res ) );
   }
 
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      out.setCodec( "UTF-8" );
-#endif
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
-      out << QStringLiteral( "<pre>%1</pre>" ).arg( commandOutput.join( "" ) );
-      out << QStringLiteral( "\n</body></html>" );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
+      out << u"<pre>%1</pre>"_s.arg( commandOutput.join( "" ) );
+      out << u"\n</body></html>"_s;
     }
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
 
   return outputs;
+#else
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with Qt process feature enabled" ) );
+#endif
 }
 
 QStringList QgsPdalInformationAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  return { QStringLiteral( "info" ), QStringLiteral( "--input=%1" ).arg( layer->source() ) };
+  return { u"info"_s, u"--input=%1"_s.arg( layer->source() ) };
 }
 
 ///@endcond

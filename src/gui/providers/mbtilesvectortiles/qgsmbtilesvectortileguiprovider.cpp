@@ -17,6 +17,10 @@
 
 #include "qgsmbtilesvectortileguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <QList>
@@ -36,8 +40,7 @@
 //
 
 QgsMbtilesVectorTileSourceWidgetProvider::QgsMbtilesVectorTileSourceWidgetProvider()
-{
-}
+{}
 
 QString QgsMbtilesVectorTileSourceWidgetProvider::providerKey() const
 {
@@ -49,11 +52,8 @@ bool QgsMbtilesVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *laye
   if ( layer->providerType() != QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY )
     return false;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    layer->source()
-  );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -64,12 +64,9 @@ QgsProviderSourceWidget *QgsMbtilesVectorTileSourceWidgetProvider::createWidget(
   if ( layer->providerType() != QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY )
     return nullptr;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    layer->source()
-  );
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY, layer->source() );
 
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsMbtilesVectorTileSourceWidget( parent );
@@ -81,8 +78,7 @@ QgsProviderSourceWidget *QgsMbtilesVectorTileSourceWidgetProvider::createWidget(
 //
 QgsMbtilesVectorTileGuiProviderMetadata::QgsMbtilesVectorTileGuiProviderMetadata()
   : QgsProviderGuiMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsProviderSourceWidgetProvider *> QgsMbtilesVectorTileGuiProviderMetadata::sourceWidgetProviders()
 {

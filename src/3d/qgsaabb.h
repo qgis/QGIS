@@ -16,8 +16,6 @@
 #ifndef QGSAABB_H
 #define QGSAABB_H
 
-#include <cmath>
-
 #include "qgis_3d.h"
 #include "qgsbox3d.h"
 
@@ -47,7 +45,14 @@ class _3D_EXPORT QgsAABB
      */
     static QgsAABB fromBox3D( const QgsBox3D &box3D, const QgsVector3D &origin )
     {
-      return QgsAABB( static_cast<float>( box3D.xMinimum() - origin.x() ), static_cast<float>( box3D.yMinimum() - origin.y() ), static_cast<float>( box3D.zMinimum() - origin.z() ), static_cast<float>( box3D.xMaximum() - origin.x() ), static_cast<float>( box3D.yMaximum() - origin.y() ), static_cast<float>( box3D.zMaximum() - origin.z() ) );
+      return QgsAABB(
+        static_cast<float>( box3D.xMinimum() - origin.x() ),
+        static_cast<float>( box3D.yMinimum() - origin.y() ),
+        static_cast<float>( box3D.zMinimum() - origin.z() ),
+        static_cast<float>( box3D.xMaximum() - origin.x() ),
+        static_cast<float>( box3D.yMaximum() - origin.y() ),
+        static_cast<float>( box3D.zMaximum() - origin.z() )
+      );
     }
 
     //! Returns box width in X axis
@@ -90,10 +95,7 @@ class _3D_EXPORT QgsAABB
     QString toString() const;
 
     //! Returns true if xExtent(), yExtent() and zExtent() are all zero, false otherwise
-    bool isEmpty() const
-    {
-      return xMin == xMax && yMin == yMax && zMin == zMax;
-    }
+    bool isEmpty() const { return xMin == xMax && yMin == yMax && zMin == zMax; }
 
     float xMin = 0.0f;
     float yMin = 0.0f;

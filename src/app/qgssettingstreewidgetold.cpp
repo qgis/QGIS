@@ -50,8 +50,11 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgssettingstreewidgetold.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
   : QTreeWidget( parent )
@@ -69,8 +72,8 @@ QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
 
   mRefreshTimer.setInterval( 2000 );
 
-  mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
-  mKeyIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconDeselected.svg" ) );
+  mGroupIcon = QgsApplication::getThemeIcon( u"mIconFolderOpen.svg"_s );
+  mKeyIcon = QgsApplication::getThemeIcon( u"mIconDeselected.svg"_s );
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
@@ -172,7 +175,8 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     {
       QAction *deleteAction = new QAction( tr( "Delete Group…" ), mContextMenu );
       connect( deleteAction, &QAction::triggered, this, [this, itemPath, itemText] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Group" ), tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, tr( "Delete Group" ), tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
 
@@ -187,7 +191,8 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     {
       QAction *deleteSetting = new QAction( tr( "Delete Setting…" ), mContextMenu );
       connect( deleteSetting, &QAction::triggered, this, [this, itemPath] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Setting" ), tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, tr( "Delete Setting" ), tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
         mSettings.remove( itemPath );
@@ -261,7 +266,7 @@ void QgsSettingsTreeWidgetOld::updateChildItems( QTreeWidgetItem *parent )
     const QVariant value = mSettings.value( key );
     if ( value.userType() == QMetaType::Type::UnknownType )
     {
-      child->setText( ColumnType, QStringLiteral( "Invalid" ) );
+      child->setText( ColumnType, u"Invalid"_s );
     }
     else
     {
@@ -300,7 +305,7 @@ QTreeWidgetItem *QgsSettingsTreeWidgetOld::createItem( const QString &text, QTre
   QgsDebugMsgLevel( key, 4 );
   if ( mSettingsMap.contains( key ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "contains!!!!" ), 4 );
+    QgsDebugMsgLevel( u"contains!!!!"_s, 4 );
     const QStringList values = mSettingsMap[key];
     item->setText( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnDescription, values.at( 0 ) );

@@ -33,7 +33,6 @@ safely).
 #include "qgsmaprenderercache.h"
 %End
   public:
-
     QgsMapRendererCache();
 
     void clear();
@@ -43,7 +42,7 @@ Invalidates the cache contents, clearing all cached images.
 .. seealso:: :py:func:`clearCacheImage`
 %End
 
- bool init( const QgsRectangle &extent, double scale ) /Deprecated="Since 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear()."/;
+ bool init( const QgsRectangle &extent, double scale ) /Deprecated="Since 3.18. Will be removed in QGIS 5.0. Use the updateParameters() and clear()."/;
 %Docstring
 Initialize cache: sets extent and scale parameters and clears the cache
 if any parameters have changed since last initialization.
@@ -52,7 +51,7 @@ if any parameters have changed since last initialization.
 
 .. deprecated:: 3.18
 
-   Will be removed in QGIS 4.0. Use the :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`.
+   Will be removed in QGIS 5.0. Use the :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`.
 %End
 
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );
@@ -81,11 +80,9 @@ repaint then the cache image will be cleared.
 .. seealso:: :py:func:`cacheImage`
 %End
 
-    void setCacheImageWithParameters( const QString &cacheKey,
-                                      const QImage &image,
-                                      const QgsRectangle &extent,
-                                      const QgsMapToPixel &mapToPixel,
-                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImageWithParameters(
+      const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >()
+    );
 %Docstring
 Set the cached ``image`` for a particular ``cacheKey``, using a specific
 ``extent`` and ``mapToPixel`` (which may differ from the current cache

@@ -49,12 +49,10 @@ void TestQgsInternalGeometryEngine::cleanupTestCase()
 }
 
 void TestQgsInternalGeometryEngine::init()
-{
-}
+{}
 
 void TestQgsInternalGeometryEngine::cleanup()
-{
-}
+{}
 
 void TestQgsInternalGeometryEngine::ray()
 {

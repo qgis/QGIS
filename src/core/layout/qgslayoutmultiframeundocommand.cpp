@@ -23,15 +23,17 @@
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 QgsLayoutMultiFrameUndoCommand::QgsLayoutMultiFrameUndoCommand( QgsLayoutMultiFrame *frame, const QString &text, int id, QUndoCommand *parent )
   : QgsAbstractLayoutUndoCommand( text, id, parent )
   , mFrameUuid( frame->uuid() )
   , mLayout( frame->layout() )
   , mItemType( frame->type() )
-{
-
-}
+{}
 
 bool QgsLayoutMultiFrameUndoCommand::mergeWith( const QUndoCommand *command )
 {
@@ -53,7 +55,7 @@ bool QgsLayoutMultiFrameUndoCommand::mergeWith( const QUndoCommand *command )
 void QgsLayoutMultiFrameUndoCommand::saveState( QDomDocument &stateDoc ) const
 {
   stateDoc.clear();
-  QDomElement documentElement = stateDoc.createElement( QStringLiteral( "ItemState" ) );
+  QDomElement documentElement = stateDoc.createElement( u"ItemState"_s );
 
   QgsLayoutMultiFrame *item = mLayout->multiFrameByUuid( mFrameUuid );
   Q_ASSERT_X( item, "QgsLayoutMultiFrameUndoCommand::saveState", "could not retrieve item for saving state" );

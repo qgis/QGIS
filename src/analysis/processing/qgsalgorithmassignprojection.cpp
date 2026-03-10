@@ -17,11 +17,15 @@
 
 #include "qgsalgorithmassignprojection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAssignProjectionAlgorithm::name() const
 {
-  return QStringLiteral( "assignprojection" );
+  return u"assignprojection"_s;
 }
 
 QString QgsAssignProjectionAlgorithm::displayName() const
@@ -41,7 +45,7 @@ QString QgsAssignProjectionAlgorithm::group() const
 
 QString QgsAssignProjectionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsAssignProjectionAlgorithm::outputName() const
@@ -51,10 +55,12 @@ QString QgsAssignProjectionAlgorithm::outputName() const
 
 QString QgsAssignProjectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
-                      "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
-                      "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
-                      "Attributes are not modified by this algorithm." );
+  return QObject::tr(
+    "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
+    "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
+    "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
+    "Attributes are not modified by this algorithm."
+  );
 }
 
 QString QgsAssignProjectionAlgorithm::shortDescription() const
@@ -75,7 +81,7 @@ bool QgsAssignProjectionAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer 
 
 void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Assigned CRS" ), u"EPSG:4326"_s ) );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsAssignProjectionAlgorithm::sourceFlags() const
@@ -85,7 +91,7 @@ Qgis::ProcessingFeatureSourceFlags QgsAssignProjectionAlgorithm::sourceFlags() c
 
 bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDestCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  mDestCrs = parameterAsCrs( parameters, u"CRS"_s, context );
   return true;
 }
 

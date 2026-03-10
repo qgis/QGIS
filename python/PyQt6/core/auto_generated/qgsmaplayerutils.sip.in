@@ -22,7 +22,6 @@ Contains utility functions for working with map layers.
 #include "qgsmaplayerutils.h"
 %End
   public:
-
     static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Returns the combined extent of a list of ``layers``.
@@ -48,6 +47,32 @@ This method can be used to test whether a layer is associated with a
 file path.
 
 .. versionadded:: 3.22
+%End
+
+    static bool layerRefersToUri( const QgsMapLayer *layer, const QString &uri, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object );
+%Docstring
+Returns ``True`` if a ``layer`` and ``uri`` point to the same resource
+at the specified hierarchy ``level``.
+
+This method parses the underlying connection parameters of the ``layer``
+and ``uri`` to check if they share the same scope defined by ``level``.
+
+.. note::
+
+   This method is only valid for a ``uri`` from the same data provider as ``layer``.
+
+.. warning::
+
+   Not all providers implement this functionality. Check whether the provider's metadata capabilities returns the
+   :py:class:`QgsProviderMetadata`.ProviderMetadataCapability.UrisReferToSame to determine whether a specific provider metadata object
+   supports this method.
+
+:raises QgsNotSupportedException: if the layer's provider does not
+                                  implement the
+                                  QgsProviderMetadata.ProviderMetadataCapability.UrisReferToSame
+                                  capability.
+
+.. versionadded:: 4.0
 %End
 
     static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
@@ -100,10 +125,7 @@ Returns the translated name of the type for a given layer type.
 
 .. versionadded:: 4.0
 %End
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -26,6 +26,10 @@
 #include "qgsscientificnumericformat.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
   addFormat( new QgsFallbackNumericFormat() );
@@ -84,7 +88,7 @@ QgsNumericFormat *QgsNumericFormatRegistry::create( const QString &id, const QVa
 QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const
 {
   const QVariantMap configuration = QgsXmlUtils::readVariant( element.firstChildElement() ).toMap();
-  const QString id = element.attribute( QStringLiteral( "id" ) );
+  const QString id = element.attribute( u"id"_s );
 
   if ( mFormats.contains( id ) )
     return mFormats.value( id )->create( configuration, context );

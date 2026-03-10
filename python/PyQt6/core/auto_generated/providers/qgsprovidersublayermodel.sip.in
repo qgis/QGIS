@@ -14,7 +14,7 @@
 
 
 
-class QgsProviderSublayerModel: QAbstractItemModel
+class QgsProviderSublayerModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
 A model for representing the sublayers present in a URI.
@@ -35,7 +35,6 @@ added by calling :py:func:`~addNonLayerItem`.
 #include "qgsprovidersublayermodel.h"
 %End
   public:
-
     enum class Role /BaseType=IntEnum/
     {
       ProviderKey,
@@ -60,7 +59,7 @@ added by calling :py:func:`~addNonLayerItem`.
     };
 
     class NonLayerItem
-{
+    {
 %Docstring(signature="appended")
 Contains details for a non-sublayer item to include in a
 QgsProviderSublayerModel.
@@ -68,11 +67,7 @@ QgsProviderSublayerModel.
 .. versionadded:: 3.22
 %End
 
-%TypeHeaderCode
-#include "qgsprovidersublayermodel.h"
-%End
       public:
-
         QString type() const;
 %Docstring
 Returns the item's type.
@@ -209,12 +204,11 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
   protected:
 
 
-
 };
 
 
 
-class QgsProviderSublayerProxyModel: QSortFilterProxyModel
+class QgsProviderSublayerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A QSortFilterProxyModel for filtering and sorting a
@@ -227,7 +221,6 @@ A QSortFilterProxyModel for filtering and sorting a
 #include "qgsprovidersublayermodel.h"
 %End
   public:
-
     QgsProviderSublayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderSublayerProxyModel, with the specified

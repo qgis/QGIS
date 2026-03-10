@@ -29,7 +29,9 @@
 #include <QSet>
 #include <QString>
 
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+using namespace Qt::StringLiterals;
+
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
 thread_local QgsProjContext QgsProjContext::sProjContext;
 #else
 QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
@@ -51,7 +53,7 @@ QgsProjContext::~QgsProjContext()
 
 PJ_CONTEXT *QgsProjContext::get()
 {
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
   return sProjContext.mContext;
 #else
   PJ_CONTEXT *pContext = nullptr;
@@ -75,7 +77,7 @@ void QgsProjUtils::ProjPJDeleter::operator()( PJ *object ) const
 
 bool QgsProjUtils::usesAngularUnit( const QString &projDef )
 {
-  const QString crsDef = QStringLiteral( "%1 +type=crs" ).arg( projDef );
+  const QString crsDef = u"%1 +type=crs"_s.arg( projDef );
   PJ_CONTEXT *context = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr projSingleOperation( proj_create( context, crsDef.toUtf8().constData() ) );
   if ( !projSingleOperation )
@@ -91,21 +93,14 @@ bool QgsProjUtils::usesAngularUnit( const QString &projDef )
     const char *outUnitAuthName = nullptr;
     const char *outUnitAuthCode = nullptr;
     // Read only first axis
-    proj_cs_get_axis_info( context, coordinateSystem.get(), 0,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           &outUnitAuthName,
-                           &outUnitAuthCode );
+    proj_cs_get_axis_info( context, coordinateSystem.get(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, &outUnitAuthName, &outUnitAuthCode );
 
     if ( outUnitAuthName && outUnitAuthCode )
     {
       const char *unitCategory = nullptr;
       if ( proj_uom_get_info_from_database( context, outUnitAuthName, outUnitAuthCode, nullptr, nullptr, &unitCategory ) )
       {
-        return QString( unitCategory ).compare( QLatin1String( "angular" ), Qt::CaseInsensitive ) == 0;
+        return QString( unitCategory ).compare( "angular"_L1, Qt::CaseInsensitive ) == 0;
       }
     }
   }
@@ -137,40 +132,20 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
     const char *outName0 = nullptr;
     const char *outName1 = nullptr;
 
-    proj_cs_get_axis_info( context, pjCs.get(), 0,
-                           &outName0,
-                           nullptr,
-                           &outDirection0,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr
-                         );
+    proj_cs_get_axis_info( context, pjCs.get(), 0, &outName0, nullptr, &outDirection0, nullptr, nullptr, nullptr, nullptr );
 
-    proj_cs_get_axis_info( context, pjCs.get(), 1,
-                           &outName1,
-                           nullptr,
-                           &outDirection1,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr
-                         );
+    proj_cs_get_axis_info( context, pjCs.get(), 1, &outName1, nullptr, &outDirection1, nullptr, nullptr, nullptr, nullptr );
 
-    if ( QString( outDirection0 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 &&
-         QString( outDirection1 ).compare( QLatin1String( "east" ), Qt::CaseInsensitive ) == 0 )
+    if ( QString( outDirection0 ).compare( "north"_L1, Qt::CaseInsensitive ) == 0 && QString( outDirection1 ).compare( "east"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return true;
     }
 
     // Handle polar projections with NE-order
-    if ( ( QString( outDirection0 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 &&
-           QString( outDirection1 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 ) ||
-         ( QString( outDirection0 ).compare( QLatin1String( "south" ), Qt::CaseInsensitive ) == 0 &&
-           QString( outDirection1 ).compare( QLatin1String( "south" ), Qt::CaseInsensitive ) == 0 ) )
+    if ( ( QString( outDirection0 ).compare( "north"_L1, Qt::CaseInsensitive ) == 0 && QString( outDirection1 ).compare( "north"_L1, Qt::CaseInsensitive ) == 0 )
+         || ( QString( outDirection0 ).compare( "south"_L1, Qt::CaseInsensitive ) == 0 && QString( outDirection1 ).compare( "south"_L1, Qt::CaseInsensitive ) == 0 ) )
     {
-      return QString( outName0 ).startsWith( QLatin1String( "northing" ), Qt::CaseInsensitive ) &&
-             QString( outName1 ).startsWith( QLatin1String( "easting" ), Qt::CaseInsensitive ) ;
+      return QString( outName0 ).startsWith( "northing"_L1, Qt::CaseInsensitive ) && QString( outName1 ).startsWith( "easting"_L1, Qt::CaseInsensitive );
     }
   }
   return false;
@@ -191,13 +166,12 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   if ( datum )
   {
     const PJ_TYPE type = proj_get_type( datum.get() );
-    isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
-                type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+    isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME || type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
     if ( !isDynamic )
     {
       const QString authName( proj_get_id_auth_name( datum.get(), 0 ) );
       const QString code( proj_get_id_code( datum.get(), 0 ) );
-      if ( authName == QLatin1String( "EPSG" ) && code == QLatin1String( "6326" ) )
+      if ( authName == "EPSG"_L1 && code == "6326"_L1 )
       {
         isDynamic = true;
       }
@@ -212,8 +186,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
       if ( member )
       {
         const PJ_TYPE type = proj_get_type( member.get() );
-        isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
-                    type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+        isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME || type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
       }
     }
   }
@@ -243,13 +216,13 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs
     case PJ_TYPE_VERTICAL_CRS:
       return nullptr;
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return unboundCrs( crs );
   }
 
-#ifndef _MSC_VER  // unreachable
+#ifndef _MSC_VER // unreachable
   return nullptr;
 #endif
 }
@@ -277,7 +250,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToVerticalCrs( const PJ *crs )
     case PJ_TYPE_VERTICAL_CRS:
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return nullptr;
@@ -314,7 +287,7 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
       return hasVerticalAxis( proj_get_source_crs( context, crs ) );
     }
 
-    // maybe other types to handle like this??
+      // maybe other types to handle like this??
 
     default:
       break;
@@ -328,19 +301,11 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
   for ( int axisIndex = 0; axisIndex < axisCount; ++axisIndex )
   {
     const char *outDirection = nullptr;
-    proj_cs_get_axis_info( context, pjCs.get(), axisIndex,
-                           nullptr,
-                           nullptr,
-                           &outDirection,
-                           nullptr,
-                           nullptr,
-                           nullptr,
-                           nullptr
-                         );
+    proj_cs_get_axis_info( context, pjCs.get(), axisIndex, nullptr, nullptr, &outDirection, nullptr, nullptr, nullptr, nullptr );
     const QString outDirectionString = QString( outDirection );
-    if ( outDirectionString.compare( QLatin1String( "geocentricZ" ), Qt::CaseInsensitive ) == 0
-         || outDirectionString.compare( QLatin1String( "up" ), Qt::CaseInsensitive ) == 0
-         || outDirectionString.compare( QLatin1String( "down" ), Qt::CaseInsensitive ) == 0 )
+    if ( outDirectionString.compare( "geocentricZ"_L1, Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( "up"_L1, Qt::CaseInsensitive ) == 0
+         || outDirectionString.compare( "down"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return true;
     }
@@ -359,13 +324,13 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
     case PJ_TYPE_BOUND_CRS:
       return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
   }
 
-#ifndef _MSC_VER  // unreachable
+#ifndef _MSC_VER // unreachable
   return nullptr;
 #endif
 }
@@ -390,13 +355,12 @@ void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const
 {
   QStringList *dest = reinterpret_cast< QStringList * >( user_data );
   QString messageString( message );
-  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
+  messageString.replace( "internal_proj_create: "_L1, QString() );
   dest->append( messageString );
 }
 
 void QgsProjUtils::proj_silent_logger( void * /*user_data*/, int /*level*/, const char * /*message*/ )
-{
-}
+{}
 
 void QgsProjUtils::proj_logger( void *, int level, const char *message )
 {
@@ -404,7 +368,7 @@ void QgsProjUtils::proj_logger( void *, int level, const char *message )
   if ( level == PJ_LOG_ERROR )
   {
     const QString messageString( message );
-    if ( messageString == QLatin1String( "push: Invalid latitude" ) )
+    if ( messageString == "push: Invalid latitude"_L1 )
     {
       // these messages tend to spam the console as they can be repeated 1000s of times
       QgsDebugMsgLevel( messageString, 3 );
@@ -419,8 +383,8 @@ void QgsProjUtils::proj_logger( void *, int level, const char *message )
     QgsDebugMsgLevel( QString( message ), 3 );
   }
 #else
-  ( void )level;
-  ( void )message;
+  ( void ) level;
+  ( void ) message;
 #endif
 }
 
@@ -435,10 +399,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *hori
   QgsScopedProjCollectingLogger projLogger;
 
   // const cast here is for compatibility with proj < 9.5
-  QgsProjUtils::proj_pj_unique_ptr compoundCrs( proj_create_compound_crs( context,
-      nullptr,
-      const_cast< PJ *>( horizontalCrs ),
-      const_cast< PJ * >( verticalCrs ) ) );
+  QgsProjUtils::proj_pj_unique_ptr compoundCrs( proj_create_compound_crs( context, nullptr, const_cast< PJ *>( horizontalCrs ), const_cast< PJ * >( verticalCrs ) ) );
 
   if ( errors )
     *errors = projLogger.errors();
@@ -482,7 +443,7 @@ bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authC
         candidateCrs = QgsProjUtils::unboundCrs( candidateCrs.get() );
         const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
         // if a match is identical confidence, we prefer EPSG codes for compatibility with earlier qgis conversions
-        if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == QLatin1String( "EPSG" ) ) )
+        if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == "EPSG"_L1 ) )
         {
           bestConfidence = confidence[i];
           matchedCrs = std::move( candidateCrs );
@@ -515,7 +476,7 @@ bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
 
 QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
 {
-  const thread_local QRegularExpression regex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+  const thread_local QRegularExpression regex( u"\\+(?:nad)?grids=(.*?)\\s"_s );
 
   QList< QgsDatumTransform::GridDetails > grids;
   QRegularExpressionMatchIterator matches = regex.globalMatch( proj );

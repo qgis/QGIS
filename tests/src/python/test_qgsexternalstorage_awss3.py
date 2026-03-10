@@ -18,12 +18,10 @@ from qgis.core import (
     QgsAuthMethodConfig,
 )
 from qgis.testing import unittest
-
 from test_qgsexternalstorage_base import TestPyQgsExternalStorageBase
 
 
 class TestPyQgsExternalStorageAwsS3(TestPyQgsExternalStorageBase, unittest.TestCase):
-
     storageType = "AWSS3"
     badUrl = "http://nothinghere/"
 

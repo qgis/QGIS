@@ -22,14 +22,13 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
+from qgis.core import QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 
-from qgis.core import QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer
-
-from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
+from processing.gui.RenderingStyles import RenderingStyles
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -41,7 +40,6 @@ with warnings.catch_warnings():
 
 
 class EditRenderingStylesDialog(BASE, WIDGET):
-
     def __init__(self, alg):
         super().__init__(None)
         self.setupUi(self)

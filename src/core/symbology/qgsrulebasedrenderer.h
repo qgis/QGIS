@@ -53,12 +53,12 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct FeatureToRender
     {
-      FeatureToRender( const QgsFeature &_f, int _flags )
-        : feat( _f )
-        , flags( _flags )
-      {}
-      QgsFeature feat;
-      int flags; // selected and/or draw markers
+        FeatureToRender( const QgsFeature &_f, int _flags )
+          : feat( _f )
+          , flags( _flags )
+        {}
+        QgsFeature feat;
+        int flags; // selected and/or draw markers
     };
 
     /**
@@ -67,7 +67,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-
         /**
          * Constructor for a render job, with the specified feature to render and symbol.
          *
@@ -96,40 +95,40 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderLevel
     {
-      explicit RenderLevel( int z )
-        : zIndex( z )
-      {}
+        explicit RenderLevel( int z )
+          : zIndex( z )
+        {}
 
-      ~RenderLevel() { qDeleteAll( jobs ); }
-      int zIndex;
+        ~RenderLevel() { qDeleteAll( jobs ); }
+        int zIndex;
 
-      //! List of jobs to render, owned by this object.
-      QList<QgsRuleBasedRenderer::RenderJob *> jobs;
+        //! List of jobs to render, owned by this object.
+        QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
-      QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
-      {
-        if ( &rh == this )
+        QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
+        {
+          if ( &rh == this )
+            return *this;
+
+          zIndex = rh.zIndex;
+          qDeleteAll( jobs );
+          jobs.clear();
+          for ( auto it = rh.jobs.constBegin(); it != rh.jobs.constEnd(); ++it )
+          {
+            jobs << new RenderJob( *( *it ) );
+          }
           return *this;
-
-        zIndex = rh.zIndex;
-        qDeleteAll( jobs );
-        jobs.clear();
-        for ( auto it = rh.jobs.constBegin(); it != rh.jobs.constEnd(); ++it )
-        {
-          jobs << new RenderJob( *( *it ) );
         }
-        return *this;
-      }
 
-      RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
-        : zIndex( other.zIndex ), jobs()
-      {
-        for ( auto it = other.jobs.constBegin(); it != other.jobs.constEnd(); ++it )
+        RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
+          : zIndex( other.zIndex )
+          , jobs()
         {
-          jobs << new RenderJob( * ( *it ) );
+          for ( auto it = other.jobs.constBegin(); it != other.jobs.constEnd(); ++it )
+          {
+            jobs << new RenderJob( *( *it ) );
+          }
         }
-      }
-
     };
 
     //! Rendering queue: a list of rendering levels
@@ -160,8 +159,15 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbol *symbol SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(),
-              const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule(
+          QgsSymbol *symbol SIP_TRANSFER,
+          int maximumScale = 0,
+          int minimumScale = 0,
+          const QString &filterExp = QString(),
+          const QString &label = QString(),
+          const QString &description = QString(),
+          bool elseRule = false
+        );
         ~Rule();
 
         Rule( const Rule &rh ) = delete;
@@ -400,10 +406,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
          * \param reuseId set to TRUE to create an exact copy of the original symbol or FALSE to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
+         * \param context The rendering context (Since QGIS 4.0)
          *
          * \returns A new rule
          */
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
 
         /**
          * Returns all children rules of this rule

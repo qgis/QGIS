@@ -27,7 +27,6 @@ objects.
 #include "qgstextdocument.h"
 %End
   public:
-
     QgsTextDocument();
     QgsTextDocument( const QgsTextDocument &other );
 
@@ -137,7 +136,7 @@ Returns the block at the specified ``index``.
       sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
 %End
 
-    int size() const;
+      int size() const;
 %Docstring
 Returns the number of blocks in the document.
 %End
@@ -147,7 +146,7 @@ Returns the number of blocks in the document.
     sipRes = sipCpp->size();
 %End
 
-    QStringList toPlainText() const;
+        QStringList toPlainText() const;
 %Docstring
 Returns a list of plain text lines of text representing the document.
 %End
@@ -165,6 +164,14 @@ enabled, the ``useMaxLineLengthWhenAutoWrapping`` argument controls
 whether the lines should be wrapped to an ideal maximum of
 ``autoWrapLength`` characters, or if ``False`` then the lines are
 wrapped to an ideal minimum length of ``autoWrapLength`` characters.
+%End
+
+    QVector< QgsTextDocument > splitBlocksToDocuments() const;
+%Docstring
+Splits the text document, such that each block in the document becomes a
+separate document of its own.
+
+.. versionadded:: 4.0
 %End
 
     void applyCapitalization( Qgis::Capitalization capitalization );

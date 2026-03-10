@@ -20,17 +20,19 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const Qgis::LayoutUnit units )
   : mLength( length )
   , mUnits( units )
-{
-}
+{}
 
 QString QgsLayoutMeasurement::encodeMeasurement() const
 {
-  return QStringLiteral( "%1,%2" ).arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2"_s.arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::decodeMeasurement( const QString &string )
@@ -50,7 +52,7 @@ bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement other ) const
 
 bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator+( const double v ) const

@@ -20,6 +20,10 @@
 #include "qgsrelation.h"
 #include "qgsvectorlayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * Represent a QgsRelation with possibly unresolved layers or unmatched fields.
  *
@@ -41,7 +45,6 @@
 class CORE_EXPORT QgsWeakRelation
 {
   public:
-
     /**
      * Enum to distinguish if the layer is referenced or referencing
      * \since QGIS 3.16
@@ -49,7 +52,7 @@ class CORE_EXPORT QgsWeakRelation
     enum WeakRelationType
     {
       Referencing, //!< The layer is referencing (or the "child" / "right" layer in the relationship)
-      Referenced //!< The layer is referenced (or the "parent" / "left" left in the relationship)
+      Referenced   //!< The layer is referenced (or the "parent" / "left" left in the relationship)
     };
 
     /**
@@ -62,18 +65,19 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.30
      */
-    QgsWeakRelation( const QString &relationId,
-                     const QString &relationName,
-                     const Qgis::RelationshipStrength strength,
-                     const QString &referencingLayerId,
-                     const QString &referencingLayerName,
-                     const QString &referencingLayerSource,
-                     const QString &referencingLayerProviderKey,
-                     const QString &referencedLayerId,
-                     const QString &referencedLayerName,
-                     const QString &referencedLayerSource,
-                     const QString &referencedLayerProviderKey
-                   );
+    QgsWeakRelation(
+      const QString &relationId,
+      const QString &relationName,
+      const Qgis::RelationshipStrength strength,
+      const QString &referencingLayerId,
+      const QString &referencingLayerName,
+      const QString &referencingLayerSource,
+      const QString &referencingLayerProviderKey,
+      const QString &referencedLayerId,
+      const QString &referencedLayerName,
+      const QString &referencedLayerSource,
+      const QString &referencedLayerProviderKey
+    );
 
     /**
      * Resolves a weak relation in the given \a project returning a list of possibly invalid QgsRelations
@@ -456,6 +460,7 @@ class CORE_EXPORT QgsWeakRelation
     static void writeXml( const QgsVectorLayer *layer, WeakRelationType type, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
 
@@ -469,15 +474,18 @@ class CORE_EXPORT QgsWeakRelation
 
     QString str;
     if ( leftIdentifier.isEmpty() && rightIdentifier.isEmpty() )
-      str = QStringLiteral( "<QgsWeakRelation: %1>" ).arg( sipCpp->id() );
+      str = u"<QgsWeakRelation: %1>"_s.arg( sipCpp->id() );
     else
-      str = QStringLiteral( "<QgsWeakRelation: %1 - %2 -> %3>" ).arg( sipCpp->id(), leftIdentifier, rightIdentifier );
+      str = u"<QgsWeakRelation: %1 - %2 -> %3>"_s.arg( sipCpp->id(), leftIdentifier, rightIdentifier );
 
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
     QgsVectorLayerRef mReferencingLayer;
     QgsVectorLayerRef mReferencedLayer;
@@ -498,7 +506,6 @@ class CORE_EXPORT QgsWeakRelation
     QString mRelatedTableType;
 
     friend class TestQgsWeakRelation;
-
 };
 
 #endif // QGSWEAKRELATION_H

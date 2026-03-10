@@ -83,9 +83,7 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mAlignment( other.mAlignment )
   , mUnits( other.mUnits )
   , mNumericFormat( other.mNumericFormat->clone() )
-{
-
-}
+{}
 
 QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &other )
 {
@@ -336,4 +334,3 @@ void QgsScaleBarSettings::setNumericFormat( QgsNumericFormat *format )
 }
 
 QgsScaleBarSettings::~QgsScaleBarSettings() = default;
-

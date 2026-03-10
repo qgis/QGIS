@@ -28,8 +28,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsrubberband.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geometryType )
   : QObject( nullptr )
@@ -49,8 +52,7 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomet
 QgsRubberBand::QgsRubberBand()
   : QObject( nullptr )
   , QgsMapCanvasItem( nullptr )
-{
-}
+{}
 
 QgsRubberBand::~QgsRubberBand() = default;
 
@@ -198,7 +200,13 @@ void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex, int ringIndex
 
 void QgsRubberBand::removePoint( int index, bool doUpdate /* = true*/, int geometryIndex /* = 0*/, int ringIndex /* = 0*/ )
 {
-  if ( geometryIndex < 0 || ringIndex < 0 || mPoints.size() <= geometryIndex || mPoints.at( geometryIndex ).size() <= ringIndex || mPoints.at( geometryIndex ).at( ringIndex ).size() <= index || mPoints.at( geometryIndex ).at( ringIndex ).size() < -index || mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
+  if ( geometryIndex < 0
+       || ringIndex < 0
+       || mPoints.size() <= geometryIndex
+       || mPoints.at( geometryIndex ).size() <= ringIndex
+       || mPoints.at( geometryIndex ).at( ringIndex ).size() <= index
+       || mPoints.at( geometryIndex ).at( ringIndex ).size() < -index
+       || mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
@@ -313,7 +321,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform rubber band geometry to map CRS" ) );
+      QgsDebugError( u"Could not transform rubber band geometry to map CRS"_s );
       return;
     }
   }
@@ -584,12 +592,7 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
           case ICON_DIAMOND:
           case ICON_FULL_DIAMOND:
           {
-            QPointF pts[] = {
-              QPointF( x, y - s ),
-              QPointF( x + s, y ),
-              QPointF( x, y + s ),
-              QPointF( x - s, y )
-            };
+            QPointF pts[] = { QPointF( x, y - s ), QPointF( x + s, y ), QPointF( x, y + s ), QPointF( x - s, y ) };
             if ( mIconType == ICON_FULL_DIAMOND )
               p->drawPolygon( pts, 4 );
             else

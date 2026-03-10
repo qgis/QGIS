@@ -11,31 +11,30 @@ __date__ = "17/01/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QPainter, QImage
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsFillSymbol,
     QgsLayout,
     QgsLayoutItem,
+    QgsLayoutItemElevationProfile,
     QgsLayoutItemLabel,
     QgsLayoutItemMap,
     QgsLayoutItemShape,
     QgsLayoutMeasurement,
     QgsLayoutObject,
     QgsLayoutPoint,
+    QgsLayoutRenderContext,
     QgsLayoutSize,
     QgsProject,
     QgsProperty,
-    QgsUnitTypes,
-    QgsFillSymbol,
     QgsSimpleFillSymbolLayer,
-    QgsLayoutRenderContext,
-    QgsLayoutItemElevationProfile,
+    QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -64,7 +63,6 @@ class LayoutItemTestCase:
 
 
 class TestQgsLayoutItem(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "composer_effects"

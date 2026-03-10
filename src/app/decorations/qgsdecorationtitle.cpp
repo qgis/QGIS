@@ -30,8 +30,11 @@
 #include <QFile>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsdecorationtitle.cpp"
+
+using namespace Qt::StringLiterals;
 
 //non qt includes
 #include <cmath>
@@ -44,7 +47,7 @@ QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Title Label" ) );
-  mConfigurationName = QStringLiteral( "TitleLabel" );
+  mConfigurationName = u"TitleLabel"_s;
 
   projectRead();
 }
@@ -53,15 +56,15 @@ void QgsDecorationTitle::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Label" ), QString() );
-  mBackgroundColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
+  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, u"/Label"_s, QString() );
+  mBackgroundColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/BackgroundColor"_s, u"0,0,0,99"_s ) );
 
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -76,18 +79,18 @@ void QgsDecorationTitle::saveToProject()
 {
   QgsDecorationItem::saveToProject();
 
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QgsColorUtils::colorToString( mBackgroundColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Label"_s, mLabelText );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/BackgroundColor"_s, QgsColorUtils::colorToString( mBackgroundColor ) );
 
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   const QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Font"_s, textDoc.toString() );
 }
 
 // Slot called when the buffer menu item is activated
@@ -159,57 +162,51 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   switch ( mPlacement )
   {
     case BottomLeft: // Bottom Left, xOffset is set above
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       break;
     case TopLeft: // Top left, xOffset is set above
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       break;
     case TopRight: // Top Right
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case BottomRight: // Bottom Right
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case TopCenter: // Top Center
-      backgroundBar << QPointF( 0, 0 )
-                    << QPointF( deviceWidth, 0 )
-                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
-                    << QPointF( 0, yOffset * 2 + textHeight );
+      backgroundBar << QPointF( 0, 0 ) << QPointF( deviceWidth, 0 ) << QPointF( deviceWidth, yOffset * 2 + textHeight ) << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     case BottomCenter: // Bottom Center
-      backgroundBar << QPointF( 0, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight )
-                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
-                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      backgroundBar
+        << QPointF( 0, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight )
+        << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+        << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     default:
-      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
   }
 
   // Draw background bar

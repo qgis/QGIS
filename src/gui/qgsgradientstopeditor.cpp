@@ -18,16 +18,14 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
+#include <QMouseEvent>
 #include <QPainter>
+#include <QString>
+#include <QStyleOptionFrame>
 
 #include "moc_qgsgradientstopeditor.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
-#include <QMouseEvent>
+using namespace Qt::StringLiterals;
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
@@ -38,19 +36,23 @@ QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorR
 
   if ( sOuterTriangle.isEmpty() )
   {
-    sOuterTriangle << QPointF( 0, MARKER_HEIGHT ) << QPointF( MARKER_WIDTH, MARKER_HEIGHT )
-                   << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
-                   << QPointF( MARKER_WIDTH / 2.0, 0 )
-                   << QPointF( 0, MARKER_WIDTH / 2.0 )
-                   << QPointF( 0, MARKER_HEIGHT );
+    sOuterTriangle
+      << QPointF( 0, MARKER_HEIGHT )
+      << QPointF( MARKER_WIDTH, MARKER_HEIGHT )
+      << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
+      << QPointF( MARKER_WIDTH / 2.0, 0 )
+      << QPointF( 0, MARKER_WIDTH / 2.0 )
+      << QPointF( 0, MARKER_HEIGHT );
   }
   if ( sInnerTriangle.isEmpty() )
   {
-    sInnerTriangle << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP ) << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_HEIGHT - MARKER_GAP )
-                   << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-                   << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
-                   << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-                   << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
+    sInnerTriangle
+      << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP )
+      << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_HEIGHT - MARKER_GAP )
+      << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+      << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
+      << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+      << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
   }
 
   setFocusPolicy( Qt::StrongFocus );
@@ -415,7 +417,7 @@ QPixmap QgsGradientStopEditor::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }

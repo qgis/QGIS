@@ -13,18 +13,18 @@ __author__ = "Etienne Trimaille"
 __date__ = "21/06/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from qgis.core import QgsMapLayerServerProperties, QgsVectorLayer
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsMapLayerServerProperties, QgsVectorLayer
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsMapLayerServerConfig(QgisTestCase):
-
     def test_deprecated_function(self):
         """Test deprecated function about metadata url in QgsMapLayer."""
-        # Remove in QGIS 4.0
+        # Remove in QGIS 5.0
         layer = QgsVectorLayer("Point?field=fldtxt:string", "layer_1", "memory")
 
         self.assertEqual("", layer.metadataUrl())

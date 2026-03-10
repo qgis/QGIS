@@ -41,9 +41,11 @@ It proxies display and actions to
       CommonAngleSnapping,
       Distance,
       Bearing,
+      Weight,
+      Area,
+      TotalLength,
     };
     typedef QFlags<QgsAdvancedDigitizingFloater::FloaterItem> FloaterItems;
-
 
 
     explicit QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
@@ -64,13 +66,34 @@ active but not visible (e.g. if the mouse is not over the canvas).
 .. versionadded:: 3.8
 %End
 
-    bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
+    bool itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
 %Docstring
 Returns ``True`` if the floater ``item`` visibility setting is enabled.
 
 :param item: floater item
 
 .. versionadded:: 3.32
+%End
+
+    Qgis::CadMeasurementDisplayType itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
+%Docstring
+Returns the measurement display type for a floater ``item``.
+
+If the ``item`` does not support measurement types (see
+:py:func:`~QgsAdvancedDigitizingFloater.itemSupportsMeasurementType`),
+:py:class:`Qgis`.CadMeasurementDisplayType.Hidden will be returned. For
+these items use :py:func:`~QgsAdvancedDigitizingFloater.itemVisibility`
+instead.
+
+.. versionadded:: 4.0
+%End
+
+    static bool itemSupportsMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item );
+%Docstring
+Returns ``True`` if a floater ``item`` supports display in different
+:py:class:`Qgis`.CadMeasurementDisplayType values.
+
+.. versionadded:: 4.0
 %End
 
   public slots:
@@ -86,7 +109,7 @@ canvas).
 .. versionadded:: 3.8
 %End
 
-    void setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible );
+    void setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item, bool visible );
 %Docstring
 Set whether the floater ``item`` should be visible or not.
 
@@ -94,6 +117,39 @@ Set whether the floater ``item`` should be visible or not.
 :param visible: 
 
 .. versionadded:: 3.32
+%End
+
+    void setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item, Qgis::CadMeasurementDisplayType type );
+%Docstring
+Set whether the measurement display ``type`` for a floater ``item``.
+
+.. versionadded:: 4.0
+%End
+
+  public slots:
+    void changeWeight( const QString &text );
+%Docstring
+Updates the weight value displayed in the floater for NURBSCurve.
+
+:param text: The weight value as a string
+
+.. versionadded:: 4.0
+%End
+
+    void enabledChangedWeight( bool enabled );
+%Docstring
+Shows or hides the weight widget in the floater for NURBSCurve.
+
+:param enabled: Whether weight editing is active
+
+.. versionadded:: 4.0
+%End
+
+    void focusOnWeight();
+%Docstring
+Requests focus on the weight input field for NURBSCurve.
+
+.. versionadded:: 4.0
 %End
 
   private:

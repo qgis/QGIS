@@ -56,9 +56,12 @@
 #include <QScreen>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsgraduatedsymbolrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ------------------------------ Model ------------------------------------
 
@@ -66,10 +69,9 @@
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
+  , mMimeFormat( u"application/x-qgsgraduatedsymbolrendererv2model"_s )
   , mScreen( screen )
-{
-}
+{}
 
 void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *renderer )
 {
@@ -338,7 +340,7 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
     to = mRenderer->ranges().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsgLevel( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ), 2 );
+    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t )
@@ -444,10 +446,11 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )
@@ -504,14 +507,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   btnChangeGraduatedSymbol->setLayer( mLayer );
   btnChangeGraduatedSymbol->registerExpressionContextGenerator( this );
 
-  mSizeUnitWidget->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
-  );
+  mSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
   spinPrecision->setMinimum( QgsClassificationMethod::MIN_PRECISION );
   spinPrecision->setMaximum( QgsClassificationMethod::MAX_PRECISION );
@@ -1093,7 +1089,14 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   // and give the user the chance to cancel
   if ( mRenderer->classificationMethod()->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
   {
-    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
+    if ( QMessageBox::Cancel
+         == QMessageBox::question(
+           this,
+           tr( "Apply Classification" ),
+           tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ),
+           QMessageBox::Cancel,
+           QMessageBox::Ok
+         ) )
     {
       return;
     }
@@ -1203,8 +1206,7 @@ void QgsGraduatedSymbolRendererWidget::rangesClicked( const QModelIndex &idx )
 }
 
 void QgsGraduatedSymbolRendererWidget::changeSelectedSymbols()
-{
-}
+{}
 
 void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
@@ -1315,12 +1317,7 @@ void QgsGraduatedSymbolRendererWidget::toggleBoundariesLink( bool linked )
   {
     if ( !rowsOrdered() )
     {
-      int result = QMessageBox::warning(
-        this,
-        tr( "Link Class Boundaries" ),
-        tr( "Rows will be reordered before linking boundaries. Continue?" ),
-        QMessageBox::Ok | QMessageBox::Cancel
-      );
+      int result = QMessageBox::warning( this, tr( "Link Class Boundaries" ), tr( "Rows will be reordered before linking boundaries. Continue?" ), QMessageBox::Ok | QMessageBox::Cancel );
       if ( result != QMessageBox::Ok )
       {
         cbxLinkBoundaries->setChecked( false );

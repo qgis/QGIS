@@ -23,6 +23,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -41,7 +42,10 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QScreen>
+#include <QString>
 #include <QToolBar>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name
@@ -60,10 +64,10 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     if ( crs.isGeographic() )
     {
       // we can't deal with non-projected CRS, so let's just pick something
-      QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+      QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
     }
 
-    map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) : QgsProject::instance()->crs() );
+    map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( u"EPSG:4978"_s ) : QgsProject::instance()->crs() );
     map->setLayers( visibleLayers );
 
     if ( map->sceneMode() == Qgis::SceneMode::Local )
@@ -78,9 +82,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
-    QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] {
-      map->setTransformContext( QgsProject::instance()->transformContext() );
-    } );
+    QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] { map->setTransformContext( QgsProject::instance()->transformContext() ); } );
 
     QgsFlatTerrainSettings *flatTerrain = new QgsFlatTerrainSettings();
     flatTerrain->setElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
@@ -130,7 +132,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     QgsReadWriteContext readWriteContext;
     readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    map->readXml( viewXml.firstChildElement( QStringLiteral( "qgis3d" ) ), readWriteContext );
+    map->readXml( viewXml.firstChildElement( u"qgis3d"_s ), readWriteContext );
     map->resolveReferences( *QgsProject::instance() );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
@@ -142,16 +144,14 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
 
     canvas->setMapSettings( map );
 
-    QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
+    QDomElement elemCamera = viewXml.firstChildElement( u"camera"_s );
     if ( !elemCamera.isNull() )
     {
       canvas->cameraController()->readXml( elemCamera, savedOrigin );
     }
   }
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] {
-    qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
-  } );
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] { qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount(); } );
 
   qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
 }
@@ -159,8 +159,8 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
 QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 {
   const QPointer configDialog = new QDialog;
-  configDialog->setWindowTitle( QStringLiteral( "3D Configuration" ) );
-  configDialog->setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  configDialog->setWindowTitle( u"3D Configuration"_s );
+  configDialog->setObjectName( u"3DConfigurationDialog"_s );
   configDialog->setMinimumSize( 600, 460 );
   QgsGui::enableAutoGeometryRestore( configDialog );
 
@@ -177,11 +177,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
     // update map
     w->apply();
 
-    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
-      oldLookingAt,
-      oldOrigin, oldCrs,
-      map->origin(), map->crs(), QgsProject::instance()->transformContext()
-    );
+    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates( oldLookingAt, oldOrigin, oldCrs, map->origin(), map->crs(), QgsProject::instance()->transformContext() );
 
     if ( p != oldLookingAt )
     {
@@ -199,7 +195,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
       configDialog->accept();
   } );
-  QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
+  QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( u"map_views/3d_map_view.html#scene-configuration"_s ); } );
 
   QObject::connect( w, &Qgs3DMapConfigWidget::isValidChanged, configDialog, [buttons]( const bool valid ) {
     buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
@@ -214,7 +210,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 
 int main( int argc, char *argv[] )
 {
-  QgsApplication myApp( argc, argv, true, QString(), QStringLiteral( "desktop" ) );
+  QgsApplication myApp( argc, argv, true, QString(), u"desktop"_s );
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -260,19 +256,12 @@ int main( int argc, char *argv[] )
 
   QToolBar *toolBar = new QToolBar( windowWidget );
   toolBar->setIconSize( QgsGuiUtils::iconSize() );
-  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), QStringLiteral( "Reset camera to default position" ), windowWidget, [canvas] {
-    canvas->resetView();
-  } );
-  QAction *toggleDebugPanel = toolBar->addAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
-    QStringLiteral( "Toggle on-screen Debug panel" )
-  );
+  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), u"Reset camera to default position"_s, windowWidget, [canvas] { canvas->resetView(); } );
+  QAction *toggleDebugPanel = toolBar->addAction( QgsApplication::getThemeIcon( u"/propertyicons/general.svg"_s ), u"Toggle on-screen Debug panel"_s );
   toggleDebugPanel->setCheckable( true );
-  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ), QStringLiteral( "Configure…" ), windowWidget );
+  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ), u"Configure…"_s, windowWidget );
   QDialog *configDialog = createConfigDialog( canvas );
-  QObject::connect( configureAction, &QAction::triggered, windowWidget, [configDialog] {
-    configDialog->setVisible( true );
-  } );
+  QObject::connect( configureAction, &QAction::triggered, windowWidget, [configDialog] { configDialog->setVisible( true ); } );
   toolBar->addAction( configureAction );
 
   QWidget *container = QWidget::createWindowContainer( canvas );
@@ -280,17 +269,13 @@ int main( int argc, char *argv[] )
   Qgs3DDebugWidget *debugWidget = new Qgs3DDebugWidget( canvas );
   debugWidget->setMapSettings( canvas->mapSettings() );
   debugWidget->setVisible( false );
-  QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [debugWidget]( const bool enabled ) {
-    debugWidget->setVisible( enabled );
-  } );
+  QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [debugWidget]( const bool enabled ) { debugWidget->setVisible( enabled ); } );
 
   // Connect the camera to the debug widget.
   QObject::connect( canvas->cameraController(), &QgsCameraController::cameraChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
   QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
   QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
-  QObject::connect( toggleDebugPanel, &QAction::toggled, windowWidget, [debugWidget]( const bool enabled ) {
-    debugWidget->setVisible( enabled );
-  } );
+  QObject::connect( toggleDebugPanel, &QAction::toggled, windowWidget, [debugWidget]( const bool enabled ) { debugWidget->setVisible( enabled ); } );
 
   // construct the layout of sandbox
   QVBoxLayout *vLayout = new QVBoxLayout;

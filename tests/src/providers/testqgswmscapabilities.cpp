@@ -19,6 +19,9 @@
 
 #include <QFile>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -37,10 +40,7 @@ class TestQgsWmsCapabilities : public QObject
     }
 
     //runs after all tests
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
 
     void read()
@@ -78,7 +78,7 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl.size(), 1 );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref, QString( "http://www.example.com/fb.png" ) );
 
-      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << QStringLiteral( "EPSG:2056" ) );
+      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << u"EPSG:2056"_s );
     }
 
     void guessCrs()
@@ -94,7 +94,7 @@ class TestQgsWmsCapabilities : public QObject
       QVERIFY( capabilities.parseResponse( content, config ) );
       QCOMPARE( capabilities.supportedLayers().size(), 5 );
 
-      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), u"EPSG:3857"_s );
     }
 
     void wmstSettings()
@@ -111,10 +111,7 @@ class TestQgsWmsCapabilities : public QObject
         QCOMPARE( date.toString( iterator.value() ), iterator.key() );
       }
 
-      QList<QString> resolutionList = {
-        "P1D", "P1Y", "PT5M", "P1DT1H",
-        "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S"
-      };
+      QList<QString> resolutionList = { "P1D", "P1Y", "PT5M", "P1DT1H", "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S" };
 
       for ( const QString &resolutionText : resolutionList )
       {
@@ -122,7 +119,7 @@ class TestQgsWmsCapabilities : public QObject
         QCOMPARE( resolution.toString(), resolutionText );
       }
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D"_s );
       settings.setTimeDimensionExtent( extent );
 
       QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
@@ -147,7 +144,7 @@ class TestQgsWmsCapabilities : public QObject
 
       QCOMPARE( secondClosest, secondExpected );
 
-      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H" ) );
+      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H"_s );
       settings.setTimeDimensionExtent( secondExtent );
 
       QDateTime thirdClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 5, 0, 0 ), Qt::UTC ) );
@@ -191,12 +188,12 @@ class TestQgsWmsCapabilities : public QObject
       QgsWmsLayerProperty prop;
       cap.parseLayer( doc.documentElement(), prop );
 
-      QCOMPARE( prop.name, QStringLiteral( "danger_index" ) );
+      QCOMPARE( prop.name, u"danger_index"_s );
       QCOMPARE( prop.dimensions.size(), 1 );
-      QCOMPARE( prop.dimensions.at( 0 ).name, QStringLiteral( "time" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).name, u"time"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, u"2019-01-01"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).extent, u"2018-01-01/2019-12-31"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).units, u"ISO8601"_s );
     }
 
     void wmstListOfTimeExtents()
@@ -204,7 +201,9 @@ class TestQgsWmsCapabilities : public QObject
       // test parsing a fixed list of time extents
       QgsWmsSettings settings;
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent(
+        u"1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z"_s
+      );
       settings.setTimeDimensionExtent( extent );
 
       QCOMPARE( extent.datesResolutionList.size(), 8 );
@@ -244,25 +243,29 @@ class TestQgsWmsCapabilities : public QObject
       QTest::addColumn<QString>( "dimension" );
       QTest::addColumn<QString>( "extent" );
 
-      QTest::newRow( "single instant" ) << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "single instant" )
+        << R"""(<Dimension name="time" units="ISO8601">
                                            2020-01-01
                                            </Dimension>)"""
-                                        << "2020-01-01";
+        << "2020-01-01";
 
-      QTest::newRow( "interval" ) << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "interval" )
+        << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01/2020-12-31/P1M
                                      </Dimension>)"""
-                                  << "2020-01-01/2020-12-31/P1M";
+        << "2020-01-01/2020-12-31/P1M";
 
-      QTest::newRow( "list" ) << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "list" )
+        << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01,2020-06-31,2020-12-31
                                      </Dimension>)"""
-                              << "2020-01-01,2020-06-31,2020-12-31";
+        << "2020-01-01,2020-06-31,2020-12-31";
 
-      QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "continuous" )
+        << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01/2020-06-31
                                      </Dimension>)"""
-                                    << "2020-01-01/2020-06-31";
+        << "2020-01-01/2020-06-31";
 
       QTest::newRow( "interval with internal newline characters" )
         << R"""(<Dimension name="time" units="ISO8601">
@@ -293,7 +296,8 @@ class TestQgsWmsCapabilities : public QObject
       QTest::addColumn<QString>( "secondLayer" );
       QTest::addColumn<bool>( "result" );
 
-      QTest::newRow( "equal properties" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+      QTest::newRow( "equal properties" )
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test</Title>
                                              <Abstract>Test</Abstract>
@@ -305,7 +309,7 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test</Title>
                                              <Abstract>Test</Abstract>
@@ -317,9 +321,10 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                          << true;
+        << true;
 
-      QTest::newRow( "different names" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+      QTest::newRow( "different names" )
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                             <Name>Test</Name>
                                             <Title>Test</Title>
                                             <Abstract>Test</Abstract>
@@ -331,7 +336,7 @@ class TestQgsWmsCapabilities : public QObject
                                             2020-01-01
                                             </Dimension>
                                             </Layer>)"""
-                                         << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                             <Name>Test2</Name>
                                             <Title>Test</Title>
                                             <Abstract>Test</Abstract>
@@ -343,9 +348,10 @@ class TestQgsWmsCapabilities : public QObject
                                             2020-01-01
                                             </Dimension>
                                             </Layer>)"""
-                                         << false;
+        << false;
 
-      QTest::newRow( "different titles" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+      QTest::newRow( "different titles" )
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test</Title>
                                              <SRS>EPSG:4326</SRS>
@@ -356,7 +362,7 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test2</Title>
                                              <SRS>EPSG:4326</SRS>
@@ -367,9 +373,10 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                          << false;
+        << false;
 
-      QTest::newRow( "different abstract" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+      QTest::newRow( "different abstract" )
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test</Title>
                                              <Abstract>Test</Abstract>
@@ -381,7 +388,7 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                            << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                              <Name>Test</Name>
                                              <Title>Test2</Title>
                                              <Abstract>Test2</Abstract>
@@ -393,9 +400,10 @@ class TestQgsWmsCapabilities : public QObject
                                              2020-01-01
                                              </Dimension>
                                              </Layer>)"""
-                                            << false;
+        << false;
 
-      QTest::newRow( "different dimension extent" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+      QTest::newRow( "different dimension extent" )
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                                        <Name>Test</Name>
                                                        <Title>Test</Title>
                                                        <Abstract>Test</Abstract>
@@ -407,7 +415,7 @@ class TestQgsWmsCapabilities : public QObject
                                                        2020-01-01
                                                        </Dimension>
                                                        </Layer>)"""
-                                                    << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+        << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                                        <Name>Test</Name>
                                                        <Title>Test</Title>
                                                        <Abstract>Test</Abstract>
@@ -419,7 +427,7 @@ class TestQgsWmsCapabilities : public QObject
                                                        2020-01-01/2020-12-31/P1M
                                                        </Dimension>
                                                        </Layer>)"""
-                                                    << false;
+        << false;
     }
 
     void wmsLayerProperty()
@@ -531,6 +539,7 @@ class TestQgsWmsCapabilities : public QObject
               <TileMatrixSetLink>
                   <TileMatrixSet>g</TileMatrixSet>
               </TileMatrixSetLink>
+              <ResourceURL format="image/png" resourceType="tile" template="https:\/\/landscapes-mapserver.tern.org.au/mapcache/wmts/1.0.0/ETaScaled/default/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
               <ResourceURL format="image/png" resourceType="tile" template="https:\/\/landscapes-mapserver.tern.org.au/mapcache/wmts/1.0.0/ETaScaled/default/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
           </Layer>
           <TileMatrixSet>
@@ -558,19 +567,27 @@ class TestQgsWmsCapabilities : public QObject
 
       QCOMPARE( capabilities.supportedTileLayers().size(), 1 );
       const QgsWmtsTileLayer tileLayer = capabilities.supportedTileLayers().at( 0 );
-      QCOMPARE( tileLayer.title, QStringLiteral( "ETa Scaled" ) );
-      QCOMPARE( tileLayer.timeDimensionIdentifier, QStringLiteral( "time" ) );
+      QCOMPARE( tileLayer.title, u"ETa Scaled"_s );
+      QCOMPARE( tileLayer.timeDimensionIdentifier, u"time"_s );
 
-      QCOMPARE( tileLayer.allTimeRanges, QList<QgsDateTimeRange>( {
-                                           QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
-                                           QgsDateTimeRange( QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ),
-                                           QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ) ),
-                                           QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
-                                         } ) );
+      QCOMPARE(
+        tileLayer.allTimeRanges,
+        QList<QgsDateTimeRange>( {
+          QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
+          QgsDateTimeRange( QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ),
+          QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ) ),
+          QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
+        } )
+      );
       QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
       QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
-      QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
+      QCOMPARE( tileLayer.defaultTimeDimensionValue, u"current"_s );
+
+      // Verify the temporal URL (with {TIME}) was selected
+      QVERIFY( tileLayer.getTileURLs.contains( "image/png" ) );
+      QString selectedUrl = tileLayer.getTileURLs.value( "image/png" );
+      QVERIFY( selectedUrl.toLower().contains( "{time}" ) );
     }
 
     void wmtsTimeDimensionValue_data()
@@ -579,10 +596,22 @@ class TestQgsWmsCapabilities : public QObject
       QTest::addColumn<QgsDateTimeRange>( "range" );
       QTest::addColumn<int>( "format" );
 
-      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
-      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
-      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
-      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
+      QTest::newRow( "YYYYMMDD" )
+        << QString( "20210103" )
+        << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) )
+        << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
+      QTest::newRow( "YYYY-MM-DD" )
+        << QString( "2021-01-03" )
+        << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) )
+        << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
+      QTest::newRow( "YYYY" )
+        << QString( "2021" )
+        << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) )
+        << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
+      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" )
+        << QString( "2018-03-01T16:23:44Z" )
+        << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) )
+        << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
     }
 
     void wmtsTimeDimensionValue()
@@ -634,6 +663,31 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( capabilities.supportedTileMatrixSets().size(), 1 );
       QgsWmtsTileLayer layer = capabilities.supportedTileLayers().at( 0 );
       QCOMPARE( layer.boundingBoxes.first().box, QgsRectangle( 109.999, -45.081, 155.005, -9.978 ) );
+    }
+
+    void wmstTemporalFormat_data()
+    {
+      QTest::addColumn<QString>( "extent" );
+      QTest::addColumn<QString>( "expectedFormat" );
+
+      QTest::newRow( "year only" ) << "2014" << "yyyy";
+      QTest::newRow( "year-month" ) << "2014-01" << "yyyy-MM";
+      QTest::newRow( "year-month-day" ) << "2020-01-01" << "yyyy-MM-dd";
+      QTest::newRow( "full datetime with Z" ) << "2020-01-01T12:30:45Z" << "yyyy-MM-ddTHH:mm:ssZ";
+      QTest::newRow( "interval with dates" ) << "2020-01-01,2020-12-31" << "yyyy-MM-dd";
+      QTest::newRow( "interval with datetime" ) << "2020-01-01T00:00:00Z,2020-12-31T23:59:59Z" << "yyyy-MM-ddTHH:mm:ssZ";
+      QTest::newRow( "empty string" ) << "" << "";
+    }
+
+    void wmstTemporalFormat()
+    {
+      QFETCH( QString, extent );
+      QFETCH( QString, expectedFormat );
+
+      QgsWmsSettings settings;
+      QString format = settings.parseTemporalFormat( extent );
+
+      QCOMPARE( format, expectedFormat );
     }
 };
 

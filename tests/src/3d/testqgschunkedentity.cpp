@@ -26,13 +26,17 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsChunkedEntity : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsChunkedEntity()
-      : QgsTest( QStringLiteral( "3D Rendering Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Rendering Tests"_s, u"3d"_s )
     {}
 
   private slots:

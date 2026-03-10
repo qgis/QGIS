@@ -30,9 +30,12 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionGraphicsItem>
 
 #include "moc_qgslayoutitempage.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout, false )
@@ -41,15 +44,14 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] {
     prepareGeometryChange();
     mBoundingRect = QRectF();
   } );
 
   const QFont font;
   const QFontMetrics fm( font );
-  mMaximumShadowWidth = fm.boundingRect( QStringLiteral( "X" ) ).width();
+  mMaximumShadowWidth = fm.boundingRect( u"X"_s ).width();
 
   mGrid = std::make_unique<QgsLayoutItemPageGrid>( pos().x(), pos().y(), rect().width(), rect().height(), mLayout );
   mGrid->setParentItem( this );
@@ -111,7 +113,7 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
 QPageLayout QgsLayoutItemPage::pageLayout() const
 {
   QPageLayout pageLayout;
-  pageLayout.setMargins( {0, 0, 0, 0} );
+  pageLayout.setMargins( { 0, 0, 0, 0 } );
   pageLayout.setMode( QPageLayout::FullPageMode );
   const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), Qgis::LayoutUnit::Millimeters ).toQSizeF();
 
@@ -154,13 +156,13 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
     *ok = false;
 
   const QString trimmedString = string.trimmed();
-  if ( trimmedString.compare( QLatin1String( "portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmedString.compare( "portrait"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;
     return Portrait;
   }
-  else if ( trimmedString.compare( QLatin1String( "landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( trimmedString.compare( "landscape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;
@@ -192,20 +194,18 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesF
 void QgsLayoutItemPage::createDefaultPageStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"no"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
   mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
 
 
-
 ///@cond PRIVATE
-class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+class QgsLayoutItemPageUndoCommand : public QgsLayoutItemUndoCommand
 {
   public:
-
     QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsLayoutItemUndoCommand( page, text, id, parent )
     {}
@@ -217,7 +217,6 @@ class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
     }
 
   protected:
-
     QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
@@ -240,7 +239,7 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() cons
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   QgsStyleSymbolEntity entity( mPageStyleSymbol.get() );
-  if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
+  if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"page"_s, QObject::tr( "Page" ) ) ) )
     return false;
   return true;
 }
@@ -277,8 +276,9 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
-                                            std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
+    painter->drawRect(
+      pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ), std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) )
+    );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
@@ -306,8 +306,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     }
 
     // round up
-    const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                  std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
+    const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels, std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
     const QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
@@ -330,7 +329,7 @@ bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocu
 
 bool QgsLayoutItemPage::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
   {
     mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );

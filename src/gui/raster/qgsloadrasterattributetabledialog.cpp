@@ -16,13 +16,17 @@
 #include "qgsloadrasterattributetabledialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterattributetable.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsloadrasterattributetabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )
@@ -32,14 +36,13 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s ); } );
 
-  connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [this]( const QString & ) {
-    updateButtons();
-  } );
+  connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [this]( const QString & ) { updateButtons(); } );
 
   mRasterBand->setLayer( mRasterLayer );
 
-  mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+  mDbfPathWidget->setFilter( u"VAT DBF Files (*.vat.dbf)"_s );
 
   updateButtons();
 
@@ -98,7 +101,9 @@ void QgsLoadRasterAttributeTableDialog::accept()
     {
       if ( !rat->isValid( &errorMessage ) )
       {
-        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
+        switch (
+          QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ).arg( errorMessage ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel )
+        )
         {
           case QMessageBox::Cancel:
             return;
@@ -114,7 +119,13 @@ void QgsLoadRasterAttributeTableDialog::accept()
 
       if ( mRasterLayer->attributeTable( rasterBand() ) && !mRasterLayer->attributeTable( rasterBand() )->filePath().isEmpty() )
       {
-        switch ( QMessageBox::warning( nullptr, tr( "Confirm Attribute Table Replacement" ), tr( "Raster band %1 already has an associated attribute table loaded from '%2'. Are you sure you want to replace the existing raster attribute table?" ).arg( QString::number( rasterBand() ), mRasterLayer->attributeTable( rasterBand() )->filePath() ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
+        switch ( QMessageBox::warning(
+          nullptr,
+          tr( "Confirm Attribute Table Replacement" ),
+          tr( "Raster band %1 already has an associated attribute table loaded from '%2'. Are you sure you want to replace the existing raster attribute table?" )
+            .arg( QString::number( rasterBand() ), mRasterLayer->attributeTable( rasterBand() )->filePath() ),
+          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+        ) )
         {
           case QMessageBox::Cancel:
             return;

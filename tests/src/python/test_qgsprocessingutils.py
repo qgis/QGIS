@@ -12,13 +12,13 @@ __author__ = "Germán Carrillo"
 __date__ = "7.3.2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.core import QgsField, QgsFields, QgsProcessingUtils
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsField, QgsFields, QgsProcessingUtils
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsProcessingUtils(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -21,11 +21,15 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsFieldCalculatorAlgorithm::name() const
 {
-  return QStringLiteral( "fieldcalculator" );
+  return u"fieldcalculator"_s;
 }
 
 QString QgsFieldCalculatorAlgorithm::displayName() const
@@ -45,7 +49,7 @@ QString QgsFieldCalculatorAlgorithm::group() const
 
 QString QgsFieldCalculatorAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QString QgsFieldCalculatorAlgorithm::outputName() const
@@ -76,8 +80,7 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
   QVariantList icons;
   fieldTypes.reserve( 11 );
   icons.reserve( 11 );
-  for ( const auto &type :
-        std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
+  for ( const auto &type : std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
           { QMetaType::Type::Double, QMetaType::Type::UnknownType },
           { QMetaType::Type::Int, QMetaType::Type::UnknownType },
           { QMetaType::Type::QString, QMetaType::Type::UnknownType },
@@ -95,16 +98,14 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  auto fieldName = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
-  auto fieldType = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
-  fieldType->setMetadata(
-    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
-    }
-  );
+  auto fieldName = std::make_unique<QgsProcessingParameterString>( u"FIELD_NAME"_s, QObject::tr( "Field name" ), QVariant(), false );
+  auto fieldType = std::make_unique<QgsProcessingParameterEnum>( u"FIELD_TYPE"_s, QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  fieldType->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"icons"_s, icons } } ) } } ) } );
 
-  auto fieldLength = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  auto fieldPrecision = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  auto expression = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+  auto fieldLength = std::make_unique<QgsProcessingParameterNumber>( u"FIELD_LENGTH"_s, QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  auto fieldPrecision
+    = std::make_unique<QgsProcessingParameterNumber>( u"FIELD_PRECISION"_s, QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  auto expression = std::make_unique<QgsProcessingParameterExpression>( u"FORMULA"_s, QObject::tr( "Formula" ), QVariant(), u"INPUT"_s, false );
 
   expression->setMetadata( QVariantMap( { { "inlineEditor", true } } ) );
 
@@ -122,16 +123,20 @@ QgsFields QgsFieldCalculatorAlgorithm::outputFields( const QgsFields & ) const
 
 QString QgsFieldCalculatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes a new vector layer with the same features of the input layer, "
-                      "but either overwriting an existing attribute or adding an additional attribute. The values of this field "
-                      "are computed from each feature using an expression, based on the properties and attributes of the feature. "
-                      "Note that if \"Field name\" is an existing field in the layer then all the rest of the field settings are ignored." );
+  return QObject::tr(
+    "This algorithm computes a new vector layer with the same features of the input layer, "
+    "but either overwriting an existing attribute or adding an additional attribute. The values of this field "
+    "are computed from each feature using an expression, based on the properties and attributes of the feature. "
+    "Note that if \"Field name\" is an existing field in the layer then all the rest of the field settings are ignored."
+  );
 }
 
 QString QgsFieldCalculatorAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Computes a new vector layer with the same features of the input layer, "
-                      "but either overwriting an existing attribute or adding an additional attribute." );
+  return QObject::tr(
+    "Computes a new vector layer with the same features of the input layer, "
+    "but either overwriting an existing attribute or adding an additional attribute."
+  );
 }
 
 QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const
@@ -142,16 +147,16 @@ QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const
 
 bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
 
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   // prepare fields
-  const int fieldTypeIdx = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
-  const int fieldLength = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
-  const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const int fieldTypeIdx = parameterAsInt( parameters, u"FIELD_TYPE"_s, context );
+  const int fieldLength = parameterAsInt( parameters, u"FIELD_LENGTH"_s, context );
+  const int fieldPrecision = parameterAsInt( parameters, u"FIELD_PRECISION"_s, context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD_NAME"_s, context );
 
   QMetaType::Type fieldType = QMetaType::Type::QString;
   QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
@@ -198,15 +203,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   if ( fieldName.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
 
-  const QgsField field(
-    fieldName,
-    fieldType,
-    QString(),
-    fieldLength,
-    fieldPrecision,
-    QString(),
-    fieldSubType
-  );
+  const QgsField field( fieldName, fieldType, QString(), fieldLength, fieldPrecision, QString(), fieldSubType );
 
   mFields = source->fields();
 
@@ -224,7 +221,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mFieldIdx = mFields.lookupField( field.name() );
 
   // prepare expression
-  const QString expressionString = parameterAsString( parameters, QStringLiteral( "FORMULA" ), context );
+  const QString expressionString = parameterAsString( parameters, u"FORMULA"_s, context );
   mExpressionContext = createExpressionContext( parameters, context, source.get() );
   mExpression = QgsExpression( expressionString );
   mDa.setSourceCrs( source->sourceCrs(), context.transformContext() );
@@ -235,8 +232,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mExpression.setAreaUnits( context.areaUnit() );
 
   if ( mExpression.hasParserError() )
-    throw QgsProcessingException( QObject::tr( "Parser error with formula expression \"%2\": %3" )
-                                    .arg( expressionString, mExpression.parserErrorString() ) );
+    throw QgsProcessingException( QObject::tr( "Parser error with formula expression \"%2\": %3" ).arg( expressionString, mExpression.parserErrorString() ) );
 
   mExpression.prepare( &mExpressionContext );
 
@@ -258,14 +254,13 @@ QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &fe
   if ( mExpression.isValid() )
   {
     mExpressionContext.setFeature( feature );
-    mExpressionContext.lastScope()->setVariable( QStringLiteral( "row_number" ), mRowNumber );
+    mExpressionContext.lastScope()->setVariable( u"row_number"_s, mRowNumber );
 
     const QVariant value = mExpression.evaluate( &mExpressionContext );
 
     if ( mExpression.hasEvalError() )
     {
-      throw QgsProcessingException( QObject::tr( "Evaluation error in expression \"%1\": %2" )
-                                      .arg( mExpression.expression(), mExpression.evalErrorString() ) );
+      throw QgsProcessingException( QObject::tr( "Evaluation error in expression \"%1\": %2" ).arg( mExpression.expression(), mExpression.evalErrorString() ) );
     }
 
     attributes[mFieldIdx] = value;

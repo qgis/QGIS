@@ -14,11 +14,13 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (
     Qgis,
+    QgsAnnotationPictureItem,
+    QgsAnnotationRectangleTextItem,
+    QgsBalloonCallout,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
@@ -35,14 +37,11 @@ from qgis.core import (
     QgsSvgAnnotation,
     QgsTextAnnotation,
     QgsVectorLayer,
-    QgsAnnotationPictureItem,
-    QgsAnnotationRectangleTextItem,
-    QgsBalloonCallout,
 )
 from qgis.gui import QgsFormAnnotation
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
@@ -50,7 +49,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotation(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "annotations"
@@ -241,78 +239,6 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFilePath(svg)
         self.assertTrue(self.renderAnnotationInLayout("svg_annotation_in_layout", a))
 
-    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
-    def testHtmlAnnotation(self):
-        """test rendering a html annotation"""
-        a = QgsHtmlAnnotation()
-        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
-        a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
-        html = TEST_DATA_DIR + "/test_html.html"
-        a.setSourceFile(html)
-        im = self.renderAnnotation(a, QPointF(20, 30))
-        self.assertTrue(self.image_check("html_annotation", "html_annotation", im))
-
-        # check clone
-        clone = a.clone()
-        im = self.renderAnnotation(clone, QPointF(20, 30))
-        self.assertTrue(self.image_check("html_annotation", "html_annotation", im))
-
-    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
-    def testHtmlAnnotationSetHtmlSource(self):
-        """test rendering html annotation where the html is set directly (not from file)"""
-        a = QgsHtmlAnnotation()
-        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
-        a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
-        with open(TEST_DATA_DIR + "/test_html.html") as f:
-            htmlText = f.read()
-        a.setHtmlSource(htmlText)
-        im = self.renderAnnotation(a, QPointF(20, 30))
-        self.assertTrue(
-            self.image_check("html_annotation_html_source", "html_annotation", im)
-        )
-
-    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
-    def testHtmlAnnotationInLayout(self):
-        """test rendering a svg annotation"""
-        a = QgsHtmlAnnotation()
-        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 200 / 3.7795275))
-        a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
-        html = TEST_DATA_DIR + "/test_html.html"
-        a.setSourceFile(html)
-        self.assertTrue(self.renderAnnotationInLayout("html_annotation_in_layout", a))
-
-    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
-    def testHtmlAnnotationWithFeature(self):
-        """test rendering a html annotation with a feature"""
-        layer = QgsVectorLayer(
-            "Point?crs=EPSG:3111&field=station:string&field=suburb:string",
-            "test",
-            "memory",
-        )
-
-        a = QgsHtmlAnnotation()
-        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
-        a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
-        a.setMapLayer(layer)
-        html = TEST_DATA_DIR + "/test_html_feature.html"
-        a.setSourceFile(html)
-        im = self.renderAnnotation(a, QPointF(20, 30))
-        self.assertTrue(self.image_check("html_nofeature", "html_nofeature", im))
-        f = QgsFeature(layer.fields())
-        f.setValid(True)
-        f.setAttributes(["hurstbridge", "somewhere"])
-        a.setAssociatedFeature(f)
-        im = self.renderAnnotation(a, QPointF(20, 30))
-        self.assertTrue(self.image_check("html_feature", "html_feature", im))
-
     def testFormAnnotation(self):
         """test rendering a form annotation"""
         a = QgsFormAnnotation()
@@ -351,21 +277,6 @@ class TestQgsAnnotation(QgisTestCase):
         a.setSourceFile(html)
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.image_check("relative_style", "relative_style", im))
-
-    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
-    def testMargins(self):
-        """test rendering an annotation with margins"""
-        a = QgsHtmlAnnotation()
-        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
-        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
-        a.setHasFixedMapPosition(False)
-        a.setContentsMargin(QgsMargins(15, 10, 30, 20))
-        html = TEST_DATA_DIR + "/test_html.html"
-        a.setSourceFile(html)
-        im = self.renderAnnotation(a, QPointF(20, 30))
-        self.assertTrue(
-            self.image_check("annotation_margins", "annotation_margins", im)
-        )
 
     def testFillSymbol(self):
         """test rendering an annotation with fill symbol"""

@@ -29,7 +29,10 @@
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterLayerProfileResults
@@ -37,7 +40,7 @@
 
 QString QgsRasterLayerProfileResults::type() const
 {
-  return QStringLiteral( "raster" );
+  return u"raster"_s;
 }
 
 QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
@@ -53,7 +56,6 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
   }
   return res;
 }
-
 
 
 //
@@ -88,6 +90,11 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
 QString QgsRasterLayerProfileGenerator::sourceId() const
 {
   return mId;
+}
+
+QString QgsRasterLayerProfileGenerator::type() const
+{
+  return u"raster"_s;
 }
 
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
@@ -128,7 +135,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( u"Error transforming profile line to raster CRS"_s );
     return false;
   }
 
@@ -186,16 +193,10 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   int subRegionHeight = 0;
   int subRegionLeft = 0;
   int subRegionTop = 0;
-  QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ?
-                                 QgsRasterIterator::subRegion(
-                                   mRasterProvider->extent(),
-                                   mRasterProvider->xSize(),
-                                   mRasterProvider->ySize(),
-                                   transformedCurve->boundingBox(),
-                                   subRegionWidth,
-                                   subRegionHeight,
-                                   subRegionLeft,
-                                   subRegionTop ) : transformedCurve->boundingBox();
+  QgsRectangle rasterSubRegion
+    = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0
+        ? QgsRasterIterator::subRegion( mRasterProvider->extent(), mRasterProvider->xSize(), mRasterProvider->ySize(), transformedCurve->boundingBox(), subRegionWidth, subRegionHeight, subRegionLeft, subRegionTop )
+        : transformedCurve->boundingBox();
 
   const bool zeroXYSize = mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0;
   if ( zeroXYSize )
@@ -277,7 +278,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           else
           {
             row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
-            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ), 0, blockColumns - 1 );
           }
           double val = block->valueAndNoData( row, col, isNoData );
           if ( !isNoData )
@@ -325,10 +326,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           const double val = block->valueAndNoData( row, col, isNoData );
 
           // does pixel intersect curve?
-          QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX,
-                                          currentY - halfPixelSizeY,
-                                          currentX + halfPixelSizeX,
-                                          currentY + halfPixelSizeY ) );
+          QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX, currentY - halfPixelSizeY, currentX + halfPixelSizeX, currentY + halfPixelSizeY ) );
           if ( !curveEngine->intersects( pixelRectGeometry.constGet() ) )
             continue;
 

@@ -28,7 +28,11 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitempolygon.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -56,12 +60,10 @@ int QgsLayoutItemPolygon::type() const
 
 QIcon QgsLayoutItemPolygon::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolygon.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s );
 }
 
-bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
-                                     QPointF newPoint,
-                                     const double radius )
+bool QgsLayoutItemPolygon::_addNode( const int indexPoint, QPointF newPoint, const double radius )
 {
   Q_UNUSED( radius )
   mPolygon.insert( indexPoint + 1, newPoint );
@@ -71,12 +73,12 @@ bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
 void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"black"_s );
+  properties.insert( u"width_border"_s, u"0.3"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
 
   mPolygonStyleSymbol = QgsFillSymbol::createSimple( properties );
 
@@ -171,8 +173,7 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
   polygonPath.addPolygon( mPolygon );
 
   mPolygonStyleSymbol->startRender( renderContext );
-  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings,
-                                      nullptr, renderContext );
+  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings, nullptr, renderContext );
   mPolygonStyleSymbol->stopRender( renderContext );
 }
 
@@ -189,10 +190,7 @@ void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 
 void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
-  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.get(),
-                         doc,
-                         context );
+  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(), mPolygonStyleSymbol.get(), doc, context );
   elmt.appendChild( pe );
 }
 
@@ -210,4 +208,3 @@ bool QgsLayoutItemPolygon::_removeNode( const int index )
 
   return true;
 }
-

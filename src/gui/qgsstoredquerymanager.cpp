@@ -19,18 +19,20 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QCryptographicHash>
+#include <QString>
 
 #include "moc_qgsstoredquerymanager.cpp"
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
-const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryName = new QgsSettingsEntryString( QStringLiteral( "name" ), sTreeStoredQueries );
-const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryDefinition = new QgsSettingsEntryString( QStringLiteral( "query" ), sTreeStoredQueries );
+const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryName = new QgsSettingsEntryString( u"name"_s, sTreeStoredQueries );
+const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryDefinition = new QgsSettingsEntryString( u"query"_s, sTreeStoredQueries );
 ///@endcond PRIVATE
 
 QgsStoredQueryManager::QgsStoredQueryManager( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsStoredQueryManager::storeQuery( const QString &name, const QString &query, Qgis::QueryStorageBackend backend )
 {
@@ -57,11 +59,11 @@ void QgsStoredQueryManager::storeQuery( const QString &name, const QString &quer
 
     case Qgis::QueryStorageBackend::CurrentProject:
     {
-      const bool isExisting = QgsProject::instance()->subkeyList( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries" ) ).contains( hash );
+      const bool isExisting = QgsProject::instance()->subkeyList( u"DBManager"_s, u"savedQueries"_s ).contains( hash );
       wasAdded = !isExisting;
       wasUpdated = isExisting;
-      QgsProject::instance()->writeEntry( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/name" ).arg( hash ), name );
-      QgsProject::instance()->writeEntry( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/query" ).arg( hash ), query );
+      QgsProject::instance()->writeEntry( u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash ), name );
+      QgsProject::instance()->writeEntry( u"DBManager"_s, u"savedQueries/%1/query"_s.arg( hash ), query );
       break;
     }
   }
@@ -92,10 +94,8 @@ void QgsStoredQueryManager::removeQuery( const QString &name, Qgis::QueryStorage
 
     case Qgis::QueryStorageBackend::CurrentProject:
     {
-      wasDeleted = QgsProject::instance()->subkeyList( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries" ) ).contains( hash );
-      QgsProject::instance()->removeEntry(
-        "DBManager", QStringLiteral( "savedQueries/%1" ).arg( hash )
-      );
+      wasDeleted = QgsProject::instance()->subkeyList( u"DBManager"_s, u"savedQueries"_s ).contains( hash );
+      QgsProject::instance()->removeEntry( "DBManager", u"savedQueries/%1"_s.arg( hash ) );
       break;
     }
   }
@@ -122,13 +122,11 @@ QStringList QgsStoredQueryManager::allQueryNames( Qgis::QueryStorageBackend back
 
     case Qgis::QueryStorageBackend::CurrentProject:
     {
-      const QStringList hashes = QgsProject::instance()->subkeyList( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries" ) );
+      const QStringList hashes = QgsProject::instance()->subkeyList( u"DBManager"_s, u"savedQueries"_s );
       names.reserve( hashes.size() );
       for ( const QString &hash : hashes )
       {
-        names.append( QgsProject::instance()->readEntry(
-          QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/name" ).arg( hash )
-        ) );
+        names.append( QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash ) ) );
       }
       break;
     }
@@ -150,7 +148,7 @@ QString QgsStoredQueryManager::query( const QString &name, Qgis::QueryStorageBac
 
     case Qgis::QueryStorageBackend::CurrentProject:
     {
-      return QgsProject::instance()->readEntry( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/query" ).arg( hash ) );
+      return QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/query"_s.arg( hash ) );
     }
   }
   BUILTIN_UNREACHABLE;
@@ -161,7 +159,7 @@ QList<QgsStoredQueryManager::QueryDetails> QgsStoredQueryManager::allQueries() c
   QList<QgsStoredQueryManager::QueryDetails> res;
 
   const QStringList localProfileHashes = sTreeStoredQueries->items();
-  const QStringList projectHashes = QgsProject::instance()->subkeyList( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries" ) );
+  const QStringList projectHashes = QgsProject::instance()->subkeyList( u"DBManager"_s, u"savedQueries"_s );
   res.reserve( localProfileHashes.size() + projectHashes.size() );
 
   for ( const QString &hash : localProfileHashes )
@@ -176,12 +174,8 @@ QList<QgsStoredQueryManager::QueryDetails> QgsStoredQueryManager::allQueries() c
   for ( const QString &hash : projectHashes )
   {
     QueryDetails details;
-    details.name = QgsProject::instance()->readEntry(
-      QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/name" ).arg( hash )
-    );
-    details.definition = QgsProject::instance()->readEntry(
-      QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/query" ).arg( hash )
-    );
+    details.name = QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash ) );
+    details.definition = QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/query"_s.arg( hash ) );
     details.backend = Qgis::QueryStorageBackend::CurrentProject;
     res.append( details );
   }
@@ -206,5 +200,5 @@ QString QgsStoredQueryManager::getQueryHash( const QString &name )
   // for compatibility with DB manager stored queries!
   QByteArray nameUtf8 = name.toUtf8();
   QByteArray hash = QCryptographicHash::hash( nameUtf8, QCryptographicHash::Md5 ).toHex();
-  return QStringLiteral( "q%1" ).arg( QString::fromUtf8( hash ) );
+  return u"q%1"_s.arg( QString::fromUtf8( hash ) );
 }

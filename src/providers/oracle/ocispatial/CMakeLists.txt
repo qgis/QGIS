@@ -20,6 +20,7 @@ add_library(qsqlocispatial SHARED ${QSQLOCISPATIAL_SRC})
 target_link_libraries(qsqlocispatial
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::SqlPrivate
   ${OCI_LIBRARY}
 )
 

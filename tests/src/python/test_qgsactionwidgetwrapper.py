@@ -12,12 +12,13 @@ __author__ = "Alessandro Pasotti"
 __date__ = "16/08/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from qgis.PyQt.QtCore import QUuid
-from qgis.PyQt.QtWidgets import QPushButton, QWidget
+import unittest
+
 from qgis.core import QgsAction, QgsVectorLayer
 from qgis.gui import QgsActionWidgetWrapper
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QUuid
+from qgis.PyQt.QtWidgets import QPushButton, QWidget
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -25,7 +26,6 @@ from qgis.testing import QGISAPP
 
 
 class TestQgsActionWidgetWrapper(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

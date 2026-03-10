@@ -33,11 +33,14 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QStandardItemModel>
+#include <QString>
 #include <QStringListModel>
 #include <QTimer>
 #include <QVBoxLayout>
 
 #include "moc_qgsvaluerelationwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 
@@ -295,8 +298,7 @@ void QgsFilteredTableWidget::onTableWidgetMenuActionDeselectAllTriggered()
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-{
-}
+{}
 
 QVariant QgsValueRelationWidgetWrapper::value() const
 {
@@ -317,7 +319,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     QStringList selection = mTableWidget->selection();
 
     // If there is no selection and allow NULL is not checked return NULL.
-    if ( selection.isEmpty() && !config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( selection.isEmpty() && !config( u"AllowNull"_s ).toBool() )
     {
       return QgsVariantUtils::createNullVariant( QMetaType::Type::QVariantList );
     }
@@ -373,13 +375,13 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsValueRelationWidgetWrapper::widgetValueChanged );
 
-  mExpression = config().value( QStringLiteral( "FilterExpression" ) ).toString();
+  mExpression = config().value( u"FilterExpression"_s ).toString();
 
-  const bool allowMulti = config( QStringLiteral( "AllowMulti" ) ).toBool();
-  const bool useCompleter = config( QStringLiteral( "UseCompleter" ) ).toBool();
+  const bool allowMulti = config( u"AllowMulti"_s ).toBool();
+  const bool useCompleter = config( u"UseCompleter"_s ).toBool();
   if ( allowMulti )
   {
-    const bool displayGroupName = config( QStringLiteral( "DisplayGroupName" ) ).toBool();
+    const bool displayGroupName = config( u"DisplayGroupName"_s ).toBool();
     return new QgsFilteredTableWidget( parent, useCompleter, displayGroupName );
   }
   else if ( useCompleter )
@@ -532,8 +534,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     QVariant oldValue( value() );
     setFormFeatureAttribute( attribute, newValue );
     // Update combos if the value used in the filter expression has changed
-    if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression )
-         && QgsValueRelationFieldFormatter::expressionFormAttributes( mExpression ).contains( attribute ) )
+    if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) && QgsValueRelationFieldFormatter::expressionFormAttributes( mExpression ).contains( attribute ) )
     {
       populate();
       // Restore value
@@ -579,10 +580,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
-  if ( context().attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode
-       && !formFeature().attribute( fieldIdx() ).isValid()
-       && !mCache.isEmpty()
-       && !config( QStringLiteral( "AllowNull" ) ).toBool() )
+  if ( context().attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode && !formFeature().attribute( fieldIdx() ).isValid() && !mCache.isEmpty() && !config( u"AllowNull"_s ).toBool() )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
@@ -597,7 +595,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
-  return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+  return std::max( 1, config( u"NofColumns"_s ).toInt() );
 }
 
 
@@ -607,7 +605,7 @@ QMetaType::Type QgsValueRelationWidgetWrapper::fkType() const
   if ( layer )
   {
     QgsFields fields = layer->fields();
-    int idx { fields.lookupField( config().value( QStringLiteral( "Key" ) ).toString() ) };
+    int idx { fields.lookupField( config().value( u"Key"_s ).toString() ) };
     if ( idx >= 0 )
     {
       return fields.at( idx ).type();
@@ -639,7 +637,7 @@ void QgsValueRelationWidgetWrapper::populate()
   {
     mComboBox->blockSignals( true );
     mComboBox->clear();
-    const bool allowNull = config( QStringLiteral( "AllowNull" ) ).toBool();
+    const bool allowNull = config( u"AllowNull"_s ).toBool();
     if ( allowNull )
     {
       mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createNullVariant( field().type() ) );
@@ -649,7 +647,7 @@ void QgsValueRelationWidgetWrapper::populate()
     {
       QVariant currentGroup;
       QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboBox->model() );
-      const bool displayGroupName = config( QStringLiteral( "DisplayGroupName" ) ).toBool();
+      const bool displayGroupName = config( u"DisplayGroupName"_s ).toBool();
       for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
       {
         if ( currentGroup != element.group )
@@ -693,7 +691,9 @@ void QgsValueRelationWidgetWrapper::populate()
     QStringListModel *m = new QStringListModel( values, mLineEdit );
     QCompleter *completer = new QCompleter( m, mLineEdit );
 
-    const Qt::MatchFlags completerMatchFlags { config().contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config().value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
+    const Qt::MatchFlags completerMatchFlags {
+      config().contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config().value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith
+    };
 
     if ( completerMatchFlags.testFlag( Qt::MatchFlag::MatchContains ) )
     {
@@ -750,7 +750,7 @@ void QgsValueRelationWidgetWrapper::parentFormValueChanged( const QString &attri
 
   // Check if the change might affect the filter expression and the cache needs updates
   if ( QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression )
-       && ( config( QStringLiteral( "Value" ) ).toString() == attribute || config( QStringLiteral( "Key" ) ).toString() == attribute || !QgsValueRelationFieldFormatter::expressionParentFormVariables( mExpression ).isEmpty() || QgsValueRelationFieldFormatter::expressionParentFormAttributes( mExpression ).contains( attribute ) ) )
+       && ( config( u"Value"_s ).toString() == attribute || config( u"Key"_s ).toString() == attribute || !QgsValueRelationFieldFormatter::expressionParentFormVariables( mExpression ).isEmpty() || QgsValueRelationFieldFormatter::expressionParentFormAttributes( mExpression ).contains( attribute ) ) )
   {
     populate();
   }

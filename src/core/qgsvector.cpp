@@ -19,6 +19,10 @@
 #include "qgis.h"
 #include "qgsexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVector QgsVector::rotateBy( double rot ) const
 {
   const double angle = std::atan2( mY, mX ) + rot;
@@ -32,7 +36,7 @@ QgsVector QgsVector::normalized() const
 
   if ( len == 0.0 )
   {
-    throw QgsException( QStringLiteral( "normalized vector of null vector undefined" ) );
+    throw QgsException( u"normalized vector of null vector undefined"_s );
   }
 
   return *this / len;

@@ -18,11 +18,6 @@ TOPLEVEL=$(git rev-parse --show-toplevel)
 
 set -e
 
-if ! type -p "${TOPLEVEL}"/scripts/astyle.sh >/dev/null; then
-  echo astyle.sh not found
-  exit 1
-fi
-
 # capture files passed by pre-commit
 MODIFIED="$@"
 
@@ -40,13 +35,7 @@ for f in $MODIFIED; do
   esac
 
   # Run Python formatters
-  "${TOPLEVEL}"/scripts/pre_commit/sort_includes.py "$f"
   "${TOPLEVEL}"/scripts/pre_commit/doxygen_space.py "$f"
-
-  # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
-  if [[ $f =~ ^src/(core) ]]; then
-    "${TOPLEVEL}"/scripts/astyle.sh "$f"
-  fi
 done
 
 exit 0

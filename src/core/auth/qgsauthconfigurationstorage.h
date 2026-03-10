@@ -27,25 +27,26 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  *  Abstract class that defines the interface for all authentication configuration storage implementations.
  *  \since QGIS 3.40
  */
-class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
+class CORE_EXPORT QgsAuthConfigurationStorage : public QObject
 {
     Q_OBJECT
 
   public:
-
     /**
      * Structure that holds the (encrypted) master password elements.
      */
     struct CORE_EXPORT MasterPasswordConfig
     {
-      QString salt;
-      QString civ;
-      QString hash;
+        QString salt;
+        QString civ;
+        QString hash;
     };
 
     /**
@@ -53,9 +54,9 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      */
     struct CORE_EXPORT SettingParameter
     {
-      QString name;
-      QString description;
-      QVariant::Type type;
+        QString name;
+        QString description;
+        QVariant::Type type;
     };
 
     /**
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * and check if it can decrypt all of them, it is faster than retrieve all the configurations one
      * by one.
      */
-    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const SIP_THROW( QgsNotSupportedException ) = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Load an authentication configuration from the database.
@@ -413,7 +414,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      *  \returns list of CA certificates
      *  \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const  QList<QSslCertificate> caCerts() const SIP_THROW( QgsNotSupportedException ) = 0;
+    virtual const QList<QSslCertificate> caCerts() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      *  Store certificate trust policy
@@ -455,7 +456,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \returns list of master passwords
      * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const SIP_THROW( QgsNotSupportedException ) = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Store a master password in the database.
@@ -497,7 +498,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \param level Message log level
      * \see QgsMessageLog
      */
-    void messageLog( const QString &message, const QString &tag = QStringLiteral( "Authentication" ), Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+    void messageLog( const QString &message, const QString &tag = u"Authentication"_s, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Emitted when the storage was updated.
@@ -511,7 +512,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     /**
      * Emitted when the storage method config table was changed.
      */
-    void methodConfigChanged( );
+    void methodConfigChanged();
 
     /**
      * Emitted when the storage master password table was changed.
@@ -554,7 +555,6 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
 #endif
 
   protected:
-
     /**
      * Set the capabilities of the storage to \a capabilities.
      */
@@ -606,7 +606,6 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * Store whether the storage is read-only.
      */
     bool mIsReadOnly = false;
-
 };
 
 #endif // QGSAUTHCONFIGURATIONSTORAGE_H

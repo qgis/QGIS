@@ -30,8 +30,6 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#define SIP_NO_FILE
-
 
 #include <cfloat>
 #include <cmath>
@@ -43,7 +41,7 @@
 #include "qgsgeos.h"
 #include "qgsrectangle.h"
 
-#include <QLinkedList>
+#define SIP_NO_FILE
 
 namespace pal
 {
@@ -59,13 +57,13 @@ namespace pal
    */
   struct OrientedConvexHullBoundingBox
   {
-    double x[4] = {0, 0, 0, 0};
-    double y[4] = {0, 0, 0, 0};
+      double x[4] = { 0, 0, 0, 0 };
+      double y[4] = { 0, 0, 0, 0 };
 
-    double alpha = 0;
+      double alpha = 0;
 
-    double width = 0;
-    double length = 0;
+      double width = 0;
+      double length = 0;
   };
 
   /**
@@ -126,7 +124,7 @@ namespace pal
        *
        * \warning this code is completely unreadable and cannot be understood by mortals
        */
-      static QLinkedList<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
+      static QVector<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
 
       /**
        * Extends linestrings by the specified amount at the start and end of the line,
@@ -161,10 +159,7 @@ namespace pal
       /**
        * Returns the point set bounding box.
        */
-      QgsRectangle boundingBox() const
-      {
-        return QgsRectangle( xmin, ymin, xmax, ymax );
-      }
+      QgsRectangle boundingBox() const { return QgsRectangle( xmin, ymin, xmax, ymax ); }
 
       /**
        * Returns TRUE if the bounding box of this pointset intersects the bounding box
@@ -229,7 +224,7 @@ namespace pal
 
       int nbPoints;
       std::vector< double > x;
-      std::vector< double > y;   // points order is counterclockwise
+      std::vector< double > y; // points order is counterclockwise
 
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
@@ -262,18 +257,15 @@ namespace pal
       double ymax = std::numeric_limits<double>::lowest();
 
     private:
-
       mutable const GEOSPreparedGeometry *mGeosPreparedBoundary = nullptr;
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
       mutable GEOSGeometry *mMultipartGeos = nullptr;
       mutable const GEOSPreparedGeometry *mMultipartPreparedGeos = nullptr;
 
-      PointSet &operator= ( const PointSet & ) = delete;
-
+      PointSet &operator=( const PointSet & ) = delete;
   };
 
 } // namespace pal
 
 #endif
-

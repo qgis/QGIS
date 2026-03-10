@@ -27,7 +27,6 @@ accessed through :py:func:`QgsApplication.sourceCache()`.
 #include "qgssourcecache.h"
 %End
   public:
-
     QgsSourceCache( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSourceCache, with the specified ``parent`` object.

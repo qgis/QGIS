@@ -22,8 +22,11 @@
 #include "qgswebframe.h"
 
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgshtmlwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -67,18 +70,6 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setHtml( mHtmlCode.replace( "\n", " " ) );
 
-#ifdef WITH_QTWEBKIT
-
-  const int horizontalDpi = mWidget->logicalDpiX();
-
-  mWidget->setZoomFactor( horizontalDpi / 96.0 );
-
-  QWebPage *page = mWidget->page();
-  connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-  connect( page, &QWebPage::loadFinished, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-
-#endif
-
   checkGeometryNeeds();
 }
 
@@ -108,9 +99,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   }
 
   auto frame = webView.page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), &evaluator );
-  } );
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] { frame->addToJavaScriptWindowObject( u"expression"_s, &evaluator ); } );
 
   webView.setHtml( mHtmlCode );
 
@@ -122,7 +111,8 @@ void QgsHtmlWidgetWrapper::setHtmlCode( const QString &htmlCode )
   mHtmlCode = htmlCode;
 
   bool ok = false;
-  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  const thread_local QRegularExpression
+    expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mHtmlCode );
   while ( !ok && matchIt.hasNext() )
   {
@@ -153,21 +143,10 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
-  } );
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] { frame->addToJavaScriptWindowObject( u"expression"_s, htmlExpression ); } );
 
   mWidget->setHtml( mHtmlCode );
 }
-
-#ifdef WITH_QTWEBKIT
-void QgsHtmlWidgetWrapper::fixHeight()
-{
-  QWebPage *page = mWidget->page();
-  const int docHeight { page->mainFrame()->contentsSize().height() };
-  mWidget->setFixedHeight( docHeight );
-}
-#endif
 
 void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {

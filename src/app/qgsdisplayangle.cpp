@@ -24,9 +24,15 @@
 #include "qgsproject.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
 #include "moc_qgsdisplayangle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDisplayAngle::QgsDisplayAngle( QgsMapTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -40,8 +46,8 @@ void QgsDisplayAngle::setAngleInRadians( double value )
   mValue = value;
 
   const QgsSettings settings;
-  const Qgis::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( Qgis::AngleUnit::Degrees ) ).toString() );
-  const int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  const Qgis::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( u"qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( Qgis::AngleUnit::Degrees ) ).toString() );
+  const int decimals = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Radians, unit ), decimals, unit ) );
 }
 

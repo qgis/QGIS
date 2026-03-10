@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFields;
 class QgsFeedback;
 class QgsRectangle;
@@ -32,17 +36,15 @@ class QgsSensorThingsExpansionDefinition;
  */
 class CORE_EXPORT QgsSensorThingsUtils
 {
-
   public:
-
     //! Default page size
-    static constexpr int DEFAULT_PAGE_SIZE = 200; SIP_SKIP
+    static constexpr int DEFAULT_PAGE_SIZE = 200 SIP_SKIP;
 
     //! Default limit on number of features fetched
-    static constexpr int DEFAULT_FEATURE_LIMIT = 10000; SIP_SKIP
+    static constexpr int DEFAULT_FEATURE_LIMIT = 10000 SIP_SKIP;
 
     //! Default limit on number of expanded features fetched
-    static constexpr int DEFAULT_EXPANSION_LIMIT = 100; SIP_SKIP
+    static constexpr int DEFAULT_EXPANSION_LIMIT = 100 SIP_SKIP;
 
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
@@ -175,7 +177,6 @@ class CORE_EXPORT QgsSensorThingsUtils
      * \since QGIS 3.38
      */
     static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
-
 };
 
 
@@ -188,15 +189,16 @@ class CORE_EXPORT QgsSensorThingsUtils
 class CORE_EXPORT QgsSensorThingsExpansionDefinition
 {
   public:
-
     /**
      * Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
      */
-    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
-                                        const QString &orderBy = QString(),
-                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
-                                        const QString &filter = QString() );
+    QgsSensorThingsExpansionDefinition(
+      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+      const QString &orderBy = QString(),
+      Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+      const QString &filter = QString()
+    );
 
     /**
      * Returns an expansion definition for the specified \a entity type, populated with reasonable
@@ -274,14 +276,14 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     void setLimit( int limit );
 
     /**
-     * Returns the the string filter to filter expanded child entities by.
+     * Returns the string filter to filter expanded child entities by.
      *
      * \see setFilter()
      */
     QString filter() const;
 
     /**
-     * Returns the the string \a filter to filter expanded child entities by.
+     * Returns the string \a filter to filter expanded child entities by.
      *
      * \see filter()
      */
@@ -314,6 +316,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     if ( !sipCpp->isValid() )
@@ -325,37 +328,40 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
       QString innerDefinition;
       if ( !sipCpp->orderBy().isEmpty() )
       {
-        innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
+        innerDefinition = u"by %1 (%2)"_s.arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? u"asc"_s : u"desc"_s );
       }
       if ( sipCpp->limit() >= 0 )
       {
         if ( !innerDefinition.isEmpty() )
-          innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
+          innerDefinition = u"%1, limit %2"_s.arg( innerDefinition ).arg( sipCpp->limit() );
         else
-          innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+          innerDefinition = u"limit %1"_s.arg( sipCpp->limit() );
       }
       if ( !sipCpp->filter().isEmpty() )
       {
         if ( !innerDefinition.isEmpty() )
-          innerDefinition = QStringLiteral( "%1, filter '%2'" ).arg( innerDefinition ).arg( sipCpp->filter() );
+          innerDefinition = u"%1, filter '%2'"_s.arg( innerDefinition ).arg( sipCpp->filter() );
         else
-          innerDefinition = QStringLiteral( "filter '%1'" ).arg( sipCpp->filter() );
+          innerDefinition = u"filter '%1'"_s.arg( sipCpp->filter() );
       }
 
-      QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
+      QString str = u"<QgsSensorThingsExpansionDefinition: %1%2>"_s.arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( u" "_s + innerDefinition ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    Qgis::SensorThingsEntity mChildEntity = Qgis::SensorThingsEntity::Invalid;
+    Qgis::SensorThingsEntity mChildEntity
+    = Qgis::SensorThingsEntity::Invalid;
     QString mOrderBy;
     Qt::SortOrder mSortOrder = Qt::SortOrder::AscendingOrder;
     int mLimit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT;
     QString mFilter;
-
 };
 Q_DECLARE_METATYPE( QgsSensorThingsExpansionDefinition )
 

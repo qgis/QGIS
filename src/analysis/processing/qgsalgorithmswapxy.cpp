@@ -19,11 +19,15 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSwapXYAlgorithm::name() const
 {
-  return QStringLiteral( "swapxy" );
+  return u"swapxy"_s;
 }
 
 QString QgsSwapXYAlgorithm::displayName() const
@@ -43,7 +47,7 @@ QString QgsSwapXYAlgorithm::group() const
 
 QString QgsSwapXYAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSwapXYAlgorithm::outputName() const
@@ -53,8 +57,10 @@ QString QgsSwapXYAlgorithm::outputName() const
 
 QString QgsSwapXYAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm swaps the X and Y coordinate values in input geometries. It can be used to repair geometries "
-                      "which have accidentally had their latitude and longitude values reversed." );
+  return QObject::tr(
+    "This algorithm swaps the X and Y coordinate values in input geometries. It can be used to repair geometries "
+    "which have accidentally had their latitude and longitude values reversed."
+  );
 }
 
 QString QgsSwapXYAlgorithm::shortDescription() const

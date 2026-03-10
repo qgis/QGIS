@@ -22,6 +22,10 @@
 #include "qgsfillsymbol.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayerAbstractPlotDataGatherer;
 
 
@@ -36,11 +40,10 @@ class QgsVectorLayerAbstractPlotDataGatherer;
 class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
 {
   public:
-
     QgsBarChartPlot();
     ~QgsBarChartPlot() override = default;
 
-    QString type() const override { return QStringLiteral( "bar" ); }
+    QString type() const override { return u"bar"_s; }
 
     void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 
@@ -68,8 +71,13 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     //! Returns a new data gatherer for a given bar chart \a plot.
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
-  private:
+    /**
+     * Initializes properties of this plot from an existing \a plot, transferring all applicable
+     * settings.
+     */
+    void initFromPlot( const QgsPlot *plot ) override;
 
+  private:
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
 };
 

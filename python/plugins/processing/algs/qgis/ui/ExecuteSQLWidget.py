@@ -21,27 +21,24 @@ __copyright__ = "(C) 2018, Paul Blottiere"
 
 import os
 
-from qgis.PyQt import uic
-
 from qgis.core import (
     Qgis,
-    QgsExpressionContextScope,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
     QgsExpression,
+    QgsExpressionContextScope,
     QgsProcessingModelChildParameterSource,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
 )
-
 from qgis.gui import QgsFieldExpressionWidget
+from qgis.PyQt import uic
 
-from processing.gui.wrappers import WidgetWrapper, dialogTypes, DIALOG_MODELER
+from processing.gui.wrappers import DIALOG_MODELER, WidgetWrapper, dialogTypes
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ExecuteSQLWidgetBase.ui"))
 
 
 class ExecuteSQLWidget(BASE, WIDGET):
-
     def __init__(self, dialog):
         super().__init__(None)
         self.setupUi(self)
@@ -146,7 +143,6 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
 
 class ExecuteSQLWidgetWrapper(WidgetWrapper):
-
     def createWidget(self):
         return ExecuteSQLWidget(self.dialog)
 

@@ -20,8 +20,11 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgsgrassvector.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {
@@ -39,8 +42,7 @@ extern "C"
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent )
   : QObject( parent )
@@ -108,8 +110,7 @@ QgsFields QgsGrassVectorLayer::fields()
     mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
-  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty()
-       && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
+  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty() && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
   {
     QgsDebugMsgLevel( "reload fields", 2 );
     mError.clear();
@@ -154,19 +155,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = QStringLiteral( "int" );
+              type = u"int"_s;
               qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = QStringLiteral( "double" );
+              type = u"double"_s;
               qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = QStringLiteral( "string" );
+              type = u"string"_s;
               qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
-              type = QStringLiteral( "datetime" );
+              type = u"datetime"_s;
               qtype = QMetaType::Type::QString;
               break;
           }
@@ -187,15 +188,13 @@ QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location
   : QObject( parent )
   , mGrassObject( gisdbase, location, mapset, name )
   , mNodeCount( 0 )
-{
-}
+{}
 
 QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent )
   : QObject( parent )
   , mGrassObject( grassObject )
   , mNodeCount( 0 )
-{
-}
+{}
 
 bool QgsGrassVector::openHead()
 {

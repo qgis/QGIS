@@ -25,6 +25,7 @@ set(TESTS
   testqgsmultipoint.cpp
   testqgsmultipolygon.cpp
   testqgsmultisurface.cpp
+  testqgsnurbscurve.cpp
   testqgspoint.cpp
   testqgspointxy.cpp
   testqgspolygon.cpp

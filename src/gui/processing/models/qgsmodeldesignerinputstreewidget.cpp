@@ -23,14 +23,9 @@
 
 QgsModelDesignerInputsTreeWidget::QgsModelDesignerInputsTreeWidget( QWidget *parent )
   : QTreeWidget( parent )
-{
-}
+{}
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-QMimeData *QgsModelDesignerInputsTreeWidget::mimeData( const QList<QTreeWidgetItem *> items ) const
-#else
 QMimeData *QgsModelDesignerInputsTreeWidget::mimeData( const QList<QTreeWidgetItem *> &items ) const
-#endif
 {
   if ( items.empty() )
     return nullptr;

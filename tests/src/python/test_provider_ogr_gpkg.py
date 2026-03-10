@@ -13,35 +13,24 @@ __author__ = "Even Rouault"
 __date__ = "2016-04-21"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import math
 import os
 import re
 import shutil
 import sys
 import tempfile
 import time
-import math
+import unittest
 from sqlite3 import OperationalError
 
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QFileInfo,
-    Qt,
-    QTemporaryDir,
-    QTime,
-    QVariant,
-)
-from qgis.PyQt.QtXml import QDomDocument
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsFeature,
-    QgsRelation,
-    QgsRelationContext,
     QgsFeatureRequest,
     QgsFeatureSink,
     QgsField,
@@ -54,17 +43,27 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsProviderRegistry,
     QgsRectangle,
+    QgsRelation,
+    QgsRelationContext,
     QgsSettings,
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QFileInfo,
+    Qt,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -80,7 +79,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -299,7 +297,6 @@ class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
 
 
 class ErrorReceiver:
-
     def __init__(self):
         self.msg = None
 
@@ -328,7 +325,6 @@ def count_opened_filedescriptors(filename_to_test):
 
 
 class TestPyQgsOGRProviderGpkg(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1838,6 +1834,40 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             ),
             provider_extent.asPolygon()[0],
         )
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 13, 0),
+        "GDAL 3.13 required",
+    )
+    def testApproxFeatureCountWithProviderFilter(self):
+        """Test issue GH #65067 where the provider filter was not applied when doing an approximate feature count"""
+        tmpfile = os.path.join(
+            self.basetestpath, "testApproxFeatureCountWithProviderFilter.gpkg"
+        )
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint)
+        # Add an int field
+        lyr.CreateField(ogr.FieldDefn("int_field", ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(0 1)"))
+        f.SetField("int_field", 1)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(2 3)"))
+        f.SetField("int_field", 2)
+        lyr.CreateFeature(f)
+
+        # Drop gpkg_ogr_contents
+        ds.ExecuteSQL("DROP TABLE IF EXISTS gpkg_ogr_contents")
+
+        ds = None
+
+        vl = QgsVectorLayer(f"{tmpfile}" + "|layername=" + "test", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+
+        vl.setSubsetString("int_field = 1")
+        self.assertEqual(vl.featureCount(), 1)
 
     def testRegenerateFid(self):
         """Test regenerating feature ids"""

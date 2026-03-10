@@ -20,7 +20,10 @@
 #include "qgis.h"
 
 #include <QObject>
+#include <QString>
 #include <QVariantMap>
+
+using namespace Qt::StringLiterals;
 
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin
@@ -227,20 +230,10 @@ class QgsAuthOAuth2Config : public QObject
     static bool writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, ConfigFormat format = ConfigFormat::JSON, bool pretty = false );
 
     //! Load and parse a directory of configs (e.g. JSON) to objects
-    static QList<QgsAuthOAuth2Config *> loadOAuth2Configs(
-      const QString &configdirectory,
-      QObject *parent = nullptr,
-      ConfigFormat format = ConfigFormat::JSON,
-      bool *ok = nullptr
-    );
+    static QList<QgsAuthOAuth2Config *> loadOAuth2Configs( const QString &configdirectory, QObject *parent = nullptr, ConfigFormat format = ConfigFormat::JSON, bool *ok = nullptr );
 
     //! Load and parse a directory of configs (e.g. JSON) to a map
-    static QgsStringMap mapOAuth2Configs(
-      const QString &configdirectory,
-      QObject *parent = nullptr,
-      ConfigFormat format = ConfigFormat::JSON,
-      bool *ok = nullptr
-    );
+    static QgsStringMap mapOAuth2Configs( const QString &configdirectory, QObject *parent = nullptr, ConfigFormat format = ConfigFormat::JSON, bool *ok = nullptr );
 
     /**
      * Returns an ordered list of locations from which stored configuration files
@@ -423,7 +416,7 @@ class QgsAuthOAuth2Config : public QObject
     QString mRequestUrl;
     QString mTokenUrl;
     QString mRefreshTokenUrl;
-    QString mRedirectHost = QStringLiteral( "127.0.0.1" );
+    QString mRedirectHost = u"127.0.0.1"_s;
     QString mRedirectURL;
     int mRedirectPort = 7070;
     QString mClientId;

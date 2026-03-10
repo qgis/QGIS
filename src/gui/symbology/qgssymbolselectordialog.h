@@ -91,7 +91,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     friend class QgsSymbolSelectorDialog;
 
   public:
-    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+    // TODO QGIS 5.0 - transfer ownership of symbol to widget!
 
     /**
      * Symbol selector widget that can be used to select and build a symbol
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    // TODO QGIS 4.0 -- remove when normal constructor takes ownership
+    // TODO QGIS 5.0 -- remove when normal constructor takes ownership
 
     /**
      * Creates a QgsSymbolSelectorWidget which takes ownership of a symbol and maintains
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     QgsSymbol *symbol() { return mSymbol; }
 
-    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+    // TODO QGIS 5.0 - transfer ownership of symbol to widget!
 
     /**
      * Loads the given symbol into the widget.

@@ -19,7 +19,7 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTextBrowser, QApplication
+from qgis.PyQt.QtWidgets import QApplication, QTextBrowser
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError, DbError, DBPlugin, Schema, Table
@@ -28,7 +28,6 @@ from .gui_utils import GuiUtils
 
 
 class InfoViewer(QTextBrowser):
-
     def __init__(self, parent=None):
         QTextBrowser.__init__(self, parent)
         self.setOpenLinks(False)

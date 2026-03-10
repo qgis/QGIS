@@ -28,15 +28,17 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgssnappinglayertreemodel.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
   , mCanvas( canvas )
-{
-}
+{}
 
 QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -61,7 +63,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
       typeMenu->addAction( action );
     }
     mTypeButton->setMenu( typeMenu );
-    mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+    mTypeButton->setObjectName( u"SnappingTypeButton"_s );
     mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     return mTypeButton;
   }
@@ -198,9 +200,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
     }
   }
-  else if (
-    index.column() == QgsSnappingLayerTreeModel::UnitsColumn
-  )
+  else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )

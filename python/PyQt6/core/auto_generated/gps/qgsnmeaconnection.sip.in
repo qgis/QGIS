@@ -9,7 +9,7 @@
 
 
 
-class QgsNmeaConnection: QgsGpsConnection
+class QgsNmeaConnection : QgsGpsConnection
 {
 %Docstring(signature="appended")
 Evaluates NMEA sentences coming from a GPS device.
@@ -19,7 +19,6 @@ Evaluates NMEA sentences coming from a GPS device.
 #include "qgsnmeaconnection.h"
 %End
   public:
-
     QgsNmeaConnection( QIODevice *device /Transfer/ );
 %Docstring
 Constructs a QgsNmeaConnection with given ``device``.

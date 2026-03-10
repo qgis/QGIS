@@ -23,8 +23,11 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgscolorswatchgrid.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 
@@ -122,7 +125,7 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 
     QString info;
     if ( !colorName.isEmpty() )
-      info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
+      info += u"<h3>%1</h3><p>"_s.arg( colorName );
 
     info += QgsColorTooltip::htmlDescription( color, this );
 
@@ -271,7 +274,8 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     const int row = index / NUMBER_COLORS_PER_ROW;
     const int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
+    QRect swatchRect
+      = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {
@@ -326,7 +330,7 @@ QPixmap QgsColorSwatchGrid::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }

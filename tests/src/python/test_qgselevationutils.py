@@ -7,17 +7,16 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 
 from qgis.core import (
     Qgis,
+    QgsDoubleRange,
+    QgsElevationUtils,
     QgsProject,
     QgsRasterLayer,
-    QgsElevationUtils,
-    QgsDoubleRange,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -27,7 +26,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsElevationUtils(QgisTestCase):
-
     def test_z_range_for_project(self):
         """
         Test calculating z range for a project

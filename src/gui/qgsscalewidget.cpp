@@ -24,8 +24,11 @@
 
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsscalewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   : QWidget( parent )
@@ -39,7 +42,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
 
   mCurrentScaleButton = new QToolButton( this );
   mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
-  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
 
   mMenu = new QMenu( this );
   mCurrentScaleButton->setMenu( mMenu );
@@ -108,7 +111,7 @@ void QgsScaleWidget::menuAboutToShow()
   mMenu->clear();
 
   double scale = mCanvas->scale();
-  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ), tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
+  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ), tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
   connect( canvasScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
   mMenu->addAction( canvasScaleAction );
 

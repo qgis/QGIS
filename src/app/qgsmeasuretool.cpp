@@ -23,12 +23,16 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 #include "qgssnapindicator.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeasuretool.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )
@@ -74,14 +78,20 @@ void QgsMeasureTool::activate()
   // map CRS is set to a geographic one, warn them.
   if ( mCanvas->mapSettings().destinationCrs().isValid() && mCanvas->mapSettings().destinationCrs().isGeographic() && ( mCanvas->extent().height() > 360 || mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( nullptr, tr( "Incorrect Measure Results" ), tr( "<p>This map is defined with a geographic coordinate system "
-                                                                          "(latitude/longitude) "
-                                                                          "but the map extents suggests that it is actually a projected "
-                                                                          "coordinate system (e.g., Mercator). "
-                                                                          "If so, the results from line or area measurements will be "
-                                                                          "incorrect.</p>"
-                                                                          "<p>To fix this, explicitly set an appropriate map coordinate "
-                                                                          "system using the <tt>Settings:Project Properties</tt> menu." ) );
+    QMessageBox::warning(
+      nullptr,
+      tr( "Incorrect Measure Results" ),
+      tr(
+        "<p>This map is defined with a geographic coordinate system "
+        "(latitude/longitude) "
+        "but the map extents suggests that it is actually a projected "
+        "coordinate system (e.g., Mercator). "
+        "If so, the results from line or area measurements will be "
+        "incorrect.</p>"
+        "<p>To fix this, explicitly set an appropriate map coordinate "
+        "system using the <tt>Settings:Project Properties</tt> menu."
+      )
+    );
     mWrongProjectProjection = true;
   }
 }
@@ -117,16 +127,12 @@ void QgsMeasureTool::restart()
 
 void QgsMeasureTool::updateSettings()
 {
-  const QgsSettings settings;
-
-  const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-  const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-  const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
+  const QColor measureColor = QgsSettingsRegistryGui::settingsDefaultMeasureColor->value();
+  mRubberBand->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 100 ) );
   mRubberBand->setWidth( 3 );
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
   mRubberBandPoints->setIconSize( 10 );
-  mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
+  mRubberBandPoints->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 150 ) );
 
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )

@@ -36,8 +36,11 @@
 
 #include <QDialog>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsmaptoolannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -117,10 +120,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
     const QgsPointXY mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
     annotation->setMapPosition( mapPos );
     annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
-    annotation->setRelativePosition( QPointF(
-      static_cast<double>( e->pos().x() ) / mCanvas->width(),
-      static_cast<double>( e->pos().y() ) / mCanvas->height()
-    ) );
+    annotation->setRelativePosition( QPointF( static_cast<double>( e->pos().x() ) / mCanvas->width(), static_cast<double>( e->pos().y() ) / mCanvas->height() ) );
     annotation->setFrameSizeMm( QSizeF( 50, 25 ) );
 
     QgsProject::instance()->annotationManager()->addAnnotation( annotation );
@@ -167,14 +167,14 @@ bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMous
     return true;
   }
   menu->addSeparator();
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Edit" ), this, [this, existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Edit" ), this, [this, existingItem]() {
     QDialog *dialog = createItemEditor( existingItem );
     if ( dialog )
     {
       dialog->exec();
     }
   } );
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionDeleteSelected.svg"_s ), tr( "Delete" ), this, [existingItem]() {
     QgsProject::instance()->annotationManager()->removeAnnotation( existingItem->annotation() );
   } );
 
@@ -233,21 +233,29 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
       double relPosX = annotation->relativePosition().x();
       double relPosY = annotation->relativePosition().y();
 
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRight || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRight
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         xmax += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
         xmin += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
         relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / static_cast<double>( mCanvas->width() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         ymin += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
         relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / static_cast<double>( mCanvas->height() );
       }
-      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
+      if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown
+           || mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
       {
         ymax += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
       }

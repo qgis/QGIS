@@ -11,6 +11,8 @@ __date__ = "26/04/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -21,8 +23,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -55,7 +56,6 @@ def createLayerWithFivePoints():
 
 
 class TestQgsFeatureSource(QgisTestCase):
-
     def testUniqueValues(self):
         """
         Test retrieving unique values using base class method

@@ -32,8 +32,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
@@ -43,7 +46,7 @@ QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstract
 
   QVector< const QgsAbstractGeometry * > geometries;
   geometries << geom;
-  while ( ! geometries.isEmpty() )
+  while ( !geometries.isEmpty() )
   {
     const QgsAbstractGeometry *g = geometries.takeFirst();
     if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( g ) )
@@ -209,23 +212,15 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, 
 
 double QgsGeometryUtils::distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon )
 {
-  const double area = std::abs(
-                        ( linePoint1.x() - linePoint2.x() ) * ( point.y() - linePoint2.y() ) -
-                        ( linePoint1.y() - linePoint2.y() ) * ( point.x() - linePoint2.x() )
-                      );
+  const double area = std::abs( ( linePoint1.x() - linePoint2.x() ) * ( point.y() - linePoint2.y() ) - ( linePoint1.y() - linePoint2.y() ) * ( point.x() - linePoint2.x() ) );
 
-  const double length = std::sqrt(
-                          std::pow( linePoint1.x() - linePoint2.x(), 2 ) +
-                          std::pow( linePoint1.y() - linePoint2.y(), 2 )
-                        );
+  const double length = std::sqrt( std::pow( linePoint1.x() - linePoint2.x(), 2 ) + std::pow( linePoint1.y() - linePoint2.y(), 2 ) );
 
   const double distance = area / length;
   return qgsDoubleNear( distance, 0.0, epsilon ) ? 0.0 : distance;
 }
 
-bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const double radius,
-    const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-    QgsPointXY &intersection )
+bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection )
 {
   // formula taken from http://mathworld.wolfram.com/Circle-LineIntersection.html
 
@@ -348,7 +343,7 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
 
   // determine the absolute intersection points
   intersection1 = QgsPointXY( x2 + rx, y2 - ry );
-  intersection2 = QgsPointXY( x2 - rx, y2 +  ry );
+  intersection2 = QgsPointXY( x2 - rx, y2 + ry );
 
   return 2;
 }
@@ -379,7 +374,9 @@ bool QgsGeometryUtils::tangentPointAndCircle( const QgsPointXY &center, double r
 }
 
 // inspired by http://csharphelper.com/blog/2014/12/find-the-tangent-lines-between-two-circles-in-c/
-int QgsGeometryUtils::circleCircleOuterTangents( const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2 )
+int QgsGeometryUtils::circleCircleOuterTangents(
+  const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2
+)
 {
   if ( radius1 > radius2 )
     return circleCircleOuterTangents( center2, radius2, center1, radius1, line1P1, line1P2, line2P1, line2P2 );
@@ -415,7 +412,9 @@ int QgsGeometryUtils::circleCircleOuterTangents( const QgsPointXY &center1, doub
 }
 
 // inspired by http://csharphelper.com/blog/2014/12/find-the-tangent-lines-between-two-circles-in-c/
-int QgsGeometryUtils::circleCircleInnerTangents( const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2 )
+int QgsGeometryUtils::circleCircleInnerTangents(
+  const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2
+)
 {
   if ( radius1 > radius2 )
     return circleCircleInnerTangents( center2, radius2, center1, radius1, line1P1, line1P2, line2P1, line2P2 );
@@ -472,7 +471,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
   {
     const QgsPoint pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
     const QgsPoint pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
-    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance ) continue;
+    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance )
+      continue;
 
     // Don't test neighboring edges
     const int start = j + 1;
@@ -484,7 +484,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
 
       QgsPoint inter;
       bool intersection = false;
-      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) ) continue;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) )
+        continue;
 
       SelfIntersection s;
       s.segment1 = i;
@@ -528,14 +529,79 @@ QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const Qgs
   const double x = centerX + radius * ( std::cos( angleDest ) );
   const double y = centerY + radius * ( std::sin( angleDest ) );
 
-  const double z = pt1.is3D() ?
-                   QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.z(), pt2.z(), pt3.z() )
-                   : 0;
-  const double m = pt1.isMeasure() ?
-                   QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.m(), pt2.m(), pt3.m() )
-                   : 0;
+  const double z = pt1.is3D() ? QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.z(), pt2.z(), pt3.z() ) : 0;
+  const double m = pt1.isMeasure() ? QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.m(), pt2.m(), pt3.m() ) : 0;
 
   return QgsPoint( pt1.wkbType(), x, y, z, m );
+}
+
+QgsPoint QgsGeometryUtils::interpolatePointOnCubicBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t )
+{
+  const bool hasZ = p0.is3D() && p1.is3D() && p2.is3D() && p3.is3D();
+  const bool hasM = p0.isMeasure() && p1.isMeasure() && p2.isMeasure() && p3.isMeasure();
+
+  double x, y;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
+
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( p0.x(), p0.y(), p0.z(), p0.m(), p1.x(), p1.y(), p1.z(), p1.m(), p2.x(), p2.y(), p2.z(), p2.m(), p3.x(), p3.y(), p3.z(), p3.m(), t, hasZ, hasM, x, y, z, m );
+
+  Qgis::WkbType wkbType = Qgis::WkbType::Point;
+  if ( hasZ && hasM )
+    wkbType = Qgis::WkbType::PointZM;
+  else if ( hasZ )
+    wkbType = Qgis::WkbType::PointZ;
+  else if ( hasM )
+    wkbType = Qgis::WkbType::PointM;
+
+  return QgsPoint( wkbType, x, y, z, m );
+}
+
+void QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+  double p0x,
+  double p0y,
+  double p0z,
+  double p0m,
+  double p1x,
+  double p1y,
+  double p1z,
+  double p1m,
+  double p2x,
+  double p2y,
+  double p2z,
+  double p2m,
+  double p3x,
+  double p3y,
+  double p3z,
+  double p3m,
+  double t,
+  bool hasZ,
+  bool hasM,
+  double &outX,
+  double &outY,
+  double &outZ,
+  double &outM
+)
+{
+  // Cubic Bézier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+  const double t1 = 1.0 - t;
+  const double t1_2 = t1 * t1;
+  const double t1_3 = t1_2 * t1;
+  const double t_2 = t * t;
+  const double t_3 = t_2 * t;
+
+  outX = t1_3 * p0x + 3.0 * t1_2 * t * p1x + 3.0 * t1 * t_2 * p2x + t_3 * p3x;
+  outY = t1_3 * p0y + 3.0 * t1_2 * t * p1y + 3.0 * t1 * t_2 * p2y + t_3 * p3y;
+
+  if ( hasZ )
+  {
+    outZ = t1_3 * p0z + 3.0 * t1_2 * t * p1z + 3.0 * t1 * t_2 * p2z + t_3 * p3z;
+  }
+
+  if ( hasM )
+  {
+    outM = t1_3 * p0m + 3.0 * t1_2 * t * p1m + 3.0 * t1 * t_2 * p2m + t_3 * p3m;
+  }
 }
 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )
@@ -587,15 +653,14 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
 
 QgsPoint QgsGeometryUtils::segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
 {
-  double midPointAngle = QgsGeometryUtilsBase::averageAngle( QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p1.x(), p1.y() ),
-                         QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
+  double midPointAngle
+    = QgsGeometryUtilsBase::averageAngle( QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p1.x(), p1.y() ), QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
   if ( !useShortestArc )
     midPointAngle += M_PI;
   return center.project( center.distance( p1 ), midPointAngle * 180 / M_PI );
 }
 
-double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1,
-    const QgsPoint &cp2, const QgsPoint &cp3 )
+double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 )
 {
   //calculate circle midpoint
   double mX, mY, radius;
@@ -631,20 +696,18 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
     return false;
 
   // distance of candidate point to center of arc a1-a2-a3
-  const double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) +
-                                      ( b.y() - centerY ) * ( b.y() - centerY ) );
+  const double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) + ( b.y() - centerY ) * ( b.y() - centerY ) );
 
   double diff = std::fabs( radius - bDistance );
 
-  auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
-  {
+  auto arcAngle = []( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c ) -> double {
     const double abX = b.x() - a.x();
     const double abY = b.y() - a.y();
 
     const double cbX = b.x() - c.x();
     const double cbY = b.y() - c.y();
 
-    const double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    const double dot = ( abX * cbX + abY * cbY );   /* dot product */
     const double cross = ( abX * cbY - abY * cbX ); /* cross product */
 
     const double alpha = std::atan2( cross, dot );
@@ -668,7 +731,7 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
     }
 
     const int a2Side = QgsGeometryUtilsBase::leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
-    const int bSide  = QgsGeometryUtilsBase::leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    const int bSide = QgsGeometryUtilsBase::leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
 
     // Is the point b on the same side of a1/a3 as the mid-point a2 is?
     // If not, it's in the unbounded part of the circle, so it continues the arc, return true.
@@ -678,7 +741,9 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
   return false;
 }
 
-void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
+void QgsGeometryUtils::segmentizeArc(
+  const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM
+)
 {
   bool reversed = false;
   const int segSide = segmentSide( p1, p3, p2 );
@@ -734,7 +799,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     double angle = a3 - a1;
     // angle == 0 when full circle
-    if ( angle <= 0 ) angle += M_PI * 2;
+    if ( angle <= 0 )
+      angle += M_PI * 2;
 
     /* Number of segments in output */
     const int segs = ceil( angle / increment );
@@ -795,7 +861,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     std::reverse( stringPoints.begin(), stringPoints.end() );
   }
-  if ( ! points.empty() && stringPoints.front() == points.back() ) stringPoints.pop_front();
+  if ( !points.empty() && stringPoints.front() == points.back() )
+    stringPoints.pop_front();
   points.append( stringPoints );
 }
 
@@ -830,8 +897,8 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
-  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rx( u"\\s"_s );
+  const thread_local QRegularExpression rxIsNumber( u"^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$"_s );
   for ( const QString &pointCoordinates : coordList )
   {
     const QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
@@ -904,8 +971,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
     if ( is3D )
     {
       double z = point.z();
-      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
-           && std::isnan( z ) )
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin && std::isnan( z ) )
         z = -std::numeric_limits<double>::max();
 
       wkb << z;
@@ -913,8 +979,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
     if ( isMeasure )
     {
       double m = point.m();
-      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
-           && std::isnan( m ) )
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin && std::isnan( m ) )
         m = -std::numeric_limits<double>::max();
 
       wkb << m;
@@ -924,7 +989,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
 
 QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
 {
-  QString wkt = QStringLiteral( "(" );
+  QString wkt = u"("_s;
   for ( const QgsPoint &p : points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
@@ -933,9 +998,9 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
       wkt += ' ' + qgsDoubleToString( p.z(), precision );
     if ( isMeasure )
       wkt += ' ' + qgsDoubleToString( p.m(), precision );
-    wkt += QLatin1String( ", " );
+    wkt += ", "_L1;
   }
-  if ( wkt.endsWith( QLatin1String( ", " ) ) )
+  if ( wkt.endsWith( ", "_L1 ) )
     wkt.chop( 2 ); // Remove last ", "
   wkt += ')';
   return wkt;
@@ -943,15 +1008,15 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
 
 QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, QgsAbstractGeometry::AxisOrder axisOrder )
 {
-  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
+  QDomElement elemCoordinates = doc.createElementNS( ns, u"coordinates"_s );
 
   // coordinate separator
-  const QString cs = QStringLiteral( "," );
+  const QString cs = u","_s;
   // tuple separator
-  const QString ts = QStringLiteral( " " );
+  const QString ts = u" "_s;
 
-  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
-  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
+  elemCoordinates.setAttribute( u"cs"_s, cs );
+  elemCoordinates.setAttribute( u"ts"_s, ts );
 
   QString strCoordinates;
 
@@ -970,8 +1035,8 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
 QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, QgsAbstractGeometry::AxisOrder axisOrder )
 {
-  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
-  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
+  QDomElement elemPosList = doc.createElementNS( ns, u"posList"_s );
+  elemPosList.setAttribute( u"srsDimension"_s, is3D ? 3 : 2 );
 
   QString strCoordinates;
   for ( const QgsPoint &p : points )
@@ -992,12 +1057,12 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
 
 QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
 {
-  QString json = QStringLiteral( "[ " );
+  QString json = u"[ "_s;
   for ( const QgsPoint &p : points )
   {
-    json += '[' + qgsDoubleToString( p.x(), precision ) + QLatin1String( ", " ) + qgsDoubleToString( p.y(), precision ) + QLatin1String( "], " );
+    json += '[' + qgsDoubleToString( p.x(), precision ) + ", "_L1 + qgsDoubleToString( p.y(), precision ) + "], "_L1;
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  if ( json.endsWith( ", "_L1 ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
@@ -1053,12 +1118,12 @@ QPair<Qgis::WkbType, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt
     const int openedParenthesisCount = wktParsed.count( '(' );
     const int closedParenthesisCount = wktParsed.count( ')' );
     // closes missing parentheses
-    for ( int i = 0 ;  i < openedParenthesisCount - closedParenthesisCount; ++i )
+    for ( int i = 0; i < openedParenthesisCount - closedParenthesisCount; ++i )
       wktParsed.push_back( ')' );
     // removes extra parentheses
     wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
 
-    const thread_local QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ), QRegularExpression::DotMatchesEverythingOption );
+    const thread_local QRegularExpression cooRegEx( u"^[^\\(]*\\((.*)\\)[^\\)]*$"_s, QRegularExpression::DotMatchesEverythingOption );
     const QRegularExpressionMatch match = cooRegEx.match( wktParsed );
     contents = match.hasMatch() ? match.captured( 1 ) : QString();
   }
@@ -1134,11 +1199,13 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
 QgsPoint QgsGeometryUtils::interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double fraction )
 {
   const double _fraction = 1 - fraction;
-  return QgsPoint( p1.wkbType(),
-                   p1.x() * _fraction + p2.x() * fraction,
-                   p1.y() * _fraction + p2.y() * fraction,
-                   p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
-                   p1.isMeasure() ? p1.m() * _fraction + p2.m() * fraction : std::numeric_limits<double>::quiet_NaN() );
+  return QgsPoint(
+    p1.wkbType(),
+    p1.x() * _fraction + p2.x() * fraction,
+    p1.y() * _fraction + p2.y() * fraction,
+    p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
+    p1.isMeasure() ? p1.m() * _fraction + p2.m() * fraction : std::numeric_limits<double>::quiet_NaN()
+  );
 }
 
 QgsPointXY QgsGeometryUtils::interpolatePointOnLine( const double x1, const double y1, const double x2, const double y2, const double fraction )
@@ -1189,7 +1256,6 @@ void QgsGeometryUtils::coefficients( const QgsPoint &pt1, const QgsPoint &pt2, d
     b = pt2.x() - pt1.x();
     c = pt1.x() * pt2.y() - pt1.y() * pt2.x();
   }
-
 }
 
 QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
@@ -1278,8 +1344,7 @@ QgsPoint QgsGeometryUtils::createPointWithMatchingDimensions( double x, double y
     return QgsPoint( x, y );
 }
 
-QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
-    const QgsPoint &segmentStart, const QgsPoint &segmentEnd )
+QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y, const QgsPoint &segmentStart, const QgsPoint &segmentEnd )
 {
   QgsPoint result = createPointWithMatchingDimensions( x, y, segmentStart );
   const double distanceFromStart = QgsGeometryUtilsBase::distance2D( segmentStart.x(), segmentStart.y(), x, y );
@@ -1290,9 +1355,7 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
     double z2 = segmentEnd.z();
     double interpolatedZ;
     double tempX, tempY;
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
-      distanceFromStart, tempX, tempY, &z1, &z2, &interpolatedZ );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(), distanceFromStart, tempX, tempY, &z1, &z2, &interpolatedZ );
     result.setZ( interpolatedZ );
   }
 
@@ -1302,32 +1365,43 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
     double m2 = segmentEnd.m();
     double interpolatedM;
     double tempX, tempY;
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
-      distanceFromStart, tempX, tempY, nullptr, nullptr, nullptr, &m1, &m2, &interpolatedM );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(), distanceFromStart, tempX, tempY, nullptr, nullptr, nullptr, &m1, &m2, &interpolatedM );
     result.setM( interpolatedM );
   }
 
   return result;
 }
 
-bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                                      const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                                      double distance1, double distance2,
-                                      QgsPoint &chamferStart, QgsPoint &chamferEnd,
-                                      double epsilon )
+bool QgsGeometryUtils::createChamfer(
+  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2, QgsPoint &chamferStart, QgsPoint &chamferEnd, double epsilon
+)
 {
   // Create chamfer points using the utility function
   double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
 
   QgsGeometryUtilsBase::createChamfer(
-    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
-    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
-    distance1, distance2,
-    chamferStartX, chamferStartY,
-    chamferEndX, chamferEndY,
-    nullptr, nullptr, nullptr, nullptr,
-    nullptr, nullptr, nullptr, nullptr,
+    segment1Start.x(),
+    segment1Start.y(),
+    segment1End.x(),
+    segment1End.y(),
+    segment2Start.x(),
+    segment2Start.y(),
+    segment2End.x(),
+    segment2End.y(),
+    distance1,
+    distance2,
+    chamferStartX,
+    chamferStartY,
+    chamferEndX,
+    chamferEndY,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
     epsilon
   );
 
@@ -1337,24 +1411,41 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPo
   return true;
 }
 
-bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                                     const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                                     double radius,
-                                     QgsPoint &filletPoint1,
-                                     QgsPoint &filletMidPoint,
-                                     QgsPoint &filletPoint2,
-                                     double epsilon )
+bool QgsGeometryUtils::createFillet(
+  const QgsPoint &segment1Start,
+  const QgsPoint &segment1End,
+  const QgsPoint &segment2Start,
+  const QgsPoint &segment2End,
+  double radius,
+  QgsPoint &filletPoint1,
+  QgsPoint &filletMidPoint,
+  QgsPoint &filletPoint2,
+  double epsilon
+)
 {
   // Create fillet arc using the utility function
   double filletPointsX[3], filletPointsY[3];
 
   QgsGeometryUtilsBase::createFillet(
-    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
-    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
+    segment1Start.x(),
+    segment1Start.y(),
+    segment1End.x(),
+    segment1End.y(),
+    segment2Start.x(),
+    segment2Start.y(),
+    segment2End.x(),
+    segment2End.y(),
     radius,
-    filletPointsX, filletPointsY,
-    nullptr, nullptr, nullptr, nullptr,
-    nullptr, nullptr, nullptr, nullptr,
+    filletPointsX,
+    filletPointsY,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
     epsilon
   );
 
@@ -1375,11 +1466,9 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoi
   return true;
 }
 
-bool QgsGeometryUtils::createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-    const QgsPoint &segment2Start, const QgsPoint &segment2End,
-    double radius,
-    QgsPoint filletPoints[3],
-    double epsilon )
+bool QgsGeometryUtils::createFilletArray(
+  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, QgsPoint filletPoints[3], double epsilon
+)
 {
   QgsPoint p1, p2, p3;
   createFillet( segment1Start, segment1End, segment2Start, segment2End, radius, p1, p2, p3, epsilon );
@@ -1390,21 +1479,18 @@ bool QgsGeometryUtils::createFilletArray( const QgsPoint &segment1Start, const Q
 }
 
 std::unique_ptr<QgsLineString> QgsGeometryUtils::createChamferGeometry(
-  const QgsPoint &segment1Start, const QgsPoint &segment1End,
-  const QgsPoint &segment2Start, const QgsPoint &segment2End,
-  double distance1, double distance2 )
+  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2
+)
 {
   QgsPoint chamferStart, chamferEnd;
   createChamfer( segment1Start, segment1End, segment2Start, segment2End, distance1, distance2, chamferStart, chamferEnd );
 
-  return std::make_unique<QgsLineString>(
-           QVector<QgsPoint> { segment1Start, chamferStart, chamferEnd, segment2Start } );
+  return std::make_unique<QgsLineString>( QVector<QgsPoint> { segment1Start, chamferStart, chamferEnd, segment2Start } );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
-  const QgsPoint &segment1Start, const QgsPoint &segment1End,
-  const QgsPoint &segment2Start, const QgsPoint &segment2End,
-  double radius, int segments )
+  const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments
+)
 {
   QgsPoint filletPoints[3];
   createFilletArray( segment1Start, segment1End, segment2Start, segment2End, radius, filletPoints );
@@ -1412,10 +1498,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
   // Calculate far endpoints for complete geometry
   double intersectionX, intersectionY;
   bool isIntersection;
-  QgsGeometryUtilsBase::segmentIntersection(
-    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
-    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
-    intersectionX, intersectionY, isIntersection, 1e-8, true );
+  QgsGeometryUtilsBase::
+    segmentIntersection( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), intersectionX, intersectionY, isIntersection, 1e-8, true );
 
   if ( !isIntersection )
   {
@@ -1436,18 +1520,16 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
     auto completeCurve = std::make_unique<QgsCompoundCurve>();
 
     // First linear segment
-    auto firstSegment = std::make_unique<QgsLineString>(
-                          QVector<QgsPoint> { segment1FarEnd, filletPoints[0] } );
+    auto firstSegment = std::make_unique<QgsLineString>( QVector<QgsPoint> { segment1FarEnd, filletPoints[0] } );
     completeCurve->addCurve( firstSegment.release() );
 
     // Circular arc segment
     auto circularString = std::make_unique<QgsCircularString>();
-    circularString->setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
+    circularString->setPoints( { filletPoints[0], filletPoints[1], filletPoints[2] } );
     completeCurve->addCurve( circularString.release() );
 
     // Last linear segment
-    auto lastSegment = std::make_unique<QgsLineString>(
-                         QVector<QgsPoint> { filletPoints[2], segment2FarEnd } );
+    auto lastSegment = std::make_unique<QgsLineString>( QVector<QgsPoint> { filletPoints[2], segment2FarEnd } );
     completeCurve->addCurve( lastSegment.release() );
 
     return completeCurve;
@@ -1460,11 +1542,23 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
 
     // Convert circular arc to line segments with specified number of segments
     QgsCircularString tempArc;
-    tempArc.setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
+    tempArc.setPoints( { filletPoints[0], filletPoints[1], filletPoints[2] } );
 
     // Calculate appropriate tolerance based on desired number of segments
-    // For segments > 0: use angle tolerance = 2*PI / (4 * segments) to get approximately 'segments' segments for a quarter circle
-    const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+    // Calculate the actual arc angle and divide by desired number of segments
+    // Note: segmentizeArc uses ceil(angle/tolerance), so we need to ensure we get exactly the desired number of segments
+    double angleTolerance = M_PI / 180.0; // Default to 1 degree
+    if ( segments > 0 )
+    {
+      double radius, centerX, centerY;
+      QgsGeometryUtils::circleCenterRadius( filletPoints[0], filletPoints[1], filletPoints[2], radius, centerX, centerY );
+      const double arcAngle
+        = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY, filletPoints[0].x(), filletPoints[0].y(), filletPoints[1].x(), filletPoints[1].y(), filletPoints[2].x(), filletPoints[2].y() ) )
+          * M_PI
+          / 180.0; // Convert to radians
+      // Add small epsilon to avoid ceil() rounding up due to numerical precision
+      angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
+    }
 
     std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
 
@@ -1479,30 +1573,23 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
   }
 }
 
-double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-    const QgsPoint &segment2Start, const QgsPoint &segment2End,
-    double epsilon )
+double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double epsilon )
 {
-  return QgsGeometryUtilsBase::maxFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
+  return QgsGeometryUtilsBase::maximumFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
-  const QgsCurve *curve, int vertexIndex,
-  double distance1, double distance2 )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex( const QgsCurve *curve, int vertexIndex, double distance1, double distance2 )
 {
   return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Chamfer, curve, vertexIndex, distance1, distance2, 0 );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
-  const QgsCurve *curve, int vertexIndex,
-  double radius, int segments )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex( const QgsCurve *curve, int vertexIndex, double radius, int segments )
 {
   return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Fillet, curve, vertexIndex, radius, 0.0, segments );
 }
 
 std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex(
-  QgsGeometry::ChamferFilletOperationType operation, const QgsCurve *curve, int vertexIndex,
-  double value1, double value2, int segments
+  QgsGeometry::ChamferFilletOperationType operation, const QgsCurve *curve, int vertexIndex, double value1, double value2, int segments
 )
 {
   if ( !curve )
@@ -1512,14 +1599,14 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     if ( curve->numPoints() < 4 )
       throw QgsInvalidArgumentException( "Closed curve must have at least 4 vertex." );
     if ( vertexIndex < 0 || vertexIndex > curve->numPoints() - 1 )
-      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in [0, %2]." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+      throw QgsInvalidArgumentException( u"Vertex index out of range. %1 must be in [0, %2]."_s.arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
   }
   else
   {
     if ( curve->numPoints() < 3 )
       throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
     if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
-      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in (0, %2)." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+      throw QgsInvalidArgumentException( u"Vertex index out of range. %1 must be in (0, %2)."_s.arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
   }
 
   // Extract the three consecutive vertices
@@ -1555,7 +1642,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     createChamfer( pPrev, p, p, pNext, value1, value2, firstNewPoint, lastNewPoint );
   }
   else
-    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( qgsEnumValueToKey( operation ) ) );
+    throw QgsInvalidArgumentException( u"Operation '%1' is unknown."_s.arg( qgsEnumValueToKey( operation ) ) );
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
@@ -1574,6 +1661,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
     if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
+      // Add fillet arc as line segments with proper segmentation
       if ( firstNewPoint != pPrev )
         points.append( firstNewPoint );
 
@@ -1582,7 +1670,15 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
         QgsCircularString tempArc;
         tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
 
-        const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+        // Calculate the actual arc angle and divide by desired number of segments
+        // Note: segmentizeArc uses ceil(angle/tolerance), so we need to ensure we get exactly the desired number of segments
+        double radius, centerX, centerY;
+        QgsGeometryUtils::circleCenterRadius( firstNewPoint, middlePoint, lastNewPoint, radius, centerX, centerY );
+        const double arcAngle = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY, firstNewPoint.x(), firstNewPoint.y(), middlePoint.x(), middlePoint.y(), lastNewPoint.x(), lastNewPoint.y() ) )
+                                * M_PI
+                                / 180.0; // Convert to radians
+        // Add small epsilon to avoid ceil() rounding up due to numerical precision
+        const double angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
         std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
 
         for ( int i = 1; i < segmentizedArc->numPoints() - 1; ++i )
@@ -1700,9 +1796,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     }
     else
     {
-      auto chamferLine = std::make_unique<QgsLineString>(
-                           QVector<QgsPoint> { firstNewPoint, lastNewPoint }
-                         );
+      auto chamferLine = std::make_unique<QgsLineString>( QVector<QgsPoint> { firstNewPoint, lastNewPoint } );
       newCompound->addCurve( chamferLine.release() );
     }
 
@@ -1751,3 +1845,68 @@ bool QgsGeometryUtils::pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &
     return QgsGeometryUtilsBase::pointsAreCollinear( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y(), epsilon );
   }
 }
+
+bool QgsGeometryUtils::checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1, QgsPoint &pt2, QgsPoint &pt3, double epsilon )
+{
+  if ( !geom || !geom->is3D() || geom->nCoordinates() < 3 || qgsgeometry_cast< const QgsGeometryCollection * >( geom ) )
+  {
+    return false;
+  }
+
+  const QgsCurve *ring = nullptr;
+  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
+  {
+    ring = curve;
+  }
+  else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom ) )
+  {
+    // curve polygon case, consider exterior ring only
+    ring = curvePolygon->exteriorRing();
+  }
+
+  if ( ring )
+  {
+    QgsVertexIterator ringIt = ring->vertices();
+    pt1 = ringIt.next();
+
+    // Find a second distinct point
+    while ( ringIt.hasNext() )
+    {
+      pt2 = ringIt.next();
+      if ( !pt2.fuzzyEqual( pt1, epsilon ) )
+      {
+        // Find a third non-collinear point
+        while ( ringIt.hasNext() )
+        {
+          pt3 = ringIt.next();
+          if ( !QgsGeometryUtils::pointsAreCollinear( pt1, pt2, pt3, epsilon ) )
+          {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}
+double QgsGeometryUtils::interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y )
+{
+  const double x1 = a.x(), y1 = a.y(), z1 = a.z();
+  const double x2 = b.x(), y2 = b.y(), z2 = b.z();
+  const double x3 = c.x(), y3 = c.y(), z3 = c.z();
+
+  const double denom = ( ( y2 - y3 ) * ( x1 - x3 ) + ( x3 - x2 ) * ( y1 - y3 ) );
+  if ( qgsDoubleNear( denom, 0.0 ) )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  const double w1 = ( ( y2 - y3 ) * ( x - x3 ) + ( x3 - x2 ) * ( y - y3 ) ) / denom;
+  const double w2 = ( ( y3 - y1 ) * ( x - x3 ) + ( x1 - x3 ) * ( y - y3 ) ) / denom;
+  const double w3 = 1.0 - w1 - w2;
+
+  const double eps = 1e-9;
+  if ( w1 < -eps || w2 < -eps || w3 < -eps )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  return w1 * z1 + w2 * z2 + w3 * z3;
+};

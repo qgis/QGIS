@@ -22,6 +22,10 @@
 #include "qgsprocessingcontext.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::GeometryType geometryType, SanitizeFlags flags )
@@ -29,7 +33,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::Geome
   if ( geom.isNull() )
   {
     // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
-    throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), geom.lastError() ) );
+    throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), geom.lastError() ) );
   }
 
   // Intersection of geometries may give use also geometries we do not want in our results.
@@ -49,8 +53,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::Geome
     return false;
   }
 
-  if ( geometryType != Qgis::GeometryType::Point
-       || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  if ( geometryType != Qgis::GeometryType::Point || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
     // when we promised multi-part geometries, so ensure we have the right type
@@ -67,7 +70,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, Qgis::GeometryType geom
   if ( geom.isNull() )
   {
     // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
-    throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: difference failed." ), geom.lastError() ) );
+    throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: difference failed." ), geom.lastError() ) );
   }
 
   //fix geometry collections
@@ -82,8 +85,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, Qgis::GeometryType geom
   if ( geom.isEmpty() )
     return false;
 
-  if ( geometryType != Qgis::GeometryType::Point
-       || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  if ( geometryType != Qgis::GeometryType::Point || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
     // when we promised multi-part geometries, so ensure we have the right type
@@ -99,7 +101,18 @@ static QString writeFeatureError()
   return QObject::tr( "Could not write feature" );
 }
 
-void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs, const QgsGeometryParameters &parameters, SanitizeFlags flags )
+void QgsOverlayUtils::difference(
+  const QgsFeatureSource &sourceA,
+  const QgsFeatureSource &sourceB,
+  QgsFeatureSink &sink,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  long &count,
+  long totalCount,
+  QgsOverlayUtils::DifferenceOutput outputAttrs,
+  const QgsGeometryParameters &parameters,
+  SanitizeFlags flags
+)
 {
   const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   QgsFeatureRequest requestB;
@@ -187,7 +200,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
           // It is possible to get rid of this issue in two steps:
           // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
           // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
-          throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
+          throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
         }
         geom = geom.difference( geomB, parameters );
       }
@@ -230,7 +243,18 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 }
 
 
-void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, const QgsGeometryParameters &parameters )
+void QgsOverlayUtils::intersection(
+  const QgsFeatureSource &sourceA,
+  const QgsFeatureSource &sourceB,
+  QgsFeatureSink &sink,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  long &count,
+  long totalCount,
+  const QList<int> &fieldIndicesA,
+  const QList<int> &fieldIndicesB,
+  const QgsGeometryParameters &parameters
+)
 {
   const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   const int attrCount = fieldIndicesA.count() + fieldIndicesB.count();

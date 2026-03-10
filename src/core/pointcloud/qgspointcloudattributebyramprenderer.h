@@ -23,6 +23,10 @@
 #include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 
 /**
@@ -33,10 +37,9 @@
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
     QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
@@ -61,7 +64,6 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPr
 class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudAttributeByRampRenderer.
      */
@@ -141,13 +143,11 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     void setMaximum( double maximum );
 
   private:
-
     double mMin = 0;
     double mMax = 100;
 
-    QString mAttribute = QStringLiteral( "Intensity" );
+    QString mAttribute = u"Intensity"_s;
     QgsColorRampShader mColorRampShader;
-
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERER_H

@@ -18,11 +18,15 @@
 
 #include "qgsalgorithmdensifygeometriesbycount.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDensifyGeometriesByCountAlgorithm::name() const
 {
-  return QStringLiteral( "densifygeometries" );
+  return u"densifygeometries"_s;
 }
 
 QString QgsDensifyGeometriesByCountAlgorithm::displayName() const
@@ -42,19 +46,21 @@ QString QgsDensifyGeometriesByCountAlgorithm::group() const
 
 QString QgsDensifyGeometriesByCountAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsDensifyGeometriesByCountAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon or line layer "
-                      "and generates a new one in which the geometries "
-                      "have a larger number of vertices than the "
-                      "original one.\n\n If the geometries have z or m values "
-                      "present then these will be linearly interpolated "
-                      "at the added nodes.\n\n The number of new vertices to "
-                      "add to each feature geometry is specified "
-                      "as an input parameter." );
+  return QObject::tr(
+    "This algorithm takes a polygon or line layer "
+    "and generates a new one in which the geometries "
+    "have a larger number of vertices than the "
+    "original one.\n\n If the geometries have z or m values "
+    "present then these will be linearly interpolated "
+    "at the added nodes.\n\n The number of new vertices to "
+    "add to each feature geometry is specified "
+    "as an input parameter."
+  );
 }
 
 QString QgsDensifyGeometriesByCountAlgorithm::shortDescription() const
@@ -75,10 +81,10 @@ QList<int> QgsDensifyGeometriesByCountAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  auto verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ), QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
+  auto verticesCnt = std::make_unique<QgsProcessingParameterNumber>( u"VERTICES"_s, QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
-  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
-  verticesCnt->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( u"VerticesCount"_s, QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
+  verticesCnt->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( verticesCnt.release() );
 }
 
@@ -90,11 +96,11 @@ QString QgsDensifyGeometriesByCountAlgorithm::outputName() const
 bool QgsDensifyGeometriesByCountAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mVerticesCnt = parameterAsInt( parameters, QStringLiteral( "VERTICES" ), context );
+  mVerticesCnt = parameterAsInt( parameters, u"VERTICES"_s, context );
 
-  mDynamicVerticesCnt = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "VERTICES" ) );
+  mDynamicVerticesCnt = QgsProcessingParameters::isDynamic( parameters, u"VERTICES"_s );
   if ( mDynamicVerticesCnt )
-    mVerticesCntProperty = parameters.value( QStringLiteral( "VERTICES" ) ).value<QgsProperty>();
+    mVerticesCntProperty = parameters.value( u"VERTICES"_s ).value<QgsProperty>();
 
   return true;
 }

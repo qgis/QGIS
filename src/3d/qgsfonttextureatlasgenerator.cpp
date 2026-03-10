@@ -24,6 +24,9 @@
 #include <QPainter>
 #include <QRegularExpressionMatch>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // rectpack2D library
 #include <finders_interface.h>
@@ -42,19 +45,10 @@ class QgsCharTextureRect
     }
 
     // get_rect must be implemented for rectpack2D compatibility:
-    auto &get_rect()
-    {
-      return paddedRect;
-    }
-    const auto &get_rect() const
-    {
-      return paddedRect;
-    }
+    auto &get_rect() { return paddedRect; }
+    const auto &get_rect() const { return paddedRect; }
 
-    QRect asQRect() const
-    {
-      return QRect( paddedRect.x, paddedRect.y, paddedRect.w, paddedRect.h );
-    }
+    QRect asQRect() const { return QRect( paddedRect.x, paddedRect.y, paddedRect.w, paddedRect.h ); }
 
     QString grapheme;
     //! Original tight bounding rect of the character glyph
@@ -145,7 +139,14 @@ QImage QgsFontTextureAtlas::renderAtlasTexture() const
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
   for ( const QgsCharTextureRect &rect : mRects )
   {
-    QgsTextRenderer::drawText( QPointF( -rect.characterOffsetFromOrigin.x() + rect.paddedRect.x + mTexturePaddingPixels, -rect.characterOffsetFromOrigin.y() + rect.paddedRect.y + mTexturePaddingPixels ), 0, Qgis::TextHorizontalAlignment::Left, { rect.grapheme }, context, mFormat );
+    QgsTextRenderer::drawText(
+      QPointF( -rect.characterOffsetFromOrigin.x() + rect.paddedRect.x + mTexturePaddingPixels, -rect.characterOffsetFromOrigin.y() + rect.paddedRect.y + mTexturePaddingPixels ),
+      0,
+      Qgis::TextHorizontalAlignment::Left,
+      { rect.grapheme },
+      context,
+      mFormat
+    );
   }
   painter.end();
 
@@ -224,7 +225,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   charRects.reserve( uniqueGraphemes.size() );
   for ( const QString &c : uniqueGraphemes )
   {
-    const thread_local QRegularExpression sWhitespaceRx( QStringLiteral( "^\\s+$" ) );
+    const thread_local QRegularExpression sWhitespaceRx( u"^\\s+$"_s );
     if ( sWhitespaceRx.match( c ).hasMatch() )
       continue;
 
@@ -236,9 +237,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   using spacesType = rectpack2D::empty_spaces<false, rectpack2D::default_empty_spaces>;
 
   bool result = true;
-  auto reportSuccessful = []( rectpack2D::rect_xywh & ) {
-    return rectpack2D::callback_result::CONTINUE_PACKING;
-  };
+  auto reportSuccessful = []( rectpack2D::rect_xywh & ) { return rectpack2D::callback_result::CONTINUE_PACKING; };
 
   auto reportUnsuccessful = [&result]( rectpack2D::rect_xywh & ) {
     result = false;
@@ -247,21 +246,10 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
 
   const auto discardStep = -4;
 
-  auto byWidth = []( const rectpack2D::rect_xywh *a, const rectpack2D::rect_xywh *b ) {
-    return a->w > b->w;
-  };
+  auto byWidth = []( const rectpack2D::rect_xywh *a, const rectpack2D::rect_xywh *b ) { return a->w > b->w; };
 
-  const rectpack2D::rect_wh resultSize = rectpack2D::find_best_packing<spacesType>(
-    charRects,
-    rectpack2D::make_finder_input(
-      1024,
-      discardStep,
-      reportSuccessful,
-      reportUnsuccessful,
-      rectpack2D::flipping_option::DISABLED
-    ),
-    byWidth
-  );
+  const rectpack2D::rect_wh resultSize
+    = rectpack2D::find_best_packing<spacesType>( charRects, rectpack2D::make_finder_input( 1024, discardStep, reportSuccessful, reportUnsuccessful, rectpack2D::flipping_option::DISABLED ), byWidth );
 
   if ( !result )
     return QgsFontTextureAtlas();

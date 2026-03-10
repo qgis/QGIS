@@ -20,16 +20,16 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgsmeshvariablestrokewidthwidget.cpp"
 
-QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
-  const QgsInterpolatedLineWidth &variableStrokeWidth,
-  double defaultMinimumvalue,
-  double defaultMaximumValue,
-  QWidget *parent
-)
-  : QgsPanelWidget( parent ), mDefaultMinimumValue( defaultMinimumvalue ), mDefaultMaximumValue( defaultMaximumValue )
+using namespace Qt::StringLiterals;
+
+QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget( const QgsInterpolatedLineWidth &variableStrokeWidth, double defaultMinimumvalue, double defaultMaximumValue, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mDefaultMinimumValue( defaultMinimumvalue )
+  , mDefaultMaximumValue( defaultMaximumValue )
 {
   setupUi( this );
 
@@ -125,7 +125,7 @@ void QgsMeshVariableStrokeWidthButton::openWidget()
   {
     // Show the dialog version if not in a panel
     QDialog *dlg = new QDialog( this );
-    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    const QString key = u"/UI/paneldialog/%1"_s.arg( widget->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( widget->panelTitle() );

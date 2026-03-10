@@ -23,8 +23,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsconfigcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 
@@ -32,29 +35,20 @@ QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 QgsAbstractCacheStrategy *getStrategyFromSettings( QgsServerSettings *settings )
 {
   QgsAbstractCacheStrategy *strategy;
-  if ( settings && settings->projectCacheStrategy() == QLatin1String( "periodic" ) )
+  if ( settings && settings->projectCacheStrategy() == "periodic"_L1 )
   {
     strategy = new QgsPeriodicCacheStrategy( settings->projectCacheCheckInterval() );
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Initializing 'periodic' cache strategy" ),
-      QStringLiteral( "Server" ), Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'periodic' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
-  else if ( settings && settings->projectCacheStrategy() == QLatin1String( "off" ) )
+  else if ( settings && settings->projectCacheStrategy() == "off"_L1 )
   {
     strategy = new QgsNullCacheStrategy();
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Initializing 'off' cache strategy" ),
-      QStringLiteral( "Server" ), Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'off' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
   else
   {
     strategy = new QgsFileSystemCacheStrategy();
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Initializing 'filesystem' cache strategy" ),
-      QStringLiteral( "Server" ), Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'filesystem' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
 
   return strategy;
@@ -65,10 +59,7 @@ void QgsConfigCache::initialize( QgsServerSettings *settings )
 {
   if ( sInstance )
   {
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Project's cache is already initialized" ),
-      QStringLiteral( "Server" ), Qgis::MessageLevel::Warning
-    );
+    QgsMessageLog::logMessage( u"Project's cache is already initialized"_s, u"Server"_s, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -100,8 +91,7 @@ QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
 
 QgsConfigCache::QgsConfigCache()
   : QgsConfigCache( new QgsFileSystemCacheStrategy() )
-{
-}
+{}
 
 const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
@@ -117,9 +107,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage
-    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                                       | Qgis::ProjectReadFlag::DontLoad3DViews
-                                       | Qgis::ProjectReadFlag::DontUpgradeAnnotations;
+    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations;
     if ( settings )
     {
       // Activate trust layer metadata flag
@@ -164,18 +152,12 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           // This is a critical error unless QGIS_SERVER_IGNORE_BAD_LAYERS is set to TRUE
           if ( !settings || !settings->ignoreBadLayers() )
           {
-            QgsMessageLog::logMessage(
-              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
-              QStringLiteral( "Server" ), Qgis::MessageLevel::Critical
-            );
-            throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+            QgsMessageLog::logMessage( u"Error, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ), u"Server"_s, Qgis::MessageLevel::Critical );
+            throw QgsServerException( u"Layer(s) not valid"_s );
           }
           else
           {
-            QgsMessageLog::logMessage(
-              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
-              QStringLiteral( "Server" ), Qgis::MessageLevel::Warning
-            );
+            QgsMessageLog::logMessage( u"Warning, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ), u"Server"_s, Qgis::MessageLevel::Warning );
           }
         }
       }
@@ -183,10 +165,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     }
     else
     {
-      QgsMessageLog::logMessage(
-        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
-        QStringLiteral( "Server" ), Qgis::MessageLevel::Critical
-      );
+      QgsMessageLog::logMessage( u"Error when loading project file '%1': %2 "_s.arg( path, prj->error() ), u"Server"_s, Qgis::MessageLevel::Critical );
     }
   }
 
@@ -241,13 +220,13 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
   QFile configFile( filePath );
   if ( !configFile.exists() )
   {
-    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", u"Server"_s, Qgis::MessageLevel::Critical );
     return nullptr;
   }
 
   if ( !configFile.open( QIODevice::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", u"Server"_s, Qgis::MessageLevel::Critical );
     return nullptr;
   }
 
@@ -261,7 +240,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
     int line, column;
     if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
     {
-      QgsMessageLog::logMessage( "Error parsing file '" + filePath + QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( "Error parsing file '" + filePath + u"': parse error %1 at row %2, column %3"_s.arg( errorMsg ).arg( line ).arg( column ), u"Server"_s, Qgis::MessageLevel::Critical );
       delete xmlDoc;
       return nullptr;
     }
@@ -319,8 +298,7 @@ void QgsConfigCache::removeChangedEntries()
 
 
 QgsFileSystemCacheStrategy::QgsFileSystemCacheStrategy()
-{
-}
+{}
 
 void QgsFileSystemCacheStrategy::attach( QgsConfigCache *cache )
 {
@@ -341,8 +319,7 @@ void QgsFileSystemCacheStrategy::entryInserted( const QString &path )
 
 QgsPeriodicCacheStrategy::QgsPeriodicCacheStrategy( int interval )
   : mInterval( interval )
-{
-}
+{}
 
 void QgsPeriodicCacheStrategy::attach( QgsConfigCache *cache )
 {

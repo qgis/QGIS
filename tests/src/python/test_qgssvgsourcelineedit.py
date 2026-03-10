@@ -11,19 +11,17 @@ __date__ = "19/07/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import QgsSvgSourceLineEdit
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.gui import QgsSvgSourceLineEdit
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsSvgSourceLineEdit(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsSvgSourceLineEdit()

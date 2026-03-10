@@ -24,6 +24,9 @@
 #include "qgis_core.h"
 
 #include <QPointF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -43,7 +46,6 @@
 class CORE_EXPORT QgsLayoutPoint
 {
   public:
-
     /**
      * Constructor for QgsLayoutPoint.
     */
@@ -66,7 +68,11 @@ class CORE_EXPORT QgsLayoutPoint
      * \see setY()
      * \see setUnits()
     */
-    void setPoint( const double x, const double y ) { mX = x; mY = y; }
+    void setPoint( const double x, const double y )
+    {
+      mX = x;
+      mY = y;
+    }
 
     /**
      * Returns x coordinate of point.
@@ -171,19 +177,23 @@ class CORE_EXPORT QgsLayoutPoint
     QgsLayoutPoint operator/=( double v );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    QString str = u"<QgsLayoutPoint: %1, %2 %3 >"_s.arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    double mX = 0.0;
+    double mX
+    = 0.0;
     double mY = 0.0;
     Qgis::LayoutUnit mUnits = Qgis::LayoutUnit::Millimeters;
-
 };
 
 #endif // QGSLAYOUTPOINT_H

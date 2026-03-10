@@ -22,8 +22,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = QStringLiteral( "Stacked" );
+using namespace Qt::StringLiterals;
+
+const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = u"Stacked"_s;
 
 QgsStackedBarDiagram::QgsStackedBarDiagram()
 {
@@ -68,7 +71,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
@@ -135,7 +138,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
@@ -282,27 +285,31 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        axisPoints << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
-                   << QPointF( baseX, baseY - axisOffset )
-                   << QPointF( baseX + scaledWidth, baseY - axisOffset );
+        axisPoints
+          << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+          << QPointF( baseX, baseY - axisOffset )
+          << QPointF( baseX + scaledWidth, baseY - axisOffset );
         break;
 
       case QgsDiagramSettings::Down:
-        axisPoints << QPointF( baseX, baseY )
-                   << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + axisOffset )
-                   << QPointF( baseX + scaledWidth, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + axisOffset );
+        axisPoints
+          << QPointF( baseX, baseY )
+          << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + axisOffset )
+          << QPointF( baseX + scaledWidth, baseY - scaledMaxVal - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + axisOffset );
         break;
 
       case QgsDiagramSettings::Right:
-        axisPoints << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseY - scaledWidth )
-                   << QPointF( baseX + axisOffset, baseY - scaledWidth )
-                   << QPointF( baseX + axisOffset, baseY );
+        axisPoints
+          << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseY - scaledWidth )
+          << QPointF( baseX + axisOffset, baseY - scaledWidth )
+          << QPointF( baseX + axisOffset, baseY );
         break;
 
       case QgsDiagramSettings::Left:
-        axisPoints << QPointF( baseX, baseY - scaledWidth )
-                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) - axisOffset, baseY - scaledWidth )
-                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) - axisOffset, baseY );
+        axisPoints
+          << QPointF( baseX, baseY - scaledWidth )
+          << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) - axisOffset, baseY - scaledWidth )
+          << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) - axisOffset, baseY );
         break;
     }
 

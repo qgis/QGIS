@@ -22,8 +22,6 @@ __copyright__ = "(C) 2013, Nyall Dawson, Massimo Endrighi"
 import os
 import unittest
 
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (
     Qgis,
     QgsMapSettings,
@@ -34,8 +32,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorSimplifyMethod,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -43,7 +42,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsBlendModes(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)

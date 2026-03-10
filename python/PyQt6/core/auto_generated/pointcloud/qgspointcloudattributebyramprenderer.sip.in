@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsPointCloudAttributeByRampRenderer : QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
@@ -24,7 +26,6 @@ green and blue attributes.
 #include "qgspointcloudattributebyramprenderer.h"
 %End
   public:
-
     QgsPointCloudAttributeByRampRenderer();
 %Docstring
 Constructor for QgsPointCloudAttributeByRampRenderer.

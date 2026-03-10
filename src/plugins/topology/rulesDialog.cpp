@@ -28,12 +28,16 @@
 #include "topolTest.h"
 
 #include <QDebug>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_rulesDialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )
-  : QDialog( parent ), Ui::rulesDialog()
+  : QDialog( parent )
+  , Ui::rulesDialog()
 {
   setupUi( this );
 
@@ -94,9 +98,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
 
   mRulesTable->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [this] {
-    mContextMenu->exec( QCursor::pos() );
-  } );
+  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [this] { mContextMenu->exec( QCursor::pos() ); } );
 
   //setHorizontalHeaderItems();
   mRulesTable->hideColumn( 3 );
@@ -142,10 +144,10 @@ void rulesDialog::setHorizontalHeaderItems()
 void rulesDialog::readTest( int index, QgsProject *project )
 {
   const QString postfix = QString::number( index );
-  const bool testEnabled = project->readBoolEntry( QStringLiteral( "Topol" ), "/testenabled_" + postfix, true );
-  const QString testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
-  const QString layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
-  const QString layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
+  const bool testEnabled = project->readBoolEntry( u"Topol"_s, "/testenabled_" + postfix, true );
+  const QString testName = project->readEntry( u"Topol"_s, "/testname_" + postfix, QString() );
+  const QString layer1Id = project->readEntry( u"Topol"_s, "/layer1_" + postfix, QString() );
+  const QString layer2Id = project->readEntry( u"Topol"_s, "/layer2_" + postfix, QString() );
 
   QgsVectorLayer *l1 = nullptr;
   if ( !( QgsVectorLayer * ) project->mapLayers().contains( layer1Id ) )
@@ -170,7 +172,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
     }
   }
   else
-    layer2Name = QStringLiteral( "No layer" );
+    layer2Name = u"No layer"_s;
 
   const int row = index;
   mRulesTable->insertRow( row );
@@ -200,7 +202,7 @@ void rulesDialog::projectRead()
 {
   clearRules();
   QgsProject *project = QgsProject::instance();
-  const int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
+  const int testCount = QgsProject::instance()->readNumEntry( u"Topol"_s, u"/testCount"_s );
   mRulesTable->clearContents();
 
   for ( int i = 0; i < testCount; ++i )
@@ -308,11 +310,11 @@ void rulesDialog::addRule()
   const QString postfix = QString::number( row );
   QgsProject *project = QgsProject::instance();
 
-  project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
-  project->writeEntry( QStringLiteral( "Topol" ), "/testenabled_" + postfix, true );
-  project->writeEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, test );
-  project->writeEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, layer1ID );
-  project->writeEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, layer2ID );
+  project->writeEntry( u"Topol"_s, u"/testCount"_s, row + 1 );
+  project->writeEntry( u"Topol"_s, "/testenabled_" + postfix, true );
+  project->writeEntry( u"Topol"_s, "/testname_" + postfix, test );
+  project->writeEntry( u"Topol"_s, "/layer1_" + postfix, layer1ID );
+  project->writeEntry( u"Topol"_s, "/layer2_" + postfix, layer2ID );
 
   // reset controls to default
   mRuleBox->setCurrentIndex( 0 );
@@ -403,5 +405,5 @@ void rulesDialog::clearRules()
 
 void rulesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_topology_checker.html" ) );
+  QgsHelp::openHelp( u"plugins/core_plugins/plugins_topology_checker.html"_s );
 }

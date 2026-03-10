@@ -27,9 +27,9 @@
 // version without notice, or even be removed.
 //
 
+#include "qgs3drendercontext.h"
 #include "qgschunkedentity.h"
 #include "qgschunkloader.h"
-#include "qgsfeature3dhandler_p.h"
 
 #define SIP_NO_FILE
 
@@ -60,15 +60,19 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    int mLeafLevel;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    mutable QHash< QString, bool > mNodesAreLeafs;
+    int mMaxFeatures;
 };
 
 
@@ -101,6 +105,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     QString mLayerName;
+    bool mNodeIsLeaf = false;
 };
 
 
@@ -130,7 +135,9 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
   private:
     friend class QgsRuleBasedChunkedEntity;
     //! This implementation is shared between QgsVectorLayerChunkedEntity and QgsRuleBasedChunkedEntity
-    static QList<QgsRayCastHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin );
+    static QList<QgsRayCastHit> rayIntersection(
+      const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin
+    );
 
     Qt3DCore::QTransform *mTransform = nullptr;
 

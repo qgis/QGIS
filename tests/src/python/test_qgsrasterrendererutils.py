@@ -10,12 +10,12 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "15/09/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
+from qgis.core import QgsColorRampShader, QgsRasterRendererUtils
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsColorRampShader, QgsRasterRendererUtils
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterRendererUtils(QgisTestCase):
-
     def testSaveRestoreColorMap(self):
         items = [
             QgsColorRampShader.ColorRampItem(5.5, QColor(255, 100, 120, 60), "my item"),

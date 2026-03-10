@@ -21,6 +21,10 @@
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 /**
@@ -32,15 +36,13 @@
 class CORE_EXPORT QgsProcessingModelChildDependency
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelChildDependency, with the specified \a childId.
      */
     QgsProcessingModelChildDependency( const QString &childId = QString(), const QString &conditionalBranch = QString() )
       : childId( childId )
       , conditionalBranch( conditionalBranch )
-    {
-    }
+    {}
 
     //! Child algorithm ID
     QString childId;
@@ -55,8 +57,8 @@ class CORE_EXPORT QgsProcessingModelChildDependency
     QVariant toVariant() const
     {
       QVariantMap res;
-      res.insert( QStringLiteral( "child_id" ), childId );
-      res.insert( QStringLiteral( "conditional_branch" ), conditionalBranch );
+      res.insert( u"child_id"_s, childId );
+      res.insert( u"conditional_branch"_s, conditionalBranch );
       return res;
     }
 
@@ -66,26 +68,17 @@ class CORE_EXPORT QgsProcessingModelChildDependency
      */
     bool loadVariant( const QVariantMap &map )
     {
-      childId = map.value( QStringLiteral( "child_id" ) ).toString();
-      conditionalBranch = map.value( QStringLiteral( "conditional_branch" ) ).toString();
+      childId = map.value( u"child_id"_s ).toString();
+      conditionalBranch = map.value( u"conditional_branch"_s ).toString();
       return true;
     }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsProcessingModelChildDependency &other ) const
-    {
-      return childId == other.childId && conditionalBranch == other.conditionalBranch;
-    }
+    bool operator==( const QgsProcessingModelChildDependency &other ) const { return childId == other.childId && conditionalBranch == other.conditionalBranch; }
 
-    bool operator!=( const QgsProcessingModelChildDependency &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsProcessingModelChildDependency &other ) const { return !( *this == other ); }
 
-    bool operator<( const QgsProcessingModelChildDependency &other ) const
-    {
-      return childId == other.childId ? conditionalBranch < other.conditionalBranch : childId < other.childId;
-    }
+    bool operator<( const QgsProcessingModelChildDependency &other ) const { return childId == other.childId ? conditionalBranch < other.conditionalBranch : childId < other.childId; }
 };
 
 Q_DECLARE_METATYPE( QgsProcessingModelChildDependency )

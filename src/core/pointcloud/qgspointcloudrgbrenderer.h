@@ -23,6 +23,10 @@
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 
 /**
@@ -33,17 +37,16 @@
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudRgbRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
     QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override;
 
-    QString redAttribute = QStringLiteral( "Red" );
-    QString greenAttribute = QStringLiteral( "Green" );
-    QString blueAttribute = QStringLiteral( "Blue" );
+    QString redAttribute = u"Red"_s;
+    QString greenAttribute = u"Green"_s;
+    QString blueAttribute = u"Blue"_s;
     std::unique_ptr< QgsContrastEnhancement > redContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > greenContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > blueContrastEnhancement;
@@ -69,7 +72,6 @@ class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointC
 class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudRgbRenderer.
      */
@@ -202,15 +204,13 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
   private:
-
-    QString mRedAttribute = QStringLiteral( "Red" );
-    QString mGreenAttribute = QStringLiteral( "Green" );
-    QString mBlueAttribute = QStringLiteral( "Blue" );
+    QString mRedAttribute = u"Red"_s;
+    QString mGreenAttribute = u"Green"_s;
+    QString mBlueAttribute = u"Blue"_s;
 
     std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
-
 };
 
 #endif // QGSPOINTCLOUDRGBRENDERER_H

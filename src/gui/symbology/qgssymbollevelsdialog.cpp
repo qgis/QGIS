@@ -23,9 +23,12 @@
 #include <QDialogButtonBox>
 #include <QItemDelegate>
 #include <QSpinBox>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgssymbollevelsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ////////////////
 
@@ -112,7 +115,8 @@ void QgsSymbolLevelsWidget::populateTable()
       else
       {
         const QgsSymbolLayer *sl = sym->symbolLayer( layer );
-        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type(), nullptr, QgsScreenProperties( screen() ) );
+        const QIcon icon
+          = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type(), nullptr, QgsScreenProperties( screen() ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );
@@ -227,7 +231,7 @@ QgsLegendSymbolList QgsSymbolLevelsDialog::symbolLevels() const
 
 void QgsSymbolLevelsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#symbols-levels"_s );
 }
 
 /// @cond PRIVATE

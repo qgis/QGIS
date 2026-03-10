@@ -38,9 +38,12 @@
 #include <QPainter>
 #include <QPicture>
 #include <QRegularExpression>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgssvgcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -48,7 +51,9 @@
 // QgsSvgCacheEntry
 //
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QMap<QString, QString> &parameters )
+QgsSvgCacheEntry::QgsSvgCacheEntry(
+  const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QMap<QString, QString> &parameters
+)
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , strokeWidth( strokeWidth )
@@ -57,8 +62,7 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double str
   , fill( fill )
   , stroke( stroke )
   , parameters( parameters )
-{
-}
+{}
 
 bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
@@ -94,7 +98,7 @@ int QgsSvgCacheEntry::dataSize() const
 
 void QgsSvgCacheEntry::dump() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "path: %1, size %2, width scale factor %3" ).arg( path ).arg( size ).arg( widthScaleFactor ), 4 );
+  QgsDebugMsgLevel( u"path: %1, size %2, width scale factor %3"_s.arg( path ).arg( size ).arg( widthScaleFactor ), 4 );
 }
 ///@endcond
 
@@ -106,9 +110,9 @@ void QgsSvgCacheEntry::dump() const
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QgsAbstractContentCache< QgsSvgCacheEntry >( parent, QObject::tr( "SVG" ) )
 {
-  mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+  mMissingSvg = u"<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>"_s.toLatin1();
 
-  const QString downloadingSvgPath = QgsApplication::defaultThemePath() + QStringLiteral( "downloading_svg.svg" );
+  const QString downloadingSvgPath = QgsApplication::defaultThemePath() + u"downloading_svg.svg"_s;
   if ( QFile::exists( downloadingSvgPath ) )
   {
     QFile file( downloadingSvgPath );
@@ -120,14 +124,24 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
 
   if ( mFetchingSvg.isEmpty() )
   {
-    mFetchingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+    mFetchingSvg = u"<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>"_s.toLatin1();
   }
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSvgCache::remoteSvgFetched );
 }
 
-QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QImage QgsSvgCache::svgAsImage(
+  const QString &file,
+  double size,
+  const QColor &fill,
+  const QColor &stroke,
+  double strokeWidth,
+  double widthScaleFactor,
+  bool &fitsInCache,
+  double fixedAspectRatio,
+  bool blocking,
+  const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -186,8 +200,18 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
   return result;
 }
 
-QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QPicture QgsSvgCache::svgAsPicture(
+  const QString &path,
+  double size,
+  const QColor &fill,
+  const QColor &stroke,
+  double strokeWidth,
+  double widthScaleFactor,
+  bool forceVectorOutput,
+  double fixedAspectRatio,
+  bool blocking,
+  const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -210,8 +234,18 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
   return p;
 }
 
-QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters, bool *isMissingImage )
+QByteArray QgsSvgCache::svgContent(
+  const QString &path,
+  double size,
+  const QColor &fill,
+  const QColor &stroke,
+  double strokeWidth,
+  double widthScaleFactor,
+  double fixedAspectRatio,
+  bool blocking,
+  const QMap<QString, QString> &parameters,
+  bool *isMissingImage
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -220,8 +254,9 @@ QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QCol
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QSizeF QgsSvgCache::svgViewboxSize(
+  const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -229,8 +264,9 @@ QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QCol
   return currentEntry->viewboxSize;
 }
 
-void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor,
-                                  bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking ) const
+void QgsSvgCache::containsParams(
+  const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking
+) const
 {
   bool hasDefaultFillColor = false;
   bool hasFillOpacityParam = false;
@@ -242,21 +278,46 @@ void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColo
   bool hasDefaultStrokeOpacity = false;
   double defaultStrokeOpacity = 1.0;
 
-  containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
-                  hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                  hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
-                  hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                  hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity,
-                  blocking );
+  containsParams(
+    path,
+    hasFillParam,
+    hasDefaultFillColor,
+    defaultFillColor,
+    hasFillOpacityParam,
+    hasDefaultFillOpacity,
+    defaultFillOpacity,
+    hasStrokeParam,
+    hasDefaultStrokeColor,
+    defaultStrokeColor,
+    hasStrokeWidthParam,
+    hasDefaultStrokeWidth,
+    defaultStrokeWidth,
+    hasStrokeOpacityParam,
+    hasDefaultStrokeOpacity,
+    defaultStrokeOpacity,
+    blocking
+  );
 }
 
-void QgsSvgCache::containsParams( const QString &path,
-                                  bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
-                                  bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-                                  bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
-                                  bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                                  bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
-                                  bool blocking ) const
+void QgsSvgCache::containsParams(
+  const QString &path,
+  bool &hasFillParam,
+  bool &hasDefaultFillParam,
+  QColor &defaultFillColor,
+  bool &hasFillOpacityParam,
+  bool &hasDefaultFillOpacity,
+  double &defaultFillOpacity,
+  bool &hasStrokeParam,
+  bool &hasDefaultStrokeColor,
+  QColor &defaultStrokeColor,
+  bool &hasStrokeWidthParam,
+  bool &hasDefaultStrokeWidth,
+  double &defaultStrokeWidth,
+  bool &hasStrokeOpacityParam,
+  bool &hasDefaultStrokeOpacity,
+  double &defaultStrokeOpacity,
+  bool blocking
+) const
 {
   hasFillParam = false;
   hasFillOpacityParam = false;
@@ -282,11 +343,24 @@ void QgsSvgCache::containsParams( const QString &path,
   }
 
   const QDomElement docElem = svgDoc.documentElement();
-  containsElemParams( docElem, hasFillParam, hasDefaultFillParam, defaultFillColor,
-                      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                      hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
-                      hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                      hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+  containsElemParams(
+    docElem,
+    hasFillParam,
+    hasDefaultFillParam,
+    defaultFillColor,
+    hasFillOpacityParam,
+    hasDefaultFillOpacity,
+    defaultFillOpacity,
+    hasStrokeParam,
+    hasDefaultStrokeColor,
+    defaultStrokeColor,
+    hasStrokeWidthParam,
+    hasDefaultStrokeWidth,
+    defaultStrokeWidth,
+    hasStrokeOpacityParam,
+    hasDefaultStrokeOpacity,
+    defaultStrokeOpacity
+  );
 }
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocking )
@@ -296,7 +370,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
     return;
   }
 
-  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking );
   entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
   if ( !svgDoc.setContent( content ) )
@@ -333,23 +407,23 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
 
   //find svg viewbox attribute
   //first check if docElem is svg element
-  if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
+  if ( docElem.tagName() == "svg"_L1 && docElem.hasAttribute( u"viewBox"_s ) )
   {
-    viewBox = docElem.attribute( QStringLiteral( "viewBox" ), QString() );
+    viewBox = docElem.attribute( u"viewBox"_s, QString() );
   }
-  else if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
+  else if ( docElem.tagName() == "svg"_L1 && docElem.hasAttribute( u"viewbox"_s ) )
   {
-    viewBox = docElem.attribute( QStringLiteral( "viewbox" ), QString() );
+    viewBox = docElem.attribute( u"viewbox"_s, QString() );
   }
   else
   {
-    const QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) );
+    const QDomElement svgElem = docElem.firstChildElement( u"svg"_s );
     if ( !svgElem.isNull() )
     {
-      if ( svgElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
-        viewBox = svgElem.attribute( QStringLiteral( "viewBox" ), QString() );
-      else if ( svgElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
-        viewBox = svgElem.attribute( QStringLiteral( "viewbox" ), QString() );
+      if ( svgElem.hasAttribute( u"viewBox"_s ) )
+        viewBox = svgElem.attribute( u"viewBox"_s, QString() );
+      else if ( svgElem.hasAttribute( u"viewbox"_s ) )
+        viewBox = svgElem.attribute( u"viewbox"_s, QString() );
     }
   }
 
@@ -357,15 +431,15 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
   if ( viewBox.isEmpty() )
   {
     // trying looking for width/height and use them as a fallback
-    if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "width" ) ) )
+    if ( docElem.tagName() == "svg"_L1 && docElem.hasAttribute( u"width"_s ) )
     {
-      const QString widthString = docElem.attribute( QStringLiteral( "width" ) );
-      const thread_local QRegularExpression measureRegEx( QStringLiteral( "([\\d\\.]+).*?$" ) );
+      const QString widthString = docElem.attribute( u"width"_s );
+      const thread_local QRegularExpression measureRegEx( u"([\\d\\.]+).*?$"_s );
       const QRegularExpressionMatch widthMatch = measureRegEx.match( widthString );
       if ( widthMatch.hasMatch() )
       {
         const double width = widthMatch.captured( 1 ).toDouble();
-        const QString heightString = docElem.attribute( QStringLiteral( "height" ) );
+        const QString heightString = docElem.attribute( u"height"_s );
 
         const QRegularExpressionMatch heightMatch = measureRegEx.match( heightString );
         if ( heightMatch.hasMatch() )
@@ -412,8 +486,7 @@ bool QgsSvgCache::checkReply( QNetworkReply *reply, const QString &path ) const
   // we accept both real SVG mime types AND plain text types - because some sites
   // (notably github) serve up svgs as raw text
   const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive )
-       && !contentType.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( "image/svg+xml"_L1, Qt::CaseInsensitive ) && !contentType.startsWith( "text/plain"_L1, Qt::CaseInsensitive ) )
   {
     QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
     return false;
@@ -500,8 +573,18 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters, bool blocking, bool *isMissingImage )
+QgsSvgCacheEntry *QgsSvgCache::cacheEntry(
+  const QString &path,
+  double size,
+  const QColor &fill,
+  const QColor &stroke,
+  double strokeWidth,
+  double widthScaleFactor,
+  double fixedAspectRatio,
+  const QMap<QString, QString> &parameters,
+  bool blocking,
+  bool *isMissingImage
+)
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio, parameters ) );
 
@@ -531,7 +614,7 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
   {
     const QDomAttr attribute = attributes.item( i ).toAttr();
     //e.g. style="fill:param(fill);param(stroke)"
-    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( "style"_L1, Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       QString newAttributeString;
@@ -550,23 +633,23 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
         QString newValue = value;
         value = value.trimmed().toLower();
 
-        if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
+        if ( value.startsWith( "param(fill)"_L1 ) )
         {
           newValue = fill.name();
         }
-        else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
+        else if ( value.startsWith( "param(fill-opacity)"_L1 ) )
         {
           newValue = QString::number( fill.alphaF() );
         }
-        else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
+        else if ( value.startsWith( "param(outline)"_L1 ) )
         {
           newValue = stroke.name();
         }
-        else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
+        else if ( value.startsWith( "param(outline-opacity)"_L1 ) )
         {
           newValue = QString::number( stroke.alphaF() );
         }
-        else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
+        else if ( value.startsWith( "param(outline-width)"_L1 ) )
         {
           newValue = QString::number( strokeWidth );
         }
@@ -582,23 +665,23 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
     else
     {
       const QString value = attribute.value().trimmed().toLower();
-      if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
+      if ( value.startsWith( "param(fill)"_L1 ) )
       {
         elem.setAttribute( attribute.name(), fill.name() );
       }
-      else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
+      else if ( value.startsWith( "param(fill-opacity)"_L1 ) )
       {
         elem.setAttribute( attribute.name(), fill.alphaF() );
       }
-      else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
+      else if ( value.startsWith( "param(outline)"_L1 ) )
       {
         elem.setAttribute( attribute.name(), stroke.name() );
       }
-      else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
+      else if ( value.startsWith( "param(outline-opacity)"_L1 ) )
       {
         elem.setAttribute( attribute.name(), stroke.alphaF() );
       }
-      else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
+      else if ( value.startsWith( "param(outline-width)"_L1 ) )
       {
         elem.setAttribute( attribute.name(), QString::number( strokeWidth ) );
       }
@@ -607,7 +690,7 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
         QMap<QString, QString>::const_iterator paramIt = parameters.constBegin();
         for ( ; paramIt != parameters.constEnd(); ++paramIt )
         {
-          if ( value.startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt.key() ) ) )
+          if ( value.startsWith( QString( "param(%1)"_L1 ).arg( paramIt.key() ) ) )
           {
             elem.setAttribute( attribute.name(), paramIt.value() );
             break;
@@ -623,7 +706,7 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
     QMap<QString, QString>::const_iterator paramIt = parameters.constBegin();
     for ( ; paramIt != parameters.constEnd(); ++paramIt )
     {
-      if ( child.toText().data().startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt.key() ) ) )
+      if ( child.toText().data().startsWith( QString( "param(%1)"_L1 ).arg( paramIt.key() ) ) )
       {
         child.setNodeValue( paramIt.value() );
         break;
@@ -640,11 +723,24 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
   }
 }
 
-void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillParam, bool &hasDefaultFill, QColor &defaultFill,
-                                      bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-                                      bool &hasStrokeParam, bool &hasDefaultStroke, QColor &defaultStroke,
-                                      bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                                      bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const
+void QgsSvgCache::containsElemParams(
+  const QDomElement &elem,
+  bool &hasFillParam,
+  bool &hasDefaultFill,
+  QColor &defaultFill,
+  bool &hasFillOpacityParam,
+  bool &hasDefaultFillOpacity,
+  double &defaultFillOpacity,
+  bool &hasStrokeParam,
+  bool &hasDefaultStroke,
+  QColor &defaultStroke,
+  bool &hasStrokeWidthParam,
+  bool &hasDefaultStrokeWidth,
+  double &defaultStrokeWidth,
+  bool &hasStrokeOpacityParam,
+  bool &hasDefaultStrokeOpacity,
+  double &defaultStrokeOpacity
+) const
 {
   if ( elem.isNull() )
   {
@@ -665,7 +761,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
   for ( int i = 0; i < nAttributes; ++i )
   {
     const QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( "style"_L1, Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       const QStringList entryList = attribute.value().split( ';' );
@@ -679,7 +775,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
         }
         const QString value = keyValueSplit.at( 1 );
         valueSplit = value.split( ' ' );
-        if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
+        if ( !hasFillParam && value.startsWith( "param(fill)"_L1 ) )
         {
           hasFillParam = true;
           if ( valueSplit.size() > 1 )
@@ -688,7 +784,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
             hasDefaultFill = true;
           }
         }
-        else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
+        else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)"_L1 ) )
         {
           hasFillOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -702,7 +798,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
             }
           }
         }
-        else if ( !hasStrokeParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
+        else if ( !hasStrokeParam && value.startsWith( "param(outline)"_L1 ) )
         {
           hasStrokeParam = true;
           if ( valueSplit.size() > 1 )
@@ -711,7 +807,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
             hasDefaultStroke = true;
           }
         }
-        else if ( !hasStrokeWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
+        else if ( !hasStrokeWidthParam && value.startsWith( "param(outline-width)"_L1 ) )
         {
           hasStrokeWidthParam = true;
           if ( valueSplit.size() > 1 )
@@ -720,7 +816,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
             hasDefaultStrokeWidth = true;
           }
         }
-        else if ( !hasStrokeOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
+        else if ( !hasStrokeOpacityParam && value.startsWith( "param(outline-opacity)"_L1 ) )
         {
           hasStrokeOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -740,7 +836,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
     {
       const QString value = attribute.value();
       valueSplit = value.split( ' ' );
-      if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
+      if ( !hasFillParam && value.startsWith( "param(fill)"_L1 ) )
       {
         hasFillParam = true;
         if ( valueSplit.size() > 1 )
@@ -749,7 +845,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
           hasDefaultFill = true;
         }
       }
-      else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
+      else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)"_L1 ) )
       {
         hasFillOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -763,7 +859,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
           }
         }
       }
-      else if ( !hasStrokeParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
+      else if ( !hasStrokeParam && value.startsWith( "param(outline)"_L1 ) )
       {
         hasStrokeParam = true;
         if ( valueSplit.size() > 1 )
@@ -772,7 +868,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
           hasDefaultStroke = true;
         }
       }
-      else if ( !hasStrokeWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
+      else if ( !hasStrokeWidthParam && value.startsWith( "param(outline-width)"_L1 ) )
       {
         hasStrokeWidthParam = true;
         if ( valueSplit.size() > 1 )
@@ -781,7 +877,7 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
           hasDefaultStrokeWidth = true;
         }
       }
-      else if ( !hasStrokeOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
+      else if ( !hasStrokeOpacityParam && value.startsWith( "param(outline-opacity)"_L1 ) )
       {
         hasStrokeOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -804,11 +900,24 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
   for ( int i = 0; i < nChildren; ++i )
   {
     const QDomElement childElem = childList.at( i ).toElement();
-    containsElemParams( childElem, hasFillParam, hasDefaultFill, defaultFill,
-                        hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                        hasStrokeParam, hasDefaultStroke, defaultStroke,
-                        hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                        hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+    containsElemParams(
+      childElem,
+      hasFillParam,
+      hasDefaultFill,
+      defaultFill,
+      hasFillOpacityParam,
+      hasDefaultFillOpacity,
+      defaultFillOpacity,
+      hasStrokeParam,
+      hasDefaultStroke,
+      defaultStroke,
+      hasStrokeWidthParam,
+      hasDefaultStrokeWidth,
+      defaultStrokeWidth,
+      hasStrokeOpacityParam,
+      hasDefaultStrokeOpacity,
+      defaultStrokeOpacity
+    );
   }
 }
 

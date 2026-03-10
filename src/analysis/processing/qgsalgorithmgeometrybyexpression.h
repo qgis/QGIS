@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMGEOMETRYBYEXPRESSION_H
 #define QGSALGORITHMGEOMETRYBYEXPRESSION_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -33,8 +38,8 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
 {
   public:
     QgsGeometryByExpressionAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCentroids.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCentroids.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -56,7 +61,7 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
   private:
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsExpression mExpression;
-    QgsExpressionContext mExpressionContext;
+    bool mExpressionPrepared = false;
 };
 
 ///@endcond PRIVATE

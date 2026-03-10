@@ -28,6 +28,9 @@
 #include "qgsvector3d.h"
 
 #include <QMatrix4x4>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
@@ -38,7 +41,7 @@
 
 QString QgsGltfToVectorFeaturesAlgorithm::name() const
 {
-  return QStringLiteral( "gltftovector" );
+  return u"gltftovector"_s;
 }
 
 QString QgsGltfToVectorFeaturesAlgorithm::displayName() const
@@ -58,7 +61,7 @@ QString QgsGltfToVectorFeaturesAlgorithm::group() const
 
 QString QgsGltfToVectorFeaturesAlgorithm::groupId() const
 {
-  return QStringLiteral( "3dtiles" );
+  return u"3dtiles"_s;
 }
 
 QString QgsGltfToVectorFeaturesAlgorithm::shortHelpString() const
@@ -78,10 +81,12 @@ QgsGltfToVectorFeaturesAlgorithm *QgsGltfToVectorFeaturesAlgorithm::createInstan
 
 void QgsGltfToVectorFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input GLTF" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "gltf" ), QVariant(), false, QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input GLTF" ), Qgis::ProcessingFileParameterBehavior::File, u"gltf"_s, QVariant(), false, u"GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)"_s )
+  );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_POLYGONS" ), QObject::tr( "Output polygons" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Output lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_POLYGONS"_s, QObject::tr( "Output polygons" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_LINES"_s, QObject::tr( "Output lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
 }
 
 std::unique_ptr<QgsAbstractGeometry> extractTriangles(
@@ -104,14 +109,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
   QVector<double> x;
   QVector<double> y;
   QVector<double> z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, QgsMatrix4x4(),
-    &ecefTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    Qgis::Axis::Y,
-    x, y, z
-  );
+  QgsGltfUtils::accessorToMapCoordinates( model, positionAccessorIndex, QgsMatrix4x4(), &ecefTransform, tileTranslationEcef, gltfLocalTransform, Qgis::Axis::Y, x, y, z );
 
   auto mp = std::make_unique<QgsMultiPolygon>();
 
@@ -122,7 +120,9 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
     mp->reserve( x.size() );
     for ( int i = 0; i < x.size(); i += 3 )
     {
-      mp->addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( x[i], y[i], z[i] ), QgsPoint( x[i + 1], y[i + 1], z[i + 1] ), QgsPoint( x[i + 2], y[i + 2], z[i + 2] ), QgsPoint( x[i], y[i], z[i] ) } ) ) );
+      mp->addGeometry( new QgsPolygon(
+        new QgsLineString( QVector<QgsPoint> { QgsPoint( x[i], y[i], z[i] ), QgsPoint( x[i + 1], y[i + 1], z[i + 1] ), QgsPoint( x[i + 2], y[i + 2], z[i + 2] ), QgsPoint( x[i], y[i], z[i] ) } )
+      ) );
     }
   }
   else
@@ -131,7 +131,12 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
     const tinygltf::BufferView &bvPrimitive = model.bufferViews[primitiveAccessor.bufferView];
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
-    Q_ASSERT( ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE ) && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR );
+    Q_ASSERT(
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
+      && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
+    );
 
     const char *primitivePtr = reinterpret_cast<const char *>( bPrimitive.data.data() ) + bvPrimitive.byteOffset + primitiveAccessor.byteOffset;
 
@@ -179,7 +184,9 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
         index3 = uintPtrPrimitive[2];
       }
 
-      mp->addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( x[index1], y[index1], z[index1] ), QgsPoint( x[index2], y[index2], z[index2] ), QgsPoint( x[index3], y[index3], z[index3] ), QgsPoint( x[index1], y[index1], z[index1] ) } ) ) );
+      mp->addGeometry( new QgsPolygon( new QgsLineString(
+        QVector<QgsPoint> { QgsPoint( x[index1], y[index1], z[index1] ), QgsPoint( x[index2], y[index2], z[index2] ), QgsPoint( x[index3], y[index3], z[index3] ), QgsPoint( x[index1], y[index1], z[index1] ) }
+      ) ) );
     }
   }
   return mp;
@@ -205,14 +212,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
   QVector<double> x;
   QVector<double> y;
   QVector<double> z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, QgsMatrix4x4(),
-    &ecefTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    Qgis::Axis::Y,
-    x, y, z
-  );
+  QgsGltfUtils::accessorToMapCoordinates( model, positionAccessorIndex, QgsMatrix4x4(), &ecefTransform, tileTranslationEcef, gltfLocalTransform, Qgis::Axis::Y, x, y, z );
 
   auto ml = std::make_unique<QgsMultiLineString>();
 
@@ -232,7 +232,12 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
     const tinygltf::BufferView &bvPrimitive = model.bufferViews[primitiveAccessor.bufferView];
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
-    Q_ASSERT( ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE ) && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR );
+    Q_ASSERT(
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
+      && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
+    );
 
     const char *primitivePtr = reinterpret_cast<const char *>( bPrimitive.data.data() ) + bvPrimitive.byteOffset + primitiveAccessor.byteOffset;
 
@@ -284,19 +289,19 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
 
 QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
+  const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
-  const QgsCoordinateReferenceSystem destCrs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem destCrs( u"EPSG:4326"_s );
   QgsFields fields;
 
   QString polygonDest;
-  std::unique_ptr<QgsFeatureSink> polygonSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_POLYGONS" ), context, polygonDest, fields, Qgis::WkbType::MultiPolygonZ, destCrs ) );
-  if ( !polygonSink && parameters.value( QStringLiteral( "OUTPUT_POLYGONS" ) ).isValid() )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_POLYGONS" ) ) );
+  std::unique_ptr<QgsFeatureSink> polygonSink( parameterAsSink( parameters, u"OUTPUT_POLYGONS"_s, context, polygonDest, fields, Qgis::WkbType::MultiPolygonZ, destCrs ) );
+  if ( !polygonSink && parameters.value( u"OUTPUT_POLYGONS"_s ).isValid() )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_POLYGONS"_s ) );
   QString lineDest;
-  std::unique_ptr<QgsFeatureSink> lineSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, lineDest, fields, Qgis::WkbType::MultiLineStringZ, destCrs ) );
-  if ( !lineSink && parameters.value( QStringLiteral( "OUTPUT_LINES" ) ).isValid() )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+  std::unique_ptr<QgsFeatureSink> lineSink( parameterAsSink( parameters, u"OUTPUT_LINES"_s, context, lineDest, fields, Qgis::WkbType::MultiLineStringZ, destCrs ) );
+  if ( !lineSink && parameters.value( u"OUTPUT_LINES"_s ).isValid() )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_LINES"_s ) );
 
   QFile f( path );
   QByteArray fileContent;
@@ -309,7 +314,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
     throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
   }
 
-  const QgsCoordinateTransform ecefTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), destCrs, context.transformContext() );
+  const QgsCoordinateTransform ecefTransform( QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), destCrs, context.transformContext() );
 
   tinygltf::Model model;
   QString errors;
@@ -370,7 +375,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
                 QgsFeature f;
                 f.setGeometry( std::move( geometry ) );
                 if ( !polygonSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-                  throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, QStringLiteral( "OUTPUT_POLYGONS" ) ) );
+                  throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, u"OUTPUT_POLYGONS"_s ) );
               }
             }
             break;
@@ -386,7 +391,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
                 QgsFeature f;
                 f.setGeometry( std::move( geometry ) );
                 if ( !lineSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-                  throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+                  throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, u"OUTPUT_LINES"_s ) );
               }
             }
             break;
@@ -461,12 +466,12 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
   if ( polygonSink )
   {
     polygonSink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT_POLYGONS" ), polygonDest );
+    outputs.insert( u"OUTPUT_POLYGONS"_s, polygonDest );
   }
   if ( lineSink )
   {
     lineSink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT_LINES" ), lineDest );
+    outputs.insert( u"OUTPUT_LINES"_s, lineDest );
   }
   return outputs;
 }

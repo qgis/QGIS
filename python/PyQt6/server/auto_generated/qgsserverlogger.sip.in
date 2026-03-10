@@ -56,13 +56,8 @@ Activates logging to stderr.
 
     virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
-%Docstring
-Log a message from the server context
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format );
 
-:param message: the message
-:param tag: tag of the message
-:param level: log level of the message
-%End
 
   protected:
     QgsServerLogger();

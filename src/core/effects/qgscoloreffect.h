@@ -23,6 +23,9 @@
 #include "qgspainteffect.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -34,9 +37,7 @@
 
 class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
-
   public:
-
     /**
      * Creates a new QgsColorEffect effect from a properties string map.
      * \param map encoded properties string map
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QgsColorEffect();
 
     Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "color" ); }
+    QString type() const override { return u"color"_s; }
     QVariantMap properties() const override;
 
     using QgsPaintEffect::readProperties;
@@ -213,11 +214,9 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
-
     void draw( QgsRenderContext &context ) override;
 
   private:
-
     double mOpacity = 1.0;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
     int mBrightness = 0;
@@ -230,4 +229,3 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 };
 
 #endif // QGSBLUREFFECT_H
-

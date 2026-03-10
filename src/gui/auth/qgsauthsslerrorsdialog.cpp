@@ -29,10 +29,13 @@
 #include <QDialogButtonBox>
 #include <QFont>
 #include <QPushButton>
+#include <QString>
 #include <QStyle>
 #include <QToolButton>
 
 #include "moc_qgsauthsslerrorsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent, const QString &digest, const QString &hostport )
   : QDialog( parent )
@@ -47,10 +50,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   }
   if ( mHostPort.isEmpty() )
   {
-    mHostPort = QStringLiteral( "%1:%2" )
-                  .arg( reply->url().host() )
-                  .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                  .trimmed();
+    mHostPort = u"%1:%2"_s.arg( reply->url().host() ).arg( reply->url().port() != -1 ? reply->url().port() : 443 ).trimmed();
   }
 
   setupUi( this );
@@ -62,7 +62,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-  lblErrorsText->setStyleSheet( QStringLiteral( "QLabel{ font-weight: bold; }" ) );
+  lblErrorsText->setStyleSheet( u"QLabel{ font-weight: bold; }"_s );
   leUrl->setText( reply->request().url().toString() );
 
   ignoreButton()->setDefault( false );
@@ -72,7 +72,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   {
     saveButton()->setEnabled( false );
 
-    saveButton()->setText( QStringLiteral( "%1 && %2" ).arg( saveButton()->text(), ignoreButton()->text() ) );
+    saveButton()->setText( u"%1 && %2"_s.arg( saveButton()->text(), ignoreButton()->text() ) );
 
     grpbxSslConfig->setChecked( false );
     grpbxSslConfig->setCollapsed( true );
@@ -98,12 +98,12 @@ void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
   grpbxSslErrors->setCollapsed( load );
   if ( !load )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unloading certificate and host:port" ), 2 );
+    QgsDebugMsgLevel( u"Unloading certificate and host:port"_s, 2 );
     clearCertificateConfig();
     return;
   }
   wdgtSslConfig->setEnabled( true );
-  QgsDebugMsgLevel( QStringLiteral( "Loading certificate for host:port = %1" ).arg( mHostPort ), 2 );
+  QgsDebugMsgLevel( u"Loading certificate for host:port = %1"_s.arg( mHostPort ), 2 );
   wdgtSslConfig->setSslCertificate( mSslConfiguration.peerCertificate(), mHostPort );
   if ( !mSslErrors.isEmpty() )
   {
@@ -170,10 +170,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   switch ( btnenum )
   {
     case QDialogButtonBox::Ignore:
-      QgsApplication::authManager()->updateIgnoredSslErrorsCache(
-        QStringLiteral( "%1:%2" ).arg( mDigest, mHostPort ),
-        mSslErrors
-      );
+      QgsApplication::authManager()->updateIgnoredSslErrorsCache( u"%1:%2"_s.arg( mDigest, mHostPort ), mSslErrors );
       accept();
       break;
     case QDialogButtonBox::Save:
@@ -188,7 +185,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   }
   // Clear access cache if the user choose abort and the
   // setting allows it
-  if ( btnenum == QDialogButtonBox::Abort && QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool() )
+  if ( btnenum == QDialogButtonBox::Abort && QgsSettings().value( u"clear_auth_cache_on_errors"_s, true, QgsSettings::Section::Auth ).toBool() )
   {
     QgsNetworkAccessManager::instance()->clearAccessCache();
   }
@@ -201,8 +198,7 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   const auto constMSslErrors = mSslErrors;
   for ( const QSslError &err : constMSslErrors )
   {
-    errs << QStringLiteral( "* %1: %2" )
-              .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ), err.errorString() );
+    errs << u"* %1: %2"_s.arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ), err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( QLatin1Char( '\n' ) ) );
 }

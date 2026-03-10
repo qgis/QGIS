@@ -124,9 +124,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
   newValues.append( eww->additionalFieldValues() );
 
-  if ( ( oldValue != newValues.at( 0 ) && newValues.at( 0 ).isValid() )
-       || QgsVariantUtils::isNull( oldValue ) != QgsVariantUtils::isNull( newValues.at( 0 ) )
-       || newValues.count() > 1 )
+  if ( ( oldValue != newValues.at( 0 ) && newValues.at( 0 ).isValid() ) || QgsVariantUtils::isNull( oldValue ) != QgsVariantUtils::isNull( newValues.at( 0 ) ) || newValues.count() > 1 )
   {
     // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
@@ -179,7 +177,9 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
 
 void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt() );
+  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>(
+    index.model()->data( index, static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt()
+  );
 
   if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {

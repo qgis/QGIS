@@ -42,14 +42,7 @@ class QgsColorRampTextureGenerator : public Qt3DRender::QTextureImageDataGenerat
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override;
 
-    qintptr id() const override
-    {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<QgsColorRampTextureGenerator>::id );
-#else
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<QgsColorRampTextureGenerator>::id );
-#endif
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<QgsColorRampTextureGenerator>::id ); }
 
     bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 

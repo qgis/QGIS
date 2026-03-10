@@ -50,18 +50,20 @@
 #include <QScreen>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgscategorizedsymbolrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+  , mMimeFormat( u"application/x-qgscategorizedsymbolrendererv2model"_s )
   , mScreen( screen )
-{
-}
+{}
 
 void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRenderer *renderer )
 {
@@ -431,7 +433,7 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
     to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsgLevel( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ), 2 );
+    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t )
@@ -517,8 +519,7 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
 QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( QgsFieldExpressionWidget *expressionWidget, QObject *parent )
   : QStyledItemDelegate( parent )
   , mFieldExpressionWidget( expressionWidget )
-{
-}
+{}
 
 QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -851,8 +852,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 
 
 void QgsCategorizedSymbolRendererWidget::populateCategories()
-{
-}
+{}
 
 void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString &field )
 {
@@ -912,14 +912,15 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
     return;
   }
 
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
   {
-    const int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ), tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel );
+    const int res = QMessageBox::
+      warning( nullptr, tr( "Classify Categories" ), tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {
       return;
@@ -937,10 +938,16 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 
   if ( !mOldClassificationAttribute.isEmpty() && attrName != mOldClassificationAttribute && !mRenderer->categories().isEmpty() )
   {
-    const int res = QMessageBox::question( this, tr( "Delete Classification" ), tr( "The classification field was changed from '%1' to '%2'.\n"
-                                                                                    "Should the existing classes be deleted before classification?" )
-                                                                                  .arg( mOldClassificationAttribute, attrName ),
-                                           QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    const int res = QMessageBox::question(
+      this,
+      tr( "Delete Classification" ),
+      tr(
+        "The classification field was changed from '%1' to '%2'.\n"
+        "Should the existing classes be deleted before classification?"
+      )
+        .arg( mOldClassificationAttribute, attrName ),
+      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+    );
     if ( res == QMessageBox::Cancel )
     {
       return;
@@ -1089,7 +1096,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
 
   const QgsCategoryList catList = mRenderer->categories();
@@ -1114,7 +1121,7 @@ QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QSt
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
   return uniqueValues;
 }
@@ -1220,7 +1227,7 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
 void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 {
   QgsSettings settings;
-  const QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
+  const QString openFileDir = settings.value( u"UI/lastMatchToSymbolsDir"_s, QDir::homePath() ).toString();
 
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to Symbols from File" ), openFileDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -1229,7 +1236,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   }
 
   const QFileInfo openFileInfo( fileName );
-  settings.setValue( QStringLiteral( "UI/lastMatchToSymbolsDir" ), openFileInfo.absolutePath() );
+  settings.setValue( u"UI/lastMatchToSymbolsDir"_s, openFileInfo.absolutePath() );
 
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
@@ -1370,10 +1377,11 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )

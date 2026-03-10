@@ -19,11 +19,16 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QPushButton>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgssublayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! @cond
 class SubLayerItem : public QTreeWidgetItem
@@ -78,11 +83,11 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
 
   const QVariantMap dataSourceUriParsed = QgsProviderRegistry::instance()->decodeUri( name, dataSourceUri );
-  const QString dataSourceFilePath = dataSourceUriParsed.value( QStringLiteral( "path" ) ).toString();
+  const QString dataSourceFilePath = dataSourceUriParsed.value( u"path"_s ).toString();
   const QString filePath = dataSourceFilePath.isEmpty() ? dataSourceUri : dataSourceFilePath;
   const QString fileName = QFileInfo( filePath ).fileName();
 
-  setWindowTitle( fileName.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, fileName ) );
+  setWindowTitle( fileName.isEmpty() ? title : u"%1 | %2"_s.arg( title, fileName ) );
   mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) );
   mLblFilePath->setVisible( !fileName.isEmpty() );
 
@@ -146,7 +151,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << ( item.count == static_cast<int>( Qgis::FeatureCountState::Uncounted ) || item.count == static_cast<int>( Qgis::FeatureCountState::UnknownCount ) ? tr( "Unknown" ) : QString::number( item.count ) );
+      elements
+        << ( item.count == static_cast<int>( Qgis::FeatureCountState::Uncounted ) || item.count == static_cast<int>( Qgis::FeatureCountState::UnknownCount ) ? tr( "Unknown" )
+                                                                                                                                                             : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     if ( mShowDescription )
@@ -176,7 +183,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QgsSettings settings;
-  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
+  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( u"qgis/promptForSublayers"_s, Qgis::SublayerPromptMode::AlwaysAsk );
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
@@ -211,7 +218,7 @@ int QgsSublayersDialog::exec()
   if ( mShowAddToGroupCheckbox )
   {
     mCbxAddToGroup->setVisible( true );
-    const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+    const bool addToGroup = QgsSettingsRegistryGui::settingsOpenSublayersInGroup->value();
     mCbxAddToGroup->setChecked( addToGroup );
   }
 
@@ -220,7 +227,7 @@ int QgsSublayersDialog::exec()
     QApplication::setOverrideCursor( cursor );
 
   if ( mShowAddToGroupCheckbox )
-    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCbxAddToGroup->isChecked() );
+    QgsSettingsRegistryGui::settingsOpenSublayersInGroup->setValue( mCbxAddToGroup->isChecked() );
   return ret;
 }
 

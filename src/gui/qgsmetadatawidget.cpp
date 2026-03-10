@@ -34,8 +34,11 @@
 
 #include "moc_qgsmetadatawidget.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
-  : QWidget( parent ), mLayer( layer )
+  : QWidget( parent )
+  , mLayer( layer )
 {
   setupUi( this );
   tabWidget->setCurrentIndex( 0 );
@@ -88,14 +91,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mHistoryModel = new QStringListModel( listHistory );
   listHistory->setModel( mHistoryModel );
 
-  for ( QgsDateTimeEdit *w :
-        {
-          mCreationDateTimeEdit,
-          mCreationDateTimeEdit2,
-          mPublishedDateTimeEdit,
-          mRevisedDateTimeEdit,
-          mSupersededDateTimeEdit
-        } )
+  for ( QgsDateTimeEdit *w : { mCreationDateTimeEdit, mCreationDateTimeEdit2, mPublishedDateTimeEdit, mRevisedDateTimeEdit, mSupersededDateTimeEdit } )
   {
     w->setAllowNull( true );
     w->setNullRepresentation( tr( "Not set" ) );
@@ -188,10 +184,12 @@ void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
   mLabelContact->setText( tr( "Contacts related to the %1." ).arg( type ) );
   mLabelLinks->setText( tr( "Links describe ancillary resources and information related to this %1." ).arg( type ) );
   mLabelHistory->setText( tr( "History about the %1." ).arg( type ) );
-  labelKeywords->setText( tr( "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "
-                              "the %1. Edits made in the categories tab will update the category entry below. For the concept, we suggest "
-                              "to use a standard based vocabulary such as <a href=\"https://www.eionet.europa.eu/gemet/en/inspire-themes/\">"
-                              "<span style=\" text-decoration: underline; color:#0000ff;\">GEMET.</span></a></p></body></html>" )
+  labelKeywords->setText( tr(
+                            "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "
+                            "the %1. Edits made in the categories tab will update the category entry below. For the concept, we suggest "
+                            "to use a standard based vocabulary such as <a href=\"https://www.eionet.europa.eu/gemet/en/inspire-themes/\">"
+                            "<span style=\" text-decoration: underline; color:#0000ff;\">GEMET.</span></a></p></body></html>"
+  )
                             .arg( type ) );
   btnAutoSource->setText( tr( "Set from %1" ).arg( mMode == LayerMetadata ? tr( "layer" ) : tr( "project" ) ) );
 }
@@ -542,7 +540,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     addVocabulary();
     int currentRow = tabKeywords->rowCount() - 1;
     tabKeywords->item( currentRow, 0 )->setText( i.key() );
-    tabKeywords->item( currentRow, 1 )->setText( i.value().join( QLatin1Char( ',' ) ) );
+    tabKeywords->item( currentRow, 1 )->setText( i.value().join( ','_L1 ) );
   }
 
   if ( QgsLayerMetadata *layerMetadata = dynamic_cast<QgsLayerMetadata *>( mMetadata.get() ) )
@@ -853,12 +851,12 @@ bool QgsMetadataWidget::checkMetadata()
   {
     for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
-      errors += QLatin1String( "<b>" ) % result.section;
+      errors += "<b>"_L1 % result.section;
       if ( !QgsVariantUtils::isNull( result.identifier() ) )
       {
-        errors += QLatin1Char( ' ' ) % QVariant( result.identifier().toInt() + 1 ).toString();
+        errors += ' '_L1 % QVariant( result.identifier().toInt() + 1 ).toString();
       }
-      errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
+      errors += "</b>: "_L1 % result.note % "<br />"_L1;
     }
   }
   else
@@ -867,7 +865,7 @@ bool QgsMetadataWidget::checkMetadata()
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
   resultsCheckMetadata->clear();
   resultsCheckMetadata->document()->setDefaultStyleSheet( myStyle );
   resultsCheckMetadata->setHtml( errors );
@@ -880,11 +878,11 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QMap<QString, QString> countries;
   countries.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "language_codes_ISO_639.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"language_codes_ISO_639.csv"_s );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -898,11 +896,11 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   }
   file.close();
 
-  path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "country_code_ISO_3166.csv" ) );
+  path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"country_code_ISO_3166.csv"_s );
   QFile secondFile( path );
   if ( !secondFile.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -923,11 +921,11 @@ QStringList QgsMetadataWidget::parseLicenses()
   QStringList wordList;
   wordList.append( QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "licenses.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"licenses.csv"_s );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -947,11 +945,11 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   QStringList wordList;
   wordList.append( QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "LinkPropertyLookupTable.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"LinkPropertyLookupTable.csv"_s );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -971,11 +969,11 @@ QStringList QgsMetadataWidget::parseMimeTypes()
   QStringList wordList;
   wordList.append( QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "mime.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"mime.csv"_s );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -992,11 +990,11 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
 {
   QMap<QString, QString> types;
   types.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "md_scope_codes.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( u"md_scope_codes.csv"_s );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( u"Error while opening the CSV file: %1, %2 "_s.arg( path, file.errorString() ) );
     return types;
   }
 
@@ -1054,7 +1052,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
 {
   if ( mCategoriesModel->rowCount() > 0 )
   {
-    QList<QTableWidgetItem *> categories = tabKeywords->findItems( QStringLiteral( "gmd:topicCategory" ), Qt::MatchExactly );
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( u"gmd:topicCategory"_s, Qt::MatchExactly );
     int row;
     if ( !categories.isEmpty() )
     {
@@ -1065,9 +1063,9 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
       // Create a new line with 'gmd:topicCategory'
       addVocabulary();
       row = tabKeywords->rowCount() - 1;
-      tabKeywords->item( row, 0 )->setText( QStringLiteral( "gmd:topicCategory" ) );
+      tabKeywords->item( row, 0 )->setText( u"gmd:topicCategory"_s );
     }
-    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( QLatin1Char( ',' ) ) );
+    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( ','_L1 ) );
   }
 }
 
@@ -1075,11 +1073,11 @@ void QgsMetadataWidget::updatePanel()
 {
   int index = tabWidget->currentIndex();
   QString currentTabText = tabWidget->widget( index )->objectName();
-  if ( currentTabText == QLatin1String( "tabCategoriesDialog" ) )
+  if ( currentTabText == "tabCategoriesDialog"_L1 )
   {
     // Categories tab
     // We need to take keywords and insert them into the list
-    QList<QTableWidgetItem *> categories = tabKeywords->findItems( QStringLiteral( "gmd:topicCategory" ), Qt::MatchExactly );
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( u"gmd:topicCategory"_s, Qt::MatchExactly );
     if ( !categories.isEmpty() )
     {
       const int row = categories.at( 0 )->row();
@@ -1090,13 +1088,13 @@ void QgsMetadataWidget::updatePanel()
       mCategoriesModel->setStringList( QStringList() );
     }
   }
-  else if ( currentTabText == QLatin1String( "tabKeywordsDialog" ) )
+  else if ( currentTabText == "tabKeywordsDialog"_L1 )
   {
     // Keywords tab
     // We need to take categories and insert them into the table
     syncFromCategoriesTabToKeywordsTab();
   }
-  else if ( currentTabText == QLatin1String( "tabValidationDialog" ) )
+  else if ( currentTabText == "tabValidationDialog"_L1 )
   {
     checkMetadata();
   }
@@ -1162,8 +1160,7 @@ void QgsMetadataWidget::removeSelectedCategories()
 ///@cond PRIVATE
 LinkItemDelegate::LinkItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -1193,8 +1190,7 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
 
 ConstraintItemDelegate::ConstraintItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -1204,7 +1200,7 @@ QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOpti
     QComboBox *typeEditor = new QComboBox( parent );
     typeEditor->setEditable( true );
     QStringList types;
-    types << QStringLiteral( "access" ) << QStringLiteral( "use" ) << QStringLiteral( "other" );
+    types << u"access"_s << u"use"_s << u"other"_s;
     QStringListModel *model = new QStringListModel( parent );
     model->setStringList( types );
     typeEditor->setModel( model );

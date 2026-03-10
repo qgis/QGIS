@@ -34,16 +34,18 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgslayoutattributeselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsLayoutAttributeTableColumnModelBase
 
 QgsLayoutAttributeTableColumnModelBase::QgsLayoutAttributeTableColumnModelBase( QgsLayoutItemAttributeTable *table, QObject *parent )
   : QAbstractTableModel( parent )
   , mTable( table )
-{
-}
+{}
 
 QModelIndex QgsLayoutAttributeTableColumnModelBase::index( int row, int column, const QModelIndex &parent ) const
 {
@@ -362,8 +364,7 @@ QVector<QgsLayoutTableColumn> &QgsLayoutTableSortModel::columns() const
 
 QgsLayoutColumnAlignmentDelegate::QgsLayoutColumnAlignmentDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnAlignmentDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -419,8 +420,7 @@ QgsLayoutColumnSourceDelegate::QgsLayoutColumnSourceDelegate( QgsVectorLayer *vl
   , mVectorLayer( vlayer )
   , mLayoutObject( layoutObject )
   , mForceExpressions( forceExpressions )
-{
-}
+{}
 
 QgsExpressionContext QgsLayoutColumnSourceDelegate::createExpressionContext() const
 {
@@ -430,8 +430,8 @@ QgsExpressionContext QgsLayoutColumnSourceDelegate::createExpressionContext() co
   }
 
   QgsExpressionContext expContext = mLayoutObject->createExpressionContext();
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
-  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, 1, true ) );
+  expContext.setHighlightedVariables( QStringList() << u"row_number"_s );
   return expContext;
 }
 
@@ -445,7 +445,9 @@ QWidget *QgsLayoutColumnSourceDelegate::createEditor( QWidget *parent, const QSt
   fieldExpression->registerExpressionContextGenerator( this );
 
   //listen out for field changes
-  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this] { const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor(); } );
+  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this] {
+    const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor();
+  } );
   return fieldExpression;
 }
 
@@ -483,8 +485,7 @@ void QgsLayoutColumnSourceDelegate::commitAndCloseEditor()
 
 QgsLayoutColumnSortOrderDelegate::QgsLayoutColumnSortOrderDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnSortOrderDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -548,8 +549,7 @@ void QgsLayoutColumnSortOrderDelegate::updateEditorGeometry( QWidget *editor, co
 
 QgsLayoutColumnWidthDelegate::QgsLayoutColumnWidthDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnWidthDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -702,7 +702,7 @@ void QgsLayoutAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked()
 
 void QgsLayoutAttributeSelectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html" ) );
+  QgsHelp::openHelp( u"print_composer/composer_items/composer_attribute_table.html"_s );
 }
 
 void QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked()

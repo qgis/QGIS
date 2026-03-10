@@ -22,6 +22,8 @@
 
 #include "moc_qgscodeeditorcss.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
 {
@@ -83,14 +85,13 @@ void QgsCodeEditorCSS::initializeLexer()
 //
 QgsQsciLexerCSS::QgsQsciLexerCSS( QObject *parent )
   : QsciLexerCSS( parent )
-{
-}
+{}
 
 QString QgsQsciLexerCSS::description( int style ) const
 {
   // see https://www.riverbankcomputing.com/pipermail/qscintilla/2019-July/001415.html
   if ( style == QsciLexerCSS::Comment )
-    return QStringLiteral( "Comment" );
+    return u"Comment"_s;
 
   return QsciLexerCSS::description( style );
 }

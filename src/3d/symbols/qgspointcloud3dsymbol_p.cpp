@@ -15,48 +15,38 @@
 
 #include "qgspointcloud3dsymbol_p.h"
 
-#include "moc_qgspointcloud3dsymbol_p.cpp"
+#include <memory>
 
-///@cond PRIVATE
-
+#include "delaunator.hpp"
+#include "qgsfeedback.h"
+#include "qgsgeotransform.h"
+#include "qgsmaterial.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"
-#include "qgsfeedback.h"
-#include "qgsaabb.h"
-#include "qgsgeotransform.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrequest.h"
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QParameter>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
+#include <QPointSize>
+#include <QString>
+#include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QEffect>
-#include <QPointSize>
-#include <QUrl>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
 
-#include <delaunator.hpp>
-#include <memory>
+#include "moc_qgspointcloud3dsymbol_p.cpp"
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 // pick a point that we'll use as origin for coordinates for this node's points
 static QgsVector3D originFromNodeBounds( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context )
@@ -71,29 +61,29 @@ static QgsVector3D originFromNodeBounds( QgsPointCloudIndex &pc, const QgsPointC
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming node origin point" ) );
+    QgsDebugError( u"Error transforming node origin point"_s );
   }
   return QgsVector3D( nodeOriginX, nodeOriginY, nodeOriginZ );
 }
 
 
 QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
-  : Qt3DQGeometry( parent )
-  , mPositionAttribute( new Qt3DQAttribute( this ) )
-  , mParameterAttribute( new Qt3DQAttribute( this ) )
-  , mPointSizeAttribute( new Qt3DQAttribute( this ) )
-  , mColorAttribute( new Qt3DQAttribute( this ) )
-  , mTriangleIndexAttribute( new Qt3DQAttribute( this ) )
-  , mNormalsAttribute( new Qt3DQAttribute( this ) )
-  , mVertexBuffer( new Qt3DQBuffer( this ) )
+  : Qt3DCore::QGeometry( parent )
+  , mPositionAttribute( new Qt3DCore::QAttribute( this ) )
+  , mParameterAttribute( new Qt3DCore::QAttribute( this ) )
+  , mPointSizeAttribute( new Qt3DCore::QAttribute( this ) )
+  , mColorAttribute( new Qt3DCore::QAttribute( this ) )
+  , mTriangleIndexAttribute( new Qt3DCore::QAttribute( this ) )
+  , mNormalsAttribute( new Qt3DCore::QAttribute( this ) )
+  , mVertexBuffer( new Qt3DCore::QBuffer( this ) )
   , mByteStride( byteStride )
 {
   if ( !data.triangles.isEmpty() )
   {
-    mTriangleBuffer = new Qt3DQBuffer( this );
-    mTriangleIndexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
+    mTriangleBuffer = new Qt3DCore::QBuffer( this );
+    mTriangleIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
     mTriangleIndexAttribute->setBuffer( mTriangleBuffer );
-    mTriangleIndexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
+    mTriangleIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
     mTriangleBuffer->setData( data.triangles );
     mTriangleIndexAttribute->setCount( data.triangles.size() / sizeof( quint32 ) );
     addAttribute( mTriangleIndexAttribute );
@@ -101,11 +91,11 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 
   if ( !data.normals.isEmpty() )
   {
-    mNormalsBuffer = new Qt3DQBuffer( this );
-    mNormalsAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
-    mNormalsAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+    mNormalsBuffer = new Qt3DCore::QBuffer( this );
+    mNormalsAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+    mNormalsAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
     mNormalsAttribute->setVertexSize( 3 );
-    mNormalsAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+    mNormalsAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
     mNormalsAttribute->setBuffer( mNormalsBuffer );
     mNormalsBuffer->setData( data.normals );
     mNormalsAttribute->setCount( data.normals.size() / ( 3 * sizeof( float ) ) );
@@ -116,11 +106,11 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 QgsSingleColorPointCloud3DGeometry::QgsSingleColorPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : QgsPointCloud3DGeometry( parent, data, byteStride )
 {
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( mByteStride );
   addAttribute( mPositionAttribute );
@@ -147,17 +137,17 @@ void QgsSingleColorPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3D
 QgsColorRampPointCloud3DGeometry::QgsColorRampPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : QgsPointCloud3DGeometry( parent, data, byteStride )
 {
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( mByteStride );
   addAttribute( mPositionAttribute );
-  mParameterAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mParameterAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mParameterAttribute->setBuffer( mVertexBuffer );
-  mParameterAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mParameterAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mParameterAttribute->setVertexSize( 1 );
   mParameterAttribute->setName( "vertexParameter" );
   mParameterAttribute->setByteOffset( 12 );
@@ -188,19 +178,19 @@ void QgsColorRampPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSy
 QgsRGBPointCloud3DGeometry::QgsRGBPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : QgsPointCloud3DGeometry( parent, data, byteStride )
 {
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( mByteStride );
   addAttribute( mPositionAttribute );
-  mColorAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mColorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mColorAttribute->setBuffer( mVertexBuffer );
-  mColorAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mColorAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mColorAttribute->setVertexSize( 3 );
-  mColorAttribute->setName( QStringLiteral( "vertexColor" ) );
+  mColorAttribute->setName( u"vertexColor"_s );
   mColorAttribute->setByteOffset( 12 );
   mColorAttribute->setByteStride( mByteStride );
   addAttribute( mColorAttribute );
@@ -230,25 +220,25 @@ void QgsRGBPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHa
 QgsClassificationPointCloud3DGeometry::QgsClassificationPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : QgsPointCloud3DGeometry( parent, data, byteStride )
 {
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( mByteStride );
   addAttribute( mPositionAttribute );
-  mParameterAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mParameterAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mParameterAttribute->setBuffer( mVertexBuffer );
-  mParameterAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mParameterAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mParameterAttribute->setVertexSize( 1 );
   mParameterAttribute->setName( "vertexParameter" );
   mParameterAttribute->setByteOffset( 12 );
   mParameterAttribute->setByteStride( mByteStride );
   addAttribute( mParameterAttribute );
-  mPointSizeAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPointSizeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPointSizeAttribute->setBuffer( mVertexBuffer );
-  mPointSizeAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPointSizeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPointSizeAttribute->setVertexSize( 1 );
   mPointSizeAttribute->setName( "vertexSize" );
   mPointSizeAttribute->setByteOffset( 16 );
@@ -279,8 +269,7 @@ void QgsClassificationPointCloud3DGeometry::makeVertexBuffer( const QgsPointClou
 }
 
 QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, const QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
@@ -291,7 +280,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     return;
 
   // Geometry
-  Qt3DQGeometry *geom = makeGeometry( parent, out, context.symbol()->byteStride() );
+  Qt3DCore::QGeometry *geom = makeGeometry( parent, out, context.symbol()->byteStride() );
   Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
   if ( context.symbol()->renderAsTriangles() && !out.triangles.isEmpty() )
   {
@@ -316,8 +305,8 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     context.symbol()->fillMaterial( mat );
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( mat );
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.vert" ) ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.frag" ) ) ) );
+  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.vert"_s ) ) );
+  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.frag"_s ) ) );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( mat );
   renderPass->setShaderProgram( shaderProgram );
@@ -331,7 +320,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
+  filterKey->setName( u"renderingStyle"_s );
   filterKey->setValue( "forward" );
 
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
@@ -436,10 +425,7 @@ void QgsPointCloud3DSymbolHandler::calculateNormals( const std::vector<size_t> &
     }
     //calculate normals
     for ( size_t j = 0; j < 3; ++j )
-      normals[triangles.at( i + j )] += QVector3D::crossProduct(
-        triangleVertices.at( 1 ) - triangleVertices.at( 0 ),
-        triangleVertices.at( 2 ) - triangleVertices.at( 0 )
-      );
+      normals[triangles.at( i + j )] += QVector3D::crossProduct( triangleVertices.at( 1 ) - triangleVertices.at( 0 ), triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
   }
 
   // Build now normals array
@@ -533,7 +519,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex &pc, const Qg
   catch ( std::exception &e )
   {
     // something went wrong, better to retrieve initial state
-    QgsDebugMsgLevel( QStringLiteral( "Error with triangulation" ), 4 );
+    QgsDebugMsgLevel( u"Error with triangulation"_s, 4 );
     outNormal = PointData();
     processNode( pc, n, context );
     return;
@@ -545,7 +531,9 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex &pc, const Qg
   filterTriangles( triangleIndexes, context, box3D );
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock(
+  QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context
+)
 {
   std::unique_ptr<QgsPointCloudBlock> block;
   if ( pc.accessType() == Qgis::PointCloudAccessType::Local )
@@ -578,8 +566,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBloc
 
 QgsSingleColorPointCloud3DSymbolHandler::QgsSingleColorPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsSingleColorPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -590,9 +577,9 @@ bool QgsSingleColorPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRend
 void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
@@ -636,7 +623,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &p
     {
       if ( !alreadyPrintedDebug )
       {
-        QgsDebugError( QStringLiteral( "Error transforming point coordinate" ) );
+        QgsDebugError( u"Error transforming point coordinate"_s );
         alreadyPrintedDebug = true;
       }
     }
@@ -650,15 +637,14 @@ void QgsSingleColorPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *paren
   makeEntity( parent, context, outNormal, false );
 }
 
-Qt3DQGeometry *QgsSingleColorPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
+Qt3DCore::QGeometry *QgsSingleColorPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsSingleColorPointCloud3DGeometry( parent, data, byteStride );
 }
 
 QgsColorRampPointCloud3DSymbolHandler::QgsColorRampPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -670,11 +656,11 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
   const int yOffset = attributes.pointRecordSize();
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
   const int zOffset = attributes.pointRecordSize();
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   QString attributeName;
   bool attrIsX = false;
@@ -693,15 +679,15 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
     int offset = 0;
     const QgsPointCloudAttributeCollection collection = context.attributes();
 
-    if ( symbol->attribute() == QLatin1String( "X" ) )
+    if ( symbol->attribute() == "X"_L1 )
     {
       attrIsX = true;
     }
-    else if ( symbol->attribute() == QLatin1String( "Y" ) )
+    else if ( symbol->attribute() == "Y"_L1 )
     {
       attrIsY = true;
     }
-    else if ( symbol->attribute() == QLatin1String( "Z" ) )
+    else if ( symbol->attribute() == "Z"_L1 )
     {
       attrIsZ = true;
     }
@@ -760,7 +746,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
     {
       if ( !alreadyPrintedDebug )
       {
-        QgsDebugError( QStringLiteral( "Error transforming point coordinate" ) );
+        QgsDebugError( u"Error transforming point coordinate"_s );
         alreadyPrintedDebug = true;
       }
     }
@@ -787,15 +773,14 @@ void QgsColorRampPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent,
   makeEntity( parent, context, outNormal, false );
 }
 
-Qt3DQGeometry *QgsColorRampPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
+Qt3DCore::QGeometry *QgsColorRampPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
 }
 
 QgsRGBPointCloud3DSymbolHandler::QgsRGBPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsRGBPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -806,9 +791,9 @@ bool QgsRGBPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContex
 void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   QgsRgbPointCloud3DSymbol *symbol = qgis::down_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
 
@@ -883,7 +868,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, const
     {
       if ( !alreadyPrintedDebug )
       {
-        QgsDebugError( QStringLiteral( "Error transforming point coordinate" ) );
+        QgsDebugError( u"Error transforming point coordinate"_s );
         alreadyPrintedDebug = true;
       }
     }
@@ -931,15 +916,14 @@ void QgsRGBPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const
   makeEntity( parent, context, outNormal, false );
 }
 
-Qt3DQGeometry *QgsRGBPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
+Qt3DCore::QGeometry *QgsRGBPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsRGBPointCloud3DGeometry( parent, data, byteStride );
 }
 
 QgsClassificationPointCloud3DSymbolHandler::QgsClassificationPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -951,11 +935,11 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
   const int yOffset = attributes.pointRecordSize();
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
   const int zOffset = attributes.pointRecordSize();
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   QString attributeName;
   bool attrIsX = false;
@@ -970,15 +954,15 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   int offset = 0;
   const QgsPointCloudAttributeCollection collection = context.attributes();
 
-  if ( symbol->attribute() == QLatin1String( "X" ) )
+  if ( symbol->attribute() == "X"_L1 )
   {
     attrIsX = true;
   }
-  else if ( symbol->attribute() == QLatin1String( "Y" ) )
+  else if ( symbol->attribute() == "Y"_L1 )
   {
     attrIsY = true;
   }
-  else if ( symbol->attribute() == QLatin1String( "Z" ) )
+  else if ( symbol->attribute() == "Z"_L1 )
   {
     attrIsZ = true;
   }
@@ -1021,8 +1005,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   for ( QgsPointCloudCategory &c : categoriesList )
   {
     categoriesValues.push_back( c.value() );
-    categoriesPointSizes.insert( c.value(), c.pointSize() > 0 ? c.pointSize() : context.symbol() ? context.symbol()->pointSize()
-                                                                                                 : 1.0 );
+    categoriesPointSizes.insert( c.value(), c.pointSize() > 0 ? c.pointSize() : context.symbol() ? context.symbol()->pointSize() : 1.0 );
   }
 
   if ( !output )
@@ -1051,7 +1034,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     {
       if ( !alreadyPrintedDebug )
       {
-        QgsDebugError( QStringLiteral( "Error transforming point coordinate" ) );
+        QgsDebugError( u"Error transforming point coordinate"_s );
         alreadyPrintedDebug = true;
       }
     }
@@ -1082,7 +1065,7 @@ void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *pa
   makeEntity( parent, context, outNormal, false );
 }
 
-Qt3DQGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
+Qt3DCore::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
 {
   return new QgsClassificationPointCloud3DGeometry( parent, data, byteStride );
 }

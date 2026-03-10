@@ -22,10 +22,13 @@
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "vector" ) )
-{
-}
+  : Qgs3DRendererAbstractMetadata( u"vector"_s )
+{}
 
 QgsAbstract3DRenderer *QgsVectorLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -40,8 +43,7 @@ QgsAbstract3DRenderer *QgsVectorLayer3DRendererMetadata::createRenderer( QDomEle
 
 QgsVectorLayer3DRenderer::QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s )
   : mSymbol( s )
-{
-}
+{}
 
 QgsVectorLayer3DRenderer *QgsVectorLayer3DRenderer::clone() const
 {
@@ -83,10 +85,10 @@ void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
 
   writeXmlBaseProperties( elem, context );
 
-  QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
+  QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
+    elemSymbol.setAttribute( u"type"_s, mSymbol->type() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -96,8 +98,8 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
 {
   readXmlBaseProperties( elem, context );
 
-  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( u"symbol"_s );
+  const QString symbolType = elemSymbol.attribute( u"type"_s );
   mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );

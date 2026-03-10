@@ -29,18 +29,17 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QString>
 #include <QTreeWidgetItemIterator>
 
 #include "moc_qgsnewdatabasetablenamewidget.cpp"
 
-// List of data item provider keys that are filesystem based
-QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "spatialite" ) };
+using namespace Qt::StringLiterals;
 
-QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
-  QgsBrowserGuiModel *browserModel,
-  const QStringList &providersFilter,
-  QWidget *parent
-)
+// List of data item provider keys that are filesystem based
+QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { u"GPKG"_s, u"spatialite"_s };
+
+QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel, const QStringList &providersFilter, QWidget *parent )
   : QgsPanelWidget( parent )
 {
   // Initialize the browser
@@ -106,9 +105,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     validate();
   } );
 
-  connect( mActionRefresh, &QAction::triggered, this, [this] {
-    refreshModel( QModelIndex() );
-  } );
+  connect( mActionRefresh, &QAction::triggered, this, [this] { refreshModel( QModelIndex() ); } );
 
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.isValid() )
@@ -133,13 +130,13 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
           {
             mIsFilePath = FILESYSTEM_BASED_DATAITEM_PROVIDERS.contains( collectionItem->providerKey() );
             // Data items for filesystem based items are in the form gpkg://path/to/file.gpkg
-            mSchemaName = mIsFilePath ? collectionItem->path().remove( QRegularExpression( QStringLiteral( "^[A-z]+:/" ) ) ) : collectionItem->name(); // it may be cleared
+            mSchemaName = mIsFilePath ? collectionItem->path().remove( QRegularExpression( u"^[A-z]+:/"_s ) ) : collectionItem->name(); // it may be cleared
             mConnectionName = mIsFilePath ? collectionItem->name() : collectionItem->parent()->name();
             if ( oldSchema != mSchemaName )
             {
               emit schemaNameChanged( mSchemaName );
               // Store last viewed item
-              QgsSettings().setValue( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ), mBrowserProxyModel.data( index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
+              QgsSettings().setValue( u"newDatabaseTableNameWidgetLastSelectedItem"_s, mBrowserProxyModel.data( index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
               validationRequired = true;
             }
           }
@@ -206,12 +203,12 @@ void QgsNewDatabaseTableNameWidget::updateUri()
     if ( conn )
     {
       QVariantMap uriParts = dataProviderMetadata->decodeUri( conn->uri() );
-      uriParts[QStringLiteral( "layerName" )] = mTableName;
-      uriParts[QStringLiteral( "schema" )] = mSchemaName;
-      uriParts[QStringLiteral( "table" )] = mTableName;
+      uriParts[u"layerName"_s] = mTableName;
+      uriParts[u"schema"_s] = mSchemaName;
+      uriParts[u"table"_s] = mTableName;
       if ( mIsFilePath )
       {
-        uriParts[QStringLiteral( "dbname" )] = mSchemaName;
+        uriParts[u"dbname"_s] = mSchemaName;
       }
       mUri = dataProviderMetadata->encodeUri( uriParts );
     }
@@ -291,7 +288,7 @@ void QgsNewDatabaseTableNameWidget::validate()
     }
   }
 
-  mValidationResults->setStyleSheet( isError ? QStringLiteral( "* { color: red; }" ) : QString() );
+  mValidationResults->setStyleSheet( isError ? u"* { color: red; }"_s : QString() );
 
   mValidationResults->setText( mValidationError );
   mValidationResults->setVisible( !mIsValid );
@@ -358,16 +355,11 @@ QString QgsNewDatabaseTableNameWidget::validationError() const
 void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
 {
   QWidget::showEvent( e );
-  const QString lastSelectedPath( QgsSettings().value( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ), QString(), QgsSettings::Section::Gui ).toString() );
+  const QString lastSelectedPath( QgsSettings().value( u"newDatabaseTableNameWidgetLastSelectedItem"_s, QString(), QgsSettings::Section::Gui ).toString() );
   if ( !lastSelectedPath.isEmpty() )
   {
-    const QModelIndexList items = mBrowserProxyModel.match(
-      mBrowserProxyModel.index( 0, 0 ),
-      static_cast<int>( QgsBrowserModel::CustomRole::Path ),
-      QVariant::fromValue( lastSelectedPath ),
-      1,
-      Qt::MatchRecursive
-    );
+    const QModelIndexList items
+      = mBrowserProxyModel.match( mBrowserProxyModel.index( 0, 0 ), static_cast<int>( QgsBrowserModel::CustomRole::Path ), QVariant::fromValue( lastSelectedPath ), 1, Qt::MatchRecursive );
     if ( items.count() > 0 )
     {
       const QModelIndex expandIndex = items.at( 0 );

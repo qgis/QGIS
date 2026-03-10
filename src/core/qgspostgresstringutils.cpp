@@ -20,6 +20,9 @@
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 
@@ -44,13 +47,13 @@ QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const
     }
     i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView { txt }.mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( QObject::tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), QObject::tr( "PostgresStringUtils" ) );
       return QString();
     }
     i += sep.length();
-    return match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+    return match.captured( 1 ).replace( "\\\""_L1, "\""_L1 ).replace( "\\\\"_L1, "\\"_L1 );
   }
   else
   {
@@ -109,7 +112,7 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
     int i = 0;
     while ( i < newVal.length() )
     {
-      const QString value = getNextString( newVal, i, QStringLiteral( "," ) );
+      const QString value = getNextString( newVal, i, u","_s );
       if ( value.isNull() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error parsing PG like array: %1" ).arg( newVal ), QObject::tr( "PostgresStringUtils" ) );
@@ -120,7 +123,6 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
   }
 
   return variantList;
-
 }
 
 QString QgsPostgresStringUtils::buildArray( const QVariantList &list )
@@ -143,8 +145,8 @@ QString QgsPostgresStringUtils::buildArray( const QVariantList &list )
         }
         else
         {
-          newS.replace( '\\', QLatin1String( R"(\\)" ) );
-          newS.replace( '\"', QLatin1String( R"(\")" ) );
+          newS.replace( '\\', R"(\\)"_L1 );
+          newS.replace( '\"', R"(\")"_L1 );
           sl.push_back( "\"" + newS + "\"" );
         }
         break;

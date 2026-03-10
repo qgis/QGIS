@@ -35,12 +35,11 @@
  *
  * \since QGIS 3.14
  */
-class QgsFeatureExpressionValuesGatherer: public QThread
+class QgsFeatureExpressionValuesGatherer : public QThread
 {
     Q_OBJECT
 
   public:
-
     /**
        * Constructor
        * \param layer the vector layer
@@ -48,70 +47,66 @@ class QgsFeatureExpressionValuesGatherer: public QThread
        * \param request the request to perform
        * \param identifierFields an optional list of fields name to be save in a variant list for an easier reuse
        */
-    QgsFeatureExpressionValuesGatherer( QgsVectorLayer *layer,
-                                        const QString &displayExpression = QString(),
-                                        const QgsFeatureRequest &request = QgsFeatureRequest(),
-                                        const QStringList &identifierFields = QStringList() )
+    QgsFeatureExpressionValuesGatherer(
+      QgsVectorLayer *layer, const QString &displayExpression = QString(), const QgsFeatureRequest &request = QgsFeatureRequest(), const QStringList &identifierFields = QStringList()
+    )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )
       , mDisplayExpression( displayExpression.isEmpty() ? layer->displayExpression() : displayExpression )
       , mExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
       , mRequest( request )
       , mIdentifierFields( identifierFields )
-    {
-    }
+    {}
 
-    QgsFeatureExpressionValuesGatherer( QgsVectorLayer *layer,
-                                        const QString &displayExpression = QString(),
-                                        const QString &orderExpression = QString(),
-                                        const QgsFeatureRequest &request = QgsFeatureRequest(),
-                                        const QStringList &identifierFields = QStringList() )
+    QgsFeatureExpressionValuesGatherer(
+      QgsVectorLayer *layer,
+      const QString &displayExpression = QString(),
+      const QString &orderExpression = QString(),
+      const QgsFeatureRequest &request = QgsFeatureRequest(),
+      const QStringList &identifierFields = QStringList()
+    )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )
       , mDisplayExpression( displayExpression.isEmpty() ? layer->displayExpression() : displayExpression )
       , mOrderExpression( orderExpression.isEmpty() ? displayExpression.isEmpty() ? layer->displayExpression() : displayExpression : orderExpression )
       , mExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
       , mRequest( request )
       , mIdentifierFields( identifierFields )
-    {
-    }
+    {}
 
     struct Entry
     {
-      Entry() = default;
+        Entry() = default;
 
-      Entry( const QVariantList &_identifierFields, const QString &_value, const QString &_orderValue, const QgsFeature &_feature )
-        : identifierFields( _identifierFields )
-        , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
-        , value( _value )
-        , orderValue( _orderValue )
-        , feature( _feature )
-      {}
+        Entry( const QVariantList &_identifierFields, const QString &_value, const QString &_orderValue, const QgsFeature &_feature )
+          : identifierFields( _identifierFields )
+          , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
+          , value( _value )
+          , orderValue( _orderValue )
+          , feature( _feature )
+        {}
 
-      Entry( const QVariantList &_identifierFields, const QString &_value, const QgsFeature &_feature )
-        : identifierFields( _identifierFields )
-        , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
-        , value( _value )
-        , feature( _feature )
-      {}
+        Entry( const QVariantList &_identifierFields, const QString &_value, const QgsFeature &_feature )
+          : identifierFields( _identifierFields )
+          , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
+          , value( _value )
+          , feature( _feature )
+        {}
 
-      Entry( const QgsFeatureId &_featureId, const QString &_value, const QgsVectorLayer *layer )
-        : featureId( _featureId )
-        , value( _value )
-        , feature( QgsFeature( layer ? layer->fields() : QgsFields() ) )
-      {}
+        Entry( const QgsFeatureId &_featureId, const QString &_value, const QgsVectorLayer *layer )
+          : featureId( _featureId )
+          , value( _value )
+          , feature( QgsFeature( layer ? layer->fields() : QgsFields() ) )
+        {}
 
-      QVariantList identifierFields;
-      QgsFeatureId featureId;
-      QString value;
-      QString orderValue;
-      QgsFeature feature;
+        QVariantList identifierFields;
+        QgsFeatureId featureId;
+        QString value;
+        QString orderValue;
+        QgsFeature feature;
 
-      bool operator()( const Entry &lhs, const Entry &rhs ) const;
+        bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
 
-    static Entry nullEntry( QgsVectorLayer *layer )
-    {
-      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature( layer->fields() ) );
-    }
+    static Entry nullEntry( QgsVectorLayer *layer ) { return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature( layer->fields() ) ); }
 
     void run() override
     {
@@ -159,31 +154,19 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       return mWasCanceled;
     }
 
-    QVector<Entry> entries() const
-    {
-      return mEntries;
-    }
+    QVector<Entry> entries() const { return mEntries; }
 
-    QgsFeatureRequest request() const
-    {
-      return mRequest;
-    }
+    QgsFeatureRequest request() const { return mRequest; }
 
     /**
      * Internal data, use for whatever you want.
      */
-    QVariant data() const
-    {
-      return mData;
-    }
+    QVariant data() const { return mData; }
 
     /**
      * Internal data, use for whatever you want.
      */
-    void setData( const QVariant &data )
-    {
-      mData = data;
-    }
+    void setData( const QVariant &data ) { mData = data; }
 
   protected:
     QVector<Entry> mEntries;

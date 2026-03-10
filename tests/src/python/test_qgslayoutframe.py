@@ -10,17 +10,16 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "23/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.core import QgsLayoutFrame, QgsLayoutItemHtml
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsLayoutFrame, QgsLayoutItemHtml
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
 class TestQgsLayoutFrame(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

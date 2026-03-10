@@ -364,12 +364,12 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     *
     * \param value The new value of the attribute
     * \param additionalValues The values of potential additional fields
-    * \note Will be pure virtual in QGIS 4.x
+    * \note Will be pure virtual in QGIS 5.x
     * \since QGIS 3.10
     */
-    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 4: make it pure virtual
+    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 5: make it pure virtual
 
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     bool isRunningDeprecatedSetValue = false;
 
     /**

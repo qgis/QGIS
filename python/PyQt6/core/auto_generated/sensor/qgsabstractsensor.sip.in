@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractSensor : QObject
 {
 %Docstring(signature="appended")
@@ -52,10 +53,9 @@ An abstract base class for sensors.
 
     struct SensorData
     {
+        QVariant lastValue;
 
-      QVariant lastValue;
-
-      QDateTime lastTimestamp;
+        QDateTime lastTimestamp;
     };
 
     explicit QgsAbstractSensor( QObject *parent /TransferThis/ = 0 );
@@ -180,7 +180,6 @@ error.
 %End
 
   protected:
-
     virtual void handleConnect() = 0;
 %Docstring
 Handles the connection to the sensor.

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
   public:
     QgsVectorLayerTools();
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
@@ -63,7 +63,15 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \note addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const
+    virtual bool addFeature(
+      QgsVectorLayer *layer,
+      const QgsAttributeMap &defaultValues = QgsAttributeMap(),
+      const QgsGeometry &defaultGeometry = QgsGeometry(),
+      QgsFeature *feature SIP_OUT = nullptr,
+      QWidget *parentWidget = nullptr,
+      bool showModal = true,
+      bool hideParent = false
+    ) const
     {
       QgsVectorLayerToolsContext context;
       context.setParentWidget( parentWidget );
@@ -85,13 +93,19 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \note addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
      * \since QGIS 3.38
      */
-    virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext() ) const
+    virtual bool addFeatureV2(
+      QgsVectorLayer *layer,
+      const QgsAttributeMap &defaultValues = QgsAttributeMap(),
+      const QgsGeometry &defaultGeometry = QgsGeometry(),
+      QgsFeature *feature SIP_OUT = nullptr,
+      const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext()
+    ) const
     {
       Q_UNUSED( context )
       return addFeature( layer, defaultValues, defaultGeometry, feature, context.parentWidget(), context.showModal(), context.hideParent() );
     }
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers
@@ -105,7 +119,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Will be called, when an editing session is ended and the features should be committed.
@@ -118,7 +132,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Should be called, when the features should be committed but the editing session is not ended.
@@ -129,7 +143,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Copy and move features with defined translation.
@@ -146,7 +160,16 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \returns TRUE if all features could be copied.
      *
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const;
+    virtual bool copyMoveFeatures(
+      QgsVectorLayer *layer,
+      QgsFeatureRequest &request SIP_INOUT,
+      double dx = 0,
+      double dy = 0,
+      QString *errorMsg SIP_OUT = nullptr,
+      const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = nullptr,
+      QString *childrenInfoMsg = nullptr
+    ) const;
 
     /**
      * Returns force suppress form popup status.
@@ -181,11 +204,8 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
     QgsProject *project() const { return mProject; }
 
   private:
-
     QgsProject *mProject = nullptr;
     bool mForceSuppressFormPopup { false };
-
-
 };
 
 #endif // QGSVECTORLAYERTOOLS_H

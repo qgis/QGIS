@@ -19,28 +19,27 @@ __author__ = "Matthias Kuhn"
 __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
-import AlgorithmsTestBase
-
-import nose2
-import shutil
 import os
+import shutil
+import unittest
 
+import AlgorithmsTestBase
+import nose2
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
     QgsProcessingAlgorithm,
-    QgsProcessingFeedback,
     QgsProcessingException,
+    QgsProcessingFeedback,
 )
-from qgis.analysis import QgsNativeAlgorithms
-import unittest
-from qgis.testing import start_app, QgisTestCase
-from processing.tools.dataobjects import createContext
+from qgis.testing import QgisTestCase, start_app
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.ModelerUtils import ModelerUtils
+from processing.tools.dataobjects import createContext
 
 
 class TestAlg(QgsProcessingAlgorithm):
-
     def __init__(self):
         super().__init__()
 
@@ -62,7 +61,6 @@ class TestAlg(QgsProcessingAlgorithm):
 
 
 class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -106,9 +104,12 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     {},
                 )
             else:
-                exec(
-                    f"{import_string}\ntest = {t.className()}('id','name')\nassert test is not None"
-                ), {}
+                (
+                    exec(
+                        f"{import_string}\ntest = {t.className()}('id','name')\nassert test is not None"
+                    ),
+                    {},
+                )
 
 
 if __name__ == "__main__":

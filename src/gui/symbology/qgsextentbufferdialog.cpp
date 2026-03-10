@@ -26,28 +26,31 @@
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qdialogbuttonbox.h>
 
 #include "moc_qgsextentbufferdialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
-  : QgsPanelWidget( parent ), mSymbol( symbol ), mLayer( layer )
+  : QgsPanelWidget( parent )
+  , mSymbol( symbol )
+  , mLayer( layer )
 {
   setupUi( this );
 
   mExtentBufferSpinBox->setValue( mSymbol->extentBuffer() );
 
   mExtentBufferUnitSelectionWidget->setShowMapScaleButton( false );
-  mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mExtentBufferUnitSelectionWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
   mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
-  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() {
-    emit widgetChanged();
-  } );
+  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() { emit widgetChanged(); } );
 
-  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() {
-    emit widgetChanged();
-  } );
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() { emit widgetChanged(); } );
 
   registerDataDefinedButton( mExtentBufferDDButton, QgsSymbol::Property::ExtentBuffer );
 }
@@ -67,9 +70,7 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
   // pass in nullptr to avoid id, feature and geometry variables being added
   // since the buffer is not evaluated per-feature
   button->init( static_cast<int>( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
-  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() {
-    emit widgetChanged();
-  } );
+  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() { emit widgetChanged(); } );
 
   button->registerExpressionContextGenerator( this );
 }
@@ -87,10 +88,11 @@ QgsExpressionContext QgsExtentBufferWidget::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( mLayer )
@@ -175,5 +177,5 @@ void QgsExtentBufferDialog::setContext( const QgsSymbolWidgetContext &context )
 
 void QgsExtentBufferDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#extent-buffer" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#extent-buffer"_s );
 }

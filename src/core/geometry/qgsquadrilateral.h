@@ -24,6 +24,10 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsQuadrilateral
@@ -36,11 +40,12 @@
 class CORE_EXPORT QgsQuadrilateral
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty quadrilateral geometry.
      */
     QgsQuadrilateral() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Construct a QgsQuadrilateral from four QgsPoint.
@@ -211,11 +216,13 @@ class CORE_EXPORT QgsQuadrilateral
      */
     double perimeter() const SIP_HOLDGIL;
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsQuadrilateral: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsQuadrilateral: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
   private:
     QgsPoint mPoint1, mPoint2, mPoint3, mPoint4;

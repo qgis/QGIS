@@ -106,12 +106,7 @@ Keeps metadata for an indexed point cloud node.
 #include "qgspointcloudindex.h"
 %End
   public:
-
-    QgsPointCloudNode( const QgsPointCloudNodeId &id,
-                       qint64 pointCount,
-                       const QList<QgsPointCloudNodeId> &childIds,
-                       float error,
-                       const QgsBox3D &bounds );
+    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
 %Docstring
 Constructs new node object. Should only be called by
 :py:func:`QgsAbstractPointCloudIndex.getNode()`. Bounds should always be
@@ -383,6 +378,11 @@ Returns ``True`` if there are uncommitted changes, ``False`` otherwise
     QList<QgsPointCloudNodeId> updatedNodes() const;
 %Docstring
 Returns a list of node IDs that have been modified
+%End
+
+    QString uri() const;
+%Docstring
+Returns the uri used to load the index
 %End
 
 };

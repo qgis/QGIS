@@ -22,12 +22,13 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QString>
 #include <QtDebug>
 
-QgsRangeRequestCache::QgsRangeRequestCache()
-{
+using namespace Qt::StringLiterals;
 
-}
+QgsRangeRequestCache::QgsRangeRequestCache()
+{}
 
 QByteArray QgsRangeRequestCache::entry( const QNetworkRequest &request )
 {
@@ -89,7 +90,7 @@ void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
 
 QString QgsRangeRequestCache::rangeFileName( const QNetworkRequest &request ) const
 {
-  return mCacheDir + QStringLiteral( "%1-%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
+  return mCacheDir + u"%1-%2"_s.arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
 }
 
 QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
@@ -154,8 +155,7 @@ QFileInfoList QgsRangeRequestCache::cacheEntries()
 {
   QDir dir( mCacheDir );
   QFileInfoList filesList = dir.entryInfoList( QDir::Filter::Files, QDir::SortFlags() );
-  std::sort( filesList.begin(), filesList.end(), []( QFileInfo & f1, QFileInfo & f2 )
-  {
+  std::sort( filesList.begin(), filesList.end(), []( QFileInfo &f1, QFileInfo &f2 ) {
     QDateTime t1 = f1.fileTime( QFile::FileTime::FileAccessTime );
     if ( !t1.isValid() )
       t1 = f1.fileTime( QFile::FileTime::FileBirthTime );

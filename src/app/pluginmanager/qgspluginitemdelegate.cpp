@@ -24,12 +24,16 @@
 #include <QFont>
 #include <QModelIndex>
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionViewItem>
 
 #include "moc_qgspluginitemdelegate.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent )
-  : QStyledItemDelegate( parent ) {}
+  : QStyledItemDelegate( parent )
+{}
 
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -82,7 +86,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   {
     painter->setPen( option.palette.highlightedText().color() );
   }
-  else if ( index.data( PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" ) )
+  else if ( index.data( PLUGIN_ISDEPRECATED_ROLE ).toString() == "true"_L1 )
   {
     painter->setPen( option.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
@@ -96,9 +100,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setPen( Qt::red );
   }
 
-  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "upgradeable" )
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "new" ) )
+  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty() || index.data( PLUGIN_STATUS_ROLE ).toString() == "upgradeable"_L1 || index.data( PLUGIN_STATUS_ROLE ).toString() == "new"_L1 )
   {
     QFont font = painter->font();
     font.setBold( true );

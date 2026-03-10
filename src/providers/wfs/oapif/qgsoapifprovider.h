@@ -28,6 +28,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgswfsdatasourceuri.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsOapifSharedData;
 
 class QgsOapifProvider final : public QgsVectorDataProvider
@@ -59,7 +63,7 @@ class QgsOapifProvider final : public QgsVectorDataProvider
     QString subsetStringHelpUrl() const override;
     bool supportsSubsetString() const override;
 
-    QString storageType() const override { return QStringLiteral( "OGC API - Features" ); }
+    QString storageType() const override { return u"OGC API - Features"_s; }
 
     /* Inherited from QgsDataProvider */
 

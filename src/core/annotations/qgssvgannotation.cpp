@@ -23,14 +23,15 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgssvgannotation.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )
-{
-
-}
+{}
 
 QgsSvgAnnotation *QgsSvgAnnotation::clone() const
 {
@@ -43,17 +44,17 @@ QgsSvgAnnotation *QgsSvgAnnotation::clone() const
 void QgsSvgAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   const QString filePath = QgsSymbolLayerUtils::svgSymbolPathToName( mFilePath, context.pathResolver() );
-  QDomElement svgAnnotationElem = doc.createElement( QStringLiteral( "SVGAnnotationItem" ) );
-  svgAnnotationElem.setAttribute( QStringLiteral( "file" ), filePath );
+  QDomElement svgAnnotationElem = doc.createElement( u"SVGAnnotationItem"_s );
+  svgAnnotationElem.setAttribute( u"file"_s, filePath );
   _writeXml( svgAnnotationElem, doc, context );
   elem.appendChild( svgAnnotationElem );
 }
 
 void QgsSvgAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  const QString filePath = QgsSymbolLayerUtils::svgSymbolNameToPath( itemElem.attribute( QStringLiteral( "file" ) ), context.pathResolver() );
+  const QString filePath = QgsSymbolLayerUtils::svgSymbolNameToPath( itemElem.attribute( u"file"_s ), context.pathResolver() );
   setFilePath( filePath );
-  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( u"AnnotationItem"_s );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );
@@ -87,8 +88,7 @@ void QgsSvgAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size 
       renderWidth = viewBox.width() * heightRatio;
     }
 
-    mSvgRenderer.render( painter, QRectF( 0, 0, renderWidth,
-                                          renderHeight ) );
+    mSvgRenderer.render( painter, QRectF( 0, 0, renderWidth, renderHeight ) );
   }
 }
 

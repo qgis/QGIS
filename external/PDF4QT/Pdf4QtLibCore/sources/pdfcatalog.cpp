@@ -1053,4 +1053,51 @@ PDFPageAdditionalActions PDFPageAdditionalActions::parse(const PDFObjectStorage*
     return result;
 }
 
+QString PDFPageLayoutUtils::convertPageLayoutToString(PageLayout pageLayout)
+{
+    switch (pageLayout)
+    {
+        case PageLayout::SinglePage:
+            return "SinglePage";
+
+        case PageLayout::OneColumn:
+            return "OneColumn";
+
+        case PageLayout::TwoColumnLeft:
+            return "TwoColumnLeft";
+
+        case PageLayout::TwoColumnRight:
+            return "TwoColumnRight";
+
+        case PageLayout::TwoPagesLeft:
+            return "TwoPagesLeft";
+
+        case PageLayout::TwoPagesRight:
+            return "TwoPagesRight";
+
+        case PageLayout::Custom:
+            return "Custom";
+
+        default:
+            Q_ASSERT(false);
+            break;
+    }
+
+    return QString();
+}
+
+PageLayout PDFPageLayoutUtils::convertStringToPageLayout(const QString& text, PageLayout defaultPageLayout)
+{
+    for (PageLayout pageLayout : { PageLayout::SinglePage, PageLayout::OneColumn, PageLayout::TwoColumnLeft,
+                                   PageLayout::TwoColumnRight, PageLayout::TwoPagesLeft, PageLayout::TwoPagesRight, PageLayout::Custom })
+    {
+        if (convertPageLayoutToString(pageLayout) == text)
+        {
+            return pageLayout;
+        }
+    }
+
+    return defaultPageLayout;
+}
+
 }   // namespace pdf

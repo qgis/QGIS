@@ -11,15 +11,15 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
-from osgeo import gdal
 import unittest
 
+from osgeo import gdal
+from qgis.core import QgsAuthConfigurationStorageDb
+from qgis.PyQt.QtCore import QTemporaryDir
 from test_authmanager_storage_base import (
     AuthManagerStorageBaseTestCase,
     TestAuthManagerStorageBase,
 )
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import QgsAuthConfigurationStorageDb
 
 __author__ = "Alessandro Pasotti"
 __date__ = "2024-06-24"
@@ -27,7 +27,6 @@ __copyright__ = "Copyright 2024, The QGIS Project"
 
 
 class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before each tests"""

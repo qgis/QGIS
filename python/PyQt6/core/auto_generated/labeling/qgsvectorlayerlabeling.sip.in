@@ -145,7 +145,6 @@ Returns the default layer settings to use for the specified vector
 %End
 
   protected:
-
  virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Writes a TextSymbolizer element contents based on the provided labeling

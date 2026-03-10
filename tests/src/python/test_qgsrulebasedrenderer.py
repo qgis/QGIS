@@ -6,11 +6,12 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
+from qgis.core import QgsFillSymbol, QgsMarkerSymbol, QgsRuleBasedRenderer
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsMarkerSymbol, QgsFillSymbol, QgsRuleBasedRenderer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -32,7 +33,6 @@ def createFillSymbol():
 
 
 class TestQgsRuleBasedSymbolRenderer(QgisTestCase):
-
     def test_to_sld(self):
         root_rule = QgsRuleBasedRenderer.Rule(None)
         symbol_a = createMarkerSymbol()

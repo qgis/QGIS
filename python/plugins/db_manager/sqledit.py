@@ -19,11 +19,11 @@ __author__ = "Alexander Bruy"
 __date__ = "February 2014"
 __copyright__ = "(C) 2014, Alexander Bruy"
 
+from qgis.core import QgsSettings
+from qgis.PyQt.Qsci import QsciLexerSQL, QsciScintilla
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerSQL
-from qgis.core import QgsSettings
 
 
 class SqlEdit(QsciScintilla):

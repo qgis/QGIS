@@ -27,7 +27,10 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QString>
 #include <QTreeWidgetItem>
+
+using namespace Qt::StringLiterals;
 
 QColor QgsAuthGuiUtils::greenColor()
 {
@@ -51,17 +54,17 @@ QColor QgsAuthGuiUtils::yellowColor()
 
 QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
 {
-  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::greenColor().name() );
+  return u"%1{color: %2;}"_s.arg( selector, QgsAuthGuiUtils::greenColor().name() );
 }
 
 QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString &selector )
 {
-  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::orangeColor().name() );
+  return u"%1{color: %2;}"_s.arg( selector, QgsAuthGuiUtils::orangeColor().name() );
 }
 
 QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
 {
-  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::redColor().name() );
+  return u"%1{color: %2;}"_s.arg( selector, QgsAuthGuiUtils::redColor().name() );
 }
 
 bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar )
@@ -80,7 +83,14 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
   const QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Enter a password to encrypt the configuration file:" ), QLineEdit::Password );
   if ( password.isEmpty() )
   {
-    if ( QMessageBox::warning( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+    if ( QMessageBox::warning(
+           msgbar,
+           QObject::tr( "Export Authentication Configurations" ),
+           QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ),
+           QMessageBox::Ok | QMessageBox::Cancel,
+           QMessageBox::Cancel
+         )
+         == QMessageBox::Cancel )
     {
       return;
     }
@@ -111,7 +121,7 @@ void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
     return;
   }
 
-  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  QDomDocument document( u"qgis_authentication"_s );
   if ( !document.setContent( &file ) )
   {
     file.close();
@@ -120,13 +130,13 @@ void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
   file.close();
 
   const QDomElement root = document.documentElement();
-  if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
+  if ( root.tagName() != "qgis_authentication"_L1 )
   {
     return;
   }
 
   QString password;
-  if ( root.hasAttribute( QStringLiteral( "salt" ) ) )
+  if ( root.hasAttribute( u"salt"_s ) )
   {
     password = QInputDialog::getText( msgbar, QObject::tr( "Import Authentication Configurations" ), QObject::tr( "Enter the password to decrypt the configurations file:" ), QLineEdit::Password );
   }
@@ -207,12 +217,12 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, QWidget *paren
        && ( QgsApplication::authManager()->masterPasswordIsSet() || QgsApplication::authManager()->setMasterPassword( true ) )
        && QgsAuthManager::settingsUsingGeneratedRandomPassword->value() )
   {
-    dlg.oldPasswordLineEdit()->setText( QStringLiteral( "***************" ) );
+    dlg.oldPasswordLineEdit()->setText( u"***************"_s );
     dlg.oldPasswordLineEdit()->setEnabled( false );
     dlg.oldPasswordLineEdit()->setToolTip( QObject::tr( "Existing password has been automatically read from the %1" ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
     if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      QgsDebugMsgLevel( u"Master password reset: input canceled by user"_s, 2 );
       return;
     }
     if ( !QgsApplication::authManager()->resetMasterPasswordUsingStoredPasswordHelper( newpass, keepbackup, &backuppath ) )
@@ -225,7 +235,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, QWidget *paren
   {
     if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      QgsDebugMsgLevel( u"Master password reset: input canceled by user"_s, 2 );
       return;
     }
     if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
@@ -260,9 +270,16 @@ void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, QWidge
   if ( QgsAuthGuiUtils::isDisabled( msgbar ) )
     return;
 
-  if ( QMessageBox::warning( parent, QObject::tr( "Remove Configurations" ), QObject::tr( "Are you sure you want to remove ALL authentication configurations?\n\n"
-                                                                                          "Operation can NOT be undone!" ),
-                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+  if ( QMessageBox::warning(
+         parent,
+         QObject::tr( "Remove Configurations" ),
+         QObject::tr(
+           "Are you sure you want to remove ALL authentication configurations?\n\n"
+           "Operation can NOT be undone!"
+         ),
+         QMessageBox::Ok | QMessageBox::Cancel,
+         QMessageBox::Cancel
+       )
        == QMessageBox::Cancel )
   {
     return;
@@ -289,9 +306,11 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, QWidge
   const QMessageBox::StandardButton btn = QMessageBox::warning(
     parent,
     QObject::tr( "Erase Database" ),
-    QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                 "Operation can NOT be undone!\n\n"
-                 "(Current database will be backed up and new one created.)" ),
+    QObject::tr(
+      "Are you sure you want to ERASE the entire authentication database?\n\n"
+      "Operation can NOT be undone!\n\n"
+      "(Current database will be backed up and new one created.)"
+    ),
     QMessageBox::Ok | QMessageBox::Cancel,
     QMessageBox::Cancel
   );
@@ -329,7 +348,7 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
 {
   if ( !found )
   {
-    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) ) );
+    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s ) );
     widget->setToolTip( QObject::tr( "File not found" ) );
   }
   else
@@ -342,18 +361,20 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
 QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( u"UI/lastAuthOpenFileDir"_s, QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( parent, title, recentdir, extfilter );
   if ( !f.isEmpty() )
   {
-    settings.setValue( QStringLiteral( "UI/lastAuthOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( u"UI/lastAuthOpenFileDir"_s, QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }
 
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent )
 {
-  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::
+         warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }
@@ -366,8 +387,7 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   }
   else
   {
-    msg = QObject::tr( "Master password was successfully deleted from the %1" )
-            .arg( QgsAuthManager::passwordHelperDisplayName() );
+    msg = QObject::tr( "Master password was successfully deleted from the %1" ).arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
   }
@@ -378,10 +398,8 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
 void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar )
 {
   QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
-  const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::passwordHelperDisplayName() )
-                              : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::passwordHelperDisplayName() );
+  const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." ).arg( QgsAuthManager::passwordHelperDisplayName() )
+                              : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." ).arg( QgsAuthManager::passwordHelperDisplayName() );
   msgbar->clearWidgets();
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info );
 }

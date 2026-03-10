@@ -16,11 +16,10 @@ import json
 import os
 import shutil
 import tempfile
+import unittest
 
 from osgeo import gdal, ogr
-
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsApplication,
@@ -34,10 +33,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 
 def sanitize(endpoint, query_params):
@@ -189,7 +187,6 @@ def create_landing_page_api_collection(
 
 
 class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1287,7 +1284,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             ),
             (
                 "boolfield2 = false",
-                "filter=(boolfield2%20%3D%20FALSE)&filter-lang=cql2-text" "",
+                "filter=(boolfield2%20%3D%20FALSE)&filter-lang=cql2-text",
             ),
             (
                 "NOT(intfield = 0)",
@@ -3255,6 +3252,156 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         f = next(it)
         self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
+
+    def _testJsonFG_oapif1_1_OutputFormat(self, profile, profile_in_next_link=True):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testJSONFG_oapif1_1_OutputFormat"
+        )
+        collectionLinks = [
+            {
+                "type": "application/geo+json",
+                "rel": "items",
+                "title": "Items in JSON-FG format",
+                "profile": [profile],
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/items?f=jsonfg",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=jsonfg&limit=10&Accept=application/fg+json",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                json.dumps(
+                    {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "id": 1,
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-70.5, 66.5],
+                                },
+                            }
+                        ],
+                    }
+                ).encode("UTF-8")
+            )
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?f=jsonfg&VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"HEAD, GET")
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/fg+json'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=jsonfg&limit=1000&Accept=application/fg+json",
+            ),
+            "wb",
+        ) as f:
+            profile_str = f'; profile="{profile}"' if profile_in_next_link else ""
+            headers = (
+                "OGC-NumberMatched: 2\r\nLink: <http://"
+                + endpoint
+                + '/collections/mycollection/items?f=jsonfg&offset=next_offset>; rel="next"; type="application/geo+json"'
+                + profile_str
+                + "\r\n\r\n"
+            )
+            f.write(
+                headers.encode("utf-8")
+                + json.dumps(
+                    {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "id": 2,
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-70.5, 66.5],
+                                },
+                            }
+                        ],
+                    }
+                ).encode("UTF-8")
+            )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=jsonfg&offset=next_offset&Accept=application/fg+json",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                (b"\r\n")
+                + json.dumps(
+                    {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-70.25, 66.25],
+                                },
+                            }
+                        ],
+                    }
+                ).encode("UTF-8")
+            )
+
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.5 66.5)")
+
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
+
+    def testJsonFG_oapif1_1_OutputFormat_profile_jsonfg(self):
+        self._testJsonFG_oapif1_1_OutputFormat(
+            "http://www.opengis.net/def/profile/ogc/0/jsonfg"
+        )
+
+    def testJsonFG_oapif1_1_OutputFormat_profile_jsonfg_without_profile_in_next_link(
+        self,
+    ):
+        self._testJsonFG_oapif1_1_OutputFormat(
+            "http://www.opengis.net/def/profile/ogc/0/jsonfg",
+            profile_in_next_link=False,
+        )
+
+    def testJsonFG_oapif1_1_OutputFormat_profile_jsonfg_plus(self):
+        self._testJsonFG_oapif1_1_OutputFormat(
+            "http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"
+        )
 
     def testGMLOutputFormat_no_xml_schema_paging(self):
 

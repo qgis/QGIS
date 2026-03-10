@@ -29,8 +29,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgsannotationitempropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -45,9 +48,9 @@ QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotat
   mPageNoItem->setSizePolicy( sizePolicy );
   QVBoxLayout *verticalLayout = new QVBoxLayout();
   verticalLayout->setContentsMargins( 0, 0, 0, 0 );
-  QLabel *label = new QLabel();
-  label->setText( tr( "No item selected." ) );
-  verticalLayout->addWidget( label );
+  mLabel = new QLabel();
+  mLabel->setText( tr( "No item selected." ) );
+  verticalLayout->addWidget( mLabel );
   mPageNoItem->setLayout( verticalLayout );
   mStack->addWidget( mPageNoItem );
   mStack->setCurrentWidget( mPageNoItem );
@@ -221,6 +224,14 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
   }
 }
 
+void QgsAnnotationItemPropertiesWidget::setLabelMessage( const QString &message )
+{
+  if ( mLabel )
+  {
+    mLabel->setText( message );
+  }
+}
+
 //
 // QgsAnnotationItemPropertiesWidgetFactory
 //
@@ -228,7 +239,7 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 QgsAnnotationItemPropertiesWidgetFactory::QgsAnnotationItemPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Annotation" ) );
 }
 

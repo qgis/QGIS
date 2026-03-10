@@ -25,9 +25,13 @@
 #include <QDomElement>
 #include <QMainWindow>
 #include <QPointer>
+#include <QString>
 #include <QToolButton>
 
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 class QgsDockWidget;
 
@@ -53,7 +57,7 @@ class GUI_EXPORT QgsNonRejectableDialog : public QDialog
  */
 class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 {
-    static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( QStringLiteral( "docks" ) ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( u"docks"_s ) SIP_SKIP;
 
     static const QgsSettingsEntryBool *sSettingsIsDocked SIP_SKIP;
     static const QgsSettingsEntryVariant *sSettingsDockGeometry SIP_SKIP;

@@ -24,7 +24,7 @@ class PyProviderMetadata(QgsProviderMetadata):
     constructor. The proper new way of doing it is to subclass QgsProviderMetadata and implement
     its virtual functions.
 
-    TODO: QGIS 4 - remove this wrapper (only subclassing of QgsProviderMetadata should be used)
+    TODO: QGIS 5 - remove this wrapper (only subclassing of QgsProviderMetadata should be used)
     """
 
     # this is a workaround to keep references to metadata classes

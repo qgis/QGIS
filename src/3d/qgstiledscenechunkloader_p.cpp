@@ -30,9 +30,13 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
+#include <QString>
+#include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
 #include "moc_qgstiledscenechunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -62,8 +66,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
   , mIndex( index )
-{
-}
+{}
 
 void QgsTiledSceneChunkLoader::start()
 {
@@ -86,7 +89,7 @@ void QgsTiledSceneChunkLoader::start()
     if ( !isGlobe && hasLargeBounds( tile, boundsTransform ) )
       return;
 
-    QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
+    QString uri = tile.resources().value( u"content"_s ).toString();
     if ( uri.isEmpty() )
     {
       // nothing to show for this tile
@@ -109,11 +112,11 @@ void QgsTiledSceneChunkLoader::start()
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = mZValueScale;
     entityTransform.zValueOffset = mZValueOffset;
-    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
-    const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
+    const QString &format = tile.metadata().value( u"contentFormat"_s ).value<QString>();
     QStringList errors;
-    if ( format == QLatin1String( "quantizedmesh" ) )
+    if ( format == "quantizedmesh"_L1 )
     {
       try
       {
@@ -124,10 +127,10 @@ void QgsTiledSceneChunkLoader::start()
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
-        errors.append( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
+        errors.append( u"Failed to parse tile from '%1'"_s.arg( uri ) );
       }
     }
-    else if ( format == QLatin1String( "cesiumtiles" ) )
+    else if ( format == "cesiumtiles"_L1 )
     {
       const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
       if ( tileContent.gltf.isEmpty() )
@@ -135,7 +138,7 @@ void QgsTiledSceneChunkLoader::start()
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
     }
-    else if ( format == QLatin1String( "draco" ) )
+    else if ( format == "draco"_L1 )
     {
       QgsGltfUtils::I3SNodeContext i3sContext;
       i3sContext.initFromTile( tile, mFactory.mLayerCrs, mFactory.mBoundsTransform.sourceCrs(), mFactory.mRenderContext.transformContext() );
@@ -192,12 +195,7 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 ///
 
 QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
-  const Qgs3DRenderContext &context,
-  const QgsTiledSceneIndex &index,
-  QgsCoordinateReferenceSystem tileCrs,
-  QgsCoordinateReferenceSystem layerCrs,
-  double zValueScale,
-  double zValueOffset
+  const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
 )
   : mRenderContext( context )
   , mIndex( index )
@@ -263,9 +261,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // XXX: This check doesn't work for Quantized Mesh layers and possibly some
     // Cesium 3D tiles as well. For now this hack is in place to make sure both
     // work in practice.
-    if ( t.metadata()["contentFormat"] == QStringLiteral( "cesiumtiles" )
-         && mRenderContext.crs().type() != Qgis::CrsType::Geocentric
-         && hasLargeBounds( t, mBoundsTransform ) )
+    if ( t.metadata()["contentFormat"] == "cesiumtiles"_L1 && mRenderContext.crs().type() != Qgis::CrsType::Geocentric && hasLargeBounds( t, mBoundsTransform ) )
     {
       // if the tile is huge, let's try to see if our scene is actually inside
       // (if not, let' skip this child altogether!)
@@ -276,12 +272,14 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       const QgsVector3D ecef2 = cEcef - obb.center();
       const double *half = obb.halfAxes();
       // this is an approximate check anyway, no need for double precision matrix/vector
+      // clang-format off
       QMatrix4x4 rot(
         half[0], half[3], half[6], 0,
         half[1], half[4], half[7], 0,
         half[2], half[5], half[8], 0,
         0, 0, 0, 1
       );
+      // clang-format on
       QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
       if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 || aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
       {
@@ -341,9 +339,7 @@ void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, Q
     emit childrenPrepared( origNode );
     futureWatcher->deleteLater();
   } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
-    mIndex.fetchHierarchy( nodeId );
-  } ) );
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] { mIndex.fetchHierarchy( nodeId ); } ) );
 }
 
 void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
@@ -402,7 +398,7 @@ int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
 QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context );
-  QgsDebugMsgLevel( QStringLiteral( "Ray cast on tiled scene layer" ), 2 );
+  QgsDebugMsgLevel( u"Ray cast on tiled scene layer"_s, 2 );
 #ifdef QGISDEBUG
   int nodeUsed = 0;
   int nodesAll = 0;
@@ -460,10 +456,10 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     QVariantMap vm;
     QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
     // at this point this is mostly for debugging - we may want to change/rename what's returned here
-    vm[QStringLiteral( "node_id" )] = tile.id();
-    vm[QStringLiteral( "node_error" )] = tile.geometricError();
-    vm[QStringLiteral( "node_content" )] = tile.resources().value( QStringLiteral( "content" ) );
-    vm[QStringLiteral( "triangle_index" )] = minTriangleIndex;
+    vm[u"node_id"_s] = tile.id();
+    vm[u"node_error"_s] = tile.geometricError();
+    vm[u"node_content"_s] = tile.resources().value( u"content"_s );
+    vm[u"triangle_index"_s] = minTriangleIndex;
 
     QgsRayCastHit hit;
     hit.setDistance( minDist );
@@ -472,7 +468,7 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     result.append( hit );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+  QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
   return result;
 }
 

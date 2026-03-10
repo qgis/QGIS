@@ -24,6 +24,10 @@
 #include "qgsmaplayerref.h"
 #include "qgsmaplayerrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsGroupLayerDataProvider;
 class QgsPaintEffect;
 
@@ -43,26 +47,23 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
     /**
      * Setting options for loading group layers.
      * \since QGIS 3.16
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -74,14 +75,16 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     ~QgsGroupLayer() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsGroupLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QgsGroupLayer *clone() const override SIP_FACTORY;
+      QgsGroupLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
@@ -138,13 +141,11 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     void prepareLayersForRemovalFromGroup();
 
   private:
-
     std::unique_ptr<QgsGroupLayerDataProvider> mDataProvider;
     QgsCoordinateTransformContext mTransformContext;
 
     QList< QgsMapLayerRef > mChildren;
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
 };
 
 #ifndef SIP_RUN
@@ -160,8 +161,7 @@ class QgsGroupLayerDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-    QgsGroupLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
-                               Qgis::DataProviderReadFlags flags );
+    QgsGroupLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;
@@ -170,9 +170,7 @@ class QgsGroupLayerDataProvider : public QgsDataProvider
     bool isValid() const override;
 
   private:
-
     QgsCoordinateReferenceSystem mCrs;
-
 };
 ///@endcond
 #endif

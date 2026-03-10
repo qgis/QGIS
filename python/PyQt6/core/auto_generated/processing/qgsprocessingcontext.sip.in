@@ -26,7 +26,6 @@ and expression context.
 #include "qgsprocessingcontext.h"
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
@@ -206,14 +205,11 @@ during algorithm execution.
 %End
 
     class LayerDetails
-{
+    {
 %Docstring(signature="appended")
 Details for layers to load into projects.
 %End
 
-%TypeHeaderCode
-#include "qgsprocessingcontext.h"
-%End
       public:
 
         LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType );

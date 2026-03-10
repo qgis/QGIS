@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,9 +25,13 @@
 #include "qgspoint.h"
 #include "qgsquadrilateral.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectanglecenter.cpp"
 
-const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = QStringLiteral( "rectangle-from-center-and-a-point" );
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = u"rectangle-from-center-and-a-point"_s;
 
 QString QgsMapToolShapeRectangleCenterMetadata::id() const
 {
@@ -41,7 +45,7 @@ QString QgsMapToolShapeRectangleCenterMetadata::name() const
 
 QIcon QgsMapToolShapeRectangleCenterMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRectangleCenter.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRectangleCenter.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRectangleCenterMetadata::category() const
@@ -99,7 +103,12 @@ void QgsMapToolShapeRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
         const double angle = mPoints.at( 0 ).azimuth( point );
 
         mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

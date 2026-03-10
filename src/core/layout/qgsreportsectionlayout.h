@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsabstractreportsection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!
@@ -33,14 +37,13 @@
 class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 {
   public:
-
     /**
      * Constructor for QgsReportSectionLayout, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
      */
     QgsReportSectionLayout( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionLayout" ); }
+    QString type() const override { return u"SectionLayout"_s; }
     QString description() const override { return QObject::tr( "Section" ); }
     QIcon icon() const override;
 
@@ -83,12 +86,10 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     void reloadSettings() override;
 
   protected:
-
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     bool mExportedBody = false;
     std::unique_ptr< QgsLayout > mBody;
     bool mBodyEnabled = true;

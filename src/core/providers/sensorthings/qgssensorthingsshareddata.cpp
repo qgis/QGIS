@@ -28,6 +28,9 @@
 
 #include <QCryptographicHash>
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -35,8 +38,8 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 {
   const QVariantMap uriParts = QgsSensorThingsProviderMetadata().decodeUri( uri );
 
-  mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
-  const QVariantList expandTo = uriParts.value( QStringLiteral( "expandTo" ) ).toList();
+  mEntityType = qgsEnumKeyToValue( uriParts.value( u"entity"_s ).toString(), Qgis::SensorThingsEntity::Invalid );
+  const QVariantList expandTo = uriParts.value( u"expandTo"_s ).toList();
   QList< Qgis::SensorThingsEntity > expandedEntities;
   for ( const QVariant &expansionVariant : expandTo )
   {
@@ -54,30 +57,30 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   mGeometryField = QgsSensorThingsUtils::geometryFieldForEntityType( mEntityType );
   // use initial value of maximum page size as default
-  mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
+  mMaximumPageSize = uriParts.value( u"pageSize"_s, mMaximumPageSize ).toInt();
   // will default to 0 if not specified, i.e. no limit
-  mFeatureLimit = uriParts.value( QStringLiteral( "featureLimit" ) ).toInt();
-  mFilterExtent = uriParts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
-  mSubsetString = uriParts.value( QStringLiteral( "sql" ) ).toString();
+  mFeatureLimit = uriParts.value( u"featureLimit"_s ).toInt();
+  mFilterExtent = uriParts.value( u"bounds"_s ).value< QgsRectangle >();
+  mSubsetString = uriParts.value( u"sql"_s ).toString();
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
-    if ( uriParts.contains( QStringLiteral( "geometryType" ) ) )
+    if ( uriParts.contains( u"geometryType"_s ) )
     {
-      const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
-      if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+      const QString geometryType = uriParts.value( u"geometryType"_s ).toString();
+      if ( geometryType.compare( "point"_L1, Qt::CaseInsensitive ) == 0 )
       {
         mGeometryType = Qgis::WkbType::PointZ;
       }
-      else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+      else if ( geometryType.compare( "multipoint"_L1, Qt::CaseInsensitive ) == 0 )
       {
         mGeometryType = Qgis::WkbType::MultiPointZ;
       }
-      else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+      else if ( geometryType.compare( "line"_L1, Qt::CaseInsensitive ) == 0 )
       {
         mGeometryType = Qgis::WkbType::MultiLineStringZ;
       }
-      else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+      else if ( geometryType.compare( "polygon"_L1, Qt::CaseInsensitive ) == 0 )
       {
         mGeometryType = Qgis::WkbType::MultiPolygonZ;
       }
@@ -85,7 +88,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
       if ( mGeometryType != Qgis::WkbType::NoGeometry )
       {
         // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
-        mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+        mSourceCRS = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
       }
     }
     else
@@ -102,7 +105,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   mAuthCfg = dsUri.authConfigId();
   mHeaders = dsUri.httpHeaders();
 
-  mRootUri = uriParts.value( QStringLiteral( "url" ) ).toString();
+  mRootUri = uriParts.value( u"url"_s ).toString();
 }
 
 QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint )
@@ -111,7 +114,7 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
     *isTestEndpoint = false;
 
   QUrl modifiedUrl( url );
-  if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( modifiedUrl.toString().contains( "fake_qgis_http_endpoint"_L1 ) )
   {
     if ( isTestEndpoint )
       *isTestEndpoint = true;
@@ -120,9 +123,9 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
-    modifiedUrlString.replace( QLatin1String( "fake_qgis_http_endpoint/" ), QLatin1String( "fake_qgis_http_endpoint_" ) );
-    QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 2 );
-    modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
+    modifiedUrlString.replace( "fake_qgis_http_endpoint/"_L1, "fake_qgis_http_endpoint_"_L1 );
+    QgsDebugMsgLevel( u"Get %1"_s.arg( modifiedUrlString ), 2 );
+    modifiedUrlString = modifiedUrlString.mid( u"http://"_s.size() );
     QString args = modifiedUrlString.indexOf( '?' ) >= 0 ? modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) ) : QString();
     if ( modifiedUrlString.size() > 150 )
     {
@@ -130,17 +133,17 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
     }
     else
     {
-      args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "$" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
+      args.replace( "?"_L1, "_"_L1 );
+      args.replace( "&"_L1, "_"_L1 );
+      args.replace( "$"_L1, "_"_L1 );
+      args.replace( "<"_L1, "_"_L1 );
+      args.replace( ">"_L1, "_"_L1 );
+      args.replace( "'"_L1, "_"_L1 );
+      args.replace( "\""_L1, "_"_L1 );
+      args.replace( " "_L1, "_"_L1 );
+      args.replace( ":"_L1, "_"_L1 );
+      args.replace( "/"_L1, "_"_L1 );
+      args.replace( "\n"_L1, "_"_L1 );
     }
 #ifdef Q_OS_WIN
     // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
@@ -151,11 +154,11 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
-    QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 2 );
+    QgsDebugMsgLevel( u"Get %1 (after laundering)"_s.arg( modifiedUrlString ), 2 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
     if ( !QFile::exists( modifiedUrlString ) )
     {
-      QgsDebugError( QStringLiteral( "Local test file %1 for URL %2 does not exist!!!" ).arg( modifiedUrlString, url.toString() ) );
+      QgsDebugError( u"Local test file %1 for URL %2 does not exist!!!"_s.arg( modifiedUrlString, url.toString() ) );
     }
   }
 
@@ -168,8 +171,7 @@ QgsRectangle QgsSensorThingsSharedData::extent() const
 
   // Since we can't retrieve the actual layer extent via SensorThings API, we use a pessimistic
   // global extent until we've retrieved all the features from the layer
-  return hasCachedAllFeatures() ? mFetchedFeatureExtent
-         : ( !mFilterExtent.isNull() ? mFilterExtent : QgsRectangle( -180, -90, 180, 90 ) );
+  return hasCachedAllFeatures() ? mFetchedFeatureExtent : ( !mFilterExtent.isNull() ? mFilterExtent : QgsRectangle( -180, -90, 180, 90 ) );
 }
 
 long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
@@ -190,19 +192,19 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   }
 
   // return no features, just the total count
-  QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri );
+  QString countUri = u"%1?$top=0&$count=true"_s.arg( mEntityBaseUri );
   const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
   const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
   QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
-    filterString = QStringLiteral( "&$filter=" ) + filterString;
+    filterString = u"&$filter="_s + filterString;
   if ( !filterString.isEmpty() )
     countUri += filterString;
 
   const QUrl url = parseUrl( QUrl( countUri ) );
 
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsSharedData"_s );
   mHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
@@ -215,7 +217,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   // Handle network errors
   if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    QgsDebugError( u"Network error: %1"_s.arg( networkRequest.errorMessage() ) );
     mError = networkRequest.errorMessage();
   }
   else
@@ -251,9 +253,7 @@ QString QgsSensorThingsSharedData::subsetString() const
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mHasCachedAllFeatures
-         || ( mFeatureCount > 0 && mCachedFeatures.size() == mFeatureCount )
-         || ( mFeatureLimit > 0 && mRetrievedBaseFeatureCount >= mFeatureLimit );
+  return mHasCachedAllFeatures || ( mFeatureCount > 0 && mCachedFeatures.size() == mFeatureCount ) || ( mFeatureLimit > 0 && mRetrievedBaseFeatureCount >= mFeatureLimit );
 }
 
 bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
@@ -281,32 +281,33 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
       thisPageSize = mFeatureLimit - mCachedFeatures.size();
 
-    mNextPage = QStringLiteral( "%1?$top=%2&$count=false%3" ).arg( mEntityBaseUri ).arg( thisPageSize ).arg( !mExpandQueryString.isEmpty() ? ( QStringLiteral( "&" ) + mExpandQueryString ) : QString() );
+    mNextPage = u"%1?$top=%2&$count=false%3"_s.arg( mEntityBaseUri ).arg( thisPageSize ).arg( !mExpandQueryString.isEmpty() ? ( u"&"_s + mExpandQueryString ) : QString() );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
     const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, mFilterExtent );
     const QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
     if ( !filterString.isEmpty() )
-      mNextPage += QStringLiteral( "&$filter=" ) + filterString;
+      mNextPage += u"&$filter="_s + filterString;
   }
 
   locker.unlock();
 
-  processFeatureRequest( mNextPage, feedback, [id, &f, &featureFetched]( const QgsFeature & feature )
-  {
-    if ( feature.id() == id )
-    {
-      f = feature;
-      featureFetched = true;
-      // don't break here -- store all the features we retrieved in this page first!
+  processFeatureRequest(
+    mNextPage,
+    feedback,
+    [id, &f, &featureFetched]( const QgsFeature &feature ) {
+      if ( feature.id() == id )
+      {
+        f = feature;
+        featureFetched = true;
+        // don't break here -- store all the features we retrieved in this page first!
+      }
+    },
+    [&featureFetched, this] { return !featureFetched && !hasCachedAllFeatures(); },
+    [this] {
+      mNextPage.clear();
+      mHasCachedAllFeatures = true;
     }
-  }, [&featureFetched, this]
-  {
-    return !featureFetched && !hasCachedAllFeatures();
-  }, [this]
-  {
-    mNextPage.clear();
-    mHasCachedAllFeatures = true;
-  } );
+  );
 
   return featureFetched;
 }
@@ -328,24 +329,24 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   const QString extentFilter = QgsSensorThingsUtils::filterForExtent( mGeometryField, requestExtent );
   QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
-    filterString = QStringLiteral( "&$filter=" ) + filterString;
+    filterString = u"&$filter="_s + filterString;
   int thisPageSize = mMaximumPageSize;
   QString queryUrl;
   if ( !thisPage.isEmpty() )
   {
     queryUrl = thisPage;
-    const thread_local QRegularExpression topRe( QStringLiteral( "\\$top=\\d+" ) );
+    const thread_local QRegularExpression topRe( u"\\$top=\\d+"_s );
     const QRegularExpressionMatch match = topRe.match( queryUrl );
     if ( match.hasMatch() )
     {
       if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
         thisPageSize = mFeatureLimit - mCachedFeatures.size();
-      queryUrl = queryUrl.left( match.capturedStart( 0 ) ) + QStringLiteral( "$top=%1" ).arg( thisPageSize ) + queryUrl.mid( match.capturedEnd( 0 ) );
+      queryUrl = queryUrl.left( match.capturedStart( 0 ) ) + u"$top=%1"_s.arg( thisPageSize ) + queryUrl.mid( match.capturedEnd( 0 ) );
     }
   }
   else
   {
-    queryUrl = QStringLiteral( "%1?$top=%2&$count=false%3%4" ).arg( mEntityBaseUri ).arg( thisPageSize ).arg( filterString, !mExpandQueryString.isEmpty() ? ( QStringLiteral( "&" ) + mExpandQueryString ) : QString() );
+    queryUrl = u"%1?$top=%2&$count=false%3%4"_s.arg( mEntityBaseUri ).arg( thisPageSize ).arg( filterString, !mExpandQueryString.isEmpty() ? ( u"&"_s + mExpandQueryString ) : QString() );
   }
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
@@ -363,23 +364,24 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
 
   bool noMoreFeatures = false;
   bool hasFirstPage = false;
-  const bool res = processFeatureRequest( queryUrl, feedback, [&ids, &alreadyFetchedIds]( const QgsFeature & feature )
-  {
-    if ( !alreadyFetchedIds.contains( feature.id() ) )
-      ids.insert( feature.id() );
-  }, [&hasFirstPage]
-  {
-    if ( !hasFirstPage )
-    {
-      hasFirstPage = true;
-      return true;
-    }
+  const bool res = processFeatureRequest(
+    queryUrl,
+    feedback,
+    [&ids, &alreadyFetchedIds]( const QgsFeature &feature ) {
+      if ( !alreadyFetchedIds.contains( feature.id() ) )
+        ids.insert( feature.id() );
+    },
+    [&hasFirstPage] {
+      if ( !hasFirstPage )
+      {
+        hasFirstPage = true;
+        return true;
+      }
 
-    return false;
-  }, [&noMoreFeatures]
-  {
-    noMoreFeatures = true;
-  } );
+      return false;
+    },
+    [&noMoreFeatures] { noMoreFeatures = true; }
+  );
   if ( noMoreFeatures && res && ( !feedback || !feedback->isCanceled() ) )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
@@ -401,7 +403,13 @@ void QgsSensorThingsSharedData::clearCache()
   mFetchedFeatureExtent = QgsRectangle();
 }
 
-bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFeedback *feedback, const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback, const std::function<bool ()> &continueFetchingCallback, const std::function<void ()> &onNoMoreFeaturesCallback )
+bool QgsSensorThingsSharedData::processFeatureRequest(
+  QString &nextPage,
+  QgsFeedback *feedback,
+  const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
+  const std::function<bool()> &continueFetchingCallback,
+  const std::function<void()> &onNoMoreFeaturesCallback
+)
 {
   // copy some members before we unlock the read/write locker
 
@@ -423,7 +431,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
     const QUrl url = parseUrl( nextPage );
 
     QNetworkRequest request( url );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
+    QgsSetRequestInitiatorClass( request, u"QgsSensorThingsSharedData"_s );
     headers.updateNetworkRequest( request );
 
     QgsBlockingNetworkRequest networkRequest;
@@ -436,10 +444,10 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
 
     if ( error != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+      QgsDebugError( u"Network error: %1"_s.arg( networkRequest.errorMessage() ) );
       locker.changeMode( QgsReadWriteLocker::Write );
       mError = networkRequest.errorMessage();
-      QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+      QgsDebugMsgLevel( u"Query returned empty result"_s, 2 );
       return false;
     }
     else
@@ -452,7 +460,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
         {
           locker.changeMode( QgsReadWriteLocker::Write );
           mError = QObject::tr( "No 'value' in response" );
-          QgsDebugMsgLevel( QStringLiteral( "No 'value' in response" ), 2 );
+          QgsDebugMsgLevel( u"No 'value' in response"_s, 2 );
           return false;
         }
         else
@@ -472,14 +480,12 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
             locker.changeMode( QgsReadWriteLocker::Write );
             for ( const auto &featureData : values )
             {
-              auto getString = []( const basic_json<> &json, const char *tag ) -> QVariant
-              {
+              auto getString = []( const basic_json<> &json, const char *tag ) -> QVariant {
                 if ( !json.contains( tag ) )
                   return QVariant();
 
                 std::function< QString( const basic_json<> &obj, bool &ok ) > objToString;
-                objToString = [&objToString]( const basic_json<> &obj, bool & ok ) -> QString
-                {
+                objToString = [&objToString]( const basic_json<> &obj, bool &ok ) -> QString {
                   ok = true;
                   if ( obj.is_number_integer() )
                   {
@@ -527,8 +533,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QVariant();
               };
 
-              auto getDateTime = []( const basic_json<> &json, const char *tag ) -> QVariant
-              {
+              auto getDateTime = []( const basic_json<> &json, const char *tag ) -> QVariant {
                 if ( !json.contains( tag ) )
                   return QVariant();
 
@@ -542,31 +547,28 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QVariant();
               };
 
-              auto getVariantMap = []( const basic_json<> &json, const char *tag ) -> QVariant
-              {
+              auto getVariantMap = []( const basic_json<> &json, const char *tag ) -> QVariant {
                 if ( !json.contains( tag ) )
                   return QVariant();
 
                 return QgsJsonUtils::jsonToVariant( json[tag] );
               };
 
-              auto getVariantList = []( const basic_json<> &json, const char *tag ) -> QVariant
-              {
+              auto getVariantList = []( const basic_json<> &json, const char *tag ) -> QVariant {
                 if ( !json.contains( tag ) )
                   return QVariant();
 
                 return QgsJsonUtils::jsonToVariant( json[tag] );
               };
 
-              auto getStringList = []( const basic_json<> &json, const char *tag ) -> QVariant
-              {
+              auto getStringList = []( const basic_json<> &json, const char *tag ) -> QVariant {
                 if ( !json.contains( tag ) )
                   return QVariant();
 
                 const auto &jObj = json[tag];
                 if ( jObj.is_string() )
                 {
-                  return QStringList{ QString::fromStdString( json[tag].get<std::string >() ) };
+                  return QStringList { QString::fromStdString( json[tag].get<std::string >() ) };
                 }
                 else if ( jObj.is_array() )
                 {
@@ -582,8 +584,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QVariant();
               };
 
-              auto getDateTimeRange = []( const basic_json<> &json, const char *tag ) -> std::pair< QVariant, QVariant >
-              {
+              auto getDateTimeRange = []( const basic_json<> &json, const char *tag ) -> std::pair< QVariant, QVariant > {
                 if ( !json.contains( tag ) )
                   return { QVariant(), QVariant() };
 
@@ -594,11 +595,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                   const QStringList rangeParts = rangeString.split( '/' );
                   if ( rangeParts.size() == 2 )
                   {
-                    return
-                    {
-                      QDateTime::fromString( rangeParts.at( 0 ), Qt::ISODateWithMs ),
-                      QDateTime::fromString( rangeParts.at( 1 ), Qt::ISODateWithMs )
-                    };
+                    return { QDateTime::fromString( rangeParts.at( 0 ), Qt::ISODateWithMs ), QDateTime::fromString( rangeParts.at( 1 ), Qt::ISODateWithMs ) };
                   }
                   else
                   {
@@ -638,49 +635,36 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 }
               }
 
-              auto extendAttributes = [&getString, &getVariantMap, &getDateTimeRange, &getDateTime, &getStringList, &getVariantList]( Qgis::SensorThingsEntity entityType, const auto & entityData, QgsAttributes & attributes )
-              {
-                const QString iotId = getString( entityData, "@iot.id" ).toString();
-                const QString selfLink = getString( entityData, "@iot.selfLink" ).toString();
+              auto extendAttributes =
+                [&getString, &getVariantMap, &getDateTimeRange, &getDateTime, &getStringList, &getVariantList]( Qgis::SensorThingsEntity entityType, const auto &entityData, QgsAttributes &attributes ) {
+                  const QString iotId = getString( entityData, "@iot.id" ).toString();
+                  const QString selfLink = getString( entityData, "@iot.selfLink" ).toString();
 
-                const QVariant properties = getVariantMap( entityData, "properties" );
+                  const QVariant properties = getVariantMap( entityData, "properties" );
 
-                // NOLINTBEGIN(bugprone-branch-clone)
-                switch ( entityType )
-                {
-                  case Qgis::SensorThingsEntity::Invalid:
-                    break;
-
-                  case Qgis::SensorThingsEntity::Thing:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getString( entityData, "name" )
-                        << getString( entityData, "description" )
-                        << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::Location:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getString( entityData, "name" )
-                        << getString( entityData, "description" )
-                        << properties;
-                    break;
-
-                  case Qgis::SensorThingsEntity::HistoricalLocation:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getDateTime( entityData, "time" );
-                    break;
-
-                  case Qgis::SensorThingsEntity::Datastream:
+                  // NOLINTBEGIN(bugprone-branch-clone)
+                  switch ( entityType )
                   {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                    attributes
+                    case Qgis::SensorThingsEntity::Invalid:
+                      break;
+
+                    case Qgis::SensorThingsEntity::Thing:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::Location:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
+
+                    case Qgis::SensorThingsEntity::HistoricalLocation:
+                      attributes << iotId << selfLink << getDateTime( entityData, "time" );
+                      break;
+
+                    case Qgis::SensorThingsEntity::Datastream:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
+                      attributes
                         << iotId
                         << selfLink
                         << getString( entityData, "name" )
@@ -692,34 +676,22 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                         << phenomenonTime.second
                         << resultTime.first
                         << resultTime.second;
-                    break;
-                  }
+                      break;
+                    }
 
-                  case Qgis::SensorThingsEntity::Sensor:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getString( entityData, "name" )
-                        << getString( entityData, "description" )
-                        << getString( entityData, "metadata" )
-                        << properties;
-                    break;
+                    case Qgis::SensorThingsEntity::Sensor:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "metadata" ) << properties;
+                      break;
 
-                  case Qgis::SensorThingsEntity::ObservedProperty:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getString( entityData, "name" )
-                        << getString( entityData, "definition" )
-                        << getString( entityData, "description" )
-                        << properties;
-                    break;
+                    case Qgis::SensorThingsEntity::ObservedProperty:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
+                      break;
 
-                  case Qgis::SensorThingsEntity::Observation:
-                  {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > validTime = getDateTimeRange( entityData, "validTime" );
-                    attributes
+                    case Qgis::SensorThingsEntity::Observation:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > validTime = getDateTimeRange( entityData, "validTime" );
+                      attributes
                         << iotId
                         << selfLink
                         << phenomenonTime.first
@@ -730,23 +702,18 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                         << validTime.first
                         << validTime.second
                         << getVariantMap( entityData, "parameters" );
-                    break;
-                  }
+                      break;
+                    }
 
-                  case Qgis::SensorThingsEntity::FeatureOfInterest:
-                    attributes
-                        << iotId
-                        << selfLink
-                        << getString( entityData, "name" )
-                        << getString( entityData, "description" )
-                        << properties;
-                    break;
+                    case Qgis::SensorThingsEntity::FeatureOfInterest:
+                      attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                      break;
 
-                  case Qgis::SensorThingsEntity::MultiDatastream:
-                  {
-                    std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
-                    std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
-                    attributes
+                    case Qgis::SensorThingsEntity::MultiDatastream:
+                    {
+                      std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
+                      std::pair< QVariant, QVariant > resultTime = getDateTimeRange( entityData, "resultTime" );
+                      attributes
                         << iotId
                         << selfLink
                         << getString( entityData, "name" )
@@ -759,18 +726,17 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                         << phenomenonTime.second
                         << resultTime.first
                         << resultTime.second;
-                    break;
+                      break;
+                    }
                   }
-                }
-                // NOLINTEND(bugprone-branch-clone)
-              };
+                  // NOLINTEND(bugprone-branch-clone)
+                };
 
               QgsAttributes attributes;
               attributes.reserve( fields.size() );
               extendAttributes( mEntityType, featureData, attributes );
 
-              auto processFeature = [this, &fetchedFeatureCallback]( QgsFeature & feature, const QString & rawFeatureId )
-              {
+              auto processFeature = [this, &fetchedFeatureCallback]( QgsFeature &feature, const QString &rawFeatureId ) {
                 feature.setId( mNextFeatureId++ );
 
                 mCachedFeatures.insert( feature.id(), feature );
@@ -787,81 +753,96 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 mRetrievedBaseFeatureCount++;
 
                 std::function< void( const nlohmann::json &, Qgis::SensorThingsEntity, const QList<QgsSensorThingsExpansionDefinition > &, const QString &, const QgsAttributes & ) > traverseExpansion;
-                traverseExpansion = [this, &feature, &getString, &traverseExpansion, &fetchedFeatureCallback, &extendAttributes, &processFeature]( const nlohmann::json & currentLevelData, Qgis::SensorThingsEntity parentEntityType, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString & lowerLevelId, const QgsAttributes & lowerLevelAttributes )
-                {
-                  const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
-                  const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
+                traverseExpansion =
+                  [this,
+                   &feature,
+                   &getString,
+                   &traverseExpansion,
+                   &fetchedFeatureCallback,
+                   &extendAttributes,
+                   &processFeature]( const nlohmann::json &currentLevelData, Qgis::SensorThingsEntity parentEntityType, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString &lowerLevelId, const QgsAttributes &lowerLevelAttributes ) {
+                    const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
+                    const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
 
-                  bool ok = false;
-                  const Qgis::RelationshipCardinality cardinality = QgsSensorThingsUtils::relationshipCardinality( parentEntityType, currentExpansionTarget.childEntity(), ok );
-                  QString currentExpansionPropertyString;
-                  switch ( cardinality )
-                  {
-                    case Qgis::RelationshipCardinality::OneToOne:
-                    case Qgis::RelationshipCardinality::ManyToOne:
-                      currentExpansionPropertyString = qgsEnumValueToKey( currentExpansionTarget.childEntity() );
-                      break;
-
-                    case Qgis::RelationshipCardinality::OneToMany:
-                    case Qgis::RelationshipCardinality::ManyToMany:
-                      currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget.childEntity() );
-                      break;
-                  }
-
-                  if ( currentLevelData.contains( currentExpansionPropertyString.toLocal8Bit().constData() ) )
-                  {
-                    auto parseExpandedEntity = [lowerLevelAttributes, &feature, &processFeature, &lowerLevelId, &getString, &remainingExpansionTargets, &fetchedFeatureCallback, &extendAttributes, &traverseExpansion, &currentExpansionTarget, this]( const json & expandedEntityElement )
+                    bool ok = false;
+                    const Qgis::RelationshipCardinality cardinality = QgsSensorThingsUtils::relationshipCardinality( parentEntityType, currentExpansionTarget.childEntity(), ok );
+                    QString currentExpansionPropertyString;
+                    switch ( cardinality )
                     {
-                      QgsAttributes expandedAttributes = lowerLevelAttributes;
-                      const QString expandedEntityIotId = getString( expandedEntityElement, "@iot.id" ).toString();
-                      const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;
+                      case Qgis::RelationshipCardinality::OneToOne:
+                      case Qgis::RelationshipCardinality::ManyToOne:
+                        currentExpansionPropertyString = qgsEnumValueToKey( currentExpansionTarget.childEntity() );
+                        break;
 
-                      if ( remainingExpansionTargets.empty() )
-                      {
-                        auto existingFeatureIdIt = mIotIdToFeatureId.constFind( expandedFeatureId );
-                        if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
+                      case Qgis::RelationshipCardinality::OneToMany:
+                      case Qgis::RelationshipCardinality::ManyToMany:
+                        currentExpansionPropertyString = QgsSensorThingsUtils::entityToSetString( currentExpansionTarget.childEntity() );
+                        break;
+                    }
+
+                    if ( currentLevelData.contains( currentExpansionPropertyString.toLocal8Bit().constData() ) )
+                    {
+                      auto parseExpandedEntity = [lowerLevelAttributes,
+                                                  &feature,
+                                                  &processFeature,
+                                                  &lowerLevelId,
+                                                  &getString,
+                                                  &remainingExpansionTargets,
+                                                  &fetchedFeatureCallback,
+                                                  &extendAttributes,
+                                                  &traverseExpansion,
+                                                  &currentExpansionTarget,
+                                                  this]( const json &expandedEntityElement ) {
+                        QgsAttributes expandedAttributes = lowerLevelAttributes;
+                        const QString expandedEntityIotId = getString( expandedEntityElement, "@iot.id" ).toString();
+                        const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;
+
+                        if ( remainingExpansionTargets.empty() )
                         {
-                          // we've previously fetched and cached this feature, skip it
-                          fetchedFeatureCallback( *mCachedFeatures.find( *existingFeatureIdIt ) );
-                          return;
+                          auto existingFeatureIdIt = mIotIdToFeatureId.constFind( expandedFeatureId );
+                          if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
+                          {
+                            // we've previously fetched and cached this feature, skip it
+                            fetchedFeatureCallback( *mCachedFeatures.find( *existingFeatureIdIt ) );
+                            return;
+                          }
                         }
-                      }
 
-                      extendAttributes( currentExpansionTarget.childEntity(), expandedEntityElement, expandedAttributes );
-                      if ( !remainingExpansionTargets.empty() )
+                        extendAttributes( currentExpansionTarget.childEntity(), expandedEntityElement, expandedAttributes );
+                        if ( !remainingExpansionTargets.empty() )
+                        {
+                          // traverse deeper
+                          traverseExpansion( expandedEntityElement, currentExpansionTarget.childEntity(), remainingExpansionTargets, expandedFeatureId, expandedAttributes );
+                        }
+                        else
+                        {
+                          feature.setAttributes( expandedAttributes );
+                          processFeature( feature, expandedFeatureId );
+                        }
+                      };
+                      const auto &expandedEntity = currentLevelData[currentExpansionPropertyString.toLocal8Bit().constData()];
+                      if ( expandedEntity.is_array() )
                       {
-                        // traverse deeper
-                        traverseExpansion( expandedEntityElement, currentExpansionTarget.childEntity(), remainingExpansionTargets, expandedFeatureId, expandedAttributes );
+                        for ( const auto &expandedEntityElement : expandedEntity )
+                        {
+                          parseExpandedEntity( expandedEntityElement );
+                        }
+                        // NOTE: What do we do when the expanded entity has a next link? Does this situation ever arise?
+                        // The specification doesn't explicitly state whether pagination is supported for expansion, so we assume
+                        // it's not possible.
                       }
-                      else
+                      else if ( expandedEntity.is_object() )
                       {
-                        feature.setAttributes( expandedAttributes );
-                        processFeature( feature, expandedFeatureId );
+                        parseExpandedEntity( expandedEntity );
                       }
-                    };
-                    const auto &expandedEntity = currentLevelData[currentExpansionPropertyString.toLocal8Bit().constData()];
-                    if ( expandedEntity.is_array() )
-                    {
-                      for ( const auto &expandedEntityElement : expandedEntity )
-                      {
-                        parseExpandedEntity( expandedEntityElement );
-                      }
-                      // NOTE: What do we do when the expanded entity has a next link? Does this situation ever arise?
-                      // The specification doesn't explicitly state whether pagination is supported for expansion, so we assume
-                      // it's not possible.
                     }
-                    else if ( expandedEntity.is_object() )
+                    else
                     {
-                      parseExpandedEntity( expandedEntity );
+                      // No expansion for this parent feature.
+                      // Maybe we should NULL out the attributes and return the parent feature? Right now we just
+                      // skip it if there's no child features...
                     }
-                  }
-                  else
-                  {
-                    // No expansion for this parent feature.
-                    // Maybe we should NULL out the attributes and return the parent feature? Right now we just
-                    // skip it if there's no child features...
-                  }
-                };
+                  };
 
                 traverseExpansion( featureData, mEntityType, expansions, baseFeatureId, attributes );
 
@@ -900,7 +881,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         mError = QObject::tr( "Error parsing response: %1" ).arg( ex.what() );
-        QgsDebugMsgLevel( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ), 2 );
+        QgsDebugMsgLevel( u"Error parsing response: %1"_s.arg( ex.what() ), 2 );
         return false;
       }
     }

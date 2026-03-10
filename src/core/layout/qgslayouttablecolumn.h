@@ -24,6 +24,9 @@
 #include <QColor>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -36,7 +39,6 @@
 class CORE_EXPORT QgsLayoutTableColumn
 {
   public:
-
     /**
      * Constructor for QgsLayoutTableColumn.
      * \param heading column heading
@@ -187,7 +189,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \returns a new QgsLayoutTableColumn with same properties as this column.
      * \deprecated QGIS 3.14. Use a copy instead.
      */
-    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
+    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY { return new QgsLayoutTableColumn( *this ); }
 
     bool operator==( const QgsLayoutTableColumn &other ) const
     {
@@ -202,18 +204,22 @@ class CORE_EXPORT QgsLayoutTableColumn
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
-      str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
+      str = u"<QgsLayoutTableColumn: %1 (\"%2\")>"_s.arg( sipCpp->attribute(), sipCpp->heading() );
     else
-      str = QStringLiteral( "<QgsLayoutTableColumn: %1>" ).arg( sipCpp->attribute() );
+      str = u"<QgsLayoutTableColumn: %1>"_s.arg( sipCpp->attribute() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
     QString mHeading;
     QString mAttribute;
@@ -225,6 +231,5 @@ class CORE_EXPORT QgsLayoutTableColumn
     Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
 
     friend class QgsCompositionConverter;
-
 };
 #endif //QGSLAYOUTTABLECOLUMN_H

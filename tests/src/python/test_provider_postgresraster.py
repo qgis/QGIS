@@ -22,24 +22,23 @@ import os
 import time
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsApplication,
     Qgis,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
     QgsPointXY,
+    QgsProject,
     QgsProviderRegistry,
     QgsRaster,
     QgsRasterBandStats,
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.core import QgsProject
-from qgis.gui import QgsMapCanvas, QgsLayerTreeMapCanvasBridge
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.gui import QgsLayerTreeMapCanvasBridge, QgsMapCanvas
+from qgis.PyQt.QtCore import QCoreApplication, QSize
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -47,7 +46,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsPostgresRasterProvider(QgisTestCase):
-
     @classmethod
     def _load_test_table(cls, schemaname, tablename, basename=None):
 
@@ -944,8 +942,9 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         # Log should not contain any critical warnings
         critical_postgis_logs = list(
             filter(
-                lambda log: log[2] == Qgis.MessageLevel.Critical
-                and log[1] == "PostGIS",
+                lambda log: (
+                    log[2] == Qgis.MessageLevel.Critical and log[1] == "PostGIS"
+                ),
                 list(log_spy),
             )
         )
@@ -1205,6 +1204,40 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertEqual(namelist, ["related raster style default"])
         self.assertEqual(desclist, ["default test style"])
         self.assertFalse(errmsg)
+
+    def test_ExtentStatistics(self):
+        """Test extent statistics issue GH #64917"""
+
+        stats = self.source.bandStatistics(1)
+        min_val = stats.minimumValue
+        max_val = stats.maximumValue
+        self.assertEqual(int(min_val), 136)
+
+        extent = self.source.extent()
+        extent.grow(-60)
+        small_stats = self.source.bandStatistics(
+            1, Qgis.RasterBandStatistic.All, extent
+        )
+        self.assertNotEqual(stats.minimumValue, small_stats.minimumValue)
+        self.assertNotEqual(stats.maximumValue, small_stats.maximumValue)
+        self.assertEqual(int(small_stats.minimumValue), 184)
+
+        # Sample at the center: 2430681.52N, 4080113.42E
+        center_extent = QgsRectangle(4080113, 2430681, 4080113 + 1, 2430681 + 1)
+        center_stats = self.source.bandStatistics(
+            1, Qgis.RasterBandStatistic.All, center_extent
+        )
+        self.assertEqual(int(center_stats.minimumValue), 184)
+
+        # Test extent with known values
+        extent = QgsRectangle.fromWkt(
+            "Polygon ((4080086.82537919469177723 2430669.50382143305614591, 4080117.48640771303325891 2430669.50382143305614591, 4080117.48640771303325891 2430687.6613536006771028, 4080086.82537919469177723 2430687.6613536006771028, 4080086.82537919469177723 2430669.50382143305614591))"
+        )
+        expected_min = 168.894287109375
+        expected_max = 200.4803466796875
+        stats = self.source.bandStatistics(1, Qgis.RasterBandStatistic.All, extent)
+        self.assertAlmostEqual(stats.minimumValue, expected_min, 6)
+        self.assertAlmostEqual(stats.maximumValue, expected_max, 6)
 
 
 if __name__ == "__main__":

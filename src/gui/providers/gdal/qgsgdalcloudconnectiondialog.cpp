@@ -22,8 +22,11 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsgdalcloudconnectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -39,9 +42,7 @@ QgsGdalCloudConnectionDialog::QgsGdalCloudConnectionDialog( QWidget *parent )
   mCredentialsGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s ); } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );
   connect( mBucket, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );
 }
@@ -83,8 +84,7 @@ QString QgsGdalCloudConnectionDialog::connectionName() const
 
 void QgsGdalCloudConnectionDialog::updateOkButtonState()
 {
-  const bool enabled = !mEditName->text().isEmpty()
-                       && !mBucket->text().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && !mBucket->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 

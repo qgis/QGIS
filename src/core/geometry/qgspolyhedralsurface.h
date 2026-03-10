@@ -24,6 +24,10 @@
 #include "qgspolygon.h"
 #include "qgssurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsPolyhedralSurface
@@ -33,7 +37,7 @@
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
+class CORE_EXPORT QgsPolyhedralSurface : public QgsSurface
 {
   public:
     QgsPolyhedralSurface();
@@ -64,20 +68,17 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -87,7 +88,9 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 #endif
 
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper( other, epsilon, false );
     }
@@ -129,6 +132,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsPolyhedralSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
@@ -178,6 +182,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       return mPatches.at( i );
     }
 #else
+// clang-format off
 
     /**
      * Retrieves a patch from the polyhedral surface. The first patch has index 0.
@@ -198,6 +203,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       return sipConvertFromType( const_cast< QgsPolygon * >( sipCpp->patchN( a0 ) ), sipType_QgsPolygon, NULL );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -220,6 +226,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      */
     bool removePatch( int patchIndex );
 #else
+// clang-format off
 
     /**
      * Removes a patch from the polyhedral surface. The first patch has index 0.
@@ -240,6 +247,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       return PyBool_FromLong( sipCpp->removePatch( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     QPainterPath asQPainterPath() const override;
@@ -347,12 +355,13 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     QgsPolyhedralSurface *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsPolyhedralSurface: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsPolyhedralSurface: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
@@ -389,6 +398,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       return sipConvertFromType( sipCpp->patchN( count + a0 ), sipType_QgsPolygon, NULL );
     }
     % End
+// clang-format on
 #endif
 
   protected:

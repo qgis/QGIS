@@ -20,18 +20,17 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QCursor
-
 from qgis.core import (
-    QgsVectorFileWriter,
-    QgsVectorDataProvider,
     QgsCoordinateReferenceSystem,
-    QgsVectorLayerExporter,
     QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorFileWriter,
+    QgsVectorLayerExporter,
 )
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QFileInfo, Qt
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QMessageBox
 from qgis.utils import OverrideCursor
 
 from .gui_utils import GuiUtils
@@ -40,7 +39,6 @@ Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgExportVector.ui"))
 
 
 class DlgExportVector(QDialog, Ui_Dialog):
-
     def __init__(self, inLayer, inDb, parent=None):
         QDialog.__init__(self, parent)
         self.inLayer = inLayer

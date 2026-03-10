@@ -21,18 +21,17 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterString,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -74,7 +73,7 @@ class nearblack(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

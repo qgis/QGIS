@@ -27,13 +27,16 @@
 #include <QGestureEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsplotcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )
 {
-  setObjectName( QStringLiteral( "PlotCanvas" ) );
+  setObjectName( u"PlotCanvas"_s );
   mScene = new QGraphicsScene( this );
   setScene( mScene );
 
@@ -80,12 +83,10 @@ QgsPlotCanvas::~QgsPlotCanvas()
 }
 
 void QgsPlotCanvas::cancelJobs()
-{
-}
+{}
 
 void QgsPlotCanvas::refresh()
-{
-}
+{}
 
 void QgsPlotCanvas::showContextMenu( QgsPlotMouseEvent *event )
 {
@@ -276,20 +277,16 @@ QgsPointXY QgsPlotCanvas::toCanvasCoordinates( const QgsPoint & ) const
 }
 
 void QgsPlotCanvas::panContentsBy( double, double )
-{
-}
+{}
 
 void QgsPlotCanvas::centerPlotOn( double, double )
-{
-}
+{}
 
 void QgsPlotCanvas::scalePlot( double )
-{
-}
+{}
 
 void QgsPlotCanvas::zoomToRect( const QRectF & )
-{
-}
+{}
 
 QgsPointXY QgsPlotCanvas::snapToPlot( QPoint )
 {
@@ -306,8 +303,7 @@ bool QgsPlotCanvas::viewportEvent( QEvent *event )
 }
 
 void QgsPlotCanvas::wheelZoom( QWheelEvent * )
-{
-}
+{}
 
 bool QgsPlotCanvas::event( QEvent *e )
 {

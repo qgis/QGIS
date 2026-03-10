@@ -19,7 +19,12 @@
 #include "qgis_core.h"
 #include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgsvectorlayerfeatureiterator.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -30,13 +35,13 @@ class QgsSymbolLayerId;
 
 struct QgsMaskedLayer
 {
-  bool hasEffects = false;
+    bool hasEffects = false;
 
-  // masked symbol layers
-  QSet<QString> symbolLayerIds;
+    // masked symbol layers
+    QSet<QString> symbolLayerIdsToMask;
 };
 
-//! masked layers where key is the layer id
+//! masked layers where key is the layer id of the layer that WILL be masked
 typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 
 #endif
@@ -49,7 +54,6 @@ typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 class CORE_EXPORT QgsVectorLayerUtils
 {
   public:
-
     /**
      * \ingroup core
      * \class QgsDuplicateFeatureContext
@@ -58,7 +62,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsDuplicateFeatureContext
     {
       public:
-
         QgsDuplicateFeatureContext() = default;
 
         /**
@@ -92,7 +95,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsFeatureData
     {
       public:
-
         /**
          * Constructs a new QgsFeatureData with given \a geometry and \a attributes
          */
@@ -108,6 +110,16 @@ class CORE_EXPORT QgsVectorLayerUtils
         QgsGeometry mGeometry;
         QgsAttributeMap mAttributes;
     };
+
+    /**
+     * Flags used with the fieldIsEditable() function
+     * \since QGIS 4.0
+     */
+    enum class FieldIsEditableFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      IgnoreLayerEditability = 1 << 0, //!< Ignores the vector layer's editable state
+    };
+    Q_DECLARE_FLAGS( FieldIsEditableFlags, FieldIsEditableFlag )
 
     // SIP does not like "using", use legacy typedef
     //! Alias for list of QgsFeatureData
@@ -200,9 +212,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
-    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
-                                   QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
-                                   QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
+    static bool validateAttribute(
+      const QgsVectorLayer *layer,
+      const QgsFeature &feature,
+      int attributeIndex,
+      QStringList &errors SIP_OUT,
+      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
+      QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
+    );
 
     /**
      * Creates a new feature ready for insertion into a layer. Default values and constraints
@@ -212,10 +229,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * automatically inserted into the layer.
      * \see createFeatures()
      */
-    static QgsFeature createFeature( const QgsVectorLayer *layer,
-                                     const QgsGeometry &geometry = QgsGeometry(),
-                                     const QgsAttributeMap &attributes = QgsAttributeMap(),
-                                     QgsExpressionContext *context = nullptr );
+    static QgsFeature createFeature(
+      const QgsVectorLayer *layer, const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap(), QgsExpressionContext *context = nullptr
+    );
 
     /**
      * Creates a set of new features ready for insertion into a layer. Default values and constraints
@@ -224,10 +240,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see createFeature()
      * \since QGIS 3.6
      */
-    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
-                                          const QgsFeaturesDataList &featuresData,
-                                          QgsExpressionContext *context = nullptr );
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context = nullptr );
 
+    // clang-format off
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
@@ -238,6 +253,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \a referencedLayersBranch the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT, const int maxDepth = 0, int depth SIP_PYARGREMOVE = 0, QList<QgsVectorLayer *> referencedLayersBranch SIP_PYARGREMOVE = QList<QgsVectorLayer *>() );
+    // clang-format on
 
 
     /**
@@ -324,14 +340,18 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
-     * Tests whether a field is editable for a particular \a feature.
+     * Tests whether a field is editable for a particular feature.
      *
-     * \returns TRUE if the field at index \a fieldIndex from \a layer
-     * is editable, FALSE if the field is read only.
+     * \param layer The vector layer
+     * \param fieldIndex The field index
+     * \param feature The feature
+     * \param flags Additional flags modifying the editability check behavior (since QGIS 4.0)
+     *
+     * \returns TRUE if the field is editable, FALSE if the field is read only.
      *
      * \since QGIS 3.10
      */
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 
     /**
      * Returns TRUE if the field at index \a fieldIndex from \a layer
@@ -356,22 +376,35 @@ class CORE_EXPORT QgsVectorLayerUtils
     static bool fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex );
 
     /**
-      * Returns masks defined in labeling options of a layer.
+      * Returns all objects that will be masked by the labels for a given vector \a layer.
+      *
       * The returned type associates a labeling rule identifier to a set of layers that are masked given by their layer id,
       * and a set of masked symbol layers if associated to each masked layers.
+      *
+      * - Returned hash keys are the label rule ID, or an empty string for simple labeling
+      * - Returned values are hashes of the form:
+      * - The hash keys are the layer IDs for layers that will be masked.
+      * - The hash value is the set of symbol layers that will be masked in that key's layer.
+      *
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> collectObjectsMaskedByLabelsFromLayer(
+      const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector< QgsVectorLayer * > &allRenderedVectorLayers
+    ) SIP_SKIP;
 
     /**
-     * Returns all masks that may be defined on symbol layers for a given vector layer.
-     * The hash key is a layer id.
-     * The hash value is the set of symbol layers masked in the key's layer.
+     * Returns all objects that will be masked by the symbol layers for a given vector \a layer.
+     *
+     * - The hash keys are the layer IDs for layers that will be masked.
+     * - The hash value is the set of symbol layers that will be masked in that key's layer.
+     *
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer(
+      const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector< QgsVectorLayer * > &allRenderedVectorLayers
+    ) SIP_SKIP;
 
     /**
      * Returns a descriptive string for a \a feature, suitable for displaying to the user.
@@ -400,7 +433,13 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
+    static bool impactsCascadeFeatures(
+      const QgsVectorLayer *layer,
+      const QgsFeatureIds &fids,
+      const QgsProject *project,
+      QgsDuplicateFeatureContext &context SIP_OUT,
+      QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags()
+    );
 
 #ifndef SIP_RUN
 
@@ -467,6 +506,18 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 #endif
 
+    /**
+     * Filters a set of feature IDs to only include those that exist in the layer.
+     *
+     * This method can be used to validate feature IDs before selection operations to ensure
+     * accurate selection counts. It performs a minimal query (no geometry or attributes) for efficiency.
+     * \param layer vector layer to check feature IDs against
+     * \param featureIds set of feature IDs to filter
+     * \returns subset of featureIds containing only IDs that exist in the layer
+     * \see QgsVectorLayer::selectByIds()
+     * \since QGIS 4.0
+     */
+    static QgsFeatureIds filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds );
 
 #ifndef SIP_RUN
     /**
@@ -483,6 +534,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
 #else
+    // clang-format off
 
     /**
      * Converts field values from an iterator to an array of data.
@@ -505,7 +557,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     const int fieldIndex = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"Field %1 does not exist."_s.arg( *a1 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -532,13 +584,14 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         default:
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
           sipIsErr = 1;
         }
       }
     }
     % End
 
+// clang-format on
 #endif
 };
 

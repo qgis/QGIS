@@ -19,6 +19,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgstemporalnavigationobject.h>
@@ -74,8 +77,7 @@ void TestQgsTemporalNavigationObject::init()
 }
 
 void TestQgsTemporalNavigationObject::cleanup()
-{
-}
+{}
 
 void TestQgsTemporalNavigationObject::cleanupTestCase()
 {
@@ -84,10 +86,7 @@ void TestQgsTemporalNavigationObject::cleanupTestCase()
 
 void TestQgsTemporalNavigationObject::animationState()
 {
-  const QgsDateTimeRange range = QgsDateTimeRange(
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-    QDateTime( QDate( 2020, 10, 1 ), QTime( 8, 0, 0 ) )
-  );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ), QDateTime( QDate( 2020, 10, 1 ), QTime( 8, 0, 0 ) ) );
   navigationObject->setTemporalExtents( range );
 
   navigationObject->setFrameDuration( QgsInterval( 1, Qgis::TemporalUnit::Months ) );
@@ -132,10 +131,7 @@ void TestQgsTemporalNavigationObject::animationState()
 
 void TestQgsTemporalNavigationObject::temporalExtents()
 {
-  const QgsDateTimeRange range = QgsDateTimeRange(
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-    QDateTime( QDate( 2020, 12, 1 ), QTime( 8, 0, 0 ) )
-  );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ), QDateTime( QDate( 2020, 12, 1 ), QTime( 8, 0, 0 ) ) );
   navigationObject->setTemporalExtents( range );
   QCOMPARE( navigationObject->temporalExtents(), range );
 
@@ -145,20 +141,12 @@ void TestQgsTemporalNavigationObject::temporalExtents()
 
 void TestQgsTemporalNavigationObject::navigationMode()
 {
-  const QgsDateTimeRange range = QgsDateTimeRange(
-    QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) ),
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) )
-  );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
-  const QgsDateTimeRange range2 = QgsDateTimeRange(
-    QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ),
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) )
-  );
+  const QgsDateTimeRange range2 = QgsDateTimeRange( QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
   QgsDateTimeRange check;
-  auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range ) {
-    QCOMPARE( range, check );
-  };
+  auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range ) { QCOMPARE( range, check ); };
   QObject *context = new QObject( this );
   connect( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange, context, checkUpdateTemporalRange );
 
@@ -185,12 +173,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   const QSignalSpy temporalRangeSignal( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange );
 
-  const QgsDateTimeRange range = QgsDateTimeRange(
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-    true,
-    false
-  );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ), true, false );
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
   // two frames - 8-10am, 10-12am
@@ -264,32 +247,33 @@ void TestQgsTemporalNavigationObject::frameSettings()
 void TestQgsTemporalNavigationObject::expressionContext()
 {
   QgsTemporalNavigationObject object;
-  const QgsDateTimeRange range = QgsDateTimeRange(
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-    QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
-  );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ) );
   object.setTemporalExtents( range );
   object.setFrameDuration( QgsInterval( 1, Qgis::TemporalUnit::Hours ) );
   object.setCurrentFrameNumber( 1 );
   object.setFramesPerSecond( 30 );
 
   std::unique_ptr<QgsExpressionContextScope> scope( object.createExpressionContextScope() );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value<QgsInterval>().seconds(), 3600.0 );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value<double>(), 1.0 );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value<Qgis::TemporalUnit>(), Qgis::TemporalUnit::Hours );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_units" ) ).toString(), QStringLiteral( "hours" ) );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
-  QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
-  QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );
-  QCOMPARE( scope->variable( QStringLiteral( "animation_interval" ) ).value<QgsInterval>(), range.end() - range.begin() );
+  QCOMPARE( scope->variable( u"frame_rate"_s ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( u"frame_duration"_s ).value<QgsInterval>().seconds(), 3600.0 );
+  QCOMPARE( scope->variable( u"frame_timestep"_s ).value<double>(), 1.0 );
+  QCOMPARE( scope->variable( u"frame_timestep_unit"_s ).value<Qgis::TemporalUnit>(), Qgis::TemporalUnit::Hours );
+  QCOMPARE( scope->variable( u"frame_timestep_units"_s ).toString(), u"hours"_s );
+  QCOMPARE( scope->variable( u"frame_number"_s ).toInt(), 1 );
+  QCOMPARE( scope->variable( u"animation_start_time"_s ).toDateTime(), range.begin() );
+  QCOMPARE( scope->variable( u"animation_end_time"_s ).toDateTime(), range.end() );
+  QCOMPARE( scope->variable( u"animation_interval"_s ).value<QgsInterval>(), range.end() - range.begin() );
 }
 
 void TestQgsTemporalNavigationObject::testIrregularStep()
 {
   // test using the navigation in irregular step mode
   QgsTemporalNavigationObject object;
-  const QList<QgsDateTimeRange> ranges { QgsDateTimeRange( QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) ) };
+  const QList<QgsDateTimeRange> ranges {
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) )
+  };
   object.setAvailableTemporalRanges( ranges );
 
   object.setFrameDuration( QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
@@ -341,9 +325,9 @@ void TestQgsTemporalNavigationObject::testMovieMode()
   object.setFramesPerSecond( 30 );
 
   std::unique_ptr<QgsExpressionContextScope> scope( object.createExpressionContextScope() );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
-  QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 17 );
-  QCOMPARE( scope->variable( QStringLiteral( "total_frame_count" ) ).toInt(), 500 );
+  QCOMPARE( scope->variable( u"frame_rate"_s ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( u"frame_number"_s ).toInt(), 17 );
+  QCOMPARE( scope->variable( u"total_frame_count"_s ).toInt(), 500 );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )

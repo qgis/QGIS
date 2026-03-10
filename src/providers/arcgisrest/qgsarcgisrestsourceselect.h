@@ -16,7 +16,6 @@
 #ifndef QGSARCGISRESTSOURCESELECT_H
 #define QGSARCGISRESTSOURCESELECT_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsarcgisservicesourceselectbase.h"
 
@@ -26,6 +25,8 @@
 #include "qgsrectangle.h"
 
 #include <QItemDelegate>
+
+#define SIP_NO_FILE
 
 class QgsBrowserModel;
 

@@ -25,6 +25,9 @@
 #include "qgsvectorfilewriter.h"
 
 #include <QStack>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 double leftOfTresh = 0;
 
@@ -58,7 +61,7 @@ QgsDualEdgeTriangulation::~QgsDualEdgeTriangulation()
 
 void QgsDualEdgeTriangulation::performConsistencyTest()
 {
-  QgsDebugMsgLevel( QStringLiteral( "performing consistency test" ), 2 );
+  QgsDebugMsgLevel( u"performing consistency test"_s, 2 );
 
   for ( int i = 0; i < mHalfEdge.count(); i++ )
   {
@@ -66,14 +69,14 @@ void QgsDualEdgeTriangulation::performConsistencyTest()
     const int b = mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getNext();
     if ( i != a )
     {
-      QgsDebugError( QStringLiteral( "warning, first test failed" ) );
+      QgsDebugError( u"warning, first test failed"_s );
     }
     if ( i != b )
     {
-      QgsDebugError( QStringLiteral( "warning, second test failed" ) );
+      QgsDebugError( u"warning, second test failed"_s );
     }
   }
-  QgsDebugMsgLevel( QStringLiteral( "consistency test finished" ), 2 );
+  QgsDebugMsgLevel( u"consistency test finished"_s, 2 );
 }
 
 void QgsDualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )
@@ -337,7 +340,8 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       mHalfEdge[mHalfEdge[mEdgeOutside]->getNext()]->setPoint( mPointVector.count() - 1 );
 
       //find cwEdge and replace the virtual point with the new point when necessary (equivalent to while the hull is not convex going clock wise)
-      while ( MathUtils::leftOf( *mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[cwEdge]->getNext()]->getDual()]->getNext()]->getPoint()], &p, mPointVector[mHalfEdge[cwEdge]->getPoint()] ) < ( -leftOfTresh ) )
+      while ( MathUtils::leftOf( *mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[cwEdge]->getNext()]->getDual()]->getNext()]->getPoint()], &p, mPointVector[mHalfEdge[cwEdge]->getPoint()] )
+              < ( -leftOfTresh ) )
       {
         //set the point number of the necessary edge to the actual point instead of the virtual point
         mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[cwEdge]->getNext()]->getDual()]->getNext()]->getNext()]->setPoint( mPointVector.count() - 1 );
@@ -357,7 +361,12 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       mHalfEdge[edge2]->setNext( edge3 );
 
       //find ccwedge and replace the virtual point with the new point when necessary
-      while ( MathUtils::leftOf( *mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getPoint()], mPointVector[mPointVector.count() - 1], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getDual()]->getNext()]->getPoint()] ) < ( -leftOfTresh ) )
+      while ( MathUtils::leftOf(
+                *mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getPoint()],
+                mPointVector[mPointVector.count() - 1],
+                mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getDual()]->getNext()]->getPoint()]
+              )
+              < ( -leftOfTresh ) )
       {
         //set the point number of the necessary edge to the actual point instead of the virtual point
         mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getDual()]->setPoint( mPointVector.count() - 1 );
@@ -366,9 +375,10 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       }
 
       //build the necessary connections with the virtual point
-      const unsigned int edge4 = insertEdge( mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext(), -10, mPointVector.count() - 1, false, false );                                                     //points from the last visible point counterclockwise to the new point
-      const unsigned int edge5 = insertEdge( edge3, -10, -1, false, false );                                                                                                                         //points from the new point to the virtual point
-      const unsigned int edge6 = insertEdge( mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getDual(), edge4, mHalfEdge[mHalfEdge[ccwEdge]->getDual()]->getPoint(), false, false ); //points from the virtual point to the last visible point counterclockwise
+      const unsigned int edge4 = insertEdge( mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext(), -10, mPointVector.count() - 1, false, false ); //points from the last visible point counterclockwise to the new point
+      const unsigned int edge5 = insertEdge( edge3, -10, -1, false, false );                                                                     //points from the new point to the virtual point
+      const unsigned int edge6
+        = insertEdge( mHalfEdge[mHalfEdge[mHalfEdge[ccwEdge]->getNext()]->getNext()]->getDual(), edge4, mHalfEdge[mHalfEdge[ccwEdge]->getDual()]->getPoint(), false, false ); //points from the virtual point to the last visible point counterclockwise
 
 
       //adjust the other pointers
@@ -522,7 +532,7 @@ int QgsDualEdgeTriangulation::baseEdgeOfPoint( int point )
     control += 1;
     if ( control > 1000000 )
     {
-      //QgsDebugError( QStringLiteral( "warning, endless loop" ) );
+      //QgsDebugError( u"warning, endless loop"_s );
 
       //use the secure and slow method
       //qWarning( "******************warning, using the slow method in baseEdgeOfPoint****************************************" );
@@ -746,7 +756,7 @@ bool QgsDualEdgeTriangulation::calcNormal( double x, double y, QgsPoint &result 
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -759,7 +769,7 @@ bool QgsDualEdgeTriangulation::calcPoint( double x, double y, QgsPoint &result )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -1049,7 +1059,7 @@ int QgsDualEdgeTriangulation::oppositePoint( int p1, int p2 )
 
   if ( theedge == -10 ) //there is no edge between p1 and p2
   {
-    //QgsDebugError( QStringLiteral( "warning, error: the points are: %1 and %2" ).arg( p1 ).arg( p2 ) );
+    //QgsDebugError( u"warning, error: the points are: %1 and %2"_s.arg( p1 ).arg( p2 ) );
     return -10;
   }
 
@@ -1194,7 +1204,7 @@ bool QgsDualEdgeTriangulation::triangleVertices( double x, double y, QgsPoint &p
   }
   else //problems
   {
-    //QgsDebugError( QStringLiteral( "problem: the edge is: %1" ).arg( edge ) );
+    //QgsDebugError( u"problem: the edge is: %1"_s.arg( edge ) );
     return false;
   }
 }
@@ -1362,7 +1372,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     control += 1;
     if ( control > 100 )
     {
-      //QgsDebugError( QStringLiteral( "warning, endless loop" ) );
+      //QgsDebugError( u"warning, endless loop"_s );
       return -100; //return an error code
     }
 
@@ -1383,7 +1393,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     }
 
     //test, if the forced segment is a multiple of actEdge and if the direction is the same
-    if ( /*lines are parallel*/ ( point2->y() - point1->y() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - point1->y() ) == ( point2->x() - point1->x() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - point1->x() )
+    if ( /*lines are parallel*/ ( point2->y() - point1->y() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - point1->y() )
+           == ( point2->x() - point1->x() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - point1->x() )
          && ( ( point2->y() - point1->y() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - point1->y() ) > 0 )
          && ( ( point2->x() - point1->x() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - point1->x() ) > 0 ) )
     {
@@ -1416,7 +1427,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
 
     if ( MathUtils::lineIntersection( point1, point2, mPointVector[mHalfEdge[oppositeEdge]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[oppositeEdge]->getDual()]->getPoint()] ) )
     {
-      if ( mHalfEdge[mHalfEdge[actEdge]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[actEdge]->getNext()]->getForced()
+           && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge, we have to snap the forced line to the next node
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1439,7 +1451,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         }
       }
 
-      if ( mHalfEdge[mHalfEdge[actEdge]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      if ( mHalfEdge[mHalfEdge[actEdge]->getNext()]->getForced()
+           && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1509,7 +1522,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
 
     if ( MathUtils::lineIntersection( lastEdgePoint1, lastEdgeOppositePoint, point1, point2 ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced()
+           && mForcedCrossBehavior
+                == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1531,7 +1546,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced()
+                && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1555,7 +1571,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     }
     else if ( MathUtils::lineIntersection( lastEdgePoint2, lastEdgeOppositePoint, point1, point2 ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced()
+           && mForcedCrossBehavior
+                == QgsTriangulation::ForcedCrossBehavior::SnappingTypeVertex ) //if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1577,7 +1595,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced()
+                && mForcedCrossBehavior == QgsTriangulation::ForcedCrossBehavior::InsertVertex ) //if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
@@ -1741,7 +1760,7 @@ void QgsDualEdgeTriangulation::setTriangleInterpolator( TriangleInterpolator *in
 
 void QgsDualEdgeTriangulation::eliminateHorizontalTriangles()
 {
-  //QgsDebugMsgLevel( QStringLiteral( "am in eliminateHorizontalTriangles" ), 2 );
+  //QgsDebugMsgLevel( u"am in eliminateHorizontalTriangles"_s, 2 );
   const double minangle = 0; //minimum angle for swapped triangles. If triangles generated by a swap would have a minimum angle (in degrees) below that value, the swap will not be done.
 
   while ( true )
@@ -1825,7 +1844,7 @@ void QgsDualEdgeTriangulation::eliminateHorizontalTriangles()
     delete[] control;
   }
 
-  //QgsDebugMsgLevel( QStringLiteral( "end of method" ), 2 );
+  //QgsDebugMsgLevel( u"end of method"_s, 2 );
 }
 
 void QgsDualEdgeTriangulation::ruppertRefinement()
@@ -1852,9 +1871,11 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
       const int next = mHalfEdge[i]->getNext();
       const int nextnext = mHalfEdge[next]->getNext();
 
-      if ( mHalfEdge[next]->getPoint() != -1 && ( mHalfEdge[i]->getForced() || mHalfEdge[mHalfEdge[mHalfEdge[i]->getDual()]->getNext()]->getPoint() == -1 ) ) //check for encroached points on forced segments and segments on the inner side of the convex hull, but don't consider edges on the outer side of the convex hull
+      if ( mHalfEdge[next]->getPoint() != -1
+           && ( mHalfEdge[i]->getForced() || mHalfEdge[mHalfEdge[mHalfEdge[i]->getDual()]->getNext()]->getPoint() == -1 ) ) //check for encroached points on forced segments and segments on the inner side of the convex hull, but don't consider edges on the outer side of the convex hull
       {
-        if ( !( ( mHalfEdge[next]->getForced() || edgeOnConvexHull( next ) ) || ( mHalfEdge[nextnext]->getForced() || edgeOnConvexHull( nextnext ) ) ) ) //don't consider triangles where all three edges are forced edges or hull edges
+        if ( !( ( mHalfEdge[next]->getForced() || edgeOnConvexHull( next ) )
+                || ( mHalfEdge[nextnext]->getForced() || edgeOnConvexHull( nextnext ) ) ) ) //don't consider triangles where all three edges are forced edges or hull edges
         {
           //test for encroachment
           while ( MathUtils::inDiametral( mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()], mPointVector[mHalfEdge[i]->getPoint()], mPointVector[mHalfEdge[next]->getPoint()] ) )
@@ -1899,7 +1920,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
   //debugging: print out all the angles below the minimum for a test
   for ( std::multimap<double, int>::const_iterator it = angle_edge.begin(); it != angle_edge.end(); ++it )
   {
-    QgsDebugMsgLevel( QStringLiteral( "angle: %1" ).arg( it->first ), 2 );
+    QgsDebugMsgLevel( u"angle: %1"_s.arg( it->first ), 2 );
   }
 
 
@@ -1913,7 +1934,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
   while ( !edge_angle.empty() )
   {
     minangle = angle_edge.begin()->first;
-    QgsDebugMsgLevel( QStringLiteral( "minangle: %1" ).arg( minangle ), 2 );
+    QgsDebugMsgLevel( u"minangle: %1"_s.arg( minangle ), 2 );
     minedge = angle_edge.begin()->second;
     minedgenext = mHalfEdge[minedge]->getNext();
     minedgenextnext = mHalfEdge[minedgenext]->getNext();
@@ -1921,7 +1942,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
     //calculate the circumcenter
     if ( !MathUtils::circumcenter( mPointVector[mHalfEdge[minedge]->getPoint()], mPointVector[mHalfEdge[minedgenext]->getPoint()], mPointVector[mHalfEdge[minedgenextnext]->getPoint()], &circumcenter ) )
     {
-      QgsDebugError( QStringLiteral( "warning, calculation of circumcenter failed" ) );
+      QgsDebugError( u"warning, calculation of circumcenter failed"_s );
       //put all three edges to dontexamine and remove them from the other maps
       dontexamine.insert( minedge );
       edge_angle.erase( minedge );
@@ -1937,9 +1958,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
     if ( !pointInside( circumcenter.x(), circumcenter.y() ) )
     {
       //put all three edges to dontexamine and remove them from the other maps
-      QgsDebugError( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because it is outside the convex hull" )
-                       .arg( circumcenter.x() )
-                       .arg( circumcenter.y() ) );
+      QgsDebugError( u"put circumcenter %1//%2 on dontexamine list because it is outside the convex hull"_s.arg( circumcenter.x() ).arg( circumcenter.y() ) );
       dontexamine.insert( minedge );
       edge_angle.erase( minedge );
       std::multimap<double, int>::iterator minedgeiter = angle_edge.find( minangle );
@@ -1965,7 +1984,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
         {
           encroached = true;
           //split segment
-          QgsDebugMsgLevel( QStringLiteral( "segment split" ), 2 );
+          QgsDebugMsgLevel( u"segment split"_s, 2 );
           int pointno = splitHalfEdge( i, 0.5 );
 
           //update dontexmine, angle_edge, edge_angle
@@ -2168,10 +2187,11 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
 
     for ( QSet<int>::iterator it = influenceedges.begin(); it != influenceedges.end(); ++it )
     {
-      if ( ( mHalfEdge[*it]->getForced() || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
+      if ( ( mHalfEdge[*it]->getForced() || edgeOnConvexHull( *it ) )
+           && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
       {
         //split segment
-        QgsDebugMsgLevel( QStringLiteral( "segment split" ), 2 );
+        QgsDebugMsgLevel( u"segment split"_s, 2 );
         const int pointno = splitHalfEdge( *it, 0.5 );
         encroached = true;
 
@@ -2330,15 +2350,11 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
     {
       if ( pointno == -100 )
       {
-        QgsDebugError( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because of numerical instabilities" )
-                         .arg( circumcenter.x() )
-                         .arg( circumcenter.y() ) );
+        QgsDebugError( u"put circumcenter %1//%2 on dontexamine list because of numerical instabilities"_s.arg( circumcenter.x() ).arg( circumcenter.y() ) );
       }
       else if ( pointno == mTwiceInsPoint )
       {
-        QgsDebugError( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because it is already inserted" )
-                         .arg( circumcenter.x() )
-                         .arg( circumcenter.y() ) );
+        QgsDebugError( u"put circumcenter %1//%2 on dontexamine list because it is already inserted"_s.arg( circumcenter.x() ).arg( circumcenter.y() ) );
         //test, if the point is present in the triangulation
         bool flag = false;
         for ( int i = 0; i < mPointVector.count(); i++ )
@@ -2350,7 +2366,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
         }
         if ( !flag )
         {
-          QgsDebugError( QStringLiteral( "point is not present in the triangulation" ) );
+          QgsDebugError( u"point is not present in the triangulation"_s );
         }
       }
       //put all three edges to dontexamine and remove them from the other maps
@@ -2366,7 +2382,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
     }
     else //insertion successful
     {
-      QgsDebugMsgLevel( QStringLiteral( "circumcenter added" ), 2 );
+      QgsDebugMsgLevel( u"circumcenter added"_s, 2 );
 
       //update the maps
       //go around the inserted point and make changes for every half edge
@@ -2512,7 +2528,7 @@ void QgsDualEdgeTriangulation::ruppertRefinement()
   //debugging: print out all edge of dontexamine
   for ( QSet<int>::iterator it = dontexamine.begin(); it != dontexamine.end(); ++it )
   {
-    QgsDebugMsgLevel( QStringLiteral( "edge nr. %1 is in dontexamine" ).arg( *it ), 2 );
+    QgsDebugMsgLevel( u"edge nr. %1 is in dontexamine"_s.arg( *it ), 2 );
   }
 #endif
 }
@@ -2527,7 +2543,10 @@ bool QgsDualEdgeTriangulation::swapPossible( unsigned int edge ) const
   }
 
   //test, if the edge is on the convex hull or is connected to the virtual point
-  if ( mHalfEdge[edge]->getPoint() == -1 || mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint() == -1 || mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint() == -1 || mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() == -1 )
+  if ( mHalfEdge[edge]->getPoint() == -1
+       || mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint() == -1
+       || mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint() == -1
+       || mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() == -1 )
   {
     return false;
   }
@@ -2566,18 +2585,21 @@ void QgsDualEdgeTriangulation::triangulatePolygon( QList<int> *poly, QList<int> 
 
     //search for the edge pointing on the closest point(distedge) and for the next(nextdistedge)
     QList<int>::const_iterator iterator = ++( poly->constBegin() ); //go to the second edge
-    double distance = MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] );
+    double distance
+      = MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] );
     int distedge = ( *iterator );
     int nextdistedge = mHalfEdge[( *iterator )]->getNext();
     ++iterator;
 
     while ( iterator != --( poly->constEnd() ) )
     {
-      if ( MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] ) < distance )
+      if ( MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] )
+           < distance )
       {
         distedge = ( *iterator );
         nextdistedge = mHalfEdge[( *iterator )]->getNext();
-        distance = MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] );
+        distance = MathUtils::
+          distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] );
       }
       ++iterator;
     }
@@ -2687,7 +2709,7 @@ void QgsDualEdgeTriangulation::triangulatePolygon( QList<int> *poly, QList<int> 
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
   }
 }
 
@@ -2704,7 +2726,7 @@ bool QgsDualEdgeTriangulation::pointInside( double x, double y )
   {
     if ( runs > MAX_BASE_ITERATIONS ) //prevents endless loops
     {
-      QgsDebugError( QStringLiteral( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
+      QgsDebugError( u"warning, instability detected: Point coordinates: %1//%2"_s.arg( x ).arg( y ) );
       return false;
     }
 
@@ -2717,7 +2739,8 @@ bool QgsDualEdgeTriangulation::pointInside( double x, double y )
       }
     }
 
-    else if ( fabs( MathUtils::leftOf( point, mPointVector[mHalfEdge[mHalfEdge[actedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[actedge]->getPoint()] ) ) <= leftOfTresh ) //point is exactly in the line of the edge
+    else if ( fabs( MathUtils::leftOf( point, mPointVector[mHalfEdge[mHalfEdge[actedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[actedge]->getPoint()] ) )
+              <= leftOfTresh ) //point is exactly in the line of the edge
     {
       counter += 1;
       mEdgeWithPoint = actedge;
@@ -2755,7 +2778,7 @@ bool QgsDualEdgeTriangulation::pointInside( double x, double y )
   }
   if ( numinstabs > 0 ) //a numerical instability occurred
   {
-    QgsDebugError( QStringLiteral( "numerical instabilities" ) );
+    QgsDebugError( u"numerical instabilities"_s );
     return true;
   }
 
@@ -2885,7 +2908,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
     hf2->setBreak( break2 );
     hf2->setForced( forced2 );
 
-    // QgsDebugMsgLevel( QStringLiteral( "inserting half edge pair %1" ).arg( i ), 2 );
+    // QgsDebugMsgLevel( u"inserting half edge pair %1"_s.arg( i ), 2 );
     mHalfEdge.insert( nr1, hf1 );
     mHalfEdge.insert( nr2, hf2 );
 
@@ -2950,7 +2973,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
     QgsPoint *p = new QgsPoint( x, y, z );
 
-    // QgsDebugMsgLevel( QStringLiteral( "inserting point %1" ).arg( i ), 2 );
+    // QgsDebugMsgLevel( u"inserting point %1"_s.arg( i ), 2 );
     mPointVector.insert( i, p );
 
     if ( i == 0 )
@@ -3158,12 +3181,12 @@ QList<int> QgsDualEdgeTriangulation::pointsAroundEdge( double x, double y )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "warning: null pointer" ) );
+      QgsDebugError( u"warning: null pointer"_s );
     }
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Edge number negative" ) );
+    QgsDebugError( u"Edge number negative"_s );
   }
   return list;
 }
@@ -3178,7 +3201,7 @@ bool QgsDualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedb
   bool *alreadyVisitedEdges = new bool[mHalfEdge.size()];
   if ( !alreadyVisitedEdges )
   {
-    QgsDebugError( QStringLiteral( "out of memory" ) );
+    QgsDebugError( u"out of memory"_s );
     return false;
   }
 
@@ -3212,11 +3235,11 @@ bool QgsDualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedb
       {
         if ( currentEdge->getBreak() )
         {
-          attributeString = QStringLiteral( "break line" );
+          attributeString = u"break line"_s;
         }
         else
         {
-          attributeString = QStringLiteral( "structure line" );
+          attributeString = u"structure line"_s;
         }
       }
       edgeLineFeature.setAttribute( 0, attributeString );
@@ -3322,11 +3345,15 @@ int QgsDualEdgeTriangulation::splitHalfEdge( int edge, float position )
   //just a short test if position is between 0 and 1
   if ( position < 0 || position > 1 )
   {
-    QgsDebugError( QStringLiteral( "warning, position is not between 0 and 1" ) );
+    QgsDebugError( u"warning, position is not between 0 and 1"_s );
   }
 
   //create the new point on the heap
-  QgsPoint *p = new QgsPoint( mPointVector[mHalfEdge[edge]->getPoint()]->x() * position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->x() * ( 1 - position ), mPointVector[mHalfEdge[edge]->getPoint()]->y() * position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->y() * ( 1 - position ), 0 );
+  QgsPoint *p = new QgsPoint(
+    mPointVector[mHalfEdge[edge]->getPoint()]->x() * position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->x() * ( 1 - position ),
+    mPointVector[mHalfEdge[edge]->getPoint()]->y() * position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->y() * ( 1 - position ),
+    0
+  );
 
   //calculate the z-value of the point to insert
   QgsPoint zvaluepoint( 0, 0, 0 );
@@ -3338,7 +3365,7 @@ int QgsDualEdgeTriangulation::splitHalfEdge( int edge, float position )
   {
     mPointVector.resize( mPointVector.count() + 1 );
   }
-  QgsDebugMsgLevel( QStringLiteral( "inserting point nr. %1, %2//%3//%4" ).arg( mPointVector.count() ).arg( p->x() ).arg( p->y() ).arg( p->z() ), 2 );
+  QgsDebugMsgLevel( u"inserting point nr. %1, %2//%3//%4"_s.arg( mPointVector.count() ).arg( p->x() ).arg( p->y() ).arg( p->z() ), 2 );
   mPointVector.insert( mPointVector.count(), p );
 
   //insert the six new halfedges

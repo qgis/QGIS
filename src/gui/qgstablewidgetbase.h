@@ -31,7 +31,7 @@
  * Child classes must call init(QAbstractTableModel*) from their constructor.
  *
  */
-class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidgetUiBase
+class GUI_EXPORT QgsTableWidgetBase : public QWidget, public Ui::QgsTableWidgetUiBase
 {
     Q_OBJECT
   public:

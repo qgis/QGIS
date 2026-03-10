@@ -27,13 +27,13 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgstriangularmesh.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
 class QgsProfileSnapContext;
-
-#define SIP_NO_FILE
 
 
 /**
@@ -45,15 +45,12 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
-
     QPointer< QgsMeshLayer > mLayer;
 
     friend class QgsMeshLayerProfileGenerator;
@@ -69,9 +66,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
  */
 class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsMeshLayerProfileGenerator.
      */
@@ -83,9 +78,9 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
-
     double heightAt( double x, double y );
 
     QString mId;
@@ -110,8 +105,6 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     std::unique_ptr< QgsMeshLayerProfileResults > mResults;
 
     friend class QgsMeshLayerProfileResults;
-
-
 };
 
 #endif // QGSMESHLAYERPROFILEGENERATOR_H

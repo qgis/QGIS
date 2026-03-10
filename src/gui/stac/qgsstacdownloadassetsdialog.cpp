@@ -26,9 +26,12 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QTreeWidget>
 
 #include "moc_qgsstacdownloadassetsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -40,7 +43,7 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent )
   mFileWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
 
   QString defPath = QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() );
-  defPath = QgsSettings().value( QStringLiteral( "UI/lastFileNameWidgetDir" ), defPath ).toString();
+  defPath = QgsSettings().value( u"UI/lastFileNameWidgetDir"_s, defPath ).toString();
   if ( defPath.isEmpty() )
     defPath = QDir::homePath();
   mFileWidget->setFilePath( defPath );
@@ -65,11 +68,7 @@ void QgsStacDownloadAssetsDialog::accept()
 
     connect( fetcher, &QgsNetworkContentFetcherTask::errorOccurred, fetcher, [bar = mMessageBar]( QNetworkReply::NetworkError, const QString &errorMsg ) {
       if ( bar )
-        bar->pushMessage(
-          tr( "Error downloading STAC asset" ),
-          errorMsg,
-          Qgis::MessageLevel::Critical
-        );
+        bar->pushMessage( tr( "Error downloading STAC asset" ), errorMsg, Qgis::MessageLevel::Critical );
     } );
 
     connect( fetcher, &QgsNetworkContentFetcherTask::fetched, fetcher, [fetcher, folder, bar = mMessageBar] {
@@ -83,13 +82,13 @@ void QgsStacDownloadAssetsDialog::accept()
       {
         const QString fileName = fetcher->contentDispositionFilename().isEmpty() ? reply->url().fileName() : fetcher->contentDispositionFilename();
         QFileInfo fi( fileName );
-        QFile file( QStringLiteral( "%1/%2" ).arg( folder, fileName ) );
+        QFile file( u"%1/%2"_s.arg( folder, fileName ) );
         int i = 1;
         while ( file.exists() )
         {
-          QString uniqueName = QStringLiteral( "%1/%2(%3)" ).arg( folder, fi.baseName() ).arg( i++ );
+          QString uniqueName = u"%1/%2(%3)"_s.arg( folder, fi.baseName() ).arg( i++ );
           if ( !fi.completeSuffix().isEmpty() )
-            uniqueName.append( QStringLiteral( ".%1" ).arg( fi.completeSuffix() ) );
+            uniqueName.append( u".%1"_s.arg( fi.completeSuffix() ) );
           file.setFileName( uniqueName );
         }
 
@@ -110,20 +109,12 @@ void QgsStacDownloadAssetsDialog::accept()
         if ( failed )
         {
           if ( bar )
-            bar->pushMessage(
-              tr( "Error downloading STAC asset" ),
-              tr( "Could not write to file %1" ).arg( file.fileName() ),
-              Qgis::MessageLevel::Critical
-            );
+            bar->pushMessage( tr( "Error downloading STAC asset" ), tr( "Could not write to file %1" ).arg( file.fileName() ), Qgis::MessageLevel::Critical );
         }
         else
         {
           if ( bar )
-            bar->pushMessage(
-              tr( "STAC asset downloaded" ),
-              file.fileName(),
-              Qgis::MessageLevel::Success
-            );
+            bar->pushMessage( tr( "STAC asset downloaded" ), file.fileName(), Qgis::MessageLevel::Success );
         }
       }
     } );
@@ -208,9 +199,7 @@ void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
 
   const QString url = item->text( 5 );
   QAction *copyUrlAction = new QAction( tr( "Copy URL" ), mContextMenu );
-  connect( copyUrlAction, &QAction::triggered, this, [url] {
-    QApplication::clipboard()->setText( url );
-  } );
+  connect( copyUrlAction, &QAction::triggered, this, [url] { QApplication::clipboard()->setText( url ); } );
   mContextMenu->addAction( copyUrlAction );
   mContextMenu->exec( QCursor::pos() );
 }

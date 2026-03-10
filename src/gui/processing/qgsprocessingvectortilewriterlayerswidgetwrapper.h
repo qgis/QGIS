@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 #define QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingvectortilewriterlayerdetailswidgetbase.h"
 
@@ -24,6 +23,8 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsvectortilewriter.h"
+
+#define SIP_NO_FILE
 
 class QLineEdit;
 class QToolButton;
@@ -55,11 +56,7 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
     /**
      * Constructor for QgsProcessingVectorTileWriterLayersPanelWidget.
      */
-    QgsProcessingVectorTileWriterLayersPanelWidget(
-      const QVariant &value,
-      QgsProject *project,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr
-    );
+    QgsProcessingVectorTileWriterLayersPanelWidget( const QVariant &value, QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
 

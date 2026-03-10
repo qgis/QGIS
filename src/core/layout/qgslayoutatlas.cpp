@@ -29,26 +29,28 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QtAlgorithms>
 
 #include "moc_qgslayoutatlas.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
   , mLayout( layout )
-  , mFilenameExpressionString( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
+  , mFilenameExpressionString( u"'output_'||@atlas_featurenumber"_s )
 {
-
   //listen out for layer removal
-  connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
+  connect( mLayout->project(), static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
 
-  if ( QgsVariantUtils::isNull( mLayout->customProperty( QStringLiteral( "singleFile" ) ) ) )
-    mLayout->setCustomProperty( QStringLiteral( "singleFile" ), true );
+  if ( QgsVariantUtils::isNull( mLayout->customProperty( u"singleFile"_s ) ) )
+    mLayout->setCustomProperty( u"singleFile"_s, true );
 }
 
 QString QgsLayoutAtlas::stringType() const
 {
-  return QStringLiteral( "atlas" );
+  return u"atlas"_s;
 }
 
 QgsLayout *QgsLayoutAtlas::layout()
@@ -56,45 +58,45 @@ QgsLayout *QgsLayoutAtlas::layout()
   return mLayout;
 }
 
-const QgsLayout *QgsLayoutAtlas::layout() const  // cppcheck-suppress duplInheritedMember
+const QgsLayout *QgsLayoutAtlas::layout() const // cppcheck-suppress duplInheritedMember
 {
   return mLayout.data();
 }
 
 bool QgsLayoutAtlas::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
-  QDomElement atlasElem = document.createElement( QStringLiteral( "Atlas" ) );
-  atlasElem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  QDomElement atlasElem = document.createElement( u"Atlas"_s );
+  atlasElem.setAttribute( u"enabled"_s, mEnabled ? u"1"_s : u"0"_s );
 
   if ( mCoverageLayer )
   {
-    atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer.layerId );
-    atlasElem.setAttribute( QStringLiteral( "coverageLayerName" ), mCoverageLayer.name );
-    atlasElem.setAttribute( QStringLiteral( "coverageLayerSource" ), mCoverageLayer.source );
-    atlasElem.setAttribute( QStringLiteral( "coverageLayerProvider" ), mCoverageLayer.provider );
+    atlasElem.setAttribute( u"coverageLayer"_s, mCoverageLayer.layerId );
+    atlasElem.setAttribute( u"coverageLayerName"_s, mCoverageLayer.name );
+    atlasElem.setAttribute( u"coverageLayerSource"_s, mCoverageLayer.source );
+    atlasElem.setAttribute( u"coverageLayerProvider"_s, mCoverageLayer.provider );
   }
   else
   {
-    atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), QString() );
+    atlasElem.setAttribute( u"coverageLayer"_s, QString() );
   }
 
   if ( mLimitCoverageLayerRenderToCurrentFeature )
-    atlasElem.setAttribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "1" ) );
+    atlasElem.setAttribute( u"limitCoverageLayerRenderToCurrentFeature"_s, u"1"_s );
 
-  atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  atlasElem.setAttribute( QStringLiteral( "filenamePattern" ), mFilenameExpressionString );
-  atlasElem.setAttribute( QStringLiteral( "pageNameExpression" ), mPageNameExpression );
+  atlasElem.setAttribute( u"hideCoverage"_s, mHideCoverage ? u"1"_s : u"0"_s );
+  atlasElem.setAttribute( u"filenamePattern"_s, mFilenameExpressionString );
+  atlasElem.setAttribute( u"pageNameExpression"_s, mPageNameExpression );
 
-  atlasElem.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  atlasElem.setAttribute( u"sortFeatures"_s, mSortFeatures ? u"1"_s : u"0"_s );
   if ( mSortFeatures )
   {
-    atlasElem.setAttribute( QStringLiteral( "sortKey" ), mSortExpression );
-    atlasElem.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    atlasElem.setAttribute( u"sortKey"_s, mSortExpression );
+    atlasElem.setAttribute( u"sortAscending"_s, mSortAscending ? u"1"_s : u"0"_s );
   }
-  atlasElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  atlasElem.setAttribute( u"filterFeatures"_s, mFilterFeatures ? u"1"_s : u"0"_s );
   if ( mFilterFeatures )
   {
-    atlasElem.setAttribute( QStringLiteral( "featureFilter" ), mFilterExpression );
+    atlasElem.setAttribute( u"featureFilter"_s, mFilterExpression );
   }
 
   parentElement.appendChild( atlasElem );
@@ -104,31 +106,31 @@ bool QgsLayoutAtlas::writeXml( QDomElement &parentElement, QDomDocument &documen
 
 bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &, const QgsReadWriteContext & )
 {
-  mEnabled = atlasElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mEnabled = atlasElem.attribute( u"enabled"_s, u"0"_s ).toInt();
 
   // look for stored layer name
-  const QString layerId = atlasElem.attribute( QStringLiteral( "coverageLayer" ) );
-  const QString layerName = atlasElem.attribute( QStringLiteral( "coverageLayerName" ) );
-  const QString layerSource = atlasElem.attribute( QStringLiteral( "coverageLayerSource" ) );
-  const QString layerProvider = atlasElem.attribute( QStringLiteral( "coverageLayerProvider" ) );
+  const QString layerId = atlasElem.attribute( u"coverageLayer"_s );
+  const QString layerName = atlasElem.attribute( u"coverageLayerName"_s );
+  const QString layerSource = atlasElem.attribute( u"coverageLayerSource"_s );
+  const QString layerProvider = atlasElem.attribute( u"coverageLayerProvider"_s );
 
   mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mCoverageLayer.resolveWeakly( mLayout->project() );
   mLayout->reportContext().setLayer( mCoverageLayer.get() );
 
-  mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
+  mPageNameExpression = atlasElem.attribute( u"pageNameExpression"_s, QString() );
   QString error;
-  setFilenameExpression( atlasElem.attribute( QStringLiteral( "filenamePattern" ), QString() ), error );
+  setFilenameExpression( atlasElem.attribute( u"filenamePattern"_s, QString() ), error );
 
-  mSortFeatures = atlasElem.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "0" ) ).toInt();
-  mSortExpression = atlasElem.attribute( QStringLiteral( "sortKey" ) );
-  mSortAscending = atlasElem.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "1" ) ).toInt();
-  mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "0" ) ).toInt();
-  mFilterExpression = atlasElem.attribute( QStringLiteral( "featureFilter" ) );
+  mSortFeatures = atlasElem.attribute( u"sortFeatures"_s, u"0"_s ).toInt();
+  mSortExpression = atlasElem.attribute( u"sortKey"_s );
+  mSortAscending = atlasElem.attribute( u"sortAscending"_s, u"1"_s ).toInt();
+  mFilterFeatures = atlasElem.attribute( u"filterFeatures"_s, u"0"_s ).toInt();
+  mFilterExpression = atlasElem.attribute( u"featureFilter"_s );
 
-  mLimitCoverageLayerRenderToCurrentFeature = atlasElem.attribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "0" ) ).toInt();
+  mLimitCoverageLayerRenderToCurrentFeature = atlasElem.attribute( u"limitCoverageLayerRenderToCurrentFeature"_s, u"0"_s ).toInt();
   mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature, mLimitCoverageLayerRenderToCurrentFeature );
-  mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "0" ) ).toInt();
+  mHideCoverage = atlasElem.attribute( u"hideCoverage"_s, u"0"_s ).toInt();
   mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, mHideCoverage );
 
   emit toggled( mEnabled );
@@ -261,8 +263,7 @@ class AtlasFeatureSorter
 
     bool operator()( const QPair< QgsFeatureId, QString > &id1, const QPair< QgsFeatureId, QString > &id2 )
     {
-      return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) )
-             : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
+      return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) ) : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
     }
 
   private:
@@ -307,7 +308,6 @@ int QgsLayoutAtlas::updateFeatures()
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     Q_NOWARN_DEPRECATED_PUSH
     if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
     {
@@ -318,7 +318,6 @@ int QgsLayoutAtlas::updateFeatures()
       mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
     }
     Q_NOWARN_DEPRECATED_POP
-    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
@@ -545,8 +544,7 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope();
   if ( mLayout )
-    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() )
-                      << QgsExpressionContextUtils::layoutScope( mLayout );
+    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() ) << QgsExpressionContextUtils::layoutScope( mLayout );
 
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
 
@@ -559,9 +557,9 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
     {
       expressionContext.lastScope()->setFeature( mCurrentFeature );
     }
-    else if ( mCoverageLayer )  // Create an empty feature for the expression validation
+    else if ( mCoverageLayer ) // Create an empty feature for the expression validation
     {
-      QgsFeature feature{ mCoverageLayer->fields() };
+      QgsFeature feature { mCoverageLayer->fields() };
       feature.setValid( true );
       expressionContext.lastScope()->setFeature( feature );
     }
@@ -600,7 +598,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     evalResult = evalFeatureFilename( expressionContext );
   }
 
-  if ( ! evalResult )
+  if ( !evalResult )
   {
     error = mFilenameExpressionError;
   }
@@ -650,7 +648,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   mCurrentFeatureNo = featureI;
 
   // retrieve the next feature, based on its id
-  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature ) )
+  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[featureI].first ) ).nextFeature( mCurrentFeature ) )
     return false;
 
   mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
@@ -673,4 +671,3 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
 
   return mCurrentFeature.isValid();
 }
-

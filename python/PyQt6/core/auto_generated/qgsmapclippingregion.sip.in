@@ -21,7 +21,6 @@ A map clipping region (in map coordinates and CRS).
 #include "qgsmapclippingregion.h"
 %End
   public:
-
     enum class FeatureClippingType /BaseType=IntEnum/
     {
       ClipToIntersection,

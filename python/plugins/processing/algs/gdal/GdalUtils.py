@@ -19,40 +19,38 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from typing import Optional
+import math
 import os
 import platform
 import re
 from dataclasses import dataclass
-import math
+from typing import Optional
 
 import psycopg2
-
 from qgis.core import (
     Qgis,
-    QgsBlockingProcess,
-    QgsRunProcess,
     QgsApplication,
-    QgsVectorFileWriter,
-    QgsProcessingFeedback,
-    QgsProcessingUtils,
-    QgsMessageLog,
-    QgsSettings,
+    QgsBlockingProcess,
+    QgsCoordinateReferenceSystem,
     QgsCredentials,
     QgsDataSourceUri,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingException,
-    QgsProviderRegistry,
-    QgsMapLayer,
-    QgsProcessingContext,
-    QgsRectangle,
-    QgsPointXY,
     QgsDistanceArea,
-    QgsRasterLayer,
-    QgsWmsUtils,
+    QgsMapLayer,
+    QgsMessageLog,
+    QgsPointXY,
+    QgsProcessingContext,
+    QgsProcessingException,
+    QgsProcessingFeedback,
     QgsProcessingRasterLayerDefinition,
+    QgsProcessingUtils,
+    QgsProviderRegistry,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsRunProcess,
+    QgsSettings,
+    QgsVectorFileWriter,
+    QgsWmsUtils,
 )
-
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QFile,
@@ -569,9 +567,7 @@ class GdalUtils:
                             connection_string=wms_description_file_path
                         )
                     else:
-                        message = "Cannot create XML description file for WMS layer. Details: {}".format(
-                            xml_wms_error
-                        )
+                        message = f"Cannot create XML description file for WMS layer. Details: {xml_wms_error}"
                         QgsMessageLog.logMessage(
                             message, "Processing", Qgis.MessageLevel.Warning
                         )

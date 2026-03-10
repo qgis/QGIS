@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRendererCategory
 {
 %Docstring(signature="appended")
@@ -20,7 +21,6 @@ Represents an individual category (class) from a
 #include "qgscategorizedsymbolrenderer.h"
 %End
   public:
-
     QgsRendererCategory();
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
@@ -155,7 +155,7 @@ document and ``element``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+    protected:
 
 };
 
@@ -172,7 +172,6 @@ categories.
 #include "qgscategorizedsymbolrenderer.h"
 %End
   public:
-
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 %Docstring
 Constructor for QgsCategorizedSymbolRenderer.
@@ -467,8 +466,7 @@ size for marker symbols. Will return ``None`` if the functionality is
 disabled.
 %End
 
-    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
-                        QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
 %Docstring
 Replaces category symbols with the symbols from a ``style`` that have a
 matching name and symbol ``type``.
@@ -529,11 +527,11 @@ default QVariant.toString output.
 hashtable for faster access to symbols
 %End
 
- QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
+ QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
  QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated="Since 3.40. Use variant which takes a second bool argument instead."/;

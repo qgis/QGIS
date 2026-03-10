@@ -23,15 +23,18 @@
 #include "qgis_sip.h"
 #include "qgsrendereditemdetails.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains computed statistics for a layer render.
  * \since QGIS 3.42
  */
-class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
+class CORE_EXPORT QgsRenderedLayerStatistics : public QgsRenderedItemDetails
 {
   public:
-
     /**
      * \brief Constructor for QgsRenderedLayerStatistics from a list of \a minimum and \a maximum.
      *
@@ -47,6 +50,7 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
 #ifndef SIP_RUN
     QgsRenderedLayerStatistics( const QString &layerId, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN() );
 #else
+    // clang-format off
     QgsRenderedLayerStatistics( const QString &layerId, SIP_PYOBJECT minimum SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT maximum SIP_TYPEHINT( Optional[float] ) = Py_None ) [( const QString & layerId, double minimum = 0.0, double maximum = 0.0 )];
     % MethodCode
     double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -55,9 +59,11 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
     QList<double> maxL = {maxP};
     sipCpp = new sipQgsRenderedLayerStatistics( *a0, minL, maxL );
     % End
+// clang-format on
 #endif
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QStringList minimums;
@@ -72,16 +78,17 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
     {
       maximums.append( QString::number( max ) );
     }
-    QString str = QStringLiteral( "<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>" ).arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
+    QString str = u"<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>"_s.arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns the minimum values of the computed statistics.
      * \see setMinimum()
      */
-    QList<double> minimum() const;
+        QList<double> minimum() const;
 
     /**
      * Returns the minimum value of the computed statistics at \a index.
@@ -128,7 +135,6 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
     bool setMaximum( int index, double maximum );
 
   private:
-
     QList<double> mMin;
     QList<double> mMax;
 };

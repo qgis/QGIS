@@ -30,8 +30,7 @@ Qgis::GpsFixStatus QgsGpsInformation::bestFixStatus( Qgis::GnssConstellation &co
   {
     if ( it.value() == Qgis::GpsFixStatus::Fix3D
          || ( it.value() == Qgis::GpsFixStatus::Fix2D && bestStatus != Qgis::GpsFixStatus::Fix3D )
-         || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData )
-       )
+         || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData ) )
     {
       bestStatus = it.value();
       constellation = it.key();
@@ -45,13 +44,12 @@ bool QgsGpsInformation::isValid() const
   bool valid = false;
   Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
   const Qgis::GpsFixStatus bestFix = bestFixStatus( constellation );
-  if ( status == 'V'
-       || bestFix == Qgis::GpsFixStatus::NoFix
-       || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( status == 'V' || bestFix == Qgis::GpsFixStatus::NoFix || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     valid = false;
   }
-  else if ( status == 'A' || status == 'D'
+  else if ( status == 'A'
+            || status == 'D'
             || bestFix == Qgis::GpsFixStatus::Fix2D
             || bestFix == Qgis::GpsFixStatus::Fix3D
             || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good - D=Differential for UM98x
@@ -172,4 +170,3 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
   }
   BUILTIN_UNREACHABLE
 }
-

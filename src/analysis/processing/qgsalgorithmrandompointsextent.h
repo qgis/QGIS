@@ -21,11 +21,16 @@
 #ifndef QGSALGORITHMRANDOMPOINTSEXTENT_H
 #define QGSALGORITHMRANDOMPOINTSEXTENT_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -37,8 +42,8 @@ class QgsRandomPointsExtentAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsRandomPointsExtentAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsWithinExtent.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPointsWithinExtent.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomPointsWithinExtent.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomPointsWithinExtent.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

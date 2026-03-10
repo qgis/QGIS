@@ -22,10 +22,13 @@
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
-{
-}
+  : Qgs3DRendererAbstractMetadata( u"mesh"_s )
+{}
 
 QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -39,8 +42,7 @@ QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomEleme
 
 QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
   : mSymbol( s )
-{
-}
+{}
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRenderer::clone() const
 {
@@ -101,12 +103,12 @@ void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
 
-  QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
+  QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
+    elemSymbol.setAttribute( u"type"_s, mSymbol->type() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -114,9 +116,9 @@ void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 
 void QgsMeshLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mLayerRef = QgsMapLayerRef( elem.attribute( u"layer"_s ) );
 
-  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( u"symbol"_s );
   QgsMesh3DSymbol *symbol = new QgsMesh3DSymbol;
   symbol->readXml( elemSymbol, context );
   mSymbol.reset( symbol );

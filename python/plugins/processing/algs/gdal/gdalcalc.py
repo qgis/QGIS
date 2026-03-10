@@ -21,18 +21,18 @@ __copyright__ = "(C) 2015, Giovanni Manghi"
 
 from qgis.core import (
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
     QgsProcessingParameterExtent,
-    QgsProcessingParameterString,
+    QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 
@@ -50,10 +50,10 @@ class gdalcalc(GdalAlgorithm):
     BAND_E = "BAND_E"
     BAND_F = "BAND_F"
     FORMULA = "FORMULA"
-    # TODO QGIS 4.0 : Rename EXTENT_OPT to EXTENT
+    # TODO QGIS 5.0 : Rename EXTENT_OPT to EXTENT
     EXTENT_OPT = "EXTENT_OPT"
     EXTENT_OPTIONS = ["ignore", "fail", "union", "intersect"]
-    # TODO QGIS 4.0 : Rename EXTENT to PROJWIN or CUSTOM_EXTENT
+    # TODO QGIS 5.0 : Rename EXTENT to PROJWIN or CUSTOM_EXTENT
     EXTENT = "PROJWIN"
     OUTPUT = "OUTPUT"
     NO_DATA = "NO_DATA"
@@ -209,7 +209,7 @@ class gdalcalc(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

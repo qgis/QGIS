@@ -14,7 +14,6 @@
 
 class QgsServerResponse
 {
-
 %TypeHeaderCode
 #include "qgsserverresponse.h"
 %End

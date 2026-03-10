@@ -29,30 +29,41 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 #include "qgsstatusbar.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsgpscanvasbridge.cpp"
 
-const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingShowBearingLine = new QgsSettingsEntryBool( QStringLiteral( "show-bearing-line" ), QgsSettingsTree::sTreeGps, false, QStringLiteral( "Whether the GPS bearing line symbol should be shown" ) );
+using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsGpsCanvasBridge::settingBearingLineSymbol = new QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingShowBearingLine
+  = new QgsSettingsEntryBool( u"show-bearing-line"_s, QgsSettingsTree::sTreeGps, false, u"Whether the GPS bearing line symbol should be shown"_s );
 
-const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold = new QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettingsTree::sTreeGps, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
+const QgsSettingsEntryString *QgsGpsCanvasBridge::settingBearingLineSymbol
+  = new QgsSettingsEntryString( u"bearing-line-symbol"_s, QgsSettingsTree::sTreeGps, QString(), u"Line symbol to use for GPS bearing line"_s, Qgis::SettingsOptions(), 0 );
 
-const QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> *QgsGpsCanvasBridge::settingMapCenteringMode = new QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode>( QStringLiteral( "map-recentering" ), QgsSettingsTree::sTreeGps, Qgis::MapRecenteringMode::WhenOutsideVisibleExtent, QStringLiteral( "Automatic GPS based map recentering mode" ) );
+const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold
+  = new QgsSettingsEntryInteger( u"map-recentering-threshold"_s, QgsSettingsTree::sTreeGps, 50, u"Threshold for GPS automatic map centering"_s );
 
-const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingRotateMap = new QgsSettingsEntryBool( QStringLiteral( "auto-map-rotate" ), QgsSettingsTree::sTreeGps, false, QStringLiteral( "Whether to automatically rotate the map to match GPS bearing" ) );
+const QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> *QgsGpsCanvasBridge::settingMapCenteringMode = new QgsSettingsEntryEnumFlag<
+  Qgis::MapRecenteringMode>( u"map-recentering"_s, QgsSettingsTree::sTreeGps, Qgis::MapRecenteringMode::WhenOutsideVisibleExtent, u"Automatic GPS based map recentering mode"_s );
 
-const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapRotateInterval = new QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
+const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingRotateMap
+  = new QgsSettingsEntryBool( u"auto-map-rotate"_s, QgsSettingsTree::sTreeGps, false, u"Whether to automatically rotate the map to match GPS bearing"_s );
+
+const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapRotateInterval
+  = new QgsSettingsEntryInteger( u"map-rotate-interval"_s, QgsSettingsTree::sTreeGps, 0, u"Interval for GPS automatic map rotation"_s );
 
 QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
   , mConnection( connection )
   , mCanvas( canvas )
 {
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:4326"_s );
 
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsGpsCanvasBridge::gpsDisconnected );
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsCanvasBridge::gpsStateChanged );
@@ -69,9 +80,7 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
 
   mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
-    mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] { mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() ); } );
 
   connect( mCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsCanvasBridge::cursorCoordinateChanged );
   connect( mCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsCanvasBridge::tapAndHold );
@@ -154,8 +163,7 @@ void QgsGpsCanvasBridge::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGest
     updateGpsDistanceStatusMessage( true );
   }
   catch ( QgsCsException & )
-  {
-  }
+  {}
 }
 
 void QgsGpsCanvasBridge::updateBearingAppearance()
@@ -169,7 +177,7 @@ void QgsGpsCanvasBridge::updateBearingAppearance()
   if ( bearingLineSymbolXml.isEmpty() )
   {
     QgsSettings settings;
-    bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
+    bearingLineSymbolXml = settings.value( u"bearingLineSymbol"_s, QVariant(), QgsSettings::Gps ).toString();
   }
 
   if ( !bearingLineSymbolXml.isEmpty() )
@@ -198,10 +206,10 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   else
   {
     // legacy settings
-    mBearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
+    mBearingFromTravelDirection = settings.value( u"calculateBearingFromTravel"_s, "false", QgsSettings::Gps ).toBool();
 
-    mMapExtentMultiplier = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
-    mMapRotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
+    mMapExtentMultiplier = settings.value( u"mapExtentMultiplier"_s, "50", QgsSettings::Gps ).toInt();
+    mMapRotateInterval = settings.value( u"rotateMapInterval"_s, 0, QgsSettings::Gps ).toInt();
   }
 }
 
@@ -261,8 +269,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
           }
         }
         catch ( QgsCsException & )
-        {
-        }
+        {}
         break;
 
       case Qgis::MapRecenteringMode::Never:
@@ -275,22 +282,21 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
   double bearing = 0;
   double trueNorth = 0;
   const QgsSettings settings;
-  const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
+  const double adjustment = settings.value( u"gps/bearingAdjustment"_s, 0.0, QgsSettings::App ).toDouble();
 
   if ( !std::isnan( info.direction ) || ( mBearingFromTravelDirection && !mSecondLastGpsPosition.isEmpty() ) )
   {
     if ( !mBearingFromTravelDirection )
     {
       bearing = info.direction;
-      if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
+      if ( settings.value( u"gps/correctForTrueNorth"_s, false, QgsSettings::App ).toBool() )
       {
         try
         {
           trueNorth = QgsBearingUtils::bearingTrueNorth( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mCanvas->mapSettings().visibleExtent().center() );
         }
         catch ( QgsException & )
-        {
-        }
+        {}
       }
     }
     else
@@ -300,8 +306,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
       }
       catch ( QgsCsException & )
-      {
-      }
+      {}
     }
 
     if ( mRotateMap && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast<long long>( mMapRotateInterval ) * 1000 ) ) )
@@ -325,7 +330,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         catch ( QgsCsException & )
         {
           // TODO report errors to user
-          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+          QgsDebugError( u"An error occurred while calculating length"_s );
         }
 
         QgsDistanceArea da;
@@ -339,7 +344,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
+        QgsDebugError( u"Coordinate exception encountered while calculating GPS bearing rotation"_s );
         mCanvas->setRotation( trueNorth - bearing - adjustment );
         mCanvas->refresh();
       }
@@ -405,8 +410,7 @@ void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
     updateGpsDistanceStatusMessage( true );
   }
   catch ( QgsCsException & )
-  {
-  }
+  {}
 }
 
 void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
@@ -431,15 +435,18 @@ void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
 
   try
   {
-    const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector<QgsPointXY>() << mLastCursorPosWgs84 << mLastGpsPosition ), QgsProject::instance()->distanceUnits() );
+    const double distance
+      = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector<QgsPointXY>() << mLastCursorPosWgs84 << mLastGpsPosition ), QgsProject::instance()->distanceUnits() );
     const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
-    const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+    const int distanceDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
     const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
     const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - static_cast<int>( mLastForcedStatusUpdate.elapsed() ) );
+    QgisApp::instance()->statusBarIface()->showMessage(
+      tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ),
+      forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - static_cast<int>( mLastForcedStatusUpdate.elapsed() )
+    );
   }
   catch ( QgsCsException & )
-  {
-  }
+  {}
 }

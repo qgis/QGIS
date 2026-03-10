@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmraiseexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 //
@@ -25,7 +29,7 @@
 
 QString QgsRaiseExceptionAlgorithm::name() const
 {
-  return QStringLiteral( "raiseexception" );
+  return u"raiseexception"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsRaiseExceptionAlgorithm::flags() const
@@ -50,16 +54,18 @@ QString QgsRaiseExceptionAlgorithm::group() const
 
 QString QgsRaiseExceptionAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsRaiseExceptionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises an exception and cancels a model's execution.\n\n"
-                      "The exception message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the exception will only "
-                      "be raised if the expression result is true. A false result indicates that no exception "
-                      "will be raised, and the model execution can continue uninterrupted." );
+  return QObject::tr(
+    "This algorithm raises an exception and cancels a model's execution.\n\n"
+    "The exception message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the exception will only "
+    "be raised if the expression result is true. A false result indicates that no exception "
+    "will be raised, and the model execution can continue uninterrupted."
+  );
 }
 
 QString QgsRaiseExceptionAlgorithm::shortDescription() const
@@ -74,13 +80,13 @@ QgsRaiseExceptionAlgorithm *QgsRaiseExceptionAlgorithm::createInstance() const
 
 void QgsRaiseExceptionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "MESSAGE" ), QObject::tr( "Error message" ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "CONDITION" ), QObject::tr( "Condition" ), QVariant(), QString(), true ) );
+  addParameter( new QgsProcessingParameterString( u"MESSAGE"_s, QObject::tr( "Error message" ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"CONDITION"_s, QObject::tr( "Condition" ), QVariant(), QString(), true ) );
 }
 
 QVariantMap QgsRaiseExceptionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
+  const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {
     const QgsExpressionContext expContext = createExpressionContext( parameters, context );
@@ -93,7 +99,7 @@ QVariantMap QgsRaiseExceptionAlgorithm::processAlgorithm( const QVariantMap &par
       return QVariantMap();
   }
 
-  const QString error = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
+  const QString error = parameterAsString( parameters, u"MESSAGE"_s, context );
   throw QgsProcessingException( error );
 }
 
@@ -104,7 +110,7 @@ QVariantMap QgsRaiseExceptionAlgorithm::processAlgorithm( const QVariantMap &par
 
 QString QgsRaiseWarningAlgorithm::name() const
 {
-  return QStringLiteral( "raisewarning" );
+  return u"raisewarning"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsRaiseWarningAlgorithm::flags() const
@@ -129,16 +135,18 @@ QString QgsRaiseWarningAlgorithm::group() const
 
 QString QgsRaiseWarningAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsRaiseWarningAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises a warning message in the log.\n\n"
-                      "The warning message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the warning will only "
-                      "be logged if the expression result is true. A false result indicates that no warning "
-                      "will be logged." );
+  return QObject::tr(
+    "This algorithm raises a warning message in the log.\n\n"
+    "The warning message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the warning will only "
+    "be logged if the expression result is true. A false result indicates that no warning "
+    "will be logged."
+  );
 }
 
 QString QgsRaiseWarningAlgorithm::shortDescription() const
@@ -153,13 +161,13 @@ QgsRaiseWarningAlgorithm *QgsRaiseWarningAlgorithm::createInstance() const
 
 void QgsRaiseWarningAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "MESSAGE" ), QObject::tr( "Warning message" ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "CONDITION" ), QObject::tr( "Condition" ), QVariant(), QString(), true ) );
+  addParameter( new QgsProcessingParameterString( u"MESSAGE"_s, QObject::tr( "Warning message" ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"CONDITION"_s, QObject::tr( "Condition" ), QVariant(), QString(), true ) );
 }
 
 QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
+  const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {
     const QgsExpressionContext expContext = createExpressionContext( parameters, context );
@@ -172,7 +180,7 @@ QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &param
       return QVariantMap();
   }
 
-  const QString warning = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
+  const QString warning = parameterAsString( parameters, u"MESSAGE"_s, context );
   feedback->pushWarning( warning );
   return QVariantMap();
 }
@@ -184,7 +192,7 @@ QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &param
 
 QString QgsRaiseMessageAlgorithm::name() const
 {
-  return QStringLiteral( "raisemessage" );
+  return u"raisemessage"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsRaiseMessageAlgorithm::flags() const
@@ -209,16 +217,18 @@ QString QgsRaiseMessageAlgorithm::group() const
 
 QString QgsRaiseMessageAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsRaiseMessageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises an information message in the log.\n\n"
-                      "The message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the message will only "
-                      "be logged if the expression result is true. A false result indicates that no message "
-                      "will be logged." );
+  return QObject::tr(
+    "This algorithm raises an information message in the log.\n\n"
+    "The message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the message will only "
+    "be logged if the expression result is true. A false result indicates that no message "
+    "will be logged."
+  );
 }
 
 QString QgsRaiseMessageAlgorithm::shortDescription() const
@@ -233,13 +243,13 @@ QgsRaiseMessageAlgorithm *QgsRaiseMessageAlgorithm::createInstance() const
 
 void QgsRaiseMessageAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "MESSAGE" ), QObject::tr( "Information message" ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "CONDITION" ), QObject::tr( "Condition" ), QVariant(), QString(), true ) );
+  addParameter( new QgsProcessingParameterString( u"MESSAGE"_s, QObject::tr( "Information message" ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"CONDITION"_s, QObject::tr( "Condition" ), QVariant(), QString(), true ) );
 }
 
 QVariantMap QgsRaiseMessageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
+  const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {
     const QgsExpressionContext expContext = createExpressionContext( parameters, context );
@@ -252,7 +262,7 @@ QVariantMap QgsRaiseMessageAlgorithm::processAlgorithm( const QVariantMap &param
       return QVariantMap();
   }
 
-  const QString info = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
+  const QString info = parameterAsString( parameters, u"MESSAGE"_s, context );
   feedback->pushInfo( info );
   return QVariantMap();
 }

@@ -27,8 +27,11 @@
 #include <QGraphicsLineItem>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutruler.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
@@ -49,7 +52,7 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->boundingRect( QStringLiteral( "000" ) ).width() * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->boundingRect( u"000"_s ).width() * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 
@@ -242,8 +245,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           const int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
-          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
-               || ( nextPageStartPixel == 0 ) )
+          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel ) || ( nextPageStartPixel == 0 ) )
           {
             drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
           }

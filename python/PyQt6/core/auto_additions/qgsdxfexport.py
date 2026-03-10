@@ -88,8 +88,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsDxfExport.DxfLayer.__doc__ = """Layers and optional attribute index to split
-into multiple layers using attribute value as layer name."""
+    QgsDxfExport.DxfLayer.__doc__ = """Encapsulates the properties of a vector layer containing features that will be exported to the DXF file."""
     QgsDxfExport.DxfLayer.__group__ = ['dxf']
 except (NameError, AttributeError):
     pass

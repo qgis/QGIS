@@ -17,7 +17,11 @@
 
 #include "qgsvtpkvectortilesourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgsvtpkvectortilesourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -36,7 +40,7 @@ QgsVtpkVectorTileSourceWidget::QgsVtpkVectorTileSourceWidget( QWidget *parent )
 
   mFileWidget = new QgsFileWidget();
   mFileWidget->setDialogTitle( tr( "Select VTPK Dataset" ) );
-  mFileWidget->setFilter( tr( "VTPK Files" ) + QStringLiteral( " (*.vtpk *.VTPK)" ) );
+  mFileWidget->setFilter( tr( "VTPK Files" ) + u" (*.vtpk *.VTPK)"_s );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   layout->addWidget( mFileWidget );
@@ -48,23 +52,17 @@ QgsVtpkVectorTileSourceWidget::QgsVtpkVectorTileSourceWidget( QWidget *parent )
 
 void QgsVtpkVectorTileSourceWidget::setSourceUri( const QString &uri )
 {
-  mSourceParts = QgsProviderRegistry::instance()->decodeUri(
-    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-    uri
-  );
+  mSourceParts = QgsProviderRegistry::instance()->decodeUri( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, uri );
 
-  mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mFileWidget->setFilePath( mSourceParts.value( u"path"_s ).toString() );
   mIsValid = true;
 }
 
 QString QgsVtpkVectorTileSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
-  parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
-  return QgsProviderRegistry::instance()->encodeUri(
-    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-    parts
-  );
+  parts.insert( u"path"_s, mFileWidget->filePath() );
+  return QgsProviderRegistry::instance()->encodeUri( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, parts );
 }
 
 void QgsVtpkVectorTileSourceWidget::validate()

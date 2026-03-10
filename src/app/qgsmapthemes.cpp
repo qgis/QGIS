@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmapthemes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemes *QgsMapThemes::sInstance;
 
@@ -123,7 +126,8 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ), tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  int res = QMessageBox::
+    question( QgisApp::instance(), tr( "Replace Theme" ), tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 
@@ -151,11 +155,7 @@ void QgsMapThemes::renameCurrentPreset()
   {
     if ( actionPreset->isChecked() )
     {
-      QgsNewNameDialog dlg(
-        tr( "theme" ),
-        tr( "%1" ).arg( actionPreset->text() ),
-        QStringList(), existingNames, Qt::CaseInsensitive, mMenu
-      );
+      QgsNewNameDialog dlg( tr( "theme" ), tr( "%1" ).arg( actionPreset->text() ), QStringList(), existingNames, Qt::CaseInsensitive, mMenu );
 
       dlg.setWindowTitle( tr( "Rename Map Theme" ) );
       dlg.setHintString( tr( "Enter the new name of the map theme" ) );
@@ -177,7 +177,8 @@ void QgsMapThemes::removeCurrentPreset()
   {
     if ( actionPreset->isChecked() )
     {
-      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ), tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      int res = QMessageBox::
+        question( QgisApp::instance(), tr( "Remove Theme" ), tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )
         QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
@@ -223,5 +224,5 @@ void QgsMapThemes::menuAboutToShow()
 
 void QgsMapThemes::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#configuring-map-themes"_s );
 }

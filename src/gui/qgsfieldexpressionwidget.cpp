@@ -29,8 +29,11 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QObject>
+#include <QString>
 
 #include "moc_qgsfieldexpressionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -53,7 +56,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
@@ -66,8 +69,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
 
   mExpressionContext = QgsExpressionContext();
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   mCombo->installEventFilter( this );
 }
@@ -165,7 +167,9 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
   mExpressionContextGenerator = generator;
 }
 
-void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsFieldExpressionWidget::setCustomPreviewGenerator(
+  const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator
+)
 {
   mCustomPreviewLabel = label;
   mCustomChoices = choices;
@@ -245,7 +249,7 @@ void QgsFieldExpressionWidget::editExpression()
 
   const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, u"generic"_s, context );
   if ( mDistanceArea )
   {
     dlg.setGeomCalculator( *mDistanceArea );
@@ -379,7 +383,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
   QString stylesheet;
   if ( !isEnabled() )
   {
-    stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::gray ).name() );
+    stylesheet = u"QLineEdit { color: %1; }"_s.arg( QColor( Qt::gray ).name() );
   }
   else
   {
@@ -400,7 +404,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 
     if ( isExpression && !isValid )
     {
-      stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::red ).name() );
+      stylesheet = u"QLineEdit { color: %1; }"_s.arg( QColor( Qt::red ).name() );
     }
   }
   mCombo->lineEdit()->setStyleSheet( stylesheet );

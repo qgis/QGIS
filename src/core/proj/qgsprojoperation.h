@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a PROJ operation.
@@ -31,7 +33,6 @@
 class CORE_EXPORT QgsProjOperation
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -54,24 +55,29 @@ class CORE_EXPORT QgsProjOperation
     QString details() const { return mDetails; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsProjOperation: invalid>" );
+      str = u"<QgsProjOperation: invalid>"_s;
     }
     else
     {
-      str = QStringLiteral( "<QgsProjOperation: %1>" ).arg( sipCpp->id() );
+      str = u"<QgsProjOperation: %1>"_s.arg( sipCpp->id() );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mId;
     QString mDescription;
     QString mDetails;

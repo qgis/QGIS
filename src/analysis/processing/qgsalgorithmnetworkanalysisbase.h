@@ -18,7 +18,6 @@
 #ifndef QGSALGORITHMNETWORKANALYSISBASE_H
 #define QGSALGORITHMNETWORKANALYSISBASE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
@@ -26,6 +25,12 @@
 #include "qgsgraphbuilder.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerdirector.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -37,8 +42,8 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
   public:
     QString group() const final;
     QString groupId() const final;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNetworkAnalysis.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmNetworkAnalysis.svg"_s ); }
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
@@ -56,7 +61,9 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Loads point from the feature source for further processing.
      */
-    void loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *features );
+    void loadPoints(
+      QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *features
+    );
 
     std::unique_ptr<QgsFeatureSource> mNetwork;
     QgsVectorLayerDirector *mDirector = nullptr;

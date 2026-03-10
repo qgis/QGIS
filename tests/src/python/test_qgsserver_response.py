@@ -20,7 +20,6 @@ from qgis.server import QgsBufferServerResponse
 
 
 class QgsServerResponseTest(unittest.TestCase):
-
     def test_responseHeaders(self):
         """Test response headers"""
         headers = {"header-key-1": "header-value-1", "header-key-2": "header-value-2"}

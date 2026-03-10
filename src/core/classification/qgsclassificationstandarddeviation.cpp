@@ -19,15 +19,16 @@
 #include "qgsgraduatedsymbolrenderer.h"
 
 #include <QObject>
+#include <QString>
 
-const QString QgsClassificationStandardDeviation::METHOD_ID = QStringLiteral( "StdDev" );
+using namespace Qt::StringLiterals;
+
+const QString QgsClassificationStandardDeviation::METHOD_ID = u"StdDev"_s;
 
 
 QgsClassificationStandardDeviation::QgsClassificationStandardDeviation()
   : QgsClassificationMethod( SymmetricModeAvailable )
-{
-
-}
+{}
 
 QString QgsClassificationStandardDeviation::name() const
 {
@@ -53,8 +54,7 @@ QIcon QgsClassificationStandardDeviation::icon() const
 }
 
 
-QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses, QString &error )
+QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( error )
   // C++ implementation of the standard deviation class interval algorithm
@@ -106,15 +106,15 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
   switch ( position )
   {
     case LowerBound:
-      return QStringLiteral( "< %1" ).arg( upperLabel );
+      return u"< %1"_s.arg( upperLabel );
     case Inner:
     {
       QString label( labelFormat() );
-      label.replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
+      label.replace( "%1"_L1, lowerLabel ).replace( "%2"_L1, upperLabel );
       return label;
     }
     case UpperBound:
-      return QStringLiteral( "≥ %1" ).arg( lowerLabel );
+      return u"≥ %1"_s.arg( lowerLabel );
   }
   return QString();
 }
@@ -131,14 +131,14 @@ void QgsClassificationStandardDeviation::writeXml( QDomElement &element, const Q
 {
   Q_UNUSED( context )
 
-  element.setAttribute( QStringLiteral( "std_dev" ), QString::number( mStdDev, 'f', 16 ) );
-  element.setAttribute( QStringLiteral( "effective_symmetry_point" ), QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
+  element.setAttribute( u"std_dev"_s, QString::number( mStdDev, 'f', 16 ) );
+  element.setAttribute( u"effective_symmetry_point"_s, QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
 }
 
 void QgsClassificationStandardDeviation::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
 
-  mStdDev = element.attribute( QStringLiteral( "std_dev" ), QStringLiteral( "1.0" ) ).toDouble();
-  mEffectiveSymmetryPoint = element.attribute( QStringLiteral( "effective_symmetry_point" ), QStringLiteral( "0.0" ) ).toDouble();
+  mStdDev = element.attribute( u"std_dev"_s, u"1.0"_s ).toDouble();
+  mEffectiveSymmetryPoint = element.attribute( u"effective_symmetry_point"_s, u"0.0"_s ).toDouble();
 }

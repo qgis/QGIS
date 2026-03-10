@@ -50,6 +50,13 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget : public QWidget, private Ui::Qg
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
 
+    /**
+     * Tune settings of the widget for the given format (in particular for COG)
+     *
+     * \since QGIS 4.0
+     */
+    void tuneForFormat( const QString &driverName );
+
   public slots:
 
     void apply();

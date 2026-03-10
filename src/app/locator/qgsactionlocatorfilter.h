@@ -21,6 +21,10 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QAction;
 
 
@@ -31,10 +35,10 @@ class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
   public:
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
     QgsActionLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "actions" ); }
+    QString name() const override { return u"actions"_s; }
     QString displayName() const override { return tr( "Actions" ); }
     Priority priority() const override { return Lowest; }
-    QString prefix() const override { return QStringLiteral( "." ); }
+    QString prefix() const override { return u"."_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

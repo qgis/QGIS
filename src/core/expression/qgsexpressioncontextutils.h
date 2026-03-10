@@ -25,6 +25,8 @@
 #include <QString>
 #include <QVariantMap>
 
+using namespace Qt::StringLiterals;
+
 class QgsExpressionContextScope;
 class QgsProject;
 class QgsLayout;
@@ -47,7 +49,6 @@ class QgsLayoutMultiFrame;
 class CORE_EXPORT QgsExpressionContextUtils
 {
   public:
-
     /**
      * Creates a new scope which contains variables and functions relating to the global QGIS context.
      * For instance, QGIS version numbers and variables specified through QGIS options.
@@ -61,7 +62,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * The \a formMode (SingleEditMode etc.) is passed as text
      * \since QGIS 3.2
      */
-    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature(), const QString &formMode = QString() ) SIP_FACTORY;
 
     /**
      * Creates a new scope which contains functions and variables from the current parent attribute form/table \a formFeature.
@@ -69,7 +70,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * The \a formMode (SingleEditMode etc.) is passed as text
      * \since QGIS 3.14
      */
-    static QgsExpressionContextScope *parentFormScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
+    static QgsExpressionContextScope *parentFormScope( const QgsFeature &formFeature = QgsFeature(), const QString &formMode = QString() ) SIP_FACTORY;
 
     /**
      * Sets a global context variable. This variable will be contained within scopes retrieved via
@@ -330,7 +331,6 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType ) SIP_FACTORY;
 
   private:
-
     class GetLayerVisibility : public QgsScopedExpressionFunction
     {
       public:
@@ -344,11 +344,9 @@ class CORE_EXPORT QgsExpressionContextUtils
         QList< QPointer< QgsMapLayer > > mLayers;
         QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
         double mScale = 0.0;
-
     };
 
     friend class QgsLayoutItemMap; // needs access to GetLayerVisibility
-
 };
 
 ///@cond PRIVATE
@@ -357,14 +355,13 @@ class LoadLayerFunction : public QgsScopedExpressionFunction
 {
   public:
     LoadLayerFunction()
-      : QgsScopedExpressionFunction( QStringLiteral( "load_layer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "uri" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "provider" ) ), QStringLiteral( "Map Layers" ) )
+      : QgsScopedExpressionFunction( u"load_layer"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"uri"_s ) << QgsExpressionFunction::Parameter( u"provider"_s ), u"Map Layers"_s )
     {}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * ) override;
     bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
     QgsScopedExpressionFunction *clone() const override;
-
 };
 #endif
 ///@endcond
@@ -380,7 +377,6 @@ class LoadLayerFunction : public QgsScopedExpressionFunction
 class QgsExpressionContextScopePopper
 {
   public:
-
     /**
      * Constructor for QgsExpressionContextScopePopper. Appends the specified \a scope to the
      * end of \a context. \a scope will be automatically popped and deleted when this QgsExpressionContextScopePopper
@@ -395,10 +391,7 @@ class QgsExpressionContextScopePopper
       mContext.appendScope( scope );
     }
 
-    ~QgsExpressionContextScopePopper()
-    {
-      delete mContext.popScope();
-    }
+    ~QgsExpressionContextScopePopper() { delete mContext.popScope(); }
 
   private:
     QgsExpressionContext &mContext;

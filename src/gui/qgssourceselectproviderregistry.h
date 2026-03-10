@@ -81,12 +81,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
      *
      * \since QGIS 3.10
      */
-    QgsAbstractDataSourceWidget *createSelectionWidget(
-      const QString &name,
-      QWidget *parent,
-      Qt::WindowFlags fl,
-      QgsProviderRegistry::WidgetMode widgetMode
-    );
+    QgsAbstractDataSourceWidget *createSelectionWidget( const QString &name, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
 
   signals:
 

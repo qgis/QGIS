@@ -23,7 +23,6 @@ target_link_libraries(qgis_bench
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Svg
   ${QT_VERSION_BASE}::Xml
-  ${OPTIONAL_QTWEBKIT}
   ${QT_VERSION_BASE}::Test
 )
 

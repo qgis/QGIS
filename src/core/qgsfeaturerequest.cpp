@@ -20,45 +20,42 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 
+#include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //constants
-const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
+const QString QgsFeatureRequest::ALL_ATTRIBUTES = u"#!allattributes!#"_s;
 
 QgsFeatureRequest::QgsFeatureRequest()
-{
-}
+{}
 
 QgsFeatureRequest::~QgsFeatureRequest() = default;
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( Qgis::FeatureRequestFilterType::Fid )
   , mFilterFid( fid )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( Qgis::FeatureRequestFilterType::Fids )
   , mFilterFids( fids )
-{
-
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
   : mSpatialFilter( !rect.isNull() ? Qgis::SpatialFilterType::BoundingBox : Qgis::SpatialFilterType::NoFilter )
   , mFilterRect( rect )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context )
   : mFilter( Qgis::FeatureRequestFilterType::Expression )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mFilter( rh.mFilter )
   , mSpatialFilter( rh.mSpatialFilter )
   , mFilterRect( rh.mFilterRect )
@@ -71,7 +68,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
   , mExpressionContext( rh.mExpressionContext )
   , mFlags( rh.mFlags )
   , mAttrs( rh.mAttrs )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mSimplifyMethod( rh.mSimplifyMethod )
   , mLimit( rh.mLimit )
   , mOrderBy( rh.mOrderBy )
@@ -84,10 +81,8 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
   , mTimeout( rh.mTimeout )
   , mRequestMayBeNested( rh.mRequestMayBeNested )
   , mFeedback( rh.mFeedback )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
-{
-
-}
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureRequest &&rh )
   : mFilter( rh.mFilter )
@@ -114,9 +109,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureRequest &&rh )
   , mTimeout( rh.mTimeout )
   , mRequestMayBeNested( rh.mRequestMayBeNested )
   , mFeedback( rh.mFeedback )
-{
-
-}
+{}
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
@@ -199,25 +192,25 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
   if ( &rh == this )
     return true;
 
-  return mFlags == rh.mFlags &&
-         mFilter == rh.mFilter &&
-         mSpatialFilter == rh.mSpatialFilter &&
-         mFilterRect == rh.mFilterRect &&
-         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
-         mDistanceWithin == rh.mDistanceWithin &&
-         mFilterFid == rh.mFilterFid &&
-         mFilterFids == rh.mFilterFids &&
-         ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) &&
-         mInvalidGeometryFilter == rh.mInvalidGeometryFilter &&
-         mAttrs == rh.mAttrs &&
-         mSimplifyMethod == rh.mSimplifyMethod &&
-         mLimit == rh.mLimit &&
-         mOrderBy == rh.mOrderBy &&
-         mTransform == rh.mTransform &&
-         mCrs == rh.mCrs &&
-         mTransformContext == rh.mTransformContext &&
-         mTimeout == rh.mTimeout &&
-         mRequestMayBeNested == rh.mRequestMayBeNested;
+  return mFlags == rh.mFlags
+         && mFilter == rh.mFilter
+         && mSpatialFilter == rh.mSpatialFilter
+         && mFilterRect == rh.mFilterRect
+         && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) )
+         && mDistanceWithin == rh.mDistanceWithin
+         && mFilterFid == rh.mFilterFid
+         && mFilterFids == rh.mFilterFids
+         && ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression )
+         && mInvalidGeometryFilter == rh.mInvalidGeometryFilter
+         && mAttrs == rh.mAttrs
+         && mSimplifyMethod == rh.mSimplifyMethod
+         && mLimit == rh.mLimit
+         && mOrderBy == rh.mOrderBy
+         && mTransform == rh.mTransform
+         && mCrs == rh.mCrs
+         && mTransformContext == rh.mTransformContext
+         && mTimeout == rh.mTimeout
+         && mRequestMayBeNested == rh.mRequestMayBeNested;
 }
 
 
@@ -281,7 +274,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( Qgis::InvalidGeom
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -298,7 +291,7 @@ QgsFeatureRequest &QgsFeatureRequest::combineFilterExpression( const QString &ex
 {
   if ( mFilterExpression )
   {
-    setFilterExpression( QStringLiteral( "(%1) AND (%2)" ).arg( mFilterExpression->expression(), expression ) );
+    setFilterExpression( u"(%1) AND (%2)"_s.arg( mFilterExpression->expression(), expression ) );
   }
   else
   {
@@ -451,7 +444,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateRefe
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;
@@ -503,8 +496,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
       if ( !feature.hasGeometry()
            || !mReferenceGeometryEngine
            || !feature.geometry().boundingBoxIntersects( mFilterRect )
-           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin )
-         )
+           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin ) )
         return false;
       break;
   }
@@ -564,7 +556,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsgLevel( QStringLiteral( "closing active iterator" ), 2 );
+    QgsDebugMsgLevel( u"closing active iterator"_s, 2 );
     it->close();
   }
 }
@@ -580,7 +572,6 @@ void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it )
 }
 
 
-
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending )
   : mExpression( expression )
   , mAscending( ascending )
@@ -593,8 +584,7 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool
   : mExpression( expression )
   , mAscending( ascending )
   , mNullsFirst( nullsfirst )
-{
-}
+{}
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression, bool ascending )
   : mExpression( expression )
@@ -608,9 +598,7 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression
   : mExpression( expression )
   , mAscending( ascending )
   , mNullsFirst( nullsfirst )
-{
-
-}
+{}
 
 bool QgsFeatureRequest::OrderByClause::ascending() const
 {
@@ -634,10 +622,7 @@ void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
 
 QString QgsFeatureRequest::OrderByClause::dump() const
 {
-  return QStringLiteral( "%1 %2 %3" )
-         .arg( mExpression.expression(),
-               mAscending ? "ASC" : "DESC",
-               mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
+  return u"%1 %2 %3"_s.arg( mExpression.expression(), mAscending ? "ASC" : "DESC", mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
 }
 
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const
@@ -661,7 +646,7 @@ QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClaus
   }
 }
 
-bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &other ) const
+bool QgsFeatureRequest::OrderBy::operator==( const QgsFeatureRequest::OrderBy &other ) const
 {
   if ( this == &other )
     return true;
@@ -675,7 +660,7 @@ bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &
   return true;
 }
 
-bool QgsFeatureRequest::OrderBy::operator!= ( const QgsFeatureRequest::OrderBy &other ) const
+bool QgsFeatureRequest::OrderBy::operator!=( const QgsFeatureRequest::OrderBy &other ) const
 {
   return !operator==( other );
 }
@@ -692,9 +677,9 @@ void QgsFeatureRequest::OrderBy::save( QDomElement &elem ) const
   for ( it = constBegin(); it != constEnd(); ++it )
   {
     const OrderByClause &clause = *it;
-    QDomElement clauseElem = doc.createElement( QStringLiteral( "orderByClause" ) );
-    clauseElem.setAttribute( QStringLiteral( "asc" ), clause.ascending() );
-    clauseElem.setAttribute( QStringLiteral( "nullsFirst" ), clause.nullsFirst() );
+    QDomElement clauseElem = doc.createElement( u"orderByClause"_s );
+    clauseElem.setAttribute( u"asc"_s, clause.ascending() );
+    clauseElem.setAttribute( u"nullsFirst"_s, clause.nullsFirst() );
     clauseElem.appendChild( doc.createTextNode( clause.expression().expression() ) );
 
     elem.appendChild( clauseElem );
@@ -711,8 +696,8 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement &elem )
   {
     const QDomElement clauseElem = clauses.at( i ).toElement();
     const QString expression = clauseElem.text();
-    const bool asc = clauseElem.attribute( QStringLiteral( "asc" ) ).toInt() != 0;
-    const bool nullsFirst  = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
+    const bool asc = clauseElem.attribute( u"asc"_s ).toInt() != 0;
+    const bool nullsFirst = clauseElem.attribute( u"nullsFirst"_s ).toInt() != 0;
 
     append( OrderByClause( expression, asc, nullsFirst ) );
   }
@@ -763,5 +748,5 @@ QString QgsFeatureRequest::OrderBy::dump() const
     results << clause.dump();
   }
 
-  return results.join( QLatin1String( ", " ) );
+  return results.join( ", "_L1 );
 }

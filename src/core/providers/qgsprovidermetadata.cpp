@@ -24,11 +24,13 @@
 #include "qgsmaplayer.h"
 #include "qgsprovidersublayerdetails.h"
 
+#include <QString>
+
 #include "moc_qgsprovidermetadata.cpp"
 
-QgsProviderMetadata::QgsProviderMetadata( QString const &key,
-    QString const &description,
-    QString const &library )
+using namespace Qt::StringLiterals;
+
+QgsProviderMetadata::QgsProviderMetadata( QString const &key, QString const &description, QString const &library )
   : mKey( key )
   , mDescription( description )
   , mLibrary( library )
@@ -91,14 +93,10 @@ QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunct
 }
 
 void QgsProviderMetadata::initProvider()
-{
-
-}
+{}
 
 void QgsProviderMetadata::cleanupProvider()
-{
-
-}
+{}
 
 QString QgsProviderMetadata::filters( Qgis::FileFilterType )
 {
@@ -135,9 +133,7 @@ QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QSt
   return QList<QgsProviderSublayerDetails>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
-    const QgsDataProvider::ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   if ( mCreateFunction )
   {
@@ -148,31 +144,29 @@ QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
 
 void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value )
 {
-  if ( value.toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( value.toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 || value.toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
-    uri[ parameter ] = true;
+    uri[parameter] = true;
   }
-  else if ( value.toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0
+            || value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+            || value.toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
-    uri[ parameter ] = false;
+    uri[parameter] = false;
   }
 }
 
 bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue )
 {
-  if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0
+       || uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0
+       || uri.value( parameter, QString() ).toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
     return true;
   }
-  else if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0
+            || uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0
+            || uri.value( parameter, QString() ).toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     return false;
   }
@@ -209,13 +203,16 @@ QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlag
   return uri;
 }
 
-Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
-    Qgis::WkbType, const QgsCoordinateReferenceSystem &,
-    bool, QMap<int, int> &,
-    QString &errorMessage, const QMap<QString, QVariant> *,
-    QString & )
+bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgis::SourceHierarchyLevel ) const
 {
-  errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createEmptyLayer" ) );
+  return false;
+}
+
+Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
+  const QString &, const QgsFields &, Qgis::WkbType, const QgsCoordinateReferenceSystem &, bool, QMap<int, int> &, QString &errorMessage, const QMap<QString, QVariant> *, QString &
+)
+{
+  errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createEmptyLayer"_s );
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
 }
 
@@ -225,29 +222,17 @@ bool QgsProviderMetadata::createDatabase( const QString &, QString &errorMessage
   return false;
 }
 
-QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
-  const QString &, const QString &,
-  int, Qgis::DataType, int,
-  int, double *,
-  const QgsCoordinateReferenceSystem &,
-  const QStringList & )
+QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider( const QString &, const QString &, int, Qgis::DataType, int, int, double *, const QgsCoordinateReferenceSystem &, const QStringList & )
 {
   return nullptr;
 }
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &,
-    const QString &,
-    const QString &,
-    const QgsCoordinateReferenceSystem &,
-    const QMap<QString, QString> & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
 {
   return false;
 }
 
-bool QgsProviderMetadata::createMeshData( const QgsMesh &,
-    const QString &,
-    const QgsCoordinateReferenceSystem &,
-    const QMap<QString, QString> & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &, const QString &, const QgsCoordinateReferenceSystem &, const QMap<QString, QString> & ) const
 {
   return false;
 }
@@ -262,10 +247,9 @@ QList<QgsDataItemProvider *> QgsProviderMetadata::dataItemProviders() const
   return QList<QgsDataItemProvider *>();
 }
 
-int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &,
-                                     QStringList &, QString &errCause )
+int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &, QStringList &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "listStyles" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"listStyles"_s );
   return -1;
 }
 
@@ -278,32 +262,31 @@ bool QgsProviderMetadata::styleExists( const QString &, const QString &, QString
 
 QString QgsProviderMetadata::getStyleById( const QString &, const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "getStyleById" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"getStyleById"_s );
   return QString();
 }
 
 bool QgsProviderMetadata::deleteStyleById( const QString &, const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteStyleById" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"deleteStyleById"_s );
   return false;
 }
 
-bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QString &, const QString &,
-                                     const QString &, const QString &, bool, QString &errCause )
+bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QString &, const QString &, const QString &, const QString &, bool, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"saveStyle"_s );
   return false;
 }
 
 QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"loadStyle"_s );
   return QString();
 }
 
 QString QgsProviderMetadata::loadStoredStyle( const QString &, QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStoredStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"loadStoredStyle"_s );
   return QString();
 }
 
@@ -314,7 +297,7 @@ bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMeta
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createDb" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createDb"_s );
   return false;
 }
 
@@ -326,18 +309,18 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
 {
   Q_UNUSED( cached );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"connections"_s ) );
 }
 
 QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
 {
-  return connections<QgsAbstractDatabaseProviderConnection>( cached ) ;
+  return connections<QgsAbstractDatabaseProviderConnection>( cached );
 }
 
 QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
 {
   const QMap<QString, QgsAbstractProviderConnection *> constConns { connections( cached ) };
-  const QStringList constKeys { constConns.keys( ) };
+  const QStringList constKeys { constConns.keys() };
   for ( const QString &key : constKeys )
   {
     if ( key == name )
@@ -351,7 +334,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QStrin
 QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createConnection"_s ) );
 }
 
 
@@ -359,20 +342,20 @@ QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QStr
 {
   Q_UNUSED( configuration );
   Q_UNUSED( uri );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createConnection"_s ) );
 }
 
 void QgsProviderMetadata::deleteConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"deleteConnection"_s ) );
 }
 
 void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
 {
   Q_UNUSED( connection )
   Q_UNUSED( name )
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"saveConnection"_s ) );
 }
 
 ///@cond PRIVATE
@@ -389,8 +372,7 @@ void QgsProviderMetadata::saveConnectionProtected( const QgsAbstractProviderConn
 }
 ///@endcond
 
-template<typename T>
-QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
+template<typename T> QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 {
   QMap<QString, T *> result;
   const auto constConns { connections( cached ) };
@@ -408,31 +390,23 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
-    const QString &description,
-    const MeshDriverCapabilities &capabilities,
-    const QString &writeDatasetOnfileSuffix )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
-{
-}
+{}
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
-    const QString &description,
-    const MeshDriverCapabilities &capabilities,
-    const QString &writeDatasetOnfileSuffix,
-    const QString &writeMeshFrameOnFileSuffix,
-    int maxVerticesPerface )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata(
+  const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix, const QString &writeMeshFrameOnFileSuffix, int maxVerticesPerface
+)
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
   , mWriteMeshFrameOnFileSuffix( ( writeMeshFrameOnFileSuffix ) )
   , mMaxVerticesPerFace( maxVerticesPerface )
-{
-}
+{}
 
 QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const
 {

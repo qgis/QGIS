@@ -23,6 +23,10 @@
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();
@@ -35,15 +39,15 @@ void QgsStacParser::setData( const QByteArray &data )
       const QString ver( QString::fromStdString( mData.at( "stac_version" ) ) );
       if ( !isSupportedStacVersion( ver ) )
       {
-        mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
+        mError = u"Unsupported STAC version: %1"_s.arg( ver );
         return;
       }
     }
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing JSON" );
-    QgsDebugError( QStringLiteral( "Error parsing JSON : %1" ).arg( ex.what() ) );
+    mError = u"Error parsing JSON"_s;
+    QgsDebugError( u"Error parsing JSON : %1"_s.arg( ex.what() ) );
     return;
   }
 
@@ -95,7 +99,7 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
     const QString ver( QString::fromStdString( data.at( "stac_version" ) ) );
     if ( !isSupportedStacVersion( ver ) )
     {
-      mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
+      mError = u"Unsupported STAC version: %1"_s.arg( ver );
       return nullptr;
     }
 
@@ -104,10 +108,7 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    auto catalog = std::make_unique< QgsStacCatalog >( id,
-                   ver,
-                   description,
-                   links );
+    auto catalog = std::make_unique< QgsStacCatalog >( id, ver, description, links );
 
     if ( data.contains( "title" ) )
       catalog->setTitle( getString( data["title"] ) );
@@ -136,8 +137,8 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing Collection" );
-    QgsDebugError( QStringLiteral( "Error parsing Collection: %1" ).arg( ex.what() ) );
+    mError = u"Error parsing Collection"_s;
+    QgsDebugError( u"Error parsing Collection: %1"_s.arg( ex.what() ) );
     return nullptr;
   }
 }
@@ -154,7 +155,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
     const QString ver( QString::fromStdString( data.at( "stac_version" ) ) );
     if ( !isSupportedStacVersion( ver ) )
     {
-      mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
+      mError = u"Unsupported STAC version: %1"_s.arg( ver );
       return nullptr;
     }
 
@@ -169,25 +170,15 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
       QgsBox3D extent;
       if ( e.size() == 4 )
       {
-        extent = QgsBox3D( e[0].get<double>(),
-                           e[1].get<double>(),
-                           0.,
-                           e[2].get<double>(),
-                           e[3].get<double>(),
-                           0. );
+        extent = QgsBox3D( e[0].get<double>(), e[1].get<double>(), 0., e[2].get<double>(), e[3].get<double>(), 0. );
       }
       else if ( e.size() == 6 )
       {
-        extent = QgsBox3D( e[0].get<double>(),
-                           e[1].get<double>(),
-                           e[2].get<double>(),
-                           e[3].get<double>(),
-                           e[4].get<double>(),
-                           e[5].get<double>() );
+        extent = QgsBox3D( e[0].get<double>(), e[1].get<double>(), e[2].get<double>(), e[3].get<double>(), e[4].get<double>(), e[5].get<double>() );
       }
       else
       {
-        mError = QStringLiteral( "Malformed STAC collection spatial extents" );
+        mError = u"Malformed STAC collection spatial extents"_s;
         QgsDebugError( mError );
         return nullptr;
       }
@@ -200,10 +191,9 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
     totalExtents = 0;
     for ( const auto &e : data.at( "extent" ).at( "temporal" ).at( "interval" ) )
     {
-      if ( !e.is_array() ||
-           e.size() != 2 )
+      if ( !e.is_array() || e.size() != 2 )
       {
-        mError = QStringLiteral( "Malformed STAC collection temporal extents" );
+        mError = u"Malformed STAC collection temporal extents"_s;
         QgsDebugError( mError );
         return nullptr;
       }
@@ -218,12 +208,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    auto collection = std::make_unique< QgsStacCollection >( id,
-                      ver,
-                      description,
-                      links,
-                      license,
-                      stacExtent );
+    auto collection = std::make_unique< QgsStacCollection >( id, ver, description, links, license, stacExtent );
 
     if ( data.contains( "title" ) )
       collection->setTitle( getString( data["title"] ) );
@@ -255,10 +240,9 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
       QVector< QgsStacProvider > providers;
       for ( const auto &p : data["providers"] )
       {
-        if ( !p.contains( "name" ) ||
-             ( p.contains( "roles" ) && !p["roles"].is_array() ) )
+        if ( !p.contains( "name" ) || ( p.contains( "roles" ) && !p["roles"].is_array() ) )
         {
-          QgsDebugError( QStringLiteral( "Malformed STAC provider object" ) );
+          QgsDebugError( u"Malformed STAC provider object"_s );
           continue;
         }
 
@@ -271,11 +255,8 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
               roles.append( QString::fromStdString( role ) );
           }
         }
-        const QgsStacProvider provider( QString::fromStdString( p["name"] ),
-                                        p.contains( "description" ) ? getString( p["description"] ) : QString(),
-                                        roles,
-                                        p.contains( "url" ) ? getString( p["url"] ) : QString() );
-
+        const QgsStacProvider
+          provider( QString::fromStdString( p["name"] ), p.contains( "description" ) ? getString( p["description"] ) : QString(), roles, p.contains( "url" ) ? getString( p["url"] ) : QString() );
 
 
         providers.append( provider );
@@ -299,8 +280,8 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing Collection" );
-    QgsDebugError( QStringLiteral( "Error parsing Collection: %1" ).arg( ex.what() ) );
+    mError = u"Error parsing Collection"_s;
+    QgsDebugError( u"Error parsing Collection: %1"_s.arg( ex.what() ) );
     return nullptr;
   }
 }
@@ -317,7 +298,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
     const QString ver = QString::fromStdString( data.at( "stac_version" ) );
     if ( !isSupportedStacVersion( ver ) )
     {
-      mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
+      mError = u"Unsupported STAC version: %1"_s.arg( ver );
       return nullptr;
     }
 
@@ -347,8 +328,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
     }
 
     auto datetime = data.at( "properties" ).at( "datetime" );
-    if ( !datetime.is_string() ||
-         !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
+    if ( !datetime.is_string() || !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
     {
       auto s = data.at( "properties" ).at( "start_datetime" );
       QString ss = QString::fromStdString( s );
@@ -357,11 +337,10 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
       auto e = data.at( "properties" ).at( "end_datetime" );
       const QString ee = QString::fromStdString( e );
       const QDateTime end = QDateTime::fromString( ee, Qt::ISODate );
-      if ( start.isNull() ||
-           end.isNull() )
+      if ( start.isNull() || end.isNull() )
       {
         // invalid datetime
-        mError = QStringLiteral( "Invalid STAC item temporal range" );
+        mError = u"Invalid STAC item temporal range"_s;
         return nullptr;
       }
     }
@@ -371,13 +350,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
 
     QMap< QString, QgsStacAsset > assets = parseAssets( data.at( "assets" ) );
 
-    auto item = std::make_unique< QgsStacItem >( id,
-                ver,
-                geom,
-                properties,
-                links,
-                assets,
-                bbox );
+    auto item = std::make_unique< QgsStacItem >( id, ver, geom, properties, links, assets, bbox );
 
     if ( data.contains( "stac_extensions" ) )
     {
@@ -397,8 +370,8 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing Item" );
-    QgsDebugError( QStringLiteral( "Error parsing Item: %1" ).arg( ex.what() ) );
+    mError = u"Error parsing Item"_s;
+    QgsDebugError( u"Error parsing Item: %1"_s.arg( ex.what() ) );
     return nullptr;
   }
 }
@@ -413,10 +386,11 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
     if ( linkUrl.isRelative() )
       linkUrl = mBaseUrl.resolved( linkUrl );
 
-    const QgsStacLink l( linkUrl.toString(),
-                         QString::fromStdString( link.at( "rel" ) ),
-                         link.contains( "type" ) ? getString( link["type"] ) : QString(),
-                         link.contains( "title" ) ? getString( link["title"] ) : QString() );
+    const QgsStacLink
+      l( linkUrl.toString(),
+         QString::fromStdString( link.at( "rel" ) ),
+         link.contains( "type" ) ? getString( link["type"] ) : QString(),
+         link.contains( "title" ) ? getString( link["title"] ) : QString() );
     links.append( l );
   }
   return links;
@@ -432,11 +406,12 @@ QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
     if ( assetUrl.isRelative() )
       assetUrl = mBaseUrl.resolved( assetUrl );
 
-    const QgsStacAsset a( assetUrl.toString(),
-                          value.contains( "title" ) ? getString( value["title"] ) : QString(),
-                          value.contains( "description" ) ? getString( value["description"] ) : QString(),
-                          value.contains( "type" ) ? getString( value["type"] ) : QString(),
-                          value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
+    const QgsStacAsset
+      a( assetUrl.toString(),
+         value.contains( "title" ) ? getString( value["title"] ) : QString(),
+         value.contains( "description" ) ? getString( value["description"] ) : QString(),
+         value.contains( "type" ) ? getString( value["type"] ) : QString(),
+         value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
     assets.insert( QString::fromStdString( asset.key() ), a );
   }
   return assets;
@@ -449,7 +424,7 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   const int minMinor = 0;
   const int minRelease = 0;
 
-  const thread_local QRegularExpression r( QStringLiteral( "^(\\d+).(\\d+).(\\d+)(-.*)*" ) );
+  const thread_local QRegularExpression r( u"^(\\d+).(\\d+).(\\d+)(-.*)*"_s );
   const QRegularExpressionMatch match = r.match( version );
 
   const QStringList m = match.capturedTexts();
@@ -462,11 +437,11 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   const int minor = m[2].toInt();
   const int release = m[3].toInt();
 
-  if ( major > maxMajor ||
-       major < minMajor ||
-       ( major == minMajor && minor < minMinor ) ||
-       ( major == minMajor && minor == minMinor && release < minRelease ) ||
-       ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
+  if ( major > maxMajor
+       || major < minMajor
+       || ( major == minMajor && minor < minMinor )
+       || ( major == minMajor && minor == minMinor && release < minRelease )
+       || ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
   {
     return false;
   }
@@ -494,12 +469,12 @@ std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
     }
 
     if ( mData.contains( "numberMatched" ) )
-      numberMatched =  mData["numberMatched"].get<int>();
+      numberMatched = mData["numberMatched"].get<int>();
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing ItemCollection" );
-    QgsDebugError( QStringLiteral( "Error parsing ItemCollection: %1" ).arg( ex.what() ) );
+    mError = u"Error parsing ItemCollection"_s;
+    QgsDebugError( u"Error parsing ItemCollection: %1"_s.arg( ex.what() ) );
     return nullptr;
   }
 
@@ -537,8 +512,8 @@ QgsStacCollectionList *QgsStacParser::collections()
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing ItemCollection" );
-    QgsDebugError( QStringLiteral( "Error parsing ItemCollection: %1" ).arg( ex.what() ) );
+    mError = u"Error parsing ItemCollection"_s;
+    QgsDebugError( u"Error parsing ItemCollection: %1"_s.arg( ex.what() ) );
     return nullptr;
   }
 

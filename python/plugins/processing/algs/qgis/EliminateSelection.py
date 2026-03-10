@@ -21,22 +21,21 @@ __copyright__ = "(C) 2017, Bernhard Ströbl"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     QgsApplication,
-    QgsFeatureRequest,
     QgsFeature,
+    QgsFeatureRequest,
     QgsFeatureSink,
     QgsGeometry,
+    QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingUtils,
-    QgsProcessingParameterVectorLayer,
     QgsProcessingParameterEnum,
-    QgsProcessing,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingUtils,
 )
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 

@@ -24,17 +24,17 @@ import re
 
 from qgis.core import (
     QgsDataProvider,
-    QgsRasterLayer,
-    QgsWkbTypes,
-    QgsVectorLayer,
-    QgsProject,
-    QgsSettings,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsExpressionContextUtils,
+    QgsFeatureRequest,
     QgsProcessingContext,
     QgsProcessingUtils,
-    QgsFeatureRequest,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    QgsExpressionContextScope,
+    QgsProject,
+    QgsRasterLayer,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication
@@ -117,13 +117,13 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
     Loads a layer/table into the current project, given its file.
 
     .. deprecated:: 3.0
-    Do not use, will be removed in QGIS 4.0
+    Do not use, will be removed in QGIS 5.0
     """
 
     from warnings import warn
 
     warn(
-        "processing.load is deprecated and will be removed in QGIS 4.0",
+        "processing.load is deprecated and will be removed in QGIS 5.0",
         DeprecationWarning,
     )
 

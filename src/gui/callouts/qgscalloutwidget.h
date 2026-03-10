@@ -30,7 +30,7 @@
  * \brief Base class for widgets which allow control over the properties of callouts.
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsCalloutWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 

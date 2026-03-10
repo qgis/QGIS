@@ -23,12 +23,10 @@
 QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response )
   : mFilters( filters )
   , mResponse( response )
-{
-}
+{}
 
 void QgsFilterResponseDecorator::start()
 {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
@@ -38,12 +36,10 @@ void QgsFilterResponseDecorator::start()
       return;
     }
   }
-#endif
 }
 
 void QgsFilterResponseDecorator::ready()
 {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
@@ -53,12 +49,10 @@ void QgsFilterResponseDecorator::ready()
       return;
     }
   }
-#endif
 }
 
 void QgsFilterResponseDecorator::finish()
 {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
@@ -69,7 +63,6 @@ void QgsFilterResponseDecorator::finish()
       break;
     }
   }
-#endif
   // Will call internal 'flush'
   mResponse.finish();
 }
@@ -77,7 +70,6 @@ void QgsFilterResponseDecorator::finish()
 
 void QgsFilterResponseDecorator::flush()
 {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
 
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
@@ -88,6 +80,5 @@ void QgsFilterResponseDecorator::flush()
       return;
     }
   }
-#endif
   mResponse.flush();
 }

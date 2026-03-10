@@ -23,7 +23,6 @@ import os
 
 
 class Test:
-
     def __init__(self, iface):
         plugin_dir = os.path.dirname(__file__)
 

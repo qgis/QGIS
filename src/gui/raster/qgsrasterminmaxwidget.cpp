@@ -25,14 +25,17 @@
 
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsrasterminmaxwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  QgsDebugMsgLevel( u"Entered."_s, 4 );
   setupUi( this );
 
   mStatisticsExtentCombo->addItem( tr( "Whole Raster" ), QVariant::fromValue( Qgis::RasterRangeExtent::WholeRaster ) );
@@ -155,12 +158,8 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
   minMaxOrigin.setExtent( mStatisticsExtentCombo->currentData().value<Qgis::RasterRangeExtent>() );
   minMaxOrigin.setStatAccuracy( cboAccuracy->currentData().value<Qgis::RasterRangeAccuracy>() );
 
-  minMaxOrigin.setCumulativeCutLower(
-    mCumulativeCutLowerDoubleSpinBox->value() / 100.0
-  );
-  minMaxOrigin.setCumulativeCutUpper(
-    mCumulativeCutUpperDoubleSpinBox->value() / 100.0
-  );
+  minMaxOrigin.setCumulativeCutLower( mCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  minMaxOrigin.setCumulativeCutUpper( mCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
   minMaxOrigin.setStdDevFactor( mStdDevSpinBox->value() );
 
   return minMaxOrigin;
@@ -168,7 +167,7 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
 
 void QgsRasterMinMaxWidget::doComputations()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  QgsDebugMsgLevel( u"Entered."_s, 4 );
   if ( !mLayer->dataProvider() )
     return;
 
@@ -178,7 +177,7 @@ void QgsRasterMinMaxWidget::doComputations()
   const QgsRasterMinMaxOrigin newMinMaxOrigin = minMaxOrigin();
   if ( mLastRectangleValid && mLastRectangle == myExtent && mLastMinMaxOrigin == newMinMaxOrigin && !mBandsChanged )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Does not need to redo statistics computations" ), 2 );
+    QgsDebugMsgLevel( u"Does not need to redo statistics computations"_s, 2 );
     return;
   }
 
@@ -189,7 +188,7 @@ void QgsRasterMinMaxWidget::doComputations()
 
   for ( const int myBand : std::as_const( mBands ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "myBand = %1" ).arg( myBand ), 2 );
+    QgsDebugMsgLevel( u"myBand = %1"_s.arg( myBand ), 2 );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
     {
       continue;

@@ -21,6 +21,10 @@
 #include "qgis_analysis.h"
 #include "qgsderivativefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
@@ -35,10 +39,7 @@ class ANALYSIS_EXPORT QgsSlopeFilter : public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-    const QString openClProgramBaseName() const override
-    {
-      return QStringLiteral( "slope" );
-    }
+    const QString openClProgramBaseName() const override { return u"slope"_s; }
 #endif
 };
 

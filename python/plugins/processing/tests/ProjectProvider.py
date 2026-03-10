@@ -20,17 +20,18 @@ __date__ = "July 2018"
 __copyright__ = "(C) 2018, Nyall Dawson"
 
 import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.PyQt.QtCore import QTemporaryFile
+
 from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsProject
-from processing.modeler.ProjectProvider import ProjectProvider
+from qgis.PyQt.QtCore import QTemporaryFile
+from qgis.testing import QgisTestCase, start_app
+
 from processing.modeler.ModelerDialog import ModelerDialog
+from processing.modeler.ProjectProvider import ProjectProvider
 
 start_app()
 
 
 class ProjectProviderTest(QgisTestCase):
-
     def testSaveRestoreFromProject(self):
         p = QgsProject()
         provider = ProjectProvider(p)

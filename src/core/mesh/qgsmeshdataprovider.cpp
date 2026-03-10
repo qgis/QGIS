@@ -21,13 +21,15 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
+
 #include "moc_qgsmeshdataprovider.cpp"
 
-QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+using namespace Qt::StringLiterals;
+
+QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
-{
-}
+{}
 
 QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities()
 {
@@ -61,9 +63,8 @@ QgsMeshDriverMetadata QgsMeshDataProvider::driverMetadata() const
 }
 
 QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
-  const QDateTime &referenceTime,
-  int groupIndex, qint64 time,
-  QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
+  const QDateTime &referenceTime, int groupIndex, qint64 time, QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method
+) const
 {
   const QDateTime requestDateTime = referenceTime.addMSecs( time );
   qint64 providerTime;
@@ -115,8 +116,9 @@ QList<QgsMeshDatasetIndex> QgsMeshDatasetSourceInterface::datasetIndexInTimeInte
   return ret;
 }
 
-QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
-  mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
+QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface()
+  : mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() )
+{}
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {
@@ -129,16 +131,13 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata(
 }
 
 bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
-  const QString &path,
-  const QgsMeshDatasetGroupMetadata &meta,
-  const QVector<QgsMeshDataBlock> &datasetValues,
-  const QVector<QgsMeshDataBlock> &datasetActive,
-  const QVector<double> &times )
+  const QString &path, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
+)
 {
   // Form DRIVER:filename
   QString filename = path;
   // ASCII dat supports face, edge and vertex datasets
-  QString driverName = QStringLiteral( "DAT" );
+  QString driverName = u"DAT"_s;
   QStringList parts = path.split( ':' );
   if ( parts.size() > 1 )
   {

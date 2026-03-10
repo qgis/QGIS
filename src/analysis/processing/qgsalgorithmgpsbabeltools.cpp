@@ -15,7 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 #if QT_CONFIG( process )
 
@@ -35,7 +38,7 @@
 
 QString QgsConvertGpxFeatureTypeAlgorithm::name() const
 {
-  return QStringLiteral( "convertgpxfeaturetype" );
+  return u"convertgpxfeaturetype"_s;
 }
 
 QString QgsConvertGpxFeatureTypeAlgorithm::displayName() const
@@ -55,28 +58,32 @@ QString QgsConvertGpxFeatureTypeAlgorithm::group() const
 
 QString QgsConvertGpxFeatureTypeAlgorithm::groupId() const
 {
-  return QStringLiteral( "gps" );
+  return u"gps"_s;
 }
 
 void QgsConvertGpxFeatureTypeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "GPX files" ) + u" (*.gpx *.GPX)"_s )
+  );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "CONVERSION" ), QObject::tr( "Conversion" ), { QObject::tr( "Waypoints from a Route" ), QObject::tr( "Waypoints from a Track" ), QObject::tr( "Route from Waypoints" ), QObject::tr( "Track from Waypoints" ) }, false, 0 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"CONVERSION"_s, QObject::tr( "Conversion" ), { QObject::tr( "Waypoints from a Route" ), QObject::tr( "Waypoints from a Track" ), QObject::tr( "Route from Waypoints" ), QObject::tr( "Track from Waypoints" ) }, false, 0 )
+  );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output" ), QObject::tr( "GPX files" ) + u" (*.gpx *.GPX)"_s ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Output layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output layer" ) ) );
 }
 
 QIcon QgsConvertGpxFeatureTypeAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QString QgsConvertGpxFeatureTypeAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::iconPath( u"/mIconGps.svg"_s );
 }
 
 QString QgsConvertGpxFeatureTypeAlgorithm::shortHelpString() const
@@ -97,14 +104,14 @@ QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInst
 
 QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
-  const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
+  const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
 
-  const ConversionType convertType = static_cast<ConversionType>( parameterAsEnum( parameters, QStringLiteral( "CONVERSION" ), context ) );
+  const ConversionType convertType = static_cast<ConversionType>( parameterAsEnum( parameters, u"CONVERSION"_s, context ) );
 
   QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
-    babelPath = QStringLiteral( "gpsbabel" );
+    babelPath = u"gpsbabel"_s;
 
   QStringList processArgs;
   QStringList logArgs;
@@ -112,12 +119,8 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
   feedback->pushCommandInfo( QObject::tr( "Conversion command: " ) + babelPath + ' ' + logArgs.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( babelPath, processArgs );
-  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba );
-  } );
-  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
-    feedback->pushDebugInfo( ba );
-  } );
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba ); } );
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) { feedback->pushDebugInfo( ba ); } );
 
   const int res = babelProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
@@ -148,13 +151,13 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
   {
     case QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute:
     case QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, u"gpx"_s );
       break;
     case QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, u"gpx"_s );
       break;
     case QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, u"gpx"_s );
       break;
   }
 
@@ -166,13 +169,13 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
   else
   {
     const QString layerId = layer->id();
-    outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    outputs.insert( u"OUTPUT_LAYER"_s, layerId );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }
 
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  outputs.insert( u"OUTPUT"_s, outputPath );
   return outputs;
 }
 
@@ -180,42 +183,42 @@ void QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( const QString &inpu
 {
   logArgs.reserve( 10 );
   processArgs.reserve( 10 );
-  for ( const QString &arg : { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ) } )
+  for ( const QString &arg : { u"-i"_s, u"gpx"_s, u"-f"_s } )
   {
     logArgs << arg;
     processArgs << arg;
   }
 
   // when showing the babel command, wrap filenames in "", which is what QProcess does internally.
-  logArgs << QStringLiteral( "\"%1\"" ).arg( inputPath );
+  logArgs << u"\"%1\""_s.arg( inputPath );
   processArgs << inputPath;
 
   QStringList convertStrings;
   switch ( conversion )
   {
     case QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=rte,del" );
+      convertStrings << u"-x"_s << u"transform,wpt=rte,del"_s;
       break;
     case QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=trk,del" );
+      convertStrings << u"-x"_s << u"transform,wpt=trk,del"_s;
       break;
     case QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,rte=wpt,del" );
+      convertStrings << u"-x"_s << u"transform,rte=wpt,del"_s;
       break;
     case QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,trk=wpt,del" );
+      convertStrings << u"-x"_s << u"transform,trk=wpt,del"_s;
       break;
   }
   logArgs << convertStrings;
   processArgs << convertStrings;
 
-  for ( const QString &arg : { QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ) } )
+  for ( const QString &arg : { u"-o"_s, u"gpx"_s, u"-F"_s } )
   {
     logArgs << arg;
     processArgs << arg;
   }
 
-  logArgs << QStringLiteral( "\"%1\"" ).arg( outputPath );
+  logArgs << u"\"%1\""_s.arg( outputPath );
   processArgs << outputPath;
 }
 
@@ -226,7 +229,7 @@ void QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( const QString &inpu
 
 QString QgsConvertGpsDataAlgorithm::name() const
 {
-  return QStringLiteral( "convertgpsdata" );
+  return u"convertgpsdata"_s;
 }
 
 QString QgsConvertGpsDataAlgorithm::displayName() const
@@ -246,43 +249,48 @@ QString QgsConvertGpsDataAlgorithm::group() const
 
 QString QgsConvertGpsDataAlgorithm::groupId() const
 {
-  return QStringLiteral( "gps" );
+  return u"gps"_s;
 }
 
 void QgsConvertGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QgsApplication::gpsBabelFormatRegistry()->importFileFilter() + QStringLiteral( ";;%1" ).arg( QObject::tr( "All files (*.*)" ) ) ) );
+  addParameter( new QgsProcessingParameterFile(
+    u"INPUT"_s,
+    QObject::tr( "Input file" ),
+    Qgis::ProcessingFileParameterBehavior::File,
+    QString(),
+    QVariant(),
+    false,
+    QgsApplication::gpsBabelFormatRegistry()->importFileFilter() + u";;%1"_s.arg( QObject::tr( "All files (*.*)" ) )
+  ) );
 
-  auto formatParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMAT" ), QObject::tr( "Format" ) );
+  auto formatParam = std::make_unique<QgsProcessingParameterString>( u"FORMAT"_s, QObject::tr( "Format" ) );
 
   QStringList formats;
   const QStringList formatNames = QgsApplication::gpsBabelFormatRegistry()->importFormatNames();
   for ( const QString &format : formatNames )
     formats << QgsApplication::gpsBabelFormatRegistry()->importFormat( format )->description();
 
-  std::sort( formats.begin(), formats.end(), []( const QString &a, const QString &b ) {
-    return a.compare( b, Qt::CaseInsensitive ) < 0;
-  } );
+  std::sort( formats.begin(), formats.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
-  formatParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), formats } } ) }
-  } );
+  formatParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, formats } } ) } } );
   addParameter( formatParam.release() );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "FEATURE_TYPE" ), QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"FEATURE_TYPE"_s, QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output" ), QObject::tr( "GPX files" ) + u" (*.gpx *.GPX)"_s ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Output layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output layer" ) ) );
 }
 
 QIcon QgsConvertGpsDataAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QString QgsConvertGpsDataAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::iconPath( u"/mIconGps.svg"_s );
 }
 
 QString QgsConvertGpsDataAlgorithm::shortHelpString() const
@@ -302,24 +310,23 @@ QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
-  const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
+  const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
 
-  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
+  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, u"FEATURE_TYPE"_s, context ) );
 
   QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
-    babelPath = QStringLiteral( "gpsbabel" );
+    babelPath = u"gpsbabel"_s;
 
-  const QString formatName = parameterAsString( parameters, QStringLiteral( "FORMAT" ), context );
+  const QString formatName = parameterAsString( parameters, u"FORMAT"_s, context );
   const QgsBabelSimpleImportFormat *format = QgsApplication::gpsBabelFormatRegistry()->importFormat( formatName );
   if ( !format ) // second try, match using descriptions instead of names
     format = QgsApplication::gpsBabelFormatRegistry()->importFormatByDescription( formatName );
 
   if ( !format )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel format “%1”. Valid formats are: %2" )
-                                    .arg( formatName, QgsApplication::gpsBabelFormatRegistry()->importFormatNames().join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel format “%1”. Valid formats are: %2" ).arg( formatName, QgsApplication::gpsBabelFormatRegistry()->importFormatNames().join( ", "_L1 ) ) );
   }
 
   switch ( featureType )
@@ -327,24 +334,21 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
     case Qgis::GpsFeatureType::Waypoint:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Waypoints ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting waypoints." )
-                                        .arg( formatName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting waypoints." ).arg( formatName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Route:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Routes ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting routes." )
-                                        .arg( formatName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting routes." ).arg( formatName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Track:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Tracks ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting tracks." )
-                                        .arg( formatName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting tracks." ).arg( formatName ) );
       }
       break;
   }
@@ -356,12 +360,8 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   feedback->pushCommandInfo( QObject::tr( "Conversion command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba );
-  } );
-  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
-    feedback->pushDebugInfo( ba );
-  } );
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba ); } );
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) { feedback->pushDebugInfo( ba ); } );
 
   const int res = babelProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
@@ -391,13 +391,13 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   switch ( featureType )
   {
     case Qgis::GpsFeatureType::Waypoint:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, u"gpx"_s );
       break;
     case Qgis::GpsFeatureType::Route:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, u"gpx"_s );
       break;
     case Qgis::GpsFeatureType::Track:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, u"gpx"_s );
       break;
   }
 
@@ -409,13 +409,13 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   else
   {
     const QString layerId = layer->id();
-    outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    outputs.insert( u"OUTPUT_LAYER"_s, layerId );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }
 
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  outputs.insert( u"OUTPUT"_s, outputPath );
   return outputs;
 }
 
@@ -425,7 +425,7 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
 
 QString QgsDownloadGpsDataAlgorithm::name() const
 {
-  return QStringLiteral( "downloadgpsdata" );
+  return u"downloadgpsdata"_s;
 }
 
 QString QgsDownloadGpsDataAlgorithm::displayName() const
@@ -445,52 +445,46 @@ QString QgsDownloadGpsDataAlgorithm::group() const
 
 QString QgsDownloadGpsDataAlgorithm::groupId() const
 {
-  return QStringLiteral( "gps" );
+  return u"gps"_s;
 }
 
 void QgsDownloadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  auto deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
+  auto deviceParam = std::make_unique<QgsProcessingParameterString>( u"DEVICE"_s, QObject::tr( "Device" ) );
 
   QStringList deviceNames = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
-  std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) {
-    return a.compare( b, Qt::CaseInsensitive ) < 0;
-  } );
+  std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
-  deviceParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), deviceNames } } ) }
-  } );
+  deviceParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, deviceNames } } ) } } );
   addParameter( deviceParam.release() );
 
 
-  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
-  auto portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
+  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( u"usb:"_s, u"usb:"_s );
+  auto portParam = std::make_unique<QgsProcessingParameterString>( u"PORT"_s, QObject::tr( "Port" ) );
 
   QStringList ports;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )
     ports << it->second;
-  std::sort( ports.begin(), ports.end(), []( const QString &a, const QString &b ) {
-    return a.compare( b, Qt::CaseInsensitive ) < 0;
-  } );
+  std::sort( ports.begin(), ports.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
-  portParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), ports } } ) }
-  } );
+  portParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, ports } } ) } } );
   addParameter( portParam.release() );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "FEATURE_TYPE" ), QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"FEATURE_TYPE"_s, QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output" ), QObject::tr( "GPX files" ) + u" (*.gpx *.GPX)"_s ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Output layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output layer" ) ) );
 }
 
 QIcon QgsDownloadGpsDataAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QString QgsDownloadGpsDataAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::iconPath( u"/mIconGps.svg"_s );
 }
 
 QString QgsDownloadGpsDataAlgorithm::shortHelpString() const
@@ -510,24 +504,23 @@ QgsDownloadGpsDataAlgorithm *QgsDownloadGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
+  const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
+  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, u"FEATURE_TYPE"_s, context ) );
 
   QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
-    babelPath = QStringLiteral( "gpsbabel" );
+    babelPath = u"gpsbabel"_s;
 
-  const QString deviceName = parameterAsString( parameters, QStringLiteral( "DEVICE" ), context );
+  const QString deviceName = parameterAsString( parameters, u"DEVICE"_s, context );
   const QgsBabelGpsDeviceFormat *format = QgsApplication::gpsBabelFormatRegistry()->deviceFormat( deviceName );
   if ( !format )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" )
-                                    .arg( deviceName, QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" ).arg( deviceName, QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( ", "_L1 ) ) );
   }
 
-  const QString portName = parameterAsString( parameters, QStringLiteral( "PORT" ), context );
+  const QString portName = parameterAsString( parameters, u"PORT"_s, context );
   QString inputPort;
-  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
+  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( u"usb:"_s, u"usb:"_s );
   QStringList validPorts;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )
   {
@@ -539,8 +532,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   }
   if ( inputPort.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
-                                    .arg( portName, validPorts.join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" ).arg( portName, validPorts.join( ", "_L1 ) ) );
   }
 
   switch ( featureType )
@@ -548,24 +540,21 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
     case Qgis::GpsFeatureType::Waypoint:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Waypoints ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting waypoints." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting waypoints." ).arg( deviceName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Route:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Routes ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting routes." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting routes." ).arg( deviceName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Track:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Tracks ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting tracks." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support converting tracks." ).arg( deviceName ) );
       }
       break;
   }
@@ -577,12 +566,8 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   feedback->pushCommandInfo( QObject::tr( "Download command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba );
-  } );
-  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
-    feedback->pushDebugInfo( ba );
-  } );
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba ); } );
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) { feedback->pushDebugInfo( ba ); } );
 
   const int res = babelProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
@@ -612,13 +597,13 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   switch ( featureType )
   {
     case Qgis::GpsFeatureType::Waypoint:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=waypoint", layerName, u"gpx"_s );
       break;
     case Qgis::GpsFeatureType::Route:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=route", layerName, u"gpx"_s );
       break;
     case Qgis::GpsFeatureType::Track:
-      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, QStringLiteral( "gpx" ) );
+      layer = std::make_unique<QgsVectorLayer>( outputPath + "?type=track", layerName, u"gpx"_s );
       break;
   }
 
@@ -630,13 +615,13 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   else
   {
     const QString layerId = layer->id();
-    outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    outputs.insert( u"OUTPUT_LAYER"_s, layerId );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }
 
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  outputs.insert( u"OUTPUT"_s, outputPath );
   return outputs;
 }
 
@@ -647,7 +632,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
 
 QString QgsUploadGpsDataAlgorithm::name() const
 {
-  return QStringLiteral( "uploadgpsdata" );
+  return u"uploadgpsdata"_s;
 }
 
 QString QgsUploadGpsDataAlgorithm::displayName() const
@@ -667,49 +652,45 @@ QString QgsUploadGpsDataAlgorithm::group() const
 
 QString QgsUploadGpsDataAlgorithm::groupId() const
 {
-  return QStringLiteral( "gps" );
+  return u"gps"_s;
 }
 
 void QgsUploadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "GPX files" ) + u" (*.gpx *.GPX)"_s )
+  );
 
-  auto deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
+  auto deviceParam = std::make_unique<QgsProcessingParameterString>( u"DEVICE"_s, QObject::tr( "Device" ) );
 
   QStringList deviceNames = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
-  std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) {
-    return a.compare( b, Qt::CaseInsensitive ) < 0;
-  } );
+  std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
-  deviceParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), deviceNames } } ) }
-  } );
+  deviceParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, deviceNames } } ) } } );
   addParameter( deviceParam.release() );
 
-  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
-  auto portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
+  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( u"usb:"_s, u"usb:"_s );
+  auto portParam = std::make_unique<QgsProcessingParameterString>( u"PORT"_s, QObject::tr( "Port" ) );
 
   QStringList ports;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )
     ports << it->second;
-  std::sort( ports.begin(), ports.end(), []( const QString &a, const QString &b ) {
-    return a.compare( b, Qt::CaseInsensitive ) < 0;
-  } );
+  std::sort( ports.begin(), ports.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
-  portParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), ports } } ) }
-  } );
+  portParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, ports } } ) } } );
   addParameter( portParam.release() );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "FEATURE_TYPE" ), QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"FEATURE_TYPE"_s, QObject::tr( "Feature type" ), { QObject::tr( "Waypoints" ), QObject::tr( "Routes" ), QObject::tr( "Tracks" ) }, false, 0 ) );
 }
 
 QIcon QgsUploadGpsDataAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QString QgsUploadGpsDataAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::iconPath( u"/mIconGps.svg"_s );
 }
 
 QString QgsUploadGpsDataAlgorithm::shortHelpString() const
@@ -729,24 +710,23 @@ QgsUploadGpsDataAlgorithm *QgsUploadGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
-  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
+  const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
+  const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, u"FEATURE_TYPE"_s, context ) );
 
   QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
-    babelPath = QStringLiteral( "gpsbabel" );
+    babelPath = u"gpsbabel"_s;
 
-  const QString deviceName = parameterAsString( parameters, QStringLiteral( "DEVICE" ), context );
+  const QString deviceName = parameterAsString( parameters, u"DEVICE"_s, context );
   const QgsBabelGpsDeviceFormat *format = QgsApplication::gpsBabelFormatRegistry()->deviceFormat( deviceName );
   if ( !format )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" )
-                                    .arg( deviceName, QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" ).arg( deviceName, QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( ", "_L1 ) ) );
   }
 
-  const QString portName = parameterAsString( parameters, QStringLiteral( "PORT" ), context );
+  const QString portName = parameterAsString( parameters, u"PORT"_s, context );
   QString outputPort;
-  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
+  const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( u"usb:"_s, u"usb:"_s );
   QStringList validPorts;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )
   {
@@ -758,8 +738,7 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   }
   if ( outputPort.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
-                                    .arg( portName, validPorts.join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" ).arg( portName, validPorts.join( ", "_L1 ) ) );
   }
 
 
@@ -768,24 +747,21 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
     case Qgis::GpsFeatureType::Waypoint:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Waypoints ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support waypoints." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support waypoints." ).arg( deviceName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Route:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Routes ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support routes." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support routes." ).arg( deviceName ) );
       }
       break;
 
     case Qgis::GpsFeatureType::Track:
       if ( !( format->capabilities() & Qgis::BabelFormatCapability::Tracks ) )
       {
-        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support tracks." )
-                                        .arg( deviceName ) );
+        throw QgsProcessingException( QObject::tr( "The GPSBabel format “%1” does not support tracks." ).arg( deviceName ) );
       }
       break;
   }
@@ -797,12 +773,8 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   feedback->pushCommandInfo( QObject::tr( "Upload command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba );
-  } );
-  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
-    feedback->pushDebugInfo( ba );
-  } );
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba ); } );
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) { feedback->pushDebugInfo( ba ); } );
 
   const int res = babelProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )

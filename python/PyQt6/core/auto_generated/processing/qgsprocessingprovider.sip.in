@@ -23,7 +23,6 @@ same external application or related to a common area of analysis.
 #include "qgsprocessingprovider.h"
 %End
   public:
-
     QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingProvider.

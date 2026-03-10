@@ -10,7 +10,8 @@
 
 
 
-class QgsCircularString: QgsCurve
+
+class QgsCircularString : QgsCurve
 {
 %Docstring(signature="appended")
 Circular string geometry type.
@@ -20,7 +21,6 @@ Circular string geometry type.
 #include "qgscircularstring.h"
 %End
   public:
-
     QgsCircularString() /HoldGIL/;
 %Docstring
 Constructs an empty circular string.
@@ -180,6 +180,8 @@ circular string.
     virtual bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
+
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
 
     virtual bool hasCurvedSegments() const;
 

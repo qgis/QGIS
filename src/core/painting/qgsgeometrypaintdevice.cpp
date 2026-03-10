@@ -23,6 +23,10 @@
 #include "qgspolygon.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsGeometryPaintEngine
 //
@@ -30,8 +34,7 @@
 QgsGeometryPaintEngine::QgsGeometryPaintEngine( bool usePathStroker )
   : QPaintEngine( QPaintEngine::AllFeatures ) // we lie and say we support all paint features, as we don't want Qt trying to be helpful and rasterizing shapes
   , mUsePathStroker( usePathStroker )
-{
-}
+{}
 
 void QgsGeometryPaintEngine::setStrokedPathSegments( int segments )
 {
@@ -69,23 +72,22 @@ void QgsGeometryPaintEngine::updateState( const QPaintEngineState &state )
 void QgsGeometryPaintEngine::drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawImage method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawImage method"_s );
 }
 
 void QgsGeometryPaintEngine::drawPixmap( const QRectF &, const QPixmap &, const QRectF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawPixmap method"_s );
 }
 
 void QgsGeometryPaintEngine::drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawTiledPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawTiledPixmap method"_s );
 }
 
-template <typename T>
-void drawLinesImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *lines, int lineCount )
+template<typename T> void drawLinesImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *lines, int lineCount )
 {
   geometry.reserve( geometry.numGeometries() + lineCount );
   if ( transform.isIdentity() )
@@ -93,9 +95,8 @@ void drawLinesImp( const QTransform &transform, QgsGeometryCollection &geometry,
     for ( int i = 0; i < lineCount; ++i, ++lines )
     {
       geometry.addGeometry( new QgsLineString(
-                              QVector<double> { static_cast< double >( lines->x1() ), static_cast< double >( lines->x2() ) },
-                              QVector<double> { static_cast< double >( lines->y1() ), static_cast< double >( lines->y2() ) } )
-                          );
+        QVector<double> { static_cast< double >( lines->x1() ), static_cast< double >( lines->x2() ) }, QVector<double> { static_cast< double >( lines->y1() ), static_cast< double >( lines->y2() ) }
+      ) );
     }
   }
   else
@@ -111,10 +112,7 @@ void drawLinesImp( const QTransform &transform, QgsGeometryCollection &geometry,
       transform.map( x1, y1, &tx1, &ty1 );
       transform.map( x2, y2, &tx2, &ty2 );
 
-      geometry.addGeometry( new QgsLineString(
-                              QVector<double> { tx1, tx2 },
-                              QVector<double> { ty1, ty2 } )
-                          );
+      geometry.addGeometry( new QgsLineString( QVector<double> { tx1, tx2 }, QVector<double> { ty1, ty2 } ) );
     }
   }
 }
@@ -147,16 +145,14 @@ void QgsGeometryPaintEngine::drawLines( const QLine *lines, int lineCount )
   }
 }
 
-template <typename T>
-void drawPointsImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount )
+template<typename T> void drawPointsImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount )
 {
   geometry.reserve( geometry.numGeometries() + pointCount );
   if ( transform.isIdentity() )
   {
     for ( int i = 0; i < pointCount; ++i, ++points )
     {
-      geometry.addGeometry( new QgsPoint( static_cast< double >( points->x() ),
-                                          static_cast< double >( points->y() ) ) );
+      geometry.addGeometry( new QgsPoint( static_cast< double >( points->x() ), static_cast< double >( points->y() ) ) );
     }
   }
   else
@@ -186,8 +182,7 @@ void QgsGeometryPaintEngine::drawPoints( const QPoint *points, int pointCount )
   drawPointsImp( transform, mGeometry, points, pointCount );
 }
 
-template <typename T>
-void drawRectsImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *rects, int rectCount )
+template<typename T> void drawRectsImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *rects, int rectCount )
 {
   geometry.reserve( geometry.numGeometries() + rectCount );
   if ( transform.isIdentity() )
@@ -195,18 +190,21 @@ void drawRectsImp( const QTransform &transform, QgsGeometryCollection &geometry,
     for ( int i = 0; i < rectCount; ++i, ++rects )
     {
       QgsLineString *exterior = new QgsLineString(
-        QVector<double> { static_cast< double >( rects->left() ),
-                          static_cast< double >( rects->right() ),
-                          static_cast< double >( rects->right() ),
-                          static_cast< double >( rects->left() ),
-                          static_cast< double>( rects->left() )
-                        },
-        QVector<double> { static_cast< double >( rects->bottom() ),
-                          static_cast< double >( rects->bottom() ),
-                          static_cast< double >( rects->top() ),
-                          static_cast< double >( rects->top() ),
-                          static_cast< double >( rects->bottom() )
-                        } );
+        QVector<double> {
+          static_cast< double >( rects->left() ),
+          static_cast< double >( rects->right() ),
+          static_cast< double >( rects->right() ),
+          static_cast< double >( rects->left() ),
+          static_cast< double>( rects->left() )
+        },
+        QVector<double> {
+          static_cast< double >( rects->bottom() ),
+          static_cast< double >( rects->bottom() ),
+          static_cast< double >( rects->top() ),
+          static_cast< double >( rects->top() ),
+          static_cast< double >( rects->bottom() )
+        }
+      );
       geometry.addGeometry( new QgsPolygon( exterior ) );
     }
   }
@@ -225,9 +223,8 @@ void drawRectsImp( const QTransform &transform, QgsGeometryCollection &geometry,
       transform.map( left, top, &topLeftX, &topLeftY );
       transform.map( right, top, &topRightX, &topRightY );
 
-      QgsLineString *exterior = new QgsLineString(
-        QVector<double> { bottomLeftX, bottomRightX, topRightX, topLeftX, bottomLeftX  },
-        QVector<double> { bottomLeftY, bottomRightY, topRightY, topLeftY, bottomLeftY } );
+      QgsLineString *exterior
+        = new QgsLineString( QVector<double> { bottomLeftX, bottomRightX, topRightX, topLeftX, bottomLeftX }, QVector<double> { bottomLeftY, bottomRightY, topRightY, topLeftY, bottomLeftY } );
       geometry.addGeometry( new QgsPolygon( exterior ) );
     }
   }
@@ -245,8 +242,7 @@ void QgsGeometryPaintEngine::drawRects( const QRect *rects, int rectCount )
   drawRectsImp( transform, mGeometry, rects, rectCount );
 }
 
-template <typename T>
-void drawPolygonImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount, QPaintEngine::PolygonDrawMode mode, double simplifyTolerance )
+template<typename T> void drawPolygonImp( const QTransform &transform, QgsGeometryCollection &geometry, const T *points, int pointCount, QPaintEngine::PolygonDrawMode mode, double simplifyTolerance )
 {
   QVector< double > x;
   QVector< double > y;
@@ -493,11 +489,7 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
         const double y4 = path.elementAt( i + 2 ).y;
 
         // TODO -- we could likely reduce the number of segmented points here!
-        std::unique_ptr< QgsLineString> bezier( QgsLineString::fromBezierCurve(
-            QgsPoint( x1, y1 ),
-            QgsPoint( e.x, e.y ),
-            QgsPoint( x3, y3 ),
-            QgsPoint( x4, y4 ) ) );
+        std::unique_ptr< QgsLineString> bezier( QgsLineString::fromBezierCurve( QgsPoint( x1, y1 ), QgsPoint( e.x, e.y ), QgsPoint( x3, y3 ), QgsPoint( x4, y4 ) ) );
 
         currentX << bezier->xVector();
         currentY << bezier->yVector();
@@ -664,4 +656,3 @@ QgsGeometry QgsGeometryPaintDevice::painterPathToGeometry( const QPainterPath &p
   painter.end();
   return QgsGeometry( device.geometry().clone() );
 }
-

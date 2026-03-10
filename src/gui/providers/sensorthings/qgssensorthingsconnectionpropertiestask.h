@@ -17,10 +17,11 @@
 #define QGSSENSORTHINGSCONNECTIONPROPERTIESTASK_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgstaskmanager.h"
+
+#define SIP_NO_FILE
 
 class QgsSensorThingsConnectionPropertiesTask : public QgsTask
 {

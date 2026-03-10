@@ -27,9 +27,14 @@
 #include "qgsprojectviewsettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
+#include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutmapgridwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -51,6 +56,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::OrthogonalTicks ) );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
+
+  mHAlignmentComboBox->setAvailableAlignments( Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignRight | Qt::AlignmentFlag::AlignJustify );
 
   mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
@@ -113,6 +120,15 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mDistanceToMapFrameSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
   connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
   connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
+
+  connect( mHAlignmentComboBox, &QgsAlignmentComboBox::changed, this, [this] {
+    mMap->beginCommand( tr( "Change Grid Text Alignment" ) );
+    mMapGrid->setHorizontalAlignment( mHAlignmentComboBox->horizontalAlignment() );
+    mMap->endCommand();
+    mMap->updateBoundingRect();
+    mMap->update();
+  } );
+
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
@@ -156,19 +172,19 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select Grid Frame Color" ) );
   mGridFramePenColorButton->setAllowOpacity( true );
-  mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFramePenColorButton->setContext( u"composer"_s );
   mGridFramePenColorButton->setNoColorString( tr( "Transparent Frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill1ColorButton->setAllowOpacity( true );
-  mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFrameFill1ColorButton->setContext( u"composer"_s );
   mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill2ColorButton->setAllowOpacity( true );
-  mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFrameFill2ColorButton->setContext( u"composer"_s );
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
@@ -314,6 +330,7 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mAnnotationFontButton->blockSignals( block );
   mMinWidthSpinBox->blockSignals( block );
   mMaxWidthSpinBox->blockSignals( block );
+  mHAlignmentComboBox->blockSignals( block );
 }
 
 void QgsLayoutMapGridWidget::handleChangedFrameDisplay( Qgis::MapGridBorderSide border, const Qgis::MapGridComponentVisibility mode )
@@ -628,6 +645,8 @@ void QgsLayoutMapGridWidget::setGridItems()
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == Qgis::MapGridAnnotationFormat::CustomFormat );
   mDistanceToMapFrameSpinBox->setValue( mMapGrid->annotationFrameDistance() );
   mCoordinatePrecisionSpinBox->setValue( mMapGrid->annotationPrecision() );
+
+  mHAlignmentComboBox->setCurrentAlignment( mMapGrid->horizontalAlignment() );
 
   //Unit
   mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findData( QVariant::fromValue( mMapGrid->units() ) ) );
@@ -1288,9 +1307,9 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
   }
 
   QgsExpressionContext expressionContext = mMapGrid->createExpressionContext();
-  expressionContext.setHighlightedFunctions( QStringList() << QStringLiteral( "to_dms" ) << QStringLiteral( "to_dm" ) );
+  expressionContext.setHighlightedFunctions( QStringList() << u"to_dms"_s << u"to_dm"_s );
 
-  QgsExpressionBuilderDialog exprDlg( coverageLayer(), mMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer(), mMapGrid->annotationExpression(), this, u"generic"_s, expressionContext );
   exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )

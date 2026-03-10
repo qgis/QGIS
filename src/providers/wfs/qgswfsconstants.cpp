@@ -15,37 +15,41 @@
 
 #include "qgswfsconstants.h"
 
-const QString QgsWFSConstants::GML_NAMESPACE( QStringLiteral( "http://www.opengis.net/gml" ) );
-const QString QgsWFSConstants::OGC_NAMESPACE( QStringLiteral( "http://www.opengis.net/ogc" ) );
-const QString QgsWFSConstants::OWS_NAMESPACE( QStringLiteral( "http://www.opengis.net/ows" ) );
-const QString QgsWFSConstants::WFS_NAMESPACE( QStringLiteral( "http://www.opengis.net/wfs" ) );
-const QString QgsWFSConstants::XMLSCHEMA_NAMESPACE( QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
+#include <QString>
 
-const QString QgsWFSConstants::URI_PARAM_URL( QStringLiteral( "url" ) );
-const QString QgsWFSConstants::URI_PARAM_USERNAME( QStringLiteral( "username" ) );
-const QString QgsWFSConstants::URI_PARAM_USER( QStringLiteral( "user" ) );
-const QString QgsWFSConstants::URI_PARAM_PASSWORD( QStringLiteral( "password" ) );
-const QString QgsWFSConstants::URI_PARAM_AUTHCFG( QStringLiteral( "authcfg" ) );
-const QString QgsWFSConstants::URI_PARAM_VERSION( QStringLiteral( "version" ) );
-const QString QgsWFSConstants::URI_PARAM_TYPENAME( QStringLiteral( "typename" ) );
-const QString QgsWFSConstants::URI_PARAM_SRSNAME( QStringLiteral( "srsname" ) );
-const QString QgsWFSConstants::URI_PARAM_BBOX( QStringLiteral( "bbox" ) );
-const QString QgsWFSConstants::URI_PARAM_FILTER( QStringLiteral( "filter" ) );
-const QString QgsWFSConstants::URI_PARAM_OUTPUTFORMAT( QStringLiteral( "outputformat" ) );
-const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( QStringLiteral( "restrictToRequestBBOX" ) );
-const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( QStringLiteral( "maxNumFeatures" ) );
-const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( QStringLiteral( "IgnoreAxisOrientation" ) );
-const QString QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION( QStringLiteral( "InvertAxisOrientation" ) );
-const QString QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS( QStringLiteral( "validateSQLFunctions" ) );
-const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( QStringLiteral( "hideDownloadProgressDialog" ) );
-const QString QgsWFSConstants::URI_PARAM_PAGING_ENABLED( QStringLiteral( "pagingEnabled" ) );
-const QString QgsWFSConstants::URI_PARAM_PAGE_SIZE( QStringLiteral( "pageSize" ) );
-const QString QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES( QStringLiteral( "preferCoordinatesForWfsT11" ) );
-const QString QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE( QStringLiteral( "skipInitialGetFeature" ) );
-const QString QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE( QStringLiteral( "forceInitialGetFeature" ) );
-const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( QStringLiteral( "geometryTypeFilter" ) );
-const QString QgsWFSConstants::URI_PARAM_SQL( QStringLiteral( "sql" ) );
-const QString QgsWFSConstants::URI_PARAM_HTTPMETHOD( QStringLiteral( "httpMethod" ) );
-const QString QgsWFSConstants::URI_PARAM_FEATURE_MODE( QStringLiteral( "featureMode" ) );
+using namespace Qt::StringLiterals;
 
-const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
+const QString QgsWFSConstants::GML_NAMESPACE( u"http://www.opengis.net/gml"_s );
+const QString QgsWFSConstants::OGC_NAMESPACE( u"http://www.opengis.net/ogc"_s );
+const QString QgsWFSConstants::OWS_NAMESPACE( u"http://www.opengis.net/ows"_s );
+const QString QgsWFSConstants::WFS_NAMESPACE( u"http://www.opengis.net/wfs"_s );
+const QString QgsWFSConstants::XMLSCHEMA_NAMESPACE( u"http://www.w3.org/2001/XMLSchema"_s );
+
+const QString QgsWFSConstants::URI_PARAM_URL( u"url"_s );
+const QString QgsWFSConstants::URI_PARAM_USERNAME( u"username"_s );
+const QString QgsWFSConstants::URI_PARAM_USER( u"user"_s );
+const QString QgsWFSConstants::URI_PARAM_PASSWORD( u"password"_s );
+const QString QgsWFSConstants::URI_PARAM_AUTHCFG( u"authcfg"_s );
+const QString QgsWFSConstants::URI_PARAM_VERSION( u"version"_s );
+const QString QgsWFSConstants::URI_PARAM_TYPENAME( u"typename"_s );
+const QString QgsWFSConstants::URI_PARAM_SRSNAME( u"srsname"_s );
+const QString QgsWFSConstants::URI_PARAM_BBOX( u"bbox"_s );
+const QString QgsWFSConstants::URI_PARAM_FILTER( u"filter"_s );
+const QString QgsWFSConstants::URI_PARAM_OUTPUTFORMAT( u"outputformat"_s );
+const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( u"restrictToRequestBBOX"_s );
+const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( u"maxNumFeatures"_s );
+const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( u"IgnoreAxisOrientation"_s );
+const QString QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION( u"InvertAxisOrientation"_s );
+const QString QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS( u"validateSQLFunctions"_s );
+const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( u"hideDownloadProgressDialog"_s );
+const QString QgsWFSConstants::URI_PARAM_PAGING_ENABLED( u"pagingEnabled"_s );
+const QString QgsWFSConstants::URI_PARAM_PAGE_SIZE( u"pageSize"_s );
+const QString QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES( u"preferCoordinatesForWfsT11"_s );
+const QString QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE( u"skipInitialGetFeature"_s );
+const QString QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE( u"forceInitialGetFeature"_s );
+const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( u"geometryTypeFilter"_s );
+const QString QgsWFSConstants::URI_PARAM_SQL( u"sql"_s );
+const QString QgsWFSConstants::URI_PARAM_HTTPMETHOD( u"httpMethod"_s );
+const QString QgsWFSConstants::URI_PARAM_FEATURE_MODE( u"featureMode"_s );
+
+const QString QgsWFSConstants::VERSION_AUTO( u"auto"_s );

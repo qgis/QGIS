@@ -20,7 +20,10 @@
 #include "qgis_sip.h"
 #include "qgscodeeditor.h"
 
+#include <QString>
 #include <Qsci/qscilexerpython.h>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryBool;
@@ -55,7 +58,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
+    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( u"python"_s );
     static const QgsSettingsEntryString *settingCodeFormatter;
     static const QgsSettingsEntryInteger *settingMaxLineLength;
     static const QgsSettingsEntryBool *settingSortImports;
@@ -74,7 +77,12 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \param mode code editor mode (since QGIS 3.30)
      * \param flags code editor flags (since QGIS 3.32)
      */
-    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
+    QgsCodeEditorPython(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      const QList<QString> &filenames = QList<QString>(),
+      QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor,
+      QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding
+    );
 
     Qgis::ScriptLanguage language() const override;
     Qgis::ScriptLanguageCapabilities languageCapabilities() const override;

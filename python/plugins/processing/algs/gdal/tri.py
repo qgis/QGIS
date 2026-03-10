@@ -23,13 +23,14 @@ import os
 
 from qgis.core import (
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
-    QgsProcessingParameterString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -66,7 +67,7 @@ class tri(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

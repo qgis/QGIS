@@ -26,10 +26,13 @@
 #include <QEvent>
 #include <QGroupBox>
 #include <QLabel>
+#include <QString>
 #include <QTableView>
 #include <QTextDocumentFragment>
 #include <QTreeView>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 const int HIGHLIGHT_BACKGROUND_RED = 255;
 const int HIGHLIGHT_BACKGROUND_GREEN = 251;
@@ -43,7 +46,13 @@ const int HIGHLIGHT_TEXT_BLUE = 0;
 QgsOptionsDialogHighlightLabel::QgsOptionsDialogHighlightLabel( QLabel *label )
   : QgsOptionsDialogHighlightWidget( label )
   , mLabel( label )
-  , mStyleSheet( QStringLiteral( /*!search!*/ "QLabel { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6 );}/*!search!*/" ).arg( HIGHLIGHT_BACKGROUND_RED ).arg( HIGHLIGHT_BACKGROUND_GREEN ).arg( HIGHLIGHT_BACKGROUND_BLUE ).arg( HIGHLIGHT_TEXT_RED ).arg( HIGHLIGHT_TEXT_GREEN ).arg( HIGHLIGHT_TEXT_BLUE ) )
+  , mStyleSheet( QStringLiteral( /*!search!*/ "QLabel { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6 );}/*!search!*/" )
+                   .arg( HIGHLIGHT_BACKGROUND_RED )
+                   .arg( HIGHLIGHT_BACKGROUND_GREEN )
+                   .arg( HIGHLIGHT_BACKGROUND_BLUE )
+                   .arg( HIGHLIGHT_TEXT_RED )
+                   .arg( HIGHLIGHT_TEXT_GREEN )
+                   .arg( HIGHLIGHT_TEXT_BLUE ) )
 {}
 
 bool QgsOptionsDialogHighlightLabel::searchText( const QString &text )
@@ -78,9 +87,13 @@ void QgsOptionsDialogHighlightLabel::reset()
 QgsOptionsDialogHighlightCheckBox::QgsOptionsDialogHighlightCheckBox( QCheckBox *checkBox )
   : QgsOptionsDialogHighlightWidget( checkBox )
   , mCheckBox( checkBox )
-  , mStyleSheet( QStringLiteral( "/*!search!*/QCheckBox { background-color: rgb(%1, %2, %3); color: rgb( %4, %5, %6);}/*!search!*/" ).arg( HIGHLIGHT_BACKGROUND_RED ).arg( HIGHLIGHT_BACKGROUND_GREEN ).arg( HIGHLIGHT_BACKGROUND_BLUE ).arg( HIGHLIGHT_TEXT_RED ).arg( HIGHLIGHT_TEXT_GREEN ).arg( HIGHLIGHT_TEXT_BLUE ) )
-{
-}
+  , mStyleSheet( u"/*!search!*/QCheckBox { background-color: rgb(%1, %2, %3); color: rgb( %4, %5, %6);}/*!search!*/"_s.arg( HIGHLIGHT_BACKGROUND_RED )
+                   .arg( HIGHLIGHT_BACKGROUND_GREEN )
+                   .arg( HIGHLIGHT_BACKGROUND_BLUE )
+                   .arg( HIGHLIGHT_TEXT_RED )
+                   .arg( HIGHLIGHT_TEXT_GREEN )
+                   .arg( HIGHLIGHT_TEXT_BLUE ) )
+{}
 
 bool QgsOptionsDialogHighlightCheckBox::searchText( const QString &text )
 {
@@ -113,9 +126,13 @@ void QgsOptionsDialogHighlightCheckBox::reset()
 QgsOptionsDialogHighlightButton::QgsOptionsDialogHighlightButton( QAbstractButton *button )
   : QgsOptionsDialogHighlightWidget( button )
   , mButton( button )
-  , mStyleSheet( QStringLiteral( "/*!search!*/QAbstractButton { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6);}/*!search!*/" ).arg( HIGHLIGHT_BACKGROUND_RED ).arg( HIGHLIGHT_BACKGROUND_GREEN ).arg( HIGHLIGHT_BACKGROUND_BLUE ).arg( HIGHLIGHT_TEXT_RED ).arg( HIGHLIGHT_TEXT_GREEN ).arg( HIGHLIGHT_TEXT_BLUE ) )
-{
-}
+  , mStyleSheet( u"/*!search!*/QAbstractButton { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6);}/*!search!*/"_s.arg( HIGHLIGHT_BACKGROUND_RED )
+                   .arg( HIGHLIGHT_BACKGROUND_GREEN )
+                   .arg( HIGHLIGHT_BACKGROUND_BLUE )
+                   .arg( HIGHLIGHT_TEXT_RED )
+                   .arg( HIGHLIGHT_TEXT_GREEN )
+                   .arg( HIGHLIGHT_TEXT_BLUE ) )
+{}
 
 bool QgsOptionsDialogHighlightButton::searchText( const QString &text )
 {
@@ -148,9 +165,13 @@ void QgsOptionsDialogHighlightButton::reset()
 QgsOptionsDialogHighlightGroupBox::QgsOptionsDialogHighlightGroupBox( QGroupBox *groupBox )
   : QgsOptionsDialogHighlightWidget( groupBox )
   , mGroupBox( groupBox )
-  , mStyleSheet( QStringLiteral( "/*!search!*/QGroupBox::title { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6);}/*!search!*/" ).arg( HIGHLIGHT_BACKGROUND_RED ).arg( HIGHLIGHT_BACKGROUND_GREEN ).arg( HIGHLIGHT_BACKGROUND_BLUE ).arg( HIGHLIGHT_TEXT_RED ).arg( HIGHLIGHT_TEXT_GREEN ).arg( HIGHLIGHT_TEXT_BLUE ) )
-{
-}
+  , mStyleSheet( u"/*!search!*/QGroupBox::title { background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6);}/*!search!*/"_s.arg( HIGHLIGHT_BACKGROUND_RED )
+                   .arg( HIGHLIGHT_BACKGROUND_GREEN )
+                   .arg( HIGHLIGHT_BACKGROUND_BLUE )
+                   .arg( HIGHLIGHT_TEXT_RED )
+                   .arg( HIGHLIGHT_TEXT_GREEN )
+                   .arg( HIGHLIGHT_TEXT_BLUE ) )
+{}
 
 bool QgsOptionsDialogHighlightGroupBox::searchText( const QString &text )
 {
@@ -184,8 +205,7 @@ void QgsOptionsDialogHighlightGroupBox::reset()
 QgsOptionsDialogHighlightTree::QgsOptionsDialogHighlightTree( QTreeView *treeView )
   : QgsOptionsDialogHighlightWidget( treeView )
   , mTreeView( treeView )
-{
-}
+{}
 
 bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
 {
@@ -278,8 +298,7 @@ void QgsOptionsDialogHighlightTree::reset()
 QgsOptionsDialogHighlightTable::QgsOptionsDialogHighlightTable( QTableView *tableView )
   : QgsOptionsDialogHighlightWidget( tableView )
   , mTableView( tableView )
-{
-}
+{}
 
 bool QgsOptionsDialogHighlightTable::searchText( const QString &text )
 {
@@ -304,5 +323,4 @@ bool QgsOptionsDialogHighlightTable::highlightText( const QString & )
 }
 
 void QgsOptionsDialogHighlightTable::reset()
-{
-}
+{}

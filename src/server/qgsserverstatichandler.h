@@ -19,6 +19,10 @@
 #include "qgis_server.h"
 #include "qgsserverogcapihandler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup server
  * \brief Serves static files from the static path (resources/server/api/wfs3/static).
@@ -35,7 +39,7 @@ class SERVER_EXPORT QgsServerStaticHandler : public QgsServerOgcApiHandler
      * \param staticPathSuffix optional path suffix to use when static files are stored in a subdirectory of the default staticPath()
      * \see QgsServerOgcApiHandler::staticPath()
      */
-    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString() );
+    QgsServerStaticHandler( const QString &pathRegExp = u"/static/(?<staticFilePath>.*)$"_s, const QString &staticPathSuffix = QString() );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 

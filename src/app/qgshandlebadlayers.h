@@ -22,9 +22,7 @@
 #include "qgis_app.h"
 #include "qgsprojectbadlayerhandler.h"
 
-class APP_EXPORT QgsHandleBadLayersHandler
-  : public QObject,
-    public QgsProjectBadLayerHandler
+class APP_EXPORT QgsHandleBadLayersHandler : public QObject, public QgsProjectBadLayerHandler
 {
     Q_OBJECT
 
@@ -45,9 +43,7 @@ class APP_EXPORT QgsHandleBadLayersHandler
 
 class QPushButton;
 
-class APP_EXPORT QgsHandleBadLayers
-  : public QDialog,
-    public Ui::QgsHandleBadLayersBase
+class APP_EXPORT QgsHandleBadLayers : public QDialog, public Ui::QgsHandleBadLayersBase
 {
     Q_OBJECT
 

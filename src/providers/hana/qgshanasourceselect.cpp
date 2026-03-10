@@ -35,15 +35,16 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QStringList>
 #include <QStyledItemDelegate>
 
 #include "moc_qgshanasourceselect.cpp"
 
+using namespace Qt::StringLiterals;
+
 //! Used to create an editor for when the user tries to change the contents of a cell
-QWidget *QgsHanaSourceSelectDelegate::createEditor(
-  QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index
-) const
+QWidget *QgsHanaSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
 
@@ -60,8 +61,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   {
     QComboBox *cb = new QComboBox( parent );
     for ( const Qgis::WkbType type :
-          {
-            Qgis::WkbType::Point,
+          { Qgis::WkbType::Point,
             Qgis::WkbType::LineString,
             Qgis::WkbType::Polygon,
             Qgis::WkbType::MultiPoint,
@@ -69,8 +69,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
             Qgis::WkbType::MultiPolygon,
             Qgis::WkbType::CircularString,
             Qgis::WkbType::GeometryCollection,
-            Qgis::WkbType::NoGeometry
-          } )
+            Qgis::WkbType::NoGeometry } )
     {
       cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<quint32>( type ) );
     }
@@ -114,9 +113,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   return nullptr;
 }
 
-void QgsHanaSourceSelectDelegate::setModelData(
-  QWidget *editor, QAbstractItemModel *model, const QModelIndex &index
-) const
+void QgsHanaSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
@@ -140,7 +137,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( ", "_L1 ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -198,11 +195,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
   }
 }
 
-QgsHanaSourceSelect::QgsHanaSourceSelect(
-  QWidget *parent,
-  Qt::WindowFlags fl,
-  QgsProviderRegistry::WidgetMode theWidgetMode
-)
+QgsHanaSourceSelect::QgsHanaSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -231,14 +224,14 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
   const QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( settings.value( u"qgis/addHanaDC"_s, false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/HanaSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( u"Windows/HanaSourceSelect/geometry"_s ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( u"Windows/HanaSourceSelect/HoldDialogOpen"_s, false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( u"Windows/HanaSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -258,8 +251,7 @@ void QgsHanaSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -326,7 +318,7 @@ void QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 void QgsHanaSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )
+  if ( settings.value( u"qgis/addHANADC"_s, false ).toBool() )
     addButtonClicked();
   else
     setSql( index );
@@ -347,12 +339,12 @@ QgsHanaSourceSelect::~QgsHanaSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( u"Windows/HanaSourceSelect/geometry"_s, saveGeometry() );
+  settings.setValue( u"Windows/HanaSourceSelect/HoldDialogOpen"_s, mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( u"Windows/HanaSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -405,7 +397,7 @@ void QgsHanaSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "hana" ) );
+    emit addDatabaseLayers( mSelectedTables, u"hana"_s );
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
       accept();
   }
@@ -509,7 +501,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsHanaTableModel::DbtmTable ) )->text();
 
-  QgsVectorLayer vlayer( uri, tableName, QStringLiteral( "hana" ) );
+  QgsVectorLayer vlayer( uri, tableName, u"hana"_s );
   if ( !vlayer.isValid() )
     return;
 
@@ -518,9 +510,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     mTableModel->setSql( index, gb.sql() );
 }
 
-QString QgsHanaSourceSelect::fullDescription(
-  const QString &schema, const QString &table, const QString &column, const QString &type
-)
+QString QgsHanaSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
   QString desc;
   if ( !schema.isEmpty() )
@@ -537,9 +527,7 @@ void QgsHanaSourceSelect::setConnectionListPosition()
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );
 }
 
-void QgsHanaSourceSelect::treeWidgetSelectionChanged(
-  const QItemSelection &selected, const QItemSelection &deselected
-)
+void QgsHanaSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
@@ -547,5 +535,5 @@ void QgsHanaSourceSelect::treeWidgetSelectionChanged(
 
 void QgsHanaSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-database-layer"_s );
 }

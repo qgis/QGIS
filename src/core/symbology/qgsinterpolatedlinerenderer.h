@@ -38,7 +38,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsInterpolatedLineColor
 {
   public:
-
     /**
      * Defines how the color is defined
      */
@@ -200,7 +199,6 @@ class CORE_EXPORT QgsInterpolatedLineWidth
 class CORE_EXPORT QgsInterpolatedLineRenderer
 {
   public:
-
     //! Sets the stroke width used to render
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
 
@@ -264,7 +262,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     void setSelected( bool selected );
 
   private:
-
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
     Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
@@ -286,7 +283,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-
     QgsInterpolatedLineSymbolLayer();
 
     //! Creates the symbol layer
@@ -327,7 +323,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
      */
     Q_DECL_DEPRECATED QString endValueExpressionForWidth() const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 -- rename to avoid collision with base class methods
+    // TODO QGIS 5.0 -- rename to avoid collision with base class methods
 
     /**
      * Sets the width unit.

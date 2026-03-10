@@ -20,11 +20,15 @@
 #include "qgsfeaturerequest.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsHubDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "distancetonearesthub" );
+  return u"distancetonearesthub"_s;
 }
 
 QString QgsHubDistanceAlgorithm::displayName() const
@@ -44,17 +48,18 @@ QString QgsHubDistanceAlgorithm::group() const
 
 QString QgsHubDistanceAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsHubDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes the distance between features from the source layer to the closest feature "
-                      "from the destination layer.\n\n"
-                      "Distance calculations are based on the feature's bounding box center.\n\n"
-                      "The resulting line layer contains lines linking each origin point with its nearest destination feature.\n\n"
-                      "The resulting point layer contains each origin feature's center point with additional fields indicating the identifier "
-                      "of the nearest destination feature and the distance to it."
+  return QObject::tr(
+    "This algorithm computes the distance between features from the source layer to the closest feature "
+    "from the destination layer.\n\n"
+    "Distance calculations are based on the feature's bounding box center.\n\n"
+    "The resulting line layer contains lines linking each origin point with its nearest destination feature.\n\n"
+    "The resulting point layer contains each origin feature's center point with additional fields indicating the identifier "
+    "of the nearest destination feature and the distance to it."
   );
 }
 
@@ -75,38 +80,33 @@ QgsHubDistanceAlgorithm *QgsHubDistanceAlgorithm::createInstance() const
 
 void QgsHubDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Source layer (spokes)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "HUBS" ), QObject::tr( "Destination layer (hubs)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Hub layer name attribute" ), QVariant(), QStringLiteral( "HUBS" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Source layer (spokes)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"HUBS"_s, QObject::tr( "Destination layer (hubs)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Hub layer name attribute" ), QVariant(), u"HUBS"_s ) );
 
-  const QStringList options = QStringList()
-                              << QObject::tr( "Meters" )
-                              << QObject::tr( "Feet" )
-                              << QObject::tr( "Miles" )
-                              << QObject::tr( "Kilometers" )
-                              << QObject::tr( "Layer Units" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "UNIT" ), QObject::tr( "Measurement unit" ), options, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Hub lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_POINTS" ), QObject::tr( "Hub points" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, false ) );
+  const QStringList options = QStringList() << QObject::tr( "Meters" ) << QObject::tr( "Feet" ) << QObject::tr( "Miles" ) << QObject::tr( "Kilometers" ) << QObject::tr( "Layer Units" );
+  addParameter( new QgsProcessingParameterEnum( u"UNIT"_s, QObject::tr( "Measurement unit" ), options, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_LINES"_s, QObject::tr( "Hub lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_POINTS"_s, QObject::tr( "Hub points" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, false ) );
 }
 
 QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( parameters.value( QStringLiteral( "INPUT" ) ) == parameters.value( QStringLiteral( "HUBS" ) ) )
+  if ( parameters.value( u"INPUT"_s ) == parameters.value( u"HUBS"_s ) )
     throw QgsProcessingException( QObject::tr( "The same layer was specified for both the hubs and spokes. The hubs and spoke layers must be different layers." ) );
 
-  std::unique_ptr<QgsProcessingFeatureSource> hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> hubSource( parameterAsSource( parameters, u"HUBS"_s, context ) );
   if ( !hubSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "HUBS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"HUBS"_s ) );
 
-  std::unique_ptr<QgsProcessingFeatureSource> spokeSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> spokeSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !spokeSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString fieldHubName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const QString fieldHubName = parameterAsString( parameters, u"FIELD"_s, context );
   const int hubNameIndex = hubSource->fields().lookupField( fieldHubName );
 
-  const int unitIndex = parameterAsEnum( parameters, QStringLiteral( "UNIT" ), context );
+  const int unitIndex = parameterAsEnum( parameters, u"UNIT"_s, context );
   Qgis::DistanceUnit unit = Qgis::DistanceUnit::Unknown;
   switch ( unitIndex )
   {
@@ -125,19 +125,19 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "HubName" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "HubDist" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( u"HubName"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"HubDist"_s, QMetaType::Type::Double ) );
   fields = QgsProcessingUtils::combineFields( spokeSource->fields(), fields );
 
   QString linesDest;
-  std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, linesDest, fields, Qgis::WkbType::LineString, hubSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, u"OUTPUT_LINES"_s, context, linesDest, fields, Qgis::WkbType::LineString, hubSource->sourceCrs() ) );
   if ( !linesSink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_LINES"_s ) );
 
   QString pointsDest;
-  std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_POINTS" ), context, pointsDest, fields, Qgis::WkbType::Point, hubSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, u"OUTPUT_POINTS"_s, context, pointsDest, fields, Qgis::WkbType::Point, hubSource->sourceCrs() ) );
   if ( !pointsSink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_POINTS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_POINTS"_s ) );
 
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() << hubNameIndex );
@@ -145,17 +145,22 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   QHash<QgsFeatureId, QVariant> hubsAttributeCache;
   double step = hubSource->featureCount() > 0 ? 50.0 / hubSource->featureCount() : 1;
   long long i = 0;
-  const QgsSpatialIndex hubsIndex( hubSource->getFeatures( request ), [&]( const QgsFeature &f ) -> bool {
-    if ( feedback-> isCanceled() )
-    {
-      return false;
-    }
+  const QgsSpatialIndex hubsIndex(
+    hubSource->getFeatures( request ),
+    [&]( const QgsFeature &f ) -> bool {
+      if ( feedback->isCanceled() )
+      {
+        return false;
+      }
 
-    hubsAttributeCache.insert( f.id(), f.attributes().at( hubNameIndex ) );
+      hubsAttributeCache.insert( f.id(), f.attributes().at( hubNameIndex ) );
 
-    i++;
-    feedback->setProgress( i * step );
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      i++;
+      feedback->setProgress( i * step );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   QgsDistanceArea da;
   da.setSourceCrs( spokeSource->sourceCrs(), context.transformContext() );
@@ -181,11 +186,11 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       spokeFeature.setAttributes( spokeFeature.attributes() << QVariant() << QVariant() );
       if ( linesSink && !linesSink->addFeature( spokeFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
       }
       if ( pointsSink && !pointsSink->addFeature( spokeFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT_POINTS" ) ) );
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT_POINTS"_s ) );
       }
       continue;
     }
@@ -217,7 +222,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       outputFeature.setGeometry( QgsGeometry::fromPolylineXY( QgsPolylineXY() << point << hub ) );
       if ( !linesSink->addFeature( outputFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
       }
     }
 
@@ -226,7 +231,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       outputFeature.setGeometry( QgsGeometry::fromPointXY( point ) );
       if ( !pointsSink->addFeature( outputFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT_POINTS" ) ) );
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT_POINTS"_s ) );
       }
     }
   }
@@ -243,11 +248,11 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   QVariantMap results;
   if ( linesSink )
   {
-    results.insert( QStringLiteral( "OUTPUT_LINES" ), linesDest );
+    results.insert( u"OUTPUT_LINES"_s, linesDest );
   }
   if ( pointsSink )
   {
-    results.insert( QStringLiteral( "OUTPUT_POINTS" ), pointsDest );
+    results.insert( u"OUTPUT_POINTS"_s, pointsDest );
   }
   return results;
 }

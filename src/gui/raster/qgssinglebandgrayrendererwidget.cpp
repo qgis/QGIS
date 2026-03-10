@@ -24,7 +24,11 @@
 #include "qgsrasterminmaxwidget.h"
 #include "qgssinglebandgrayrenderer.h"
 
+#include <QString>
+
 #include "moc_qgssinglebandgrayrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -91,12 +95,10 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   }
   const int band = mGrayBandComboBox->currentBand();
 
-  QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
-    provider->dataType( band )
-  ) );
+  QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType ) ( provider->dataType( band ) ) );
   e->setMinimumValue( QgsDoubleValidator::toDouble( mMinLineEdit->text() ) );
   e->setMaximumValue( QgsDoubleValidator::toDouble( mMaxLineEdit->text() ) );
-  e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
+  e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementComboBox->currentData().toInt() ) );
 
   QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
@@ -134,11 +136,9 @@ void QgsSingleBandGrayRendererWidget::minMaxModified()
 {
   if ( !mDisableMinMaxWidgetRefresh )
   {
-    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
-      mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )
-      );
+      mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
     }
     mMinMaxWidget->userHasSetManualMinMaxValues();
     emit widgetChanged();
@@ -150,7 +150,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
 {
   Q_UNUSED( bandNo )
 
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
+  QgsDebugMsgLevel( u"theBandNo = %1 min = %2 max = %3"_s.arg( bandNo ).arg( min ).arg( max ), 2 );
 
   mDisableMinMaxWidgetRefresh = true;
   if ( std::isnan( min ) )
@@ -200,9 +200,7 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
       mMaxLineEdit->setText( QLocale().toString( ce->maximumValue() ) );
       mDisableMinMaxWidgetRefresh = false;
       //contrast enhancement algorithm
-      mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int ) ( ce->contrastEnhancementAlgorithm() ) )
-      );
+      mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( ( int ) ( ce->contrastEnhancementAlgorithm() ) ) );
     }
 
     mMinMaxWidget->setFromMinMaxOrigin( gr->minMaxOrigin() );

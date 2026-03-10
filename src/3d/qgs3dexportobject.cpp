@@ -15,26 +15,18 @@
 
 #include "qgs3dexportobject.h"
 
+#include "qgsabstractmaterialsettings.h"
+#include "qgslogger.h"
+
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
+#include <QString>
 #include <QVector3D>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
-#include "qgslogger.h"
-#include "qgsabstractmaterialsettings.h"
-
+using namespace Qt::StringLiterals;
 
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
@@ -89,7 +81,12 @@ void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuf
 
   // Qt does not provide QMatrix3x3 * QVector3D multiplication so we use QMatrix4x4
   QMatrix3x3 normal3x3 = transform.normalMatrix();
-  QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0, normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0, normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0, 0, 0, 0, 1 );
+  // clang-format off
+  QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0,
+                       normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0,
+                       normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0,
+                       0, 0, 0, 1 );
+  // clang-format on
 
   for ( int i = 0; i < normalsBuffer.size(); i += 3 )
   {
@@ -188,11 +185,11 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   auto getVertexIndex = [&]( unsigned int i ) -> QString {
     const int negativeIndex = static_cast<int>( i - verticesCount );
     if ( hasNormals && !hasTextures )
-      return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1//%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2/%3"_s.arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
     return QString::number( negativeIndex );
   };
 

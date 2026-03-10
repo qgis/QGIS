@@ -31,12 +31,15 @@
 #include "qgssettings.h"
 
 #include <QMatrix4x4>
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QEntity>
 
-class Qgs3DMapSettings;
-
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+class Qgs3DMapSettings;
 
 
 /**
@@ -54,7 +57,7 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
       , mMapSettings( mapSettings )
     {
       const QgsSettings settings;
-      mGpuMemoryLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+      mGpuMemoryLimit = settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble();
     }
 
     //! Records some bits about the scene (context for handleSceneUpdate() method)

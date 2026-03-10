@@ -33,12 +33,15 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsExtractLabelsAlgorithm::name() const
 {
-  return QStringLiteral( "extractlabels" );
+  return u"extractlabels"_s;
 }
 
 QString QgsExtractLabelsAlgorithm::displayName() const
@@ -63,49 +66,26 @@ QString QgsExtractLabelsAlgorithm::group() const
 
 QString QgsExtractLabelsAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExtent(
-    QStringLiteral( "EXTENT" ),
-    QObject::tr( "Map extent" )
-  ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Map extent" ) ) );
 
-  addParameter( new QgsProcessingParameterScale(
-    QStringLiteral( "SCALE" ),
-    QObject::tr( "Map scale" )
-  ) );
+  addParameter( new QgsProcessingParameterScale( u"SCALE"_s, QObject::tr( "Map scale" ) ) );
 
-  auto mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>(
-    QStringLiteral( "MAP_THEME" ),
-    QObject::tr( "Map theme" ),
-    QVariant(), true
-  );
+  auto mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>( u"MAP_THEME"_s, QObject::tr( "Map theme" ), QVariant(), true );
   mapThemeParameter->setHelp( QObject::tr( "This parameter is optional. When left unset, the algorithm will fallback to extracting labels from all currently visible layers in the project." ) );
   addParameter( mapThemeParameter.release() );
 
-  addParameter( new QgsProcessingParameterBoolean(
-    QStringLiteral( "INCLUDE_UNPLACED" ),
-    QObject::tr( "Include unplaced labels" ),
-    QVariant( true )
-  ) );
+  addParameter( new QgsProcessingParameterBoolean( u"INCLUDE_UNPLACED"_s, QObject::tr( "Include unplaced labels" ), QVariant( true ) ) );
 
-  auto dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "DPI" ),
-    QObject::tr( "Map resolution (in DPI)" ),
-    Qgis::ProcessingNumberParameterType::Double,
-    QVariant( 96.0 ), true
-  );
+  auto dpiParameter = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "Map resolution (in DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant( 96.0 ), true );
   dpiParameter->setFlags( dpiParameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParameter.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ),
-    QObject::tr( "Extracted labels" ),
-    Qgis::ProcessingSourceType::VectorPoint
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted labels" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsExtractLabelsAlgorithm::shortDescription() const
@@ -120,9 +100,12 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractLabelsAlgorithm::documenta
 
 QString QgsExtractLabelsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts label information from a rendered map at a given extent and scale.\n\n"
-                      "If a map theme is provided, the rendered map will match the visibility and symbology of that theme. If left blank, all visible layers from the project will be used.\n\n"
-                      "Extracted label information include: position (served as point geometries), the associated layer name and feature ID, label text, rotation (in degree, clockwise), multiline alignment, and font details." );
+  return QObject::tr(
+    "This algorithm extracts label information from a rendered map at a given extent and scale.\n\n"
+    "If a map theme is provided, the rendered map will match the visibility and symbology of that theme. If left blank, all visible layers from the project will be used.\n\n"
+    "Extracted label information include: position (served as point geometries), the associated layer name and feature ID, label text, rotation (in degree, clockwise), multiline alignment, and font "
+    "details."
+  );
 }
 
 QgsExtractLabelsAlgorithm *QgsExtractLabelsAlgorithm::createInstance() const
@@ -136,8 +119,7 @@ class ExtractLabelSink : public QgsLabelSink
     ExtractLabelSink( const QMap<QString, QString> &mapLayerNames, QgsProcessingFeedback *feedback )
       : mMapLayerNames( mapLayerNames )
       , mFeedback( feedback )
-    {
-    }
+    {}
 
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) override
     {
@@ -205,19 +187,19 @@ class ExtractLabelSink : public QgsLabelSink
       switch ( labelSettings.multilineAlign )
       {
         case Qgis::LabelMultiLineAlignment::Right:
-          labelAlignment = QStringLiteral( "right" );
+          labelAlignment = u"right"_s;
           break;
 
         case Qgis::LabelMultiLineAlignment::Center:
-          labelAlignment = QStringLiteral( "center" );
+          labelAlignment = u"center"_s;
           break;
 
         case Qgis::LabelMultiLineAlignment::Left:
-          labelAlignment = QStringLiteral( "left" );
+          labelAlignment = u"left"_s;
           break;
 
         case Qgis::LabelMultiLineAlignment::Justify:
-          labelAlignment = QStringLiteral( "justify" );
+          labelAlignment = u"justify"_s;
           break;
 
         case Qgis::LabelMultiLineAlignment::FollowPlacement:
@@ -226,27 +208,25 @@ class ExtractLabelSink : public QgsLabelSink
             case Qgis::LabelQuadrantPosition::AboveLeft:
             case Qgis::LabelQuadrantPosition::Left:
             case Qgis::LabelQuadrantPosition::BelowLeft:
-              labelAlignment = QStringLiteral( "right" );
+              labelAlignment = u"right"_s;
               break;
 
             case Qgis::LabelQuadrantPosition::Above:
             case Qgis::LabelQuadrantPosition::Over:
             case Qgis::LabelQuadrantPosition::Below:
-              labelAlignment = QStringLiteral( "center" );
+              labelAlignment = u"center"_s;
               break;
 
             case Qgis::LabelQuadrantPosition::AboveRight:
             case Qgis::LabelQuadrantPosition::Right:
             case Qgis::LabelQuadrantPosition::BelowRight:
-              labelAlignment = QStringLiteral( "left" );
+              labelAlignment = u"left"_s;
               break;
           }
           break;
       }
 
-      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 )
-                                     ? -( label->getAlpha() * 180 / M_PI ) + 360
-                                     : 0.0;
+      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 ) ? -( label->getAlpha() * 180 / M_PI ) + 360 : 0.0;
 
       const QFont font = labelFeature->definedFont();
       const QString fontFamily = font.family();
@@ -304,20 +284,38 @@ class ExtractLabelSink : public QgsLabelSink
           buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferOpacity ).toDouble() / 100.0 );
         }
 
-        bufferSize = buffer.sizeUnit() == Qgis::RenderUnit::Percentage
-                       ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
-                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
+        bufferSize = buffer.sizeUnit() == Qgis::RenderUnit::Percentage ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
+                                                                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
         bufferSize = bufferSize * 72 / context.painter()->device()->logicalDpiX();
         bufferColor = buffer.color().name();
         bufferOpacity = buffer.opacity() * 100;
       }
 
       QgsAttributes attributes;
-      attributes << mMapLayerNames.value( layerId ) << fid
-                 << labelText << label->getWidth() << label->getHeight() << labelRotation << unplacedLabel
-                 << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
-                 << labelAlignment << formatLineHeight << formatColor << formatOpacity
-                 << bufferDraw << bufferSize << bufferColor << bufferOpacity;
+      attributes
+        << mMapLayerNames.value( layerId )
+        << fid
+        << labelText
+        << label->getWidth()
+        << label->getHeight()
+        << labelRotation
+        << unplacedLabel
+        << fontFamily
+        << fontSize
+        << fontItalic
+        << fontBold
+        << fontUnderline
+        << fontStyle
+        << fontLetterSpacing
+        << fontWordSpacing
+        << labelAlignment
+        << formatLineHeight
+        << formatColor
+        << formatOpacity
+        << bufferDraw
+        << bufferSize
+        << bufferColor
+        << bufferOpacity;
 
       double x = label->getX();
       double y = label->getY();
@@ -340,13 +338,13 @@ class ExtractLabelSink : public QgsLabelSink
 
 QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
-  const double scale = parameterAsDouble( parameters, QStringLiteral( "SCALE" ), context );
+  const QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
+  const double scale = parameterAsDouble( parameters, u"SCALE"_s, context );
   if ( qgsDoubleNear( scale, 0.0 ) )
   {
     throw QgsProcessingException( QObject::tr( "Invalid scale value, a number greater than 0 is required" ) );
   }
-  double dpi = parameterAsDouble( parameters, QStringLiteral( "DPI" ), context );
+  double dpi = parameterAsDouble( parameters, u"DPI"_s, context );
   if ( qgsDoubleNear( dpi, 0.0 ) )
   {
     dpi = 96.0;
@@ -358,34 +356,34 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   const QSize imageSize = calculator.calculateImageSize( extent, scale ).toSize();
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "Layer" ), QMetaType::Type::QString, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "FeatureID" ), QMetaType::Type::LongLong, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "LabelText" ), QMetaType::Type::QString, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "LabelWidth" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-  fields.append( QgsField( QStringLiteral( "LabelHeight" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-  fields.append( QgsField( QStringLiteral( "LabelRotation" ), QMetaType::Type::Double, QString(), 20, 2 ) );
-  fields.append( QgsField( QStringLiteral( "LabelUnplaced" ), QMetaType::Type::Bool, QString(), 1, 0 ) );
-  fields.append( QgsField( QStringLiteral( "Family" ), QMetaType::Type::QString, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "Size" ), QMetaType::Type::Double, QString(), 20, 4 ) );
-  fields.append( QgsField( QStringLiteral( "Italic" ), QMetaType::Type::Bool, QString(), 1, 0 ) );
-  fields.append( QgsField( QStringLiteral( "Bold" ), QMetaType::Type::Bool, QString(), 1, 0 ) );
-  fields.append( QgsField( QStringLiteral( "Underline" ), QMetaType::Type::Bool, QString(), 1, 0 ) );
-  fields.append( QgsField( QStringLiteral( "FontStyle" ), QMetaType::Type::QString, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "FontLetterSpacing" ), QMetaType::Type::Double, QString(), 20, 4 ) );
-  fields.append( QgsField( QStringLiteral( "FontWordSpacing" ), QMetaType::Type::Double, QString(), 20, 4 ) );
-  fields.append( QgsField( QStringLiteral( "MultiLineAlignment" ), QMetaType::Type::QString, QString(), 0, 0 ) );
-  fields.append( QgsField( QStringLiteral( "MultiLineHeight" ), QMetaType::Type::Double, QString(), 20, 2 ) );
-  fields.append( QgsField( QStringLiteral( "Color" ), QMetaType::Type::QString, QString(), 7, 0 ) );
-  fields.append( QgsField( QStringLiteral( "FontOpacity" ), QMetaType::Type::Double, QString(), 20, 1 ) );
-  fields.append( QgsField( QStringLiteral( "BufferDraw" ), QMetaType::Type::Bool, QString(), 1, 0 ) );
-  fields.append( QgsField( QStringLiteral( "BufferSize" ), QMetaType::Type::Double, QString(), 20, 4 ) );
-  fields.append( QgsField( QStringLiteral( "BufferColor" ), QMetaType::Type::QString, QString(), 7, 0 ) );
-  fields.append( QgsField( QStringLiteral( "BufferOpacity" ), QMetaType::Type::Double, QString(), 20, 1 ) );
+  fields.append( QgsField( u"Layer"_s, QMetaType::Type::QString, QString(), 0, 0 ) );
+  fields.append( QgsField( u"FeatureID"_s, QMetaType::Type::LongLong, QString(), 20 ) );
+  fields.append( QgsField( u"LabelText"_s, QMetaType::Type::QString, QString(), 0, 0 ) );
+  fields.append( QgsField( u"LabelWidth"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
+  fields.append( QgsField( u"LabelHeight"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
+  fields.append( QgsField( u"LabelRotation"_s, QMetaType::Type::Double, QString(), 20, 2 ) );
+  fields.append( QgsField( u"LabelUnplaced"_s, QMetaType::Type::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( u"Family"_s, QMetaType::Type::QString, QString(), 0, 0 ) );
+  fields.append( QgsField( u"Size"_s, QMetaType::Type::Double, QString(), 20, 4 ) );
+  fields.append( QgsField( u"Italic"_s, QMetaType::Type::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( u"Bold"_s, QMetaType::Type::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( u"Underline"_s, QMetaType::Type::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( u"FontStyle"_s, QMetaType::Type::QString, QString(), 0, 0 ) );
+  fields.append( QgsField( u"FontLetterSpacing"_s, QMetaType::Type::Double, QString(), 20, 4 ) );
+  fields.append( QgsField( u"FontWordSpacing"_s, QMetaType::Type::Double, QString(), 20, 4 ) );
+  fields.append( QgsField( u"MultiLineAlignment"_s, QMetaType::Type::QString, QString(), 0, 0 ) );
+  fields.append( QgsField( u"MultiLineHeight"_s, QMetaType::Type::Double, QString(), 20, 2 ) );
+  fields.append( QgsField( u"Color"_s, QMetaType::Type::QString, QString(), 7, 0 ) );
+  fields.append( QgsField( u"FontOpacity"_s, QMetaType::Type::Double, QString(), 20, 1 ) );
+  fields.append( QgsField( u"BufferDraw"_s, QMetaType::Type::Bool, QString(), 1, 0 ) );
+  fields.append( QgsField( u"BufferSize"_s, QMetaType::Type::Double, QString(), 20, 4 ) );
+  fields.append( QgsField( u"BufferColor"_s, QMetaType::Type::QString, QString(), 7, 0 ) );
+  fields.append( QgsField( u"BufferOpacity"_s, QMetaType::Type::Double, QString(), 20, 1 ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QgsMapSettings mapSettings;
   mapSettings.setDestinationCrs( mCrs );
@@ -402,9 +400,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( context.project() )
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( context.project() ) << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
   mapSettings.setExpressionContext( expressionContext );
 
   QgsNullPaintDevice nullPaintDevice;
@@ -497,7 +493,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       break;
 
     if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
   sink->finalize();
   sink.reset();
@@ -512,7 +508,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       QgsPalLayerSettings settings;
       QgsPropertyCollection settingsProperties;
 
-      settings.fieldName = QStringLiteral( "LabelText" );
+      settings.fieldName = u"LabelText"_s;
       settings.obstacleSettings().setIsObstacle( false );
       settings.placement = Qgis::LabelPlacement::OverPoint;
       settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
@@ -530,23 +526,23 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       textFormat.setBuffer( buffer );
       settings.setFormat( textFormat );
 
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
-      settingsProperties.setProperty( QgsPalLayerSettings::Property::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( u"if(\"LabelUnplaced\",'255,0,0',\"Color\")"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromField( u"FontOpacity"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Family, QgsProperty::fromField( u"Family"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Italic, QgsProperty::fromField( u"Italic"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Bold, QgsProperty::fromField( u"Bold"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Underline, QgsProperty::fromField( u"Underline"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( u"Size"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontLetterSpacing, QgsProperty::fromField( u"FontLetterSpacing"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::FontWordSpacing, QgsProperty::fromField( u"FontWordSpacing"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineAlignment, QgsProperty::fromField( u"MultiLineAlignment"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromField( u"MultiLineHeight"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromField( u"LabelRotation"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferDraw, QgsProperty::fromField( u"BufferDraw"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromField( u"BufferSize"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferColor, QgsProperty::fromField( u"BufferColor"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromField( u"BufferOpacity"_s ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Property::Show, QgsProperty::fromExpression( u"\"LabelUnplaced\"=false"_s ) );
       settings.setDataDefinedProperties( settingsProperties );
 
       QgsAbstractVectorLayerLabeling *labeling = new QgsVectorLayerSimpleLabeling( settings );
@@ -559,7 +555,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 
@@ -567,7 +563,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   // Retrieve and clone layers
-  const QString mapTheme = parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context );
+  const QString mapTheme = parameterAsString( parameters, u"MAP_THEME"_s, context );
   if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
   {
     const QList<QgsMapLayer *> constLayers = context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme );
@@ -605,11 +601,11 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     mMapLayerNames.insert( l->id(), l->name() );
   }
 
-  mCrs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
+  mCrs = parameterAsExtentCrs( parameters, u"EXTENT"_s, context );
   if ( !mCrs.isValid() )
     mCrs = context.project()->crs();
 
-  bool includeUnplaced = parameterAsBoolean( parameters, QStringLiteral( "INCLUDE_UNPLACED" ), context );
+  bool includeUnplaced = parameterAsBoolean( parameters, u"INCLUDE_UNPLACED"_s, context );
   mLabelSettings = context.project()->labelingEngineSettings();
   mLabelSettings.setFlag( Qgis::LabelingFlag::DrawUnplacedLabels, includeUnplaced );
   mLabelSettings.setFlag( Qgis::LabelingFlag::CollectUnplacedLabels, includeUnplaced );

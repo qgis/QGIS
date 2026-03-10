@@ -45,7 +45,6 @@
 class CORE_EXPORT QgsDateTimeStatisticalSummary
 {
   public:
-
     /**
      * Constructor for QgsDateTimeStatisticalSummary
      * \param stats flags for statistics to calculate
@@ -151,7 +150,6 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     static QString displayName( Qgis::DateTimeStatistic statistic );
 
   private:
-
     Qgis::DateTimeStatistics mStatistics;
 
     int mCount;

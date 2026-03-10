@@ -89,7 +89,9 @@ QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransforme
   }
 }
 
-QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates )
+QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters(
+  QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates
+)
 {
   std::unique_ptr<QgsGcpTransformerInterface> transformer( create( method ) );
   if ( !transformer )
@@ -317,8 +319,7 @@ int QgsHelmertGeorefTransform::helmertTransform( void *pTransformerArg, int bDst
 QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
   : mPolynomialOrder( std::min( 3u, polynomialOrder ) )
   , mIsTPSTransform( useTPS )
-{
-}
+{}
 
 QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
 {

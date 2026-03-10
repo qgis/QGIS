@@ -21,17 +21,19 @@
 #include "qgsproviderregistry.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsconnectionregistry.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
-{
-}
+{}
 
 QgsAbstractProviderConnection *QgsConnectionRegistry::createConnection( const QString &id )
 {
-  const QRegularExpressionMatch m = QRegularExpression( QStringLiteral( "(.*?)\\://(.*)" ) ).match( id );
+  const QRegularExpressionMatch m = QRegularExpression( u"(.*?)\\://(.*)"_s ).match( id );
   if ( !m.hasMatch() )
     throw QgsProviderConnectionException( QObject::tr( "Invalid connection id" ) );
 

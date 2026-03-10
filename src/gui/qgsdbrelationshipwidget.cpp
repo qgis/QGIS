@@ -17,13 +17,17 @@
 
 #include "qgsdatabasetablemodel.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsproviderregistry.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsdbrelationshipwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDbRelationWidget
@@ -40,23 +44,14 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
 
   const QList<Qgis::RelationshipCardinality> cardinalities = mConnection->supportedRelationshipCardinalities();
   for ( Qgis::RelationshipCardinality cardinality :
-        {
-          Qgis::RelationshipCardinality::OneToMany,
-          Qgis::RelationshipCardinality::ManyToOne,
-          Qgis::RelationshipCardinality::OneToOne,
-          Qgis::RelationshipCardinality::ManyToMany
-        } )
+        { Qgis::RelationshipCardinality::OneToMany, Qgis::RelationshipCardinality::ManyToOne, Qgis::RelationshipCardinality::OneToOne, Qgis::RelationshipCardinality::ManyToMany } )
   {
     if ( cardinalities.contains( cardinality ) )
       mCardinalityCombo->addItem( QgsRelation::cardinalityToDisplayString( cardinality ), QVariant::fromValue( cardinality ) );
   }
 
   const QList<Qgis::RelationshipStrength> strengths = mConnection->supportedRelationshipStrengths();
-  for ( Qgis::RelationshipStrength strength :
-        {
-          Qgis::RelationshipStrength::Association,
-          Qgis::RelationshipStrength::Composition
-        } )
+  for ( Qgis::RelationshipStrength strength : { Qgis::RelationshipStrength::Association, Qgis::RelationshipStrength::Composition } )
   {
     if ( strengths.contains( strength ) )
       mStrengthCombo->addItem( QgsRelation::strengthToDisplayString( strength ), QVariant::fromValue( strength ) );
@@ -88,9 +83,7 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   mLeftTableCombo->setModel( mProxyModel );
   mRightTableCombo->setModel( mProxyModel );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [this] {
-    emit validityChanged( isValid() );
-  } );
+  connect( mNameEdit, &QLineEdit::textChanged, this, [this] { emit validityChanged( isValid() ); } );
   connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
     emit validityChanged( isValid() );
@@ -100,18 +93,9 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
     emit validityChanged( isValid() );
   } );
 
-  for ( QComboBox *combo :
-        {
-          mCardinalityCombo,
-          qobject_cast<QComboBox *>( mLeftFieldsCombo ),
-          qobject_cast<QComboBox *>( mRightFieldsCombo ),
-          mStrengthCombo,
-          mRelatedTableTypeCombo
-        } )
+  for ( QComboBox *combo : { mCardinalityCombo, qobject_cast<QComboBox *>( mLeftFieldsCombo ), qobject_cast<QComboBox *>( mRightFieldsCombo ), mStrengthCombo, mRelatedTableTypeCombo } )
   {
-    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
-      emit validityChanged( isValid() );
-    } );
+    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { emit validityChanged( isValid() ); } );
   }
 
   mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
@@ -126,9 +110,9 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
   mStrengthCombo->setCurrentIndex( mStrengthCombo->findData( QVariant::fromValue( mRelation.strength() ) ) );
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencedLayerSource() );
-  mLeftTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mLeftTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
   parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencingLayerSource() );
-  mRightTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mRightTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
 
   mCardinalityCombo->setCurrentIndex( mCardinalityCombo->findData( QVariant::fromValue( mRelation.cardinality() ) ) );
   mLeftFieldsCombo->setCurrentText( mRelation.referencedLayerFields().value( 0 ) );
@@ -140,7 +124,19 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
 
 QgsWeakRelation QgsDbRelationWidget::relationship() const
 {
-  QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(), mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(), mStrengthCombo->currentData().value<Qgis::RelationshipStrength>(), QString(), QString(), mConnection->tableUri( QString(), mRightTableCombo->currentText() ), mConnection->providerKey(), QString(), QString(), mConnection->tableUri( QString(), mLeftTableCombo->currentText() ), mConnection->providerKey() );
+  QgsWeakRelation result(
+    mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(),
+    mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(),
+    mStrengthCombo->currentData().value<Qgis::RelationshipStrength>(),
+    QString(),
+    QString(),
+    mConnection->tableUri( QString(), mRightTableCombo->currentText() ),
+    mConnection->providerKey(),
+    QString(),
+    QString(),
+    mConnection->tableUri( QString(), mLeftTableCombo->currentText() ),
+    mConnection->providerKey()
+  );
   result.setCardinality( mCardinalityCombo->currentData().value<Qgis::RelationshipCardinality>() );
   result.setReferencedLayerFields( { mLeftFieldsCombo->currentText() } );
   result.setReferencingLayerFields( { mRightFieldsCombo->currentText() } );
@@ -187,15 +183,16 @@ bool QgsDbRelationWidget::isValid() const
 QgsDbRelationDialog::QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsDbRelationDialog" ) );
+  setObjectName( u"QgsDbRelationDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsDbRelationWidget( connection );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/joins_relations.html#dataset-stored-relationships"_s ); } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );

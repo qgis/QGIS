@@ -29,10 +29,15 @@
 #include <QCheckBox>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslayoutpdfexportoptionsdialog.cpp"
 
-QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeospatialPdfExport, const QString &geospatialPdfReason, const QStringList &geospatialPdfLayerOrder, Qt::WindowFlags flags )
+using namespace Qt::StringLiterals;
+
+QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog(
+  QWidget *parent, bool allowGeospatialPdfExport, const QString &geospatialPdfReason, const QStringList &geospatialPdfLayerOrder, Qt::WindowFlags flags
+)
   : QDialog( parent, flags )
 {
   setupUi( this );
@@ -269,7 +274,7 @@ bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index )
@@ -283,14 +288,10 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
     {
       QAction *selectAll = new QAction( tr( "Select All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( selectAll );
-      connect( selectAll, &QAction::triggered, this, [this, index] {
-        mGeospatialPdfStructureModel->checkAll( true, QModelIndex(), index.column() );
-      } );
+      connect( selectAll, &QAction::triggered, this, [this, index] { mGeospatialPdfStructureModel->checkAll( true, QModelIndex(), index.column() ); } );
       QAction *deselectAll = new QAction( tr( "Deselect All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( deselectAll );
-      connect( deselectAll, &QAction::triggered, this, [this, index] {
-        mGeospatialPdfStructureModel->checkAll( false, QModelIndex(), index.column() );
-      } );
+      connect( deselectAll, &QAction::triggered, this, [this, index] { mGeospatialPdfStructureModel->checkAll( false, QModelIndex(), index.column() ); } );
       break;
     }
 

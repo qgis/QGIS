@@ -21,15 +21,21 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for delimited text source select
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
+    QString providerKey() const override { return u"delimitedtext"_s; }
     QString text() const override { return QObject::tr( "Delimited Text" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddDelimitedTextLayer.svg"_s ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
     }
@@ -38,8 +44,7 @@ class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 
 QgsDelimitedTextProviderGuiMetadata::QgsDelimitedTextProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsDelimitedTextProviderGuiMetadata::sourceSelectProviders()
 {

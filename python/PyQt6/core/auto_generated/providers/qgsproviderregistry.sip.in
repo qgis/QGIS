@@ -12,6 +12,7 @@
 
 
 
+
 class QgsProviderRegistry
 {
 %Docstring(signature="appended")
@@ -33,7 +34,6 @@ gdal|ogr|postgres it will load only providers gdal, ogr and postgres.
 #include "qgsproviderregistry.h"
 %End
   public:
-
 
     enum WidgetMode /BaseType=IntEnum/
     {
@@ -80,10 +80,12 @@ Sets library directory where to search for plugins
 %End
 
 
-    QgsDataProvider *createProvider( const QString &providerKey,
-                                     const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /TransferBack/;
+    QgsDataProvider *createProvider(
+      const QString &providerKey,
+      const QString &dataSource,
+      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+      Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    ) /TransferBack/;
 %Docstring
 Creates a new instance of a provider.
 
@@ -116,10 +118,12 @@ Returns the provider capabilities
       const QString &format,
       int nBands,
       Qgis::DataType type,
-      int width, int height,
+      int width,
+      int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions = QStringList() ) /Factory/;
+      const QStringList &createOptions = QStringList()
+    ) /Factory/;
 %Docstring
 Creates new instance of raster data provider
 
@@ -212,7 +216,9 @@ returned.
 .. versionadded:: 3.30
 %End
 
- QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
+ QWidget *createSelectionWidget(
+      const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
+    ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
 %Docstring
 Returns a new widget for selecting layers from a provider. Either the
 ``parent`` widget must be set or the caller becomes responsible for
@@ -234,12 +240,7 @@ Returns list of data item providers of the provider
 .. versionadded:: 3.10
 %End
 
-    int listStyles( const QString &providerKey,
-                    const QString &uri,
-                    QStringList &ids,
-                    QStringList &names,
-                    QStringList &descriptions,
-                    QString &errCause );
+    int listStyles( const QString &providerKey, const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause );
 %Docstring
 Lists stored layer styles in the provider defined by ``providerKey`` and
 ``uri``
@@ -284,9 +285,17 @@ Deletes a layer style defined by ``styleId``
 .. versionadded:: 3.10
 %End
 
-    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause );
+    bool saveStyle(
+      const QString &providerKey,
+      const QString &uri,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
+    );
 %Docstring
 Saves a layer style to provider
 
@@ -398,18 +407,14 @@ the specified layer ``type``.
 %End
 
     class ProviderCandidateDetails
-{
+    {
 %Docstring(signature="appended")
 Contains information pertaining to a candidate provider.
 
 .. versionadded:: 3.18
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
-
         ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
 %Docstring
 Constructor for ProviderCandidateDetails, with the specified provider
@@ -457,7 +462,7 @@ URI then all of these providers will be returned.
 %End
 
     class UnusableUriDetails
-{
+    {
 %Docstring(signature="appended")
 Contains information about unusable URIs which aren't handled by any
 registered providers.
@@ -470,11 +475,7 @@ used on their QGIS build.
 .. versionadded:: 3.18.1
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
-
         UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
 %Docstring
 Constructor for UnusableUriDetails for the given ``uri``, with the
@@ -497,11 +498,10 @@ which are usually valid options for opening the URI.
         QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
     };
 
     class UnusableUriHandlerInterface
-{
+    {
 %Docstring(signature="appended")
 An interface used to handle unusable URIs which aren't handled by any
 registered providers, and construct user-friendly warnings as to why the
@@ -515,11 +515,7 @@ used on their QGIS build.
 .. versionadded:: 3.18.1
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
-
         virtual ~UnusableUriHandlerInterface();
 
         virtual bool matchesUri( const QString &uri ) const = 0;
@@ -532,7 +528,6 @@ specified ``uri``.
 %Docstring
 Returns the details for advising the user why the ``uri`` is not usable.
 %End
-
     };
 
     bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler /Transfer/ );
@@ -614,7 +609,7 @@ only, such as ".aux.xml" files or ".shp.xml" files, or the
 cloud sources.
 
 This method tests whether any of the registered providers return
-``True`` for the their :py:func:`QgsProviderMetadata.uriIsBlocklisted()`
+``True`` for their :py:func:`QgsProviderMetadata.uriIsBlocklisted()`
 implementation for the specified URI.
 
 .. versionadded:: 3.18

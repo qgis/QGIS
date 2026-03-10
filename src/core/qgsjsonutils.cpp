@@ -38,9 +38,12 @@
 
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsjsonutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
@@ -53,7 +56,7 @@ QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   }
 
   // Default 4326
-  mDestinationCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mDestinationCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   mTransform.setDestinationCrs( mDestinationCrs );
 }
 
@@ -83,8 +86,7 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
   return mCrs;
 }
 
-QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
-                                        const QVariant &id, int indent ) const
+QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent ) const
 {
   try
   {
@@ -92,21 +94,20 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   }
   catch ( json::type_error &ex )
   {
-    QgsLogger::warning( QStringLiteral( "Cannot export feature to json: %1" ).arg( ex.what() ) );
+    QgsLogger::warning( u"Cannot export feature to json: %1"_s.arg( ex.what() ) );
     return QString();
   }
   catch ( json::other_error &ex )
   {
-    QgsLogger::warning( QStringLiteral( "Cannot export feature to json: %1" ).arg( ex.what() ) );
+    QgsLogger::warning( u"Cannot export feature to json: %1"_s.arg( ex.what() ) );
     return QString();
   }
 }
 
 json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
 {
-  json featureJson
-  {
-    {  "type",  "Feature" },
+  json featureJson {
+    { "type", "Feature" },
   };
   if ( id.isValid() )
   {
@@ -150,19 +151,13 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::Point )
     {
-      featureJson[ "bbox" ] =
-      {
-        qgsRound( box.xMinimum(), mPrecision ),
-        qgsRound( box.yMinimum(), mPrecision ),
-        qgsRound( box.xMaximum(), mPrecision ),
-        qgsRound( box.yMaximum(), mPrecision )
-      };
+      featureJson["bbox"] = { qgsRound( box.xMinimum(), mPrecision ), qgsRound( box.yMinimum(), mPrecision ), qgsRound( box.xMaximum(), mPrecision ), qgsRound( box.yMaximum(), mPrecision ) };
     }
-    featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
+    featureJson["geometry"] = geom.asJsonObject( mPrecision );
   }
   else
   {
-    featureJson[ "geometry"  ] = nullptr;
+    featureJson["geometry"] = nullptr;
   }
 
   // build up properties element
@@ -175,10 +170,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
       // List of formatters through we want to pass the values
       QStringList formattersAllowList;
-      formattersAllowList << QStringLiteral( "KeyValue" )
-                          << QStringLiteral( "List" )
-                          << QStringLiteral( "ValueRelation" )
-                          << QStringLiteral( "ValueMap" );
+      formattersAllowList << u"KeyValue"_s << u"List"_s << u"ValueRelation"_s << u"ValueMap"_s;
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -200,7 +192,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
         {
           name = mLayer->attributeDisplayName( i );
         }
-        properties[ name.toStdString() ] = QgsJsonUtils::jsonFromVariant( val );
+        properties[name.toStdString()] = QgsJsonUtils::jsonFromVariant( val );
       }
     }
 
@@ -209,7 +201,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       QVariantMap::const_iterator it = extraProperties.constBegin();
       for ( ; it != extraProperties.constEnd(); ++it )
       {
-        properties[ it.key().toStdString() ] = QgsJsonUtils::jsonFromVariant( it.value() );
+        properties[it.key().toStdString()] = QgsJsonUtils::jsonFromVariant( it.value() );
       }
     }
 
@@ -242,11 +234,11 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
             relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches, mUseFieldFormatters );
           }
         }
-        properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
+        properties[relation.name().toStdString()] = relatedFeatureAttributes;
       }
     }
   }
-  featureJson[ "properties" ] = properties;
+  featureJson["properties"] = properties;
   return featureJson;
 }
 
@@ -257,11 +249,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
 
 json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
 {
-  json data
-  {
-    { "type", "FeatureCollection" },
-    { "features", json::array() }
-  };
+  json data { { "type", "FeatureCollection" }, { "features", json::array() } };
 
   QgsJsonUtils::addCrsInfo( data, mDestinationCrs );
 
@@ -301,7 +289,7 @@ QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encod
 QString QgsJsonUtils::encodeValue( const QVariant &value )
 {
   if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "null" );
+    return u"null"_s;
 
   switch ( value.userType() )
   {
@@ -322,14 +310,8 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
 
     default:
     case QMetaType::Type::QString:
-      QString v = value.toString()
-                  .replace( '\\', QLatin1String( "\\\\" ) )
-                  .replace( '"', QLatin1String( "\\\"" ) )
-                  .replace( '\r', QLatin1String( "\\r" ) )
-                  .replace( '\b', QLatin1String( "\\b" ) )
-                  .replace( '\t', QLatin1String( "\\t" ) )
-                  .replace( '/', QLatin1String( "\\/" ) )
-                  .replace( '\n', QLatin1String( "\\n" ) );
+      QString v
+        = value.toString().replace( '\\', "\\\\"_L1 ).replace( '"', "\\\""_L1 ).replace( '\r', "\\r"_L1 ).replace( '\b', "\\b"_L1 ).replace( '\t', "\\t"_L1 ).replace( '/', "\\/"_L1 ).replace( '\n', "\\n"_L1 );
 
       return v.prepend( '"' ).append( '"' );
   }
@@ -342,7 +324,7 @@ QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLaye
   for ( int i = 0; i < fields.count(); ++i )
   {
     if ( i > 0 )
-      attrs += QLatin1String( ",\n" );
+      attrs += ",\n"_L1;
 
     QVariant val = feature.attributes().at( i );
 
@@ -366,9 +348,9 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
   try
   {
     const auto jObj( json::parse( json.toStdString() ) );
-    if ( ! jObj.is_array() )
+    if ( !jObj.is_array() )
     {
-      throw json::parse_error::create( 0, 0, QStringLiteral( "JSON value must be an array" ).toStdString(), &jObj );
+      throw json::parse_error::create( 0, 0, u"JSON value must be an array"_s.toStdString(), &jObj );
     }
     for ( const auto &item : jObj )
     {
@@ -404,9 +386,9 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
       // If a destination type was specified (it's not invalid), try to convert
       if ( type != QMetaType::Type::UnknownType )
       {
-        if ( ! v.convert( static_cast<int>( type ) ) )
+        if ( !v.convert( static_cast<int>( type ) ) )
         {
-          QgsLogger::warning( QStringLiteral( "Cannot convert json array element to specified type, ignoring: %1" ).arg( v.toString() ) );
+          QgsLogger::warning( u"Cannot convert json array element to specified type, ignoring: %1"_s.arg( v.toString() ) );
         }
         else
         {
@@ -422,7 +404,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
   catch ( json::parse_error &ex )
   {
     errorMessage = ex.what();
-    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( ex.what(), json ) );
+    QgsLogger::warning( u"Cannot parse json (%1): %2"_s.arg( ex.what(), json ) );
   }
 
   return result;
@@ -437,7 +419,7 @@ std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords )
 {
   if ( !coords.is_array() || coords.size() < 2 || coords.size() > 3 )
   {
-    QgsDebugError( QStringLiteral( "JSON Point geometry coordinates must be an array of two or three numbers" ) );
+    QgsDebugError( u"JSON Point geometry coordinates must be an array of two or three numbers"_s );
     return nullptr;
   }
 
@@ -458,7 +440,7 @@ std::unique_ptr< QgsLineString> parseLineStringFromGeoJson( const json &coords )
 {
   if ( !coords.is_array() || coords.size() < 2 )
   {
-    QgsDebugError( QStringLiteral( "JSON LineString geometry coordinates must be an array of at least two points" ) );
+    QgsDebugError( u"JSON LineString geometry coordinates must be an array of at least two points"_s );
     return nullptr;
   }
 
@@ -467,15 +449,10 @@ std::unique_ptr< QgsLineString> parseLineStringFromGeoJson( const json &coords )
   QVector< double > x;
   QVector< double > y;
   QVector< double > z;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  x.resize( static_cast< int >( coordsSize ) );
-  y.resize( static_cast< int >( coordsSize ) );
-  z.resize( static_cast< int >( coordsSize ) );
-#else
   x.resize( coordsSize );
   y.resize( coordsSize );
   z.resize( coordsSize );
-#endif
+
   double *xOut = x.data();
   double *yOut = y.data();
   double *zOut = z.data();
@@ -484,7 +461,7 @@ std::unique_ptr< QgsLineString> parseLineStringFromGeoJson( const json &coords )
   {
     if ( !coord.is_array() || coord.size() < 2 || coord.size() > 3 )
     {
-      QgsDebugError( QStringLiteral( "JSON LineString geometry coordinates must be an array of two or three numbers" ) );
+      QgsDebugError( u"JSON LineString geometry coordinates must be an array of two or three numbers"_s );
       return nullptr;
     }
 
@@ -508,7 +485,7 @@ std::unique_ptr< QgsPolygon > parsePolygonFromGeoJson( const json &coords )
 {
   if ( !coords.is_array() || coords.size() < 1 )
   {
-    QgsDebugError( QStringLiteral( "JSON Polygon geometry coordinates must be an array" ) );
+    QgsDebugError( u"JSON Polygon geometry coordinates must be an array"_s );
     return nullptr;
   }
 
@@ -536,33 +513,33 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 {
   if ( !geometry.is_object() )
   {
-    QgsDebugError( QStringLiteral( "JSON geometry value must be an object" ) );
+    QgsDebugError( u"JSON geometry value must be an object"_s );
     return nullptr;
   }
 
   if ( !geometry.contains( "type" ) )
   {
-    QgsDebugError( QStringLiteral( "JSON geometry must contain 'type'" ) );
+    QgsDebugError( u"JSON geometry must contain 'type'"_s );
     return nullptr;
   }
 
   const QString type = QString::fromStdString( geometry["type"].get< std::string >() );
-  if ( type.compare( QLatin1String( "Point" ), Qt::CaseInsensitive ) == 0 )
+  if ( type.compare( "Point"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON Point geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON Point geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
     const json &coords = geometry["coordinates"];
     return parsePointFromGeoJson( coords );
   }
-  else if ( type.compare( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "MultiPoint"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiPoint geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON MultiPoint geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
@@ -570,7 +547,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     if ( !coords.is_array() )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiPoint geometry coordinates must be an array" ) );
+      QgsDebugError( u"JSON MultiPoint geometry coordinates must be an array"_s );
       return nullptr;
     }
 
@@ -588,22 +565,22 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     return multiPoint;
   }
-  else if ( type.compare( QLatin1String( "LineString" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "LineString"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON LineString geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON LineString geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
     const json &coords = geometry["coordinates"];
     return parseLineStringFromGeoJson( coords );
   }
-  else if ( type.compare( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "MultiLineString"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiLineString geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON MultiLineString geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
@@ -611,7 +588,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     if ( !coords.is_array() )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiLineString geometry coordinates must be an array" ) );
+      QgsDebugError( u"JSON MultiLineString geometry coordinates must be an array"_s );
       return nullptr;
     }
 
@@ -629,28 +606,28 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     return multiLineString;
   }
-  else if ( type.compare( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "Polygon"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON Polygon geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON Polygon geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
     const json &coords = geometry["coordinates"];
     if ( !coords.is_array() || coords.size() < 1 )
     {
-      QgsDebugError( QStringLiteral( "JSON Polygon geometry coordinates must be an array of at least one ring" ) );
+      QgsDebugError( u"JSON Polygon geometry coordinates must be an array of at least one ring"_s );
       return nullptr;
     }
 
     return parsePolygonFromGeoJson( coords );
   }
-  else if ( type.compare( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "MultiPolygon"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "coordinates" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiPolygon geometry must contain 'coordinates'" ) );
+      QgsDebugError( u"JSON MultiPolygon geometry must contain 'coordinates'"_s );
       return nullptr;
     }
 
@@ -658,7 +635,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     if ( !coords.is_array() )
     {
-      QgsDebugError( QStringLiteral( "JSON MultiPolygon geometry coordinates must be an array" ) );
+      QgsDebugError( u"JSON MultiPolygon geometry coordinates must be an array"_s );
       return nullptr;
     }
 
@@ -676,11 +653,11 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     return multiPolygon;
   }
-  else if ( type.compare( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "GeometryCollection"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( !geometry.contains( "geometries" ) )
     {
-      QgsDebugError( QStringLiteral( "JSON GeometryCollection geometry must contain 'geometries'" ) );
+      QgsDebugError( u"JSON GeometryCollection geometry must contain 'geometries'"_s );
       return nullptr;
     }
 
@@ -688,7 +665,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     if ( !geometries.is_array() )
     {
-      QgsDebugError( QStringLiteral( "JSON GeometryCollection geometries must be an array" ) );
+      QgsDebugError( u"JSON GeometryCollection geometries must be an array"_s );
       return nullptr;
     }
 
@@ -707,7 +684,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
     return collection;
   }
 
-  QgsDebugError( QStringLiteral( "Unhandled GeoJSON geometry type: %1" ).arg( type ) );
+  QgsDebugError( u"Unhandled GeoJSON geometry type: %1"_s.arg( type ) );
   return nullptr;
 }
 
@@ -715,7 +692,7 @@ QgsGeometry QgsJsonUtils::geometryFromGeoJson( const json &geometry )
 {
   if ( !geometry.is_object() )
   {
-    QgsDebugError( QStringLiteral( "JSON geometry value must be an object" ) );
+    QgsDebugError( u"JSON geometry value must be an object"_s );
     return QgsGeometry();
   }
 
@@ -731,7 +708,7 @@ QgsGeometry QgsJsonUtils::geometryFromGeoJson( const QString &geometry )
   }
   catch ( json::parse_error &ex )
   {
-    QgsDebugError( QStringLiteral( "Cannot parse json (%1): %2" ).arg( geometry, ex.what() ) );
+    QgsDebugError( u"Cannot parse json (%1): %2"_s.arg( geometry, ex.what() ) );
     return QgsGeometry();
   }
 }
@@ -749,7 +726,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     json jMap = json::object();
     for ( auto it = vMap.constBegin(); it != vMap.constEnd(); it++ )
     {
-      jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
+      jMap[it.key().toStdString()] = jsonFromVariant( it.value() );
     }
     j = jMap;
   }
@@ -798,8 +775,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 
   if ( !error.isEmpty() )
   {
-    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( error,
-                        QString::fromStdString( jsonString ) ) );
+    QgsLogger::warning( u"Cannot parse json (%1): %2"_s.arg( error, QString::fromStdString( jsonString ) ) );
   }
   return res;
 }
@@ -828,91 +804,90 @@ QVariant QgsJsonUtils::jsonToVariant( const json &value )
   // tracks whether entire json string is a primitive
   bool isPrimitive = true;
 
-  std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
-      QVariant result;
-      if ( jObj.is_array() )
+  std::function<QVariant( json )> _parser { [&]( json jObj ) -> QVariant {
+    QVariant result;
+    if ( jObj.is_array() )
+    {
+      isPrimitive = false;
+      QVariantList results;
+      results.reserve( jObj.size() );
+      for ( const auto &item : jObj )
       {
-        isPrimitive = false;
-        QVariantList results;
-        results.reserve( jObj.size() );
-        for ( const auto &item : jObj )
-        {
-          results.push_back( _parser( item ) );
-        }
-        result = results;
+        results.push_back( _parser( item ) );
       }
-      else if ( jObj.is_object() )
-      {
-        isPrimitive = false;
-        QVariantMap results;
-        for ( const auto  &item : jObj.items() )
-        {
-          const auto key { QString::fromStdString( item.key() ) };
-          const auto value {  _parser( item.value() ) };
-          results[ key ] = value;
-        }
-        result = results;
-      }
-      else
-      {
-        if ( jObj.is_number_unsigned() )
-        {
-          // Try signed int and long long first, fall back
-          // onto unsigned long long
-          const qulonglong num { jObj.get<qulonglong>() };
-          if ( num <= std::numeric_limits<int>::max() )
-          {
-            result = static_cast<int>( num );
-          }
-          else if ( num <= std::numeric_limits<qlonglong>::max() )
-          {
-            result = static_cast<qlonglong>( num );
-          }
-          else
-          {
-            result = num;
-          }
-        }
-        else if ( jObj.is_number_integer() )
-        {
-          const qlonglong num { jObj.get<qlonglong>() };
-          if ( num <= std::numeric_limits<int>::max() && num >= std::numeric_limits<int>::lowest() )
-          {
-            result = static_cast<int>( num );
-          }
-          else
-          {
-            result = num;
-          }
-        }
-        else if ( jObj.is_boolean() )
-        {
-          result = jObj.get<bool>();
-        }
-        else if ( jObj.is_number_float() )
-        {
-          // Note: it's a double and not a float on purpose
-          result = jObj.get<double>();
-        }
-        else if ( jObj.is_string() )
-        {
-          if ( isPrimitive && jObj.get<std::string>().length() == 0 )
-          {
-            result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
-          }
-          else
-          {
-            result = QString::fromStdString( jObj.get<std::string>() );
-          }
-        }
-        else if ( jObj.is_null() )
-        {
-          // Do nothing (leave invalid)
-        }
-      }
-      return result;
+      result = results;
     }
-  };
+    else if ( jObj.is_object() )
+    {
+      isPrimitive = false;
+      QVariantMap results;
+      for ( const auto &item : jObj.items() )
+      {
+        const auto key { QString::fromStdString( item.key() ) };
+        const auto value { _parser( item.value() ) };
+        results[key] = value;
+      }
+      result = results;
+    }
+    else
+    {
+      if ( jObj.is_number_unsigned() )
+      {
+        // Try signed int and long long first, fall back
+        // onto unsigned long long
+        const qulonglong num { jObj.get<qulonglong>() };
+        if ( num <= std::numeric_limits<int>::max() )
+        {
+          result = static_cast<int>( num );
+        }
+        else if ( num <= std::numeric_limits<qlonglong>::max() )
+        {
+          result = static_cast<qlonglong>( num );
+        }
+        else
+        {
+          result = num;
+        }
+      }
+      else if ( jObj.is_number_integer() )
+      {
+        const qlonglong num { jObj.get<qlonglong>() };
+        if ( num <= std::numeric_limits<int>::max() && num >= std::numeric_limits<int>::lowest() )
+        {
+          result = static_cast<int>( num );
+        }
+        else
+        {
+          result = num;
+        }
+      }
+      else if ( jObj.is_boolean() )
+      {
+        result = jObj.get<bool>();
+      }
+      else if ( jObj.is_number_float() )
+      {
+        // Note: it's a double and not a float on purpose
+        result = jObj.get<double>();
+      }
+      else if ( jObj.is_string() )
+      {
+        if ( isPrimitive && jObj.get<std::string>().length() == 0 )
+        {
+          result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
+        }
+        else
+        {
+          result = QString::fromStdString( jObj.get<std::string>() );
+        }
+      }
+      else if ( jObj.is_null() )
+      {
+        // Do nothing (leave invalid)
+      }
+    }
+    return result;
+  } };
 
   return _parser( value );
 }

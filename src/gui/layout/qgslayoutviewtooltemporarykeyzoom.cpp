@@ -25,8 +25,7 @@
 
 QgsLayoutViewToolTemporaryKeyZoom::QgsLayoutViewToolTemporaryKeyZoom( QgsLayoutView *view )
   : QgsLayoutViewToolZoom( view )
-{
-}
+{}
 
 void QgsLayoutViewToolTemporaryKeyZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {

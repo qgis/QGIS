@@ -2,8 +2,8 @@
                          qgsellipse.h
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,6 +26,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsEllipse
@@ -37,13 +39,13 @@
  */
 class CORE_EXPORT QgsEllipse
 {
-
   public:
-
+    // clang-format off
     /**
      * Constructor for QgsEllipse.
      */
     QgsEllipse() SIP_HOLDGIL = default;
+    // clang-format on
 
     virtual ~QgsEllipse() = default;
 
@@ -240,11 +242,13 @@ class CORE_EXPORT QgsEllipse
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsEllipse: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

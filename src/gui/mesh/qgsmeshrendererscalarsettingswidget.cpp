@@ -53,14 +53,12 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mUserDefinedRadioButton->setChecked( true );
   mMinMaxValueTypeComboBox->setEnabled( false );
 
-  mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits(
-    {
-      Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-    }
-  );
+  mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits( {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );

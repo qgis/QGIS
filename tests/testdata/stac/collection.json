@@ -108,5 +108,15 @@
       "href": "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/collection.json",
       "type": "application/json"
     }
-  ]
+  ],
+  "assets": {
+    "geoparquet-file": {
+      "href": "https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet",
+      "title": "GeoParquet File",
+      "type": "application/vnd.apache.parquet",
+      "roles": [
+        "data"
+      ]
+    }
+  }
 }

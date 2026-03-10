@@ -23,6 +23,10 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
@@ -32,9 +36,11 @@ class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
 
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddHanaLayer.svg"_s ); }
 
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsHanaSourceSelect( parent, fl, widgetMode );
     }
@@ -45,8 +51,7 @@ class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
   public:
     QgsHanaProviderGuiMetadata()
       : QgsProviderGuiMetadata( QgsHanaProvider::HANA_KEY )
-    {
-    }
+    {}
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
@@ -55,11 +60,7 @@ class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
       return providers;
     }
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsHanaDataItemGuiProvider;
-    }
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override { return QList<QgsDataItemGuiProvider *>() << new QgsHanaDataItemGuiProvider; }
 };
 
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()

@@ -11,10 +11,8 @@ __date__ = "02/09/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsApplication,
     QgsBookmark,
@@ -25,9 +23,10 @@ from qgis.core import (
     QgsReferencedRectangle,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -35,7 +34,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsBookmarkManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

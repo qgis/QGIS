@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsProcessingParameterType
 {
   public:
-
     /**
      * Returns the default color for a processing parameter.
      *
@@ -62,7 +61,7 @@ class CORE_EXPORT QgsProcessingParameterType
      */
     virtual QString name() const = 0;
 
-    // TODO QGIS 4.0 -- make pure virtual
+    // TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns a valid Python import string for importing the corresponding parameter type,
@@ -73,7 +72,7 @@ class CORE_EXPORT QgsProcessingParameterType
      */
     virtual QString pythonImportString() const { return QString(); }
 
-    // TODO QGIS 4.0 -- make pure virtual
+    // TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns the corresponding class name for the parameter type.
@@ -187,7 +186,6 @@ class CORE_EXPORT QgsProcessingParameterType
      * \since QGIS 4.0
      */
     virtual QColor modelColor() const;
-
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPE_H

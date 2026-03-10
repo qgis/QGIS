@@ -23,6 +23,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 // #include <qgisapp.h>
 #include "diagram/qgspiediagram.h"
@@ -51,7 +53,8 @@ class TestQgsDiagram : public QgsTest
 
   public:
     TestQgsDiagram()
-      : QgsTest( QStringLiteral( "Diagram Tests" ), QStringLiteral( "diagrams" ) ) {}
+      : QgsTest( u"Diagram Tests"_s, u"diagrams"_s )
+    {}
 
   private:
     bool mTestHasError = false;
@@ -83,12 +86,12 @@ class TestQgsDiagram : public QgsTest
       //
       const QString myPointsFileName = mTestDataDir + "points.shp";
       const QFileInfo myPointFileInfo( myPointsFileName );
-      mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
 
       //we don't want to render the points themselves, just the diagrams
       QVariantMap symbolProps;
-      symbolProps.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,0" ) );
-      symbolProps.insert( QStringLiteral( "outline_style" ), QStringLiteral( "no" ) );
+      symbolProps.insert( u"color"_s, u"0,0,0,0"_s );
+      symbolProps.insert( u"outline_style"_s, u"no"_s );
       QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps ).release();
       QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( symbol );
       mPointsLayer->setRenderer( symbolRenderer );
@@ -116,9 +119,7 @@ class TestQgsDiagram : public QgsTest
     }
 
     // will be called after every testfunction.
-    void cleanup()
-    {
-    }
+    void cleanup() {}
 
     void testPieDiagram()
     {
@@ -128,7 +129,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -144,7 +145,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -169,7 +170,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 1 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -185,7 +186,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -210,7 +211,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"/sum(\"Pilots\")" ) << QStringLiteral( "\"Cabin Crew\"/sum(\"Cabin Crew\")" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\"/sum(\"Pilots\")"_s << u"\"Cabin Crew\"/sum(\"Cabin Crew\")"_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -226,7 +227,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -251,7 +252,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "abs($x)" ) << QStringLiteral( "$y" );
+      ds.categoryAttributes = QList<QString>() << u"abs($x)"_s << u"$y"_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -267,7 +268,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -292,7 +293,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -309,7 +310,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -334,7 +335,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -350,7 +351,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -371,7 +372,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -389,7 +390,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -410,7 +411,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -423,8 +424,8 @@ class TestQgsDiagram : public QgsTest
       ds.setShowAxis( true );
 
       QVariantMap props;
-      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
-      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
+      props.insert( u"width"_s, u"2"_s );
+      props.insert( u"color"_s, u"#ff00ff"_s );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -432,7 +433,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -465,7 +466,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -482,7 +483,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -503,6 +504,114 @@ class TestQgsDiagram : public QgsTest
       QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_down", "histogram_down", *mMapSettings, 200, 15 );
     }
 
+    void testHistogramNegative()
+    {
+      // Make sure we have features with both values positive,
+      // both values negative, and mixed positive-negative
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\" - 2"_s << u"\"Cabin Crew\" - 2"_s;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 4 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( u"Cabin Crew"_s );
+      dr->setDiagram( new QgsHistogramDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_negative_up", "histogram_negative_up", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_negative_down", "histogram_negative_down", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_negative_left", "histogram_negative_left", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_negative_right", "histogram_negative_right", *mMapSettings, 200, 15 );
+    }
+
+    void testHistogramAxisNegative()
+    {
+      // Make sure we have features with both values positive,
+      // both values negative, and mixed positive-negative
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\" - 2"_s << u"\"Cabin Crew\" - 2"_s;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.setShowAxis( true );
+
+      QVariantMap props;
+      props.insert( u"width"_s, u"2"_s );
+      props.insert( u"color"_s, u"#ff00ff"_s );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 4 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( u"Cabin Crew"_s );
+      dr->setDiagram( new QgsHistogramDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_up", "histogram_axis_negative_up", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_down", "histogram_axis_negative_down", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_left", "histogram_axis_negative_left", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_right", "histogram_axis_negative_right", *mMapSettings, 200, 15 );
+    }
+
     void testStackedFixSize()
     {
       QgsDiagramSettings ds;
@@ -511,7 +620,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -556,7 +665,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -574,7 +683,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsStackedBarDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -606,7 +715,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -620,8 +729,8 @@ class TestQgsDiagram : public QgsTest
       ds.setShowAxis( true );
 
       QVariantMap props;
-      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
-      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
+      props.insert( u"width"_s, u"2"_s );
+      props.insert( u"color"_s, u"#ff00ff"_s );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -629,7 +738,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsStackedBarDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -662,7 +771,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "-\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"-\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -676,8 +785,8 @@ class TestQgsDiagram : public QgsTest
       ds.setShowAxis( true );
 
       QVariantMap props;
-      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
-      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
+      props.insert( u"width"_s, u"2"_s );
+      props.insert( u"color"_s, u"#ff00ff"_s );
       ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -685,7 +794,7 @@ class TestQgsDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setClassificationField( u"Staff"_s );
       dr->setDiagram( new QgsStackedBarDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -718,7 +827,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "ln(Pilots + 1)" ) << QStringLiteral( "ln(\"Cabin Crew\" + 1)" );
+      ds.categoryAttributes = QList<QString>() << u"ln(Pilots + 1)"_s << u"ln(\"Cabin Crew\" + 1)"_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -735,7 +844,7 @@ class TestQgsDiagram : public QgsTest
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
       dr->setClassificationAttributeIsExpression( true );
-      dr->setClassificationAttributeExpression( QStringLiteral( "ln(Staff + 1)" ) );
+      dr->setClassificationAttributeExpression( u"ln(Staff + 1)"_s );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
 
@@ -760,7 +869,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "ln(Pilots + 1)" ) << QStringLiteral( "ln(\"Cabin Crew\" + 1)" );
+      ds.categoryAttributes = QList<QString>() << u"ln(Pilots + 1)"_s << u"ln(\"Cabin Crew\" + 1)"_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -797,7 +906,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -818,8 +927,8 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //Set data defined position
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x + -5" ), true ) );
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y + 5" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"$x + -5"_s, true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"$y + 5"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -834,7 +943,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -855,8 +964,8 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined stroke
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')" ), true ) );
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StrokeWidth, QgsProperty::fromExpression( QStringLiteral( "\"Staff\" / 2.0" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StrokeColor, QgsProperty::fromExpression( u"if(\"Pilots\">1,'0,0,0,255','255,0,0,255')"_s, true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StrokeWidth, QgsProperty::fromExpression( u"\"Staff\" / 2.0"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -871,7 +980,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -892,7 +1001,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined start angle
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StartAngle, QgsProperty::fromExpression( QStringLiteral( "360.0-\"Importance\"/20.0 * 360.0" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::StartAngle, QgsProperty::fromExpression( u"360.0-\"Importance\"/20.0 * 360.0"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -907,7 +1016,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -928,7 +1037,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined distance
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Distance, QgsProperty::fromExpression( QStringLiteral( "\"Staff\"*2" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Distance, QgsProperty::fromExpression( u"\"Staff\"*2"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -943,7 +1052,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -964,7 +1073,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined show
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Show, QgsProperty::fromExpression( QStringLiteral( "\"Pilots\"=1" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Show, QgsProperty::fromExpression( u"\"Pilots\"=1"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -979,7 +1088,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1000,7 +1109,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( false );
 
       //setup data defined priority
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Priority, QgsProperty::fromExpression( QStringLiteral( "\"importance\"/2" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Priority, QgsProperty::fromExpression( u"\"importance\"/2"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -1013,7 +1122,7 @@ class TestQgsDiagram : public QgsTest
       const QColor col1 = Qt::red;
       const QColor col2 = Qt::yellow;
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1034,7 +1143,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined z index
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "\"importance\"/2" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::ZIndex, QgsProperty::fromExpression( u"\"importance\"/2"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -1049,7 +1158,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1070,9 +1179,9 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( false );
 
       //setup data defined priority (required to only show certain diagrams)
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Priority, QgsProperty::fromExpression( QStringLiteral( "\"importance\"/2" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::Priority, QgsProperty::fromExpression( u"\"importance\"/2"_s, true ) );
       //setup data defined "always show"
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "\"Staff\">=6" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( u"\"Staff\">=6"_s, true ) );
 
 
       mPointsLayer->setDiagramLayerSettings( dls );
@@ -1090,7 +1199,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0 );
       col2.setAlphaF( 0 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\""_s << u"\"Cabin Crew\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1111,7 +1220,7 @@ class TestQgsDiagram : public QgsTest
       dls.setShowAllDiagrams( true );
 
       //setup data defined stroke
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::BackgroundColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Pilots\">1,'0,0,255,150','255,0,0,150')" ), true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Property::BackgroundColor, QgsProperty::fromExpression( u"if(\"Pilots\">1,'0,0,255,150','255,0,0,150')"_s, true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -1121,11 +1230,11 @@ class TestQgsDiagram : public QgsTest
     void testClipping()
     {
       const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
-      auto vl2 = std::make_unique<QgsVectorLayer>( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( filename, u"lines"_s, u"ogr"_s );
 
       QVariantMap props;
-      props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
-      props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
+      props.insert( u"outline_color"_s, u"#487bb6"_s );
+      props.insert( u"outline_width"_s, u"1"_s );
       std::unique_ptr<QgsLineSymbol> symbol( QgsLineSymbol::createSimple( props ) );
       vl2->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
 
@@ -1135,7 +1244,7 @@ class TestQgsDiagram : public QgsTest
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Value\"" );
+      ds.categoryAttributes = QList<QString>() << u"\"Value\""_s;
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;

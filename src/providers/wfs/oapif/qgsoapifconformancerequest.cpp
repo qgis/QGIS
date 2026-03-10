@@ -15,6 +15,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -60,7 +64,7 @@ void QgsOapifConformanceRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing Conformance response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing Conformance response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

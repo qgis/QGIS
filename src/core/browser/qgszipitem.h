@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item for zip (archive) files.
@@ -43,14 +47,16 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
     bool hasDragEnabled() const override;
@@ -61,7 +67,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QStringList sProviderNames;
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString vsiPrefix( const QString &uri ) SIP_DEPRECATED;
 
@@ -83,7 +89,4 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 };
 
 
-
 #endif // QGSZIPITEM_H
-
-

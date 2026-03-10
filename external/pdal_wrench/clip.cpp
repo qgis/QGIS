@@ -34,7 +34,7 @@ namespace fs = std::filesystem;
 void Clip::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
-    argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
+    argOutputFormatVpc = &programArgs.add("vpc-output-format", "Output format (las/laz/copc)", outputFormatVpc, "copc");
     argPolygon = &programArgs.add("polygon,p", "Input polygon vector file", polygonFile);
 }
 
@@ -51,17 +51,20 @@ bool Clip::checkArgs()
         return false;
     }
 
-    if (argOutputFormat->set())
+    if (argOutputFormatVpc->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormatVpc != "las" && outputFormatVpc != "laz" && outputFormatVpc != "copc")
         {
-            std::cerr << "unknown output format: " << outputFormat << std::endl;
+            std::cerr << "unknown output format: " << outputFormatVpc << std::endl;
             return false;
         }
     }
-    else
-        outputFormat = "las";  // uncompressed by default
 
+    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    {
+        isStreaming = false;
+    }
+    
     return true;
 }
 
@@ -98,7 +101,26 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
                 fullEnvelope = envelope;
             else
                 fullEnvelope.Merge(envelope);
-            crop_opts.add(pdal::Option("polygon", pdal::Polygon(hGeometry)));
+
+            char* wkt_ptr = nullptr;
+            OGR_G_ExportToWkt(hGeometry, &wkt_ptr);
+            const std::string wkt(wkt_ptr);
+            CPLFree(wkt_ptr);
+
+            SpatialReference pdalSrs;
+            if ( OGRSpatialReferenceH srs = OGR_G_GetSpatialReference(hGeometry) )
+            {
+                char *srsWkt_ptr = nullptr;
+                const OGRErr err = OSRExportToWkt(srs, &srsWkt_ptr);
+                if ( err== OGRERR_NONE )
+                {
+                  const std::string srsWkt = std::string(srsWkt_ptr);
+                  pdalSrs = SpatialReference( srsWkt );
+                }
+                CPLFree(srsWkt_ptr);
+            }
+
+            crop_opts.add(pdal::Option("polygon", pdal::Polygon(wkt, pdalSrs)));
         }
         OGR_F_Destroy( hFeature );
     }
@@ -187,15 +209,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
-            // for input file /x/y/z.las that goes to /tmp/hello.vpc,
-            // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fileStem(f.filename);
-            
-            // if the output is not VPC  las file format is forced to avoid time spent on compression, files will be later merged into single output and removed anyways
-            if (!ends_with(outputFile, ".vpc"))
-                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
-            else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+            tile.outputFilename = tileOutputFileName(outputFile, outputFormatVpc, outputSubdir, f.filename);
 
             tileOutputFiles.push_back(tile.outputFilename);
 

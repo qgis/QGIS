@@ -21,6 +21,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomDocument;
 class QDomElement;
@@ -37,7 +40,6 @@ class QgsClassificationRange;
 class CORE_EXPORT QgsRendererRange
 {
   public:
-
     QgsRendererRange() = default;
     ~QgsRendererRange();
 
@@ -178,11 +180,12 @@ class CORE_EXPORT QgsRendererRange
     bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange = false ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
-                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+                        ? u"<QgsRendererRange: %1 - %2>"_s.arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                        : u"<QgsRendererRange: %1 - %2 (%3)>"_s.arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
@@ -202,9 +205,12 @@ class CORE_EXPORT QgsRendererRange
       PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
     }
     % End
+// clang-format on
 #endif
 
-  protected:
+    // clang-format off
+    protected:
+    // clang-format on
     friend class QgsGraduatedSymbolRendererWidget;
 
     double mLowerValue = 0, mUpperValue = 0;

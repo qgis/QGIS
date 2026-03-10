@@ -28,7 +28,11 @@
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 
+#include <QString>
+
 #include "moc_qgsmodelviewtoollink.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
@@ -142,7 +146,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   if ( !inputChildAlgorithm )
   {
     // Should not happen, but checking is cheap!
-    QgsDebugError( QStringLiteral( "Input is not a QgsProcessingModelChildAlgorithm" ) );
+    QgsDebugError( u"Input is not a QgsProcessingModelChildAlgorithm"_s );
     return;
   }
 
@@ -250,7 +254,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
       // Was not connected, nothing to do
-      if ( ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId().isEmpty() ) || ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter && source.parameterName().isEmpty() ) )
+      if ( ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId().isEmpty() )
+           || ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter && source.parameterName().isEmpty() ) )
         continue;
 
       switch ( source.source() )
@@ -262,7 +267,12 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           // reset to default value.
           QList<QgsProcessingModelChildParameterSource> newSources;
-          if ( param->type() == QgsProcessingParameterFeatureSource::typeName() || param->type() == QgsProcessingParameterMapLayer::typeName() || param->type() == QgsProcessingParameterMeshLayer::typeName() || param->type() == QgsProcessingParameterPointCloudLayer::typeName() || param->type() == QgsProcessingParameterRasterLayer::typeName() || param->type() == QgsProcessingParameterVectorLayer::typeName() )
+          if ( param->type() == QgsProcessingParameterFeatureSource::typeName()
+               || param->type() == QgsProcessingParameterMapLayer::typeName()
+               || param->type() == QgsProcessingParameterMeshLayer::typeName()
+               || param->type() == QgsProcessingParameterPointCloudLayer::typeName()
+               || param->type() == QgsProcessingParameterRasterLayer::typeName()
+               || param->type() == QgsProcessingParameterVectorLayer::typeName() )
           {
             // Layers/feature sources default to an empty model input parameter
             // This is the same default that a newly added algorithm uses. It's not the best, since when opening the algorithm's
@@ -292,7 +302,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             auto algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() );
             if ( !algSource )
             {
-              QgsDebugError( QStringLiteral( "algSource not set, aborting!" ) );
+              QgsDebugError( u"algSource not set, aborting!"_s );
               return;
             }
             socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
@@ -305,7 +315,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           if ( !item )
           {
-            QgsDebugError( QStringLiteral( "item not set, aborting!" ) );
+            QgsDebugError( u"item not set, aborting!"_s );
             return;
           }
 

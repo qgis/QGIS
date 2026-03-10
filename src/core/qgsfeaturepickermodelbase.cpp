@@ -21,7 +21,11 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfeaturepickermodelbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
@@ -184,7 +188,6 @@ int QgsFeaturePickerModelBase::rowCount( const QModelIndex &parent ) const
 }
 
 
-
 QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
@@ -303,8 +306,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b )
-    {
+    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) {
       bool ok = false;
       double aNumericOrderValue = a.orderValue.toDouble( &ok );
       if ( ok )
@@ -330,7 +332,6 @@ void QgsFeaturePickerModelBase::updateCompleter()
       {
         return a.orderValue.localeAwareCompare( b.orderValue ) < 0;
       }
-
     } );
 
     if ( mAllowNull && mSourceLayer )
@@ -462,9 +463,9 @@ void QgsFeaturePickerModelBase::scheduledReload()
     if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
       filterClause = mFilterExpression;
     else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) ILIKE '%%2%'" ).arg( mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) ILIKE '%%2%'"_s.arg( mDisplayExpression, mFilterValue );
     else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) AND ((%2) ILIKE '%%3%')"_s.arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
     if ( !filterClause.isEmpty() )
     {
@@ -604,14 +605,14 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
   const QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
 
-  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(), mExpressionContext );
 
   if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
     const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
     const auto allStyles = layer->conditionalStyles()->fieldStyles( fieldName );
-    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
+    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ), mExpressionContext );
 
     styles += matchingFieldStyles;
   }

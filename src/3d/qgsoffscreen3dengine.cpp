@@ -51,11 +51,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Set up the engine and the aspects that we want to use.
   mAspectEngine = new Qt3DCore::QAspectEngine();
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  mRenderAspect = new Qt3DRender::QRenderAspect( Qt3DRender::QRenderAspect::Threaded ); // Only threaded mode seems to work right now.
-#else
   mRenderAspect = new Qt3DRender::QRenderAspect();
-#endif
 
   mLogicAspect = new Qt3DLogic::QLogicAspect();
 
@@ -149,8 +145,6 @@ void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
   // Parent the incoming scene root to our current root entity.
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  root->addComponent( mFrameGraph->forwardRenderView().renderLayer() );
-  root->addComponent( mFrameGraph->shadowRenderView().entityCastingShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsOffscreen3DEngine::renderSettings()

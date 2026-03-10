@@ -15,6 +15,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -25,8 +29,7 @@ using namespace nlohmann;
 
 QgsOapifPutFeatureRequest::QgsOapifPutFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
-{
-}
+{}
 
 bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsFeature &f, const QString &contentCrs, bool hasAxisInverted )
 {
@@ -62,7 +65,7 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
-  QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+  QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
 }
 

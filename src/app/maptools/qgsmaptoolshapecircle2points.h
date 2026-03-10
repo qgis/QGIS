@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,6 +21,10 @@
 #include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMetadata
 {
   public:
@@ -28,7 +32,7 @@ class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMe
       : QgsMapToolShapeMetadata()
     {}
 
-    static const inline QString TOOL_ID = QStringLiteral( "circle-from-2-points" );
+    static const inline QString TOOL_ID = u"circle-from-2-points"_s;
 
     QString id() const override;
     QString name() const override;

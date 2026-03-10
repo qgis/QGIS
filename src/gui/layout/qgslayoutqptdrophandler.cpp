@@ -22,18 +22,20 @@
 #include "qgsreadwritecontext.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslayoutqptdrophandler.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLayoutQptDropHandler::QgsLayoutQptDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
-{
-}
+{}
 
 bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF, const QString &file )
 {
   const QFileInfo fi( file );
-  if ( fi.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) != 0 )
+  if ( fi.suffix().compare( "qpt"_L1, Qt::CaseInsensitive ) != 0 )
     return false;
 
   QFile templateFile( file );

@@ -28,14 +28,19 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsunittypes.h"
 % End
+// clang-format on
 #endif
-class QString;
+  class QString;
 
 /**
  * \ingroup core
@@ -46,7 +51,6 @@ class QString;
 class CORE_EXPORT QgsInterval
 {
   public:
-
     // YEAR const value taken from postgres query
     // SELECT EXTRACT(EPOCH FROM interval '1 year')
     //! Seconds per year (average)
@@ -96,20 +100,22 @@ class CORE_EXPORT QgsInterval
     QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
     if ( ! sipCpp->isValid() )
-      str = QStringLiteral( "<QgsInterval: invalid>" );
+      str = u"<QgsInterval: invalid>"_s;
     else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
-      str = QStringLiteral( "<QgsInterval: %1 %2>" ).arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
+      str = u"<QgsInterval: %1 %2>"_s.arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
     else
-      str = QStringLiteral( "<QgsInterval: %1 seconds>" ).arg( sipCpp->seconds() );
+      str = u"<QgsInterval: %1 seconds>"_s.arg( sipCpp->seconds() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the interval duration in years (based on an average year length)
      *
      * If the originalUnit() is QgsUnitTypes::TemporalYears then this value
@@ -118,7 +124,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setYears()
      */
-    double years() const;
+      double years() const;
 
     /**
      * Sets the interval duration in years.
@@ -331,10 +337,7 @@ class CORE_EXPORT QgsInterval
         return false;
     }
 
-    bool operator!=( QgsInterval other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( QgsInterval other ) const { return !( *this == other ); }
 
     /**
      * Converts a string to an interval
@@ -344,13 +347,9 @@ class CORE_EXPORT QgsInterval
     static QgsInterval fromString( const QString &string );
 
     //! Allows direct construction of QVariants from intervals.
-    operator QVariant() const
-    {
-      return QVariant::fromValue( *this );
-    }
+    operator QVariant() const { return QVariant::fromValue( *this ); }
 
   private:
-
     //! Duration of interval in seconds
     double mSeconds = 0.0;
 
@@ -368,17 +367,6 @@ Q_DECLARE_METATYPE( QgsInterval )
 
 #ifndef SIP_RUN
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-
-/**
- * Returns the interval between two datetimes.
- * \param datetime1 start datetime
- * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
- * \note not available in Python bindings
- */
-QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
-
-#endif
 
 /**
  * Returns the interval between two dates.

@@ -15,15 +15,18 @@
 #include "qgspointcloudstatistics.h"
 %End
 
-struct QgsPointCloudAttributeStatistics
+  struct QgsPointCloudAttributeStatistics
 {
-  double minimum;
-  double maximum;
-  double mean;
-  double stDev;
-  int count;
+%TypeHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
+    double minimum;
+    double maximum;
+    double mean;
+    double stDev;
+    int count;
 
-  int singleClassCount( int cls ) const;
+    int singleClassCount( int cls ) const;
 %Docstring
 Returns the count of points in given class or -1 on error
 

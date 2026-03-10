@@ -16,6 +16,9 @@
 #include "qgsattributeeditorfield.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeEditorElement *QgsAttributeEditorField::clone( QgsAttributeEditorElement *parent ) const
 {
@@ -28,7 +31,7 @@ QgsAttributeEditorElement *QgsAttributeEditorField::clone( QgsAttributeEditorEle
 void QgsAttributeEditorField::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc )
-  elem.setAttribute( QStringLiteral( "index" ), mIdx );
+  elem.setAttribute( u"index"_s, mIdx );
 }
 
 void QgsAttributeEditorField::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
@@ -41,5 +44,5 @@ void QgsAttributeEditorField::loadConfiguration( const QDomElement &element, con
 
 QString QgsAttributeEditorField::typeIdentifier() const
 {
-  return QStringLiteral( "attributeEditorField" );
+  return u"attributeEditorField"_s;
 }

@@ -70,7 +70,6 @@ def values(source, *attributes):
 
     for feature in source.getFeatures(request):
         for i in indices:
-
             # convert attribute value to number
             try:
                 v = float(feature[i])

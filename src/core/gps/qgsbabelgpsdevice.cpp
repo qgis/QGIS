@@ -15,12 +15,20 @@
 #include "qgsbabelgpsdevice.h"
 
 #include <QRegularExpression>
+#include <QString>
 
-QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand, const QString &waypointUploadCommand,
-    const QString &routeDownloadCommand, const QString &routeUploadCommand,
-    const QString &trackDownloadCommand, const QString &trackUploadCommand )
+using namespace Qt::StringLiterals;
+
+QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat(
+  const QString &waypointDownloadCommand,
+  const QString &waypointUploadCommand,
+  const QString &routeDownloadCommand,
+  const QString &routeUploadCommand,
+  const QString &trackDownloadCommand,
+  const QString &trackUploadCommand
+)
 {
-  const thread_local QRegularExpression whiteSpaceRx( QStringLiteral( "\\s" ) );
+  const thread_local QRegularExpression whiteSpaceRx( u"\\s"_s );
 
   if ( !waypointDownloadCommand.isEmpty() )
   {
@@ -60,10 +68,7 @@ QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloa
   }
 }
 
-QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel,
-    Qgis::GpsFeatureType type,
-    const QString &in,
-    const QString &out, Qgis::BabelCommandFlags flags ) const
+QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags ) const
 {
   QStringList original;
 
@@ -84,24 +89,21 @@ QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel,
   copy.reserve( original.size() );
   for ( const QString &iter : std::as_const( original ) )
   {
-    if ( iter == QLatin1String( "%babel" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
-    else if ( iter == QLatin1String( "%type" ) )
+    if ( iter == "%babel"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( babel ) : babel );
+    else if ( iter == "%type"_L1 )
       copy.append( featureTypeToArgument( type ) );
-    else if ( iter == QLatin1String( "%in" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
-    else if ( iter == QLatin1String( "%out" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
+    else if ( iter == "%in"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( in ) : in );
+    else if ( iter == "%out"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( out ) : out );
     else
       copy.append( iter );
   }
   return copy;
 }
 
-QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel,
-    Qgis::GpsFeatureType type,
-    const QString &in,
-    const QString &out, Qgis::BabelCommandFlags flags ) const
+QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags ) const
 {
   QStringList original;
   switch ( type )
@@ -121,19 +123,16 @@ QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel,
   copy.reserve( original.size() );
   for ( const QString &iter : std::as_const( original ) )
   {
-    if ( iter == QLatin1String( "%babel" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
-    else if ( iter == QLatin1String( "%type" ) )
+    if ( iter == "%babel"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( babel ) : babel );
+    else if ( iter == "%type"_L1 )
       copy.append( featureTypeToArgument( type ) );
-    else if ( iter == QLatin1String( "%in" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
-    else if ( iter == QLatin1String( "%out" ) )
-      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
+    else if ( iter == "%in"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( in ) : in );
+    else if ( iter == "%out"_L1 )
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( out ) : out );
     else
       copy.append( iter );
   }
   return copy;
 }
-
-
-

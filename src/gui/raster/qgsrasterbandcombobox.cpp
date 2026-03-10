@@ -18,7 +18,11 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrasterbandcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -176,7 +180,7 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   // name if it is already there
   if ( !description.isEmpty() )
   {
-    return name.contains( description, Qt::CaseInsensitive ) ? name : QStringLiteral( "%1 - %2" ).arg( name, description );
+    return name.contains( description, Qt::CaseInsensitive ) ? name : u"%1 - %2"_s.arg( name, description );
   }
   return name;
 }

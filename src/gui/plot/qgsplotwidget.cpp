@@ -26,7 +26,11 @@
 #include "qgspiechartplot.h"
 #include "qgsplotregistry.h"
 
+#include <QString>
+
 #include "moc_qgsplotwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
@@ -45,17 +49,18 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
     context.appendScope( QgsExpressionContextUtils::globalScope() );
   }
 
-  auto plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( u"plot"_s );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, 0.0, true ) );
   context.appendScope( plotScope.release() );
 
-  auto chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
-  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), QString(), true ) );
-  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), 0.0, true ) );
+  auto chartScope = std::make_unique<QgsExpressionContextScope>( u"chart"_s );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, QString(), true ) );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, QString(), true ) );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, 0.0, true ) );
   context.appendScope( chartScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "plot_axis" ), QStringLiteral( "plot_axis_value" ), QStringLiteral( "chart_category" ), QStringLiteral( "chart_value" ) } );
+  context.setHighlightedVariables( { u"plot_axis"_s, u"plot_axis_value"_s, u"chart_series_name"_s, u"chart_category"_s, u"chart_value"_s } );
 
   return context;
 }
@@ -92,7 +97,6 @@ void QgsPlotWidget::updateProperty()
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit widgetChanged();
 }
-
 
 QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   : QgsPlotWidget( parent )
@@ -293,7 +297,14 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
   mXAxisTypeCombo->addItem( tr( "Categorical" ), QVariant::fromValue( Qgis::PlotAxisType::Categorical ) );
+  connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsBarChartPlotWidget::updateXAxisProperties );
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
+  connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
     emit widgetChanged();
@@ -374,6 +385,31 @@ void QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked()
   emit widgetChanged();
 }
 
+void QgsBarChartPlotWidget::updateXAxisProperties()
+{
+  const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
+
+  mXAxisLabelSuffixLabel->setEnabled( enable );
+  mXAxisLabelSuffixEdit->setEnabled( enable );
+  mLabelMinXAxis->setEnabled( enable );
+  mSpinMinXAxis->setEnabled( enable );
+  mDDBtnMinXAxis->setEnabled( enable );
+  mLabelMaxXAxis->setEnabled( enable );
+  mSpinMaxXAxis->setEnabled( enable );
+  mDDBtnMaxXAxis->setEnabled( enable );
+
+  mXAxisMajorIntervalLabel->setEnabled( enable );
+  mXAxisMajorIntervalSpin->setEnabled( enable );
+  mDDBtnXAxisMajorInterval->setEnabled( enable );
+  mXAxisMajorLinesLabel->setEnabled( enable );
+  mXAxisMajorLinesSymbolButton->setEnabled( enable );
+  mXAxisMinorIntervalLabel->setEnabled( enable );
+  mXAxisMinorIntervalSpin->setEnabled( enable );
+  mDDBtnXAxisMinorInterval->setEnabled( enable );
+  mXAxisMinorLinesLabel->setEnabled( enable );
+  mXAxisMinorLinesSymbolButton->setEnabled( enable );
+}
+
 void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
 {
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
@@ -428,6 +464,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisNumericFormat.reset( chartPlot->yAxis().numericFormat()->clone() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffixEdit->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -447,6 +484,8 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinRightMargin->setValue( chartPlot->margins().right() );
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
+
+  mFlipAxes = chartPlot->flipAxes();
 
   mPropertyCollection = chartPlot->dataDefinedProperties();
 
@@ -470,10 +509,9 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mBlockChanges--;
 }
 
-
 QgsPlot *QgsBarChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "bar" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"bar"_s );
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
   if ( !chartPlot )
   {
@@ -506,6 +544,7 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   chartPlot->yAxis().setNumericFormat( mYAxisNumericFormat.get()->clone() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffixEdit->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
@@ -526,6 +565,7 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
 
+  chartPlot->setFlipAxes( mFlipAxes );
   chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
@@ -732,7 +772,14 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
   mXAxisTypeCombo->addItem( tr( "Categorical" ), QVariant::fromValue( Qgis::PlotAxisType::Categorical ) );
+  connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLineChartPlotWidget::updateXAxisProperties );
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+
+  connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
     emit widgetChanged();
@@ -828,6 +875,31 @@ void QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked()
   emit widgetChanged();
 }
 
+void QgsLineChartPlotWidget::updateXAxisProperties()
+{
+  const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
+
+  mXAxisLabelSuffixLabel->setEnabled( enable );
+  mXAxisLabelSuffixEdit->setEnabled( enable );
+  mLabelMinXAxis->setEnabled( enable );
+  mSpinMinXAxis->setEnabled( enable );
+  mDDBtnMinXAxis->setEnabled( enable );
+  mLabelMaxXAxis->setEnabled( enable );
+  mSpinMaxXAxis->setEnabled( enable );
+  mDDBtnMaxXAxis->setEnabled( enable );
+
+  mXAxisMajorIntervalLabel->setEnabled( enable );
+  mXAxisMajorIntervalSpin->setEnabled( enable );
+  mDDBtnXAxisMajorInterval->setEnabled( enable );
+  mXAxisMajorLinesLabel->setEnabled( enable );
+  mXAxisMajorLinesSymbolButton->setEnabled( enable );
+  mXAxisMinorIntervalLabel->setEnabled( enable );
+  mXAxisMinorIntervalSpin->setEnabled( enable );
+  mDDBtnXAxisMinorInterval->setEnabled( enable );
+  mXAxisMinorLinesLabel->setEnabled( enable );
+  mXAxisMinorLinesSymbolButton->setEnabled( enable );
+}
+
 void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 {
   QgsLineChartPlot *chartPlot = dynamic_cast<QgsLineChartPlot *>( plot );
@@ -895,6 +967,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mYAxisLabelFontButton->setTextFormat( chartPlot->yAxis().textFormat() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
+  mXAxisLabelSuffixEdit->setText( chartPlot->xAxis().labelSuffix() );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
 
   mXAxisMajorIntervalSpin->setValue( chartPlot->xAxis().gridIntervalMajor() );
@@ -914,6 +987,8 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinRightMargin->setValue( chartPlot->margins().right() );
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
+
+  mFlipAxes = chartPlot->flipAxes();
 
   mPropertyCollection = chartPlot->dataDefinedProperties();
 
@@ -937,10 +1012,9 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mBlockChanges--;
 }
 
-
 QgsPlot *QgsLineChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "line" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"line"_s );
   QgsLineChartPlot *chartPlot = dynamic_cast<QgsLineChartPlot *>( plot );
   if ( !chartPlot )
   {
@@ -977,6 +1051,7 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   chartPlot->yAxis().setTextFormat( mYAxisLabelFontButton->textFormat() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
+  chartPlot->xAxis().setLabelSuffix( mXAxisLabelSuffixEdit->text() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );
 
   chartPlot->xAxis().setGridIntervalMajor( mXAxisMajorIntervalSpin->value() );
@@ -997,6 +1072,7 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
 
+  chartPlot->setFlipAxes( mFlipAxes );
   chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
@@ -1199,7 +1275,7 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
 
 QgsPlot *QgsPieChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "pie" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"pie"_s );
   QgsPieChartPlot *chartPlot = dynamic_cast<QgsPieChartPlot *>( plot );
   if ( !chartPlot )
   {

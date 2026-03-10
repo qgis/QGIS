@@ -26,6 +26,10 @@
 #include "qgssymbollayer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
 
@@ -42,14 +46,14 @@ QgsRenderContext::~QgsRenderContext() = default;
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mFlags( rh.mFlags )
   , mRasterizedRenderingPolicy( rh.mRasterizedRenderingPolicy )
   , mPainter( rh.mPainter )
   , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
 
-    // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
+  // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
   , mMaskIdProvider( nullptr )
   , mCurrentMaskId( -1 )
 
@@ -70,7 +74,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSelectionColor( rh.mSelectionColor )
   , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
   , mExpressionContext( rh.mExpressionContext )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mGeometry( rh.mGeometry )
   , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
@@ -98,9 +102,8 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
   , mElevationMap( rh.mElevationMap )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
-{
-}
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{}
 
 QgsRenderContext::QgsRenderContext( QgsRenderContext &&rh )
   : QgsTemporalRangeObject( rh )
@@ -155,9 +158,7 @@ QgsRenderContext::QgsRenderContext( QgsRenderContext &&rh )
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
   , mElevationMap( rh.mElevationMap )
-{
-
-}
+{}
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
@@ -326,7 +327,7 @@ QgsCoordinateTransformContext QgsRenderContext::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
 #endif
   return mTransformContext;
 }
@@ -441,7 +442,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
   const QStringList layerIds = mapSettings.layerIds( true );
   if ( !layerIds.empty() )
-    ctx.setCustomProperty( QStringLiteral( "visible_layer_ids" ), layerIds );
+    ctx.setCustomProperty( u"visible_layer_ids"_s, layerIds );
 
   return ctx;
 }
@@ -681,7 +682,8 @@ double QgsRenderContext::convertFromPainterUnits( double size, Qgis::RenderUnit 
     {
       if ( mMapToPixel.isValid() )
       {
-        const double mup = mapToPixel().mapUnitsPerPixel();;
+        const double mup = mapToPixel().mapUnitsPerPixel();
+        ;
         if ( mup > 0 )
         {
           conversionFactor = mup / 1.0;
@@ -846,7 +848,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
         }
         catch ( const QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter" ) );
+          QgsDebugError( u"QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter"_s );
           // what should we return;.. ?
           return meters;
         }
@@ -1035,14 +1037,11 @@ void QgsRenderContext::setElevationMap( QgsElevationMap *map )
 
 void QgsRenderContext::matchRasterizedRenderingPolicyToFlags()
 {
-  if ( !mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
-       && mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+  if ( !mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
-  else if ( mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
-            && mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
-  else if ( mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
-            && !mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput ) && !mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }
 
@@ -1069,11 +1068,11 @@ void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId,
 {
   if ( geometry.isMultipart() )
   {
-    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry.asGeometryCollection() );
+    mSymbolLayerClippingGeometries[symbolLayerId].append( geometry.asGeometryCollection() );
   }
   else
   {
-    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
+    mSymbolLayerClippingGeometries[symbolLayerId].append( geometry );
   }
 }
 
@@ -1087,7 +1086,7 @@ bool QgsRenderContext::symbolLayerHasClipGeometries( const QString &symbolLayerI
 
 QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const
 {
-  return mSymbolLayerClippingGeometries[ symbolLayerId ];
+  return mSymbolLayerClippingGeometries[symbolLayerId];
 }
 
 void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers )

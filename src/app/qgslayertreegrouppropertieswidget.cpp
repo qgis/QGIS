@@ -26,8 +26,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgslayertreegrouppropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( nullptr, canvas, parent )
@@ -49,8 +52,7 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
 QgsLayerTreeGroupPropertiesWidget::~QgsLayerTreeGroupPropertiesWidget() = default;
 
 void QgsLayerTreeGroupPropertiesWidget::syncToLayer( QgsMapLayer * )
-{
-}
+{}
 
 void QgsLayerTreeGroupPropertiesWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )
 {
@@ -133,7 +135,7 @@ void QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged()
 QgsLayerTreeGroupPropertiesWidgetFactory::QgsLayerTreeGroupPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 

@@ -23,7 +23,11 @@
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
+#include <QString>
+
 #include "moc_qgsrenderermeshpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -129,7 +133,7 @@ void QgsRendererMeshPropertiesWidget::apply()
   mMeshLayer->triggerRepaint();
 
   QgsSettings windowsSettings;
-  windowsSettings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), mStyleOptionsTab->currentIndex() );
+  windowsSettings.setValue( u"/Windows/RendererMeshProperties/tab"_s, mStyleOptionsTab->currentIndex() );
 }
 
 void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
@@ -175,10 +179,10 @@ void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
   mEdgeMeshGroupBox->setVisible( hasEdges || !mMeshLayer->isValid() );
 
   QgsSettings settings;
-  if ( !settings.contains( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ) )
-    settings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), 0 );
+  if ( !settings.contains( u"/Windows/RendererMeshProperties/tab"_s ) )
+    settings.setValue( u"/Windows/RendererMeshProperties/tab"_s, 0 );
   else
-    mStyleOptionsTab->setCurrentIndex( settings.value( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ).toInt() );
+    mStyleOptionsTab->setCurrentIndex( settings.value( u"/Windows/RendererMeshProperties/tab"_s ).toInt() );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )

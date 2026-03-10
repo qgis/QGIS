@@ -24,7 +24,6 @@ Contains utilities for working with EXIF tags in images.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QVariantMap readTags( const QString &imagePath );
 %Docstring
 Returns a map object containing all exif tags stored in the image at
@@ -61,18 +60,14 @@ Returns ``True`` if the image at ``imagePath`` contains a valid geotag.
 %End
 
     class GeoTagDetails
-{
+    {
 %Docstring(signature="appended")
 Extended image geotag details.
 
 .. versionadded:: 3.6
 %End
 
-%TypeHeaderCode
-#include "qgsexiftools.h"
-%End
       public:
-
         GeoTagDetails();
 
         double elevation;
@@ -105,7 +100,6 @@ Writes a tag to the image at imagePath.
 
 .. versionadded:: 3.30
 %End
-
 };
 
 /************************************************************************

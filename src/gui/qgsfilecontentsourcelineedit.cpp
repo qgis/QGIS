@@ -27,10 +27,13 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QMovie>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsfilecontentsourcelineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFileContentSourceLineEdit
@@ -65,9 +68,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( extractFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::extractFile );
   sourceMenu->addAction( extractFileAction );
 
-  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction] {
-    extractFileAction->setEnabled( mMode == ModeBase64 );
-  } );
+  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction] { extractFileAction->setEnabled( mMode == ModeBase64 ); } );
 
   QAction *enterUrlAction = new QAction( tr( "From URL…" ), sourceMenu );
   connect( enterUrlAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::selectUrl );
@@ -115,7 +116,7 @@ void QgsAbstractFileContentSourceLineEdit::setPropertyOverrideToolButtonVisible(
 
 void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 {
-  const bool isBase64 = source.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive );
+  const bool isBase64 = source.startsWith( "base64:"_L1, Qt::CaseInsensitive );
 
   if ( ( !isBase64 && source == mFileLineEdit->text() && mBase64.isEmpty() ) || ( isBase64 && source == mBase64 ) )
     return;
@@ -192,7 +193,7 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
   const QByteArray encoded = blob.toBase64();
 
   QString path( encoded );
-  path.prepend( QLatin1String( "base64:" ) );
+  path.prepend( "base64:"_L1 );
   if ( path == source() )
     return;
 
@@ -232,7 +233,8 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
 
     if ( mMessageBar )
     {
-      mMessageBar->pushMessage( extractFileTitle(), tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar
+        ->pushMessage( extractFileTitle(), tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Success, 0 );
     }
   }
   else if ( mMessageBar )
@@ -300,9 +302,9 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       const QByteArrayList supportedFormats = QImageReader::supportedImageFormats();
       for ( const auto &format : supportedFormats )
       {
-        formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+        formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     }
 
     case AnimatedImage:
@@ -311,9 +313,9 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       const QByteArrayList supportedFormats = QMovie::supportedFormats();
       for ( const auto &format : supportedFormats )
       {
-        formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+        formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     }
   }
   BUILTIN_UNREACHABLE
@@ -394,11 +396,11 @@ QString QgsPictureSourceLineEditBase::defaultSettingsKey() const
   switch ( mFormat )
   {
     case Svg:
-      return QStringLiteral( "/UI/lastSVGDir" );
+      return u"/UI/lastSVGDir"_s;
     case Image:
-      return QStringLiteral( "/UI/lastImageDir" );
+      return u"/UI/lastImageDir"_s;
     case AnimatedImage:
-      return QStringLiteral( "/UI/lastAnimatedImageDir" );
+      return u"/UI/lastAnimatedImageDir"_s;
   }
   BUILTIN_UNREACHABLE
 }

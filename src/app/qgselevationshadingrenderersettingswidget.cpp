@@ -20,7 +20,11 @@
 #include "qgselevationshadingrenderer.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgselevationshadingrenderersettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -78,20 +82,12 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
   mBlockUpdates = true;
   QgsElevationShadingRenderer shadingRenderer = QgsProject::instance()->elevationShadingRenderer();
   mShadingGroupBox->setChecked( shadingRenderer.isActive() );
-  mCombineMethodCombo->setCurrentIndex(
-    mCombineMethodCombo->findData( QVariant::fromValue( shadingRenderer.combinedElevationMethod() ) )
-  );
+  mCombineMethodCombo->setCurrentIndex( mCombineMethodCombo->findData( QVariant::fromValue( shadingRenderer.combinedElevationMethod() ) ) );
   mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
   mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
   mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
   mEdlDistanceUnit->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
   );
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
   mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
@@ -115,7 +111,7 @@ void QgsElevationShadingRendererSettingsWidget::onChanged()
 QgsElevationShadingRendererSettingsWidgetFactory::QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"mShadingRenderer.svg"_s ) );
   setTitle( tr( "Shading Renderer" ) );
 }
 

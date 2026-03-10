@@ -2,7 +2,7 @@
   "name": "overlay_disjoint",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature is spatially disjoint from all the features of a target layer, or an array of expression-based results for the features in the target layer that are disjoint from the current feature.<br><br>Read more on the underlying GEOS \"Disjoint\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Disjoint.html'>ST_Disjoint</a> function.",
+  "description": "Returns whether the current feature is spatially disjoint from all the features of a target layer, or returns an array of expression-based results for the features in the target layer that are disjoint from the current feature.<br><br>Read more on the underlying GEOS \"Disjoint\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Disjoint.html'>ST_Disjoint</a> function.",
   "arguments": [{
     "arg": "layer",
     "description": "the layer whose overlay is checked"

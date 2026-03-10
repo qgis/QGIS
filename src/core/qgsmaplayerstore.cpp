@@ -22,8 +22,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QList>
+#include <QString>
 
 #include "moc_qgsmaplayerstore.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStore::QgsMapLayerStore( QObject *parent )
   : QObject( parent )
@@ -89,14 +92,14 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
   {
     if ( !myLayer )
     {
-      QgsDebugError( QStringLiteral( "Cannot add null layers" ) );
+      QgsDebugError( u"Cannot add null layers"_s );
       continue;
     }
 
     QGIS_CHECK_QOBJECT_THREAD_EQUALITY( myLayer );
 
     // If the layer is already in the store but its validity has flipped to TRUE reset data source
-    if ( mMapLayers.contains( myLayer->id() ) && ! mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
+    if ( mMapLayers.contains( myLayer->id() ) && !mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
     {
       mMapLayers[myLayer->id()]->setDataSource( myLayer->dataProvider()->dataSourceUri(), myLayer->name(), myLayer->providerType(), QgsDataProvider::ProviderOptions() );
     }
@@ -120,8 +123,7 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
   return myResultList;
 }
 
-QgsMapLayer *
-QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
+QgsMapLayer *QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -264,7 +266,7 @@ void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 
   if ( !id.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Map layer deleted without unregistering! %1" ).arg( id ) );
+    QgsDebugError( u"Map layer deleted without unregistering! %1"_s.arg( id ) );
     mMapLayers.remove( id );
   }
 }

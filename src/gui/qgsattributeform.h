@@ -68,7 +68,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr,      //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAttributeForm(
+      QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
     ~QgsAttributeForm() override;
 
     /**
@@ -92,7 +94,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void displayWarning( const QString &message );
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Hides the button box (OK/Cancel) and enables auto-commit
@@ -100,7 +102,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void hideButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Shows the button box (OK/Cancel) and disables auto-commit
@@ -108,7 +110,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void showButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Disconnects the button box (OK/Cancel) from the accept/resetValues slots
@@ -408,6 +410,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct WidgetInfo
     {
         QWidget *widget = nullptr;
+        bool expandingNeeded = false;
         QString labelText;
         QString toolTip;
         QString hint;

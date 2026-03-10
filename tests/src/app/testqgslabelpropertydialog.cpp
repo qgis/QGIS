@@ -25,6 +25,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLabelPropertyDialog : public QObject
 {
@@ -49,17 +52,14 @@ class TestQgsLabelPropertyDialog : public QObject
       mTestDataDir = myDataDir + '/';
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void test()
     {
       // init vector layer
       const QString pointFileName = mTestDataDir + "points.shp";
       const QFileInfo pointFileInfo( pointFileName );
-      QgsVectorLayer *vl = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
       QgsProject::instance()->addMapLayer( vl );
 
       // activate labeling

@@ -26,9 +26,12 @@
 #include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsuserprofilemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
@@ -72,12 +75,9 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   mWatchProfiles = enabled;
   if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
-    mWatcher = std::make_unique<QFileSystemWatcher>( );
+    mWatcher = std::make_unique<QFileSystemWatcher>();
     mWatcher->addPath( mRootProfilePath );
-    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
-    {
-      emit profilesChanged();
-    } );
+    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this] { emit profilesChanged(); } );
   }
   else
   {
@@ -97,22 +97,22 @@ bool QgsUserProfileManager::rootLocationIsSet() const
 
 QString QgsUserProfileManager::defaultProfileName() const
 {
-  const QString defaultName = QStringLiteral( "default" );
+  const QString defaultName = u"default"_s;
   // If the profiles.ini doesn't have the default profile we grab it from
   // global settings as it might be set by the admin.
   // If the overrideProfile flag is set then no matter what the profiles.ini says we always take the
   // global profile.
   const QgsSettings globalSettings;
-  if ( !mSettings->contains( QStringLiteral( "/core/defaultProfile" ) ) || globalSettings.value( QStringLiteral( "overrideLocalProfile" ), false, QgsSettings::Core ).toBool() )
+  if ( !mSettings->contains( u"/core/defaultProfile"_s ) || globalSettings.value( u"overrideLocalProfile"_s, false, QgsSettings::Core ).toBool() )
   {
-    return globalSettings.value( QStringLiteral( "defaultProfile" ), defaultName, QgsSettings::Core ).toString();
+    return globalSettings.value( u"defaultProfile"_s, defaultName, QgsSettings::Core ).toString();
   }
-  return mSettings->value( QStringLiteral( "/core/defaultProfile" ), defaultName ).toString();
+  return mSettings->value( u"/core/defaultProfile"_s, defaultName ).toString();
 }
 
 void QgsUserProfileManager::setDefaultProfileName( const QString &name )
 {
-  mSettings->setValue( QStringLiteral( "/core/defaultProfile" ), name );
+  mSettings->setValue( u"/core/defaultProfile"_s, name );
   mSettings->sync();
 }
 
@@ -123,23 +123,23 @@ void QgsUserProfileManager::setDefaultFromActive()
 
 QString QgsUserProfileManager::lastProfileName() const
 {
-  return mSettings->value( QStringLiteral( "/core/lastProfile" ), QString() ).toString();
+  return mSettings->value( u"/core/lastProfile"_s, QString() ).toString();
 }
 
-void QgsUserProfileManager::updateLastProfileName( )
+void QgsUserProfileManager::updateLastProfileName()
 {
-  mSettings->setValue( QStringLiteral( "/core/lastProfile" ), userProfile()->name() );
+  mSettings->setValue( u"/core/lastProfile"_s, userProfile()->name() );
   mSettings->sync();
 }
 
 Qgis::UserProfileSelectionPolicy QgsUserProfileManager::userProfileSelectionPolicy() const
 {
-  return static_cast< Qgis::UserProfileSelectionPolicy >( mSettings->value( QStringLiteral( "/core/selectionPolicy" ), 0 ).toInt() );
+  return static_cast< Qgis::UserProfileSelectionPolicy >( mSettings->value( u"/core/selectionPolicy"_s, 0 ).toInt() );
 }
 
 void QgsUserProfileManager::setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy policy )
 {
-  mSettings->setValue( QStringLiteral( "/core/selectionPolicy" ), static_cast< int >( policy ) );
+  mSettings->setValue( u"/core/selectionPolicy"_s, static_cast< int >( policy ) );
   mSettings->sync();
 }
 
@@ -232,7 +232,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString &name )
 
 QString QgsUserProfileManager::settingsFile() const
 {
-  return  mRootProfilePath + QDir::separator() + "profiles.ini";
+  return mRootProfilePath + QDir::separator() + "profiles.ini";
 }
 
 QSettings *QgsUserProfileManager::settings()
@@ -247,7 +247,7 @@ QgsUserProfile *QgsUserProfileManager::userProfile()
 
 void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
   const QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
   arguments << QCoreApplication::arguments();
@@ -255,8 +255,8 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
   // on Windows this might not be case so we need to handle that
   // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
   arguments.removeFirst();
-  arguments << QStringLiteral( "--profile" ) << name;
-  QgsDebugMsgLevel( QStringLiteral( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ), 2 );
+  arguments << u"--profile"_s << name;
+  QgsDebugMsgLevel( u"Starting instance from %1 with %2"_s.arg( path ).arg( arguments.join( " " ) ), 2 );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 #else
   Q_UNUSED( name )
@@ -266,7 +266,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
-  if ( ! mUserProfile )
+  if ( !mUserProfile )
   {
     mUserProfile = profileForName( profile );
   }

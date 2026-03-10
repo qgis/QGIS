@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsPrecalculatedTextMetrics
 {
   public:
-
     /**
      * Constructor for QgsPrecalculatedTextMetrics
      * \param graphemes list of graphemes contained in the text
@@ -43,10 +42,7 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
      * \param characterHeights height of characters
      * \param characterDescents descent of characters
      */
-    QgsPrecalculatedTextMetrics( const QStringList &graphemes,
-                                 const QVector< double > &characterWidths,
-                                 const QVector< double > &characterHeights,
-                                 const QVector< double > &characterDescents )
+    QgsPrecalculatedTextMetrics( const QStringList &graphemes, const QVector< double > &characterWidths, const QVector< double > &characterHeights, const QVector< double > &characterDescents )
       : mGraphemes( graphemes )
       , mCharacterHeights( characterHeights )
       , mCharacterWidths( characterWidths )
@@ -70,21 +66,36 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Returns the width of the character at the specified position.
      */
-    double characterWidth( int position ) const { return mCharacterWidths[position]; }
+    double characterWidth( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterWidths[position];
+    }
 
     /**
      * Returns the character height of the character at the specified position (actually font metrics height, not individual character height).
      *
      * \since QGIS 3.28
      */
-    double characterHeight( int position ) const { return mCharacterHeights[position]; }
+    double characterHeight( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterHeights[position];
+    }
 
     /**
      * Returns the descent of the character at the specified position.
      *
      * \since QGIS 3.28
      */
-    double characterDescent( int position ) const { return mCharacterDescents[position]; }
+    double characterDescent( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterDescents[position];
+    }
 
     /**
      * Returns the maximum height of any character found in the text.
@@ -126,7 +137,6 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     QgsTextCharacterFormat graphemeFormat( int index ) const { return mGraphemeFormats.value( index ); }
 
   private:
-
     QStringList mGraphemes;
     QVector< QgsTextCharacterFormat > mGraphemeFormats;
     QVector< double > mCharacterHeights;
@@ -134,7 +144,6 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     QVector< double > mCharacterDescents;
     double mMaximumCharacterHeight = 0;
     double mMaximumCharacterDescent = 0;
-
 };
 
 

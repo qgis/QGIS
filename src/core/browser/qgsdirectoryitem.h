@@ -22,7 +22,10 @@
 #include "qgsdatacollectionitem.h"
 
 #include <QDateTime>
+#include <QString>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 class QFileSystemWatcher;
 class QMouseEvent;
@@ -35,7 +38,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDirectoryItem, with the specified \a parent item.
      *
@@ -49,7 +51,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
 
 
-    // TODO QGIS 4.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
+    // TODO QGIS 5.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
     // else to clarify the role of dirPath vs path
 
     /**
@@ -71,13 +73,15 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+    QString str = u"<QgsDirectoryItem: %1 - %2>"_s.arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
-    void setState( Qgis::BrowserItemState state ) override;
+      void setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -204,11 +208,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     void directoryChanged();
 
   protected:
-
     QString mDirPath;
 
   private:
-
     void init( const QString &dirName );
 
     void createOrDestroyFileSystemWatcher();
@@ -228,7 +230,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 // ---------
 
-// TODO: move to qgis_gui for QGIS 4
+// TODO: move to qgis_gui for QGIS 5
 
 /**
  * \ingroup core
@@ -263,7 +265,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectHomeItem.
      */
@@ -271,7 +272,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
     QIcon icon() override;
     QVariant sortKey() const override;
-
 };
 
 #endif

@@ -33,20 +33,16 @@ class TestQgsRange : public QObject
 };
 
 void TestQgsRange::initTestCase()
-{
-}
+{}
 
 void TestQgsRange::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsRange::init()
-{
-}
+{}
 
 void TestQgsRange::cleanup()
-{
-}
+{}
 
 void TestQgsRange::testMergeRangesDate()
 {
@@ -82,7 +78,13 @@ void TestQgsRange::testMergeRangesDate()
   QCOMPARE( res.at( 0 ).begin(), QDate( 2020, 1, 10 ) );
   QCOMPARE( res.at( 0 ).end(), QDate( 2020, 1, 22 ) );
 
-  const QList<QgsDateRange> ranges { QgsDateRange( QDate( 2020, 1, 10 ), QDate( 2020, 1, 15 ) ), QgsDateRange( QDate( 2020, 1, 20 ), QDate( 2020, 1, 25 ) ), QgsDateRange( QDate( 2020, 1, 9 ), QDate( 2020, 1, 11 ) ), QgsDateRange( QDate( 2020, 1, 19 ), QDate( 2020, 1, 27 ) ), QgsDateRange( QDate( 2020, 1, 1 ), QDate( 2020, 1, 3 ) ) };
+  const QList<QgsDateRange> ranges {
+    QgsDateRange( QDate( 2020, 1, 10 ), QDate( 2020, 1, 15 ) ),
+    QgsDateRange( QDate( 2020, 1, 20 ), QDate( 2020, 1, 25 ) ),
+    QgsDateRange( QDate( 2020, 1, 9 ), QDate( 2020, 1, 11 ) ),
+    QgsDateRange( QDate( 2020, 1, 19 ), QDate( 2020, 1, 27 ) ),
+    QgsDateRange( QDate( 2020, 1, 1 ), QDate( 2020, 1, 3 ) )
+  };
 
   res = QgsDateRange::mergeRanges( ranges );
   QCOMPARE( res.size(), 3 );
@@ -96,7 +98,13 @@ void TestQgsRange::testMergeRangesDate()
 
 void TestQgsRange::testMergeRangesDateTime()
 {
-  const QList<QgsDateTimeRange> ranges { QgsDateTimeRange( QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 25 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 9 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 19 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 27 ), QTime( 0, 0, 0 ) ) ), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ) ) ) };
+  const QList<QgsDateTimeRange> ranges {
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 25 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 9 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 19 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 27 ), QTime( 0, 0, 0 ) ) ),
+    QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ) ) )
+  };
 
   const QList<QgsDateTimeRange> res = QgsDateTimeRange::mergeRanges( ranges );
   QCOMPARE( res.size(), 3 );

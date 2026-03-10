@@ -11,7 +11,7 @@
 
 
 
-class QgsGeometryCollection: QgsAbstractGeometry
+class QgsGeometryCollection : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Geometry collection.
@@ -21,8 +21,6 @@ Geometry collection.
 #include "qgsgeometrycollection.h"
 %End
   public:
-
-
     QgsGeometryCollection() /HoldGIL/;
 %Docstring
 Constructor for an empty geometry collection.
@@ -227,6 +225,8 @@ ownership to the caller.
     virtual double length() const /HoldGIL/;
 
     virtual double area() const /HoldGIL/;
+
+    virtual double area3D() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 

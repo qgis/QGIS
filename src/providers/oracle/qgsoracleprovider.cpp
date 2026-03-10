@@ -44,7 +44,11 @@
 #include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsoracleprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -58,7 +62,9 @@
 #include "ocispatial/wkbptr.h"
 
 
-#define LoggedExecStatic( query, sql, args, uri ) QgsOracleProvider::execLoggedStatic( query, sql, args, uri, QStringLiteral( "QgsOracleProvider" ), QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
+#define LoggedExecStatic( query, sql, args, uri ) \
+  QgsOracleProvider::                             \
+    execLoggedStatic( query, sql, args, uri, u"QgsOracleProvider"_s, QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
 
 
 const QString ORACLE_KEY = "oracle";
@@ -73,7 +79,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   if ( geomMetaType < 0 )
     geomMetaType = qRegisterMetaType<QOCISpatialGeometry>();
 
-  QgsDebugMsgLevel( QStringLiteral( "URI: %1 " ).arg( uri ), 2 );
+  QgsDebugMsgLevel( u"URI: %1 "_s.arg( uri ), 2 );
 
   mUri = QgsDataSourceUri( uri );
 
@@ -123,14 +129,14 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Owner is: %1" ).arg( mOwnerName ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Query is: %1" ).arg( mQuery ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Where clause is: %1" ).arg( mSqlWhereClause ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "SRID is: %1" ).arg( mSrid ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Using estimated metadata: %1" ).arg( mUseEstimatedMetadata ? "yes" : "no" ), 2 );
+  QgsDebugMsgLevel( u"Connection info is %1"_s.arg( mUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( u"Geometry column is: %1"_s.arg( mGeometryColumn ), 2 );
+  QgsDebugMsgLevel( u"Owner is: %1"_s.arg( mOwnerName ), 2 );
+  QgsDebugMsgLevel( u"Table name is: %1"_s.arg( mTableName ), 2 );
+  QgsDebugMsgLevel( u"Query is: %1"_s.arg( mQuery ), 2 );
+  QgsDebugMsgLevel( u"Where clause is: %1"_s.arg( mSqlWhereClause ), 2 );
+  QgsDebugMsgLevel( u"SRID is: %1"_s.arg( mSrid ), 2 );
+  QgsDebugMsgLevel( u"Using estimated metadata: %1"_s.arg( mUseEstimatedMetadata ? "yes" : "no" ), 2 );
 
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )
@@ -251,7 +257,7 @@ void QgsOracleProvider::setWorkspace( const QString &workspace )
   if ( !conn )
   {
     mUri = prevUri;
-    QgsDebugMsgLevel( QStringLiteral( "restoring previous uri:%1" ).arg( mUri.uri( false ) ), 2 );
+    QgsDebugMsgLevel( u"restoring previous uri:%1"_s.arg( mUri.uri( false ) ), 2 );
     conn = connectionRO();
   }
   else
@@ -294,7 +300,7 @@ QgsOracleConn *QgsOracleProvider::connectionRO() const
 
 bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass, const QString &queryOrigin )
 {
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri, QStringLiteral( "oracle" ), originatorClass, queryOrigin };
+  QgsDatabaseQueryLogWrapper logWrapper { sql, uri, u"oracle"_s, originatorClass, queryOrigin };
 
   qry.setForwardOnly( true );
 
@@ -304,7 +310,7 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
   {
     for ( const auto &arg : args )
     {
-      QgsDebugMsgLevel( QStringLiteral( " ARG: %1 [%2]" ).arg( arg.toString() ).arg( arg.typeName() ), 4 );
+      QgsDebugMsgLevel( u" ARG: %1 [%2]"_s.arg( arg.toString() ).arg( arg.typeName() ), 4 );
       qry.addBindValue( arg );
     }
     res = qry.exec();
@@ -312,9 +318,7 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
 
   if ( !res )
   {
-    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
-                     .arg( qry.lastQuery() )
-                     .arg( qry.lastError().text() ) );
+    QgsDebugError( u"SQL: %1\nERROR: %2"_s.arg( qry.lastQuery() ).arg( qry.lastError().text() ) );
   }
 
   logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
@@ -406,7 +410,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
   switch ( mPrimaryKeyType )
   {
     case PktInt:
-      QgsDebugMsgLevel( QStringLiteral( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
+      QgsDebugMsgLevel( u"addBindValue pk %1"_s.arg( FID_TO_STRING( fid ) ), 4 );
       qry.addBindValue( FID_TO_STRING( fid ) );
       break;
 
@@ -419,16 +423,16 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
         const auto constToList = pkValsVariant.toList();
         for ( const QVariant &v : constToList )
         {
-          QgsDebugMsgLevel( QStringLiteral( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
+          QgsDebugMsgLevel( u"addBindValue pk %1"_s.arg( FID_TO_STRING( fid ) ), 4 );
           qry.addBindValue( v );
         }
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "key values for fid %1 not found." ).arg( fid ), 2 );
+        QgsDebugMsgLevel( u"key values for fid %1 not found."_s.arg( fid ), 2 );
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "addBindValue pk NULL" ).arg( fid ), 4 );
+          QgsDebugMsgLevel( u"addBindValue pk NULL"_s.arg( fid ), 4 );
           qry.addBindValue( QVariant() );
         }
       }
@@ -437,13 +441,15 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     break;
 
     case PktUnknown:
-      QgsDebugError( QStringLiteral( "Unknown key type" ) );
+      QgsDebugError( u"Unknown key type"_s );
       break;
   }
 }
 
 
-QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &args )
+QString QgsOracleUtils::whereClause(
+  QgsFeatureId featureId, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &args
+)
 {
   QString whereClause;
 
@@ -484,7 +490,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fi
       }
       else
       {
-        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
+        QgsDebugError( u"FAILURE: Key values for feature %1 not found."_s.arg( featureId ) );
         whereClause = "NULL IS NOT NULL";
       }
     }
@@ -499,7 +505,9 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fi
   return whereClause;
 }
 
-QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &args )
+QString QgsOracleUtils::whereClause(
+  QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &args
+)
 {
   QStringList whereClauses;
   const auto constFeatureIds = featureIds;
@@ -597,13 +605,13 @@ bool QgsOracleProvider::loadFields()
 
   if ( !mIsQuery )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
+    QgsDebugMsgLevel( u"Loading fields for table %1"_s.arg( mTableName ), 2 );
 
-    if ( LoggedExecStatic( qry, QStringLiteral( "SELECT comments FROM all_tab_comments WHERE owner=? AND table_name=?" ), QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
+    if ( LoggedExecStatic( qry, u"SELECT comments FROM all_tab_comments WHERE owner=? AND table_name=?"_s, QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
     {
       if ( qry.next() )
         mDataComment = qry.value( 0 ).toString();
-      else if ( LoggedExecStatic( qry, QStringLiteral( "SELECT comments FROM all_mview_comments WHERE owner=? AND mview_name=?" ), QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
+      else if ( LoggedExecStatic( qry, u"SELECT comments FROM all_mview_comments WHERE owner=? AND mview_name=?"_s, QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
       {
         if ( qry.next() )
           mDataComment = qry.value( 0 ).toString();
@@ -611,16 +619,13 @@ bool QgsOracleProvider::loadFields()
     }
     else
     {
-      const QString error { tr( "Loading comment for table %1.%2 failed [%3]" )
-                              .arg( mOwnerName )
-                              .arg( mTableName )
-                              .arg( qry.lastError().text() ) };
+      const QString error { tr( "Loading comment for table %1.%2 failed [%3]" ).arg( mOwnerName ).arg( mTableName ).arg( qry.lastError().text() ) };
       QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     }
 
     qry.finish();
 
-    if ( LoggedExecStatic( qry, QStringLiteral( "SELECT column_name,comments FROM all_col_comments t WHERE t.owner=? AND t.table_name=?" ), QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
+    if ( LoggedExecStatic( qry, u"SELECT column_name,comments FROM all_col_comments t WHERE t.owner=? AND t.table_name=?"_s, QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
     {
       while ( qry.next() )
       {
@@ -638,16 +643,21 @@ bool QgsOracleProvider::loadFields()
     qry.finish();
 
     QVariantList args;
-    QString sql( "SELECT"
-                 " t.column_name"
-                 ",CASE WHEN t.data_type_owner IS NULL THEN t.data_type ELSE t.data_type_owner||'.'||t.data_type END"
-                 ",t.data_precision"
-                 ",t.data_scale"
-                 ",t.char_length"
-                 ",t.char_used"
-                 ",t.data_default"
-                 + QString( mOracleVersion >= 12 ? ",CASE WHEN t.virtual_column = 'YES' OR a.generation_type = 'ALWAYS' THEN 'YES' ELSE 'NO' END" : ",t.virtual_column" ) + " FROM all_tab_cols t" + QString( mOracleVersion >= 12 ? " LEFT JOIN all_tab_identity_cols a ON a.column_name = t.column_name AND a.owner = t.owner AND a.table_name = t.table_name" : "" ) + " WHERE t.owner=? AND t.table_name=?"
-                                                                                                                                                                                                                                                                                                                                                                          " AND t.hidden_column='NO'" );
+    QString sql(
+      "SELECT"
+      " t.column_name"
+      ",CASE WHEN t.data_type_owner IS NULL THEN t.data_type ELSE t.data_type_owner||'.'||t.data_type END"
+      ",t.data_precision"
+      ",t.data_scale"
+      ",t.char_length"
+      ",t.char_used"
+      ",t.data_default"
+      + QString( mOracleVersion >= 12 ? ",CASE WHEN t.virtual_column = 'YES' OR a.generation_type = 'ALWAYS' THEN 'YES' ELSE 'NO' END" : ",t.virtual_column" )
+      + " FROM all_tab_cols t"
+      + QString( mOracleVersion >= 12 ? " LEFT JOIN all_tab_identity_cols a ON a.column_name = t.column_name AND a.owner = t.owner AND a.table_name = t.table_name" : "" )
+      + " WHERE t.owner=? AND t.table_name=?"
+        " AND t.hidden_column='NO'"
+    );
     args << mOwnerName << mTableName;
 
     if ( !mGeometryColumn.isEmpty() )
@@ -706,10 +716,7 @@ bool QgsOracleProvider::loadFields()
     }
     else
     {
-      const QString error { tr( "Loading field types for table %1.%2 failed [%3]" )
-                              .arg( mOwnerName )
-                              .arg( mTableName )
-                              .arg( qry.lastError().text() ) };
+      const QString error { tr( "Loading field types for table %1.%2 failed [%3]" ).arg( mOwnerName ).arg( mTableName ).arg( qry.lastError().text() ) };
 
       QgsMessageLog::logMessage( error, tr( "Oracle" ) );
     }
@@ -724,8 +731,7 @@ bool QgsOracleProvider::loadFields()
   {
     if ( !mHasSpatialIndex )
     {
-      const QString sql { QStringLiteral( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'" )
-                            .arg( mQuery )
+      const QString sql { u"SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'"_s.arg( mQuery )
                             .arg( quotedIdentifier( mGeometryColumn ) )
                             .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) };
 
@@ -740,7 +746,7 @@ bool QgsOracleProvider::loadFields()
 
   qry.finish();
 
-  const QString sql { QStringLiteral( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) };
+  const QString sql { u"SELECT * FROM %1 WHERE 1=0"_s.arg( mQuery ) };
 
   if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
   {
@@ -782,7 +788,7 @@ bool QgsOracleProvider::loadFields()
 
 bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
+  QgsDebugMsgLevel( u"Checking for permissions on the relation"_s, 2 );
 
   mEnabledCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::TransactionSupport;
 
@@ -814,7 +820,12 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
     }
     else
     {
-      if ( LoggedExecStatic( qry, QStringLiteral( "SELECT privilege FROM all_tab_privs WHERE table_schema=? AND table_name=? AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')" ), QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
+      if ( LoggedExecStatic(
+             qry,
+             u"SELECT privilege FROM all_tab_privs WHERE table_schema=? AND table_name=? AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')"_s,
+             QVariantList() << mOwnerName << mTableName,
+             mUri.uri()
+           ) )
       {
         // check grants
         while ( qry.next() )
@@ -841,7 +852,12 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
         if ( !mGeometryColumn.isNull() )
         {
-          if ( LoggedExecStatic( qry, QStringLiteral( "SELECT 1 FROM all_col_privs WHERE table_schema=? AND table_name=? AND column_name=? AND privilege='UPDATE'" ), QVariantList() << mOwnerName << mTableName << mGeometryColumn, mUri.uri() ) )
+          if ( LoggedExecStatic(
+                 qry,
+                 u"SELECT 1 FROM all_col_privs WHERE table_schema=? AND table_name=? AND column_name=? AND privilege='UPDATE'"_s,
+                 QVariantList() << mOwnerName << mTableName << mGeometryColumn,
+                 mUri.uri()
+               ) )
           {
             if ( qry.next() )
               mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
@@ -859,10 +875,9 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
       }
       else
       {
-        const QString error { tr( "Unable to determine table access privileges for the table %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                                .arg( mQuery )
-                                .arg( qry.lastError().text() )
-                                .arg( qry.lastQuery() ) };
+        const QString error {
+          tr( "Unable to determine table access privileges for the table %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mQuery ).arg( qry.lastError().text() ).arg( qry.lastQuery() )
+        };
         QgsMessageLog::logMessage( error, tr( "Oracle" ) );
       }
     }
@@ -876,12 +891,10 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
-    const QString sql { QStringLiteral( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) };
+    const QString sql { u"SELECT * FROM %1 WHERE 1=0"_s.arg( mQuery ) };
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
-      const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                              .arg( qry.lastError().text() )
-                              .arg( qry.lastQuery() ) };
+      const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ) };
       QgsMessageLog::logMessage( error, tr( "Oracle" ) );
       return false;
     }
@@ -933,11 +946,9 @@ bool QgsOracleProvider::determinePrimaryKey()
     }
     else
     {
-      if ( !LoggedExecStatic( qry, QStringLiteral( "SELECT 1 FROM all_tables WHERE owner=? AND table_name=?" ), QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
+      if ( !LoggedExecStatic( qry, u"SELECT 1 FROM all_tables WHERE owner=? AND table_name=?"_s, QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
       {
-        const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                .arg( qry.lastError().text() )
-                                .arg( qry.lastQuery() ) };
+        const QString error { tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ) };
         QgsMessageLog::logMessage( error, tr( "Oracle" ) );
       }
       else if ( qry.next() )
@@ -1030,8 +1041,8 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 
   // This is tricky: in case of SQL query layers we have a generated uid in the form "qgis_generated_uid_%1_" which cannot be quoted as identifier.
 
-  QString sql = QString( "SELECT (SELECT count(distinct %1) FROM %2)-(SELECT count(%1) FROM %2) FROM dual" )
-                  .arg( colName.startsWith( QLatin1String( "qgis_generated_uid_" ) ) ? colName : quotedIdentifier( colName ), mQuery );
+  QString sql
+    = QString( "SELECT (SELECT count(distinct %1) FROM %2)-(SELECT count(%1) FROM %2) FROM dual" ).arg( colName.startsWith( "qgis_generated_uid_"_L1 ) ? colName : quotedIdentifier( colName ), mQuery );
 
   if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) || !qry.next() )
   {
@@ -1053,8 +1064,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
   {
     // get the field name
     QgsField fld = field( index );
-    QString sql = QString( "SELECT min(%1) FROM %2" )
-                    .arg( quotedIdentifier( fld.name() ), mQuery );
+    QString sql = QString( "SELECT min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1094,16 +1104,14 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
   {
     // get the field name
     QgsField fld = field( index );
-    QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                    .arg( quotedIdentifier( fld.name() ), mQuery );
+    QString sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
       sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
     }
 
-    sql += QString( " ORDER BY %1" )
-             .arg( quotedIdentifier( fld.name() ) );
+    sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
 
     if ( limit >= 0 )
     {
@@ -1142,9 +1150,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
   {
     // get the field name
     QgsField fld = field( index );
-    QString sql = QString( "SELECT max(%1) FROM %2" )
-                    .arg( quotedIdentifier( fld.name() ) )
-                    .arg( mQuery );
+    QString sql = QString( "SELECT max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1241,7 +1247,7 @@ QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, con
   QgsOracleConn *conn = connectionRO();
   QSqlQuery qry( *conn );
 
-  const QString sql { QStringLiteral( "SELECT %1 FROM dual" ).arg( value ) };
+  const QString sql { u"SELECT %1 FROM dual"_s.arg( value ) };
 
   if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) || !qry.next() )
   {
@@ -1264,7 +1270,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
   bool returnvalue = true;
 
-  if ( !( flags & QgsFeatureSink::FastInsert ) && !getWorkspace().isEmpty() && getWorkspace().compare( QStringLiteral( "LIVE" ), Qt::CaseInsensitive ) != 0 )
+  if ( !( flags & QgsFeatureSink::FastInsert ) && !getWorkspace().isEmpty() && getWorkspace().compare( u"LIVE"_s, Qt::CaseInsensitive ) != 0 )
   {
     static bool warn = true;
     if ( warn )
@@ -1287,8 +1293,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     }
 
     // Prepare the INSERT statement
-    QString insert = QStringLiteral( "INSERT INTO %1(" ).arg( mQuery );
-    QString values = QStringLiteral( ") VALUES (" );
+    QString insert = u"INSERT INTO %1("_s.arg( mQuery );
+    QString values = u") VALUES ("_s;
     QString delim;
 
     QStringList defaultValues;
@@ -1321,7 +1327,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         defaultValues << defaultValueClause( idx );
       }
 
-      getFidSql = QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys, mQuery );
+      getFidSql = u"SELECT %1 FROM %2 WHERE ROWID=?"_s.arg( keys, mQuery );
       if ( !getfid.prepare( getFidSql ) )
       {
         throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
@@ -1332,11 +1338,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
-#else
     for ( int idx = 0; idx < std::min( attributevec.size(), static_cast<qsizetype>( mAttributeFields.size() ) ); ++idx )
-#endif
     {
       if ( mAlwaysGenerated.at( idx ) )
         continue;
@@ -1364,7 +1366,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     insert += values + ")";
 
-    QgsDebugMsgLevel( QStringLiteral( "SQL prepare: %1" ).arg( insert ), 4 );
+    QgsDebugMsgLevel( u"SQL prepare: %1"_s.arg( insert ), 4 );
 
     if ( !ins.prepare( insert ) )
     {
@@ -1375,7 +1377,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     {
       QgsAttributes attributevec = features->attributes();
 
-      QgsDebugMsgLevel( QStringLiteral( "insert feature %1" ).arg( features->id() ), 4 );
+      QgsDebugMsgLevel( u"insert feature %1"_s.arg( features->id() ), 4 );
 
       if ( !mGeometryColumn.isNull() )
       {
@@ -1401,11 +1403,11 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         }
         features->setAttribute( fieldId[i], value );
 
-        QgsDebugMsgLevel( QStringLiteral( "addBindValue: %1" ).arg( value.toString() ), 4 );
+        QgsDebugMsgLevel( u"addBindValue: %1"_s.arg( value.toString() ), 4 );
         ins.addBindValue( value );
       }
 
-      QgsDatabaseQueryLogWrapper logInsWrapper { insert, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+      QgsDatabaseQueryLogWrapper logInsWrapper { insert, mUri.uri(), u"oracle"_s, u"QgsOracleProvider"_s, QGS_QUERY_LOG_ORIGIN };
       const bool res { ins.exec() };
       logInsWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( ins ) );
       logInsWrapper.setFetchedRows( ins.numRowsAffected() );
@@ -1421,7 +1423,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         if ( mPrimaryKeyType == PktRowId )
         {
           features->setId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
-          QgsDebugMsgLevel( QStringLiteral( "new fid=%1" ).arg( features->id() ), 4 );
+          QgsDebugMsgLevel( u"new fid=%1"_s.arg( features->id() ), 4 );
         }
         else if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
         {
@@ -1429,7 +1431,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
           {
             getfid.addBindValue( QVariant( ins.lastInsertId() ) );
 
-            QgsDatabaseQueryLogWrapper logGetFidWrapper { getFidSql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+            QgsDatabaseQueryLogWrapper logGetFidWrapper { getFidSql, mUri.uri(), u"oracle"_s, u"QgsOracleProvider"_s, QGS_QUERY_LOG_ORIGIN };
 
             const bool result { getfid.exec() };
             logGetFidWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( getfid ) );
@@ -1488,7 +1490,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
             features->setId( mShared->lookupFid( primaryKeyVals ) );
           }
-          QgsDebugMsgLevel( QStringLiteral( "new fid=%1" ).arg( features->id() ), 4 );
+          QgsDebugMsgLevel( u"new fid=%1"_s.arg( features->id() ), 4 );
         }
       }
     }
@@ -1501,7 +1503,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
   }
   catch ( OracleException &e )
   {
-    QgsDebugError( QStringLiteral( "Oracle error: %1" ).arg( e.errorMessage() ) );
+    QgsDebugError( u"Oracle error: %1"_s.arg( e.errorMessage() ) );
     pushError( tr( "Oracle error while adding features: %1" ).arg( e.errorMessage() ) );
     if ( !conn->rollback( db ) )
     {
@@ -1535,8 +1537,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds &id )
     for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
     {
       QVariantList args;
-      QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
-                      .arg( mQuery, whereClause( *it, args ) );
+      QString sql = u"DELETE FROM %1 WHERE %2"_s.arg( mQuery, whereClause( *it, args ) );
       QgsDebugMsgLevel( "delete sql: " + sql, 2 );
 
       if ( !LoggedExecStatic( qry, sql, args, mUri.uri() ) )
@@ -1608,8 +1609,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
         }
       }
 
-      QString sql = QString( "ALTER TABLE %1 ADD %2 %3" )
-                      .arg( mQuery, quotedIdentifier( iter->name() ), type );
+      QString sql = QString( "ALTER TABLE %1 ADD %2 %3" ).arg( mQuery, quotedIdentifier( iter->name() ), type );
       QgsDebugMsgLevel( sql, 2 );
 
       if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
@@ -1619,8 +1619,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 
       if ( !iter->comment().isEmpty() )
       {
-        sql = QString( "COMMENT ON COLUMN %1.%2 IS ?" )
-                .arg( mQuery, quotedIdentifier( iter->name() ) );
+        sql = QString( "COMMENT ON COLUMN %1.%2 IS ?" ).arg( mQuery, quotedIdentifier( iter->name() ) );
 
         if ( !LoggedExecStatic( qry, sql, QVariantList() << iter->comment(), mUri.uri() ) )
         {
@@ -1684,8 +1683,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
     {
       QgsField fld = mAttributeFields.at( id );
 
-      QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
-                      .arg( mQuery, quotedIdentifier( fld.name() ) );
+      QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" ).arg( mQuery, quotedIdentifier( fld.name() ) );
 
       //send sql statement and do error handling
       if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
@@ -1766,8 +1764,7 @@ bool QgsOracleProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
     for ( renameIt = renamedAttributes.constBegin(); renameIt != renamedAttributes.constEnd(); ++renameIt )
     {
       QString src( mAttributeFields.at( renameIt.key() ).name() );
-      const QString sql { QString( "ALTER TABLE %1 RENAME COLUMN %2 TO %3" )
-                            .arg( mQuery, quotedIdentifier( src ), quotedIdentifier( renameIt.value() ) ) };
+      const QString sql { QString( "ALTER TABLE %1 RENAME COLUMN %2 TO %3" ).arg( mQuery, quotedIdentifier( src ), quotedIdentifier( renameIt.value() ) ) };
 
       if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
       {
@@ -1908,7 +1905,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       for ( const auto &arg : std::as_const( args ) )
         qry.addBindValue( arg );
 
-      QgsDatabaseQueryLogWrapper logWrapper { sql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+      QgsDatabaseQueryLogWrapper logWrapper { sql, mUri.uri(), u"oracle"_s, u"QgsOracleProvider"_s, QGS_QUERY_LOG_ORIGIN };
 
       if ( !qry.exec() )
       {
@@ -2069,7 +2066,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
             // Oracle polygons must have their exterior ring in counterclockwise
             // order, and the interior ring(s) in clockwise order.
-            const bool reverseRing = iRing == 0 ? poly->exteriorRing()->orientation() == Qgis::AngularDirection::Clockwise : poly->interiorRing( iRing - 1 )->orientation() == Qgis::AngularDirection::CounterClockwise;
+            const bool reverseRing = iRing == 0 ? poly->exteriorRing()->orientation() == Qgis::AngularDirection::Clockwise
+                                                : poly->interiorRing( iRing - 1 )->orientation() == Qgis::AngularDirection::CounterClockwise;
 
             const int n = *ptr.iPtr++;
             if ( reverseRing )
@@ -2187,8 +2185,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             {
               // Inside a compound curve, two consecutives lines share start/end points
               // We don't repeat this point in ordinates, so we skip the last point (except for last line)
-              if ( ( curveType == Qgis::WkbType::CompoundCurve || curveType == Qgis::WkbType::CompoundCurveZ )
-                   && i == n - 1 && iLine < nLines - 1 )
+              if ( ( curveType == Qgis::WkbType::CompoundCurve || curveType == Qgis::WkbType::CompoundCurveZ ) && i == n - 1 && iLine < nLines - 1 )
               {
                 ptr.dPtr += dim;
                 continue;
@@ -2251,9 +2248,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             }
 
             // Oracle don't store compound curve with only one line
-            g.eleminfo << iOrdinate
-                       << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 )
-                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( lineType ) == Qgis::WkbType::CircularString ? 2 : 1 ) );
+            g.eleminfo << iOrdinate << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 ) << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( lineType ) == Qgis::WkbType::CircularString ? 2 : 1 ) );
 
             for ( int iLine = 0; iLine < nLines; iLine++ )
             {
@@ -2271,8 +2266,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
               {
                 // Inside a compound polygon, two consecutives lines share start/end points
                 // We don't repeat this point in ordinates, so we skip the last point (except for last line)
-                if ( compound
-                     && i == n - 1 && iLine < nLines - 1 )
+                if ( compound && i == n - 1 && iLine < nLines - 1 )
                 {
                   break;
                 }
@@ -2336,13 +2330,28 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::TriangleZM:
       case Qgis::WkbType::Unknown:
       case Qgis::WkbType::NoGeometry:
+      // TOOD: NURBS should be supported, but not yet tested on ORACLE
+      case Qgis::WkbType::NurbsCurve:
+      case Qgis::WkbType::NurbsCurveZ:
+      case Qgis::WkbType::NurbsCurveM:
+      case Qgis::WkbType::NurbsCurveZM:
 
         g.isNull = true;
         break;
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "addBindValue geometry: isNull=%1 gtype=%2 srid=%3 p=%4,%5,%6 eleminfo=%7 ordinates=%8" ).arg( g.isNull ).arg( g.gtype ).arg( g.srid ).arg( g.x ).arg( g.y ).arg( g.z ).arg( g.eleminfo.size() ).arg( g.ordinates.size() ), 4 );
+  QgsDebugMsgLevel(
+    u"addBindValue geometry: isNull=%1 gtype=%2 srid=%3 p=%4,%5,%6 eleminfo=%7 ordinates=%8"_s.arg( g.isNull )
+      .arg( g.gtype )
+      .arg( g.srid )
+      .arg( g.x )
+      .arg( g.y )
+      .arg( g.z )
+      .arg( g.eleminfo.size() )
+      .arg( g.ordinates.size() ),
+    4
+  );
   qry.addBindValue( QVariant::fromValue( g ) );
 }
 
@@ -2364,24 +2373,19 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
       throw OracleException( tr( "Could not start transaction" ), db );
     }
 
-    QString update = QString( "UPDATE %1 SET %2=? WHERE %3" )
-                       .arg( mQuery )
-                       .arg( quotedIdentifier( mGeometryColumn ) )
-                       .arg( pkParamWhereClause() );
-    QgsDebugMsgLevel( QStringLiteral( "SQL prepare: %1" ).arg( update ), 4 );
+    QString update = QString( "UPDATE %1 SET %2=? WHERE %3" ).arg( mQuery ).arg( quotedIdentifier( mGeometryColumn ) ).arg( pkParamWhereClause() );
+    QgsDebugMsgLevel( u"SQL prepare: %1"_s.arg( update ), 4 );
     if ( !qry.prepare( update ) )
     {
       throw OracleException( tr( "Could not prepare update statement." ), qry );
     }
 
-    for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
-          iter != geometry_map.constEnd();
-          ++iter )
+    for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
     {
       appendGeomParam( iter.value(), qry );
       appendPkParams( iter.key(), qry );
 
-      QgsDatabaseQueryLogWrapper logWrapper { update, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+      QgsDatabaseQueryLogWrapper logWrapper { update, mUri.uri(), u"oracle"_s, u"QgsOracleProvider"_s, QGS_QUERY_LOG_ORIGIN };
 
       if ( !qry.exec() )
       {
@@ -2545,10 +2549,9 @@ QList<QgsRelation> QgsOracleProvider::discoverRelations( const QgsVectorLayer *t
   QList<QString> refTableFound;
   if ( !LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) )
   {
-    const QString error { tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                            .arg( mTableName )
-                            .arg( qry.lastError().text() )
-                            .arg( qry.lastQuery() ) };
+    const QString error {
+      tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mTableName ).arg( qry.lastError().text() ).arg( qry.lastQuery() )
+    };
     QgsLogger::warning( error );
     return result;
   }
@@ -2563,7 +2566,7 @@ QList<QgsRelation> QgsOracleProvider::discoverRelations( const QgsVectorLayer *t
     const QString position = qry.value( 5 ).toString();
 
     const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refOwner, refTable );
-    if ( ( position == QLatin1String( "1" ) ) || ( !refTableFound.contains( refTable ) ) )
+    if ( ( position == "1"_L1 ) || ( !refTableFound.contains( refTable ) ) )
     {
       // first reference field => try to find if we have layers for the referenced table
       for ( const QgsVectorLayer *foundLayer : foundLayers )
@@ -2631,7 +2634,9 @@ long long QgsOracleProvider::featureCount() const
     sql = QString( "explain plan for select 1 from %1.%2" ).arg( quotedIdentifier( mOwnerName ) ).arg( quotedIdentifier( mTableName ) );
     if ( !mSqlWhereClause.isEmpty() )
       sql += " WHERE " + mSqlWhereClause;
-    if ( LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) && LoggedExecStatic( qry, QStringLiteral( "SELECT dbms_xplan.display_plan(format=>'basic,rows', type=>'xml') FROM dual" ), QVariantList(), mUri.uri() ) && qry.next() )
+    if ( LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() )
+         && LoggedExecStatic( qry, u"SELECT dbms_xplan.display_plan(format=>'basic,rows', type=>'xml') FROM dual"_s, QVariantList(), mUri.uri() )
+         && qry.next() )
     {
       QDomDocument plan;
       plan.setContent( qry.value( 0 ).toString() );
@@ -2639,7 +2644,7 @@ long long QgsOracleProvider::featureCount() const
       if ( nList.length() == 2 )
         mFeaturesCounted = nList.item( 0 ).toElement().text().toLongLong();
       else
-        QgsLogger::warning( QStringLiteral( "Cannot parse XML explain result to estimate feature count : %1" ).arg( plan.toString() ) );
+        QgsLogger::warning( u"Cannot parse XML explain result to estimate feature count : %1"_s.arg( plan.toString() ) );
     }
   }
   // Else, to estimate feature count, we use the stats
@@ -2671,17 +2676,17 @@ QgsOracleProvider::Relkind QgsOracleProvider::relkind() const
   {
     QSqlQuery qry( *conn );
     QString type;
-    const QString sql = QStringLiteral( "SELECT object_type FROM all_objects WHERE object_name=? and owner=?" );
+    const QString sql = u"SELECT object_type FROM all_objects WHERE object_name=? and owner=?"_s;
     if ( LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) && qry.next() )
       type = qry.value( 0 ).toString();
 
     mKind = Relkind::Unknown;
 
-    if ( type == QLatin1String( "TABLE" ) )
+    if ( type == "TABLE"_L1 )
     {
       mKind = Relkind::Table;
     }
-    else if ( type == QLatin1String( "VIEW" ) )
+    else if ( type == "VIEW"_L1 )
     {
       mKind = Relkind::View;
     }
@@ -2708,14 +2713,20 @@ QgsRectangle QgsOracleProvider::extent() const
       {
         // TODO: make SDO_DIMNAME values configurable (#16252)
 
-        const QString sql { QStringLiteral( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=? AND table_name=? AND column_name=? AND sdo_dimname='X'" ) };
+        const QString sql { u"SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=? AND table_name=? AND column_name=? AND sdo_dimname='X'"_s };
 
         if ( LoggedExecStatic( qry, sql, QVariantList() << mOwnerName << mTableName << mGeometryColumn, mUri.uri() ) && qry.next() )
         {
           mLayerExtent.setXMinimum( qry.value( 0 ).toDouble() );
           mLayerExtent.setXMaximum( qry.value( 1 ).toDouble() );
 
-          if ( LoggedExecStatic( qry, QStringLiteral( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=? AND table_name=? AND column_name=? AND sdo_dimname='Y'" ), QVariantList() << mOwnerName << mTableName << mGeometryColumn, mUri.uri() ) && qry.next() )
+          if ( LoggedExecStatic(
+                 qry,
+                 u"SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=? AND table_name=? AND column_name=? AND sdo_dimname='Y'"_s,
+                 QVariantList() << mOwnerName << mTableName << mGeometryColumn,
+                 mUri.uri()
+               )
+               && qry.next() )
           {
             mLayerExtent.setYMinimum( qry.value( 0 ).toDouble() );
             mLayerExtent.setYMaximum( qry.value( 1 ).toDouble() );
@@ -2726,7 +2737,7 @@ QgsRectangle QgsOracleProvider::extent() const
 
       if ( mHasSpatialIndex && mUseEstimatedMetadata )
       {
-        const QString sql { QStringLiteral( "SELECT SDO_TUNE.EXTENT_OF(?,?) FROM dual" ) };
+        const QString sql { u"SELECT SDO_TUNE.EXTENT_OF(?,?) FROM dual"_s };
         ok = LoggedExecStatic( qry, sql, QVariantList() << QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) << mGeometryColumn, mUri.uri() );
       }
     }
@@ -2765,8 +2776,37 @@ void QgsOracleProvider::updateExtents()
 
 bool QgsOracleProvider::getGeometryDetails()
 {
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+  QString ownerName = mOwnerName;
+  QString tableName = mTableName;
+  const QString requestedGeometryColumn = mGeometryColumn;
+
+  if ( mGeometryColumn.isNull() && mRequestedGeomType != Qgis::WkbType::NoGeometry && !mIsQuery )
+  {
+    // if not specified in advance, determine geometry column name
+    const QString sql { u"SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS WHERE owner=? AND table_name=? AND data_type='SDO_GEOMETRY'"_s };
+    if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName, mUri.uri() ) )
+    {
+      if ( qry.next() )
+      {
+        mGeometryColumn = qry.value( 0 ).toString();
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not determine geometry column name: No SDO_GEOMETRY results found for %1.%2 in ALL_TAB_COLUMNS" ).arg( ownerName, tableName ), tr( "Oracle" ) );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Could not determine geometry column name.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
+    }
+  }
+
   if ( mGeometryColumn.isNull() )
   {
+    // maintain old behavior -- if we had no explicit geometry column name and can't determine it automatically, treat
+    // the layer as a valid non-spatial table
     mDetectedGeomType = Qgis::WkbType::NoGeometry;
     mValid = true;
     return true;
@@ -2779,15 +2819,9 @@ bool QgsOracleProvider::getGeometryDetails()
     return true;
   }
 
-  QString ownerName = mOwnerName;
-  QString tableName = mTableName;
-  QString geomCol = mGeometryColumn;
-
-  QgsOracleConn *conn = connectionRO();
-  QSqlQuery qry( *conn );
   if ( mIsQuery )
   {
-    const QString sql { QStringLiteral( "SELECT %1 FROM %2 WHERE 1=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) };
+    const QString sql { u"SELECT %1 FROM %2 WHERE 1=0"_s.arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) };
 
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
@@ -2813,9 +2847,9 @@ bool QgsOracleProvider::getGeometryDetails()
   if ( !ownerName.isEmpty() )
   {
     {
-      const QString sql { QStringLiteral( "SELECT srid FROM mdsys.all_sdo_geom_metadata WHERE owner=? AND table_name=? AND column_name=?" ) };
+      const QString sql { u"SELECT srid FROM mdsys.all_sdo_geom_metadata WHERE owner=? AND table_name=? AND column_name=?"_s };
 
-      if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName << geomCol, mUri.uri() ) )
+      if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName << mGeometryColumn, mUri.uri() ) )
       {
         if ( qry.next() )
         {
@@ -2823,7 +2857,7 @@ bool QgsOracleProvider::getGeometryDetails()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Could not retrieve SRID of %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mQuery ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
+          QgsMessageLog::logMessage( tr( "Could not retrieve SRID of %1.%2 (%3): No matches found in all_sdo_geom_metadata" ).arg( ownerName, tableName, mGeometryColumn ), tr( "Oracle" ) );
         }
       }
       else
@@ -2832,9 +2866,12 @@ bool QgsOracleProvider::getGeometryDetails()
       }
     }
 
-    QString sql { mUseEstimatedMetadata ? QStringLiteral( "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2" ) : QStringLiteral( "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ) };
+    QString sql {
+      mUseEstimatedMetadata ? u"SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2"_s
+                            : u"SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2"_s
+    };
 
-    sql = sql.arg( quotedIdentifier( geomCol ), mQuery );
+    sql = sql.arg( quotedIdentifier( mGeometryColumn ), mQuery );
 
     if ( LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
@@ -2854,7 +2891,8 @@ bool QgsOracleProvider::getGeometryDetails()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Could not determine geometry type of %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mQuery ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
+      QgsMessageLog::
+        logMessage( tr( "Could not determine geometry type of %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mQuery ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
     }
   }
 
@@ -2906,8 +2944,14 @@ bool QgsOracleProvider::getGeometryDetails()
         }
         else
         {
-          // we need to filter
+          // mixed types, so we need to filter
           detectedType = Qgis::WkbType::Unknown;
+          // maybe only a single detected srid, if so, we can at least set that
+          const QSet< int > detectedSrids = qgis::listToSet( layerProperty.srids );
+          if ( detectedSrids.size() == 1 )
+          {
+            detectedSrid = *detectedSrids.constBegin();
+          }
         }
       }
       else
@@ -2923,16 +2967,33 @@ bool QgsOracleProvider::getGeometryDetails()
   if ( detectedSrid != -1 )
     mSrid = detectedSrid;
 
-  QgsDebugMsgLevel( QStringLiteral( "Detected Oracle SRID is %1" ).arg( mSrid ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( qgsEnumValueToKey( mDetectedGeomType ) ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( qgsEnumValueToKey( mRequestedGeomType ) ), 2 );
+  QgsDebugMsgLevel( u"Detected Oracle SRID is %1"_s.arg( mSrid ), 2 );
+  QgsDebugMsgLevel( u"Detected type is %1"_s.arg( qgsEnumValueToKey( mDetectedGeomType ) ), 2 );
+  QgsDebugMsgLevel( u"Requested type is %1"_s.arg( qgsEnumValueToKey( mRequestedGeomType ) ), 2 );
 
-  mValid = ( mDetectedGeomType != Qgis::WkbType::Unknown || mRequestedGeomType != Qgis::WkbType::Unknown );
+  if ( mDetectedGeomType == Qgis::WkbType::Unknown && mRequestedGeomType == Qgis::WkbType::Unknown )
+  {
+    if ( requestedGeometryColumn.isNull() )
+    {
+      // maintain old behavior -- if we had no explicit geometry column name and can't determine it automatically, treat
+      // the layer as a valid non-spatial table
+      mDetectedGeomType = Qgis::WkbType::NoGeometry;
+      mValid = true;
+    }
+    else
+    {
+      mValid = false;
+    }
+  }
+  else
+  {
+    mValid = true;
+  }
 
   if ( !mValid )
     return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "Feature type name is %1" ).arg( QgsWkbTypes::displayString( wkbType() ) ), 2 );
+  QgsDebugMsgLevel( u"Feature type name is %1"_s.arg( QgsWkbTypes::displayString( wkbType() ) ), 2 );
 
   return mValid;
 }
@@ -2954,10 +3015,12 @@ bool QgsOracleProvider::createSpatialIndex()
     // TODO: make SDO_DIMNAME values configurable (#16252)
     QgsRectangle r( extent() );
 
-    const QString sql { QStringLiteral( "UPDATE mdsys.user_sdo_geom_metadata SET diminfo=mdsys.sdo_dim_array("
-                                        "mdsys.sdo_dim_element('X', ?, ?, 0.001),"
-                                        "mdsys.sdo_dim_element('Y', ?, ?, 0.001)"
-                                        ") WHERE table_name=? AND column_name=?" ) };
+    const QString sql { QStringLiteral(
+      "UPDATE mdsys.user_sdo_geom_metadata SET diminfo=mdsys.sdo_dim_array("
+      "mdsys.sdo_dim_element('X', ?, ?, 0.001),"
+      "mdsys.sdo_dim_element('Y', ?, ?, 0.001)"
+      ") WHERE table_name=? AND column_name=?"
+    ) };
 
     {
       if ( !LoggedExecStatic( qry, sql, QVariantList() << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum() << mTableName << mGeometryColumn, mUri.uri() ) )
@@ -2969,22 +3032,32 @@ bool QgsOracleProvider::createSpatialIndex()
 
     if ( qry.numRowsAffected() == 0 )
     {
-      const QString sql { QStringLiteral( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,mdsys.sdo_dim_array("
-                                          "mdsys.sdo_dim_element('X', ?, ?, 0.001),"
-                                          "mdsys.sdo_dim_element('Y', ?, ?, 0.001)"
-                                          "))" ) };
+      const QString sql { QStringLiteral(
+        "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,mdsys.sdo_dim_array("
+        "mdsys.sdo_dim_element('X', ?, ?, 0.001),"
+        "mdsys.sdo_dim_element('Y', ?, ?, 0.001)"
+        "))"
+      ) };
 
 
-      if ( !LoggedExecStatic( qry, sql, QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSrid ) << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum(), mUri.uri() ) )
+      if ( !LoggedExecStatic(
+             qry,
+             sql,
+             QVariantList() << mTableName << mGeometryColumn << ( mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSrid ) << r.xMinimum() << r.xMaximum() << r.yMinimum() << r.yMaximum(),
+             mUri.uri()
+           ) )
       {
-        QgsMessageLog::logMessage( tr( "Could not insert metadata for %1.%2.\nSQL: %3\nError: %4" ).arg( quotedValue( mTableName ) ).arg( quotedValue( mGeometryColumn ) ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+        QgsMessageLog::logMessage(
+          tr( "Could not insert metadata for %1.%2.\nSQL: %3\nError: %4" ).arg( quotedValue( mTableName ) ).arg( quotedValue( mGeometryColumn ) ).arg( qry.lastQuery() ).arg( qry.lastError().text() ),
+          tr( "Oracle" )
+        );
         return false;
       }
     }
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "geographic CRS" ), 2 );
+    QgsDebugMsgLevel( u"geographic CRS"_s, 2 );
   }
 
   if ( !mHasSpatialIndex )
@@ -2997,7 +3070,7 @@ bool QgsOracleProvider::createSpatialIndex()
   }
   else
   {
-    const QString sql { QStringLiteral( "ALTER INDEX %1 REBUILD" ).arg( mSpatialIndexName ) };
+    const QString sql { u"ALTER INDEX %1 REBUILD"_s.arg( mSpatialIndexName ) };
 
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
@@ -3069,7 +3142,17 @@ bool QgsOracleProvider::convertField( QgsField &field )
 }
 
 
-Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &createdLayerUri, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem &srs,
+  bool overwrite,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &createdLayerUri,
+  QString &errorMessage,
+  const QMap<QString, QVariant> *options
+)
 {
   Q_UNUSED( wkbType )
   Q_UNUSED( options )
@@ -3079,7 +3162,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
   QString ownerName = dsUri.schema();
   createdLayerUri = uri;
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( u"Connection info is: %1"_s.arg( dsUri.connectionInfo( false ) ), 2 );
 
   // create the table
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
@@ -3108,9 +3191,9 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
 
   QString ownerTableName = quotedIdentifier( ownerName ) + "." + quotedIdentifier( tableName );
 
-  QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( geometryColumn ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Owner is: %1" ).arg( ownerName ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( tableName ), 2 );
+  QgsDebugMsgLevel( u"Geometry column is: %1"_s.arg( geometryColumn ), 2 );
+  QgsDebugMsgLevel( u"Owner is: %1"_s.arg( ownerName ), 2 );
+  QgsDebugMsgLevel( u"Table name is: %1"_s.arg( tableName ), 2 );
 
   if ( geometryColumn.isEmpty() && fields.isEmpty() )
   {
@@ -3136,7 +3219,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
     if ( idx >= 0 )
     {
       QgsField fld = fields.at( idx );
-      if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
+      if ( ( options && options->value( u"skipConvertFields"_s, false ).toBool() ) || convertField( fld ) )
       {
         primaryKeyType = fld.typeName();
       }
@@ -3161,7 +3244,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
     }
 
     {
-      const QString sql { QStringLiteral( "SELECT 1 FROM all_tables WHERE owner=? AND table_name=?" ) };
+      const QString sql { u"SELECT 1 FROM all_tables WHERE owner=? AND table_name=?"_s };
 
       if ( !LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName, uri ) )
       {
@@ -3177,7 +3260,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
       {
         // delete the table if exists, then re-create it
 
-        const QString sql { QStringLiteral( "DROP TABLE %1" ).arg( ownerTableName ) };
+        const QString sql { u"DROP TABLE %1"_s.arg( ownerTableName ) };
 
 
         if ( !LoggedExecStatic( qry, sql, QVariantList(), uri ) )
@@ -3191,7 +3274,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
       }
     }
 
-    QString sql = QStringLiteral( "CREATE TABLE %1(" ).arg( ownerTableName );
+    QString sql = u"CREATE TABLE %1("_s.arg( ownerTableName );
     QString delim;
 
     if ( hasPrimaryKey )
@@ -3226,9 +3309,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
   }
   catch ( OracleException &e )
   {
-    errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
-                     .arg( ownerTableName )
-                     .arg( e.errorMessage() );
+    errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" ).arg( ownerTableName ).arg( e.errorMessage() );
 
     if ( !conn->rollback( db ) )
     {
@@ -3237,7 +3318,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
 
     if ( created )
     {
-      const QString sql { QStringLiteral( "DROP TABLE %1" ).arg( ownerTableName ) };
+      const QString sql { u"DROP TABLE %1"_s.arg( ownerTableName ) };
 
       if ( !LoggedExecStatic( qry, sql, QVariantList(), uri ) )
       {
@@ -3252,7 +3333,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
 
   conn->disconnect();
 
-  QgsDebugMsgLevel( QStringLiteral( "layer %1 created" ).arg( ownerTableName ), 2 );
+  QgsDebugMsgLevel( u"layer %1 created"_s.arg( ownerTableName ), 2 );
 
   // use the provider to edit the table1
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
@@ -3268,7 +3349,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "layer loaded" ), 2 );
+  QgsDebugMsgLevel( u"layer loaded"_s, 2 );
 
   // add fields to the layer
   oldToNewAttrIdxMap.clear();
@@ -3330,17 +3411,20 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
 
       if ( fld.name() == geometryColumn )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Found a field with the same name of the geometry column. Skip it!" ), 2 );
+        QgsDebugMsgLevel( u"Found a field with the same name of the geometry column. Skip it!"_s, 2 );
         continue;
       }
 
-      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
+      if ( !( options && options->value( u"skipConvertFields"_s, false ).toBool() ) && !convertField( fld ) )
       {
         errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      QgsDebugMsgLevel( QStringLiteral( "Field #%1 name %2 type %3 typename %4 width %5 precision %6" ).arg( i ).arg( fld.name() ).arg( QVariant::typeToName( fld.type() ) ).arg( fld.typeName() ).arg( fld.length() ).arg( fld.precision() ), 2 );
+      QgsDebugMsgLevel(
+        u"Field #%1 name %2 type %3 typename %4 width %5 precision %6"_s.arg( i ).arg( fld.name() ).arg( QVariant::typeToName( fld.type() ) ).arg( fld.typeName() ).arg( fld.length() ).arg( fld.precision() ),
+        2
+      );
 
       flist.append( fld );
       oldToNewAttrIdxMap.insert( i, offset++ );
@@ -3352,15 +3436,14 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Done creating fields" ), 2 );
+    QgsDebugMsgLevel( u"Done creating fields"_s, 2 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "No fields created." ), 2 );
+    QgsDebugMsgLevel( u"No fields created."_s, 2 );
   }
 
-  if ( !fakeColumn.isEmpty()
-       && !provider->deleteAttributes( QgsAttributeIds { provider->fields().indexOf( fakeColumn ) } ) )
+  if ( !fakeColumn.isEmpty() && !provider->deleteAttributes( QgsAttributeIds { provider->fields().indexOf( fakeColumn ) } ) )
   {
     errorMessage = QObject::tr( "Remove of temporary column '%1' failed" ).arg( fakeColumn );
     return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
@@ -3403,11 +3486,11 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
 
   if ( srid == 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "%1:%2 not found in mdsys.cs_srs - trying WKT" ).arg( parts[0] ).arg( parts[1] ), 2 );
+    QgsDebugMsgLevel( u"%1:%2 not found in mdsys.cs_srs - trying WKT"_s.arg( parts[0] ).arg( parts[1] ), 2 );
 
     QString wkt = srs.toWkt();
 
-    const QString sql { QStringLiteral( "SELECT srid FROM mdsys.cs_srs WHERE wktext=?" ) };
+    const QString sql { u"SELECT srid FROM mdsys.cs_srs WHERE wktext=?"_s };
 
     {
       if ( !LoggedExecStatic( qry, sql, QVariantList() << wkt, conn->connInfo() ) )
@@ -3423,7 +3506,7 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
     else
     {
       {
-        const QString sql { QStringLiteral( "SELECT max(srid)+1 FROM sdo_coord_ref_system" ) };
+        const QString sql { u"SELECT max(srid)+1 FROM sdo_coord_ref_system"_s };
 
         if ( !LoggedExecStatic( qry, sql, QVariantList(), conn->connInfo() ) || !qry.next() )
         {
@@ -3433,9 +3516,11 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
 
       srid = qry.value( 0 ).toInt();
 
-      const QString sql { QStringLiteral( "INSERT"
-                                          " INTO sdo_coord_ref_system(srid,coord_ref_sys_name,coord_ref_sys_kind,legacy_wktext,is_valid,is_legacy,information_source)"
-                                          " VALUES (?,?,?,?,'TRUE','TRUE','GDAL/OGR via QGIS')" ) };
+      const QString sql { QStringLiteral(
+        "INSERT"
+        " INTO sdo_coord_ref_system(srid,coord_ref_sys_name,coord_ref_sys_kind,legacy_wktext,is_valid,is_legacy,information_source)"
+        " VALUES (?,?,?,?,'TRUE','TRUE','GDAL/OGR via QGIS')"
+      ) };
 
 
       if ( !LoggedExecStatic( qry, sql, QVariantList() << srid << srs.description() << ( srs.isGeographic() ? "GEOGRAPHIC2D" : "PROJECTED" ) << wkt, conn->connInfo() ) )
@@ -3448,7 +3533,7 @@ void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &
   if ( tableName.toUpper() != tableName || geometryColumn.toUpper() != geometryColumn )
     throw OracleException( tr( "Cannot insert geometry metadata for table '%1' and geometry column '%2'. Both needs to be uppercase" ).arg( tableName, geometryColumn ), qry );
 
-  const QString sql { QStringLiteral( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,%1)" ).arg( diminfo ) };
+  const QString sql { u"INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,%1)"_s.arg( diminfo ) };
 
   if ( !LoggedExecStatic( qry, sql, QVariantList() << tableName.toUpper() << geometryColumn.toUpper() << srid, conn->connInfo() ) )
   {
@@ -3525,11 +3610,7 @@ QString QgsOracleProvider::description() const
 } //  QgsOracleProvider::description()
 
 
-QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
-  const QString &uri,
-  const QgsDataProvider::ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags
-)
+QgsOracleProvider *QgsOracleProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsOracleProvider( uri, options, flags );
 }
@@ -3546,12 +3627,19 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 // ---------------------------------------------------------------------------
 
-Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
+Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer(
+  const QString &uri,
+  const QgsFields &fields,
+  Qgis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem &srs,
+  bool overwrite,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
+  const QMap<QString, QVariant> *options,
+  QString &createdLayerUri
+)
 {
-  return QgsOracleProvider::createEmptyLayer(
-    uri, fields, wkbType, srs, overwrite,
-    oldToNewAttrIdxMap, createdLayerUri, errorMessage, options
-  );
+  return QgsOracleProvider::createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, createdLayerUri, errorMessage, options );
 }
 
 QgsOracleProjectStorage *gOracleProjectStorage = nullptr; // when not null it is owned by QgsApplication::projectStorageRegistry()
@@ -3622,8 +3710,7 @@ QVariantList QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
 bool QgsOracleProviderMetadata::layerStylesTableExists( QgsOracleConn *conn, const QgsDataSourceUri &dsUri, QString &errCause )
 {
   QSqlQuery qry( *conn );
-  if ( !LoggedExecStatic( qry, QStringLiteral( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ), QVariantList(), dsUri.uri() )
-       || !qry.next() )
+  if ( !LoggedExecStatic( qry, u"SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'"_s, QVariantList(), dsUri.uri() ) || !qry.next() )
   {
     errCause = QObject::tr( "Unable to find layer style table [%1]" ).arg( qry.lastError().text() );
     return false;
@@ -3658,13 +3745,18 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
     args << dsUri.geometryColumn();
   args << ( styleId.isEmpty() ? dsUri.table() : styleId );
 
-  if ( !LoggedExecStatic( qry, "SELECT id,stylename FROM layer_styles"
-                               " WHERE f_table_catalog=?"
-                               " AND f_table_schema=?"
-                               " AND f_table_name=?"
-                               " AND f_geometry_column"
-                                 + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) + " AND styleName=?",
-                          args, dsUri.uri() ) )
+  if ( !LoggedExecStatic(
+         qry,
+         "SELECT id,stylename FROM layer_styles"
+         " WHERE f_table_catalog=?"
+         " AND f_table_schema=?"
+         " AND f_table_name=?"
+         " AND f_geometry_column"
+           + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+           + " AND styleName=?",
+         args,
+         dsUri.uri()
+       ) )
   {
     errorCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3682,7 +3774,9 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
   }
 }
 
-bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause )
+bool QgsOracleProviderMetadata::saveStyle(
+  const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
+)
 {
   errCause.clear();
 
@@ -3705,24 +3799,30 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Creating layer style table." ), 2 );
+      QgsDebugMsgLevel( u"Creating layer style table."_s, 2 );
 
-      if ( !LoggedExecStatic( qry, QStringLiteral( "CREATE TABLE layer_styles("
-                                                   "id INTEGER PRIMARY KEY,"
-                                                   "f_table_catalog VARCHAR2(30) NOT NULL,"
-                                                   "f_table_schema VARCHAR2(30) NOT NULL,"
-                                                   "f_table_name VARCHAR2(30) NOT NULL,"
-                                                   "f_geometry_column VARCHAR2(30),"
-                                                   "stylename VARCHAR2(2047),"
-                                                   "styleqml CLOB,"
-                                                   "stylesld CLOB,"
-                                                   "useasdefault INTEGER,"
-                                                   "description VARCHAR2(2047),"
-                                                   "owner VARCHAR2(30),"
-                                                   "ui CLOB,"
-                                                   "update_time timestamp"
-                                                   ")" ),
-                              QVariantList(), dsUri.uri() ) )
+      if ( !LoggedExecStatic(
+             qry,
+             QStringLiteral(
+               "CREATE TABLE layer_styles("
+               "id INTEGER PRIMARY KEY,"
+               "f_table_catalog VARCHAR2(30) NOT NULL,"
+               "f_table_schema VARCHAR2(30) NOT NULL,"
+               "f_table_name VARCHAR2(30) NOT NULL,"
+               "f_geometry_column VARCHAR2(30),"
+               "stylename VARCHAR2(2047),"
+               "styleqml CLOB,"
+               "stylesld CLOB,"
+               "useasdefault INTEGER,"
+               "description VARCHAR2(2047),"
+               "owner VARCHAR2(30),"
+               "ui CLOB,"
+               "update_time timestamp"
+               ")"
+             ),
+             QVariantList(),
+             dsUri.uri()
+           ) )
       {
         errCause = QObject::tr( "Unable to create layer style table [%1]" ).arg( qry.lastError().text() );
         conn->disconnect();
@@ -3738,13 +3838,18 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
     args << dsUri.geometryColumn();
   args << ( styleName.isEmpty() ? dsUri.table() : styleName );
 
-  if ( !LoggedExecStatic( qry, "SELECT id,stylename FROM layer_styles"
-                               " WHERE f_table_catalog=?"
-                               " AND f_table_schema=?"
-                               " AND f_table_name=?"
-                               " AND f_geometry_column"
-                                 + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) + " AND styleName=?",
-                          args, dsUri.uri() ) )
+  if ( !LoggedExecStatic(
+         qry,
+         "SELECT id,stylename FROM layer_styles"
+         " WHERE f_table_catalog=?"
+         " AND f_table_schema=?"
+         " AND f_table_name=?"
+         " AND f_geometry_column"
+           + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+           + " AND styleName=?",
+         args,
+         dsUri.uri()
+       ) )
   {
     errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3754,35 +3859,38 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
   {
     id = qry.value( 0 ).toInt();
 
-    sql = QString( "UPDATE layer_styles"
-                   " SET update_time=(select current_timestamp from dual),"
-                   "f_table_catalog=?,"
-                   "f_table_schema=?,"
-                   "f_table_name=?,"
-                   "f_geometry_column=?,"
-                   "styleName=?,"
-                   "styleQML=?,"
-                   "styleSLD=?,"
-                   "useAsDefault=?,"
-                   "description=?,"
-                   "owner=?"
-                   "%1"
-                   " WHERE id=%2" )
+    sql = QString(
+            "UPDATE layer_styles"
+            " SET update_time=(select current_timestamp from dual),"
+            "f_table_catalog=?,"
+            "f_table_schema=?,"
+            "f_table_name=?,"
+            "f_geometry_column=?,"
+            "styleName=?,"
+            "styleQML=?,"
+            "styleSLD=?,"
+            "useAsDefault=?,"
+            "description=?,"
+            "owner=?"
+            "%1"
+            " WHERE id=%2"
+    )
             .arg( uiFileContent.isEmpty() ? "" : ",ui=?" )
             .arg( id );
   }
-  else if ( LoggedExecStatic( qry, QStringLiteral( "select coalesce(max(id)+1,0) FROM layer_styles" ), QVariantList(), dsUri.uri() )
-            && qry.next() )
+  else if ( LoggedExecStatic( qry, u"select coalesce(max(id)+1,0) FROM layer_styles"_s, QVariantList(), dsUri.uri() ) && qry.next() )
   {
     id = qry.value( 0 ).toInt();
 
-    sql = QString( "INSERT INTO layer_styles("
-                   "id,update_time,f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%1"
-                   ") VALUES ("
-                   "%2,"
-                   "(select current_timestamp from dual)"
-                   "%3"
-                   ")" )
+    sql = QString(
+            "INSERT INTO layer_styles("
+            "id,update_time,f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%1"
+            ") VALUES ("
+            "%2,"
+            "(select current_timestamp from dual)"
+            "%3"
+            ")"
+    )
             .arg( uiFileContent.isEmpty() ? "" : ",ui" )
             .arg( id )
             .arg( QString( ",?" ).repeated( uiFileContent.isEmpty() ? 10 : 11 ) );
@@ -3794,7 +3902,18 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
     return false;
   }
 
-  args = { dsUri.database(), dsUri.schema(), dsUri.table(), dsUri.geometryColumn(), ( styleName.isEmpty() ? dsUri.table() : styleName ), qmlStyle, sldStyle, ( useAsDefault ? 1 : 0 ), ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ), dsUri.username() };
+  args = {
+    dsUri.database(),
+    dsUri.schema(),
+    dsUri.table(),
+    dsUri.geometryColumn(),
+    ( styleName.isEmpty() ? dsUri.table() : styleName ),
+    qmlStyle,
+    sldStyle,
+    ( useAsDefault ? 1 : 0 ),
+    ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ),
+    dsUri.username()
+  };
 
   if ( !uiFileContent.isEmpty() )
     args << uiFileContent;
@@ -3802,7 +3921,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
   if ( !LoggedExecStatic( qry, sql, args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugError( QStringLiteral( "execute insert/update failed" ) );
+    QgsDebugError( u"execute insert/update failed"_s );
     conn->disconnect();
     return false;
   }
@@ -3810,17 +3929,23 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri, const QString &qm
   if ( useAsDefault )
   {
     args = { dsUri.database(), dsUri.schema(), dsUri.table(), dsUri.geometryColumn(), id };
-    if ( !LoggedExecStatic( qry, QStringLiteral( "UPDATE layer_styles"
-                                                 " SET useasdefault=0,update_time=(select current_timestamp from dual)"
-                                                 " WHERE f_table_catalog=?"
-                                                 " AND f_table_schema=?"
-                                                 " AND f_table_name=?"
-                                                 " AND f_geometry_column=?"
-                                                 " AND id<>?" ),
-                            args, dsUri.uri() ) )
+    if ( !LoggedExecStatic(
+           qry,
+           QStringLiteral(
+             "UPDATE layer_styles"
+             " SET useasdefault=0,update_time=(select current_timestamp from dual)"
+             " WHERE f_table_catalog=?"
+             " AND f_table_schema=?"
+             " AND f_table_name=?"
+             " AND f_geometry_column=?"
+             " AND id<>?"
+           ),
+           args,
+           dsUri.uri()
+         ) )
     {
       errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
-      QgsDebugError( QStringLiteral( "execute update failed" ) );
+      QgsDebugError( u"execute update failed"_s );
       conn->disconnect();
       return false;
     }
@@ -3864,16 +3989,21 @@ QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString 
   if ( !dsUri.geometryColumn().isEmpty() )
     args << dsUri.geometryColumn();
 
-  if ( !LoggedExecStatic( qry, "SELECT styleName, styleQML FROM ("
-                               "SELECT styleName, styleQML"
-                               " FROM layer_styles"
-                               " WHERE f_table_catalog=?"
-                               " AND f_table_schema=?"
-                               " AND f_table_name=?"
-                               " AND f_geometry_column"
-                                 + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) + " ORDER BY useAsDefault DESC"
-                                                                                                     ") WHERE rownum=1",
-                          args, dsUri.uri() ) )
+  if ( !LoggedExecStatic(
+         qry,
+         "SELECT styleName, styleQML FROM ("
+         "SELECT styleName, styleQML"
+         " FROM layer_styles"
+         " WHERE f_table_catalog=?"
+         " AND f_table_schema=?"
+         " AND f_table_name=?"
+         " AND f_geometry_column"
+           + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+           + " ORDER BY useAsDefault DESC"
+             ") WHERE rownum=1",
+         args,
+         dsUri.uri()
+       ) )
   {
     errCause = QObject::tr( "Could not retrieve style [%1]" ).arg( qry.lastError().text() );
   }
@@ -3918,7 +4048,13 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri, QStringList &ids,
   if ( !dsUri.geometryColumn().isEmpty() )
     args << dsUri.geometryColumn();
 
-  if ( !LoggedExecStatic( qry, "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column" + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ), args, dsUri.uri() ) )
+  if ( !LoggedExecStatic(
+         qry,
+         "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+           + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ),
+         args,
+         dsUri.uri()
+       ) )
   {
     errCause = QObject::tr( "Could not execute select [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3936,14 +4072,18 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri, QStringList &ids,
 
   qry.finish();
 
-  args = QVariantList()
-         << dsUri.database()
-         << dsUri.schema()
-         << dsUri.table();
+  args = QVariantList() << dsUri.database() << dsUri.schema() << dsUri.table();
   if ( !dsUri.geometryColumn().isEmpty() )
     args << dsUri.geometryColumn();
 
-  if ( !LoggedExecStatic( qry, "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column" + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) + ") ORDER BY update_time DESC", args, dsUri.uri() ) )
+  if ( !LoggedExecStatic(
+         qry,
+         "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+           + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+           + ") ORDER BY update_time DESC",
+         args,
+         dsUri.uri()
+       ) )
   {
     errCause = QObject::tr( "Could not execute select [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3976,7 +4116,7 @@ QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QStri
 
   QSqlQuery qry( *conn );
 
-  if ( !LoggedExecStatic( qry, QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=?" ), QVariantList() << styleId, dsUri.uri() ) )
+  if ( !LoggedExecStatic( qry, u"SELECT styleQml FROM layer_styles WHERE id=?"_s, QVariantList() << styleId, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not load layer style table [%1]" ).arg( qry.lastError().text() );
   }
@@ -4001,11 +4141,13 @@ QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QStri
 class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "oracle" ); }
+    QString providerKey() const override { return u"oracle"_s; }
     QString text() const override { return QObject::tr( "Oracle" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddOracleLayer.svg"_s ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsOracleSourceSelect( parent, fl, widgetMode );
     }
@@ -4014,11 +4156,8 @@ class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
 class QgsOracleProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 {
   public:
-    QString type() override { return QStringLiteral( "oracle" ); }
-    QString visibleName() override
-    {
-      return QObject::tr( "Oracle" );
-    }
+    QString type() override { return u"oracle"_s; }
+    QString visibleName() override { return QObject::tr( "Oracle" ); }
 
     QString showLoadGui() override
     {
@@ -4041,8 +4180,7 @@ class QgsOracleProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 
 QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
   : QgsProviderGuiMetadata( ORACLE_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsOracleProviderGuiMetadata::sourceSelectProviders()
 {
@@ -4065,7 +4203,11 @@ void QgsOracleProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
 
 QgsOracleProviderMetadata::QgsOracleProviderMetadata()
   : QgsProviderMetadata( ORACLE_KEY, ORACLE_DESCRIPTION )
+{}
+
+QgsProviderMetadata::ProviderMetadataCapabilities QgsOracleProviderMetadata::capabilities() const
 {
+  return QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame;
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
@@ -4086,43 +4228,43 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
   QVariantMap uriParts;
 
   if ( !dsUri.database().isEmpty() )
-    uriParts[QStringLiteral( "dbname" )] = dsUri.database();
+    uriParts[u"dbname"_s] = dsUri.database();
   if ( !dsUri.host().isEmpty() )
-    uriParts[QStringLiteral( "host" )] = dsUri.host();
+    uriParts[u"host"_s] = dsUri.host();
   if ( !dsUri.port().isEmpty() )
-    uriParts[QStringLiteral( "port" )] = dsUri.port();
+    uriParts[u"port"_s] = dsUri.port();
   if ( !dsUri.service().isEmpty() )
-    uriParts[QStringLiteral( "service" )] = dsUri.service();
+    uriParts[u"service"_s] = dsUri.service();
   if ( !dsUri.param( "dbworkspace" ).isEmpty() )
-    uriParts[QStringLiteral( "dbworkspace" )] = dsUri.param( "dbworkspace" );
+    uriParts[u"dbworkspace"_s] = dsUri.param( "dbworkspace" );
   if ( !dsUri.username().isEmpty() )
-    uriParts[QStringLiteral( "username" )] = dsUri.username();
+    uriParts[u"username"_s] = dsUri.username();
   if ( !dsUri.password().isEmpty() )
-    uriParts[QStringLiteral( "password" )] = dsUri.password();
+    uriParts[u"password"_s] = dsUri.password();
   if ( !dsUri.authConfigId().isEmpty() )
-    uriParts[QStringLiteral( "authcfg" )] = dsUri.authConfigId();
+    uriParts[u"authcfg"_s] = dsUri.authConfigId();
   if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
-    uriParts[QStringLiteral( "type" )] = static_cast<quint32>( dsUri.wkbType() );
+    uriParts[u"type"_s] = static_cast<quint32>( dsUri.wkbType() );
   if ( !dsUri.table().isEmpty() )
-    uriParts[QStringLiteral( "table" )] = dsUri.table();
+    uriParts[u"table"_s] = dsUri.table();
   if ( !dsUri.schema().isEmpty() )
-    uriParts[QStringLiteral( "schema" )] = dsUri.schema();
+    uriParts[u"schema"_s] = dsUri.schema();
   if ( !dsUri.keyColumn().isEmpty() )
-    uriParts[QStringLiteral( "key" )] = dsUri.keyColumn();
+    uriParts[u"key"_s] = dsUri.keyColumn();
   if ( !dsUri.srid().isEmpty() )
-    uriParts[QStringLiteral( "srid" )] = dsUri.srid();
-  if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    uriParts[QStringLiteral( "estimatedmetadata" )] = dsUri.useEstimatedMetadata();
+    uriParts[u"srid"_s] = dsUri.srid();
+  if ( uri.contains( u"estimatedmetadata="_s, Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[u"estimatedmetadata"_s] = dsUri.useEstimatedMetadata();
   if ( !dsUri.param( "includegeoattributes" ).isEmpty() )
-    uriParts[QStringLiteral( "includegeoattributes" )] = dsUri.param( "includegeoattributes" );
+    uriParts[u"includegeoattributes"_s] = dsUri.param( "includegeoattributes" );
   if ( !dsUri.sql().isEmpty() )
-    uriParts[QStringLiteral( "sql" )] = dsUri.sql();
+    uriParts[u"sql"_s] = dsUri.sql();
   if ( !dsUri.param( "checkPrimaryKeyUnicity" ).isEmpty() )
-    uriParts[QStringLiteral( "checkPrimaryKeyUnicity" )] = dsUri.param( "checkPrimaryKeyUnicity" );
+    uriParts[u"checkPrimaryKeyUnicity"_s] = dsUri.param( "checkPrimaryKeyUnicity" );
   if ( !dsUri.geometryColumn().isEmpty() )
-    uriParts[QStringLiteral( "geometrycolumn" )] = dsUri.geometryColumn();
+    uriParts[u"geometrycolumn"_s] = dsUri.geometryColumn();
   if ( !dsUri.param( "dboptions" ).isEmpty() )
-    uriParts[QStringLiteral( "dboptions" )] = dsUri.param( "dboptions" );
+    uriParts[u"dboptions"_s] = dsUri.param( "dboptions" );
 
   return uriParts;
 }
@@ -4130,42 +4272,42 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
 QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  if ( parts.contains( QStringLiteral( "dbname" ) ) )
-    dsUri.setDatabase( parts.value( QStringLiteral( "dbname" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "host" ) ) )
-    dsUri.setParam( QStringLiteral( "host" ), parts.value( QStringLiteral( "host" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "port" ) ) )
-    dsUri.setParam( QStringLiteral( "port" ), parts.value( QStringLiteral( "port" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "service" ) ) )
-    dsUri.setParam( QStringLiteral( "service" ), parts.value( QStringLiteral( "service" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "dbworkspace" ) ) )
-    dsUri.setParam( QStringLiteral( "dbworkspace" ), parts.value( QStringLiteral( "dbworkspace" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "username" ) ) )
-    dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "password" ) ) )
-    dsUri.setPassword( parts.value( QStringLiteral( "password" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "type" ) ) )
-    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
-  if ( parts.contains( QStringLiteral( "table" ) ) )
-    dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "schema" ) ) )
-    dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "key" ) ) )
-    dsUri.setParam( QStringLiteral( "key" ), parts.value( QStringLiteral( "key" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "srid" ) ) )
-    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "estimatedmetadata" ) ) )
-    dsUri.setParam( QStringLiteral( "estimatedmetadata" ), parts.value( QStringLiteral( "estimatedmetadata" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "includegeoattributes" ) ) )
-    dsUri.setParam( QStringLiteral( "includegeoattributes" ), parts.value( QStringLiteral( "includegeoattributes" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "sql" ) ) )
-    dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
-    dsUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), parts.value( QStringLiteral( "checkPrimaryKeyUnicity" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
-    dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
+  if ( parts.contains( u"dbname"_s ) )
+    dsUri.setDatabase( parts.value( u"dbname"_s ).toString() );
+  if ( parts.contains( u"host"_s ) )
+    dsUri.setParam( u"host"_s, parts.value( u"host"_s ).toString() );
+  if ( parts.contains( u"port"_s ) )
+    dsUri.setParam( u"port"_s, parts.value( u"port"_s ).toString() );
+  if ( parts.contains( u"service"_s ) )
+    dsUri.setParam( u"service"_s, parts.value( u"service"_s ).toString() );
+  if ( parts.contains( u"dbworkspace"_s ) )
+    dsUri.setParam( u"dbworkspace"_s, parts.value( u"dbworkspace"_s ).toString() );
+  if ( parts.contains( u"username"_s ) )
+    dsUri.setUsername( parts.value( u"username"_s ).toString() );
+  if ( parts.contains( u"password"_s ) )
+    dsUri.setPassword( parts.value( u"password"_s ).toString() );
+  if ( parts.contains( u"authcfg"_s ) )
+    dsUri.setAuthConfigId( parts.value( u"authcfg"_s ).toString() );
+  if ( parts.contains( u"type"_s ) )
+    dsUri.setParam( u"type"_s, QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( u"type"_s ).toInt() ) ) );
+  if ( parts.contains( u"table"_s ) )
+    dsUri.setTable( parts.value( u"table"_s ).toString() );
+  if ( parts.contains( u"schema"_s ) )
+    dsUri.setSchema( parts.value( u"schema"_s ).toString() );
+  if ( parts.contains( u"key"_s ) )
+    dsUri.setParam( u"key"_s, parts.value( u"key"_s ).toString() );
+  if ( parts.contains( u"srid"_s ) )
+    dsUri.setSrid( parts.value( u"srid"_s ).toString() );
+  if ( parts.contains( u"estimatedmetadata"_s ) )
+    dsUri.setParam( u"estimatedmetadata"_s, parts.value( u"estimatedmetadata"_s ).toString() );
+  if ( parts.contains( u"includegeoattributes"_s ) )
+    dsUri.setParam( u"includegeoattributes"_s, parts.value( u"includegeoattributes"_s ).toString() );
+  if ( parts.contains( u"sql"_s ) )
+    dsUri.setSql( parts.value( u"sql"_s ).toString() );
+  if ( parts.contains( u"checkPrimaryKeyUnicity"_s ) )
+    dsUri.setParam( u"checkPrimaryKeyUnicity"_s, parts.value( u"checkPrimaryKeyUnicity"_s ).toString() );
+  if ( parts.contains( u"geometrycolumn"_s ) )
+    dsUri.setGeometryColumn( parts.value( u"geometrycolumn"_s ).toString() );
   return dsUri.uri( false );
 }
 
@@ -4201,7 +4343,31 @@ QList<Qgis::LayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
   return { Qgis::LayerType::Vector };
 }
 
+bool QgsOracleProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
+{
+  const QVariantMap parts1 = decodeUri( uri1 );
+  const QVariantMap parts2 = decodeUri( uri2 );
+
+  const bool sameConnection = parts1.value( u"host"_s ) == parts2.value( u"host"_s )
+                              && parts1.value( u"dbname"_s ) == parts2.value( u"dbname"_s )
+                              && parts1.value( u"port"_s ) == parts2.value( u"port"_s )
+                              && parts1.value( u"service"_s ) == parts2.value( u"service"_s )
+                              && parts1.value( u"dbworkspace"_s ) == parts2.value( u"dbworkspace"_s );
+  const bool sameSchema = parts1.value( u"schema"_s ) == parts2.value( u"schema"_s );
+  const bool sameTable = parts1.value( u"table"_s ) == parts2.value( u"table"_s );
+  switch ( level )
+  {
+    case Qgis::SourceHierarchyLevel::Connection:
+      return sameConnection;
+    case Qgis::SourceHierarchyLevel::Group:
+      return sameConnection && sameSchema;
+    case Qgis::SourceHierarchyLevel::Object:
+      return sameConnection && sameSchema && sameTable;
+  }
+  return false;
+}
+
 QIcon QgsOracleProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconOracle.svg"_s );
 }

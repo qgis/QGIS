@@ -14,17 +14,20 @@
  ***************************************************************************/
 #include "qgshtmlutils.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QString QgsHtmlUtils::buildBulletList( const QStringList &values )
 {
-  QString s( QStringLiteral( "<ul>" ) );
+  QString s( u"<ul>"_s );
 
   for ( const QString &value : values )
   {
-    s += QStringLiteral( "<li>%1</li>" ).arg( value );
+    s += u"<li>%1</li>"_s.arg( value );
   }
-  s += QLatin1String( "</ul>" );
+  s += "</ul>"_L1;
 
   return s;
 }

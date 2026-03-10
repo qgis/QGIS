@@ -19,6 +19,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMssqlConnectionItem;
 class QgsMssqlLayerItem;
 
@@ -26,7 +30,7 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "MSSQL" ); }
+    QString name() override { return u"MSSQL"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

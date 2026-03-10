@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
+import unittest
+
 from qgis.core import (
     QgsPointCloudAttribute,
     QgsPointCloudAttributeCollection,
@@ -19,9 +20,8 @@ from qgis.core import (
     QgsPointCloudLayer,
     QgsProviderRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import Qt
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -48,7 +48,6 @@ def create_attributes():
 
 
 class TestQgsFieldModel(QgisTestCase):
-
     def testGettersSetters(self):
         """test model getters/setters"""
         m = QgsPointCloudAttributeModel()

@@ -26,6 +26,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgssurface.h"
 
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiSurface::QgsMultiSurface()
 {
@@ -44,7 +47,7 @@ const QgsSurface *QgsMultiSurface::surfaceN( int index ) const
 
 QString QgsMultiSurface::geometryType() const
 {
-  return QStringLiteral( "MultiSurface" );
+  return u"MultiSurface"_s;
 }
 
 void QgsMultiSurface::clear()
@@ -72,15 +75,13 @@ QgsMultiSurface *QgsMultiSurface::toCurveType() const
 
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt,
-  { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon },
-  QStringLiteral( "Polygon" ) );
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon }, u"Polygon"_s );
 }
 
 QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
-  QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+  QDomElement elemMultiPolygon = doc.createElementNS( ns, u"MultiPolygon"_s );
 
   if ( isEmpty() )
     return elemMultiPolygon;
@@ -91,7 +92,7 @@ QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QSt
     {
       std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
 
-      QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
+      QDomElement elemPolygonMember = doc.createElementNS( ns, u"polygonMember"_s );
       elemPolygonMember.appendChild( polygon->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiPolygon.appendChild( elemPolygonMember );
     }
@@ -102,7 +103,7 @@ QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QSt
 
 QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
+  QDomElement elemMultiSurface = doc.createElementNS( ns, u"MultiSurface"_s );
 
   if ( isEmpty() )
     return elemMultiSurface;
@@ -111,7 +112,7 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
-      QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "surfaceMember" ) );
+      QDomElement elemSurfaceMember = doc.createElementNS( ns, u"surfaceMember"_s );
       elemSurfaceMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiSurface.appendChild( elemSurfaceMember );
     }
@@ -123,13 +124,13 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiSurface::asJsonObject( int precision ) const
 {
-  json polygons( json::array( ) );
+  json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
-      json coordinates( json::array( ) );
-      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
+      json coordinates( json::array() );
+      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
@@ -146,11 +147,7 @@ json QgsMultiSurface::asJsonObject( int precision ) const
       polygons.push_back( coordinates );
     }
   }
-  return
-  {
-    {  "type",  "MultiPolygon" },
-    {  "coordinates", polygons }
-  };
+  return { { "type", "MultiPolygon" }, { "coordinates", polygons } };
 }
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )

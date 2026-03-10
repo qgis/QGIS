@@ -27,6 +27,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationPictureItem::QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds )
   : QgsAnnotationRectItem( bounds )
@@ -38,7 +41,7 @@ QgsAnnotationPictureItem::~QgsAnnotationPictureItem() = default;
 
 QString QgsAnnotationPictureItem::type() const
 {
-  return QStringLiteral( "picture" );
+  return u"picture"_s;
 }
 
 void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback * )
@@ -61,9 +64,8 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         }
       }
 
-      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(),
-                               context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default,
-                               aspectRatio );
+      const QPicture picture
+        = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(), context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default, aspectRatio );
       const double pictureWidth = picture.boundingRect().width();
       const double pictureHeight = picture.boundingRect().height();
 
@@ -78,17 +80,16 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         yOffset = ( painterBounds.height() - pictureHeight ) * 0.5;
       }
 
-      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset,
-                                painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
+      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset, painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
 
       break;
     }
 
     case Qgis::PictureFormat::Raster:
     {
-      const QImage im = QgsApplication::imageCache()->pathAsImage( mPath,
-                        QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ),
-                        lockAspectRatio, 1, fitsInCache );
+      const QImage im
+        = QgsApplication::imageCache()
+            ->pathAsImage( mPath, QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ), lockAspectRatio, 1, fitsInCache );
       double xOffset = 0;
       if ( lockAspectRatio && static_cast< int >( painterBounds.width() ) > im.width() )
       {
@@ -110,9 +111,9 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
 
 bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "lockAspect" ), mLockAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "path" ), mPath );
-  element.setAttribute( QStringLiteral( "format" ), qgsEnumValueToKey( mFormat ) );
+  element.setAttribute( u"lockAspect"_s, mLockAspectRatio ? u"1"_s : u"0"_s );
+  element.setAttribute( u"path"_s, mPath );
+  element.setAttribute( u"format"_s, qgsEnumValueToKey( mFormat ) );
   writeCommonProperties( element, document, context );
   return true;
 }
@@ -124,10 +125,10 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::create()
 
 bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mLockAspectRatio = element.attribute( QStringLiteral( "lockAspect" ), QStringLiteral( "1" ) ).toInt();
+  mLockAspectRatio = element.attribute( u"lockAspect"_s, u"1"_s ).toInt();
 
-  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( QStringLiteral( "format" ) ), Qgis::PictureFormat::Unknown );
-  setPath( format, element.attribute( QStringLiteral( "path" ) ) );
+  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( u"format"_s ), Qgis::PictureFormat::Unknown );
+  setPath( format, element.attribute( u"path"_s ) );
 
   readCommonProperties( element, context );
   return true;

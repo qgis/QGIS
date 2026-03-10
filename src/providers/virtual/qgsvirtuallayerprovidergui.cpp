@@ -20,16 +20,22 @@
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for virtual layers source select
 class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "virtual" ); }
+    QString providerKey() const override { return u"virtual"_s; }
     QString text() const override { return QObject::tr( "Virtual Layer" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }
     QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddVirtualLayer.svg"_s ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
     }
@@ -38,8 +44,7 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 
 QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsVirtualLayerProviderGuiMetadata::sourceSelectProviders()
 {

@@ -12,17 +12,18 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "09/09/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationRotateItem,
     QgsAnnotationItemEditOperationTranslateItem,
     QgsPoint,
     QgsVertexId,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -30,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotationItemEditOperation(QgisTestCase):
-
     def test_move_operation(self):
         operation = QgsAnnotationItemEditOperationMoveNode(
             "item id", QgsVertexId(1, 2, 3), QgsPoint(4, 5), QgsPoint(6, 7)
@@ -58,6 +58,11 @@ class TestQgsAnnotationItemEditOperation(QgisTestCase):
         self.assertEqual(operation.itemId(), "item id")
         self.assertEqual(operation.translationX(), 6)
         self.assertEqual(operation.translationY(), 7)
+
+    def test_rotate_operation(self):
+        operation = QgsAnnotationItemEditOperationRotateItem("item id", 45)
+        self.assertEqual(operation.itemId(), "item id")
+        self.assertEqual(operation.angle(), 45)
 
 
 if __name__ == "__main__":

@@ -24,6 +24,8 @@
 #include <QList>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a member of a datum ensemble.
@@ -34,7 +36,6 @@
 class CORE_EXPORT QgsDatumEnsembleMember
 {
   public:
-
     /**
      * Returns the name of the member.
      */
@@ -61,19 +62,23 @@ class CORE_EXPORT QgsDatumEnsembleMember
     QString code() const { return mCode; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString id;
     if ( !sipCpp->code().isEmpty() )
-      id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+      id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
       id = sipCpp->name();
-    QString str = QStringLiteral( "<QgsDatumEnsembleMember: %1>" ).arg( id );
+    QString str = u"<QgsDatumEnsembleMember: %1>"_s.arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
     QString mName;
     QString mScope;
@@ -94,7 +99,6 @@ class CORE_EXPORT QgsDatumEnsembleMember
 class CORE_EXPORT QgsDatumEnsemble
 {
   public:
-
     /**
      * Returns TRUE if the datum ensemble is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -137,29 +141,34 @@ class CORE_EXPORT QgsDatumEnsemble
     QList< QgsDatumEnsembleMember > members() const { return mMembers; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );
+      str = u"<QgsDatumEnsemble: invalid>"_s;
     }
     else
     {
       QString id;
       if ( !sipCpp->code().isEmpty() )
-        id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+        id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
       else
         id = sipCpp->name();
-      str = QStringLiteral( "<QgsDatumEnsemble: %1>" ).arg( id );
+      str = u"<QgsDatumEnsemble: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mName;
     double mAccuracy = 0;
     QString mAuthority;

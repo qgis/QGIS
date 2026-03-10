@@ -17,10 +17,9 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 import os
 import urllib.parse
 
-from qgis.PyQt import QtCore
 from qgis.core import QgsVectorLayer
+from qgis.PyQt import QtCore
 from qgis.testing import unittest
-
 from test_qgsserver import QgsServerTestBase
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
@@ -28,7 +27,6 @@ os.environ["QT_HASH_SEED"] = "1"
 
 
 class PyQgsServerWMSGetMapDxf(QgsServerTestBase):
-
     def test_dxf_export_works_with_reverse_axis_epsg(self):
         qs = "?" + "&".join(
             [
@@ -62,9 +60,8 @@ class PyQgsServerWMSGetMapDxf(QgsServerTestBase):
         f.close()
 
         vl = QgsVectorLayer(dxf, "lyr", "ogr")
-        myMessage = "Expected downloaded dxf contains: {} line\nGot: {}\n".format(
-            1,
-            vl.featureCount(),
+        myMessage = (
+            f"Expected downloaded dxf contains: {1} line\nGot: {vl.featureCount()}\n"
         )
 
         self.assertEqual(vl.featureCount(), 1, myMessage)

@@ -20,14 +20,16 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgspanelwidget.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-{
-}
+{}
 
 void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {
@@ -97,7 +99,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    const QString key = u"/UI/paneldialog/%1"_s.arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

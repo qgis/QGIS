@@ -25,7 +25,11 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolchangelabelproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -107,7 +111,8 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
       labeltext = mCurrentLabel.pos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID, mCurrentLabel.pos.providerID, mCurrentLabel.pos.featureId, mCurrentLabel.pos.labelFont, labeltext, mCurrentLabel.pos.isPinned, mCurrentLabel.settings, mCanvas, nullptr );
+    QgsLabelPropertyDialog
+      d( mCurrentLabel.pos.layerID, mCurrentLabel.pos.providerID, mCurrentLabel.pos.featureId, mCurrentLabel.pos.labelFont, labeltext, mCurrentLabel.pos.isPinned, mCurrentLabel.settings, mCanvas, nullptr );
     d.setMapCanvas( canvas() );
 
     connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
@@ -158,7 +163,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
       }
     }
 
-    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )

@@ -24,18 +24,14 @@ backends and registered in :py:class:`QgsProjectStorageRegistry`.
 #include "qgsprojectstorage.h"
 %End
   public:
-
     class Metadata
-{
+    {
 %Docstring(signature="appended")
 Metadata associated with a project.
 
 .. versionadded:: 3.2
 %End
 
-%TypeHeaderCode
-#include "qgsprojectstorage.h"
-%End
       public:
         QString name;
         QDateTime lastModified;
@@ -154,7 +150,6 @@ destination or empty string if the GUI was canceled.
 
    Use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality.
 %End
-
 };
 
 /************************************************************************

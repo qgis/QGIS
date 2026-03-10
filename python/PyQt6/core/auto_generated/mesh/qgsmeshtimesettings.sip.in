@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMeshTimeSettings
 {
 %Docstring(signature="appended")
@@ -22,7 +23,6 @@ Represents a mesh time settings for mesh datasets.
 #include "qgsmeshtimesettings.h"
 %End
   public:
-
     enum TimeUnit /BaseType=IntEnum/
     {
       //! second unit

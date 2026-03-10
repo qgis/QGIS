@@ -21,6 +21,10 @@
 #include "qgis_analysis.h"
 #include "qgsderivativefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \class QgsHillshadeFilter
@@ -41,10 +45,7 @@ class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
   private:
 #ifdef HAVE_OPENCL
 
-    const QString openClProgramBaseName() const override
-    {
-      return QStringLiteral( "hillshade" );
-    }
+    const QString openClProgramBaseName() const override { return u"hillshade"_s; }
 #endif
 
     float mLightAzimuth;

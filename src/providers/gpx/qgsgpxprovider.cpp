@@ -22,6 +22,10 @@
 #include <cstring>
 #include <limits>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation
 // fails. [gsherman]
@@ -74,7 +78,7 @@ const QList<QgsGPXProvider::DataType> QgsGPXProvider::sAttributedUsedForLayerTyp
   QgsGPXProvider::WaypointType,
 };
 
-const QString GPX_KEY = QStringLiteral( "gpx" );
+const QString GPX_KEY = u"gpx"_s;
 
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
@@ -83,23 +87,23 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
   : QgsVectorDataProvider( uri, options, flags )
 {
   // we always use UTF-8
-  setEncoding( QStringLiteral( "utf8" ) );
+  setEncoding( u"utf8"_s );
 
   const QVariantMap uriParts = decodeUri( uri );
-  const QString typeStr = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+  const QString typeStr = uriParts.value( u"layerName"_s ).toString();
   if ( typeStr.isEmpty() )
   {
     QgsLogger::warning( tr( "Bad URI - you need to specify the feature type." ) );
     return;
   }
-  if ( typeStr.compare( QLatin1String( "waypoint" ), Qt::CaseInsensitive ) == 0 )
+  if ( typeStr.compare( "waypoint"_L1, Qt::CaseInsensitive ) == 0 )
     mFeatureType = WaypointType;
-  else if ( typeStr.compare( QLatin1String( "route" ), Qt::CaseInsensitive ) == 0 )
+  else if ( typeStr.compare( "route"_L1, Qt::CaseInsensitive ) == 0 )
     mFeatureType = RouteType;
   else
     mFeatureType = TrackType;
 
-  mFileName = uriParts.value( QStringLiteral( "path" ) ).toString();
+  mFileName = uriParts.value( u"path"_s ).toString();
 
   // set up the attributes and the geometry type depending on the feature type
   for ( int i = 0; i < sAttributeNames.size(); ++i )
@@ -193,8 +197,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     return false;
 
   // add all the features
-  for ( QgsFeatureList::iterator iter = flist.begin();
-        iter != flist.end(); ++iter )
+  for ( QgsFeatureList::iterator iter = flist.begin(); iter != flist.end(); ++iter )
   {
     if ( !addFeature( *iter, flags ) )
       return false;
@@ -531,41 +534,40 @@ QString QgsGPXProvider::description() const
 
 QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  return QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
 }
 
 QString QgsGPXProvider::encodeUri( const QVariantMap &parts )
 {
-  if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
-    return parts.value( QStringLiteral( "path" ) ).toString();
+  if ( parts.value( u"layerName"_s ).toString().isEmpty() )
+    return parts.value( u"path"_s ).toString();
   else
-    return QStringLiteral( "%1?type=%2" ).arg( parts.value( QStringLiteral( "path" ) ).toString(), parts.value( QStringLiteral( "layerName" ) ).toString() );
+    return u"%1?type=%2"_s.arg( parts.value( u"path"_s ).toString(), parts.value( u"layerName"_s ).toString() );
 }
 
 QVariantMap QgsGPXProvider::decodeUri( const QString &uri )
 {
   QVariantMap res;
   const int fileNameEnd = uri.indexOf( '?' );
-  if ( fileNameEnd != -1 && uri.mid( fileNameEnd + 1, 5 ) == QLatin1String( "type=" ) )
+  if ( fileNameEnd != -1 && uri.mid( fileNameEnd + 1, 5 ) == "type="_L1 )
   {
-    res.insert( QStringLiteral( "layerName" ), uri.mid( fileNameEnd + 6 ) );
-    res.insert( QStringLiteral( "path" ), uri.left( fileNameEnd ) );
+    res.insert( u"layerName"_s, uri.mid( fileNameEnd + 6 ) );
+    res.insert( u"path"_s, uri.left( fileNameEnd ) );
   }
   else if ( !uri.isEmpty() )
   {
-    res.insert( QStringLiteral( "path" ), uri );
+    res.insert( u"path"_s, uri );
   }
   return res;
 }
 
 QgsGpxProviderMetadata::QgsGpxProviderMetadata()
   : QgsProviderMetadata( GPX_KEY, GPX_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsGpxProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconGpx.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconGpx.svg"_s );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
@@ -598,7 +600,7 @@ QString QgsGpxProviderMetadata::absoluteToRelativeUri( const QString &uri, const
   QString src = uri;
   QStringList theURIParts = src.split( '?' );
   theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-  src = theURIParts.join( QLatin1Char( '?' ) );
+  src = theURIParts.join( '?'_L1 );
   return src;
 }
 
@@ -607,7 +609,7 @@ QString QgsGpxProviderMetadata::relativeToAbsoluteUri( const QString &uri, const
   QString src = uri;
   QStringList theURIParts = src.split( '?' );
   theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-  src = theURIParts.join( QLatin1Char( '?' ) );
+  src = theURIParts.join( '?'_L1 );
   return src;
 }
 

@@ -31,12 +31,18 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemmapoverview.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer(
+      std::make_unique<
+        QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, tr( "Overview" ), u"memory"_s, QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) )
+    )
 {
   createDefaultFrameSymbol();
 }
@@ -46,9 +52,9 @@ QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
+  properties.insert( u"color"_s, u"255,0,0,75"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"no"_s );
   mFrameSymbol = QgsFillSymbol::createSimple( properties );
 
   mExtentLayer->setRenderer( new QgsSingleSymbolRenderer( mFrameSymbol->clone() ) );
@@ -73,22 +79,19 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
   QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
-  if ( overviewFrameMap->crs() !=
-       mMap->crs() )
+  if ( overviewFrameMap->crs() != mMap->crs() )
   {
     QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
 
     // reproject extent
-    QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mMap->crs(), mLayout->project() );
+    QgsCoordinateTransform ct( overviewFrameMap->crs(), mMap->crs(), mLayout->project() );
     g = g.densifyByCount( 20 );
     try
     {
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
 
     otherExtent = g.asQPolygonF();
   }
@@ -142,11 +145,12 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
     //We are inverting the overview frame (ie, shading outside the intersecting extent)
     //Construct a polygon corresponding to the overview map extent
     QPolygonF outerPolygon;
-    outerPolygon << QPointF( 0, 0 )
-                 << QPointF( mMap->rect().width() * dotsPerMM, 0 )
-                 << QPointF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM )
-                 << QPointF( 0, mMap->rect().height() * dotsPerMM )
-                 << QPointF( 0, 0 );
+    outerPolygon
+      << QPointF( 0, 0 )
+      << QPointF( mMap->rect().width() * dotsPerMM, 0 )
+      << QPointF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM )
+      << QPointF( 0, mMap->rect().height() * dotsPerMM )
+      << QPointF( 0, 0 );
 
     //Intersecting extent is an inner ring for the shaded area
     rings.append( intersectPolygon );
@@ -164,12 +168,12 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
   }
 
   //overview map frame
-  QDomElement overviewFrameElem = doc.createElement( QStringLiteral( "ComposerMapOverview" ) );
+  QDomElement overviewFrameElem = doc.createElement( u"ComposerMapOverview"_s );
 
-  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMap ? mFrameMap ->uuid() : QString() );
-  overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
-  overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
-  overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
+  overviewFrameElem.setAttribute( u"frameMap"_s, mFrameMap ? mFrameMap->uuid() : QString() );
+  overviewFrameElem.setAttribute( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  overviewFrameElem.setAttribute( u"inverted"_s, mInverted );
+  overviewFrameElem.setAttribute( u"centered"_s, mCentered );
 
   QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol.get(), doc, context );
   overviewFrameElem.appendChild( frameStyleElem );
@@ -189,14 +193,14 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
 
   bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
-  mFrameMapUuid = itemElem.attribute( QStringLiteral( "frameMap" ) );
+  mFrameMapUuid = itemElem.attribute( u"frameMap"_s );
   setLinkedMap( nullptr );
 
-  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
-  mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-  mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( u"blendMode"_s, u"0"_s ).toUInt() ) );
+  mInverted = ( itemElem.attribute( u"inverted"_s, u"0"_s ) != "0"_L1 );
+  mCentered = ( itemElem.attribute( u"centered"_s, u"0"_s ) != "0"_L1 );
 
-  QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
+  QDomElement frameStyleElem = itemElem.firstChildElement( u"symbol"_s );
   if ( !frameStyleElem.isNull() )
   {
     mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context );
@@ -276,16 +280,14 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
   if ( overviewFrameMap->crs() != mMap->crs() )
   {
     // reproject extent
-    QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mMap->crs(), mLayout->project() );
+    QgsCoordinateTransform ct( overviewFrameMap->crs(), mMap->crs(), mLayout->project() );
     g = g.densifyByCount( 20 );
     try
     {
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
 
   //get current map's extent as a QPolygonF
@@ -322,7 +324,7 @@ bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor )
   if ( mFrameSymbol )
   {
     QgsStyleSymbolEntity entity( mFrameSymbol.get() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "overview" ), QObject::tr( "Overview" ) ) ) )
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"overview"_s, QObject::tr( "Overview" ) ) ) )
       return false;
   }
 
@@ -374,10 +376,7 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
     QgsRectangle otherExtent = mFrameMap->extent();
 
     QgsPointXY center = otherExtent.center();
-    QgsRectangle movedExtent( center.x() - extent.width() / 2,
-                              center.y() - extent.height() / 2,
-                              center.x() - extent.width() / 2 + extent.width(),
-                              center.y() - extent.height() / 2 + extent.height() );
+    QgsRectangle movedExtent( center.x() - extent.width() / 2, center.y() - extent.height() / 2, center.x() - extent.width() / 2 + extent.width(), center.y() - extent.height() / 2 + extent.height() );
     mMap->setExtent( movedExtent );
   }
 
@@ -392,9 +391,7 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
 
 QgsLayoutItemMapOverviewStack::QgsLayoutItemMapOverviewStack( QgsLayoutItemMap *map )
   : QgsLayoutItemMapItemStack( map )
-{
-
-}
+{}
 
 void QgsLayoutItemMapOverviewStack::addOverview( QgsLayoutItemMapOverview *overview )
 {
@@ -455,11 +452,11 @@ bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDom
   removeItems();
 
   //read overview stack
-  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( QStringLiteral( "ComposerMapOverview" ) );
+  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( u"ComposerMapOverview"_s );
   for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
   {
     QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
-    QgsLayoutItemMapOverview *mapOverview = new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), mMap );
+    QgsLayoutItemMapOverview *mapOverview = new QgsLayoutItemMapOverview( mapOverviewElem.attribute( u"name"_s ), mMap );
     mapOverview->readXml( mapOverviewElem, doc, context );
     mItems.append( mapOverview );
   }
@@ -471,7 +468,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
 {
   QList<QgsMapLayer *> res = layers;
   res.reserve( layers.count() + mItems.count() );
-  for ( QgsLayoutItemMapItem  *item : std::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -480,7 +477,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
     if ( !l )
       continue;
 
-    l->setCustomProperty( QStringLiteral( "_noset_layer_expression_context" ), true );
+    l->setCustomProperty( u"_noset_layer_expression_context"_s, true );
 
     switch ( item->stackingPosition() )
     {

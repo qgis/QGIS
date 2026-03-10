@@ -38,19 +38,20 @@ class QgsMeshLayer;
 class QgsPointCloudLayer;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
 % End
+// clang-format on
 #endif
 
-/**
+  /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
  * \brief Abstract base class for processing algorithms.
  */
-class CORE_EXPORT QgsProcessingAlgorithm
+  class CORE_EXPORT QgsProcessingAlgorithm
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       sipType = sipType_QgsProcessingFeatureBasedAlgorithm;
     else
       sipType = sipType_QgsProcessingAlgorithm;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -114,6 +115,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
 
+    // clang-format off
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
      * should be fixed for the algorithm, and must not be localised. The name should
@@ -124,6 +126,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see tags()
     */
     virtual QString name() const = 0 SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns the unique ID for the algorithm, which is a combination of the algorithm
@@ -171,7 +174,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 

@@ -26,6 +26,9 @@
 #include "qgsgeometryutils_base.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLineSegment2D;
 class QgsBox3D;
@@ -41,15 +44,15 @@ class QgsBox3D;
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  */
-class CORE_EXPORT QgsLineString: public QgsCurve
+class CORE_EXPORT QgsLineString : public QgsCurve
 {
-
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty linestring geometry.
      */
     QgsLineString() SIP_HOLDGIL;
+    // clang-format on
 #ifndef SIP_RUN
 
     /**
@@ -66,6 +69,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsLineString( const QVector<QgsPointXY> &points );
 #else
+// clang-format off
 
     /**
      * Construct a linestring from a sequence of points (QgsPoint objects, QgsPointXY objects, or sequences of float values).
@@ -78,7 +82,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % MethodCode
     if ( !PySequence_Check( a0 ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "A sequence of QgsPoint, QgsPointXY or array of floats is expected" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"A sequence of QgsPoint, QgsPointXY or array of floats is expected"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -102,7 +106,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         PyObject *value = PySequence_GetItem( a0, i );
         if ( !value )
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
           sipIsErr = 1;
           break;
         }
@@ -113,7 +117,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
           if ( elementSize < 2 || elementSize > 4 )
           {
             sipIsErr = 1;
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2." ).arg( i ).arg( elementSize ).toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2."_s.arg( i ).arg( elementSize ).toUtf8().constData() );
             Py_DECREF( value );
             break;
           }
@@ -125,7 +129,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
               PyObject *element = PySequence_GetItem( value, j );
               if ( !element )
               {
-                PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+                PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
                 sipIsErr = 1;
                 break;
               }
@@ -239,7 +243,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
           if ( sipIsErr )
           {
             // couldn't convert the sequence value to a QgsPoint or QgsPointXY
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats." ).arg( i ) .toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats."_s.arg( i ) .toUtf8().constData() );
             break;
           }
         }
@@ -248,6 +252,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp = new sipQgsLineString( QgsLineString( xl, yl, zl, ml, is25D ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -437,6 +442,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsPoint pointN( int i ) const;
 #else
+// clang-format off
 
     /**
      * Returns the point at the specified index.
@@ -464,11 +470,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
     double xAt( int index ) const override;
 #else
+// clang-format off
 
     /**
      * Returns the x-coordinate of the specified node in the line string.
@@ -494,11 +502,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->xAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
     double yAt( int index ) const override;
 #else
+// clang-format off
 
     /**
      * Returns the y-coordinate of the specified node in the line string.
@@ -524,6 +534,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -638,6 +649,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return std::numeric_limits<double>::quiet_NaN();
     }
 #else
+// clang-format off
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -665,6 +677,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->zAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -684,11 +697,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return std::numeric_limits<double>::quiet_NaN();
     }
 #else
+// clang-format off
 
     /**
-     * Returns the m-coordinate of the specified node in the line string.
+     * Returns the m value of the specified node in the line string.
      *
-     * If the LineString does not have a m-dimension then ``NaN`` will be returned.
+     * If the LineString does not have m values then ``NaN`` will be returned.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
@@ -711,6 +725,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->mAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -724,6 +739,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setXAt( int index, double x );
 #else
+// clang-format off
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -752,6 +768,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setXAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -765,6 +782,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setYAt( int index, double y );
 #else
+// clang-format off
 
     /**
      * Sets the y-coordinate of the specified node in the line string.
@@ -793,6 +811,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setYAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -810,6 +829,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         mZ[ index ] = z;
     }
 #else
+// clang-format off
 
     /**
      * Sets the z-coordinate of the specified node in the line string.
@@ -837,6 +857,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setZAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -854,6 +875,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         mM[ index ] = m;
     }
 #else
+// clang-format off
 
     /**
      * Sets the m-coordinate of the specified node in the line string.
@@ -881,6 +903,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setMAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -1046,6 +1069,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the shoelace/triangle formula sum for the points in the linestring.
+     * 2D version.
+     *
      * If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
      * Please note that the sum will be negative if the points are defined in clockwise order.
      * Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
@@ -1053,6 +1078,18 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
      */
     void sumUpArea( double &sum SIP_OUT ) const override;
+
+    /**
+     * Calculates the shoelace/triangle formula sum for the points in the linestring.
+     * 3D version.
+     *
+     * If the linestring is closed (i.e. a polygon) then the polygon area is equal to the value of the sum.
+     *
+     * \note If the geometry is 2D, the method falls back to the 2D computation.
+     *
+     * \since QGIS 4.0
+     */
+    void sumUpArea3D( double &sum SIP_OUT ) const override;
 
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
@@ -1107,12 +1144,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsLineString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
@@ -1198,6 +1236,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
     % End
 
+// clang-format on
 #endif
 
     /**

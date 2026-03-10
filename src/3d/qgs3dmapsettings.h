@@ -787,6 +787,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     bool showDebugPanel() const;
 
+    /**
+     * Returns whether 2D map overlay is enabled
+     *
+     * \see setIs2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    bool is2DMapOverlayEnabled() const;
+
+    /**
+     * Sets whether 2D map overlay is enabled
+     *
+     * \see is2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void setIs2DMapOverlayEnabled( bool enabled );
+
+
   signals:
 
     /**
@@ -1045,6 +1062,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void originChanged();
 
+    /**
+     * Emitted when the 2D map overlay is enabled or disabled
+     * \see setIs2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void show2DMapOverlayChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -1062,19 +1086,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QColor mSelectionColor;                                 //!< Color to be used for selected map features
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
     std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
-    bool mTerrainShadingEnabled = false;                                                                      //!< Whether terrain should be shaded taking lights into account
-    QgsPhongMaterialSettings mTerrainShadingMaterial;                                                         //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
-    QString mTerrainMapTheme;                                                                                 //!< Name of map theme used for terrain's texture (empty means use the current map theme)
-    bool mShowTerrainBoundingBoxes = false;                                                                   //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo = false;                                                                        //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowCameraViewCenter = false;                                                                       //!< Whether to show camera view center as a sphere - useful for debugging
-    bool mShowCameraRotationCenter = false;                                                                   //!< Whether to show camera rotation center as a sphere - useful for debugging
-    bool mShowLightSources = false;                                                                           //!< Whether to show the origin of light sources
-    bool mShowLabels = false;                                                                                 //!< Whether to display labels on terrain tiles
-    bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
-    bool mShowDebugPanel = false;                                                                             //!< Whether to show debug panel
-    QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
-    float mFieldOfView = 45.0f;                                                                               //<! Camera lens field of view value
+    bool mTerrainShadingEnabled = false;              //!< Whether terrain should be shaded taking lights into account
+    QgsPhongMaterialSettings mTerrainShadingMaterial; //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
+    QString mTerrainMapTheme;                         //!< Name of map theme used for terrain's texture (empty means use the current map theme)
+    bool mShowTerrainBoundingBoxes = false;           //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo = false;                //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowCameraViewCenter = false;               //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowCameraRotationCenter = false;           //!< Whether to show camera rotation center as a sphere - useful for debugging
+    bool mShowLightSources = false;                   //!< Whether to show the origin of light sources
+    bool mShowLabels = false;                         //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false;                        //!< Whether to stop updating scene on zoom
+    bool mShowDebugPanel = false;                     //!< Whether to show debug panel
+    QList<QgsLightSource *> mLightSources;            //!< List of light sources in the scene (owned by the settings)
+    float mFieldOfView = 45.0f;                       //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
@@ -1117,6 +1141,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
 
     bool mShowExtentIn2DView = false;
+
+    bool mShow2DMapOverlay = false;
 };
 
 

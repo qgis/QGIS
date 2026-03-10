@@ -31,9 +31,12 @@ email                : matthias@opengis.ch
 
 #include <QButtonGroup>
 #include <QPropertyAnimation>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsgeometryvalidationdock.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -42,7 +45,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 {
   setupUi( this );
 
-  mProblemDescriptionLabel->setStyleSheet( QStringLiteral( "font: bold" ) );
+  mProblemDescriptionLabel->setStyleSheet( u"font: bold"_s );
   mErrorListView->setAlternatingRowColors( true );
   mErrorListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mErrorListView, &QWidget::customContextMenuRequested, this, &QgsGeometryValidationDock::showErrorContextMenu );
@@ -74,7 +77,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mProblemDetailWidget->setVisible( false );
 
   // Some problem resolutions are unstable, show all of them only if the user opted in
-  const bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  const bool showUnreliableResolutionMethods = QgsSettings().value( u"geometry_validation/enable_problem_resolution"_s ).toString().compare( "true"_L1, Qt::CaseInsensitive ) == 0;
   mResolutionWidget->setVisible( showUnreliableResolutionMethods );
 }
 
@@ -165,7 +168,7 @@ void QgsGeometryValidationDock::onRowsInserted()
 
 void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
 {
-  const bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  const bool showUnreliableResolutionMethods = QgsSettings().value( u"geometry_validation/enable_problem_resolution"_s ).toString().compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 
   const QModelIndex index = mErrorListView->indexAt( pos );
   QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
@@ -181,9 +184,7 @@ void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
         QAction *action = new QAction( resolutionMethod.name(), mGeometryErrorContextMenu );
         action->setToolTip( resolutionMethod.description() );
         const int fixId = resolutionMethod.id();
-        connect( action, &QAction::triggered, this, [fixId, error, this]() {
-          mGeometryValidationService->fixError( error, fixId );
-        } );
+        connect( action, &QAction::triggered, this, [fixId, error, this]() { mGeometryValidationService->fixError( error, fixId ); } );
         mGeometryErrorContextMenu->addAction( action );
       }
     }
@@ -256,7 +257,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
       for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
       {
         QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
-        resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
+        resolveBtn->setIcon( QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s ) );
         resolveBtn->setToolTip( resolutionMethod.description() );
         layout->addWidget( resolveBtn, resolutionIndex, 0 );
         QLabel *resolveLabel = new QLabel( resolutionMethod.name(), mResolutionWidget );
@@ -264,9 +265,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
         resolveLabel->setWordWrap( true );
         layout->addWidget( resolveLabel, resolutionIndex, 1 );
         const int fixId = resolutionMethod.id();
-        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]() {
-          mGeometryValidationService->fixError( error, fixId );
-        } );
+        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]() { mGeometryValidationService->fixError( error, fixId ); } );
         resolutionIndex++;
       }
 
@@ -325,7 +324,8 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
 {
   if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
   {
-    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories
+      = QgsAnalysis::geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
     const QStringList activeChecks = mCurrentLayer->geometryOptions()->geometryChecks();
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
@@ -355,9 +355,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *featureAnimation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
     featureAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( featureAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
-    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this] {
-      mFeatureRubberband->update();
-    } );
+    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this] { mFeatureRubberband->update(); } );
 
     featureAnimation->setDuration( 2000 );
     featureAnimation->setStartValue( QColor( 100, 255, 100, 255 ) );
@@ -370,9 +368,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
-    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this] {
-      mErrorRubberband->update();
-    } );
+    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this] { mErrorRubberband->update(); } );
 
     errorAnimation->setStartValue( QColor( 255, 238, 88, 255 ) );
     errorAnimation->setEndValue( QColor( 255, 238, 88, 0 ) );

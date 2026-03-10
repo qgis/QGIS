@@ -30,10 +30,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsrelationadddlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCreateRelationDialog::QgsCreateRelationDialog( QWidget *parent )
   : QDialog( parent )
@@ -51,16 +54,16 @@ QgsCreateRelationDialog::QgsCreateRelationDialog( QWidget *parent )
 
   mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast<int>( Qgis::RelationshipStrength::Association ) );
   mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast<int>( Qgis::RelationshipStrength::Composition ) );
-  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
-                                             "Duplications are made by the feature duplication action.\n"
-                                             "The default actions are activated in the Action section of the layer properties." ) );
+  mRelationStrengthComboBox->setToolTip( tr(
+    "When composition is selected the child features will be duplicated too.\n"
+    "Duplications are made by the feature duplication action.\n"
+    "The default actions are activated in the Action section of the layer properties."
+  ) );
 
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsCreateRelationDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsCreateRelationDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/joins_relations.html#one-to-many-relation" ) );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/joins_relations.html#one-to-many-relation"_s ); } );
 
   addFieldsRow();
   updateDialogButtons();

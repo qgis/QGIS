@@ -48,7 +48,7 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
   , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
-  , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
+  , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : -1 )
   , mWordSpacing( format.hasProperty( QTextFormat::FontWordSpacing ) ? format.fontWordSpacing() : std::numeric_limits< double >::quiet_NaN() )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
@@ -98,7 +98,7 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mItalic = other.mItalic;
   if ( mFontWeight == -1 && other.mFontWeight != -1 )
     mFontWeight = other.mFontWeight;
-  if ( mStyleName.isEmpty() && ! other.mStyleName.isEmpty() )
+  if ( mStyleName.isEmpty() && !other.mStyleName.isEmpty() )
     mStyleName = other.mStyleName;
   if ( mHasVerticalAlignSet && other.hasVerticalAlignmentSet() )
   {
@@ -107,7 +107,7 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
   }
   if ( mBackgroundBrush.style() == Qt::NoBrush && mBackgroundPath.isEmpty() && other.mBackgroundBrush.style() != Qt::NoBrush )
     mBackgroundBrush = other.mBackgroundBrush;
-  if ( mBackgroundBrush.style() == Qt::NoBrush  && mBackgroundPath.isEmpty() && !other.mBackgroundPath.isEmpty() )
+  if ( mBackgroundBrush.style() == Qt::NoBrush && mBackgroundPath.isEmpty() && !other.mBackgroundPath.isEmpty() )
     mBackgroundPath = other.mBackgroundPath;
 }
 
@@ -216,11 +216,8 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
 
-  if ( mFontWeight != - 1 )
+  if ( mFontWeight != -1 )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    font.setWeight( mFontWeight );
-#else
     if ( mFontWeight <= 150 )
       font.setWeight( QFont::Thin );
     else if ( mFontWeight <= 250 )
@@ -239,7 +236,6 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
       font.setWeight( QFont::ExtraBold );
     else
       font.setWeight( QFont::Black );
-#endif
 
     // depending on the font, platform, and the phase of the moon, we need to both set the font weight AND the style name
     // in order to get correct rendering!

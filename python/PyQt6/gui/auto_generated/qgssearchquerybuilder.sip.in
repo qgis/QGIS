@@ -19,7 +19,7 @@ Query builder for search strings.
 
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.
+   Will be removed in QGIS 5.
 %End
 
 %TypeHeaderCode

@@ -15,6 +15,10 @@
 
 #include "qgsabstract3dsymbol.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 
@@ -39,14 +43,12 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  const QString origin = QStringLiteral( "symbol3d" );
+  const QString origin = u"symbol3d"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
+  sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
-
 }
 
 bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
@@ -58,6 +60,4 @@ bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCo
 }
 
 void QgsAbstract3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer * )
-{
-
-}
+{}

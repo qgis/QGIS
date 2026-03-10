@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 %Docstring(signature="appended")
@@ -115,6 +117,8 @@ Gets the capture curve
 Returns a list of matches for each point on the captureCurve.
 %End
 
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
@@ -126,6 +130,26 @@ Returns a list of matches for each point on the captureCurve.
 Intercept key events like Esc or Del to delete the last point
 
 :param e: key event
+%End
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+%Docstring
+Handles key release events for NURBS weight editing mode.
+
+:param e: key event
+
+.. versionadded:: 4.0
+%End
+
+    virtual void wheelEvent( QWheelEvent *e );
+
+%Docstring
+Handles wheel events for NURBS weight editing.
+
+:param e: wheel event
+
+.. versionadded:: 4.0
 %End
 
     void deleteTempRubberBand();
@@ -275,7 +299,7 @@ Number of points digitized
 :return: Number of points
 %End
 
- QVector<QgsPointXY> points() const /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY."/;
+ QVector<QgsPointXY> points() const /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant returns QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 List of digitized points
 
@@ -283,7 +307,7 @@ List of digitized points
 
 .. deprecated:: 3.12
 
-   Will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+   Will be removed in QGIS 5.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -296,7 +320,7 @@ List of digitized points
 .. versionadded:: 3.12
 %End
 
- void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
+ void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Set the points on which to work
 
@@ -304,7 +328,7 @@ Set the points on which to work
 
 .. deprecated:: 3.12
 
-   Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+   Will be removed in QGIS 5.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     void setPoints( const QgsPointSequence &pointList );

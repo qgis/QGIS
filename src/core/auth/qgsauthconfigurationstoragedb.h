@@ -32,7 +32,6 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsAuthConfigurationStorageDb instance from the specified \a settings.
      * Settings can contain the following keys:
@@ -81,7 +80,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QString id() const override;
 
     QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const override;
-    QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const override;
+    QgsAuthMethodConfigsMap authMethodConfigsWithPayload() const override;
     QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload SIP_OUT, bool full = false ) const override;
     bool storeMethodConfig( const QgsAuthMethodConfig &mconfig, const QString &payload ) override;
     bool removeMethodConfig( const QString &id ) override;
@@ -95,6 +94,8 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool isReady() const override;
     bool initialize() override;
     QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
+
+#ifndef QT_NO_SSL
 
     bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) override;
     bool removeCertIdentity( const QSslCertificate &cert ) override;
@@ -124,8 +125,9 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const override;
     bool removeCertTrustPolicy( const QSslCertificate &cert ) override;
     bool certTrustPolicyExists( const QSslCertificate &cert ) const override;
+#endif
 
-    const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const override;
+    const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords() const override;
     bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) override;
     bool clearMasterPasswords() override;
 
@@ -181,14 +183,12 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
 
   private:
-
     bool clearTables( const QStringList &tables );
 
     static const QMap<QString, QVariant> uriToSettings( const QString &uri );
     mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
 
   protected:
-
     /**
      * Opens the connection to the database.
      * \returns TRUE if the connection was opened successfully, FALSE otherwise.
@@ -240,7 +240,6 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool mIsReady = false;
 
     mutable QRecursiveMutex mMutex;
-
 };
 
 #endif // QGSAUTHCONFIGURATIONSTORAGEDB_H

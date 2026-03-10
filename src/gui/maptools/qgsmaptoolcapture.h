@@ -17,12 +17,16 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
+
+class QgsAdvancedDigitizingFloater;
 
 #include <QList>
 #include <QPoint>
@@ -36,6 +40,8 @@ class QgsMapToolCaptureRubberBand;
 class QgsCurvePolygon;
 class QgsMapToolShapeAbstract;
 class QgsMapToolShapeMetadata;
+class QgsBezierData;
+class QgsBezierMarker;
 
 
 /**
@@ -138,6 +144,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
+    void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
@@ -146,6 +153,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \param e key event
      */
     void keyPressEvent( QKeyEvent *e ) override;
+
+    /**
+     * Handles key release events for NURBS weight editing mode.
+     * \param e key event
+     * \since QGIS 4.0
+     */
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+    /**
+     * Handles wheel events for NURBS weight editing.
+     * \param e wheel event
+     * \since QGIS 4.0
+     */
+    void wheelEvent( QWheelEvent *e ) override;
 
     /**
      * Clean a temporary rubberband
@@ -188,7 +209,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
   public slots:
 
@@ -212,7 +233,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void updateExtraSnapLayer();
 
   protected:
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a map point to layer coordinates
@@ -225,7 +246,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a point to map coordinates and layer coordinates
@@ -239,7 +260,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Fetches the original point from the source layer if it has the same
@@ -296,11 +317,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QVector<QgsPointXY> points() const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 rename it to points()
+    // TODO QGIS 5.0 rename it to points()
 
     /**
      * List of digitized points
@@ -313,7 +334,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Set the points on which to work
      *
      * \param pointList A list of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED void setPoints( const QVector<QgsPointXY> &pointList ) SIP_DEPRECATED;
 
@@ -389,6 +410,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Reset the
     void resetRubberBand();
 
+    void setCurrentShapeMapToolIsActivated( bool activated );
+
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
@@ -447,6 +470,24 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
+
+    //! Data structure for Poly-Bézier curve digitizing (anchors and handles)
+    std::unique_ptr<QgsBezierData> mBezierData;
+    //! Visualization for Poly-Bézier curve digitizing
+    std::unique_ptr<QgsBezierMarker> mBezierMarker;
+    //! TRUE if user is currently dragging
+    bool mBezierDragging = false;
+    //! Index of the anchor being dragged for new anchor handle definition (-1 if not)
+    int mBezierDragAnchorIndex = -1;
+    //! Index of the handle being dragged independently (-1 if not)
+    int mBezierDragHandleIndex = -1;
+    //! Index of the anchor being moved (-1 if not)
+    int mBezierMoveAnchorIndex = -1;
+
+    //! Flag for NURBS weight editing mode (activated with W key)
+    bool mWeightEditMode = false;
+    //! Index of control point being edited for NURBS weight
+    int mWeightEditControlPointIndex = -1;
 
     friend class TestQgsMapToolCapture;
 };

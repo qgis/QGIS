@@ -44,7 +44,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     /**
      * Switches the widget to the rules page.
      *
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void viewRules() SIP_DEPRECATED;
 
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     */
     void setLayer( QgsVectorLayer *layer );
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Switches the widget to the edit style mode for the specified style,
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     /**
      * Resets the formatting options to their default state.
      *
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void reset() SIP_DEPRECATED;
 

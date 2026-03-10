@@ -15,8 +15,8 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 import os
 import platform
 import time
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 from qgis.core import (
     QgsAction,
     QgsActionManager,
@@ -26,14 +26,13 @@ from qgis.core import (
     QgsFields,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsActionManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

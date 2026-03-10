@@ -21,6 +21,9 @@
 
 #include <QBrush>
 #include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QPainter;
 class QPointF;
@@ -40,25 +43,27 @@ class QgsAttributes;
 class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
+    if ( sipCpp->diagramName() == "Pie"_L1 )
       sipType = sipType_QgsPieDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Histogram" ) )
+    else if ( sipCpp->diagramName() == "Histogram"_L1 )
       sipType = sipType_QgsHistogramDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Text" ) )
+    else if ( sipCpp->diagramName() == "Text"_L1 )
       sipType = sipType_QgsTextDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
+    else if ( sipCpp->diagramName() == "Stacked"_L1 )
       sipType = sipType_QgsStackedBarDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "StackedDiagram" ) )
+    else if ( sipCpp->diagramName() == "StackedDiagram"_L1 )
       sipType = sipType_QgsStackedDiagram;
     else
       sipType = NULL;
     SIP_END
 #endif
 
-    virtual ~QgsDiagram() { clearCache(); }
+    virtual ~QgsDiagram()
+    {
+      clearCache();
+    }
 
     /**
      * Returns an instance that is equivalent to this one
@@ -95,7 +100,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const = 0;
 
   protected:
-
     QgsDiagram() = default;
     QgsDiagram( const QgsDiagram &other );
 
@@ -146,7 +150,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
   private:
     QMap<QString, QgsExpression *> mExpressions;
-    QgsDiagram &operator= ( const QgsDiagram & ) = delete;
+    QgsDiagram &operator=( const QgsDiagram & ) = delete;
 };
 
 #endif // QGSDIAGRAM_H

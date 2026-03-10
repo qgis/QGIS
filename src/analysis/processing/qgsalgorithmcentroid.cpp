@@ -19,11 +19,15 @@
 
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCentroidAlgorithm::name() const
 {
-  return QStringLiteral( "centroids" );
+  return u"centroids"_s;
 }
 
 QString QgsCentroidAlgorithm::displayName() const
@@ -43,7 +47,7 @@ QString QgsCentroidAlgorithm::group() const
 
 QString QgsCentroidAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsCentroidAlgorithm::outputName() const
@@ -61,8 +65,10 @@ QgsFeatureSink::SinkFlags QgsCentroidAlgorithm::sinkFlags() const
 
 QString QgsCentroidAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new point layer with points representing the centroid of the geometries in an input layer.\n\n"
-                      "The attributes associated to each point in the output layer are the same ones associated to the original features." );
+  return QObject::tr(
+    "This algorithm creates a new point layer with points representing the centroid of the geometries in an input layer.\n\n"
+    "The attributes associated to each point in the output layer are the same ones associated to the original features."
+  );
 }
 
 QString QgsCentroidAlgorithm::shortDescription() const
@@ -82,23 +88,19 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 
 void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
-  auto allParts = std::make_unique<QgsProcessingParameterBoolean>(
-    QStringLiteral( "ALL_PARTS" ),
-    QObject::tr( "Create centroid for each part" ),
-    false
-  );
+  auto allParts = std::make_unique<QgsProcessingParameterBoolean>( u"ALL_PARTS"_s, QObject::tr( "Create centroid for each part" ), false );
   allParts->setIsDynamic( true );
-  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
-  allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( u"All parts"_s, QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
+  allParts->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( allParts.release() );
 }
 
 bool QgsCentroidAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mAllParts = parameterAsBoolean( parameters, QStringLiteral( "ALL_PARTS" ), context );
-  mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
+  mAllParts = parameterAsBoolean( parameters, u"ALL_PARTS"_s, context );
+  mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, u"ALL_PARTS"_s );
   if ( mDynamicAllParts )
-    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value<QgsProperty>();
+    mAllPartsProperty = parameters.value( u"ALL_PARTS"_s ).value<QgsProperty>();
 
   return true;
 }

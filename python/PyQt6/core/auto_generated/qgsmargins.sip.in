@@ -11,14 +11,13 @@
 
 
 
+
 class QgsMargins
 {
-
 %TypeHeaderCode
 #include "qgsmargins.h"
 %End
   public:
-
     QgsMargins();
 %Docstring
 Constructs a margins object with all margins set to 0.

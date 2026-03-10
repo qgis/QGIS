@@ -46,7 +46,7 @@ class QgsLocaleAwareNumericLineEditDelegate;
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, private Ui::QgsColorRampShaderWidgetBase
 {
     Q_OBJECT
 

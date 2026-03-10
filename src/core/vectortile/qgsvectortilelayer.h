@@ -22,6 +22,10 @@
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsFeature;
@@ -91,8 +95,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
-
     /**
      * Setting options for loading vector tile layers.
      *
@@ -100,16 +102,15 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      //! Coordinate transform context
-      QgsCoordinateTransformContext transformContext;
+        //! Coordinate transform context
+        QgsCoordinateTransformContext transformContext;
     };
 
     //! Constructs a new vector tile layer
@@ -117,25 +118,25 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     ~QgsVectorTileLayer() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsVectorTileLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    // implementation of virtual functions from QgsMapLayer
+      // implementation of virtual functions from QgsMapLayer
 
-    QgsVectorTileLayer *clone() const override SIP_FACTORY;
+      QgsVectorTileLayer *clone() const override SIP_FACTORY;
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override;
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
     Qgis::MapLayerProperties properties() const override;
@@ -278,11 +279,14 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      * \see selectionChanged()
      * \since QGIS 3.28
      */
-    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
-                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
-                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
-                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
-                           QgsRenderContext *renderContext = nullptr );
+    void selectByGeometry(
+      const QgsGeometry &geometry,
+      const QgsSelectionContext &context,
+      Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+      Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+      Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+      QgsRenderContext *renderContext = nullptr
+    );
 
   public slots:
 
@@ -328,11 +332,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
 
-    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-                               const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
     bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
-
 };
 
 #endif // QGSVECTORTILELAYER_H

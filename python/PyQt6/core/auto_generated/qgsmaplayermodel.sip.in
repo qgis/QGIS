@@ -25,7 +25,6 @@ A model for display of map layers in widgets.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       LayerId,

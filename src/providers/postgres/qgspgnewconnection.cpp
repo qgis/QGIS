@@ -30,8 +30,11 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgspgnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -63,7 +66,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   cbxSSLmode->addItem( tr( "verify-full" ), QgsDataSourceUri::SslVerifyFull );
   cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( QgsDataSourceUri::SslPrefer ) );
 
-  mAuthSettings->setDataprovider( QStringLiteral( "postgres" ) );
+  mAuthSettings->setDataprovider( u"postgres"_s );
   mAuthSettings->showStoreCheckboxes( true );
 
   if ( !connName.isEmpty() )
@@ -78,7 +81,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     QString port = settings.value( key + "/port" ).toString();
     if ( port.length() == 0 )
     {
-      port = QStringLiteral( "5432" );
+      port = u"5432"_s;
     }
     txtPort->setText( port );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -97,13 +100,13 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
-    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/saveUsername" ).toString() == "true"_L1 )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( true );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/savePassword" ).toString() == "true"_L1 )
     {
       mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
       mAuthSettings->setStorePasswordChecked( true );
@@ -115,7 +118,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
-      if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
+      if ( settings.value( key + "/save" ).toString() == "true"_L1 )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
 
       mAuthSettings->setStorePasswordChecked( true );
@@ -124,7 +127,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     QString authcfg = settings.value( key + "/authcfg" ).toString();
     mAuthSettings->setConfigId( authcfg );
 
-    txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+    txtSchema->setText( settings.value( key + u"/schema"_s ).toString() );
 
     txtName->setText( connName );
   }
@@ -135,18 +138,32 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 void QgsPgNewConnection::accept()
 {
   QgsSettings settings;
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
+  QString baseKey = u"/PostgreSQL/connections/"_s;
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   testConnection();
 
-  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have opted to save your password. It will be stored in unsecured plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !hasAuthConfigID
+       && mAuthSettings->storePasswordIsChecked()
+       && QMessageBox::question(
+            this,
+            tr( "Saving Passwords" ),
+            tr(
+              "WARNING: You have opted to save your password. It will be stored in unsecured plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). If "
+              "you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab "
+              "to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database."
+            ),
+            QMessageBox::Ok | QMessageBox::Cancel
+          ) == QMessageBox::Cancel )
   {
     return;
   }
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + "/service" ) || settings.contains( baseKey + txtName->text() + "/host" ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 )
+       && ( settings.contains( baseKey + txtName->text() + "/service" ) || settings.contains( baseKey + txtName->text() + "/host" ) )
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel )
+            == QMessageBox::Cancel )
   {
     return;
   }
@@ -191,7 +208,7 @@ void QgsPgNewConnection::accept()
     configuration.insert( "schema", txtSchema->text().trimmed() );
   }
 
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
   std::unique_ptr<QgsPostgresProviderConnection> providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
   providerConnection->setUri( QgsPostgresConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
@@ -226,12 +243,14 @@ void QgsPgNewConnection::testConnection()
   }
   else
   {
-    uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), mAuthSettings->username(), mAuthSettings->password(), ( QgsDataSourceUri::SslMode ) cbxSSLmode->currentData().toInt(), mAuthSettings->configId() );
+    uri.setConnection(
+      txtHost->text(), txtPort->text(), txtDatabase->text(), mAuthSettings->username(), mAuthSettings->password(), ( QgsDataSourceUri::SslMode ) cbxSSLmode->currentData().toInt(), mAuthSettings->configId()
+    );
   }
 
   if ( !txtSessionRole->text().isEmpty() )
   {
-    uri.setParam( QStringLiteral( "session_role" ), txtSessionRole->text() );
+    uri.setParam( u"session_role"_s, txtSessionRole->text() );
   }
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, true );
@@ -269,7 +288,7 @@ void QgsPgNewConnection::testConnection()
 
 void QgsPgNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#creating-a-stored-connection"_s );
 }
 
 void QgsPgNewConnection::updateOkButtonState()

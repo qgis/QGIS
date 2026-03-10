@@ -22,11 +22,15 @@
 #include "qgsreadwritecontext.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
 {
   QgsSettings s;
-  mTolerance = s.value( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), 5, QgsSettings::Gui ).toInt();
+  mTolerance = s.value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt();
 }
 
 QgsLayout *QgsLayoutSnapper::layout()
@@ -54,8 +58,9 @@ void QgsLayoutSnapper::setSnapToItems( bool enabled )
   mSnapToItems = enabled;
 }
 
-QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine,
-                                     const QList< QgsLayoutItem * > *ignoreItems ) const
+QPointF QgsLayoutSnapper::snapPoint(
+  QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList< QgsLayoutItem * > *ignoreItems
+) const
 {
   snapped = false;
 
@@ -117,7 +122,9 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   return point;
 }
 
-QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList<QgsLayoutItem *> *ignoreItems ) const
+QRectF QgsLayoutSnapper::snapRect(
+  const QRectF &rect, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList<QgsLayoutItem *> *ignoreItems
+) const
 {
   snapped = false;
   QRectF snappedRect = rect;
@@ -221,7 +228,7 @@ QPointF QgsLayoutSnapper::snapPointsToGrid( const QList<QPointF> &points, double
     double gridRes = mLayout->convertToLayoutUnits( grid.resolution() );
     QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
     int xRatio = static_cast< int >( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
-    int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 ); //NOLINT
+    int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 );     //NOLINT
 
     double xSnapped = xRatio * gridRes + gridOffset.x();
     double ySnapped = yRatio * gridRes + gridOffset.y() + yAtTopOfPage;
@@ -307,14 +314,15 @@ double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, Qt::Or
   }
 }
 
-double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped,
-    QGraphicsLineItem *snapLine ) const
+double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped, QGraphicsLineItem *snapLine ) const
 {
   double delta = snapPointsToItems( QList< double >() << original, orientation, scaleFactor, ignoreItems, snapped, snapLine );
   return original + delta;
 }
 
-double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped, QGraphicsLineItem *snapLine ) const
+double QgsLayoutSnapper::snapPointsToItems(
+  const QList<double> &points, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped, QGraphicsLineItem *snapLine
+) const
 {
   snapped = false;
   if ( !mLayout || !mSnapToItems )
@@ -421,12 +429,12 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
 
 bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "Snapper" ) );
+  QDomElement element = document.createElement( u"Snapper"_s );
 
-  element.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
-  element.setAttribute( QStringLiteral( "snapToGrid" ), mSnapToGrid );
-  element.setAttribute( QStringLiteral( "snapToGuides" ), mSnapToGuides );
-  element.setAttribute( QStringLiteral( "snapToItems" ), mSnapToItems );
+  element.setAttribute( u"tolerance"_s, mTolerance );
+  element.setAttribute( u"snapToGrid"_s, mSnapToGrid );
+  element.setAttribute( u"snapToGuides"_s, mSnapToGuides );
+  element.setAttribute( u"snapToItems"_s, mSnapToItems );
 
   parentElement.appendChild( element );
   return true;
@@ -435,19 +443,19 @@ bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &docum
 bool QgsLayoutSnapper::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QLatin1String( "Snapper" ) )
+  if ( element.nodeName() != "Snapper"_L1 )
   {
-    element = element.firstChildElement( QStringLiteral( "Snapper" ) );
+    element = element.firstChildElement( u"Snapper"_s );
   }
 
-  if ( element.nodeName() != QLatin1String( "Snapper" ) )
+  if ( element.nodeName() != "Snapper"_L1 )
   {
     return false;
   }
 
-  mTolerance = element.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "5" ) ).toInt();
-  mSnapToGrid = element.attribute( QStringLiteral( "snapToGrid" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
-  mSnapToGuides = element.attribute( QStringLiteral( "snapToGuides" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
-  mSnapToItems = element.attribute( QStringLiteral( "snapToItems" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+  mTolerance = element.attribute( u"tolerance"_s, u"5"_s ).toInt();
+  mSnapToGrid = element.attribute( u"snapToGrid"_s, u"0"_s ) != "0"_L1;
+  mSnapToGuides = element.attribute( u"snapToGuides"_s, u"0"_s ) != "0"_L1;
+  mSnapToItems = element.attribute( u"snapToItems"_s, u"0"_s ) != "0"_L1;
   return true;
 }

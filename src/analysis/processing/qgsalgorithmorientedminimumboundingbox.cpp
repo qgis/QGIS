@@ -19,11 +19,15 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::name() const
 {
-  return QStringLiteral( "orientedminimumboundingbox" );
+  return u"orientedminimumboundingbox"_s;
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::displayName() const
@@ -43,7 +47,7 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::group() const
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::outputName() const
@@ -58,7 +62,11 @@ Qgis::WkbType QgsOrientedMinimumBoundingBoxAlgorithm::outputWkbType( Qgis::WkbTy
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "For singlepart point features, the output corresponds to the bounding box of the geometry." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for an oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." )
+         + u"\n\n"_s
+         + QObject::tr( "For singlepart point features, the output corresponds to the bounding box of the geometry." )
+         + u"\n\n"_s
+         + QObject::tr( "See the 'Minimum bounding geometry' algorithm for an oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortDescription() const
@@ -86,11 +94,11 @@ bool QgsOrientedMinimumBoundingBoxAlgorithm::supportInPlaceEdit( const QgsMapLay
 QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"width"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"height"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"angle"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
@@ -106,21 +114,13 @@ QgsFeatureList QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const Qgs
     const QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
-    attrs << width
-          << height
-          << angle
-          << area
-          << 2 * width + 2 * height;
+    attrs << width << height << angle << area << 2 * width + 2 * height;
     f.setAttributes( attrs );
   }
   else
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant()
-          << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant() << QVariant() << QVariant();
     f.setAttributes( attrs );
   }
   return QgsFeatureList() << f;

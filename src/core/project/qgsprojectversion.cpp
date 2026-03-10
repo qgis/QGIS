@@ -22,13 +22,14 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString &name )
   : mMajor( major )
   , mMinor( minor )
   , mSub( sub )
   , mName( name )
-{
-}
+{}
 
 QgsProjectVersion::QgsProjectVersion( const QString &string )
 {
@@ -46,21 +47,17 @@ QgsProjectVersion::QgsProjectVersion( const QString &string )
   }
   mName = string.section( '-', 1 );
 
-  QgsDebugMsgLevel( QStringLiteral( "Version is set to " ) + text(), 4 );
+  QgsDebugMsgLevel( u"Version is set to "_s + text(), 4 );
 }
 
 bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor == other.mMajor ) &&
-           ( mMinor == other.mMinor ) &&
-           ( mSub == other.mSub ) );
+  return ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub == other.mSub ) );
 }
 
 bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor != other.mMajor ) ||
-           ( mMinor != other.mMinor ) ||
-           ( mSub != other.mSub ) );
+  return ( ( mMajor != other.mMajor ) || ( mMinor != other.mMinor ) || ( mSub != other.mSub ) );
 }
 
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
@@ -70,9 +67,7 @@ bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
 
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor > other.mMajor ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
+  return ( ( mMajor > other.mMajor ) || ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) || ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
 }
 
 bool QgsProjectVersion::operator<( const QgsProjectVersion &other ) const
@@ -90,11 +85,11 @@ QString QgsProjectVersion::text() const
 {
   if ( mName.isEmpty() )
   {
-    return QStringLiteral( "%1.%2.%3" ).arg( mMajor ).arg( mMinor ).arg( mSub );
+    return u"%1.%2.%3"_s.arg( mMajor ).arg( mMinor ).arg( mSub );
   }
   else
   {
-    return QStringLiteral( "%1.%2.%3-%4" ).arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
+    return u"%1.%2.%3-%4"_s.arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
   }
 }
 

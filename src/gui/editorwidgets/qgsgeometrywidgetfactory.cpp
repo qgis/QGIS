@@ -19,11 +19,14 @@
 #include "qgsgeometrywidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryWidgetFactory::QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
   , mMessageBar( messageBar )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsGeometryWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
@@ -40,5 +43,5 @@ unsigned int QgsGeometryWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
   const QgsField field = vl->fields().field( fieldIdx );
   const QMetaType::Type type = field.type();
   // Geometry fields only
-  return ( type == QMetaType::Type::User && field.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
+  return ( type == QMetaType::Type::User && field.typeName().compare( "geometry"_L1, Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
 }

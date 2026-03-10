@@ -14,6 +14,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -36,9 +37,8 @@ reference open within the main QGIS application.
 %End
   public:
 
-
     enum class DataDefinedServerProperty /BaseType=IntEnum/
-      {
+    {
       NoProperty,
       AllProperties,
       WMSOnlineResource,
@@ -715,7 +715,7 @@ Remove the given ``key`` from the specified ``scope``.
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
-Returns a list of child keys with values which exist within the the
+Returns a list of child keys with values which exist within the
 specified ``scope`` and ``key``.
 
 This method does not return keys that contain other keys. See
@@ -730,7 +730,7 @@ keys.
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
 Returns a list of child keys which contain other keys that exist within
-the the specified ``scope`` and ``key``.
+the specified ``scope`` and ``key``.
 
 This method only returns keys with keys, it will not return keys that
 contain only values. See :py:func:`~QgsProject.entryList` to retrieve
@@ -786,7 +786,9 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup(
+      const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags()
+    );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -910,6 +912,15 @@ atlases and reports within the project.
 %Docstring
 Returns the project's elevation profile manager, which manages elevation
 profiles within the project.
+
+.. versionadded:: 4.0
+%End
+
+
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+%Docstring
+Returns the project's selective masking set manager, which manages
+storage of a set of selective masking source sets within the project.
 
 .. versionadded:: 4.0
 %End
@@ -1281,8 +1292,7 @@ otherwise.
 %End
 
 
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
-                                       bool addToLegend = true );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/, bool addToLegend = true );
 %Docstring
 Add a list of layers to the map of loaded layers.
 
@@ -1313,8 +1323,7 @@ addToLegend is ``True``.
 .. seealso:: :py:func:`addMapLayer`
 %End
 
-    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
-                              bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/, bool addToLegend = true );
 %Docstring
 Add a layer to the map of loaded layers.
 
@@ -1817,9 +1826,9 @@ Sets the elevation shading renderer used for global map shading
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  signals:
+        signals :
 
-    void cleared();
+      void cleared();
 %Docstring
 Emitted when the project is cleared (and additionally when an open
 project is cleared just before a new project is read).
@@ -2524,7 +2533,6 @@ directly. Instead, use :py:func:`QgsProject.blockDirtying()`
 #include "qgsproject.h"
 %End
   public:
-
     QgsProjectDirtyBlocker( QgsProject *project );
 %Docstring
 Constructor for QgsProjectDirtyBlocker.
@@ -2539,7 +2547,6 @@ this object.
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
-
 
 
 

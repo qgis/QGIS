@@ -20,6 +20,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsHanaSchemaItem;
 class QgsHanaLayerItem;
 class QgsHanaConnectionItem;
@@ -28,7 +32,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "SAP HANA" ); }
+    QString name() override { return u"SAP HANA"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
@@ -47,7 +51,6 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void createSchema( QgsDataItem *item, QgsDataItemGuiContext context );
     static void deleteSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void renameSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
-    static void renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context );
 
     bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
     bool handleDropUri( QgsHanaConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );

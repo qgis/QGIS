@@ -24,7 +24,11 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgstiledownloadmanager.h"
 
+#include <QString>
+
 #include "moc_qgscopcpointcloudblockrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsCopcPointCloudBlockRequest
@@ -32,24 +36,37 @@
 
 ///@cond PRIVATE
 
-QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &uri,
-    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
-    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
-    const QString &authcfg )
-  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
-    mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
+QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest(
+  const QgsPointCloudNodeId &node,
+  const QString &uri,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  const QgsPointCloudExpression &filterExpression,
+  const QgsRectangle &filterRect,
+  uint64_t blockOffset,
+  int32_t blockSize,
+  int pointCount,
+  const QgsLazInfo &lazInfo,
+  const QString &authcfg
+)
+  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect )
+  , mBlockOffset( blockOffset )
+  , mBlockSize( blockSize )
+  , mPointCount( pointCount )
+  , mLazInfo( lazInfo )
 {
   // an empty block size will create an invalid range, causing a full request to the server
   Q_ASSERT( mBlockSize > 0 );
 
   QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
-  QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudBlockRequest" ) );
+  QgsSetRequestInitiatorClass( nr, u"QgsCopcPointCloudBlockRequest"_s );
   QgsSetRequestInitiatorId( nr, node.toString() );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( mBlockOffset ).arg( ( int64_t ) mBlockOffset + mBlockSize - 1 ).toLocal8Bit();
+  QByteArray queryRange = u"bytes=%1-%2"_s.arg( mBlockOffset ).arg( ( int64_t ) mBlockOffset + mBlockSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
 
   if ( !authcfg.isEmpty() )
@@ -67,7 +84,7 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
   {
     if ( mBlockSize != mTileDownloadManagerReply->data().size() )
     {
-      error = QStringLiteral( "Returned HTTP range is incorrect, requested %1 bytes but got %2 bytes" ).arg( mBlockSize ).arg( mTileDownloadManagerReply->data().size() );
+      error = u"Returned HTTP range is incorrect, requested %1 bytes but got %2 bytes"_s.arg( mBlockSize ).arg( mTileDownloadManagerReply->data().size() );
     }
     else
     {
@@ -81,17 +98,17 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
       }
       catch ( std::exception &e )
       {
-        error = QStringLiteral( "Decompression error: %1" ).arg( e.what() );
+        error = u"Decompression error: %1"_s.arg( e.what() );
       }
     }
   }
   else
   {
-    error = QStringLiteral( "Network request error: %1" ).arg( mTileDownloadManagerReply->errorString() );
+    error = u"Network request error: %1"_s.arg( mTileDownloadManagerReply->errorString() );
   }
   if ( !error.isEmpty() )
   {
-    mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString(), error );
+    mErrorStr = u"Error loading point tile %1: \"%2\""_s.arg( mNode.toString(), error );
   }
   emit finished();
 }

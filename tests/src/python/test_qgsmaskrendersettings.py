@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsMaskRenderSettings(unittest.TestCase):
-
     def testGetSet(self):
         settings = QgsMaskRenderSettings()
         self.assertEqual(settings.simplifyTolerance(), 0)

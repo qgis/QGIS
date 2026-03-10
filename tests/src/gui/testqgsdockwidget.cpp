@@ -41,20 +41,16 @@ class TestQgsDockWidget : public QObject
 };
 
 void TestQgsDockWidget::initTestCase()
-{
-}
+{}
 
 void TestQgsDockWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsDockWidget::init()
-{
-}
+{}
 
 void TestQgsDockWidget::cleanup()
-{
-}
+{}
 
 void TestQgsDockWidget::testSignals()
 {
@@ -65,7 +61,7 @@ void TestQgsDockWidget::testSignals()
   // Since Qt 6.8, the `showEvent` is now correctly propagated to the dock
   // when `w->show()` is called. Therefore, it needs to be called before
   // the QSignalSpy are created
-#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 ) )
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   w->show();
 
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );

@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsapplication.h"
 #include "qgsmbtiles.h"
@@ -251,8 +253,8 @@ void TestQgsVectorTileWriter::test_mbtiles_metadata()
 
   QgsMbTiles reader( fileName );
   QVERIFY( reader.open() );
-  QCOMPARE( reader.metadataValue( "name" ), QStringLiteral( "QGIS rocks!" ) );
-  QCOMPARE( reader.metadataValue( "attribution" ), QStringLiteral( "QGIS sample data" ) );
+  QCOMPARE( reader.metadataValue( "name" ), u"QGIS rocks!"_s );
+  QCOMPARE( reader.metadataValue( "attribution" ), u"QGIS sample data"_s );
   QCOMPARE( reader.metadataValue( "description" ), QString() ); // was not specified
   QCOMPARE( reader.metadataValue( "minzoom" ).toInt(), 0 );
   QCOMPARE( reader.metadataValue( "maxzoom" ).toInt(), 1 );

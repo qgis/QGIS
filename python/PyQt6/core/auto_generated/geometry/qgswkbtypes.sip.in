@@ -25,7 +25,6 @@ Handles storage of information regarding WKB types and their properties.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static Qgis::WkbType singleType( Qgis::WkbType type ) /HoldGIL/;
 %Docstring
 Returns the single type for a WKB type. For example, for MultiPolygon
@@ -169,6 +168,15 @@ Returns ``True`` if the WKB type is a curved type or can contain curved
 geometries.
 %End
 
+    static bool isNurbsType( Qgis::WkbType type ) /HoldGIL/;
+%Docstring
+Returns ``True`` if the WKB type is a NURBS curve type.
+
+:return: ``True`` if the WKB type is a NURBS curve type.
+
+.. versionadded:: 4.0
+%End
+
     static int wkbDimensions( Qgis::WkbType type ) /HoldGIL/;
 %Docstring
 Returns the inherent dimension of the geometry type as an integer.
@@ -308,7 +316,6 @@ not supported.
 
 :return: the 25D version of the type or Unknown
 %End
-
 };
 
 /************************************************************************

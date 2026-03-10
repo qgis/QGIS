@@ -2,7 +2,6 @@ import glob
 import json
 import os
 import sys
-
 from copy import deepcopy
 
 sys.path.append(
@@ -10,12 +9,7 @@ sys.path.append(
 )
 
 cpp = open(sys.argv[1], "w", encoding="utf-8")
-cpp.write(
-    '#include "qgsexpression.h"\n'
-    "\n"
-    "void QgsExpression::buildFunctionHelp()\n"
-    "{\n"
-)
+cpp.write('#include "qgsexpression.h"\n\nvoid QgsExpression::buildFunctionHelp()\n{\n')
 
 
 def quote(v):
@@ -169,6 +163,6 @@ for f in sorted(glob.glob("resources/function_help/text/*")):
             )
         )
 
-cpp.write("\n" "}\n" "\n")
+cpp.write("\n}\n\n")
 
 cpp.close()

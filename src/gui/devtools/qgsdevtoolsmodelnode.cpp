@@ -26,7 +26,10 @@
 #include <QColor>
 #include <QDesktopServices>
 #include <QFont>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDevToolsModelNode
@@ -52,8 +55,7 @@ QList<QAction *> QgsDevToolsModelNode::actions( QObject * )
 
 QgsDevToolsModelGroup::QgsDevToolsModelGroup( const QString &title )
   : mGroupTitle( title )
-{
-}
+{}
 
 QgsDevToolsModelGroup::~QgsDevToolsModelGroup() = default;
 
@@ -71,9 +73,7 @@ QgsDevToolsModelNode *QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToo
 int QgsDevToolsModelGroup::indexOf( QgsDevToolsModelNode *child ) const
 {
   Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p ) {
-    return p.get() == child;
-  } );
+  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p ) { return p.get() == child; } );
   if ( it != mChildren.end() )
     return std::distance( mChildren.begin(), it );
   return -1;
@@ -124,8 +124,7 @@ QgsDevToolsModelValueNode::QgsDevToolsModelValueNode( const QString &key, const 
   : mKey( key )
   , mValue( value )
   , mColor( color )
-{
-}
+{}
 
 QVariant QgsDevToolsModelValueNode::data( int role ) const
 {
@@ -134,7 +133,7 @@ QVariant QgsDevToolsModelValueNode::data( int role ) const
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
     {
-      return QStringLiteral( "%1: %2" ).arg( mKey.leftJustified( 30, ' ' ), mValue );
+      return u"%1: %2"_s.arg( mKey.leftJustified( 30, ' ' ), mValue );
     }
 
     case Qt::ForegroundRole:
@@ -154,9 +153,7 @@ QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
   QList<QAction *> res;
 
   QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
-  QObject::connect( copyAction, &QAction::triggered, copyAction, [this] {
-    QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
-  } );
+  QObject::connect( copyAction, &QAction::triggered, copyAction, [this] { QApplication::clipboard()->setText( u"%1: %2"_s.arg( mKey, mValue ) ); } );
 
   res << copyAction;
 

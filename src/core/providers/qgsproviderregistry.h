@@ -29,6 +29,8 @@
 #include <QLibrary>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -56,10 +58,8 @@ class QgsFeedback;
 */
 class CORE_EXPORT QgsProviderRegistry
 {
-
   public:
-
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+    // TODO QGIS 5 - either move to QgsAbstractDataSourceWidget or remove altogether
 
     /**
      * Different ways a source select dialog can be used
@@ -141,10 +141,12 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \see createRasterDataProvider()
      */
-    QgsDataProvider *createProvider( const QString &providerKey,
-                                     const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) SIP_TRANSFERBACK;
+    QgsDataProvider *createProvider(
+      const QString &providerKey,
+      const QString &dataSource,
+      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+      Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    ) SIP_TRANSFERBACK;
 
     /**
      * Returns the provider capabilities
@@ -158,9 +160,20 @@ class CORE_EXPORT QgsProviderRegistry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
+    SIP_SKIP Qgis::VectorExportResult createEmptyLayer(
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerName
+    );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates new instance of raster data provider
@@ -174,10 +187,12 @@ class CORE_EXPORT QgsProviderRegistry
       const QString &format,
       int nBands,
       Qgis::DataType type,
-      int width, int height,
+      int width,
+      int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+      const QStringList &createOptions = QStringList()
+    ) SIP_FACTORY;
 
     /**
      * Returns list of raster pyramid resampling methods
@@ -239,7 +254,9 @@ class CORE_EXPORT QgsProviderRegistry
      * responsible for deleting the returned widget.
      * \deprecated QGIS 3.10. Use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead.
      */
-    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QWidget *createSelectionWidget(
+      const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
+    ) SIP_DEPRECATED;
 
     /**
      * Returns list of data item providers of the provider
@@ -253,12 +270,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \returns ``-1`` if not implemented by provider, otherwise number of styles stored
      * \since QGIS 3.10
      */
-    int listStyles( const QString &providerKey,
-                    const QString &uri,
-                    QStringList &ids,
-                    QStringList &names,
-                    QStringList &descriptions,
-                    QString &errCause );
+    int listStyles( const QString &providerKey, const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause );
 
     /**
      * Returns TRUE if a layer style with the specified \a styleId exists in the provider defined by \a providerKey and \a uri.
@@ -294,9 +306,17 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.10
      */
-    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause );
+    bool saveStyle(
+      const QString &providerKey,
+      const QString &uri,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
+    );
 
     /**
      * Loads a layer style defined by \a uri
@@ -391,9 +411,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     class CORE_EXPORT ProviderCandidateDetails
     {
-
       public:
-
         /**
          * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
          */
@@ -414,18 +432,22 @@ class CORE_EXPORT QgsProviderRegistry
         QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        QString str = u"<QgsProviderRegistry.ProviderCandidateDetails: %1>"_s.arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
 
-      private:
-        QgsProviderMetadata *mMetadata = nullptr;
+        // clang-format off
+        private:
+        // clang-format on
+        QgsProviderMetadata *mMetadata
+        = nullptr;
 
         QList< Qgis::LayerType > mLayerTypes;
-
     };
 
     /**
@@ -460,7 +482,6 @@ class CORE_EXPORT QgsProviderRegistry
     class CORE_EXPORT UnusableUriDetails
     {
       public:
-
         /**
          * Constructor for UnusableUriDetails for the given \a uri, with the specified user-friendly, translated \a warning.
          *
@@ -495,13 +516,14 @@ class CORE_EXPORT QgsProviderRegistry
         QList<Qgis::LayerType> layerTypes;
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        QString str = u"<QgsProviderRegistry.UnusableUriDetails: %1>"_s.arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
-
     };
 
     /**
@@ -518,9 +540,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     class CORE_EXPORT UnusableUriHandlerInterface
     {
-
       public:
-
         virtual ~UnusableUriHandlerInterface() = default;
 
         /**
@@ -532,7 +552,6 @@ class CORE_EXPORT QgsProviderRegistry
          * Returns the details for advising the user why the \a uri is not usable.
          */
         virtual UnusableUriDetails details( const QString &uri ) const = 0;
-
     };
 
     /**
@@ -598,7 +617,7 @@ class CORE_EXPORT QgsProviderRegistry
      * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
      * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
      *
-     * This method tests whether any of the registered providers return TRUE for the their
+     * This method tests whether any of the registered providers return TRUE for their
      * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
      *
      * \since QGIS 3.18

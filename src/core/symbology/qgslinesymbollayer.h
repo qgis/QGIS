@@ -31,11 +31,11 @@ class QgsPathResolver;
 class QgsColorRamp;
 class QgsFillSymbol;
 
-#define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
-#define DEFAULT_SIMPLELINE_WIDTH     Qgis::DEFAULT_LINE_WIDTH
-#define DEFAULT_SIMPLELINE_PENSTYLE  Qt::SolidLine
+#define DEFAULT_SIMPLELINE_COLOR QColor( 35, 35, 35 )
+#define DEFAULT_SIMPLELINE_WIDTH Qgis::DEFAULT_LINE_WIDTH
+#define DEFAULT_SIMPLELINE_PENSTYLE Qt::SolidLine
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
-#define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
+#define DEFAULT_SIMPLELINE_CAPSTYLE Qt::SquareCap
 
 /**
  * \ingroup core
@@ -45,15 +45,12 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsSimpleLineSymbolLayer. Creates a simple line
      * symbol in the specified \a color, \a width (in millimeters)
      * and \a penStyle.
      */
-    QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
-                              double width = DEFAULT_SIMPLELINE_WIDTH,
-                              Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+    QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR, double width = DEFAULT_SIMPLELINE_WIDTH, Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
     ~QgsSimpleLineSymbolLayer() override;
 
@@ -503,7 +500,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setTweakDashPatternOnCorners( bool enabled );
 
   private:
-
     Qt::PenStyle mPenStyle = Qt::SolidLine;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
     Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
@@ -541,8 +537,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
 /////////
 
-#define DEFAULT_MARKERLINE_ROTATE     true
-#define DEFAULT_MARKERLINE_INTERVAL   3
+#define DEFAULT_MARKERLINE_ROTATE true
+#define DEFAULT_MARKERLINE_INTERVAL 3
 
 /**
  * \ingroup core
@@ -556,7 +552,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsTemplatedLineSymbolLayerBase. Creates a template
      * line placed at the specified \a interval (in millimeters).
@@ -564,8 +559,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * The \a rotateSymbol argument specifies whether individual symbols
      * should be rotated to match the line segment alignment.
      */
-    QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
-                                     double interval = 3 );
+    QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true, double interval = 3 );
 
     ~QgsTemplatedLineSymbolLayerBase() override;
 
@@ -833,8 +827,12 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
-  protected:
+    /**
+     * Copies all common properties of this layer to another templated symbol layer \a destLayer.
+     */
+    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
 
+  protected:
     /**
      * Sets the line \a angle modification for the symbol's angle. This angle is added to
      * the symbol's rotation and data defined rotation before rendering the symbol, and
@@ -868,22 +866,19 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) = 0;
 
     /**
-     * Copies all common properties of this layer to another templated symbol layer.
-     */
-    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
-
-    /**
      * Sets all common symbol properties in the \a destLayer, using the settings
      * serialized in the \a properties map.
      */
     static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 
+  protected:
+    int mRingIndex = 0; // current ring index while rendering
 
   private:
-
     void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
     void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
     void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     /**
@@ -899,22 +894,21 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setoffsetAlongLine
      * \see setOffsetAlongLineUnit
      */
-    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
-                                      Qgis::MarkerLinePlacement placement, const QList<QPair<double, double>> &blankSegments );
+    void renderOffsetVertexAlongLine(
+      const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+    );
 
 
-    static void collectOffsetPoints( const QVector< QPointF> &points,
-                                     QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset,
-                                     QList<int> *pointIndices = nullptr,
-                                     double initialLag = 0,
-                                     int numberPointsRequired = -1 );
+    static void collectOffsetPoints(
+      const QVector< QPointF> &points, QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset, QList<int> *pointIndices = nullptr, double initialLag = 0, int numberPointsRequired = -1
+    );
 
     bool mRotateSymbols = true;
     double mInterval = 3;
     Qgis::RenderUnit mIntervalUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
     Qgis::MarkerLinePlacements mPlacements = Qgis::MarkerLinePlacement::Interval;
-    double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
+    double mOffsetAlongLine = 0;                                           //distance to offset along line before marker is drawn
     Qgis::RenderUnit mOffsetAlongLineUnit = Qgis::RenderUnit::Millimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
     double mAverageAngleLength = 4;
@@ -928,10 +922,8 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QPointF mFinalVertex;
     bool mCurrentFeatureIsSelected = false;
     double mFeatureSymbolOpacity = 1;
-    int mRingIndex = 0; // current ring index while rendering
 
     friend class TestQgsMarkerLineSymbol;
-
 };
 
 /**
@@ -942,7 +934,6 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerBase
 {
   public:
-
     /**
      * Constructor for QgsMarkerLineSymbolLayer. Creates a marker line
      * with a default marker symbol, placed at the specified \a interval (in millimeters).
@@ -950,8 +941,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * The \a rotateMarker argument specifies whether individual marker symbols
      * should be rotated to match the line segment alignment.
      */
-    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
-                              double interval = DEFAULT_MARKERLINE_INTERVAL );
+    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE, double interval = DEFAULT_MARKERLINE_INTERVAL );
 
     ~QgsMarkerLineSymbolLayer() override;
 
@@ -1008,7 +998,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
 
   protected:
-
     std::unique_ptr< QgsMarkerSymbol > mMarker;
 
     void setSymbolLineAngle( double angle ) override;
@@ -1017,12 +1006,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) override;
 
   private:
-
 #ifdef SIP_RUN
     QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer &other );
 #endif
-
-
 };
 
 
@@ -1037,7 +1023,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
 class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerBase
 {
   public:
-
     /**
      * Constructor for QgsHashedLineSymbolLayer. Creates a line
      * with a default hash symbol, placed at the specified \a interval (in millimeters).
@@ -1045,8 +1030,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * The \a rotateSymbol argument specifies whether individual hash symbols
      * should be rotated to match the line segment alignment.
      */
-    QgsHashedLineSymbolLayer( bool rotateSymbol = true,
-                              double interval = 3 );
+    QgsHashedLineSymbolLayer( bool rotateSymbol = true, double interval = 3 );
 
     ~QgsHashedLineSymbolLayer() override;
 
@@ -1137,7 +1121,6 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
 
   protected:
-
     void setSymbolLineAngle( double angle ) override;
     double symbolAngle() const override;
     void setSymbolAngle( double angle ) override;
@@ -1157,7 +1140,6 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double mHashLength = 3;
     Qgis::RenderUnit mHashLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mHashLengthMapUnitScale;
-
 };
 
 
@@ -1172,7 +1154,6 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
 class CORE_EXPORT QgsAbstractBrushedLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-
     /**
      * Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
      *
@@ -1202,12 +1183,10 @@ class CORE_EXPORT QgsAbstractBrushedLineSymbolLayer : public QgsLineSymbolLayer
     void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
 
   protected:
-
     /**
      * Renders a polyline of \a points using the specified \a brush.
      */
-    void renderPolylineUsingBrush( const QPolygonF &points, QgsSymbolRenderContext &context, const QBrush &brush,
-                                   double patternThickness, double patternLength );
+    void renderPolylineUsingBrush( const QPolygonF &points, QgsSymbolRenderContext &context, const QBrush &brush, double patternThickness, double patternLength );
 
     Qt::PenJoinStyle mPenJoinStyle = Qt::PenJoinStyle::RoundJoin;
     Qt::PenCapStyle mPenCapStyle = Qt::PenCapStyle::RoundCap;
@@ -1215,7 +1194,6 @@ class CORE_EXPORT QgsAbstractBrushedLineSymbolLayer : public QgsLineSymbolLayer
   private:
     void renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness, const double patternLength, const QBrush &sourceBrush );
 };
-
 
 
 /**
@@ -1229,7 +1207,6 @@ class CORE_EXPORT QgsAbstractBrushedLineSymbolLayer : public QgsLineSymbolLayer
 class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
      */
@@ -1294,7 +1271,6 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     QString mPath;
     double mOpacity = 1.0;
     QImage mLineImage;
-
 };
 
 
@@ -1312,12 +1288,10 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
 class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsLineburstSymbolLayer, with the specified start and end gradient colors.
      */
-    QgsLineburstSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
-                             const QColor &color2 = Qt::white );
+    QgsLineburstSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR, const QColor &color2 = Qt::white );
     ~QgsLineburstSymbolLayer() override;
 
     /**
@@ -1390,7 +1364,6 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
     Qgis::GradientColorSource mGradientColorType = Qgis::GradientColorSource::SimpleTwoColor;
     QColor mColor2;
     std::unique_ptr< QgsColorRamp > mGradientRamp;
-
 };
 
 
@@ -1405,7 +1378,6 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
 class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsFilledLineSymbolLayer.
      *
@@ -1473,7 +1445,6 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
     void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
 
   private:
-
 #ifdef SIP_RUN
     QgsFilledLineSymbolLayer( const QgsFilledLineSymbolLayer & );
 #endif
@@ -1482,8 +1453,6 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
     std::unique_ptr< QgsFillSymbol > mFill;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
     Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
-
-
 };
 
 #endif

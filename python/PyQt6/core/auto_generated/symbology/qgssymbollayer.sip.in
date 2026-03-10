@@ -703,6 +703,32 @@ layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
+    QString selectiveMaskingSourceSetId() const;
+%Docstring
+Returns the selective masking source set ID for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`setSelectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
+    void setSelectiveMaskingSourceSetId( const QString &id );
+%Docstring
+Sets the selective masking source set ``id`` for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`selectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
 %Docstring
 Prepares all mask internal objects according to what is defined in
@@ -769,9 +795,20 @@ Constructor for QgsSymbolLayer.
 
 
 
+
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
+%End
+
+    void copyCommonProperties( QgsSymbolLayer *destLayer ) const;
+%Docstring
+Copies all common base class properties from this layer to another
+symbol layer.
+
+Includes data defined properties and paint effects.
+
+.. versionadded:: 4.0
 %End
 
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
@@ -780,6 +817,8 @@ Copies all data defined properties of this layer to another symbol
 layer.
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
@@ -787,6 +826,8 @@ layer.
 Copies paint effect of this layer to another symbol layer
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void removeMasks( QgsRenderContext &context, bool recursive );
@@ -825,7 +866,6 @@ Abstract base class for marker symbol layers.
 #include "qgssymbollayer.h"
 %End
   public:
-
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -1145,7 +1185,6 @@ the marker layer.
 
   protected:
 
-
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
 Constructor for QgsMarkerSymbolLayer.
@@ -1181,10 +1220,17 @@ and any displacement required to align with the marker's anchor point.
 
 %End
 
-    void markerOffset( QgsSymbolRenderContext &context, double width, double height,
-                       Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
-                       double &offsetX, double &offsetY,
-                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
+    void markerOffset(
+      QgsSymbolRenderContext &context,
+      double width,
+      double height,
+      Qgis::RenderUnit widthUnit,
+      Qgis::RenderUnit heightUnit,
+      double &offsetX,
+      double &offsetY,
+      const QgsMapUnitScale &widthMapUnitScale,
+      const QgsMapUnitScale &heightMapUnitScale
+    ) const /PyName=markerOffset2/;
 %Docstring
 Calculates the required marker offset, including both the symbol offset
 and any displacement required to align with the marker's anchor point.
@@ -1227,7 +1273,6 @@ Abstract base class for line symbol layers.
 #include "qgssymbollayer.h"
 %End
   public:
-
     enum RenderRingFilter /BaseType=IntEnum/
     {
       AllRings,
@@ -1450,7 +1495,6 @@ Abstract base class for fill symbol layers.
 %End
   public:
 
-
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 %Docstring
 Renders the fill symbol layer for the polygon whose outer ring is
@@ -1485,7 +1529,7 @@ Returns the rotation angle of the fill symbol, in degrees clockwise.
 .. seealso:: :py:func:`setAngle`
 %End
 
-    virtual QImage toTiledPatternImage( ) const;
+    virtual QImage toTiledPatternImage() const;
 %Docstring
 Renders the symbol layer as an image that can be used as a seamless
 pattern fill for polygons, this method is used by SLD export to generate

@@ -20,30 +20,32 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import sys
-from qgis.PyQt.QtCore import QCoreApplication
+
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsExpression,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsFeatureSink,
-    QgsProcessingFeedback,
-    QgsProcessingUtils,
+    QgsGeometry,
     QgsMessageLog,
     QgsProcessingException,
-    QgsProcessingFeatureSourceDefinition,
     QgsProcessingFeatureSource,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingFeedback,
     QgsProcessingParameters,
+    QgsProcessingUtils,
     QgsProject,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsExpression,
-    QgsWkbTypes,
-    QgsGeometry,
-    QgsVectorLayerUtils,
     QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
+
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
-from qgis.utils import iface
 
 
 def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
@@ -273,7 +275,6 @@ def execute_in_place_run(
             results, ok = {"__count": current + 1}, True
 
         else:  # Traditional 'run' with delete and add features cycle
-
             # There is no way to know if some features have been skipped
             # due to invalid geometries
             if (

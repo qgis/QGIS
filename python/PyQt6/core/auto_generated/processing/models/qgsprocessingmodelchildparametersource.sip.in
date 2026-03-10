@@ -22,7 +22,6 @@ model.
 #include "qgsprocessingmodelchildparametersource.h"
 %End
   public:
-
     QgsProcessingModelChildParameterSource();
 %Docstring
 Constructor for QgsProcessingModelChildParameterSource. It is

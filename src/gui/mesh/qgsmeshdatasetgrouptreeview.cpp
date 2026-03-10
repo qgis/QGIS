@@ -29,14 +29,16 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsmeshdatasetgrouptreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )
   , mRootItem( new QgsMeshDatasetGroupTreeItem() )
-{
-}
+{}
 
 int QgsMeshDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
 {
@@ -89,8 +91,7 @@ QVariant QgsMeshDatasetGroupTreeModel::headerData( int section, Qt::Orientation 
   return QVariant();
 }
 
-QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent )
-  const
+QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();
@@ -334,12 +335,11 @@ bool QgsMeshDatasetGroupProxyModel::filterAcceptsRow( int source_row, const QMod
 
 QgsMeshDatasetGroupTreeItemDelegate::QgsMeshDatasetGroupTreeItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-  , mScalarSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontours.svg" ) )
-  , mScalarDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontoursoff.svg" ) )
-  , mVectorSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectors.svg" ) )
-  , mVectorDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectorsoff.svg" ) )
-{
-}
+  , mScalarSelectedPixmap( u":/images/themes/default/propertyicons/meshcontours.svg"_s )
+  , mScalarDeselectedPixmap( u":/images/themes/default/propertyicons/meshcontoursoff.svg"_s )
+  , mVectorSelectedPixmap( u":/images/themes/default/propertyicons/meshvectors.svg"_s )
+  , mVectorDeselectedPixmap( u":/images/themes/default/propertyicons/meshvectorsoff.svg"_s )
+{}
 
 void QgsMeshDatasetGroupTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -382,7 +382,8 @@ QSize QgsMeshDatasetGroupTreeItemDelegate::sizeHint( const QStyleOptionViewItem 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 QgsMeshActiveDatasetGroupTreeView::QgsMeshActiveDatasetGroupTreeView( QWidget *parent )
-  : QTreeView( parent ), mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
+  : QTreeView( parent )
+  , mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
 {
   setModel( mProxyModel );
   setItemDelegate( &mDelegate );
@@ -616,7 +617,7 @@ void QgsMeshDatasetGroupTreeView::removeCurrentItem()
         if ( item )
         {
           varList.append( item->name() );
-          varList.append( QStringLiteral( "\n" ) );
+          varList.append( u"\n"_s );
         }
       }
       QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" ).arg( varList ) );
@@ -695,13 +696,11 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
     {
       const QString driverName = driver.name();
       const QString suffix = driver.writeDatasetOnFileSuffix();
-      if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
-             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
-           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
+      if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
+           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
+           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
       {
-        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this] {
-          this->saveDatasetGroup( groupIndex, driverName, suffix );
-        } );
+        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this] { this->saveDatasetGroup( groupIndex, driverName, suffix ); } );
       }
     }
   }
@@ -731,15 +730,15 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
   QgsSettings settings;
   QString filter;
   if ( !fileSuffix.isEmpty() )
-    filter = QStringLiteral( "%1 (*.%2)" ).arg( driver ).arg( fileSuffix );
-  const QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
+    filter = u"%1 (*.%2)"_s.arg( driver ).arg( fileSuffix );
+  const QString exportFileDir = settings.value( u"lastMeshDatasetDir"_s, QDir::homePath(), QgsSettings::App ).toString();
   const QString saveFileName = QFileDialog::getSaveFileName( nullptr, QObject::tr( "Save Mesh Datasets" ), exportFileDir, filter );
 
   if ( saveFileName.isEmpty() )
     return;
 
   const QFileInfo openFileInfo( saveFileName );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
+  settings.setValue( u"lastMeshDatasetDir"_s, openFileInfo.absolutePath(), QgsSettings::App );
 
 
   if ( mMeshLayer->saveDataset( saveFileName, datasetGroup, driver ) )

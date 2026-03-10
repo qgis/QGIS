@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  *
@@ -44,12 +46,14 @@
  */
 class CORE_EXPORT QgsDefaultValue
 {
-    Q_GADGET SIP_SKIP
+    // clang-format off
+  Q_GADGET SIP_SKIP
 
-    Q_PROPERTY( QString expression READ expression WRITE setExpression )
-    Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
+  Q_PROPERTY( QString expression READ expression WRITE setExpression )
+  Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
 
   public:
+    // clang-format on
 
     /**
      * Create a new default value with the given \a expression and \a applyOnUpdate flag.
@@ -61,21 +65,23 @@ class CORE_EXPORT QgsDefaultValue
     bool operator==( const QgsDefaultValue &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsDefaultValue: %1>" ).arg(
-                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + QStringLiteral( "..." )
+    const QString str = sipCpp->isValid() ? u"<QgsDefaultValue: %1>"_s.arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + u"..."_s
                           : sipCpp->expression() )
-                        : QStringLiteral( "<QgsDefaultValue: invalid>" );
+                        : u"<QgsDefaultValue: invalid>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * The expression will be evaluated whenever a default value needs
      * to be calculated for a field.
      */
-    QString expression() const;
+        QString expression() const;
 
     /**
      * The expression will be evaluated whenever a default value needs

@@ -2,8 +2,8 @@
                          qgscircle.h
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -28,6 +28,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsPoint;
 
 /**
@@ -45,6 +47,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
   public:
     QgsCircle();
 
+    // clang-format off
     /**
      * Constructs a circle by defining all the members.
      * \param center The center of the circle.
@@ -52,6 +55,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
     QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructs a circle by 2 points on the circle.
@@ -373,17 +377,18 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     */
     static int calculateSegments( double radius, double parameter, int minSegments, Qgis::SegmentCalculationMethod method );
 
-
+// clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str
-      = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
+      = u"<QgsCircle: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private :
+  private:
+// clang-format on
 
     /**
      * Calculate the number of segments needed to approximate a circle within a given tolerance.

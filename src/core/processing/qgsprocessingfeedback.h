@@ -39,7 +39,6 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingFeedback.
      *
@@ -165,14 +164,12 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
   private:
-
     void log( const QString &htmlMessage, const QString &textMessage );
 
     bool mLogFeedback = true;
     QString mHtmlLog;
     QString mTextLog;
     int mMessageLoggedCount = 0;
-
 };
 
 
@@ -192,7 +189,6 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
      * number of \a steps. This feedback object will proxy calls
@@ -205,6 +201,21 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
      * to scale the current progress to account for progress through the overall process.
      */
     void setCurrentStep( int step );
+
+    /**
+     * Sets the relative \a weights for each step.
+     *
+     * The \a weights list size must match the number of steps
+     * defined in the constructor. Weights are normalized internally,
+     * so they do not need to sum to 1.0 or 100.0.
+     *
+     * If this is not called, all steps are assumed to have equal weight.
+     *
+     * \warning step weights must be set in advance before the feedback is used to report any progress
+     *
+     * \since QGIS 4.0
+     */
+    void setStepWeights( const QList<double> &weights );
 
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError = false ) override;
@@ -222,13 +233,11 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void updateOverallProgress( double progress );
 
   private:
-
     int mChildSteps = 0;
     int mCurrentStep = 0;
+    QList< double > mStepWeights;
+    double mCurrentStepBaseProgress = 0.0;
     QgsProcessingFeedback *mFeedback = nullptr;
-
 };
 
 #endif // QGSPROCESSINGFEEDBACK_H
-
-

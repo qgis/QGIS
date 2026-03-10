@@ -46,7 +46,8 @@ class QgsChunkLoader : public QgsChunkQueueJob
   public:
     //! Construct chunk loader for a node
     QgsChunkLoader( QgsChunkNode *node )
-      : QgsChunkQueueJob( node ) {}
+      : QgsChunkQueueJob( node )
+    {}
 
     /**
      * Run in main thread to use loaded data.
@@ -101,7 +102,7 @@ class QgsChunkLoaderFactory : public QObject
     /**
      * Requests that node has enough hierarchy information to create children in createChildren().
      * This function must not block, only start any requests in background. When the hierarchy
-     * information is ready, the signal childrenPrepared() must be emitted.
+     * information is ready, the signal childrenPrepared() may be emitted so that the entity gets updated.
      *
      * The default implementation does nothing. This only needs to be implemented when the factory
      * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
@@ -131,7 +132,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     ~QgsQuadtreeChunkLoaderFactory() override;
 
     //! Initializes the root node setup (bounding box and error) and tree depth
-    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );
+    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel = -1, const QgsBox3D &clippingBox3D = QgsBox3D() );
 
     QgsChunkNode *createRootNode() const override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
@@ -140,8 +141,8 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsBox3D mRootBox3D;
     QgsBox3D mClippingBox3D;
     float mRootError = 0;
-    //! maximum allowed depth of quad tree
-    int mMaxLevel = 0;
+    //! maximum allowed depth of quad tree. -1 for no max depth.
+    int mMaxLevel = -1;
 };
 
 /**
@@ -157,13 +158,9 @@ class QgsChunkUpdaterFactory : public QgsChunkQueueJobFactory
   public:
     QgsChunkUpdaterFactory( QgsChunkLoaderFactory *loaderFactory )
       : mChunkLoaderFactory( loaderFactory )
-    {
-    }
+    {}
 
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
-    {
-      return mChunkLoaderFactory->createChunkLoader( chunk );
-    }
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return mChunkLoaderFactory->createChunkLoader( chunk ); }
 
   private:
     QgsChunkLoaderFactory *mChunkLoaderFactory;

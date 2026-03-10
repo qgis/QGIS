@@ -17,21 +17,25 @@
 
 #include "qgsalgorithmsubdivide.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
-  auto nodes = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 8, 100000 );
+  auto nodes = std::make_unique<QgsProcessingParameterNumber>( u"MAX_NODES"_s, QObject::tr( "Maximum nodes in parts" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 8, 100000 );
   nodes->setIsDynamic( true );
-  nodes->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsPropertyDefinition::Integer ) );
-  nodes->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  nodes->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MAX_NODES"_s, QObject::tr( "Maximum nodes in parts" ), QgsPropertyDefinition::Integer ) );
+  nodes->setDynamicLayerParameterName( u"INPUT"_s );
 
   addParameter( nodes.release() );
 }
 
 QString QgsSubdivideAlgorithm::name() const
 {
-  return QStringLiteral( "subdivide" );
+  return u"subdivide"_s;
 }
 
 QString QgsSubdivideAlgorithm::displayName() const
@@ -51,17 +55,19 @@ QString QgsSubdivideAlgorithm::group() const
 
 QString QgsSubdivideAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSubdivideAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm subdivides the geometry. The returned geometry will be a collection containing subdivided parts "
-                      "from the original geometry, where no part has more than the specified maximum number of nodes.\n\n"
-                      "This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially "
-                      "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
-                      "not be valid and may contain self-intersections.\n\n"
-                      "Curved geometries will be segmentized before subdivision." );
+  return QObject::tr(
+    "This algorithm subdivides the geometry. The returned geometry will be a collection containing subdivided parts "
+    "from the original geometry, where no part has more than the specified maximum number of nodes.\n\n"
+    "This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially "
+    "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
+    "not be valid and may contain self-intersections.\n\n"
+    "Curved geometries will be segmentized before subdivision."
+  );
 }
 
 QString QgsSubdivideAlgorithm::shortDescription() const
@@ -104,10 +110,10 @@ QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsPr
 
 bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMaxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
-  mDynamicMaxNodes = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX_NODES" ) );
+  mMaxNodes = parameterAsInt( parameters, u"MAX_NODES"_s, context );
+  mDynamicMaxNodes = QgsProcessingParameters::isDynamic( parameters, u"MAX_NODES"_s );
   if ( mDynamicMaxNodes )
-    mMaxNodesProperty = parameters.value( QStringLiteral( "MAX_NODES" ) ).value<QgsProperty>();
+    mMaxNodesProperty = parameters.value( u"MAX_NODES"_s ).value<QgsProperty>();
 
   return true;
 }

@@ -22,14 +22,17 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QString>
 
 #include "moc_qgspointcloudlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
-  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
+  setObjectName( u"mOptsPage_3DView"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -40,7 +43,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   mWidgetPointCloudSymbol->connectChildPanels( this );
 
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
-  setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#d-view-properties" ) );
+  setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#d-view-properties"_s );
 }
 
 void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
@@ -65,6 +68,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
   renderer->setZoomOutBehavior( mWidgetPointCloudSymbol->zoomOutBehavior() );
+  renderer->setOverviewSwitchingScale( mWidgetPointCloudSymbol->overviewSwitchingScale() );
   return renderer;
 }
 
@@ -91,7 +95,7 @@ void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   QgsAbstract3DRenderer *r = layer->renderer3D();
   QgsPointCloudLayer3DRenderer *pointCloudRenderer = nullptr;
-  if ( r && r->type() == QLatin1String( "pointcloud" ) )
+  if ( r && r->type() == "pointcloud"_L1 )
   {
     pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( r );
   }
@@ -138,7 +142,7 @@ bool QgsPointCloudLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsPointCloudLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }
 
 bool QgsPointCloudLayer3DRendererWidgetFactory::supportsStyleDock() const

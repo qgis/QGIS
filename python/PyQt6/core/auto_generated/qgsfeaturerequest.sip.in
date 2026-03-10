@@ -68,9 +68,8 @@ Examples:
 #include "qgsfeaturerequest.h"
 %End
   public:
-
     class OrderByClause
-{
+    {
 %Docstring(signature="appended")
 The OrderByClause class represents an order by clause for a
 QgsFeatureRequest.
@@ -96,11 +95,7 @@ will be respected for the features returned by the iterator but
 internally all features will be requested from the provider.
 %End
 
-%TypeHeaderCode
-#include "qgsfeaturerequest.h"
-%End
       public:
-
         OrderByClause( const QString &expression, bool ascending = true );
 %Docstring
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
@@ -197,17 +192,13 @@ Dumps the content to an SQL equivalent
 
 
     class OrderBy
-{
+    {
 %Docstring(signature="appended")
 Represents a list of OrderByClauses, with the most important first and
 the least important last.
 %End
 
-%TypeHeaderCode
-#include "qgsfeaturerequest.h"
-%End
       public:
-
         OrderBy();
 %Docstring
 Create a new empty order by
@@ -1061,7 +1052,6 @@ iterator to check if it should be canceled, if set.
 %End
 
   protected:
-
 
 
 

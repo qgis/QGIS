@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -30,11 +31,14 @@
 #include <QPalette>
 #include <QProgressBar>
 #include <QStackedWidget>
+#include <QString>
 #include <QTimer>
 #include <QToolButton>
 #include <QWidget>
 
 #include "moc_qgsmessagebar.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
   : QFrame( parent )
@@ -54,13 +58,15 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
-  mCountStyleSheet = QString( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
-                              " border-radius: 2px; background: rgba(0, 0, 0, 0);"
-                              " image: url(:/images/themes/default/%1) }"
-                              "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
+  mCountStyleSheet = QString(
+    "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
+    " border-radius: 2px; background: rgba(0, 0, 0, 0);"
+    " image: url(:/images/themes/default/%1) }"
+    "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }"
+  );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
-  mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.svg"_L1 ) );
+  mCountProgress->setObjectName( u"mCountdown"_s );
   const int barWidth = std::max( 25.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.25 );
   const int barHeight = std::max( 14.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.7 );
   mCountProgress->setFixedSize( barWidth, barHeight );
@@ -71,19 +77,19 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addWidget( mCountProgress, 0, 0, 1, 1 );
 
   mItemCount = new QLabel( this );
-  mItemCount->setObjectName( QStringLiteral( "mItemCount" ) );
+  mItemCount->setObjectName( u"mItemCount"_s );
   mItemCount->setToolTip( tr( "Remaining messages" ) );
   mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mLayout->addWidget( mItemCount, 0, 2, 1, 1 );
 
   mCloseMenu = new QMenu( this );
-  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
+  mCloseMenu->setObjectName( u"mCloseMenu"_s );
   mActionCloseAll = new QAction( tr( "Close All" ), this );
   mCloseMenu->addAction( mActionCloseAll );
   connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 
   mCloseBtn = new QToolButton( this );
-  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
+  mCloseMenu->setObjectName( u"mCloseMenu"_s );
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( QgsGuiUtils::scaleIconSize( 44 ) );
   mCloseBtn->setStyleSheet(
@@ -91,7 +97,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
     "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }"
   );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
-  mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+  mCloseBtn->setIcon( QgsApplication::getThemeIcon( u"/mIconClose.svg"_s ) );
 
   const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
   mCloseBtn->setIconSize( QSize( iconSize, iconSize ) );
@@ -119,12 +125,12 @@ void QgsMessageBar::mousePressEvent( QMouseEvent *e )
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerContinue.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.svg"_L1 ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.svg"_L1 ) );
     }
   }
 }
@@ -225,8 +231,7 @@ int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::NoLevel:
     {
-      const QgsSettings settings;
-      return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+      return QgsSettingsRegistryGui::settingsMessageTimeout->value();
     }
 
     case Qgis::MessageLevel::Warning:
@@ -310,7 +315,7 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   // user can get them back easier.
   QString formattedTitle;
   if ( !item->title().isEmpty() && !item->text().isEmpty() )
-    formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
+    formattedTitle = u"%1 : %2"_s.arg( item->title(), item->text() );
   else if ( !item->title().isEmpty() )
     formattedTitle = item->title();
   else if ( !item->text().isEmpty() )
@@ -358,7 +363,7 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
   QToolButton *showMoreButton = new QToolButton();
   QAction *act = new QAction( showMoreButton );
   act->setText( tr( "Show more" ) );
-  showMoreButton->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+  showMoreButton->setStyleSheet( u"background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;"_s );
   showMoreButton->setCursor( Qt::PointingHandCursor );
   showMoreButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMoreButton->addAction( act );
@@ -371,13 +376,7 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
     duration = defaultMessageTimeout( level );
   }
 
-  QgsMessageBarItem *item = new QgsMessageBarItem(
-    title,
-    text,
-    showMoreButton,
-    level,
-    duration
-  );
+  QgsMessageBarItem *item = new QgsMessageBarItem( title, text, showMoreButton, level, duration );
   pushItem( item );
 }
 
@@ -434,7 +433,7 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.svg"_L1 ) );
   mCountProgress->setVisible( false );
 }
 

@@ -25,7 +25,11 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgssourcefieldsproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -38,11 +42,11 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   //button appearance
-  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
-  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
-  mSaveLayerEditsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAllEdits.svg" ) ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( u"/mActionNewAttribute.svg"_s ) );
+  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( u"/mActionDeleteAttribute.svg"_s ) );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ) );
+  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( u"/mActionCalculateField.svg"_s ) );
+  mSaveLayerEditsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionSaveAllEdits.svg"_s ) );
 
   //button signals
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::toggleEditing );
@@ -132,10 +136,9 @@ void QgsSourceFieldsProperties::updateExpression()
   const QString exp = mLayer->expressionField( index );
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
-  QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, u"generic"_s, context );
 
   if ( dlg.exec() )
   {
@@ -224,7 +227,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     expressionWidget->setLayout( new QHBoxLayout );
     QToolButton *editExpressionButton = new QToolButton;
     editExpressionButton->setProperty( "Index", idx );
-    editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+    editExpressionButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
     connect( editExpressionButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::updateExpression );
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
@@ -237,15 +240,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  QList<int> notEditableCols = QList<int>()
-                               << AttrIdCol
-                               << AttrNameCol
-                               << AttrAliasCol
-                               << AttrTypeCol
-                               << AttrTypeNameCol
-                               << AttrLengthCol
-                               << AttrPrecCol
-                               << AttrCommentCol;
+  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol;
 
   const auto constNotEditableCols = notEditableCols;
   for ( const int i : constNotEditableCols )
@@ -293,10 +288,15 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
+  applyToLayer( mLayer );
+}
+
+void QgsSourceFieldsProperties::applyToLayer( QgsVectorLayer *layer )
+{
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     const int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
-    Qgis::FieldConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
+    Qgis::FieldConfigurationFlags flags = layer->fieldConfigurationFlags( idx );
 
     QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
     if ( cb )
@@ -309,7 +309,7 @@ void QgsSourceFieldsProperties::apply()
         const bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
         flags.setFlag( flag, active );
       }
-      mLayer->setFieldConfigurationFlags( idx, flags );
+      layer->setFieldConfigurationFlags( idx, flags );
     }
   }
 }

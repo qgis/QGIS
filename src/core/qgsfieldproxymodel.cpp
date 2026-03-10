@@ -18,7 +18,11 @@
 #include "qgsfieldmodel.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgsfieldproxymodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -52,7 +56,7 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
       // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
       // This enables them to be bulk field-calculated when a user needs to, but hides them by default
       // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
-      if ( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ) ).toString() == QLatin1String( "Hidden" ) )
+      if ( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ) ).toString() == "Hidden"_L1 )
         return true;
 
       return !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ) ).toBool();
@@ -76,7 +80,6 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
         return false;
       }
     }
-
   }
   return false; // avoid warnings
 }
@@ -118,16 +121,16 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( !ok )
     return true;
 
-  if ( ( mFilters.testFlag( String ) && type == QMetaType::Type::QString ) ||
-       ( mFilters.testFlag( LongLong ) && type == QMetaType::Type::LongLong ) ||
-       ( mFilters.testFlag( Int ) && type == QMetaType::Type::Int ) ||
-       ( mFilters.testFlag( Double ) && type == QMetaType::Type::Double ) ||
-       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDate ) ||
-       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDateTime ) ||
-       ( mFilters.testFlag( DateTime ) && type == QMetaType::Type::QDateTime ) ||
-       ( mFilters.testFlag( Time ) && type == QMetaType::Type::QTime ) ||
-       ( mFilters.testFlag( Binary ) && type == QMetaType::Type::QByteArray ) ||
-       ( mFilters.testFlag( Boolean ) && type == QMetaType::Type::Bool ) )
+  if ( ( mFilters.testFlag( String ) && type == QMetaType::Type::QString )
+       || ( mFilters.testFlag( LongLong ) && type == QMetaType::Type::LongLong )
+       || ( mFilters.testFlag( Int ) && type == QMetaType::Type::Int )
+       || ( mFilters.testFlag( Double ) && type == QMetaType::Type::Double )
+       || ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDate )
+       || ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDateTime )
+       || ( mFilters.testFlag( DateTime ) && type == QMetaType::Type::QDateTime )
+       || ( mFilters.testFlag( Time ) && type == QMetaType::Type::QTime )
+       || ( mFilters.testFlag( Binary ) && type == QMetaType::Type::QByteArray )
+       || ( mFilters.testFlag( Boolean ) && type == QMetaType::Type::Bool ) )
     return true;
 
   return false;

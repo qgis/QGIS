@@ -22,16 +22,22 @@
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
 #include "qgsmaplayer.h"
 #include "qgspoint.h"
 #include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 #include "qgswindow3dengine.h"
 
 #include <QKeyEvent>
+#include <QString>
 
 #include "moc_qgs3dmaptoolmeasureline.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
@@ -105,13 +111,8 @@ void Qgs3DMapToolMeasureLine::updateSettings()
 {
   if ( mRubberBand )
   {
-    const QgsSettings settings;
-    const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-    const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-    const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-
     mRubberBand->setWidth( 3 );
-    mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+    mRubberBand->setColor( QgsSettingsRegistryGui::settingsDefaultMeasureColor->value() );
   }
 }
 

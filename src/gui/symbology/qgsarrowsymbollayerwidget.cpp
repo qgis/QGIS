@@ -18,8 +18,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
+#include <QString>
 
 #include "moc_qgsarrowsymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
@@ -53,7 +56,7 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidge
 
 void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
+  if ( !layer || layer->layerType() != "ArrowLine"_L1 )
   {
     return;
   }

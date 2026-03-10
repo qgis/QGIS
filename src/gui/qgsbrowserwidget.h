@@ -191,6 +191,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QStringList mDisabledDataItemsKeys;
 
     friend class QgsBrowserDockWidget;
+    friend class TestQgsCustomization;
 };
 
 #endif // QGSBROWSERWIDGET_H

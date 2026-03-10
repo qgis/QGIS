@@ -22,9 +22,8 @@ __copyright__ = "(C) 2016, Alexander Bruy"
 import os
 import warnings
 
-from qgis.core import QgsProject, QgsReferencedPointXY, QgsPointXY
+from qgis.core import QgsPointXY, QgsProject, QgsReferencedPointXY
 from qgis.PyQt import uic
-
 from qgis.utils import iface
 
 from processing.gui.PointMapTool import PointMapTool
@@ -39,7 +38,6 @@ with warnings.catch_warnings():
 
 
 class PointSelectionPanel(BASE, WIDGET):
-
     def __init__(self, dialog, default=None):
         super().__init__(None)
         self.setupUi(self)

@@ -9,7 +9,9 @@
 
 
 
-class QgsPolyhedralSurface: QgsSurface
+
+
+class QgsPolyhedralSurface : QgsSurface
 {
 %Docstring(signature="appended")
 Polyhedral surface geometry type.
@@ -77,6 +79,8 @@ Creates a polyhedral surface from a multiPolygon.
 
 
     virtual double area() const /HoldGIL/;
+
+    virtual double area3D() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 

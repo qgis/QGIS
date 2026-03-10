@@ -33,11 +33,7 @@ class CORE_EXPORT QgsStacAsset
 {
   public:
     //! Constructor
-    QgsStacAsset( const QString &href,
-                  const QString &title,
-                  const QString &description,
-                  const QString &mediaType,
-                  const QStringList &roles );
+    QgsStacAsset( const QString &href, const QString &title, const QString &description, const QString &mediaType, const QStringList &roles );
 
     //! Returns the URI to the asset object
     QString href() const;

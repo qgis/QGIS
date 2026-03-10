@@ -22,8 +22,7 @@
 QgsMaskPaintEngine::QgsMaskPaintEngine( bool usePathStroker )
   : QPaintEngine( QPaintEngine::AllFeatures )
   , mUsePathStroker( usePathStroker )
-{
-}
+{}
 
 QPainterPath QgsMaskPaintEngine::maskPainterPath() const
 {

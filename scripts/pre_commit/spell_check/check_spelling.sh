@@ -26,7 +26,7 @@
 EXCLUDE_SCRIPT_LIST='(\.(xml|sip|pl|sh|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/debian/build/))$'
 
 # always exclude these files
-EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/cpt-city-qgis-min/.*|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|doc/api_break.dox|NEWS.md|python/.*/class_map.yaml|python/.*/auto_(additions|generated)/.*)$'
+EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/data/.*|resources/cpt-city-qgis-min/.*|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|doc/api_break.dox|NEWS.md|python/.*/class_map.yaml|python/.*/auto_(additions|generated)/.*)$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/pre_commit/spell_check
 
@@ -201,13 +201,13 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
         # also make error small case and escape special chars: () |
         ERRORSMALLCASE=$(echo ${ERRORNOCOLOR,,} |${GP}sed -r 's/\(/\\(/g' | ${GP}sed -r 's/\)/\\)/g' | ${GP}sed -r 's/\|/\\|/g' )
         if [[ ! "${ERRORSMALLCASE}" =~ $IGNORECASE_INWORD ]]; then
-         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" ${DIR}/spelling.dat) ]]; then
            PREVCHAR=${ERROR::1}
            # remove first character
            ERRORSMALLCASE=${ERRORSMALLCASE#?}
            ERROR=${ERROR#?}
          fi
-         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" ${DIR}/spelling.dat) ]]; then
            NEXTCHAR=${ERROR:${#ERROR}-1:1}
            # remove last character
            ERRORSMALLCASE=${ERRORSMALLCASE::-1}

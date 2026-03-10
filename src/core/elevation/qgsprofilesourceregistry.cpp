@@ -17,12 +17,14 @@
 #include "qgsabstractprofilesource.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsprofilesourceregistry.cpp"
 
-QgsProfileSourceRegistry::QgsProfileSourceRegistry()
-{
+using namespace Qt::StringLiterals;
 
-}
+QgsProfileSourceRegistry::QgsProfileSourceRegistry()
+{}
 
 QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
 {
@@ -36,7 +38,6 @@ QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() c
 
 bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {
-
   if ( mSources.contains( profileSource ) )
   {
     return false;
@@ -46,7 +47,7 @@ bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *
   {
     if ( source->profileSourceId() == profileSource->profileSourceId() )
     {
-      QgsDebugError( QStringLiteral( "A profile source with the same ID (%1) already exists" ).arg( profileSource->profileSourceId() ) );
+      QgsDebugError( u"A profile source with the same ID (%1) already exists"_s.arg( profileSource->profileSourceId() ) );
       return false;
     }
   }

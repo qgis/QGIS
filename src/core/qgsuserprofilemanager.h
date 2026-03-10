@@ -42,7 +42,6 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * User profile manager used to manage user profiles for the instance of QGIS.
      */
@@ -229,7 +228,6 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void profilesChanged();
 
   private:
-
     bool mWatchProfiles = false;
     std::unique_ptr<QFileSystemWatcher> mWatcher;
 

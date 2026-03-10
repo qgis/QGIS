@@ -37,9 +37,13 @@
 #include <QDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QStandardPaths>
+#include <QString>
 #include <QTimer>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 bool QgsXmlSchemaAnalyzer::readAttributesFromSchema(
   const QString &translatedProviderName,
@@ -60,15 +64,16 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchema(
   geometryMaybeMissing = false;
   metadataRetrievalCanceled = false;
   bool mayTryWithGMLAS = false;
-  bool ret = readAttributesFromSchemaWithoutGMLAS(
-    translatedProviderName, sharedData, schemaDoc, prefixedTypename,
-    geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS
-  );
+  bool ret = readAttributesFromSchemaWithoutGMLAS( translatedProviderName, sharedData, schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
 
   // Only consider GMLAS / ComplexFeatures mode if FeatureMode=DEFAULT and there
   // is no edition capabilities, or if explicitly requested.
   // Cf https://github.com/qgis/QGIS/pull/61493
-  if ( ( ( sharedData->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::Default && ( capabilities & Qgis::VectorProviderCapability::AddFeatures ) == 0 ) || sharedData->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::ComplexFeatures ) && singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
+  if ( ( ( sharedData->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::Default && ( capabilities & Qgis::VectorProviderCapability::AddFeatures ) == 0 )
+         || sharedData->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::ComplexFeatures )
+       && singleLayerContext
+       && mayTryWithGMLAS
+       && GDALGetDriverByName( "GMLAS" ) )
   {
     QString geometryAttributeGMLAS;
     QgsFields fieldsGMLAS;
@@ -94,39 +99,54 @@ static QMetaType::Type getVariantTypeFromXML( const QString &xmlType )
 {
   QMetaType::Type attributeType = QMetaType::Type::UnknownType;
 
-  const QString type = QString( xmlType )
-                         .replace( QLatin1String( "xs:" ), QString() )
-                         .replace( QLatin1String( "xsd:" ), QString() );
+  const QString type = QString( xmlType ).replace( "xs:"_L1, QString() ).replace( "xsd:"_L1, QString() );
 
-  if ( type.compare( QLatin1String( "string" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "token" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "NMTOKEN" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "NCName" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "QName" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "ID" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "IDREF" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "anyURI" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "anySimpleType" ), Qt::CaseInsensitive ) == 0 )
+  if ( type.compare( "string"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "token"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "NMTOKEN"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "NCName"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "QName"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "ID"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "IDREF"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "anyURI"_L1, Qt::CaseInsensitive ) == 0
+       || type.compare( "anySimpleType"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::QString;
   }
-  else if ( type.compare( QLatin1String( "boolean" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "boolean"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::Bool;
   }
-  else if ( type.compare( QLatin1String( "double" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "float" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "decimal" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "double"_L1, Qt::CaseInsensitive ) == 0 || type.compare( "float"_L1, Qt::CaseInsensitive ) == 0 || type.compare( "decimal"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::Double;
   }
-  else if ( type.compare( QLatin1String( "byte" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "unsignedByte" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "int" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "short" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "unsignedShort" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "byte"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "unsignedByte"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "int"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "short"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "unsignedShort"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::Int;
   }
-  else if ( type.compare( QLatin1String( "long" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "unsignedLong" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "integer" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "negativeInteger" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "nonNegativeInteger" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "positiveInteger" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "long"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "unsignedLong"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "integer"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "negativeInteger"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "nonNegativeInteger"_L1, Qt::CaseInsensitive ) == 0
+            || type.compare( "positiveInteger"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::LongLong;
   }
-  else if ( type.compare( QLatin1String( "date" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "gYear" ), Qt::CaseInsensitive ) == 0 || type.compare( QLatin1String( "gYearMonth" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "date"_L1, Qt::CaseInsensitive ) == 0 || type.compare( "gYear"_L1, Qt::CaseInsensitive ) == 0 || type.compare( "gYearMonth"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::QDate;
   }
-  else if ( type.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "time"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::QTime;
   }
-  else if ( type.compare( QLatin1String( "dateTime" ), Qt::CaseInsensitive ) == 0 )
+  else if ( type.compare( "dateTime"_L1, Qt::CaseInsensitive ) == 0 )
   {
     attributeType = QMetaType::Type::QDateTime;
   }
@@ -139,9 +159,7 @@ struct QgsXmlSchemaAnalyzerGMLASErrorHandlerUserData
     QString translatedProviderName;
 };
 
-static void CPL_STDCALL QgsXmlSchemaAnalyzerGMLASErrorHandler(
-  CPLErr eErr, CPLErrorNum /*eErrorNum*/, const char *pszErrorMsg
-)
+static void CPL_STDCALL QgsXmlSchemaAnalyzerGMLASErrorHandler( CPLErr eErr, CPLErrorNum /*eErrorNum*/, const char *pszErrorMsg )
 {
   // Silence harmless warnings like "GeographicalName_pronunciation_PronunciationOfName_pronunciationSoundLink_nilReason identifier truncated to geographicalname_pronunciation_pronunciationofname_pronunciatio"
   if ( !( eErr == CE_Warning && strstr( pszErrorMsg, " truncated to " ) ) )
@@ -155,11 +173,11 @@ static void CPL_STDCALL QgsXmlSchemaAnalyzerGMLASErrorHandler(
     }
     else if ( eErr == CE_Debug )
     {
-      QgsDebugMsgLevel( QStringLiteral( "GMLAS debug msg: %1" ).arg( pszErrorMsg ), 5 );
+      QgsDebugMsgLevel( u"GMLAS debug msg: %1"_s.arg( pszErrorMsg ), 5 );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "GMLAS eErr=%1, msg=%2" ).arg( eErr ).arg( pszErrorMsg ), 2 );
+      QgsDebugMsgLevel( u"GMLAS eErr=%1, msg=%2"_s.arg( eErr ).arg( pszErrorMsg ), 2 );
     }
   }
 }
@@ -180,9 +198,9 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   geomType = Qgis::WkbType::NoGeometry;
   geometryMaybeMissing = false;
 
-  QUrl url( sharedData->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
+  QUrl url( sharedData->mURI.requestUrl( u"DescribeFeatureType"_s ) );
   QUrlQuery query( url );
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), prefixedTypename );
+  query.addQueryItem( u"TYPENAME"_s, prefixedTypename );
   url.setQuery( query );
 
   // If a previous attempt with the same URL failed because of cancellation
@@ -222,14 +240,14 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
 
   const auto downloaderLambda = [pszSchemaTempFilename, &feedback, &hDS, &errorMsg, &translatedProviderName]() {
     QgsCPLHTTPFetchOverrider cplHTTPFetchOverrider( QString(), &feedback );
-    QgsSetCPLHTTPFetchOverriderInitiatorClass( cplHTTPFetchOverrider, QStringLiteral( "WFSProviderDownloadSchema" ) )
+    QgsSetCPLHTTPFetchOverriderInitiatorClass( cplHTTPFetchOverrider, u"WFSProviderDownloadSchema"_s )
 
       char **papszOpenOptions
       = nullptr;
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "XSD", pszSchemaTempFilename );
 
     QgsSettings settings;
-    QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+    QString cacheDirectory = settings.value( u"cache/directory"_s ).toString();
     if ( cacheDirectory.isEmpty() )
       cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
     if ( !cacheDirectory.endsWith( QDir::separator() ) )
@@ -237,43 +255,45 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       cacheDirectory.push_back( QDir::separator() );
     }
     // Must be kept in sync with QgsOptions::clearCache()
-    cacheDirectory += QLatin1String( "gmlas_xsd_cache" );
-    QgsDebugMsgLevel( QStringLiteral( "cacheDirectory = %1" ).arg( cacheDirectory ), 4 );
+    cacheDirectory += "gmlas_xsd_cache"_L1;
+    QgsDebugMsgLevel( u"cacheDirectory = %1"_s.arg( cacheDirectory ), 4 );
     char *pszEscaped = CPLEscapeString( cacheDirectory.toStdString().c_str(), -1, CPLES_XML );
-    QString config = QStringLiteral( "<Configuration><SchemaCache><Directory>%1</Directory></SchemaCache>"
-                                     "<IgnoredXPaths>"
-                                     "    <WarnIfIgnoredXPathFoundInDocInstance>true</WarnIfIgnoredXPathFoundInDocInstance>"
-                                     "    <Namespaces>"
-                                     "        <Namespace prefix=\"gml\" uri=\"http://www.opengis.net/gml\"/>"
-                                     "        <Namespace prefix=\"gml32\" uri=\"http://www.opengis.net/gml/3.2\"/>"
-                                     "        <Namespace prefix=\"swe\" uri=\"http://www.opengis.net/swe/2.0\"/>"
-                                     "    </Namespaces>"
-                                     "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml:boundedBy</XPath>"
-                                     "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml32:boundedBy</XPath>"
-                                     "    <XPath>gml:priorityLocation</XPath>"
-                                     "    <XPath>gml32:priorityLocation</XPath>"
-                                     "    <XPath>gml32:descriptionReference/@owns</XPath>"
-                                     "    <XPath>@xlink:show</XPath>"
-                                     "    <XPath>@xlink:type</XPath>"
-                                     "    <XPath>@xlink:role</XPath>"
-                                     "    <XPath>@xlink:arcrole</XPath>"
-                                     "    <XPath>@xlink:actuate</XPath>"
-                                     "    <XPath>@gml:remoteSchema</XPath>"
-                                     "    <XPath>@gml32:remoteSchema</XPath>"
-                                     "    <XPath>swe:Quantity/swe:extension</XPath>"
-                                     "    <XPath>swe:Quantity/@referenceFrame</XPath>"
-                                     "    <XPath>swe:Quantity/@axisID</XPath>"
-                                     "    <XPath>swe:Quantity/@updatable</XPath>"
-                                     "    <XPath>swe:Quantity/@optional</XPath>"
-                                     "    <XPath>swe:Quantity/@id</XPath>"
-                                     "    <XPath>swe:Quantity/swe:identifier</XPath>"
-                                     "    <!-- <XPath>swe:Quantity/@definition</XPath> -->"
-                                     "    <XPath>swe:Quantity/swe:label</XPath>"
-                                     "    <XPath>swe:Quantity/swe:nilValues</XPath>"
-                                     "    <XPath>swe:Quantity/swe:constraint</XPath>"
-                                     "    <XPath>swe:Quantity/swe:quality</XPath>"
-                                     "</IgnoredXPaths>"
-                                     "</Configuration>" )
+    QString config = QStringLiteral(
+                       "<Configuration><SchemaCache><Directory>%1</Directory></SchemaCache>"
+                       "<IgnoredXPaths>"
+                       "    <WarnIfIgnoredXPathFoundInDocInstance>true</WarnIfIgnoredXPathFoundInDocInstance>"
+                       "    <Namespaces>"
+                       "        <Namespace prefix=\"gml\" uri=\"http://www.opengis.net/gml\"/>"
+                       "        <Namespace prefix=\"gml32\" uri=\"http://www.opengis.net/gml/3.2\"/>"
+                       "        <Namespace prefix=\"swe\" uri=\"http://www.opengis.net/swe/2.0\"/>"
+                       "    </Namespaces>"
+                       "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml:boundedBy</XPath>"
+                       "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml32:boundedBy</XPath>"
+                       "    <XPath>gml:priorityLocation</XPath>"
+                       "    <XPath>gml32:priorityLocation</XPath>"
+                       "    <XPath>gml32:descriptionReference/@owns</XPath>"
+                       "    <XPath>@xlink:show</XPath>"
+                       "    <XPath>@xlink:type</XPath>"
+                       "    <XPath>@xlink:role</XPath>"
+                       "    <XPath>@xlink:arcrole</XPath>"
+                       "    <XPath>@xlink:actuate</XPath>"
+                       "    <XPath>@gml:remoteSchema</XPath>"
+                       "    <XPath>@gml32:remoteSchema</XPath>"
+                       "    <XPath>swe:Quantity/swe:extension</XPath>"
+                       "    <XPath>swe:Quantity/@referenceFrame</XPath>"
+                       "    <XPath>swe:Quantity/@axisID</XPath>"
+                       "    <XPath>swe:Quantity/@updatable</XPath>"
+                       "    <XPath>swe:Quantity/@optional</XPath>"
+                       "    <XPath>swe:Quantity/@id</XPath>"
+                       "    <XPath>swe:Quantity/swe:identifier</XPath>"
+                       "    <!-- <XPath>swe:Quantity/@definition</XPath> -->"
+                       "    <XPath>swe:Quantity/swe:label</XPath>"
+                       "    <XPath>swe:Quantity/swe:nilValues</XPath>"
+                       "    <XPath>swe:Quantity/swe:constraint</XPath>"
+                       "    <XPath>swe:Quantity/swe:quality</XPath>"
+                       "</IgnoredXPaths>"
+                       "</Configuration>"
+    )
                        .arg( pszEscaped );
     CPLFree( pszEscaped );
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
@@ -303,7 +323,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       const QWidgetList widgets = QgsApplication::topLevelWidgets();
       for ( QWidget *widget : widgets )
       {
-        if ( widget->objectName() == QLatin1String( "QgisApp" ) )
+        if ( widget->objectName() == "QgisApp"_L1 )
         {
           parentWidget = widget;
           break;
@@ -315,11 +335,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   {
     // Display an information box if within 2 seconds, the schema has not
     // been analyzed.
-    box = new QMessageBox(
-      QMessageBox::Information, QObject::tr( "Information" ), QObject::tr( "Download of XML schemas to which the WFS refers in progress..." ),
-      QMessageBox::Cancel,
-      parentWidget
-    );
+    box = new QMessageBox( QMessageBox::Information, QObject::tr( "Information" ), QObject::tr( "Download of XML schemas to which the WFS refers in progress..." ), QMessageBox::Cancel, parentWidget );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 9, 0 )
     QObject::connect( box, &QDialog::rejected, &feedback, &QgsFeedback::cancel );
 #else
@@ -328,7 +344,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
 
     QgsSettings s;
     const double settingDefaultValue = 2.0;
-    const QString settingName = QStringLiteral( "qgis/wfsDownloadSchemasPopupTimeout" );
+    const QString settingName = u"qgis/wfsDownloadSchemasPopupTimeout"_s;
     if ( !s.contains( settingName ) )
     {
       s.setValue( settingName, settingDefaultValue );
@@ -383,7 +399,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( !hOtherMetadataLayer )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_other_metadata layer" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find _ogr_other_metadata layer"_s, 4 );
     return false;
   }
 
@@ -393,7 +409,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( keyIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find key field in _ogr_other_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find key field in _ogr_other_metadata"_s, 4 );
     return false;
   }
 
@@ -401,31 +417,25 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( valueIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find value field in _ogr_other_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find value field in _ogr_other_metadata"_s, 4 );
     return false;
   }
 
   std::map<int, QPair<QString, QString>> mapPrefixIdxToPrefixAndUri;
   while ( true )
   {
-    gdal::ogr_feature_unique_ptr hFeatureOtherMD(
-      OGR_L_GetNextFeature( hOtherMetadataLayer )
-    );
+    gdal::ogr_feature_unique_ptr hFeatureOtherMD( OGR_L_GetNextFeature( hOtherMetadataLayer ) );
     if ( !hFeatureOtherMD )
       break;
 
-    const QString key = QString::fromUtf8(
-      OGR_F_GetFieldAsString( hFeatureOtherMD.get(), keyIdx )
-    );
-    const QString value = QString::fromUtf8(
-      OGR_F_GetFieldAsString( hFeatureOtherMD.get(), valueIdx )
-    );
+    const QString key = QString::fromUtf8( OGR_F_GetFieldAsString( hFeatureOtherMD.get(), keyIdx ) );
+    const QString value = QString::fromUtf8( OGR_F_GetFieldAsString( hFeatureOtherMD.get(), valueIdx ) );
 
-    if ( key.startsWith( QLatin1String( "namespace_prefix_" ) ) )
+    if ( key.startsWith( "namespace_prefix_"_L1 ) )
     {
       mapPrefixIdxToPrefixAndUri[key.mid( int( strlen( "namespace_prefix_" ) ) ).toInt()].first = value;
     }
-    else if ( key.startsWith( QLatin1String( "namespace_uri_" ) ) )
+    else if ( key.startsWith( "namespace_uri_"_L1 ) )
     {
       mapPrefixIdxToPrefixAndUri[key.mid( int( strlen( "namespace_uri_" ) ) ).toInt()].second = value;
     }
@@ -435,7 +445,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     if ( !kv.second.first.isEmpty() && !kv.second.second.isEmpty() )
     {
       sharedData->mNamespacePrefixToURIMap[kv.second.first] = kv.second.second;
-      QgsDebugMsgLevel( QStringLiteral( "%1 -> %2" ).arg( kv.second.first ).arg( kv.second.second ), 4 );
+      QgsDebugMsgLevel( u"%1 -> %2"_s.arg( kv.second.first ).arg( kv.second.second ), 4 );
     }
   }
 
@@ -444,43 +454,37 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( !hLayersMetadata )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_layers_metadata layer" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find _ogr_layers_metadata layer"_s, 4 );
     return false;
   }
   OGR_L_SetAttributeFilter( hLayersMetadata, ( "layer_xpath = " + QgsSqliteUtils::quotedString( prefixedTypename ).toStdString() ).c_str() );
   gdal::ogr_feature_unique_ptr hFeatureLayersMD( OGR_L_GetNextFeature( hLayersMetadata ) );
-  if ( !hFeatureLayersMD && !prefixedTypename.contains( QLatin1Char( ':' ) ) )
+  if ( !hFeatureLayersMD && !prefixedTypename.contains( ':'_L1 ) )
   {
     // In OAPIF use case, we don't have a typename prefixed with a namespace prefix
-    OGR_L_SetAttributeFilter( hLayersMetadata, ( "layer_xpath LIKE " + QgsSqliteUtils::quotedString( QStringLiteral( "%:" ) + prefixedTypename ).toStdString() ).c_str() );
+    OGR_L_SetAttributeFilter( hLayersMetadata, ( "layer_xpath LIKE " + QgsSqliteUtils::quotedString( u"%:"_s + prefixedTypename ).toStdString() ).c_str() );
     OGR_L_ResetReading( hLayersMetadata );
     hFeatureLayersMD.reset( OGR_L_GetNextFeature( hLayersMetadata ) );
   }
   if ( !hFeatureLayersMD )
   {
-    QgsDebugMsgLevel(
-      QStringLiteral( "Cannot find feature with layer_xpath = %1 in _ogr_layers_metadata" ).arg( prefixedTypename ), 4
-    );
+    QgsDebugMsgLevel( u"Cannot find feature with layer_xpath = %1 in _ogr_layers_metadata"_s.arg( prefixedTypename ), 4 );
     return false;
   }
   const int fldIdx = OGR_F_GetFieldIndex( hFeatureLayersMD.get(), "layer_name" );
   if ( fldIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find layer_name field in _ogr_layers_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find layer_name field in _ogr_layers_metadata"_s, 4 );
     return false;
   }
-  const QString layerName = QString::fromUtf8(
-    OGR_F_GetFieldAsString( hFeatureLayersMD.get(), fldIdx )
-  );
+  const QString layerName = QString::fromUtf8( OGR_F_GetFieldAsString( hFeatureLayersMD.get(), fldIdx ) );
 
-  OGRLayerH hLayer = GDALDatasetGetLayerByName(
-    hDS, layerName.toStdString().c_str()
-  );
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, layerName.toStdString().c_str() );
   if ( !hLayer )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find %& layer" ).arg( layerName ), 4 );
+    QgsDebugMsgLevel( u"Cannot find %& layer"_s.arg( layerName ), 4 );
     return false;
   }
 
@@ -489,7 +493,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( !hFieldsMetadata )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_fields_metadata layer" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find _ogr_fields_metadata layer"_s, 4 );
     return false;
   }
   OGR_L_SetAttributeFilter( hFieldsMetadata, ( "layer_name = " + QgsSqliteUtils::quotedString( layerName ).toStdString() ).c_str() );
@@ -500,7 +504,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldNameIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_name field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_name field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -508,7 +512,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldXPathIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_xpath field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_xpath field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -516,7 +520,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldIsListIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_is_list field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_is_list field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -524,7 +528,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldMinOccursIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_min_occurs field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_min_occurs field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -532,7 +536,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldTypeIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_type field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_type field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -540,7 +544,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( fieldCategoryIdx < 0 )
   {
     // should not happen
-    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_category field in _ogr_fields_metadata" ), 4 );
+    QgsDebugMsgLevel( u"Cannot find field_category field in _ogr_fields_metadata"_s, 4 );
     return false;
   }
 
@@ -563,26 +567,22 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
 
     // For fields that should be linked to other tables and that we will
     // get as JSON, remove the "_pkid" suffix from the name created by GMLAS.
-    if ( EQUAL( fieldCategory, "PATH_TO_CHILD_ELEMENT_WITH_LINK" ) && fieldName.endsWith( QLatin1String( "_pkid" ) ) )
+    if ( EQUAL( fieldCategory, "PATH_TO_CHILD_ELEMENT_WITH_LINK" ) && fieldName.endsWith( "_pkid"_L1 ) )
     {
       fieldName.resize( fieldName.size() - int( strlen( "_pkid" ) ) );
     }
 
-    QgsDebugMsgLevel(
-      QStringLiteral( "field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 5
-    );
-    if ( EQUAL( fieldCategory, "REGULAR" ) && ( EQUAL( fieldType, "geometry" ) || fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) ) )
+    QgsDebugMsgLevel( u"field %1: xpath=%2 is_list=%3 type=%4 category=%5"_s.arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 5 );
+    if ( EQUAL( fieldCategory, "REGULAR" ) && ( EQUAL( fieldType, "geometry" ) || fieldName.endsWith( "_abstractgeometricprimitive"_L1 ) ) )
     {
       if ( geometryAttribute.isEmpty() )
       {
-        geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
-          OGR_L_GetGeomType( hLayer )
-        );
+        geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
         if ( geomType != Qgis::WkbType::Point )
           geomType = QgsWkbTypes::multiType( geomType );
 
         QString qFieldXPath = QString::fromUtf8( fieldXPath );
-        if ( fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) && strstr( fieldXPath, "/gml:Point" ) )
+        if ( fieldName.endsWith( "_abstractgeometricprimitive"_L1 ) && strstr( fieldXPath, "/gml:Point" ) )
         {
           // Note: this particular case will not be needed in GDAL >= 3.8.4
           // The _abstractgeometricprimitive case is for a layer like
@@ -598,7 +598,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
           //   field_max_occurs (Integer) = 1
           //   field_category (String) = REGULAR
 
-          const auto pos_gmlPoint = qFieldXPath.indexOf( QLatin1String( "/gml:Point," ) );
+          const auto pos_gmlPoint = qFieldXPath.indexOf( "/gml:Point,"_L1 );
           qFieldXPath.resize( pos_gmlPoint );
           geomType = Qgis::WkbType::Unknown;
         }
@@ -621,7 +621,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
         else if ( geomType == Qgis::WkbType::MultiLineString )
           geomType = Qgis::WkbType::MultiCurve;
 
-        QgsDebugMsgLevel( QStringLiteral( "geometry field: %1, xpath: %2" ).arg( geometryAttribute ).arg( qFieldXPath ), 4 );
+        QgsDebugMsgLevel( u"geometry field: %1, xpath: %2"_s.arg( geometryAttribute ).arg( qFieldXPath ), 4 );
         geometryMaybeMissing = OGR_F_GetFieldAsInteger( hFeatureFieldsMD.get(), fieldMinOccursIdx ) == 0;
       }
     }
@@ -635,9 +635,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       else
       {
         // unhandled:duration, base64Binary, hexBinary, anyType
-        QgsDebugMsgLevel(
-          QStringLiteral( "unhandled type for field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 3
-        );
+        QgsDebugMsgLevel( u"unhandled type for field %1: xpath=%2 is_list=%3 type=%4 category=%5"_s.arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 3 );
         fields.append( QgsField( fieldName, QMetaType::Type::QString, fieldType ) );
       }
       sharedData->mFieldNameToXPathAndIsNestedContentMap[fieldName] = QPair<QString, bool>( fieldXPath, false );
@@ -645,7 +643,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     else
     {
       QgsField field( fieldName, QMetaType::Type::QString );
-      field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "JsonEdit" ), QVariantMap() ) );
+      field.setEditorWidgetSetup( QgsEditorWidgetSetup( u"JsonEdit"_s, QVariantMap() ) );
       fields.append( field );
       sharedData->mFieldNameToXPathAndIsNestedContentMap[fieldName] = QPair<QString, bool>( fieldXPath, true );
     }
@@ -669,14 +667,14 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
   mayTryWithGMLAS = false;
 
   //get the <schema> root element
-  QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, QStringLiteral( "schema" ) );
+  QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, u"schema"_s );
   if ( schemaNodeList.length() < 1 )
   {
     errorMsg = QObject::tr( "Cannot find schema root element" );
     return false;
   }
   QDomElement schemaElement = schemaNodeList.at( 0 ).toElement();
-  sharedData->mApplicationNamespace = schemaElement.attribute( QStringLiteral( "targetNamespace" ) );
+  sharedData->mApplicationNamespace = schemaElement.attribute( u"targetNamespace"_s );
 
   // Remove the namespace on the typename
   QString unprefixedTypename = prefixedTypename;
@@ -687,31 +685,31 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
 
   // Find the element whose name is the typename that interests us, and
   // collect the correspond type.
-  QDomElement elementElement = schemaElement.firstChildElement( QStringLiteral( "element" ) );
+  QDomElement elementElement = schemaElement.firstChildElement( u"element"_s );
   QString elementTypeString;
   QDomElement complexTypeElement;
   while ( !elementElement.isNull() )
   {
-    QString name = elementElement.attribute( QStringLiteral( "name" ) );
+    QString name = elementElement.attribute( u"name"_s );
     if ( name == unprefixedTypename )
     {
-      elementTypeString = elementElement.attribute( QStringLiteral( "type" ) );
+      elementTypeString = elementElement.attribute( u"type"_s );
       if ( elementTypeString.isEmpty() )
       {
         // e.g http://afnemers.ruimtelijkeplannen.nl/afnemers2012/services?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=app:Bouwvlak
-        complexTypeElement = elementElement.firstChildElement( QStringLiteral( "complexType" ) );
+        complexTypeElement = elementElement.firstChildElement( u"complexType"_s );
       }
       break;
     }
-    elementElement = elementElement.nextSiblingElement( QStringLiteral( "element" ) );
+    elementElement = elementElement.nextSiblingElement( u"element"_s );
   }
   // Try to get a complex type whose name contains the unprefixed typename
   if ( elementTypeString.isEmpty() && complexTypeElement.isNull() )
   {
-    const QDomNodeList complexElements = schemaElement.elementsByTagName( QStringLiteral( "complexType" ) );
+    const QDomNodeList complexElements = schemaElement.elementsByTagName( u"complexType"_s );
     for ( int i = 0; i < complexElements.size(); i++ )
     {
-      if ( complexElements.at( i ).toElement().attribute( QStringLiteral( "name" ) ).contains( unprefixedTypename ) )
+      if ( complexElements.at( i ).toElement().attribute( u"name"_s ).contains( unprefixedTypename ) )
       {
         complexTypeElement = complexElements.at( i ).toElement();
         break;
@@ -729,9 +727,9 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
     QDomElement includeElement;
     while ( !iter.isNull() )
     {
-      if ( iter.tagName() == QLatin1String( "import" ) )
+      if ( iter.tagName() == "import"_L1 )
         foundImport = true;
-      else if ( iter.tagName() == QLatin1String( "include" ) )
+      else if ( iter.tagName() == "include"_L1 )
       {
         countInclude++;
         if ( countInclude == 1 )
@@ -756,8 +754,8 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
     // In that case, follow the link.
     else if ( !foundImport && countInclude == 1 )
     {
-      QString schemaLocation = includeElement.attribute( QStringLiteral( "schemaLocation" ) );
-      QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType response redirects to: %1" ).arg( schemaLocation ), 4 );
+      QString schemaLocation = includeElement.attribute( u"schemaLocation"_s );
+      QgsDebugMsgLevel( u"DescribeFeatureType response redirects to: %1"_s.arg( schemaLocation ), 4 );
 
       QgsWFSDescribeFeatureType describeFeatureType( sharedData->mURI );
       if ( !describeFeatureType.sendGET( schemaLocation, QString(), true, false ) )
@@ -794,15 +792,15 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
   if ( complexTypeElement.isNull() )
   {
     //the <complexType> element corresponding to the feature type
-    complexTypeElement = schemaElement.firstChildElement( QStringLiteral( "complexType" ) );
+    complexTypeElement = schemaElement.firstChildElement( u"complexType"_s );
     while ( !complexTypeElement.isNull() )
     {
-      QString name = complexTypeElement.attribute( QStringLiteral( "name" ) );
+      QString name = complexTypeElement.attribute( u"name"_s );
       if ( name == elementTypeString )
       {
         break;
       }
-      complexTypeElement = complexTypeElement.nextSiblingElement( QStringLiteral( "complexType" ) );
+      complexTypeElement = complexTypeElement.nextSiblingElement( u"complexType"_s );
     }
     if ( complexTypeElement.isNull() )
     {
@@ -812,7 +810,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
   }
 
   //we have the relevant <complexType> element. Now find out the geometry and the thematic attributes
-  QDomNodeList attributeNodeList = complexTypeElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, QStringLiteral( "element" ) );
+  QDomNodeList attributeNodeList = complexTypeElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, u"element"_s );
   if ( attributeNodeList.size() < 1 )
   {
     errorMsg = QObject::tr( "Cannot find attribute elements" );
@@ -827,7 +825,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
     QDomElement attributeElement = attributeNodeList.at( i ).toElement();
 
     //attribute name
-    QString name = attributeElement.attribute( QStringLiteral( "name" ) );
+    QString name = attributeElement.attribute( u"name"_s );
     // Some servers like http://ogi.state.ok.us/geoserver/wfs on layer ogi:doq_centroids
     // return attribute names padded with spaces. See https://github.com/qgis/QGIS/issues/13486
     // I'm not completely sure how legal this
@@ -835,37 +833,37 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
     name = name.trimmed();
 
     //attribute type
-    QString type = attributeElement.attribute( QStringLiteral( "type" ) );
+    QString type = attributeElement.attribute( u"type"_s );
     if ( type.isEmpty() )
     {
-      QDomElement extension = attributeElement.firstChildElement( QStringLiteral( "complexType" ) ).firstChildElement( QStringLiteral( "simpleContent" ) ).firstChildElement( QStringLiteral( "extension" ) );
+      QDomElement extension = attributeElement.firstChildElement( u"complexType"_s ).firstChildElement( u"simpleContent"_s ).firstChildElement( u"extension"_s );
       if ( !extension.isNull() )
       {
-        type = extension.attribute( QStringLiteral( "base" ) );
+        type = extension.attribute( u"base"_s );
       }
     }
 
     // attribute ref
-    QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
+    QString ref = attributeElement.attribute( u"ref"_s );
 
-    const thread_local QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
-    const thread_local QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
+    const thread_local QRegularExpression gmlPT( u"gml:(.*)PropertyType"_s );
+    const thread_local QRegularExpression gmlRefProperty( u"gml:(.*)Property"_s );
 
     // gmgml: is Geomedia Web Server
-    if ( !foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
+    if ( !foundGeometryAttribute && type == "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType"_L1 )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = Qgis::WkbType::MultiPolygon;
     }
-    else if ( !foundGeometryAttribute && type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
+    else if ( !foundGeometryAttribute && type == "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType"_L1 )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = Qgis::WkbType::MultiLineString;
     }
     // such as http://go.geozug.ch/Zug_WFS_Baumkataster/service.svc/get
-    else if ( type == QLatin1String( "gmgml:Point_MultiPointPropertyType" ) )
+    else if ( type == "gmgml:Point_MultiPointPropertyType"_L1 )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
@@ -873,12 +871,12 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
-    else if ( !foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
+    else if ( !foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType"_L1 ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
-      if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && !attributeElement.nextSibling().isNull() )
+      if ( attributeElement.parentNode().nodeName() == "choice"_L1 && !attributeElement.nextSibling().isNull() )
         geomType = Qgis::WkbType::Unknown;
       else
       {

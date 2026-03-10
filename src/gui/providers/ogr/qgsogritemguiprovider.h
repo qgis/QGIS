@@ -22,9 +22,13 @@
 #include "qgsdataitemguiprovider.h"
 
 #include <QObject>
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -33,7 +37,7 @@ class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   public:
     QgsOgrItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "ogr_items" ); }
+    QString name() override { return u"ogr_items"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -21,7 +22,6 @@ source picture.
 #include "qgscoloreffect.h"
 %End
   public:
-
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsColorEffect effect from a properties string map.
@@ -252,12 +252,10 @@ Returns the blend mode for the effect
 %End
 
   protected:
-
     virtual void draw( QgsRenderContext &context );
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

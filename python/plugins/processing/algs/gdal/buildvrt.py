@@ -22,24 +22,24 @@ __copyright__ = "(C) 2014, Radoslaw Guzinski"
 import os
 import pathlib
 
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingOutputLayerDefinition,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameters,
+    QgsProcessingParameterString,
+    QgsProcessingUtils,
+    QgsProperty,
+)
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (
-    QgsProcessingAlgorithm,
-    QgsProcessing,
-    QgsProcessingParameterDefinition,
-    QgsProperty,
-    QgsProcessingParameters,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterBoolean,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterString,
-    QgsProcessingOutputLayerDefinition,
-    QgsProcessingUtils,
-)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -64,7 +64,6 @@ class buildvrt(GdalAlgorithm):
     def initAlgorithm(self, config=None):
 
         class ParameterVrtDestination(QgsProcessingParameterRasterDestination):
-
             def __init__(self, name, description):
                 super().__init__(name, description)
 

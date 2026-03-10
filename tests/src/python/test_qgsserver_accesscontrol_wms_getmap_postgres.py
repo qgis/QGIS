@@ -20,7 +20,6 @@ import urllib.request
 from qgis.core import QgsProviderRegistry
 from qgis.server import QgsAccessControlFilter
 from qgis.testing import unittest
-
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 

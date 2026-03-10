@@ -16,7 +16,6 @@
 #define QGSMASKSOURCESELECTIONWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
@@ -24,9 +23,17 @@
 
 #include <QWidget>
 
+#define SIP_NO_FILE
+
 class QTreeWidget;
 class QTreeWidgetItem;
+class QComboBox;
+class QToolButton;
 class QgsSymbolLayer;
+class QgsSelectiveMaskingSource;
+class QgsSelectiveMaskingSourceSet;
+class QgsSelectiveMaskingSourceSetManagerModel;
+class QgsSelectiveMaskingSourceSetManagerProxyModel;
 
 /**
  * \ingroup gui
@@ -40,37 +47,52 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
-    struct MaskSource
-    {
-        //! The source layer id
-        QString layerId;
-
-        //! Whether it is a labeling mask or not
-        bool isLabeling = false;
-
-        //! The symbol layer id
-        QString symbolLayerId;
-    };
-
     //! constructor
     explicit QgsMaskSourceSelectionWidget( QWidget *parent = nullptr );
 
     //! Updates the possible sources, from the project layers
     void update();
 
-    //! Returns the current selection
-    QList<MaskSource> selection() const;
+    /**
+     * Returns the current masking source set.
+     *
+     * \see setSourceSet()
+     */
+    QgsSelectiveMaskingSourceSet sourceSet() const;
 
-    //! Sets the symbol layer selection
-    void setSelection( const QList<MaskSource> &sel );
+    /**
+     * Sets the current masking source \a set.
+     *
+     * \see sourceSet()
+     */
+    void setSourceSet( const QgsSelectiveMaskingSourceSet &set );
 
   signals:
     //! Emitted when an item was changed
     void changed();
 
+  private slots:
+
+    void selectedSetChanged();
+    void emitChanged();
+    void onItemChanged();
+    void newSet();
+    void removeSet();
+    void renameSet();
+
   private:
-    QTreeWidget *mTree;
+    bool isCustomSet() const;
+
+    QComboBox *mSetComboBox = nullptr;
+    QTreeWidget *mTree = nullptr;
     QHash<QgsSymbolLayerReference, QTreeWidgetItem *> mItems;
+    QgsSelectiveMaskingSourceSetManagerModel *mManagerModel = nullptr;
+    QgsSelectiveMaskingSourceSetManagerProxyModel *mManagerProxyModel = nullptr;
+    QToolButton *mSetsToolButton = nullptr;
+    QAction *mRemoveAction = nullptr;
+    QAction *mRenameAction = nullptr;
+
+    int mBlockChangedSignals = 0;
 
     friend class TestQgsMaskingWidget;
 };

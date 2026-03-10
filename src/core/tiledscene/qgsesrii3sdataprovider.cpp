@@ -36,11 +36,14 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
+#include <QString>
 
 #include "moc_qgsesrii3sdataprovider.cpp"
 
-#define I3S_PROVIDER_KEY QStringLiteral( "esrii3s" )
-#define I3S_PROVIDER_DESCRIPTION QStringLiteral( "ESRI I3S data provider" )
+using namespace Qt::StringLiterals;
+
+#define I3S_PROVIDER_KEY u"esrii3s"_s
+#define I3S_PROVIDER_DESCRIPTION u"ESRI I3S data provider"_s
 
 
 ///@cond PRIVATE
@@ -53,11 +56,7 @@
 class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
   public:
-
-    QgsEsriI3STiledSceneIndex(
-      const json &tileset,
-      const QUrl &rootUrl,
-      const QgsCoordinateTransformContext &transformContext );
+    QgsEsriI3STiledSceneIndex( const json &tileset, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext );
 
     QgsTiledSceneTile rootTile() const final;
     QgsTiledSceneTile getTile( long long id ) final;
@@ -68,11 +67,9 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
     bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) final;
 
   protected:
-
     QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
 
   private:
-
     bool fetchNodePage( int nodePage, QgsFeedback *feedback = nullptr );
     void parseNodePage( const QByteArray &nodePageContent );
     void parseMesh( QgsTiledSceneTile &t, const json &meshJson );
@@ -80,9 +77,9 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 
     struct NodeDetails
     {
-      long long parentNodeIndex;
-      QVector<long long> childNodeIndexes;
-      QgsTiledSceneTile tile;
+        long long parentNodeIndex;
+        QVector<long long> childNodeIndexes;
+        QgsTiledSceneTile tile;
     };
 
     QVector<QString> mTextureSetFormats;
@@ -96,9 +93,7 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
     bool mGlobalMode = false;
     QMap< long long, NodeDetails > mNodeMap;
     QSet<int> mCachedNodePages;
-
 };
-
 
 
 /**
@@ -112,10 +107,7 @@ class QgsEsriI3SDataProviderSharedData
 {
   public:
     QgsEsriI3SDataProviderSharedData();
-    void initialize( const QString &i3sVersion,
-                     const json &layerJson,
-                     const QUrl &rootUrl,
-                     const QgsCoordinateTransformContext &transformContext );
+    void initialize( const QString &i3sVersion, const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext );
 
     QString mI3sVersion;
     json mLayerJson;
@@ -131,17 +123,13 @@ class QgsEsriI3SDataProviderSharedData
 
     QString mError;
     QReadWriteLock mReadWriteLock;
-
 };
 
 //
 // QgsEsriI3STiledSceneIndex
 //
 
-QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
-  const json &layerJson,
-  const QUrl &rootUrl,
-  const QgsCoordinateTransformContext &transformContext )
+QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex( const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext )
   : mRootUrl( rootUrl )
   , mTransformContext( transformContext )
 {
@@ -207,17 +195,12 @@ QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &mate
     if ( pbrJson.contains( "baseColorFactor" ) )
     {
       const json pbrBaseColorFactorJson = pbrJson["baseColorFactor"];
-      materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList
-      {
-        pbrBaseColorFactorJson[0].get<double>(),
-        pbrBaseColorFactorJson[1].get<double>(),
-        pbrBaseColorFactorJson[2].get<double>(),
-        pbrBaseColorFactorJson[3].get<double>()
-      };
+      materialDef[u"pbrBaseColorFactor"_s]
+        = QVariantList { pbrBaseColorFactorJson[0].get<double>(), pbrBaseColorFactorJson[1].get<double>(), pbrBaseColorFactorJson[2].get<double>(), pbrBaseColorFactorJson[3].get<double>() };
     }
     else
     {
-      materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+      materialDef[u"pbrBaseColorFactor"_s] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
     }
     if ( pbrJson.contains( "baseColorTexture" ) )
     {
@@ -227,8 +210,8 @@ QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &mate
       const int textureSetDefinitionId = pbrJson["baseColorTexture"]["textureSetDefinitionId"].get<int>();
       if ( textureSetDefinitionId < mTextureSetFormats.count() )
       {
-        materialDef[QStringLiteral( "pbrBaseColorTextureName" )] = QStringLiteral( "0" );
-        materialDef[QStringLiteral( "pbrBaseColorTextureFormat" )] = mTextureSetFormats[textureSetDefinitionId];
+        materialDef[u"pbrBaseColorTextureName"_s] = u"0"_s;
+        materialDef[u"pbrBaseColorTextureFormat"_s] = mTextureSetFormats[textureSetDefinitionId];
       }
       else
       {
@@ -238,12 +221,12 @@ QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &mate
   }
   else
   {
-    materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+    materialDef[u"pbrBaseColorFactor"_s] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
   }
 
   if ( materialDefinitionJson.contains( "doubleSided" ) )
   {
-    materialDef[QStringLiteral( "doubleSided" )] = materialDefinitionJson["doubleSided"].get<bool>();
+    materialDef[u"doubleSided"_s] = materialDefinitionJson["doubleSided"].get<bool>();
   }
 
   // there are various other properties that can be defined in a material,
@@ -258,7 +241,7 @@ QgsTiledSceneTile QgsEsriI3STiledSceneIndex::rootTile() const
   QMutexLocker locker( &mLock );
   if ( !mNodeMap.contains( mRootNodeIndex ) )
   {
-    QgsDebugError( QStringLiteral( "Unable to access the root tile!" ) );
+    QgsDebugError( u"Unable to access the root tile!"_s );
     return QgsTiledSceneTile();
   }
   return mNodeMap[mRootNodeIndex].tile;
@@ -305,8 +288,7 @@ QVector< long long > QgsEsriI3STiledSceneIndex::getTiles( const QgsTiledSceneReq
   QVector< long long > results;
 
   std::function< void( long long )> traverseNode;
-  traverseNode = [&request, &traverseNode, &results, this]( long long nodeId )
-  {
+  traverseNode = [&request, &traverseNode, &results, this]( long long nodeId ) {
     QgsTiledSceneTile t = getTile( nodeId );
     if ( !request.filterBox().isNull() && !t.boundingVolume().intersects( request.filterBox() ) )
       return;
@@ -315,8 +297,7 @@ QVector< long long > QgsEsriI3STiledSceneIndex::getTiles( const QgsTiledSceneReq
     {
       // need to go deeper, this tile does not have enough details
 
-      if ( childAvailability( t.id() ) == Qgis::TileChildrenAvailability::NeedFetching &&
-           !( request.flags() & Qgis::TiledSceneRequestFlag::NoHierarchyFetch ) )
+      if ( childAvailability( t.id() ) == Qgis::TileChildrenAvailability::NeedFetching && !( request.flags() & Qgis::TiledSceneRequestFlag::NoHierarchyFetch ) )
       {
         fetchHierarchy( t.id() );
       }
@@ -409,7 +390,7 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
   if ( url.isLocalFile() )
   {
     const QString slpkPath = mRootUrl.toLocalFile();
-    if ( QFileInfo( slpkPath ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
+    if ( QFileInfo( slpkPath ).suffix().compare( "slpk"_L1, Qt::CaseInsensitive ) == 0 )
     {
       const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
 
@@ -431,12 +412,11 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
   else
   {
     QNetworkRequest networkRequest = QNetworkRequest( url );
-    QgsSetRequestInitiatorClass( networkRequest, QStringLiteral( "QgsEsriI3STiledSceneIndex" ) );
+    QgsSetRequestInitiatorClass( networkRequest, u"QgsEsriI3STiledSceneIndex"_s );
     networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
-                                           networkRequest, QString(), false, feedback );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( networkRequest, QString(), false, feedback );
     return reply.content();
   }
 
@@ -448,23 +428,23 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
   QByteArray nodePageContent;
   if ( !mRootUrl.isLocalFile() )
   {
-    const QString uri = QStringLiteral( "%1/layers/0/nodepages/%2" ).arg( mRootUrl.toString() ).arg( nodePage );
+    const QString uri = u"%1/layers/0/nodepages/%2"_s.arg( mRootUrl.toString() ).arg( nodePage );
     nodePageContent = retrieveContent( uri, feedback );
   }
   else
   {
-    const QString uri = QStringLiteral( "%1/nodepages/%2.json.gz" ).arg( mRootUrl.toString() ).arg( nodePage );
+    const QString uri = u"%1/nodepages/%2.json.gz"_s.arg( mRootUrl.toString() ).arg( nodePage );
     const QByteArray nodePageContentGzipped = retrieveContent( uri, feedback );
 
     if ( !QgsZipUtils::decodeGzip( nodePageContentGzipped, nodePageContent ) )
     {
-      QgsDebugError( QStringLiteral( "Failed to decompress node page content: " ) + uri );
+      QgsDebugError( u"Failed to decompress node page content: "_s + uri );
       return false;
     }
 
     if ( nodePageContent.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Failed to read node page content: " ) + uri );
+      QgsDebugError( u"Failed to read node page content: "_s + uri );
       return false;
     }
   }
@@ -475,7 +455,7 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
   }
   catch ( json::exception &error )
   {
-    QgsDebugError( QStringLiteral( "Error reading node page %1: %2" ).arg( nodePage ).arg( error.what() ) );
+    QgsDebugError( u"Error reading node page %1: %2"_s.arg( nodePage ).arg( error.what() ) );
     return false;
   }
 
@@ -489,19 +469,18 @@ static QgsOrientedBox3D parseBox( const json &box )
   {
     json center = box["center"];
     json halfSize = box["halfSize"];
-    json quaternion = box["quaternion"];  // order is x, y, z, w
+    json quaternion = box["quaternion"]; // order is x, y, z, w
 
     return QgsOrientedBox3D(
-             QgsVector3D( center[0].get<double>(),
-                          center[1].get<double>(),
-                          center[2].get<double>() ),
-             QgsVector3D( halfSize[0].get<double>(),
-                          halfSize[1].get<double>(),
-                          halfSize[2].get<double>() ),
-             QQuaternion( static_cast<float>( quaternion[3].get<double>() ),
-                          static_cast<float>( quaternion[0].get<double>() ),
-                          static_cast<float>( quaternion[1].get<double>() ),
-                          static_cast<float>( quaternion[2].get<double>() ) ) );
+      QgsVector3D( center[0].get<double>(), center[1].get<double>(), center[2].get<double>() ),
+      QgsVector3D( halfSize[0].get<double>(), halfSize[1].get<double>(), halfSize[2].get<double>() ),
+      QQuaternion(
+        static_cast<float>( quaternion[3].get<double>() ),
+        static_cast<float>( quaternion[0].get<double>() ),
+        static_cast<float>( quaternion[1].get<double>() ),
+        static_cast<float>( quaternion[2].get<double>() )
+      )
+    );
   }
   catch ( nlohmann::json::exception & )
   {
@@ -517,9 +496,9 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
   int geometryResource = meshJson["geometry"]["resource"].get<int>();
   QString geometryUri;
   if ( mRootUrl.isLocalFile() )
-    geometryUri = QStringLiteral( "%1/nodes/%2/geometries/1.bin.gz" ).arg( mRootUrl.toString() ).arg( geometryResource );
+    geometryUri = u"%1/nodes/%2/geometries/1.bin.gz"_s.arg( mRootUrl.toString() ).arg( geometryResource );
   else
-    geometryUri = QStringLiteral( "%1/layers/0/nodes/%2/geometries/1" ).arg( mRootUrl.toString() ).arg( geometryResource );
+    geometryUri = u"%1/layers/0/nodes/%2/geometries/1"_s.arg( mRootUrl.toString() ).arg( geometryResource );
 
   // parse material and related textures
   const json materialJson = meshJson["material"];
@@ -528,31 +507,26 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
   if ( materialIndex >= 0 && materialIndex < mMaterialDefinitions.count() )
   {
     materialInfo = mMaterialDefinitions[materialIndex];
-    if ( materialInfo.contains( QStringLiteral( "pbrBaseColorTextureName" ) ) )
+    if ( materialInfo.contains( u"pbrBaseColorTextureName"_s ) )
     {
-      const QString textureName = materialInfo[QStringLiteral( "pbrBaseColorTextureName" )].toString();
-      const QString textureFormat = materialInfo[QStringLiteral( "pbrBaseColorTextureFormat" )].toString();
-      materialInfo.remove( QStringLiteral( "pbrBaseColorTextureName" ) );
-      materialInfo.remove( QStringLiteral( "pbrBaseColorTextureFormat" ) );
+      const QString textureName = materialInfo[u"pbrBaseColorTextureName"_s].toString();
+      const QString textureFormat = materialInfo[u"pbrBaseColorTextureFormat"_s].toString();
+      materialInfo.remove( u"pbrBaseColorTextureName"_s );
+      materialInfo.remove( u"pbrBaseColorTextureFormat"_s );
 
       const int textureResource = materialJson["resource"].get<int>();
       QString textureUri;
       if ( mRootUrl.isLocalFile() )
-        textureUri = QStringLiteral( "%1/nodes/%2/textures/%3.%4" ).arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName, textureFormat );
+        textureUri = u"%1/nodes/%2/textures/%3.%4"_s.arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName, textureFormat );
       else
-        textureUri = QStringLiteral( "%1/layers/0/nodes/%2/textures/%3" ).arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName );
-      materialInfo[QStringLiteral( "pbrBaseColorTexture" )] = textureUri;
+        textureUri = u"%1/layers/0/nodes/%2/textures/%3"_s.arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName );
+      materialInfo[u"pbrBaseColorTexture"_s] = textureUri;
     }
   }
 
-  t.setResources( { { QStringLiteral( "content" ), geometryUri } } );
+  t.setResources( { { u"content"_s, geometryUri } } );
 
-  QVariantMap metadata =
-  {
-    { QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Z ) },
-    { QStringLiteral( "contentFormat" ), QStringLiteral( "draco" ) },
-    { QStringLiteral( "material" ), materialInfo }
-  };
+  QVariantMap metadata = { { u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Z ) }, { u"contentFormat"_s, u"draco"_s }, { u"material"_s, materialInfo } };
   t.setMetadata( metadata );
 }
 
@@ -577,9 +551,7 @@ void QgsEsriI3STiledSceneIndex::parseNodePage( const QByteArray &nodePageContent
 
     if ( mGlobalMode )
     {
-      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),
-                                 QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ),
-                                 mTransformContext );
+      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ), QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), mTransformContext );
       QgsVector3D obbCenterEcef = ct.transform( obb.center() );
       obb = QgsOrientedBox3D( { obbCenterEcef.x(), obbCenterEcef.y(), obbCenterEcef.z() }, obb.halfAxesList() );
     }
@@ -627,14 +599,9 @@ void QgsEsriI3STiledSceneIndex::parseNodePage( const QByteArray &nodePageContent
 
 QgsEsriI3SDataProviderSharedData::QgsEsriI3SDataProviderSharedData()
   : mIndex( QgsTiledSceneIndex( nullptr ) )
-{
-}
+{}
 
-void QgsEsriI3SDataProviderSharedData::initialize(
-  const QString &i3sVersion,
-  const json &layerJson,
-  const QUrl &rootUrl,
-  const QgsCoordinateTransformContext &transformContext )
+void QgsEsriI3SDataProviderSharedData::initialize( const QString &i3sVersion, const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext )
 {
   mI3sVersion = i3sVersion;
   mLayerJson = layerJson;
@@ -662,8 +629,8 @@ void QgsEsriI3SDataProviderSharedData::initialize(
     // "global" mode
 
     // TODO: elevation can be ellipsoidal or gravity-based!
-    mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
-    mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+    mLayerCrs = QgsCoordinateReferenceSystem( u"EPSG:4979"_s );
+    mSceneCrs = QgsCoordinateReferenceSystem( u"EPSG:4978"_s );
   }
   else
   {
@@ -672,25 +639,13 @@ void QgsEsriI3SDataProviderSharedData::initialize(
     mSceneCrs = mLayerCrs;
   }
 
-  mIndex = QgsTiledSceneIndex(
-             new QgsEsriI3STiledSceneIndex(
-               layerJson,
-               rootUrl,
-               transformContext
-             )
-           );
+  mIndex = QgsTiledSceneIndex( new QgsEsriI3STiledSceneIndex( layerJson, rootUrl, transformContext ) );
 
   if ( layerJson.contains( "fullExtent" ) )
   {
     const json fullExtentJson = layerJson["fullExtent"];
-    mExtent = QgsRectangle(
-                fullExtentJson["xmin"].get<double>(),
-                fullExtentJson["ymin"].get<double>(),
-                fullExtentJson["xmax"].get<double>(),
-                fullExtentJson["ymax"].get<double>() );
-    mZRange = QgsDoubleRange(
-                fullExtentJson["zmin"].get<double>(),
-                fullExtentJson["zmax"].get<double>() );
+    mExtent = QgsRectangle( fullExtentJson["xmin"].get<double>(), fullExtentJson["ymin"].get<double>(), fullExtentJson["xmax"].get<double>(), fullExtentJson["ymax"].get<double>() );
+    mZRange = QgsDoubleRange( fullExtentJson["zmin"].get<double>(), fullExtentJson["zmax"].get<double>() );
   }
   else
   {
@@ -707,14 +662,13 @@ void QgsEsriI3SDataProviderSharedData::initialize(
 //
 
 
-QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
-    const QgsDataProvider::ProviderOptions &providerOptions,
-    Qgis::DataProviderReadFlags flags )
+QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsTiledSceneDataProvider( uri, providerOptions, flags )
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+  const QString url = dataSource.param( u"url"_s );
+  QString sourcePath = QUrl::fromPercentEncoding( url.toUtf8() );
 
   if ( sourcePath.isEmpty() )
   {
@@ -722,7 +676,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   }
 
   QUrl rootUrl;
-  if ( sourcePath.startsWith( QLatin1String( "http" ) ) || sourcePath.startsWith( QLatin1String( "file" ) ) )
+  if ( sourcePath.startsWith( "http"_L1 ) || sourcePath.startsWith( "file"_L1 ) )
   {
     rootUrl = sourcePath;
   }
@@ -734,7 +688,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
 
   QString i3sVersion;
   json layerJson;
-  if ( sourcePath.startsWith( QLatin1String( "http" ) ) )
+  if ( sourcePath.startsWith( "http"_L1 ) )
   {
     if ( !loadFromRestService( rootUrl.toString(), layerJson, i3sVersion ) )
       return;
@@ -747,20 +701,20 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
 
   if ( !layerJson.contains( "layerType" ) )
   {
-    appendError( QgsErrorMessage( tr( "Invalid I3S source: missing layer type." ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Invalid I3S source: missing layer type." ), u"I3S"_s ) );
     return;
   }
 
   if ( !layerJson.contains( "nodePages" ) )
   {
-    appendError( QgsErrorMessage( tr( "Missing 'nodePages' attribute (should be available in I3S >= 1.7)" ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Missing 'nodePages' attribute (should be available in I3S >= 1.7)" ), u"I3S"_s ) );
     return;
   }
 
   QString layerType = QString::fromStdString( layerJson["layerType"].get<std::string>() );
-  if ( layerType != QLatin1String( "3DObject" ) && layerType != QLatin1String( "IntegratedMesh" ) )
+  if ( layerType != "3DObject"_L1 && layerType != "IntegratedMesh"_L1 )
   {
-    appendError( QgsErrorMessage( tr( "Unsupported layer type: " ) + layerType, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unsupported layer type: " ) + layerType, u"I3S"_s ) );
     return;
   }
 
@@ -779,14 +733,14 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
 bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &layerJson, QString &i3sVersion )
 {
   QNetworkRequest networkRequest = QNetworkRequest( QUrl( uri ) );
-  QgsSetRequestInitiatorClass( networkRequest, QStringLiteral( "QgsEsriI3SDataProvider" ) );
+  QgsSetRequestInitiatorClass( networkRequest, u"QgsEsriI3SDataProvider"_s );
   networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( networkRequest );
   if ( reply.error() != QNetworkReply::NoError )
   {
-    appendError( QgsErrorMessage( tr( "Failed to fetch layer metadata: " ) + networkRequest.url().toString(), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Failed to fetch layer metadata: " ) + networkRequest.url().toString(), u"I3S"_s ) );
     return false;
   }
   QByteArray sceneLayerContent = reply.content();
@@ -798,13 +752,13 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse JSON: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse JSON: " ) + uri, u"I3S"_s ) );
     return false;
   }
 
   if ( !serviceJson.contains( "serviceVersion" ) )
   {
-    appendError( QgsErrorMessage( tr( "Missing I3S version: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Missing I3S version: " ) + uri, u"I3S"_s ) );
     return false;
   }
   i3sVersion = QString::fromStdString( serviceJson["serviceVersion"].get<std::string>() );
@@ -813,7 +767,7 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
 
   if ( !serviceJson.contains( "layers" ) || !serviceJson["layers"].is_array() || serviceJson["layers"].size() < 1 )
   {
-    appendError( QgsErrorMessage( tr( "Unable to get layer info: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to get layer info: " ) + uri, u"I3S"_s ) );
     return false;
   }
 
@@ -824,7 +778,7 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
 bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, QString &i3sVersion )
 {
   bool isExtracted;
-  if ( QFileInfo( uri ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
+  if ( QFileInfo( uri ).suffix().compare( "slpk"_L1, Qt::CaseInsensitive ) == 0 )
   {
     isExtracted = false;
   }
@@ -834,23 +788,23 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
 
   QByteArray metadataContent;
-  QString metadataFileName = QStringLiteral( "metadata.json" );
-  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
+  QString metadataFileName = u"metadata.json"_s;
+  if ( isExtracted ) // if a directory, read directly as Extracted SLPK
   {
     const QString metadataDirPath = QDir( uri ).filePath( metadataFileName );
     QFile fMetadata( metadataDirPath );
     if ( !fMetadata.open( QIODevice::ReadOnly ) )
     {
-      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( metadataDirPath ), QStringLiteral( "I3S" ) ) );
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( metadataDirPath ), u"I3S"_s ) );
       return false;
     }
     metadataContent = fMetadata.readAll();
   }
-  else  // SLPK
+  else // SLPK
   {
     if ( !QgsZipUtils::extractFileFromZip( uri, metadataFileName, metadataContent ) )
     {
-      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
       return false;
     }
   }
@@ -862,13 +816,13 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
     return false;
   }
 
   if ( !metadataJson.contains( "I3SVersion" ) )
   {
-    appendError( QgsErrorMessage( tr( "Missing I3S version in %1 in: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Missing I3S version in %1 in: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
     return false;
   }
   i3sVersion = QString::fromStdString( metadataJson["I3SVersion"].get<std::string>() );
@@ -876,23 +830,23 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     return false;
 
   QByteArray sceneLayerContentGzipped;
-  const QString sceneLayerContentFileName = QStringLiteral( "3dSceneLayer.json.gz" );
-  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
+  const QString sceneLayerContentFileName = u"3dSceneLayer.json.gz"_s;
+  if ( isExtracted ) // if a directory, read directly as Extracted SLPK
   {
     const QString sceneLayerContentDirPath = QDir( uri ).filePath( sceneLayerContentFileName );
     QFile fSceneLayerContent( sceneLayerContentDirPath );
     if ( !fSceneLayerContent.open( QIODevice::ReadOnly ) )
     {
-      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( sceneLayerContentDirPath ), QStringLiteral( "I3S" ) ) );
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( sceneLayerContentDirPath ), u"I3S"_s ) );
       return false;
     }
     sceneLayerContentGzipped = fSceneLayerContent.readAll();
   }
-  else  // SLPK
+  else // SLPK
   {
     if ( !QgsZipUtils::extractFileFromZip( uri, sceneLayerContentFileName, sceneLayerContentGzipped ) )
     {
-      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( sceneLayerContentFileName ).arg( uri ), u"I3S"_s ) );
       return false;
     }
   }
@@ -900,7 +854,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   QByteArray sceneLayerContent;
   if ( !QgsZipUtils::decodeGzip( sceneLayerContentGzipped, sceneLayerContent ) )
   {
-    appendError( QgsErrorMessage( tr( "Failed to decompress %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Failed to decompress %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), u"I3S"_s ) );
     return false;
   }
 
@@ -910,7 +864,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), u"I3S"_s ) );
     return false;
   }
 
@@ -931,14 +885,14 @@ bool QgsEsriI3SDataProvider::checkI3SVersion( const QString &i3sVersion )
   QStringList i3sVersionComponents = i3sVersion.split( '.' );
   if ( i3sVersionComponents.size() != 2 )
   {
-    appendError( QgsErrorMessage( tr( "Unexpected I3S version format: " ) + i3sVersion, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unexpected I3S version format: " ) + i3sVersion, u"I3S"_s ) );
     return false;
   }
   int i3sVersionMajor = i3sVersionComponents[0].toInt();
   int i3sVersionMinor = i3sVersionComponents[1].toInt();
   if ( i3sVersionMajor != 1 || ( i3sVersionMajor == 1 && i3sVersionMinor < 7 ) )
   {
-    appendError( QgsErrorMessage( tr( "Unsupported I3S version: " ) + i3sVersion, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unsupported I3S version: " ) + i3sVersion, u"I3S"_s ) );
     return false;
   }
   return true;
@@ -1016,41 +970,44 @@ QString QgsEsriI3SDataProvider::htmlMetadata() const
 
   QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
 
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "I3S Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( mShared->mI3sVersion ) % QStringLiteral( "</td></tr>\n" );
+  metadata += u"<tr><td class=\"highlight\">"_s % tr( "I3S Version" ) % u"</td><td>%1</a>"_s.arg( mShared->mI3sVersion ) % u"</td></tr>\n"_s;
 
   QString layerType = QString::fromStdString( mShared->mLayerJson["layerType"].get<std::string>() );
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Layer Type" ) % QStringLiteral( "</td><td>%1</a>" ).arg( layerType ) % QStringLiteral( "</td></tr>\n" );
+  metadata += u"<tr><td class=\"highlight\">"_s % tr( "Layer Type" ) % u"</td><td>%1</a>"_s.arg( layerType ) % u"</td></tr>\n"_s;
 
   if ( mShared->mLayerJson.contains( "version" ) )
   {
     // [required] "The ID of the last update session in which any resource belonging to this layer has been updated."
     // (even though marked as required, not all datasets provide it)
     QString version = QString::fromStdString( mShared->mLayerJson["version"].get<std::string>() );
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( version ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Version" ) % u"</td><td>%1</a>"_s.arg( version ) % u"</td></tr>\n"_s;
   }
 
   // [optional] "The name of this layer."
   if ( mShared->mLayerJson.contains( "name" ) )
   {
     QString name = QString::fromStdString( mShared->mLayerJson["name"].get<std::string>() );
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>%1</a>" ).arg( name ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Name" ) % u"</td><td>%1</a>"_s.arg( name ) % u"</td></tr>\n"_s;
   }
   // [optional] "The display alias to be used for this layer."
   if ( mShared->mLayerJson.contains( "alias" ) )
   {
     QString alias = QString::fromStdString( mShared->mLayerJson["alias"].get<std::string>() );
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Alias" ) % QStringLiteral( "</td><td>%1</a>" ).arg( alias ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Alias" ) % u"</td><td>%1</a>"_s.arg( alias ) % u"</td></tr>\n"_s;
   }
   // [optional] "Description string for this layer."
   if ( mShared->mLayerJson.contains( "description" ) )
   {
     QString description = QString::fromStdString( mShared->mLayerJson["description"].get<std::string>() );
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Description" ) % QStringLiteral( "</td><td>%1</a>" ).arg( description ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Description" ) % u"</td><td>%1</a>"_s.arg( description ) % u"</td></tr>\n"_s;
   }
 
   if ( !mShared->mZRange.isInfinite() )
   {
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Z Range" ) % QStringLiteral( "</td><td>%1 - %2</a>" ).arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s
+                % tr( "Z Range" )
+                % u"</td><td>%1 - %2</a>"_s.arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) )
+                % u"</td></tr>\n"_s;
   }
 
   return metadata;
@@ -1098,20 +1055,18 @@ QgsDoubleRange QgsEsriI3SDataProvider::zRange() const
 }
 
 
-
 //
 // QgsEsriI3SProviderMetadata
 //
 
 
-QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata():
-  QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
-{
-}
+QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata()
+  : QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
+{}
 
 QIcon QgsEsriI3SProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconEsriI3s.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconEsriI3s.svg"_s );
 }
 
 QgsEsriI3SDataProvider *QgsEsriI3SProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -1130,23 +1085,23 @@ QList<QgsProviderSublayerDetails> QgsEsriI3SProviderMetadata::querySublayers( co
   else
   {
     const QVariantMap parts = decodeUri( uri );
-    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+    fileName = parts.value( u"path"_s ).toString();
   }
 
   if ( fileName.isEmpty() )
     return {};
 
-  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
+  if ( QFileInfo( fileName ).suffix().compare( "slpk"_L1, Qt::CaseInsensitive ) == 0 )
   {
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), fileName );
+    parts.insert( u"path"_s, fileName );
 
     QgsProviderSublayerDetails details;
     details.setUri( encodeUri( parts ) );
     details.setProviderKey( key() );
     details.setType( Qgis::LayerType::TiledScene );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-    return {details};
+    return { details };
   }
   return {};
 }
@@ -1156,12 +1111,12 @@ QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
   QgsDataSourceUri dsUri( uri );
 
   QVariantMap uriComponents;
-  QString path = dsUri.param( QStringLiteral( "url" ) );
+  QString path = dsUri.param( u"url"_s );
   if ( path.isEmpty() && !uri.isEmpty() )
   {
     path = uri;
   }
-  uriComponents.insert( QStringLiteral( "path" ), path );
+  uriComponents.insert( u"path"_s, path );
 
   return uriComponents;
 }
@@ -1169,9 +1124,9 @@ QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
 QList< Qgis::LayerType > QgsEsriI3SProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  QString filePath = parts.value( u"path"_s ).toString();
 
-  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( filePath.endsWith( u".slpk"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     return { Qgis::LayerType::TiledScene };
 
   return {};
@@ -1180,8 +1135,8 @@ QList< Qgis::LayerType > QgsEsriI3SProviderMetadata::validLayerTypesForUri( cons
 QString QgsEsriI3SProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  const QString partsKey = parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( partsKey ).toString() );
+  const QString partsKey = parts.contains( u"path"_s ) ? u"path"_s : u"url"_s;
+  dsUri.setParam( u"url"_s, parts.value( partsKey ).toString() );
   return dsUri.encodedUri();
 }
 
@@ -1198,7 +1153,7 @@ QString QgsEsriI3SProviderMetadata::filters( Qgis::FileFilterType type )
       return QString();
 
     case Qgis::FileFilterType::TiledScene:
-      return QObject::tr( "ESRI Scene layer package" ) + QStringLiteral( " (*.slpk *.SLPK)" );
+      return QObject::tr( "ESRI Scene layer package" ) + u" (*.slpk *.SLPK)"_s;
   }
   return QString();
 }
@@ -1221,9 +1176,9 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsEsriI3SProviderMetadata::ca
 int QgsEsriI3SProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  QString filePath = parts.value( u"path"_s ).toString();
 
-  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( filePath.endsWith( u".slpk"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
 
   return 0;

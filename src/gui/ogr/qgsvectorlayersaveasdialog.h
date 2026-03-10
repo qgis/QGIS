@@ -62,14 +62,16 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      *
-     * \deprecated QGIS 3.14. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.14. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() ) SIP_SKIP;
 
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      */
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog(
+      QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags()
+    );
 
     /**
      * Returns the selected format in which the export should be written.
@@ -286,6 +288,8 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     Options mOptions = Option::AllOptions;
     QString mDefaultOutputLayerNameFromInputLayerName;
     bool mAddToCanvasStateOnOpenCompatibleDriver = true;
+    QHash<QString, QPair<bool, std::optional<bool>>> mFieldsState;
+    QString mPreviousFormat;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorLayerSaveAsDialog::Options )

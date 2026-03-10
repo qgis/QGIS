@@ -22,10 +22,11 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QWidget;
 class QgsGdalOption;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui
@@ -42,7 +43,9 @@ class GUI_EXPORT QgsGdalGuiUtils
      * Create database uri from connection parameters
      * \note not available in python bindings
      */
-    static QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig = false );
+    static QString createDatabaseURI(
+      const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig = false
+    );
 
     /**
      * Create protocol uri from connection parameters

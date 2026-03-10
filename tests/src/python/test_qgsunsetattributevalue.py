@@ -12,10 +12,10 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "29/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.core import QgsUnsetAttributeValue
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsUnsetAttributeValue
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsUnsetAttributeValue(QgisTestCase):
-
     def testClause(self):
         value = QgsUnsetAttributeValue()
         self.assertFalse(value.defaultValueClause())

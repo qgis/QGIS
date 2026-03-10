@@ -27,29 +27,19 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis.h"
+#include "qgs3drendercontext.h"
+
 #include <QVector>
 #include <QVector3D>
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
-#include "qgs3drendercontext.h"
-
-
 namespace Qt3DCore
 {
   class QNode;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   class QGeometry;
-#endif
 } // namespace Qt3DCore
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-namespace Qt3DRender
-{
-  class QGeometry;
-}
-#endif
 
 class QgsLineString;
 
@@ -90,11 +80,7 @@ struct QgsLineVertexData
 
     QByteArray createVertexBuffer();
     QByteArray createIndexBuffer();
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
-#else
     Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
-#endif
 
     void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0, bool closePolygon = false );
     void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );

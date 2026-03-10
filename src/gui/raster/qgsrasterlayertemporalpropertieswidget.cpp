@@ -31,8 +31,11 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )
@@ -42,8 +45,8 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   setupUi( this );
 
   // make a useful default expression for per band ranges, just to give users some hints about how to do this...
-  mFixedRangeLowerExpression = QStringLiteral( "make_datetime(%1,1,1,0,0,0) + make_interval(days:=@band)" ).arg( QDate::currentDate().year() );
-  mFixedRangeUpperExpression = QStringLiteral( "make_datetime(%1,1,1,23,59,59) + make_interval(days:=@band)" ).arg( QDate::currentDate().year() );
+  mFixedRangeLowerExpression = u"make_datetime(%1,1,1,0,0,0) + make_interval(days:=@band)"_s.arg( QDate::currentDate().year() );
+  mFixedRangeUpperExpression = u"make_datetime(%1,1,1,23,59,59) + make_interval(days:=@band)"_s.arg( QDate::currentDate().year() );
 
   mExtraWidgetLayout = new QVBoxLayout();
   mExtraWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -60,8 +63,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Represents Temporal Values" ), QVariant::fromValue( Qgis::RasterTemporalMode::RepresentsTemporalValues ) );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QVariant::fromValue( Qgis::RasterTemporalMode::RedrawLayerOnly ) );
 
-  for ( const Qgis::TemporalUnit unit :
-        {
+  for ( const Qgis::TemporalUnit unit : {
           Qgis::TemporalUnit::Milliseconds,
           Qgis::TemporalUnit::Seconds,
           Qgis::TemporalUnit::Minutes,
@@ -91,24 +93,20 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 
   connect( mTemporalGroupBox, &QGroupBox::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked );
 
-  mFixedDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
-  mStartTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
-  mEndTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
-  mOffsetDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
+  mFixedDateTimeEdit->setDisplayFormat( u"yyyy-MM-dd HH:mm:ss"_s );
+  mStartTemporalDateTimeEdit->setDisplayFormat( u"yyyy-MM-dd HH:mm:ss"_s );
+  mEndTemporalDateTimeEdit->setDisplayFormat( u"yyyy-MM-dd HH:mm:ss"_s );
+  mOffsetDateTimeEdit->setDisplayFormat( u"yyyy-MM-dd HH:mm:ss"_s );
 
   QMenu *calculateFixedRangePerBandMenu = new QMenu( mCalculateFixedRangePerBandButton );
   mCalculateFixedRangePerBandButton->setMenu( calculateFixedRangePerBandMenu );
   mCalculateFixedRangePerBandButton->setPopupMode( QToolButton::InstantPopup );
   QAction *calculateLowerAction = new QAction( "Calculate Beginning by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateLowerAction );
-  connect( calculateLowerAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( false );
-  } );
+  connect( calculateLowerAction, &QAction::triggered, this, [this] { calculateRangeByExpression( false ); } );
   QAction *calculateUpperAction = new QAction( "Calculate End by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateUpperAction );
-  connect( calculateUpperAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( true );
-  } );
+  connect( calculateUpperAction, &QAction::triggered, this, [this] { calculateRangeByExpression( true ); } );
 
 
   syncToLayer();
@@ -262,15 +260,15 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
 {
   QgsExpressionContext expressionContext;
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
 
   expressionContext.appendScope( bandScope );
   expressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  expressionContext.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" ) } );
+  expressionContext.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
 
-  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, u"generic"_s, expressionContext );
   dlg.setExpectedOutputFormat( !isUpper ? tr( "Temporal range start date / time" ) : tr( "Temporal range end date / time" ) );
 
   QList<QPair<QString, QVariant>> bandChoices;
@@ -278,9 +276,7 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
   {
     bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
   }
-  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
-    return createExpressionContextForBand( value.toInt() );
-  } );
+  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext { return createExpressionContextForBand( value.toInt() ); } );
 
   if ( dlg.exec() )
   {
@@ -293,9 +289,9 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
     exp.prepare( &expressionContext );
     for ( int band = 1; band <= mLayer->bandCount(); ++band )
     {
-      bandScope->setVariable( QStringLiteral( "band" ), band );
-      bandScope->setVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( band ) );
-      bandScope->setVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( band ) );
+      bandScope->setVariable( u"band"_s, band );
+      bandScope->setVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( band ) );
+      bandScope->setVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( band ) );
 
       const QVariant res = exp.evaluate( &expressionContext );
       mFixedRangePerBandModel->setData( mFixedRangePerBandModel->index( band - 1, isUpper ? 2 : 1 ), res, Qt::EditRole );
@@ -308,11 +304,15 @@ QgsExpressionContext QgsRasterLayerTemporalPropertiesWidget::createExpressionCon
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable(
+    QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) )
+  );
+  bandScope->addVariable(
+    QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) )
+  );
   context.appendScope( bandScope );
-  context.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" ) } );
+  context.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
   return context;
 }
 
@@ -324,8 +324,7 @@ QgsExpressionContext QgsRasterLayerTemporalPropertiesWidget::createExpressionCon
 
 QgsRasterBandFixedTemporalRangeModel::QgsRasterBandFixedTemporalRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsRasterBandFixedTemporalRangeModel::columnCount( const QModelIndex & ) const
 {
@@ -520,8 +519,7 @@ void QgsRasterBandFixedTemporalRangeModel::setLayerData( QgsRasterLayer *layer, 
 
 QgsFixedTemporalRangeDelegate::QgsFixedTemporalRangeDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsFixedTemporalRangeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {

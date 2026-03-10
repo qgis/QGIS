@@ -14,7 +14,10 @@ import hashlib
 import shutil
 import sys
 import tempfile
+import unittest
 
+from qgis.core import QgsSettings
+from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
@@ -25,10 +28,7 @@ from qgis.PyQt.QtWidgets import (
     QTextEdit,
     QWidget,
 )
-from qgis.core import QgsSettings
-from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 def sanitize(endpoint, x):
@@ -42,9 +42,7 @@ def sanitize(endpoint, x):
         ">", "_"
     ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
         "/", "_"
-    ).replace(
-        "\n", "_"
-    )
+    ).replace("\n", "_")
     # print('Sanitize: ' + x)
     return ret
 
@@ -57,7 +55,6 @@ def find_window(name):
 
 
 class TestPyQgsWFSProviderGUI(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

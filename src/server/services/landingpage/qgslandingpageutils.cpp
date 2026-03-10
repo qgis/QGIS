@@ -34,8 +34,11 @@
 #include <QCryptographicHash>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
+#include <QString>
 
-const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
+using namespace Qt::StringLiterals;
+
+const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { u"/(?<projectHash>[a-f0-9]{32})"_s };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
 
 std::once_flag initDirWatcher;
@@ -49,7 +52,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   static QFileSystemWatcher dirWatcher;
   std::call_once( initDirWatcher, [] {
     QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, []( const QString &path ) {
-      QgsMessageLog::logMessage( QStringLiteral( "Directory '%1' has changed: project information cache cleared." ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( u"Directory '%1' has changed: project information cache cleared."_s.arg( path ), u"Landing Page"_s, Qgis::MessageLevel::Info );
       AVAILABLE_PROJECTS.clear();
     } );
   } );
@@ -79,7 +82,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   const QString envDirName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES );
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
-    const auto cProjectDirs { projectDir.split( QStringLiteral( "||" ) ) };
+    const auto cProjectDirs { projectDir.split( u"||"_s ) };
     for ( const auto &path : cProjectDirs )
     {
       if ( !path.isEmpty() )
@@ -91,32 +94,32 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
           const auto constFiles { dir.entryList() };
           for ( const auto &f : constFiles )
           {
-            if ( f.endsWith( QStringLiteral( ".qgs" ), Qt::CaseSensitivity::CaseInsensitive ) || f.endsWith( QStringLiteral( ".qgz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+            if ( f.endsWith( u".qgs"_s, Qt::CaseSensitivity::CaseInsensitive ) || f.endsWith( u".qgz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
             {
               const QString fullPath { path + '/' + f };
               const auto projectHash { QCryptographicHash::hash( fullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
               AVAILABLE_PROJECTS[projectHash] = fullPath;
-              QgsMessageLog::logMessage( QStringLiteral( "Adding filesystem project '%1' with id '%2'" ).arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
+              QgsMessageLog::logMessage( u"Adding filesystem project '%1' with id '%2'"_s.arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Info );
             }
           }
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found: skipping." ).arg( envDirName, path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"%1 entry '%2' was not found: skipping."_s.arg( envDirName, path ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "%1 empty path: skipping." ).arg( envDirName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"%1 empty path: skipping."_s.arg( envDirName ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
       }
     }
   }
 
   // PG projects (there is no watcher for PG: scan every time)
   const QString envPgName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS );
-  const auto storage { QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
+  const auto storage { QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s ) };
   Q_ASSERT( storage );
-  const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
+  const auto cPgConnections { pgConnections.split( u"||"_s ) };
   for ( const auto &connectionString : cPgConnections )
   {
     if ( !connectionString.isEmpty() )
@@ -126,20 +129,20 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
       {
         for ( const auto &projectName : constProjects )
         {
-          const QString projectFullPath { connectionString + QStringLiteral( "&project=%1" ).arg( projectName ) };
+          const QString projectFullPath { connectionString + u"&project=%1"_s.arg( projectName ) };
           const auto projectHash { QCryptographicHash::hash( projectFullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
           AVAILABLE_PROJECTS[projectHash] = projectFullPath;
-          QgsMessageLog::logMessage( QStringLiteral( "Adding postgres project '%1' with id '%2'" ).arg( projectName, QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"Adding postgres project '%1' with id '%2'"_s.arg( projectName, QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found or has not projects: skipping." ).arg( envPgName, connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"%1 entry '%2' was not found or has not projects: skipping."_s.arg( envPgName, connectionString ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "%1 empty connection: skipping." ).arg( envPgName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"%1 empty connection: skipping."_s.arg( envPgName ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
     }
   }
 
@@ -192,8 +195,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
             { "city", a.city.toStdString() },
             { "country", a.country.toStdString() },
             { "postalCode", a.postalCode.toStdString() },
-            { "administrativeArea", a.administrativeArea.toStdString() }
-          }
+            { "administrativeArea", a.administrativeArea.toStdString() } }
         );
       }
       jContacts.push_back( jContact );
@@ -212,8 +214,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           { "type", l.type.toStdString() },
           { "mimeType", l.mimeType.toStdString() },
           { "format", l.format.toStdString() },
-          { "size", l.size.toStdString() }
-        }
+          { "size", l.size.toStdString() } }
       );
     }
     return jLinks;
@@ -233,7 +234,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     {
       QgsRectangle extent { viewSettings->defaultViewExtent() };
       // Need conversion?
-      if ( viewSettings->defaultViewExtent().crs().authid() != QLatin1String( "EPSG:4326" ) )
+      if ( viewSettings->defaultViewExtent().crs().authid() != "EPSG:4326"_L1 )
       {
         QgsCoordinateTransform ct { p->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
         extent = ct.transform( extent );
@@ -246,20 +247,24 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     {
       QgsProject temporaryProject( nullptr, Qgis::ProjectCapabilities() );
       QObject::connect( &temporaryProject, &QgsProject::readProject, qApp, [&]( const QDomDocument &projectDoc ) {
-        const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
+        const QDomNodeList canvasElements { projectDoc.elementsByTagName( u"mapcanvas"_s ) };
         if ( !canvasElements.isEmpty() )
         {
-          const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
-          if ( !canvasElement.isNull() && !canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).isNull() && !canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).isNull() && !canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).isNull() && !canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).isNull() )
+          const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( u"extent"_s ) };
+          if ( !canvasElement.isNull()
+               && !canvasElement.firstChildElement( u"xmin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"xmax"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
           {
             QgsRectangle extent {
-              canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
+              canvasElement.firstChildElement( u"xmin"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"ymin"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"xmax"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"ymax"_s ).text().toDouble(),
             };
             // Need conversion?
-            if ( temporaryProject.crs().authid() != QLatin1String( "EPSG:4326" ) )
+            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 )
             {
               QgsCoordinateTransform ct { temporaryProject.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), temporaryProject.transformContext() };
               extent = ct.transform( extent );
@@ -269,10 +274,15 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         }
       } );
 
-      QgsMessageLog::logMessage( QStringLiteral( "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
-                                                 "For better performances consider re-saving the project with the latest version of QGIS." )
-                                   .arg( projectUri ),
-                                 QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage(
+        QStringLiteral(
+          "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
+          "For better performances consider re-saving the project with the latest version of QGIS."
+        )
+          .arg( projectUri ),
+        u"Landing Page"_s,
+        Qgis::MessageLevel::Warning
+      );
       temporaryProject.read( projectUri );
     }
 
@@ -288,7 +298,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     info["description"] = description.toStdString();
     // CRS
     const QStringList wmsOutputCrsList { QgsServerProjectUtils::wmsOutputCrsList( *p ) };
-    const QString crs = wmsOutputCrsList.contains( QStringLiteral( "EPSG:4326" ) ) || wmsOutputCrsList.isEmpty() ? QStringLiteral( "EPSG:4326" ) : wmsOutputCrsList.first();
+    const QString crs = wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ? u"EPSG:4326"_s : wmsOutputCrsList.first();
     info["crs"] = crs.toStdString();
     // Typenames for WMS
     const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( *p ) };
@@ -340,7 +350,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     }
     info["extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
     QgsRectangle geographicExtent { extent };
-    if ( targetCrs.authid() != QLatin1String( "EPSG:4326" ) )
+    if ( targetCrs.authid() != "EPSG:4326"_L1 )
     {
       QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
       geographicExtent = ct.transform( geographicExtent );
@@ -454,9 +464,13 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               continue;
             }
             const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
-            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull
+                                 && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique
+                                && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression
+                                       && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression )
+                                            == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
             const QString defaultValue = vl->dataProvider()->defaultValueClause( fieldIdx );
             const bool isReadOnly = notNull && unique && !defaultValue.isEmpty();
             fieldsData[field.name().toStdString()] = {
@@ -526,12 +540,10 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         json constraints = json::array();
         for ( const auto &c : cConstraints )
         {
-          constraints.push_back(
-            {
-              { "type", c.type.toStdString() },
-              { "constraint", c.constraint.toStdString() },
-            }
-          );
+          constraints.push_back( {
+            { "type", c.type.toStdString() },
+            { "constraint", c.constraint.toStdString() },
+          } );
         }
         layerMetadata["constraints"] = constraints;
         wmsLayer["metadata"] = layerMetadata;
@@ -548,7 +560,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not read project '%1': skipping." ).arg( projectUri ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( u"Could not read project '%1': skipping."_s.arg( projectUri ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
   }
   return info;
 }
@@ -572,8 +584,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
-      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
-           && !wmsRestrictedLayers.contains( l->name() ) )
+      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster ) && !wmsRestrictedLayers.contains( l->name() ) )
       {
         rec["id"] = l->layerId().toStdString();
         nodeIdentifier = l->layerId();
@@ -607,7 +618,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
       rec["is_layer"] = false;
     }
     rec["title"] = title.toStdString();
-    const QString treeId = parentId.isEmpty() ? QStringLiteral( "root" ) : parentId + "." + nodeIdentifier;
+    const QString treeId = parentId.isEmpty() ? u"root"_s : parentId + "." + nodeIdentifier;
     rec["tree_id"] = treeId.toStdString();
     rec["tree_id_hash"] = QCryptographicHash::hash( treeId.toUtf8(), QCryptographicHash::Md5 ).toHex().toStdString();
 
@@ -636,7 +647,7 @@ QString QgsLandingPageUtils::projectUriFromUrl( const QString &url, const QgsSer
   if ( match.hasMatch() )
   {
     const auto availableProjects { QgsLandingPageUtils::projects( settings ) };
-    return availableProjects.value( match.captured( QStringLiteral( "projectHash" ) ), QString() );
+    return availableProjects.value( match.captured( u"projectHash"_s ), QString() );
   }
   return QString();
 };

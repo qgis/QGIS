@@ -23,6 +23,9 @@
 
 #include <QImage>
 #include <QRect>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsCharTextureRect;
@@ -77,7 +80,7 @@ class _3D_EXPORT QgsFontTextureAtlas
     const QRect res = sipCpp->rect( *a0 );
     if ( res.isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No rectangle for character %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No rectangle for character %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -138,14 +141,15 @@ class _3D_EXPORT QgsFontTextureAtlas
     int count() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
     % Docstring
-        Returns the number of textures in the atlas.
-      % End
-        //%MethodCode
-        sipRes
-      = sipCpp->count();
+    Returns the number of textures in the atlas.
+    % End
+    //%MethodCode
+    sipRes = sipCpp->count();
     //% End
+// clang-format on
 #endif
 
   private:

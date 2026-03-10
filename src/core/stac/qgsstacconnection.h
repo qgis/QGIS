@@ -23,7 +23,10 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryString;
 class QgsSettingsEntryVariantMap;
@@ -37,13 +40,11 @@ class QgsSettingsEntryVariantMap;
  */
 class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "stac" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( u"stac"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
@@ -70,16 +71,16 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
     //! Represents decoded data of a connection
     struct Data
     {
-      //! Catalog URL
-      QString url;
-      //! Authentication configuration id
-      QString authCfg;
-      //! HTTP Basic username
-      QString username;
-      //! HTTP Basic password
-      QString password;
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
+        //! Catalog URL
+        QString url;
+        //! Authentication configuration id
+        QString authCfg;
+        //! HTTP Basic username
+        QString username;
+        //! HTTP Basic password
+        QString password;
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
     };
 
     //! Returns connection data encoded as a string

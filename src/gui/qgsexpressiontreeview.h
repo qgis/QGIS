@@ -24,7 +24,10 @@
 #include <QPointer>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 
@@ -224,16 +227,16 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     /**
      * Returns a pointer to the dialog's function item model.
      * This method is exposed for testing purposes only - it should not be used to modify the model
-     * \note will be removed in QGIS 4
+     * \note will be removed in QGIS 5
      * \deprecated QGIS 3.14
      */
-    Q_DECL_DEPRECATED QStandardItemModel *model() SIP_SKIP; // TODO remove QGIS 4
+    Q_DECL_DEPRECATED QStandardItemModel *model() SIP_SKIP; // TODO remove QGIS 5
 
     /**
      * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+    void loadRecent( const QString &collection = u"generic"_s );
 
     /**
      * Adds the current expression to the given \a collection.
@@ -314,7 +317,18 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param tags tags to find function
      * \param name name of the item
      */
-    QgsExpressionItem *registerItem( const QString &group, const QString &label, const QString &expressionText, const QString &helpText = QString(), QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode, bool highlightedItem = false, int sortOrder = 1, const QIcon &icon = QIcon(), const QStringList &tags = QStringList(), const QString &name = QString() );
+    QgsExpressionItem *registerItem(
+      const QString &group,
+      const QString &label,
+      const QString &expressionText,
+      const QString &helpText = QString(),
+      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+      bool highlightedItem = false,
+      int sortOrder = 1,
+      const QIcon &icon = QIcon(),
+      const QStringList &tags = QStringList(),
+      const QString &name = QString()
+    );
 
     /**
      * Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
@@ -327,7 +341,16 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param sortOrder sort ranking for item
      * \param tags tags to find function
      */
-    void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText = QString(), QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode, bool highlightedItem = false, int sortOrder = 1, const QStringList &tags = QStringList() );
+    void registerItemForAllGroups(
+      const QStringList &groups,
+      const QString &label,
+      const QString &expressionText,
+      const QString &helpText = QString(),
+      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+      bool highlightedItem = false,
+      int sortOrder = 1,
+      const QStringList &tags = QStringList()
+    );
 
     void loadExpressionContext();
     void loadRelations();

@@ -21,6 +21,7 @@
 #define QGSNETWORKCONTENTFETCHER_H
 
 #include "qgis_core.h"
+#include "qgshttpheaders.h"
 
 #include <QNetworkReply>
 #include <QUrl>
@@ -43,7 +44,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     Q_OBJECT
 
   public:
-
     QgsNetworkContentFetcher() = default;
 
     ~QgsNetworkContentFetcher() override;
@@ -53,8 +53,10 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * signal will be emitted when content has been fetched.
      * \param url URL to fetch
      * \param authcfg optional authentication configuration
+     * \param headers optional HTTP headers to add to the request (since QGIS 3.44.8)
+     *
      */
-    void fetchContent( const QUrl &url, const QString &authcfg = QString() );
+    void fetchContent( const QUrl &url, const QString &authcfg = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 
     /**
      * Fetches content using a network \a request and handles redirects. The finished()
@@ -119,7 +121,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 
   private:
-
     QString mAuthCfg;
     std::unique_ptr<QNetworkReply> mReply;
 
@@ -141,7 +142,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * result is a redirect then the redirect is fetched automatically.
      */
     void contentLoaded( bool ok = true );
-
 };
 
 #endif

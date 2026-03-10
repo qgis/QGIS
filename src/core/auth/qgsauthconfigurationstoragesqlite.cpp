@@ -23,16 +23,18 @@
 #include <QFileInfo>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsauthconfigurationstoragesqlite.cpp"
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsAuthConfigurationStorageSqlite::QgsAuthConfigurationStorageSqlite( const QString &databasePath )
-  : QgsAuthConfigurationStorageDb( {{ QStringLiteral( "driver" ), QStringLiteral( "QSQLITE" ) }, { QStringLiteral( "database" ), databasePath }} )
-{
-}
+  : QgsAuthConfigurationStorageDb( { { u"driver"_s, u"QSQLITE"_s }, { u"database"_s, databasePath } } )
+{}
 
 bool QgsAuthConfigurationStorageSqlite::initialize()
 {
@@ -42,7 +44,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   {
     // Check if the parent path exists
     QFileInfo parentInfo( QFileInfo( mDatabase ).path() );
-    if ( ! parentInfo.exists() )
+    if ( !parentInfo.exists() )
     {
       // Try to create the directory
       QDir dir;
@@ -76,7 +78,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
     setError( tr( "Auth db file '%1' is not writable" ).arg( mDatabase ), Qgis::MessageLevel::Warning );
   }
 
-  const bool ok { createConfigTables() &&createCertTables() };
+  const bool ok { createConfigTables() && createCertTables() };
   if ( !ok )
   {
     setError( tr( "Auth db initialization FAILED" ), Qgis::MessageLevel::Critical );
@@ -89,17 +91,14 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   checkCapabilities();
 
   // Recompute capabilities if needed
-  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
-  {
-    checkCapabilities();
-  } );
+  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool ) { checkCapabilities(); } );
 
   return true;
 }
 
 QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorageSqlite::settingsParameters() const
 {
-  return {{ QStringLiteral( "database" ), tr( "Path to the SQLite database file" ), QVariant::String }};
+  return { { u"database"_s, tr( "Path to the SQLite database file" ), QVariant::String } };
 }
 
 QString QgsAuthConfigurationStorageSqlite::description() const
@@ -109,7 +108,7 @@ QString QgsAuthConfigurationStorageSqlite::description() const
 
 QString QgsAuthConfigurationStorageSqlite::type() const
 {
-  return QStringLiteral( "SQLITE" );
+  return u"SQLITE"_s;
 }
 
 bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) const
@@ -123,8 +122,8 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT name FROM sqlite_master WHERE type='table' AND name=:name" ) );
-  query.bindValue( QStringLiteral( ":name" ), table );
+  query.prepare( u"SELECT name FROM sqlite_master WHERE type='table' AND name=:name"_s );
+  query.bindValue( u":name"_s, table );
 
   if ( !authDbQuery( &query ) )
   {
@@ -132,7 +131,7 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
     return false;
   }
 
-  if ( ! query.next() )
+  if ( !query.next() )
   {
     return false;
   }
@@ -142,10 +141,9 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
 
 void QgsAuthConfigurationStorageSqlite::checkCapabilities()
 {
-
   QMutexLocker locker( &mMutex );
   QFileInfo fileInfo( mDatabase );
-  if ( ! fileInfo.exists() )
+  if ( !fileInfo.exists() )
   {
     mCapabilities = Qgis::AuthConfigurationStorageCapabilities();
     return;
@@ -156,7 +154,7 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
   mIsReadOnly = mIsReadOnly && fileInfo.isWritable();
   QgsAuthConfigurationStorageDb::checkCapabilities();
 
-  if ( ! fileInfo.isReadable() )
+  if ( !fileInfo.isReadable() )
   {
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadConfiguration, false );
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword, false );
@@ -172,7 +170,6 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
     mIsReadOnly = readOnly;
     whileBlocking( this )->setReadOnly( !readOnly );
   }
-
 }
 
 /// @endcond

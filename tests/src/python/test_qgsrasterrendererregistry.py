@@ -6,10 +6,10 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import Qgis, QgsRasterRendererRegistry
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import Qgis, QgsRasterRendererRegistry
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -19,7 +19,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterRendererRegistry(QgisTestCase):
-
     def test_registered(self):
         """
         Test that standard renderers are registered

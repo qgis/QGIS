@@ -22,30 +22,32 @@
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialitesourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for spatialite source select
 class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "spatialite" ); }
+    QString providerKey() const override { return u"spatialite"_s; }
     QString text() const override { return QObject::tr( "SpatiaLite" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddSpatiaLiteLayer.svg"_s ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
     }
 
-    QgsSourceSelectProvider::Capabilities capabilities() override
-    {
-      return QgsSourceSelectProvider::Capability::ConfigureFromUri;
-    }
+    QgsSourceSelectProvider::Capabilities capabilities() override { return QgsSourceSelectProvider::Capability::ConfigureFromUri; }
 };
 
 
 QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsSpatiaLiteProvider::SPATIALITE_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders()
 {
@@ -56,8 +58,7 @@ QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectP
 
 QList<QgsDataItemGuiProvider *> QgsSpatiaLiteProviderGuiMetadata::dataItemGuiProviders()
 {
-  return QList<QgsDataItemGuiProvider *>()
-         << new QgsSpatiaLiteDataItemGuiProvider;
+  return QList<QgsDataItemGuiProvider *>() << new QgsSpatiaLiteDataItemGuiProvider;
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

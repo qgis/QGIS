@@ -27,7 +27,7 @@ Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry
 {
     Q_NOWARN_DEPRECATED_POP
-    // TODO QGIS 4 do not inherit QgsSettingsRegistry
+    // TODO QGIS 5 do not inherit QgsSettingsRegistry
   public:
     QgsSettingsRegistryApp();
     ~QgsSettingsRegistryApp() override;

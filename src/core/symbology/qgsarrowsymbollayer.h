@@ -131,9 +131,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Possible arrow types
     enum ArrowType
     {
-      ArrowPlain,     //< Regular arrow
-      ArrowLeftHalf,  //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
-      ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+      ArrowPlain,    //< Regular arrow
+      ArrowLeftHalf, //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
+      ArrowRightHalf //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
     };
 
     //! Gets the current arrow type
@@ -188,11 +188,18 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     HeadType mComputedHeadType = HeadSingle;
     ArrowType mComputedArrowType = ArrowPlain;
 
+    // Store all default values in case we have DD and NULL values
+    double mDefaultScaledArrowWidth = 1.0;
+    double mDefaultScaledArrowStartWidth = 1.0;
+    double mDefaultScaledHeadLength = 1.5;
+    double mDefaultScaledHeadThickness = 1.5;
+    double mDefaultScaledOffset = 0.0;
+    HeadType mDefaultComputedHeadType = HeadSingle;
+    ArrowType mDefaultComputedArrowType = ArrowPlain;
+
     std::unique_ptr<QgsExpressionContextScope> mExpressionScope;
 
     void _resolveDataDefined( QgsSymbolRenderContext & );
 };
 
 #endif
-
-

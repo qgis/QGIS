@@ -39,6 +39,7 @@ QToolTip
 {
     border: 1px solid #222;
     background: @itembackground;
+    color: @text;
 }
 
 QMenuBar {
@@ -114,11 +115,19 @@ QAbstractSpinBox::up-arrow
     height: 1.2em;
 }
 
+QAbstractSpinBox::up-arrow:disabled {
+    image: url(@theme_path/icons/arrow-up-disabled.svg);
+}
+
 QAbstractSpinBox::down-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
     width: 0.8em;
     height: 1.2em;
+}
+
+QAbstractSpinBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
 }
 
 QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover {
@@ -146,6 +155,7 @@ QAbstractSpinBox::drop-down:hover {
 }
 QAbstractSpinBox::drop-down:disabled {
     background-color: transparent !important;
+    border-color: @itemdarkbackground;
 }
 
 /* ==================================================================================== */
@@ -434,6 +444,10 @@ QComboBox::down-arrow
     height: 1.2em;
 }
 
+QComboBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
 QComboBox:item {
     padding-left: 0.1em;
     height:1.25em;
@@ -660,7 +674,7 @@ QTabBar::tab:disabled {
     color: @itemalternativebackground
 }
 
-QTabBar::tab:last, QTabBar::tab::only-one
+QTabBar::tab:last, QTabBar::tab:only-one
 {
     margin-right: 0;
 }
@@ -793,8 +807,12 @@ QCheckBox::indicator
     height:0.8em;
 }
 
-QCheckBox::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+QCheckBox::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
+}
+
+QCheckBox::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
 }
 
 QCheckBox::indicator:unchecked {
@@ -952,9 +970,14 @@ QAbstractItemView:disabled, QListView:disabled
     border-radius: 0.15em;
 }
 
-QAbstractItemView::selected, QListView::selected {
+QAbstractItemView:selected, QListView:selected {
     border: 0px;
     outline: none;
+}
+
+QAbstractItemView::item:selected:disabled, QListView::item:selected:disabled {
+    background-color: @itemalternativebackground;
+    color: @background;
 }
 
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
@@ -1016,9 +1039,15 @@ QTreeView::indicator
     width:0.8em;
     height:0.8em;
 }
-QTreeView::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+
+QTreeView::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTreeView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTreeView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg);
 }
@@ -1051,9 +1080,15 @@ QTreeView#viewRules::indicator:unchecked
 QgsLayerTreeView::indicator:checked,
 QTreeView#viewGraduated::indicator:checked, 
 QTreeView#viewCategories::indicator:checked, 
-QTreeView#viewRules::indicator:checked 
+QTreeView#viewRules::indicator:checked,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate
 {
     image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+
+QgsCustomLayerOrderWidget QListView::indicator:checked:disabled,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */
@@ -1078,9 +1113,15 @@ QTableView::indicator
     width:0.8em;
     height:0.8em;
 }
-QTableView::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+
+QTableView::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTableView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTableView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
@@ -1139,9 +1180,17 @@ QHeaderView::down-arrow {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
+QHeaderView::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
 QHeaderView::up-arrow {
     width: 1.2em;
     image: url(@theme_path/icons/arrow-up.svg);
+}
+
+QHeaderView::up-arrow:disabled {
+    image: url(@theme_path/icons/up-down-disabled.svg);
 }
 
 /* ==================================================================================== */
@@ -1284,4 +1333,8 @@ QgsAttributeFormWidget QComboBox:disabled {
 
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
+}
+
+QgsLocatorResultsView::item:disabled {
+    color: @itemdarkbackground;
 }

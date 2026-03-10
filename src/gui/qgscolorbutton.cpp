@@ -25,6 +25,7 @@
 #include "qgsguiutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgssymbollayerutils.h"
 
 #include <QBuffer>
@@ -37,11 +38,14 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QScreen>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
 
 #include "moc_qgscolorbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
@@ -70,9 +74,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize.setHeight( std::max( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 
   // If project colors change, we need to redraw the button, as it may be set to follow a project color
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] {
-    setButtonBackground();
-  } );
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] { setButtonBackground(); } );
 }
 
 QSize QgsColorButton::minimumSizeHint() const
@@ -90,7 +92,7 @@ const QPixmap &QgsColorButton::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -119,7 +121,7 @@ void QgsColorButton::showColorDialog()
   const QgsSettings settings;
 
   // first check if we need to use the limited native dialogs
-  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = QgsSettingsRegistryGui::settingsNativeColorDialogs->value();
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
@@ -177,7 +179,7 @@ bool QgsColorButton::event( QEvent *e )
     if ( !isProjectColor )
       c = mColor;
 
-    QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
+    QString info = ( isProjectColor ? u"<p>%1: %2</p>"_s.arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
 
     info += QgsColorTooltip::htmlDescription( c, this );
 

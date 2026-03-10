@@ -20,8 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -31,7 +34,6 @@
 class CORE_EXPORT QgsPointCloudCategory
 {
   public:
-
     QgsPointCloudCategory() = default;
 
     /**
@@ -139,10 +141,9 @@ typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
     QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
@@ -163,7 +164,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPrepare
 class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudClassifiedRenderer.
      */
@@ -227,8 +227,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     void addCategory( const QgsPointCloudCategory &category );
 
   private:
-
-    QString mAttribute = QStringLiteral( "Classification" );
+    QString mAttribute = u"Classification"_s;
 
     QgsPointCloudCategoryList mCategories;
 };

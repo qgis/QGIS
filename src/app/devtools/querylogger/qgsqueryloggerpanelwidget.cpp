@@ -31,10 +31,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QTextStream>
 #include <QToolButton>
 
 #include "moc_qgsqueryloggerpanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerTreeView
@@ -186,11 +189,17 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, []( bool enabled ) {
-    QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
+    QgsSettings().setValue( u"logDatabaseQueries"_s, enabled, QgsSettings::App );
     QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
-    if ( QMessageBox::warning( this, tr( "Save Database Query Log" ), tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::warning(
+           this,
+           tr( "Save Database Query Log" ),
+           tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ),
+           QMessageBox::Yes | QMessageBox::No
+         )
+         == QMessageBox::No )
       return;
 
     const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Query Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );
@@ -213,11 +222,11 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   } );
 
   QgsSettings settings;
-  mTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/queryLogger/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mTreeView->header()->restoreState( settings.value( u"UI/queryLogger/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 QgsDatabaseQueryLoggerPanelWidget::~QgsDatabaseQueryLoggerPanelWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/queryLogger/treeState" ), mTreeView->header()->saveState(), QgsSettings::Gui );
+  settings.setValue( u"UI/queryLogger/treeState"_s, mTreeView->header()->saveState(), QgsSettings::Gui );
 }

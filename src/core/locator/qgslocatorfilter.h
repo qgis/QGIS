@@ -27,6 +27,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 class QgsFeedback;
 class QgsLocatorFilter;
 
@@ -47,7 +49,6 @@ class CORE_EXPORT QgsLocatorResult
     Q_PROPERTY( double groupScore MEMBER groupScore )
 
   public:
-
     QgsLocatorResult() = default;
 
     /**
@@ -125,7 +126,6 @@ class CORE_EXPORT QgsLocatorResult
     struct CORE_EXPORT ResultAction
     {
       public:
-
         ResultAction() = default;
 
         /**
@@ -153,13 +153,10 @@ class CORE_EXPORT QgsLocatorResult
     QList<QgsLocatorResult::ResultAction> actions;
 
   private:
-
     /**
      * Custom reference or other data set by the filter.
      */
     QVariant mUserData;
-
-
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
@@ -178,18 +175,17 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTreeAppLocatorFilters = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "locator-filters" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeAppLocatorFilters = QgsSettingsTree::sTreeApp->createNamedListNode( u"locator-filters"_s );
 #endif
     //! Filter priority. Controls the order of results in the locator.
     enum Priority
     {
       Highest, //!< Highest priority
-      High, //!< High priority
-      Medium, //!< Medium priority
-      Low, //!< Low priority
-      Lowest //!< Lowest priority
+      High,    //!< High priority
+      Medium,  //!< Medium priority
+      Low,     //!< Low priority
+      Lowest   //!< Lowest priority
     };
     Q_ENUM( Priority )
 
@@ -261,7 +257,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * on a background thread.
      * The method returns an autocompletion list
      */
-    virtual QStringList prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ) Q_UNUSED( context ); return QStringList();}
+    virtual QStringList prepare( const QString &string, const QgsLocatorContext &context )
+    {
+      Q_UNUSED( string )
+      Q_UNUSED( context );
+      return QStringList();
+    }
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context
@@ -296,7 +297,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      *
      * \since QGIS 3.40
      */
-    virtual void resultSelected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
+    virtual void resultSelected( const QgsLocatorResult &result ) { Q_UNUSED( result ) }
 
     /**
      * This is called when a \a result is deselected.
@@ -304,7 +305,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      *
      * \since QGIS 3.40
      */
-    virtual void resultDeselected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
+    virtual void resultDeselected( const QgsLocatorResult &result ) { Q_UNUSED( result ) }
 
     /**
      * Triggers a filter \a result from this filter for an entry in the context menu.
@@ -432,12 +433,10 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void resultFetched( const QgsLocatorResult &result );
 
   private:
-
     bool mEnabled = true;
     bool mUseWithoutPrefix = true;
     QString mActivePrefifx = QString();
     int mFetchResultsDelay = 0;
-
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult )

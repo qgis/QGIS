@@ -21,13 +21,9 @@ Class for storing a STAC Item's data.
 %End
   public:
 
-    QgsStacItem( const QString &id,
-                 const QString &version,
-                 const QgsGeometry &geometry,
-                 const QVariantMap &properties,
-                 const QVector< QgsStacLink > &links,
-                 const QMap< QString, QgsStacAsset > &assets,
-                 const QgsBox3D &bbox );
+    QgsStacItem(
+      const QString &id, const QString &version, const QgsGeometry &geometry, const QVariantMap &properties, const QVector< QgsStacLink > &links, const QMap< QString, QgsStacAsset > &assets, const QgsBox3D &bbox
+    );
 %Docstring
 Constructs a valid QgsStacItem
 

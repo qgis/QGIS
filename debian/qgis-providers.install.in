@@ -24,7 +24,7 @@ usr/lib/qgis/plugins/libprovider_virtualraster.so
 usr/lib/qgis/plugins/libprovider_wcs.so
 usr/lib/qgis/plugins/libprovider_wfs.so
 usr/lib/qgis/plugins/libprovider_wms.so
-usr/lib/*/qt5/plugins/sqldrivers/libqsqlspatialite.so
+usr/lib/*/qt6/plugins/sqldrivers/libqsqlspatialite.so
 #pdal#usr/lib/qgis/untwine
 #pdal_wrench#usr/lib/qgis/pdal_wrench
 #pdal#usr/lib/qgis/plugins/libprovider_pdal.so

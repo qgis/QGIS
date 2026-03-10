@@ -24,6 +24,10 @@
 #include "qgsnumericformat.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayerAbstractPlotDataGatherer;
 
 
@@ -38,11 +42,10 @@ class QgsVectorLayerAbstractPlotDataGatherer;
 class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 {
   public:
-
     QgsPieChartPlot();
     ~QgsPieChartPlot() override = default;
 
-    QString type() const override { return QStringLiteral( "pie" ); }
+    QString type() const override { return u"pie"_s; }
 
     void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 
@@ -125,8 +128,13 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     //! Returns a new data gatherer for a given pie chart \a plot.
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
-  private:
+    /**
+     * Initializes properties of this plot from an existing \a plot, transferring all applicable
+     * settings.
+     */
+    void initFromPlot( const QgsPlot *plot ) override;
 
+  private:
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
     std::vector<std::unique_ptr<QgsColorRamp>> mColorRamps;
 

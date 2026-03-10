@@ -83,7 +83,7 @@ Returns the current vector layer of the map canvas or 0
       InvalidLayer,
     };
 
- TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
+ TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices ) /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a list of ``vertices`` to other features to keep topology up to
 date, e.g. to neighbouring polygons. The ``vertices`` list specifies a
@@ -92,7 +92,7 @@ system.
 
 .. deprecated:: 3.12
 
-   Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+   Will be removed in QGIS 5.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );

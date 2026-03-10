@@ -27,10 +27,13 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsnewarcgisrestconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -44,7 +47,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
 
   setWindowTitle( tr( "Create a New arcgisfeatureserver Connection" ) );
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
 
   if ( !connectionName.isEmpty() )
   {
@@ -115,12 +118,24 @@ bool QgsNewArcGisRestConnectionDialog::validate()
   bool newNameAlreadyExists = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items().contains( newName );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newName, Qt::CaseInsensitive ) != 0 ) && newNameAlreadyExists && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection '%1' be overwritten?" ).arg( newName ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newName, Qt::CaseInsensitive ) != 0 )
+       && newNameAlreadyExists
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection '%1' be overwritten?" ).arg( newName ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
 
-  if ( !mAuthSettings->password().isEmpty() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !mAuthSettings->password().isEmpty()
+       && QMessageBox::question(
+            this,
+            tr( "Saving Passwords" ),
+            tr(
+              "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to "
+              "avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add "
+              "your credentials in an HTTP Basic Authentication method and store them in an encrypted database."
+            ),
+            QMessageBox::Ok | QMessageBox::Cancel
+          ) == QMessageBox::Cancel )
   {
     return false;
   }
@@ -182,5 +197,5 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
 void QgsNewArcGisRestConnectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/index.html"_s );
 }

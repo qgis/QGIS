@@ -17,12 +17,16 @@
 
 #include "qgsfielddomain.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsvariantutils.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfielddomainwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFieldDomainWidget
@@ -30,8 +34,7 @@
 
 QgsAbstractFieldDomainWidget::QgsAbstractFieldDomainWidget( QWidget *parent )
   : QWidget( parent )
-{
-}
+{}
 
 QgsAbstractFieldDomainWidget::~QgsAbstractFieldDomainWidget() = default;
 
@@ -85,6 +88,12 @@ void QgsFieldDomainWidget::setNameEditable( bool editable )
   mNameEdit->setEnabled( editable );
 }
 
+void QgsFieldDomainWidget::setPoliciesEditable( bool editable )
+{
+  mComboSplitPolicy->setEnabled( editable );
+  mComboMergePolicy->setEnabled( editable );
+}
+
 QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsRangeFieldDomain( name, description, fieldType, mMinSpinBox->value(), mMinInclusiveCheckBox->isChecked(), mMaxSpinBox->value(), mMaxInclusiveCheckBox->isChecked() );
@@ -121,6 +130,11 @@ void QgsFieldDomainDialog::setNameEditable( bool editable )
   mWidget->setNameEditable( editable );
 }
 
+void QgsFieldDomainDialog::setPoliciesEditable( bool editable )
+{
+  mWidget->setPoliciesEditable( editable );
+}
+
 QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsGlobFieldDomain( name, description, fieldType, mEditGlob->text() );
@@ -143,9 +157,7 @@ QgsCodedFieldDomainWidget::QgsCodedFieldDomainWidget( QWidget *parent )
   mModel = new QgsCodedValueTableModel( this );
   mValuesTable->setModel( mModel );
 
-  connect( mButtonAddRow, &QToolButton::clicked, this, [this] {
-    mModel->insertRow( mModel->rowCount() );
-  } );
+  connect( mButtonAddRow, &QToolButton::clicked, this, [this] { mModel->insertRow( mModel->rowCount() ); } );
   connect( mButtonRemoveRow, &QToolButton::clicked, this, [this] {
     QItemSelectionModel *selectionModel = mValuesTable->selectionModel();
     const QModelIndexList selectedRows = selectionModel->selectedIndexes();
@@ -186,8 +198,7 @@ bool QgsCodedFieldDomainWidget::isValid() const
 
 QgsCodedValueTableModel::QgsCodedValueTableModel( QObject *parent )
   : QAbstractTableModel( parent )
-{
-}
+{}
 
 int QgsCodedValueTableModel::rowCount( const QModelIndex & ) const
 {
@@ -201,8 +212,7 @@ int QgsCodedValueTableModel::columnCount( const QModelIndex & ) const
 
 QVariant QgsCodedValueTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( index.row() < 0 || index.row() >= mValues.count()
-       || index.column() < 0 || index.column() >= 2 )
+  if ( index.row() < 0 || index.row() >= mValues.count() || index.column() < 0 || index.column() >= 2 )
     return QVariant();
 
   const QgsCodedValue &value = mValues[index.row()];
@@ -230,8 +240,7 @@ QVariant QgsCodedValueTableModel::data( const QModelIndex &index, int role ) con
 
 bool QgsCodedValueTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( index.row() < 0 || index.row() >= mValues.count()
-       || index.column() < 0 || index.column() >= 2 )
+  if ( index.row() < 0 || index.row() >= mValues.count() || index.column() < 0 || index.column() >= 2 )
     return false;
 
   const QgsCodedValue codedValue = mValues.at( index.row() );
@@ -268,10 +277,7 @@ bool QgsCodedValueTableModel::setData( const QModelIndex &index, const QVariant 
 
 Qt::ItemFlags QgsCodedValueTableModel::flags( const QModelIndex &index ) const
 {
-  if ( index.row() < 0
-       || index.row() >= mValues.size()
-       || index.column() < 0
-       || index.column() >= columnCount() )
+  if ( index.row() < 0 || index.row() >= mValues.size() || index.column() < 0 || index.column() >= columnCount() )
     return QAbstractTableModel::flags( index );
 
   return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEditable;
@@ -396,13 +402,9 @@ QgsFieldDomainWidget::QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget 
   mStackedWidget->addWidget( mDomainWidget );
   mStackedWidget->setCurrentWidget( mDomainWidget );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [this] {
-    emit validityChanged( isValid() );
-  } );
+  connect( mNameEdit, &QLineEdit::textChanged, this, [this] { emit validityChanged( isValid() ); } );
 
-  connect( mDomainWidget, &QgsAbstractFieldDomainWidget::changed, this, [this] {
-    emit validityChanged( isValid() );
-  } );
+  connect( mDomainWidget, &QgsAbstractFieldDomainWidget::changed, this, [this] { emit validityChanged( isValid() ); } );
 }
 
 void QgsFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
@@ -447,15 +449,16 @@ bool QgsFieldDomainWidget::isValid() const
 QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsFieldDomainDialog" ) );
+  setObjectName( u"QgsFieldDomainDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsFieldDomainWidget( type );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/supported_data.rst#field-domain"_s ); } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );

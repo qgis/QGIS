@@ -20,11 +20,15 @@
 #include "qgscurve.h"
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRemovePartsByLengthAlgorithm::name() const
 {
-  return QStringLiteral( "removepartsbylength" );
+  return u"removepartsbylength"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::displayName() const
@@ -44,7 +48,7 @@ QString QgsRemovePartsByLengthAlgorithm::group() const
 
 QString QgsRemovePartsByLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::outputName() const
@@ -69,13 +73,15 @@ QString QgsRemovePartsByLengthAlgorithm::shortDescription() const
 
 QString QgsRemovePartsByLengthAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a line layer and removes lines which are shorter than a specified length.\n\n"
-                      "If the input geometry is a multipart geometry, then the parts will be filtered by their individual lengths. If no parts match the "
-                      "required minimum length, then the feature will be skipped and omitted from the output layer.\n\n"
-                      "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
-                      "length is below the required size and omitted from the output layer.\n\n"
-                      "The length will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
-                      "Attributes are not modified." );
+  return QObject::tr(
+    "This algorithm takes a line layer and removes lines which are shorter than a specified length.\n\n"
+    "If the input geometry is a multipart geometry, then the parts will be filtered by their individual lengths. If no parts match the "
+    "required minimum length, then the feature will be skipped and omitted from the output layer.\n\n"
+    "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
+    "length is below the required size and omitted from the output layer.\n\n"
+    "The length will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
+    "Attributes are not modified."
+  );
 }
 
 QgsRemovePartsByLengthAlgorithm *QgsRemovePartsByLengthAlgorithm::createInstance() const
@@ -91,19 +97,19 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByLengthAlgorithm::sourceFlags(
 
 void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  auto minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minLength = std::make_unique< QgsProcessingParameterDistance >( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with lengths less than" ), 0.0, u"INPUT"_s, false, 0 );
   minLength->setIsDynamic( true );
-  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
-  minLength->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
+  minLength->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minLength.release() );
 }
 
 bool QgsRemovePartsByLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMinLength = parameterAsDouble( parameters, QStringLiteral( "MIN_LENGTH" ), context );
-  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN_LENGTH" ) );
+  mMinLength = parameterAsDouble( parameters, u"MIN_LENGTH"_s, context );
+  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, u"MIN_LENGTH"_s );
   if ( mDynamicMinLength )
-    mMinLengthProperty = parameters.value( QStringLiteral( "MIN_LENGTH" ) ).value< QgsProperty >();
+    mMinLengthProperty = parameters.value( u"MIN_LENGTH"_s ).value< QgsProperty >();
 
   return true;
 }

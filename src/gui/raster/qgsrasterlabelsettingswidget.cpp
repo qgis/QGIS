@@ -148,7 +148,7 @@ QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *laye
   mInferiorPlacementWidget->hide();
   mLabelRenderingDDFrame->hide();
   mUpsidedownFrame->hide();
-  mLabelEveryPartWidget->hide();
+  mMultipartBehaviorWidget->hide();
   mFramePixelSizeVisibility->hide();
   line->hide();
 

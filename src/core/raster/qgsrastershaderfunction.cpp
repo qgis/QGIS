@@ -19,12 +19,16 @@ email                : ersts@amnh.org
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
   : mMaximumValue( maximumValue )
   , mMinimumValue( minimumValue )
   , mMinimumMaximumRange( mMaximumValue - mMinimumValue )
 {
-  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
+  QgsDebugMsgLevel( u"entered."_s, 4 );
 }
 
 void QgsRasterShaderFunction::setMaximumValue( double value )

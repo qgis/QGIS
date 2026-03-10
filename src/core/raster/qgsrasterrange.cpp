@@ -17,12 +17,15 @@
 
 #include "qgsrasterrange.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
   : mMin( min )
   , mMax( max )
   , mType( bounds )
-{
-}
+{}
 
 bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
 {
@@ -35,28 +38,20 @@ bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
   const bool otherLowerInfinite = !std::isfinite( other.mMin );
   const bool otherUpperInfinite = !std::isfinite( other.mMax );
 
-  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) ||
-         ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin < other.mMin || thisLowerInfinite ) ) )
-       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) ||
-            ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
+  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) || ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin < other.mMin || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) || ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
     return true;
 
-  if ( ( ( otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) ||
-         ( !otherIncludesLower && ( mMin < other.mMin || thisLowerInfinite ) ) )
-       && ( ( thisIncludesUpper && otherIncludesLower && ( mMax >= other.mMin || thisUpperInfinite ) ) ||
-            ( ( !thisIncludesUpper || !otherIncludesLower ) && ( mMax > other.mMin || thisUpperInfinite ) ) ) )
+  if ( ( ( otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) || ( !otherIncludesLower && ( mMin < other.mMin || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesLower && ( mMax >= other.mMin || thisUpperInfinite ) ) || ( ( !thisIncludesUpper || !otherIncludesLower ) && ( mMax > other.mMin || thisUpperInfinite ) ) ) )
     return true;
 
-  if ( ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite ) ) ||
-         ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite ) ) )
-       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) ||
-            ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
+  if ( ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite ) ) || ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) || ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
     return true;
 
-  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin >= other.mMin || otherLowerInfinite ) ) ||
-         ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin > other.mMin || otherLowerInfinite ) ) )
-       && ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite || otherUpperInfinite ) ) ||
-            ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite || otherUpperInfinite ) ) ) )
+  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin >= other.mMin || otherLowerInfinite ) ) || ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin > other.mMin || otherLowerInfinite ) ) )
+       && ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite || otherUpperInfinite ) ) || ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite || otherUpperInfinite ) ) ) )
     return true;
 
   if ( qgsDoubleNear( mMin, other.mMin ) && qgsDoubleNear( mMax, other.mMax ) )
@@ -67,15 +62,10 @@ bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
 
 QString QgsRasterRange::asText() const
 {
-  const QString minText = std::isnan( mMin ) ? QStringLiteral( "-%1" ).arg( QChar( 0x221e ) ) : QString::number( mMin );
+  const QString minText = std::isnan( mMin ) ? u"-%1"_s.arg( QChar( 0x221e ) ) : QString::number( mMin );
   const QString maxText = std::isnan( mMax ) ? QChar( 0x221e ) : QString::number( mMax );
   const QString operator1 = ( mType == IncludeMinAndMax || mType == IncludeMin ) ? QChar( 0x2264 ) : '<';
   const QString operator2 = ( mType == IncludeMinAndMax || mType == IncludeMax ) ? QChar( 0x2264 ) : '<';
 
-  return QStringLiteral( "%1 %2 x %3 %4" ).arg( minText, operator1, operator2, maxText );
+  return u"%1 %2 x %3 %4"_s.arg( minText, operator1, operator2, maxText );
 }
-
-
-
-
-

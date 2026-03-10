@@ -38,8 +38,11 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsgrassrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "GRASS provider" )
 #define QGS_ERROR( message ) QgsError( message, "GRASS provider" )
@@ -69,7 +72,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   mMapName = fileInfo.fileName();
   QDir dir = fileInfo.dir();
   QString element = dir.dirName();
-  if ( element != QLatin1String( "cellhd" ) )
+  if ( element != "cellhd"_L1 )
   {
     appendError( ERR( tr( "Groups not yet supported" ) ) );
     return;
@@ -103,10 +106,10 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   appendIfError( error );
 
   error.clear();
-  mInfo = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, QStringLiteral( "info" ), QgsRectangle(), 0, 0, 3000, error );
+  mInfo = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, u"info"_s, QgsRectangle(), 0, 0, 3000, error );
   appendIfError( error );
 
-  mGrassDataType = mInfo[QStringLiteral( "TYPE" )].toInt();
+  mGrassDataType = mInfo[u"TYPE"_s].toInt();
   QgsDebugMsgLevel( "mGrassDataType = " + QString::number( mGrassDataType ), 2 );
 
   // TODO: avoid showing these strange numbers in GUI
@@ -195,12 +198,12 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   double yMinimum = yMaximum - cellHeight * mYBlockSize;
 
   QgsDebugMsgLevel( "mYBlockSize = " + QString::number( mYBlockSize ), 2 );
-  arguments.append( ( QStringLiteral( "window=%1,%2,%3,%4,%5,%6" )
+  arguments.append( ( u"window=%1,%2,%3,%4,%5,%6"_s
                         .arg( QgsRasterBlock::printValue( ext.xMinimum() ), QgsRasterBlock::printValue( yMinimum ), QgsRasterBlock::printValue( ext.xMaximum() ), QgsRasterBlock::printValue( yMaximum ) )
                         .arg( mCols )
                         .arg( mYBlockSize ) ) );
 
-  arguments.append( QStringLiteral( "format=value" ) );
+  arguments.append( u"format=value"_s );
   QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
@@ -246,11 +249,16 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle const &viewExte
   QStringList arguments;
   arguments.append( "map=" + mMapName + "@" + mMapset );
 
-  arguments.append( ( QStringLiteral( "window=%1,%2,%3,%4,%5,%6" )
-                        .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ), QgsRasterBlock::printValue( viewExtent.yMinimum() ), QgsRasterBlock::printValue( viewExtent.xMaximum() ), QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
+  arguments.append( ( u"window=%1,%2,%3,%4,%5,%6"_s
+                        .arg(
+                          QgsRasterBlock::printValue( viewExtent.xMinimum() ),
+                          QgsRasterBlock::printValue( viewExtent.yMinimum() ),
+                          QgsRasterBlock::printValue( viewExtent.xMaximum() ),
+                          QgsRasterBlock::printValue( viewExtent.yMaximum() )
+                        )
                         .arg( pixelWidth )
                         .arg( pixelHeight ) ) );
-  arguments.append( QStringLiteral( "format=value" ) );
+  arguments.append( u"format=value"_s );
   QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
@@ -308,28 +316,34 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, Qgis::Ras
   int timeout = 30000 + 0.005 * xSize() * ySize();
 
   QString error;
-  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, QStringLiteral( "stats" ), extent, sampleRows, sampleCols, timeout, error );
+  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, u"stats"_s, extent, sampleRows, sampleCols, timeout, error );
 
   if ( info.isEmpty() || !error.isEmpty() )
   {
     return myRasterBandStats;
   }
 
-  myRasterBandStats.sum = info[QStringLiteral( "SUM" )].toDouble();
-  myRasterBandStats.elementCount = info[QStringLiteral( "COUNT" )].toInt();
-  myRasterBandStats.minimumValue = info[QStringLiteral( "MIN" )].toDouble();
-  myRasterBandStats.maximumValue = info[QStringLiteral( "MAX" )].toDouble();
+  myRasterBandStats.sum = info[u"SUM"_s].toDouble();
+  myRasterBandStats.elementCount = info[u"COUNT"_s].toInt();
+  myRasterBandStats.minimumValue = info[u"MIN"_s].toDouble();
+  myRasterBandStats.maximumValue = info[u"MAX"_s].toDouble();
   myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
-  myRasterBandStats.sumOfSquares = info[QStringLiteral( "SQSUM" )].toDouble();
-  myRasterBandStats.mean = info[QStringLiteral( "MEAN" )].toDouble();
-  myRasterBandStats.stdDev = info[QStringLiteral( "STDEV" )].toDouble();
+  myRasterBandStats.sumOfSquares = info[u"SQSUM"_s].toDouble();
+  myRasterBandStats.mean = info[u"MEAN"_s].toDouble();
+  myRasterBandStats.stdDev = info[u"STDEV"_s].toDouble();
 
   QgsDebugMsgLevel( QString( "min = %1" ).arg( myRasterBandStats.minimumValue ), 2 );
   QgsDebugMsgLevel( QString( "max = %1" ).arg( myRasterBandStats.maximumValue ), 2 );
   QgsDebugMsgLevel( QString( "count = %1" ).arg( myRasterBandStats.elementCount ), 2 );
   QgsDebugMsgLevel( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ), 2 );
 
-  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::Sum | Qgis::RasterBandStatistic::SumOfSquares | Qgis::RasterBandStatistic::StdDev;
+  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min
+                                    | Qgis::RasterBandStatistic::Max
+                                    | Qgis::RasterBandStatistic::Range
+                                    | Qgis::RasterBandStatistic::Mean
+                                    | Qgis::RasterBandStatistic::Sum
+                                    | Qgis::RasterBandStatistic::SumOfSquares
+                                    | Qgis::RasterBandStatistic::StdDev;
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;
@@ -396,7 +410,10 @@ QgsRectangle QgsGrassRasterProvider::extent() const
 }
 
 // this is only called once when statistics are calculated
-int QgsGrassRasterProvider::xBlockSize() const { return mCols; }
+int QgsGrassRasterProvider::xBlockSize() const
+{
+  return mCols;
+}
 int QgsGrassRasterProvider::yBlockSize() const
 {
   return mYBlockSize;
@@ -404,8 +421,14 @@ int QgsGrassRasterProvider::yBlockSize() const
 
 // TODO this should be always refreshed if raster has changed ?
 // maybe also only for stats
-int QgsGrassRasterProvider::xSize() const { return mCols; }
-int QgsGrassRasterProvider::ySize() const { return mRows; }
+int QgsGrassRasterProvider::xSize() const
+{
+  return mCols;
+}
+int QgsGrassRasterProvider::ySize() const
+{
+  return mRows;
+}
 
 QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
@@ -459,9 +482,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
 
 Qgis::RasterInterfaceCapabilities QgsGrassRasterProvider::capabilities() const
 {
-  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
-                                                 | Qgis::RasterInterfaceCapability::IdentifyValue
-                                                 | Qgis::RasterInterfaceCapability::Size;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue | Qgis::RasterInterfaceCapability::Size;
   return capability;
 }
 
@@ -556,12 +577,12 @@ QString QgsGrassRasterProvider::lastError()
 
 QString QgsGrassRasterProvider::name() const
 {
-  return QStringLiteral( "grassraster" );
+  return u"grassraster"_s;
 }
 
 QString QgsGrassRasterProvider::description() const
 {
-  return QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
+  return u"GRASS %1 raster provider"_s.arg( GRASS_VERSION_MAJOR );
 }
 
 QDateTime QgsGrassRasterProvider::dataTimestamp() const
@@ -569,7 +590,7 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
   QDateTime time;
   QString mapset = mGisdbase + "/" + mLocation + "/" + mMapset;
   QStringList dirs;
-  dirs << QStringLiteral( "cell" ) << QStringLiteral( "colr" );
+  dirs << u"cell"_s << u"colr"_s;
   const auto constDirs = dirs;
   for ( const QString &dir : constDirs )
   {
@@ -621,7 +642,7 @@ void QgsGrassRasterValue::start()
   QString module = QgsGrass::qgisGrassModulePath() + "/qgis.g.info";
   QStringList arguments;
 
-  arguments.append( QStringLiteral( "info=query" ) );
+  arguments.append( u"info=query"_s );
   arguments.append( "rast=" + mMapName + "@" + mMapset );
   try
   {
@@ -663,7 +684,7 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
     return value;
   }
 
-  QString coor = QStringLiteral( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ), QgsRasterBlock::printValue( y ) );
+  QString coor = u"%1 %2\n"_s.arg( QgsRasterBlock::printValue( x ), QgsRasterBlock::printValue( y ) );
   QgsDebugMsgLevel( "coor : " + coor, 2 );
   mProcess->write( coor.toLatin1() ); // how to flush, necessary?
   mProcess->waitForReadyRead();
@@ -675,7 +696,7 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
   QStringList list = str.trimmed().split( ':' );
   if ( list.size() == 2 )
   {
-    if ( list[1] == QLatin1String( "error" ) )
+    if ( list[1] == "error"_L1 )
       return value;
     value = list[1].toDouble( ok );
   }

@@ -36,11 +36,16 @@
 #include <QLabel>
 #include <QMenu>
 #include <QStackedWidget>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingmodelerparameterwidget.cpp"
 
-QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent )
+using namespace Qt::StringLiterals;
+
+QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
+  QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent
+)
   : QWidget( parent )
   , mModel( model )
   , mChildId( childId )
@@ -55,7 +60,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   QHBoxLayout *hLayout = new QHBoxLayout();
 
   {
-    const QVariantList acceptedSourcesMetadata = mParameterDefinition->metadata().value( QStringLiteral( "model_widget" ) ).toMap().value( QStringLiteral( "accepted_sources" ) ).toList();
+    const QVariantList acceptedSourcesMetadata = mParameterDefinition->metadata().value( u"model_widget"_s ).toMap().value( u"accepted_sources"_s ).toList();
     for ( const QVariant &acceptedSource : acceptedSourcesMetadata )
     {
       mLimitedSources.append( static_cast<Qgis::ProcessingModelChildParameterSource>( acceptedSource.toInt() ) );
@@ -82,6 +87,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, Qgis::ProcessingMode::Modeler ) );
   if ( mStaticWidgetWrapper )
   {
+    connect( mStaticWidgetWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingModelerParameterWidget::changed );
     QWidget *widget = mStaticWidgetWrapper->createWrappedWidget( context );
     if ( widget )
     {
@@ -99,6 +105,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   mExpressionWidget = new QgsExpressionLineEdit();
   mExpressionWidget->registerExpressionContextGenerator( this );
   mStackedWidget->addWidget( mExpressionWidget );
+  connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::changed );
 
   mModelInputCombo = new QComboBox();
   QHBoxLayout *hLayout2 = new QHBoxLayout();
@@ -108,6 +115,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   QWidget *hWidget2 = new QWidget();
   hWidget2->setLayout( hLayout2 );
   mStackedWidget->addWidget( hWidget2 );
+  connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::changed );
 
   mChildOutputCombo = new QComboBox();
   QHBoxLayout *hLayout3 = new QHBoxLayout();
@@ -117,6 +125,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   QWidget *hWidget3 = new QWidget();
   hWidget3->setLayout( hLayout3 );
   mStackedWidget->addWidget( hWidget3 );
+  connect( mChildOutputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::changed );
 
   if ( mParameterDefinition->isDestination() )
   {
@@ -128,6 +137,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
     QWidget *hWidget4 = new QWidget();
     hWidget4->setLayout( hLayout4 );
     mStackedWidget->addWidget( hWidget4 );
+    connect( mModelOutputName, &QgsFilterLineEdit::valueChanged, this, &QgsProcessingModelerParameterWidget::changed );
   }
 
   hLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -176,6 +186,7 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QgsProcessingMod
 
   updateUi();
   setSourceType( value.source() );
+  emit changed();
 }
 
 void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values )
@@ -190,6 +201,7 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcess
     mStaticValue = r;
     updateUi();
     setSourceType( Qgis::ProcessingModelChildParameterSource::StaticValue );
+    emit changed();
   }
 }
 
@@ -198,6 +210,7 @@ void QgsProcessingModelerParameterWidget::setToModelOutput( const QString &value
   if ( mModelOutputName )
     mModelOutputName->setText( value );
   setSourceType( Qgis::ProcessingModelChildParameterSource::ModelOutput );
+  emit changed();
 }
 
 bool QgsProcessingModelerParameterWidget::isModelOutput() const
@@ -221,9 +234,7 @@ QVariant QgsProcessingModelerParameterWidget::value() const
       if ( v.userType() == QMetaType::Type::QVariantList )
       {
         const QVariantList vList = v.toList();
-        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant &val ) {
-               return val.userType() == qMetaTypeId<QgsProcessingModelChildParameterSource>();
-             } ) )
+        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant &val ) { return val.userType() == qMetaTypeId<QgsProcessingModelChildParameterSource>(); } ) )
         {
           return v;
         }
@@ -289,8 +300,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
 
   const SourceType currentSource = currentSourceType();
 
-  if ( mParameterDefinition->isDestination()
-       && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::ModelOutput ) ) )
+  if ( mParameterDefinition->isDestination() && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::ModelOutput ) ) )
   {
     QAction *modelOutputAction = mSourceMenu->addAction( tr( "Model Output" ) );
     modelOutputAction->setCheckable( currentSource == ModelOutput );
@@ -298,8 +308,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
     modelOutputAction->setData( QVariant::fromValue( Qgis::ProcessingModelChildParameterSource::ModelOutput ) );
   }
 
-  if ( mHasStaticWrapper
-       && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::StaticValue ) ) )
+  if ( mHasStaticWrapper && ( mLimitedSources.empty() || mLimitedSources.contains( Qgis::ProcessingModelChildParameterSource::StaticValue ) ) )
   {
     QAction *fixedValueAction = mSourceMenu->addAction( tr( "Value" ) );
     fixedValueAction->setCheckable( currentSource == StaticValue );
@@ -338,6 +347,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuActionTriggered( QAction *ac
 {
   const Qgis::ProcessingModelChildParameterSource sourceType = action->data().value<Qgis::ProcessingModelChildParameterSource>();
   setSourceType( sourceType );
+  emit changed();
 }
 
 QgsProcessingModelerParameterWidget::SourceType QgsProcessingModelerParameterWidget::currentSourceType() const
@@ -358,19 +368,19 @@ void QgsProcessingModelerParameterWidget::setSourceType( Qgis::ProcessingModelCh
   {
     case Qgis::ProcessingModelChildParameterSource::StaticValue:
       mStackedWidget->setCurrentIndex( static_cast<int>( StaticValue ) );
-      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldInteger.svg" ) ) );
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( u"mIconFieldInteger.svg"_s ) );
       mSourceButton->setToolTip( tr( "Value" ) );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::Expression:
-      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconExpression.svg" ) ) );
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( u"mIconExpression.svg"_s ) );
       mStackedWidget->setCurrentIndex( static_cast<int>( Expression ) );
       mSourceButton->setToolTip( tr( "Pre-calculated Value" ) );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
     {
-      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "processingModel.svg" ) ) );
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( u"processingModel.svg"_s ) );
       mStackedWidget->setCurrentIndex( static_cast<int>( ModelParameter ) );
       mSourceButton->setToolTip( tr( "Model Input" ) );
       break;
@@ -378,7 +388,7 @@ void QgsProcessingModelerParameterWidget::setSourceType( Qgis::ProcessingModelCh
 
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
     {
-      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "processingAlgorithm.svg" ) ) );
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( u"processingAlgorithm.svg"_s ) );
       mStackedWidget->setCurrentIndex( static_cast<int>( ChildOutput ) );
       mSourceButton->setToolTip( tr( "Algorithm Output" ) );
       break;
@@ -386,7 +396,7 @@ void QgsProcessingModelerParameterWidget::setSourceType( Qgis::ProcessingModelCh
 
     case Qgis::ProcessingModelChildParameterSource::ModelOutput:
     {
-      mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconModelOutput.svg" ) ) );
+      mSourceButton->setIcon( QgsApplication::getThemeIcon( u"mIconModelOutput.svg"_s ) );
       mStackedWidget->setCurrentIndex( static_cast<int>( ModelOutput ) );
       mSourceButton->setToolTip( tr( "Model Output" ) );
       break;

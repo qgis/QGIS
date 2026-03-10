@@ -17,10 +17,14 @@
 #define QGSALGORITHMUNION_H
 
 
-#define SIP_NO_FILE
-
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -28,8 +32,8 @@ class QgsUnionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsUnionAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmUnion.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmUnion.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QString group() const override;

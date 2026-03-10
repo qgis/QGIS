@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsGeometry.
+"""Qgis Unit tests for QgsGeometry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -10,23 +10,22 @@ __author__ = "Loïc Bartoletti"
 __date__ = "2025-07-09"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     Qgis,
-    QgsInvalidArgumentException,
-    QgsGeometryUtils,
     QgsCircularString,
     QgsCompoundCurve,
     QgsGeometry,
+    QgsGeometryUtils,
+    QgsInvalidArgumentException,
     QgsLineString,
     QgsMultiLineString,
     QgsPoint,
     QgsVertexId,
     QgsWkbTypes,
 )
-import unittest
-
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath, writeShape
 
 # Convenience instances in case you may need them not used in this test
@@ -36,7 +35,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(QgisTestCase):
-
     # CHAMFER TESTS - SEGMENT-BASED OVERLOAD
 
     def test_chamfer_segments_basic_right_angle_quadrant1(self):
@@ -819,7 +817,7 @@ class TestQgsGeometry(QgisTestCase):
         self.assertFalse(result.isEmpty())
 
         # After fix, the exact tangent points are now included
-        expected_wkt = "Polygon ((0 0, 0.9 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 0.1, 1 1, 0 1, 0 0))"
+        expected_wkt = "Polygon ((0 0, 0.9 0, 0.92 0, 0.94 0.01, 0.96 0.02, 0.97 0.03, 0.98 0.04, 0.99 0.06, 1 0.08, 1 0.1, 1 1, 0 1, 0 0))"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet_first_vertex(self):

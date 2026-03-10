@@ -8,20 +8,20 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis.PyQt.QtCore import Qt, QStringListModel, QItemSelectionModel
-from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
 from qgis.core import (
-    QgsLayerTree,
-    QgsLayerTreeModel,
-    QgsProject,
-    QgsVectorLayer,
     QgsCategorizedSymbolRenderer,
-    QgsRendererCategory,
-    QgsMarkerSymbol,
-    QgsMapLayerLegend,
+    QgsLayerTree,
     QgsLayerTreeFilterProxyModel,
+    QgsLayerTreeModel,
+    QgsMapLayerLegend,
+    QgsMarkerSymbol,
+    QgsProject,
+    QgsRendererCategory,
+    QgsVectorLayer,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QItemSelectionModel, QStringListModel, Qt
+from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -29,7 +29,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
 

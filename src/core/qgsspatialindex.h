@@ -19,6 +19,10 @@
 
 #include "qgis_sip.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // forward declaration
 namespace SpatialIndex SIP_SKIP
 {
@@ -31,7 +35,7 @@ namespace SpatialIndex SIP_SKIP
   {
     class IBuffer;
   }
-}
+} //namespace SpatialIndex
 
 class QgsFeedback;
 class QgsFeature;
@@ -66,15 +70,14 @@ class QgsFeatureSource;
  */
 class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 {
-
   public:
-
     /* creation of spatial index */
 
     //! Flags controlling index behavior
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
+      FlagStoreFeatureGeometries
+      = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -244,6 +247,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QgsGeometry geometry( QgsFeatureId id ) const;
 
 #else
+    // clang-format off
 
     /**
      * Returns the stored geometry for the indexed feature with matching \a id.
@@ -259,7 +263,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No geometry with feature id %1 exists in the index."_s.arg( a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -267,6 +271,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
       sipRes = sipConvertFromType( g.release(), sipType_QgsGeometry, Py_None );
     }
     % End
+// clang-format on
 #endif
 
     /* debugging */
@@ -275,7 +280,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
-
     /**
      * Calculates feature info to insert into index.
     * \param f input feature
@@ -299,9 +303,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 
   private:
-
     QSharedDataPointer<QgsSpatialIndexData> d;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSpatialIndex::Flags )

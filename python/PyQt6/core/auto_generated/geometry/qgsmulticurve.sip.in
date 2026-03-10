@@ -8,7 +8,9 @@
 
 
 
-class QgsMultiCurve: QgsGeometryCollection
+
+
+class QgsMultiCurve : QgsGeometryCollection
 {
 %Docstring(signature="appended")
 Multi curve geometry collection.

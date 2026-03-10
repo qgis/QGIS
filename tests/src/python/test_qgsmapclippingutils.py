@@ -11,6 +11,8 @@ __date__ = "2020-06"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -24,14 +26,12 @@ from qgis.core import (
     QgsRenderContext,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMapClippingUtils(QgisTestCase):
-
     def testClippingRegionsForLayer(self):
         layer = QgsVectorLayer(
             "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"

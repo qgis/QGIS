@@ -29,10 +29,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeature3dhandler_p.h"
-
-class QgsPolygon3DSymbol;
 class QgsAbstract3DSymbol;
+class QgsFeature3DHandler;
+class QgsPolygon3DSymbol;
+class QgsVectorLayer;
 
 namespace Qgs3DSymbolImpl
 {

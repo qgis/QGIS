@@ -29,15 +29,18 @@
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgswmsconnection.cpp"
 
-static const QString SERVICE_WMS = QStringLiteral( "WMS" );
+using namespace Qt::StringLiterals;
+
+static const QString SERVICE_WMS = u"WMS"_s;
 
 
 QgsWMSConnection::QgsWMSConnection( const QString &connName )
   : QgsOwsConnection( SERVICE_WMS, connName )
-{
-}
+{}
 
 QStringList QgsWMSConnection::connectionList()
 {

@@ -22,28 +22,21 @@
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
 #include "moc_qgsdatetimeedit.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QDateTime(), QMetaType::Type::QDateTime, parent )
-#else
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
-#endif
-{
-}
+{}
 
 ///@cond PRIVATE
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
-#else
-QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
-  : QDateTimeEdit( var, parserType, parent )
-#endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
@@ -141,11 +134,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     if ( calendarPopup() )
     {
       QStyleOptionComboBox optCombo;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      optCombo.init( this );
-#else
       optCombo.initFrom( this );
-#endif
       optCombo.editable = true;
       optCombo.subControls = QStyle::SC_All;
       control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
@@ -213,10 +202,12 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
     QAbstractSpinBox::focusInEvent( event ); // clazy:exclude=skipped-base-method
 
     displayCurrentDate();
+    setSelectedSection( sectionAt( 0 ) );
   }
   else
   {
     QDateTimeEdit::focusInEvent( event );
+    setSelectedSection( sectionAt( 0 ) );
   }
 }
 
@@ -255,7 +246,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
       {
         mOriginalStyleSheet = lineEdit()->styleSheet();
       }
-      lineEdit()->setStyleSheet( QStringLiteral( "QLineEdit { font-style: italic; color: grey; }" ) );
+      lineEdit()->setStyleSheet( u"QLineEdit { font-style: italic; color: grey; }"_s );
     }
     else
     {
@@ -423,13 +414,8 @@ QDate QgsDateTimeEdit::date() const
 //
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QTime(), QMetaType::Type::QTime, parent )
-#else
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
-#endif
-{
-}
+{}
 
 void QgsTimeEdit::setTime( const QTime &time )
 {
@@ -463,13 +449,8 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 //
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QDate(), QMetaType::Type::QDate, parent )
-#else
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
-#endif
-{
-}
+{}
 
 void QgsDateEdit::setDate( const QDate &date )
 {

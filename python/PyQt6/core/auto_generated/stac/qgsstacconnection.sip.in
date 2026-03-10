@@ -11,6 +11,7 @@
 
 
 
+
 class QgsStacConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
@@ -23,7 +24,6 @@ Represents connections to STAC catalogs.
 #include "qgsstacconnection.h"
 %End
   public:
-
 
     QgsStacConnection( const QString &name );
 %Docstring
@@ -44,11 +44,11 @@ details.
 
     struct Data
     {
-      QString url;
-      QString authCfg;
-      QString username;
-      QString password;
-      QgsHttpHeaders httpHeaders;
+        QString url;
+        QString authCfg;
+        QString username;
+        QString password;
+        QgsHttpHeaders httpHeaders;
     };
 
     static QString encodedUri( const Data &conn );

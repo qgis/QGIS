@@ -23,6 +23,10 @@
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
 {
   QStringList str;
@@ -37,11 +41,13 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
     }
     str.back() += ids.join( ',' );
   }
-  return str.join( QLatin1String( "; " ) );
+  return str.join( "; "_L1 );
 }
 
 
-QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -111,7 +117,9 @@ QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QS
   return QgsGeometryCheck::Result::Success;
 }
 
-void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryDuplicateCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsFeaturePool *featurePoolA = featurePools[error->layerId()];
   QgsFeature featureA;
@@ -163,15 +171,13 @@ void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "No action" )
-                                     << tr( "Remove duplicates" );
+  static const QStringList methods = QStringList() << tr( "No action" ) << tr( "Remove duplicates" );
   return methods;
 }
 
 QString QgsGeometryDuplicateCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryDuplicateCheck" );
+  return u"QgsGeometryDuplicateCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryDuplicateCheck::factoryCheckType()

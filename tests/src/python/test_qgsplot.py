@@ -10,10 +10,10 @@ __author__ = "Nyall Dawson"
 __date__ = "28/3/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDir, QSizeF, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
+    Qgis,
     Qgs2DXyPlot,
     QgsBarChartPlot,
     QgsBasicNumericFormat,
@@ -21,29 +21,31 @@ from qgis.core import (
     QgsFontUtils,
     QgsLineChartPlot,
     QgsLineSymbol,
+    QgsMargins,
+    QgsMarkerSymbol,
     QgsPalLayerSettings,
     QgsPieChartPlot,
     QgsPlot,
+    QgsPlotAxis,
     QgsPlotData,
     QgsPlotRenderContext,
     QgsPresetSchemeColorRamp,
     QgsProperty,
-    QgsMarkerSymbol,
     QgsReadWriteContext,
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,
     QgsXyPlotSeries,
-    Qgis,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDir, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsPlot(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "plot"
@@ -1667,6 +1669,365 @@ class TestQgsPlot(QgisTestCase):
         assert self.image_check(
             "pie_chart_plot_value_labels", "pie_chart_plot_value_labels", im
         )
+
+    def test_copy_axis_properties(self):
+        source_axis = QgsPlotAxis()
+        source_axis.setType(Qgis.PlotAxisType.Categorical)
+        source_axis.setGridIntervalMajor(5)
+        source_axis.setGridIntervalMinor(1)
+        source_axis.setLabelInterval(2.5)
+        source_axis.setLabelSuffix("km")
+        source_axis.setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
+
+        text_format = QgsTextFormat()
+        text_format.setSize(14)
+        text_format.setColor(QColor(255, 0, 0))
+        source_axis.setTextFormat(text_format)
+
+        number_format = QgsBasicNumericFormat()
+        number_format.setNumberDecimalPlaces(3)
+        number_format.setShowTrailingZeros(True)
+        source_axis.setNumericFormat(number_format)
+
+        major_grid_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#112233", "outline_width": 2}
+        )
+        source_axis.setGridMajorSymbol(major_grid_symbol)
+
+        minor_grid_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#33221", "outline_width": 0.75}
+        )
+        source_axis.setGridMinorSymbol(minor_grid_symbol)
+
+        dest_axis = QgsPlotAxis()
+        QgsPlotAxis.copyProperties(source_axis, dest_axis)
+
+        self.assertEqual(dest_axis.type(), source_axis.type())
+        self.assertEqual(dest_axis.gridIntervalMajor(), source_axis.gridIntervalMajor())
+        self.assertEqual(dest_axis.gridIntervalMinor(), source_axis.gridIntervalMinor())
+        self.assertEqual(dest_axis.labelInterval(), source_axis.labelInterval())
+        self.assertEqual(dest_axis.labelSuffix(), source_axis.labelSuffix())
+        self.assertEqual(
+            dest_axis.labelSuffixPlacement(), source_axis.labelSuffixPlacement()
+        )
+        self.assertAlmostEqual(
+            dest_axis.textFormat().size(), source_axis.textFormat().size()
+        )
+        self.assertEqual(
+            dest_axis.textFormat().color().name(),
+            source_axis.textFormat().color().name(),
+        )
+        self.assertEqual(
+            dest_axis.numericFormat().numberDecimalPlaces(),
+            source_axis.numericFormat().numberDecimalPlaces(),
+        )
+        self.assertTrue(dest_axis.numericFormat().showTrailingZeros())
+        self.assertEqual(
+            dest_axis.gridMajorSymbol().color().name(),
+            source_axis.gridMajorSymbol().color().name(),
+        )
+        self.assertEqual(
+            dest_axis.gridMinorSymbol().color().name(),
+            source_axis.gridMinorSymbol().color().name(),
+        )
+
+        source_axis.setLabelSuffix("miles")
+        source_axis.setGridIntervalMinor(99)
+        self.assertEqual(dest_axis.labelSuffix(), "km")
+        self.assertEqual(dest_axis.gridIntervalMinor(), 1)
+
+    def _create_2dxyplot(self, type="bar"):
+        """Creates a fully configured Qgs2DXyPlot plot (bar or line)"""
+        plot = None
+        if type == "bar":
+            plot = QgsBarChartPlot()
+        elif type == "line":
+            plot = QgsBarChartPlot()
+
+        plot.setSize(QSizeF(500, 400))
+        plot.setMargins(QgsMargins(2, 4, 6, 8))
+        plot.setXMinimum(-10)
+        plot.setXMaximum(10)
+        plot.setYMinimum(0)
+        plot.setYMaximum(100)
+        plot.setFlipAxes(True)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.Interval)
+        plot.xAxis().setGridIntervalMajor(5)
+        plot.xAxis().setGridIntervalMinor(1)
+        plot.xAxis().setLabelInterval(5)
+        plot.xAxis().setLabelSuffix("m")
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
+
+        grid_major_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#aaaaaa", "outline_width": 1}
+        )
+        plot.xAxis().setGridMajorSymbol(grid_major_symbol)
+        grid_minor_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#bbbbbb", "outline_width": 0.5}
+        )
+        plot.xAxis().setGridMinorSymbol(grid_minor_symbol)
+        text_format = QgsTextFormat()
+        text_format.setColor(QColor(1, 2, 3))
+        plot.xAxis().setTextFormat(text_format)
+        number_format = QgsBasicNumericFormat()
+        number_format.setNumberDecimalPlaces(1)
+        plot.xAxis().setNumericFormat(number_format)
+
+        plot.yAxis().setGridIntervalMajor(20)
+        plot.yAxis().setGridIntervalMinor(10)
+        plot.yAxis().setLabelInterval(20)
+        plot.yAxis().setLabelSuffix("%")
+        grid_major_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#cccccc", "outline_width": 1}
+        )
+        plot.yAxis().setGridMajorSymbol(grid_major_symbol)
+        grid_minor_symbol = QgsLineSymbol.createSimple(
+            {"outline_color": "#dddddd", "outline_width": 0.5}
+        )
+        plot.yAxis().setGridMinorSymbol(grid_minor_symbol)
+        text_format = QgsTextFormat()
+        text_format.setColor(QColor(4, 5, 6))
+        plot.yAxis().setTextFormat(text_format)
+
+        background_symbol = QgsFillSymbol.createSimple(
+            {"color": "#eeeeee", "outline_style": "no"}
+        )
+        plot.setChartBackgroundSymbol(background_symbol)
+        border_symbol = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#ffffff",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(border_symbol)
+
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisMaximum, QgsProperty.fromValue(50.5)
+        )
+
+        return plot
+
+    def _create_2dplot(self):
+        """Creates a fully configured Qgs2DPlot (pie)"""
+        plot = QgsPieChartPlot()
+
+        plot.setSize(QSizeF(500, 400))
+        plot.setMargins(QgsMargins(2, 4, 6, 8))
+
+        text_format = QgsTextFormat()
+        text_format.setColor(QColor(3, 2, 1))
+        plot.setTextFormat(text_format)
+        number_format = QgsBasicNumericFormat()
+        number_format.setNumberDecimalPlaces(1)
+        plot.setNumericFormat(number_format)
+        plot.setLabelType(Qgis.PieChartLabelType.Categories)
+
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.MarginLeft, QgsProperty.fromValue(10.2)
+        )
+
+        return plot
+
+    def _check_2dplot_properties(self, new_plot, old_plot):
+        """Checks that Qgs2DPlot properties are copied from old_plot to new_plot"""
+        self.assertEqual(new_plot.size(), old_plot.size())
+        self.assertAlmostEqual(new_plot.margins().left(), old_plot.margins().left())
+        self.assertAlmostEqual(new_plot.margins().top(), old_plot.margins().top())
+        self.assertAlmostEqual(new_plot.margins().right(), old_plot.margins().right())
+        self.assertAlmostEqual(new_plot.margins().bottom(), old_plot.margins().bottom())
+
+        self.assertEqual(
+            new_plot.dataDefinedProperties().isActive(
+                QgsPlot.DataDefinedProperty.MarginLeft
+            ),
+            old_plot.dataDefinedProperties().isActive(
+                QgsPlot.DataDefinedProperty.MarginLeft
+            ),
+        )
+        self.assertEqual(
+            new_plot.dataDefinedProperties()
+            .property(QgsPlot.DataDefinedProperty.MarginLeft)
+            .staticValue(),
+            old_plot.dataDefinedProperties()
+            .property(QgsPlot.DataDefinedProperty.MarginLeft)
+            .staticValue(),
+        )
+
+    def _check_2dxyplot_properties(self, new_plot, old_plot):
+        """Checks that Qgs2DXyPlot properties are copied from old_plot to new_plot"""
+        self.assertEqual(new_plot.size(), old_plot.size())
+        self.assertEqual(new_plot.xMinimum(), old_plot.xMinimum())
+        self.assertEqual(new_plot.xMaximum(), old_plot.xMaximum())
+        self.assertEqual(new_plot.yMinimum(), old_plot.yMinimum())
+        self.assertEqual(new_plot.yMaximum(), old_plot.yMaximum())
+        self.assertTrue(new_plot.flipAxes(), old_plot.flipAxes())
+
+        self.assertEqual(new_plot.xAxis().type(), old_plot.xAxis().type())
+        self.assertEqual(
+            new_plot.xAxis().gridIntervalMajor(), old_plot.xAxis().gridIntervalMajor()
+        )
+        self.assertEqual(
+            new_plot.xAxis().gridIntervalMinor(), old_plot.xAxis().gridIntervalMinor()
+        )
+        self.assertEqual(
+            new_plot.xAxis().labelInterval(), old_plot.xAxis().labelInterval()
+        )
+        self.assertEqual(new_plot.xAxis().labelSuffix(), old_plot.xAxis().labelSuffix())
+        self.assertEqual(
+            new_plot.xAxis().labelSuffixPlacement(),
+            old_plot.xAxis().labelSuffixPlacement(),
+        )
+        self.assertEqual(
+            new_plot.xAxis().gridMajorSymbol().color().name(),
+            old_plot.xAxis().gridMajorSymbol().color().name(),
+        )
+        self.assertEqual(
+            new_plot.xAxis().gridMinorSymbol().color().name(),
+            old_plot.xAxis().gridMinorSymbol().color().name(),
+        )
+        self.assertEqual(
+            new_plot.xAxis().textFormat().color().name(),
+            old_plot.xAxis().textFormat().color().name(),
+        )
+        self.assertEqual(
+            new_plot.xAxis().numericFormat().numberDecimalPlaces(),
+            new_plot.xAxis().numericFormat().numberDecimalPlaces(),
+        )
+
+        self.assertEqual(
+            new_plot.yAxis().gridIntervalMajor(), old_plot.yAxis().gridIntervalMajor()
+        )
+        self.assertEqual(
+            new_plot.yAxis().gridIntervalMinor(), old_plot.yAxis().gridIntervalMinor()
+        )
+        self.assertEqual(
+            new_plot.yAxis().labelInterval(), old_plot.yAxis().labelInterval()
+        )
+        self.assertEqual(new_plot.yAxis().labelSuffix(), old_plot.yAxis().labelSuffix())
+        self.assertEqual(
+            new_plot.yAxis().labelSuffixPlacement(),
+            old_plot.yAxis().labelSuffixPlacement(),
+        )
+        self.assertEqual(
+            new_plot.yAxis().gridMajorSymbol().color().name(),
+            old_plot.yAxis().gridMajorSymbol().color().name(),
+        )
+        self.assertEqual(
+            new_plot.yAxis().gridMinorSymbol().color().name(),
+            old_plot.yAxis().gridMinorSymbol().color().name(),
+        )
+        self.assertEqual(
+            new_plot.yAxis().textFormat().color().name(),
+            old_plot.yAxis().textFormat().color().name(),
+        )
+        self.assertEqual(
+            new_plot.yAxis().numericFormat().numberDecimalPlaces(),
+            new_plot.yAxis().numericFormat().numberDecimalPlaces(),
+        )
+
+        self.assertEqual(
+            new_plot.chartBackgroundSymbol().color().name(),
+            old_plot.chartBackgroundSymbol().color().name(),
+        )
+        self.assertEqual(
+            new_plot.chartBorderSymbol().color().name(),
+            old_plot.chartBorderSymbol().color().name(),
+        )
+
+        self.assertEqual(
+            new_plot.dataDefinedProperties().isActive(
+                QgsPlot.DataDefinedProperty.YAxisMaximum
+            ),
+            old_plot.dataDefinedProperties().isActive(
+                QgsPlot.DataDefinedProperty.YAxisMaximum
+            ),
+        )
+        self.assertEqual(
+            new_plot.dataDefinedProperties()
+            .property(QgsPlot.DataDefinedProperty.YAxisMaximum)
+            .staticValue(),
+            old_plot.dataDefinedProperties()
+            .property(QgsPlot.DataDefinedProperty.YAxisMaximum)
+            .staticValue(),
+        )
+
+    def test_init_line_plot(self):
+        # from bar plot
+        bar_plot = self._create_2dxyplot("bar")
+
+        line_plot = QgsLineChartPlot()
+        line_plot.initFromPlot(bar_plot)
+        self._check_2dplot_properties(line_plot, bar_plot)
+        self._check_2dxyplot_properties(line_plot, bar_plot)
+
+        # from pie plot
+        pie_plot = self._create_2dplot()
+
+        line_plot = QgsLineChartPlot()
+        # store properties specific to line chart plot to confirm they won't be touched
+        x_axis_major_interval = line_plot.xAxis().gridIntervalMajor()
+        x_axis_text_format = line_plot.xAxis().textFormat()
+        y_axis_text_format = line_plot.yAxis().textFormat()
+
+        line_plot.initFromPlot(pie_plot)
+        self._check_2dplot_properties(line_plot, pie_plot)
+        self.assertEqual(line_plot.xAxis().gridIntervalMajor(), x_axis_major_interval)
+        self.assertEqual(
+            line_plot.xAxis().textFormat().color().name(),
+            x_axis_text_format.color().name(),
+        )
+        self.assertEqual(
+            line_plot.yAxis().textFormat().color().name(),
+            y_axis_text_format.color().name(),
+        )
+
+    def test_init_bar_plot(self):
+        # from line plot
+        line_plot = self._create_2dxyplot("line")
+
+        bar_plot = QgsBarChartPlot()
+        bar_plot.initFromPlot(line_plot)
+        self._check_2dplot_properties(bar_plot, line_plot)
+        self._check_2dxyplot_properties(bar_plot, line_plot)
+
+        # from pie plot
+        pie_plot = self._create_2dplot()
+
+        bar_plot = QgsBarChartPlot()
+        # store properties specific to line chart plot to confirm they won't be touched
+        x_axis_major_interval = bar_plot.xAxis().gridIntervalMajor()
+        x_axis_text_format = bar_plot.xAxis().textFormat()
+        y_axis_text_format = bar_plot.yAxis().textFormat()
+
+        bar_plot.initFromPlot(pie_plot)
+        self._check_2dplot_properties(bar_plot, pie_plot)
+        self.assertEqual(bar_plot.xAxis().gridIntervalMajor(), x_axis_major_interval)
+        self.assertEqual(
+            bar_plot.xAxis().textFormat().color().name(),
+            x_axis_text_format.color().name(),
+        )
+        self.assertEqual(
+            bar_plot.yAxis().textFormat().color().name(),
+            y_axis_text_format.color().name(),
+        )
+
+    def test_init_pie_plot(self):
+        # from bar plot
+        bar_plot = self._create_2dxyplot("bar")
+
+        pie_plot = QgsPieChartPlot()
+        pie_plot.initFromPlot(bar_plot)
+        self._check_2dplot_properties(pie_plot, bar_plot)
+
+        # from line plot
+        line_plot = self._create_2dxyplot("line")
+
+        pie_plot = QgsPieChartPlot()
+        pie_plot.initFromPlot(line_plot)
+        self._check_2dplot_properties(pie_plot, line_plot)
 
 
 if __name__ == "__main__":

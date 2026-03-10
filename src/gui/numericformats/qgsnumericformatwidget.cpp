@@ -27,8 +27,11 @@
 #include "qgsscientificnumericformat.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgsnumericformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
@@ -214,7 +217,7 @@ QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFo
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  setObjectName( QStringLiteral( "QgsBearingNumericFormatDialog" ) );
+  setObjectName( u"QgsBearingNumericFormatDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -322,7 +325,7 @@ QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormat
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  setObjectName( QStringLiteral( "QgsGeographicCoordinateNumericFormatDialog" ) );
+  setObjectName( u"QgsGeographicCoordinateNumericFormatDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -603,9 +606,9 @@ QgsExpressionContext QgsExpressionBasedNumericFormatWidget::createExpressionCont
   QgsExpressionContext context = QgsNumericFormatWidget::createExpressionContext();
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 1234.5678 ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"value"_s, 1234.5678 ) );
   context.appendScope( scope );
-  context.setHighlightedVariables( { QStringLiteral( "value" ) } );
+  context.setHighlightedVariables( { u"value"_s } );
   return context;
 }
 

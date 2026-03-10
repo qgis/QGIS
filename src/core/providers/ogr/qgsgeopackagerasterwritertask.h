@@ -19,12 +19,13 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 #include "qgsgeopackagerasterwriter.h"
 #include "qgstaskmanager.h"
+
+#define SIP_NO_FILE
 
 /**
  * \class QgsGeoPackageRasterWriterTask
@@ -38,7 +39,6 @@ class CORE_EXPORT QgsGeoPackageRasterWriterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
@@ -62,17 +62,14 @@ class CORE_EXPORT QgsGeoPackageRasterWriterTask : public QgsTask
     void errorOccurred( QgsGeoPackageRasterWriter::WriterError error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QgsGeoPackageRasterWriter mWriter;
     std::unique_ptr< QgsFeedback > mFeedback;
     QgsGeoPackageRasterWriter::WriterError mError = QgsGeoPackageRasterWriter::WriterError::NoError;
     QString mErrorMessage;
-
 };
 
 

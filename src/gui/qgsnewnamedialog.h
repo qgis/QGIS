@@ -47,7 +47,15 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \note Earlier versions had a similar constructor but with extra arguments for \a regexp which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use setRegularExpression() instead.
      * \since QGIS 3.22
      */
-    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(), const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(), Qt::CaseSensitivity cs = Qt::CaseSensitive, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+    QgsNewNameDialog(
+      const QString &source = QString(),
+      const QString &initial = QString(),
+      const QStringList &extensions = QStringList(),
+      const QStringList &existing = QStringList(),
+      Qt::CaseSensitivity cs = Qt::CaseSensitive,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags
+    );
 
     /**
      * Sets the hint string for the dialog (the text shown above the name
@@ -145,7 +153,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   signals:
 
-    // TODO QGIS 4.0 - rename to nameChanged
+    // TODO QGIS 5.0 - rename to nameChanged
 
     /**
      * Emitted when the name is changed in the dialog.
@@ -154,7 +162,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     void newNameChanged();
 
   public slots:
-    // TODO QGIS 4.0 - rename to onNameChanged
+    // TODO QGIS 5.0 - rename to onNameChanged
     void nameChanged();
 
   protected:

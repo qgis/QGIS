@@ -24,12 +24,15 @@
 #include "qgslinestring.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::name() const
 {
-  return QStringLiteral( "splitfeaturesbycharacter" );
+  return u"splitfeaturesbycharacter"_s;
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::displayName() const
@@ -49,16 +52,18 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::group() const
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits features into multiple output features by splitting a field's value with a specified character.\n\n"
-                      "For instance, if a layer contains features with multiple comma separated values contained in a single field, this "
-                      "algorithm can be used to split these values up across multiple output features.\n\n"
-                      "Geometries and other attributes remain unchanged in the output.\n\n"
-                      "Optionally, the separator string can be a regular expression for added flexibility." );
+  return QObject::tr(
+    "This algorithm splits features into multiple output features by splitting a field's value with a specified character.\n\n"
+    "For instance, if a layer contains features with multiple comma separated values contained in a single field, this "
+    "algorithm can be used to split these values up across multiple output features.\n\n"
+    "Geometries and other attributes remain unchanged in the output.\n\n"
+    "Optionally, the separator string can be a regular expression for added flexibility."
+  );
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortDescription() const
@@ -78,9 +83,9 @@ QList<int> QgsSplitFeaturesByAttributeCharacterAlgorithm::inputLayerTypes() cons
 
 void QgsSplitFeaturesByAttributeCharacterAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Split using values in field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "CHAR" ), QObject::tr( "Split values using character" ) ) );
-  std::unique_ptr<QgsProcessingParameterDefinition> regexParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "REGEX" ), QObject::tr( "Use regular expression separator" ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Split using values in field" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterString( u"CHAR"_s, QObject::tr( "Split values using character" ) ) );
+  std::unique_ptr<QgsProcessingParameterDefinition> regexParam = std::make_unique<QgsProcessingParameterBoolean>( u"REGEX"_s, QObject::tr( "Use regular expression separator" ) );
   regexParam->setFlags( regexParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( regexParam.release() );
 }
@@ -121,9 +126,9 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::outputName() const
 
 bool QgsSplitFeaturesByAttributeCharacterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mChar = parameterAsString( parameters, QStringLiteral( "CHAR" ), context );
-  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  mUseRegex = parameterAsBoolean( parameters, QStringLiteral( "REGEX" ), context );
+  mChar = parameterAsString( parameters, u"CHAR"_s, context );
+  mFieldName = parameterAsString( parameters, u"FIELD"_s, context );
+  mUseRegex = parameterAsBoolean( parameters, u"REGEX"_s, context );
   if ( mUseRegex )
     mRegex = QRegularExpression( mChar );
   return true;

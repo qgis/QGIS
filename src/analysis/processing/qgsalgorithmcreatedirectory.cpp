@@ -16,11 +16,15 @@
  ***************************************************************************/
 #include "qgsalgorithmcreatedirectory.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCreateDirectoryAlgorithm::name() const
 {
-  return QStringLiteral( "createdirectory" );
+  return u"createdirectory"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsCreateDirectoryAlgorithm::flags() const
@@ -45,14 +49,16 @@ QString QgsCreateDirectoryAlgorithm::group() const
 
 QString QgsCreateDirectoryAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsCreateDirectoryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new directory on a file system. Directories will be created recursively, creating all "
-                      "required parent directories in order to construct the full specified directory path.\n\n"
-                      "No errors will be raised if the directory already exists." );
+  return QObject::tr(
+    "This algorithm creates a new directory on a file system. Directories will be created recursively, creating all "
+    "required parent directories in order to construct the full specified directory path.\n\n"
+    "No errors will be raised if the directory already exists."
+  );
 }
 
 QString QgsCreateDirectoryAlgorithm::shortDescription() const
@@ -67,13 +73,13 @@ QgsCreateDirectoryAlgorithm *QgsCreateDirectoryAlgorithm::createInstance() const
 
 void QgsCreateDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "PATH" ), QObject::tr( "Directory path" ) ) );
-  addOutput( new QgsProcessingOutputFolder( QStringLiteral( "OUTPUT" ), QObject::tr( "Directory" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"PATH"_s, QObject::tr( "Directory path" ) ) );
+  addOutput( new QgsProcessingOutputFolder( u"OUTPUT"_s, QObject::tr( "Directory" ) ) );
 }
 
 QVariantMap QgsCreateDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString path = parameterAsString( parameters, QStringLiteral( "PATH" ), context );
+  const QString path = parameterAsString( parameters, u"PATH"_s, context );
 
   if ( !path.isEmpty() )
   {
@@ -97,7 +103,7 @@ QVariantMap QgsCreateDirectoryAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), path );
+  results.insert( u"OUTPUT"_s, path );
   return results;
 }
 

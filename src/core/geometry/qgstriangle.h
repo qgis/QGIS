@@ -3,7 +3,7 @@
                          -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -32,11 +32,12 @@
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty triangle geometry.
      */
     QgsTriangle() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Construct a QgsTriangle from three QgsPoint.

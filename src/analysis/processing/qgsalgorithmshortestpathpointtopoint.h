@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMSHORTESTPATHPOINTTOPOINT_H
 #define QGSALGORITHMSHORTESTPATHPOINTTOPOINT_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsalgorithmnetworkanalysisbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

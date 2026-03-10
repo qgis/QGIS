@@ -20,8 +20,7 @@ QgsStacLink::QgsStacLink( const QString &href, const QString &relation, const QS
   , mRelation( relation )
   , mMediaType( mediaType )
   , mTitle( title )
-{
-}
+{}
 
 QString QgsStacLink::href() const
 {

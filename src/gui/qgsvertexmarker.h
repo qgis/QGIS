@@ -41,7 +41,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       sipType = sipType_QgsVertexMarker;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
   public:
     //! Icons

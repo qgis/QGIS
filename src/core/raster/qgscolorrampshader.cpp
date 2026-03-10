@@ -34,13 +34,17 @@ originally part of the larger QgsRasterLayer class
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Qgis::ShaderInterpolationMethod type, Qgis::ShaderClassificationMethod classificationMode )
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
   , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
-  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
+  QgsDebugMsgLevel( u"called."_s, 4 );
 
   setSourceColorRamp( colorRamp );
 }
@@ -91,13 +95,13 @@ QString QgsColorRampShader::colorRampTypeAsQString() const
   switch ( mColorRampType )
   {
     case Qgis::ShaderInterpolationMethod::Linear:
-      return QStringLiteral( "INTERPOLATED" );
+      return u"INTERPOLATED"_s;
     case Qgis::ShaderInterpolationMethod::Discrete:
-      return QStringLiteral( "DISCRETE" );
+      return u"DISCRETE"_s;
     case Qgis::ShaderInterpolationMethod::Exact:
-      return QStringLiteral( "EXACT" );
+      return u"EXACT"_s;
   }
-  return QStringLiteral( "Unknown" );
+  return u"Unknown"_s;
 }
 
 void QgsColorRampShader::setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list )
@@ -120,11 +124,11 @@ bool QgsColorRampShader::isEmpty() const
 
 void QgsColorRampShader::setColorRampType( const QString &type )
 {
-  if ( type == QLatin1String( "INTERPOLATED" ) )
+  if ( type == "INTERPOLATED"_L1 )
   {
     mColorRampType = Qgis::ShaderInterpolationMethod::Linear;
   }
-  else if ( type == QLatin1String( "DISCRETE" ) )
+  else if ( type == "DISCRETE"_L1 )
   {
     mColorRampType = Qgis::ShaderInterpolationMethod::Discrete;
   }
@@ -203,7 +207,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
 
   if ( minimumValue() == maximumValue() )
   {
-    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    if ( sourceColorRamp() && sourceColorRamp()->count() > 1 )
     {
       entryValues.push_back( min );
       if ( discrete )
@@ -214,7 +218,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   }
   else if ( classificationMode() == Qgis::ShaderClassificationMethod::Continuous )
   {
-    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    if ( sourceColorRamp() && sourceColorRamp()->count() > 1 )
     {
       int numberOfEntries = sourceColorRamp()->count();
       entryValues.reserve( numberOfEntries );
@@ -333,7 +337,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       int colorDiff = 0;
       if ( classes != 0 )
       {
-        colorDiff = ( int )( 255 / classes );
+        colorDiff = ( int ) ( 255 / classes );
       }
 
       entryColors.reserve( classes );
@@ -406,7 +410,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       const double rangeValue = colorRampItems[colorRampItemListCount - 2].value - minimumValue;
       if ( rangeValue > 0 )
       {
-        const int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
+        const int lutSize = 256;                           // TODO: test if speed can be increased with a different LUT size
         mLUTFactor = ( lutSize - 0.0000001 ) / rangeValue; // decrease slightly to make sure last LUT category is correct
         idx = 0;
         double val;
@@ -414,8 +418,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
         for ( int i = 0; i < lutSize; i++ )
         {
           val = ( i / mLUTFactor ) + mLUTOffset;
-          while ( idx < colorRampItemListCount
-                  && colorRampItems[idx].value - DOUBLE_DIFF_THRESHOLD < val )
+          while ( idx < colorRampItemListCount && colorRampItems[idx].value - DOUBLE_DIFF_THRESHOLD < val )
           {
             idx++;
           }
@@ -451,7 +454,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   else
   {
     // get initial value from LUT
-    idx = mLUT[ lutIndex ];
+    idx = mLUT[lutIndex];
 
     // check if it's correct and if not increase until correct
     // the LUT is made in such a way the index is always correct or too low, never too high
@@ -475,14 +478,13 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       // Interpolate the color between two class breaks linearly.
       if ( idx < 1 || overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
       {
-        if ( mClip && ( overflow
-                        || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
+        if ( mClip && ( overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
         {
           return false;
         }
-        *returnRedValue   = currentColorRampItem.color.red();
+        *returnRedValue = currentColorRampItem.color.red();
         *returnGreenValue = currentColorRampItem.color.green();
-        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnBlueValue = currentColorRampItem.color.blue();
         *returnAlphaValue = currentColorRampItem.color.alpha();
         return true;
       }
@@ -503,9 +505,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       const int c2Blue = currentColorRampItem.color.blue();
       const int c2Alpha = currentColorRampItem.color.alpha();
 
-      *returnRedValue   = c1Red   + static_cast< int >( ( c2Red - c1Red )   * scale );
+      *returnRedValue = c1Red + static_cast< int >( ( c2Red - c1Red ) * scale );
       *returnGreenValue = c1Green + static_cast< int >( ( c2Green - c1Green ) * scale );
-      *returnBlueValue  = c1Blue  + static_cast< int >( ( c2Blue - c1Blue )  * scale );
+      *returnBlueValue = c1Blue + static_cast< int >( ( c2Blue - c1Blue ) * scale );
       *returnAlphaValue = c1Alpha + static_cast< int >( ( c2Alpha - c1Alpha ) * scale );
       return true;
     };
@@ -518,9 +520,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       {
         return false;
       }
-      *returnRedValue   = currentColorRampItem.color.red();
+      *returnRedValue = currentColorRampItem.color.red();
       *returnGreenValue = currentColorRampItem.color.green();
-      *returnBlueValue  = currentColorRampItem.color.blue();
+      *returnBlueValue = currentColorRampItem.color.blue();
       *returnAlphaValue = currentColorRampItem.color.alpha();
       return true;
     };
@@ -529,9 +531,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       // Assign the color of the exact matching value in the color ramp item list
       if ( !overflow && currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
       {
-        *returnRedValue   = currentColorRampItem.color.red();
+        *returnRedValue = currentColorRampItem.color.red();
         *returnGreenValue = currentColorRampItem.color.green();
-        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnBlueValue = currentColorRampItem.color.blue();
         *returnAlphaValue = currentColorRampItem.color.alpha();
         return true;
       }
@@ -544,10 +546,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   return false;
 }
 
-bool QgsColorRampShader::shade( double redValue, double greenValue,
-                                double blueValue, double alphaValue,
-                                int *returnRedValue, int *returnGreenValue,
-                                int *returnBlueValue, int *returnAlphaValue ) const
+bool QgsColorRampShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
   Q_UNUSED( redValue )
   Q_UNUSED( greenValue )
@@ -573,18 +572,18 @@ void QgsColorRampShader::legendSymbologyItems( QList< QPair< QString, QColor > >
 
 QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
-  colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampTypeAsQString() );
-  colorRampShaderElem.setAttribute( QStringLiteral( "classificationMode" ), static_cast< int >( classificationMode() ) );
-  colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), clip() );
-  colorRampShaderElem.setAttribute( QStringLiteral( "minimumValue" ), mMinimumValue );
-  colorRampShaderElem.setAttribute( QStringLiteral( "maximumValue" ), mMaximumValue );
-  colorRampShaderElem.setAttribute( QStringLiteral( "labelPrecision" ), mLabelPrecision );
+  QDomElement colorRampShaderElem = doc.createElement( u"colorrampshader"_s );
+  colorRampShaderElem.setAttribute( u"colorRampType"_s, colorRampTypeAsQString() );
+  colorRampShaderElem.setAttribute( u"classificationMode"_s, static_cast< int >( classificationMode() ) );
+  colorRampShaderElem.setAttribute( u"clip"_s, clip() );
+  colorRampShaderElem.setAttribute( u"minimumValue"_s, mMinimumValue );
+  colorRampShaderElem.setAttribute( u"maximumValue"_s, mMaximumValue );
+  colorRampShaderElem.setAttribute( u"labelPrecision"_s, mLabelPrecision );
 
   // save source color ramp
   if ( sourceColorRamp() )
   {
-    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), sourceColorRamp(), doc );
+    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( u"[source]"_s, sourceColorRamp(), doc );
     colorRampShaderElem.appendChild( colorRampElem );
   }
 
@@ -593,11 +592,11 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteC
   QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
   for ( ; itemIt != itemList.constEnd(); ++itemIt )
   {
-    QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
-    itemElem.setAttribute( QStringLiteral( "label" ), itemIt->label );
-    itemElem.setAttribute( QStringLiteral( "value" ), QgsRasterBlock::printValue( itemIt->value ) );
-    itemElem.setAttribute( QStringLiteral( "color" ), itemIt->color.name() );
-    itemElem.setAttribute( QStringLiteral( "alpha" ), itemIt->color.alpha() );
+    QDomElement itemElem = doc.createElement( u"item"_s );
+    itemElem.setAttribute( u"label"_s, itemIt->label );
+    itemElem.setAttribute( u"value"_s, QgsRasterBlock::printValue( itemIt->value ) );
+    itemElem.setAttribute( u"color"_s, itemIt->color.name() );
+    itemElem.setAttribute( u"alpha"_s, itemIt->color.alpha() );
     colorRampShaderElem.appendChild( itemElem );
   }
 
@@ -610,18 +609,18 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteC
 void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const QgsReadWriteContext &context )
 {
   // try to load color ramp (optional)
-  QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );
-  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( u"colorramp"_s );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( u"name"_s ) == "[source]"_L1 )
   {
     setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ).release() );
   }
 
-  setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
-  setClassificationMode( static_cast< Qgis::ShaderClassificationMethod >( colorRampShaderElem.attribute( QStringLiteral( "classificationMode" ), QStringLiteral( "1" ) ).toInt() ) );
-  setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
-  setMinimumValue( colorRampShaderElem.attribute( QStringLiteral( "minimumValue" ) ).toDouble() );
-  setMaximumValue( colorRampShaderElem.attribute( QStringLiteral( "maximumValue" ) ).toDouble() );
-  setLabelPrecision( colorRampShaderElem.attribute( QStringLiteral( "labelPrecision" ), QStringLiteral( "6" ) ).toDouble() );
+  setColorRampType( colorRampShaderElem.attribute( u"colorRampType"_s, u"INTERPOLATED"_s ) );
+  setClassificationMode( static_cast< Qgis::ShaderClassificationMethod >( colorRampShaderElem.attribute( u"classificationMode"_s, u"1"_s ).toInt() ) );
+  setClip( colorRampShaderElem.attribute( u"clip"_s, u"0"_s ) == "1"_L1 );
+  setMinimumValue( colorRampShaderElem.attribute( u"minimumValue"_s ).toDouble() );
+  setMaximumValue( colorRampShaderElem.attribute( u"maximumValue"_s ).toDouble() );
+  setLabelPrecision( colorRampShaderElem.attribute( u"labelPrecision"_s, u"6"_s ).toDouble() );
 
   QList<QgsColorRampShader::ColorRampItem> itemList;
   QDomElement itemElem;
@@ -629,15 +628,15 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   double itemValue;
   QColor itemColor;
 
-  const QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( QStringLiteral( "item" ) );
+  const QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( u"item"_s );
   itemList.reserve( itemNodeList.size() );
   for ( int i = 0; i < itemNodeList.size(); ++i )
   {
     itemElem = itemNodeList.at( i ).toElement();
-    itemValue = itemElem.attribute( QStringLiteral( "value" ) ).toDouble();
-    itemLabel = itemElem.attribute( QStringLiteral( "label" ) );
-    itemColor.setNamedColor( itemElem.attribute( QStringLiteral( "color" ) ) );
-    itemColor.setAlpha( itemElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
+    itemValue = itemElem.attribute( u"value"_s ).toDouble();
+    itemLabel = itemElem.attribute( u"label"_s );
+    itemColor.setNamedColor( itemElem.attribute( u"color"_s ) );
+    itemColor.setAlpha( itemElem.attribute( u"alpha"_s, u"255"_s ).toInt() );
 
     itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
   }

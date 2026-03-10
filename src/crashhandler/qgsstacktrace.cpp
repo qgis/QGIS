@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include <iostream>
 
+#include <QString>
+
 #ifdef _MSC_VER
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS
@@ -38,6 +40,8 @@
 #include <Windows.h>
 #include <DbgHelp.h>
 #endif
+
+using namespace Qt::StringLiterals;
 
 
 ///@cond PRIVATE
@@ -393,7 +397,8 @@ bool printGivenType( StackTrace *stackTrace, PSYMBOL_INFOW pSymInfo, enum SymTag
       ReadProcessMemory( stackTrace->process, valueLocation, &pointedValueLocation, sizeof( pointedValueLocation ), NULL );
 
 
-      stackTrace->written += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"0x%p -> ", pointedValueLocation );
+      stackTrace->written
+        += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"0x%p -> ", pointedValueLocation );
 
       if ( pointedValueLocation < ( void * ) 0x1000 )
       {
@@ -466,11 +471,7 @@ bool printType( StackTrace *stackTrace, PSYMBOL_INFOW pSymInfo, void *valueLocat
 }
 
 
-BOOL CALLBACK enumParams(
-  _In_ PSYMBOL_INFOW pSymInfo,
-  _In_ ULONG SymbolSize,
-  _In_opt_ PVOID UserContext
-)
+BOOL CALLBACK enumParams( _In_ PSYMBOL_INFOW pSymInfo, _In_ ULONG SymbolSize, _In_opt_ PVOID UserContext )
 {
   if ( ( pSymInfo->Flags & SYMFLAG_LOCAL ) == 0 )
   {
@@ -497,7 +498,8 @@ BOOL CALLBACK enumParams(
   {
     if ( stackTrace->scratchSpace == NULL )
     {
-      stackTrace->written += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Could not allocate memory to write register value>" );
+      stackTrace->written
+        += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Could not allocate memory to write register value>" );
       return TRUE;
     }
 
@@ -601,7 +603,8 @@ BOOL CALLBACK enumParams(
 #endif
 
       default:
-        stackTrace->written += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Unknown register %lu>", pSymInfo->Register );
+        stackTrace->written
+          += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Unknown register %lu>", pSymInfo->Register );
         return TRUE;
     }
   }
@@ -640,7 +643,9 @@ BOOL CALLBACK enumParams(
 #endif
 
       default:
-        stackTrace->written += swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Relative to unknown register %lu>", pSymInfo->Register );
+        stackTrace->written += swprintf_s(
+          stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"<Relative to unknown register %lu>", pSymInfo->Register
+        );
         return TRUE;
     }
   }
@@ -664,7 +669,8 @@ void GetLastErrorAsString()
   DWORD errorMessageID = ::GetLastError();
 
   LPSTR messageBuffer = nullptr;
-  size_t size = FormatMessageA( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errorMessageID, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPSTR ) &messageBuffer, 0, NULL );
+  size_t size
+    = FormatMessageA( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errorMessageID, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPSTR ) &messageBuffer, 0, NULL );
 
   std::string message( messageBuffer, size );
 
@@ -708,7 +714,9 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
       QgsStackTrace::StackLine stackline;
       stackline.symbolName = QString::fromWCharArray( symbol->Name );
 
-      stackTrace->written += swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written - 1, L">%02i: 0x%08llX %ls", i, symbol->Address, symbol->Name );
+      stackTrace->written += swprintf_s(
+        &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written - 1, L">%02i: 0x%08llX %ls", i, symbol->Address, symbol->Name
+      );
 
       IMAGEHLP_STACK_FRAME stackFrame = { 0 };
       stackFrame.InstructionOffset = symbol->Address;
@@ -726,7 +734,9 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
         stackline.fileName = QString::fromWCharArray( lineInfo.FileName );
         stackline.lineNumber = QString::number( lineInfo.LineNumber );
 
-        stackTrace->written += swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"\nSource: %ls:%lu", lineInfo.FileName, lineInfo.LineNumber );
+        stackTrace->written += swprintf_s(
+          &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"\nSource: %ls:%lu", lineInfo.FileName, lineInfo.LineNumber
+        );
       }
 
       stackTrace->written += swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L"\n" );
@@ -735,7 +745,13 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
     }
     else
     {
-      stackTrace->written += swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written, L">%02i: 0x%08llX ?\n", i, stackTrace->currentStackFrame.AddrPC.Offset );
+      stackTrace->written += swprintf_s(
+        &stackTrace->message[stackTrace->written],
+        sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
+        L">%02i: 0x%08llX ?\n",
+        i,
+        stackTrace->currentStackFrame.AddrPC.Offset
+      );
     }
   }
 
@@ -835,12 +851,12 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.contains( QLatin1String( "qgis" ), Qt::CaseInsensitive );
+  return moduleName.contains( "qgis"_L1, Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.contains( QLatin1String( "exe_common" ), Qt::CaseInsensitive ) || fileName.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) || lineNumber.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) );
+  return !( fileName.contains( "exe_common"_L1, Qt::CaseInsensitive ) || fileName.contains( "unknown"_L1, Qt::CaseInsensitive ) || lineNumber.contains( "unknown"_L1, Qt::CaseInsensitive ) );
 }
 
 ///@endcond

@@ -25,12 +25,16 @@
 #include "qgsauthsslimportdialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsvariantutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsauthserverseditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
@@ -64,7 +68,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
-    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( u"serverssortby"_s, QVariant( false ) );
     if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -76,20 +80,12 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
 void QgsAuthServersEditor::setupSslConfigsTree()
 {
   treeServerConfigs->setColumnCount( 3 );
-  treeServerConfigs->setHeaderLabels(
-    QStringList() << tr( "Common Name" )
-                  << tr( "Host" )
-                  << tr( "Expiry Date" )
-  );
+  treeServerConfigs->setHeaderLabels( QStringList() << tr( "Common Name" ) << tr( "Host" ) << tr( "Expiry Date" ) );
   treeServerConfigs->setColumnWidth( 0, 275 );
   treeServerConfigs->setColumnWidth( 1, 200 );
 
   // add root sections
-  mRootSslConfigItem = new QTreeWidgetItem(
-    treeServerConfigs,
-    QStringList( tr( "SSL Server Configurations" ) ),
-    static_cast<int>( QgsAuthServersEditor::Section )
-  );
+  mRootSslConfigItem = new QTreeWidgetItem( treeServerConfigs, QStringList( tr( "SSL Server Configurations" ) ), static_cast<int>( QgsAuthServersEditor::Section ) );
   QgsAuthGuiUtils::setItemBold( mRootSslConfigItem );
   mRootSslConfigItem->setFlags( Qt::ItemIsEnabled );
   mRootSslConfigItem->setExpanded( true );
@@ -131,9 +127,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap<QString, QList<QgsAuthConfigSslServer>> orgconfigs(
-    QgsAuthCertUtils::sslConfigsGroupedByOrg( configs )
-  );
+  const QMap<QString, QList<QgsAuthConfigSslServer>> orgconfigs( QgsAuthCertUtils::sslConfigsGroupedByOrg( configs ) );
 
   QMap<QString, QList<QgsAuthConfigSslServer>>::const_iterator it = orgconfigs.constBegin();
   for ( ; it != orgconfigs.constEnd(); ++it )
@@ -182,11 +176,11 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
 
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( conftype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -264,7 +258,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -284,16 +278,18 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
-                     .arg( hostport, digest ) );
+    QgsDebugError( u"SSL custom config does not exist in database for host:port, id %1:"_s.arg( hostport, digest ) );
     return;
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove SSL Custom Configuration" ),
-         tr( "Are you sure you want to remove the selected "
-             "SSL custom configuration from the database?\n\n"
-             "Operation can NOT be undone!" ),
+         this,
+         tr( "Remove SSL Custom Configuration" ),
+         tr(
+           "Are you sure you want to remove the selected "
+           "SSL custom configuration from the database?\n\n"
+           "Operation can NOT be undone!"
+         ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel
        )
@@ -318,7 +314,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -338,7 +334,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config does not exist in database" ) );
+    QgsDebugError( u"SSL custom config does not exist in database"_s );
     return;
   }
 
@@ -358,7 +354,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
 void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( u"serverssortby"_s, QVariant( checked ) ) )
   {
     authMessageLog( QObject::tr( "Could not store sort by preference." ), QObject::tr( "Authentication SSL Configs" ), Qgis::MessageLevel::Warning );
   }
@@ -386,6 +382,5 @@ QgsMessageBar *QgsAuthServersEditor::messageBar()
 
 int QgsAuthServersEditor::messageTimeout()
 {
-  const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  return QgsSettingsRegistryGui::settingsMessageTimeout->value();
 }

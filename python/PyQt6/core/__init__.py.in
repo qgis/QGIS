@@ -152,7 +152,7 @@ QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
 QgsProviderMetadata = PyProviderMetadata
 
 # monkey patch deprecated enum values to maintain API
-# TODO - remove for QGIS 4.0
+# TODO - remove for QGIS 5.0
 Qgis.PythonEmbeddedMode = Qgis.EmbeddedScriptMode
 Qgis.PythonEmbeddedType = Qgis.EmbeddedScriptType
 Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
@@ -322,13 +322,13 @@ DEFAULT_LINE_WIDTH = Qgis.DEFAULT_LINE_WIDTH
 DEFAULT_SEGMENT_EPSILON = Qgis.DEFAULT_SEGMENT_EPSILON
 PROJECT_SCALES = Qgis.defaultProjectScales()
 
-# TODO QGIS 4.0 - remove, require use of explicit getter/setter
+# TODO QGIS 5.0 - remove, require use of explicit getter/setter
 
 QgsAbstractMetadataBaseValidator.ValidationResult.identifier = property(QgsAbstractMetadataBaseValidator.ValidationResult._identifier)
 QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetadataBaseValidator.ValidationResult.identifier.setter(QgsAbstractMetadataBaseValidator.ValidationResult.setIdentifier)
 
 
-# TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
+# TODO QGIS 5.0 - remove, replaced by Qgis.LinePlacementFlags
 class _LinePlacementFlags:
   OnLine = 1
   AboveLine = 2
@@ -364,6 +364,17 @@ def _set_merge_lines(self, merge):
 
 QgsPalLayerSettings.mergeLines = property(_get_merge_lines)
 QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(_set_merge_lines)
+
+def _get_label_per_part(self):
+    return self.placementSettings().multiPartBehavior() == Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel
+
+
+def _set_label_per_part(self, label_per_part):
+    self.placementSettings().setMultiPartBehavior(Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel if label_per_part else Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly)
+
+
+QgsPalLayerSettings.labelPerPart = property(_get_label_per_part)
+QgsPalLayerSettings.labelPerPart = QgsPalLayerSettings.labelPerPart.setter(_set_label_per_part)
 
 
 def _get_add_direction_symbol(self):
@@ -414,7 +425,7 @@ QgsPalLayerSettings.reverseDirectionSymbol = property(_get_reverse_direction_sym
 QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectionSymbol.setter(_set_reverse_direction_symbol)
 
 
-# TODO QGIS 4.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
+# TODO QGIS 5.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
 class _DirectionSymbols:
   SymbolLeftRight = 0
   SymbolAbove = 1
@@ -550,7 +561,7 @@ QgsPalLayerSettings.obstacleFactor = QgsPalLayerSettings.obstacleFactor.setter(_
 
 
 
-# TODO QGIS 4.0 - remove, replaced by QgsLabelObstacleSettings.ObstacleType
+# TODO QGIS 5.0 - remove, replaced by QgsLabelObstacleSettings.ObstacleType
 
 QgsPalLayerSettings.ObstacleType = QgsLabelObstacleSettings.ObstacleType
 QgsPalLayerSettings.PolygonInterior = QgsLabelObstacleSettings.ObstacleType.PolygonInterior
@@ -604,6 +615,8 @@ QgsProcessingException.__doc__ = "Custom exception class for processing related 
 QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
 QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
 QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsSfcgalException.__doc__ = "Custom exception class for SfCGAL related operations."
+QgsInvalidArgumentException.__doc__ = "Custom exception class when argument are invalid.\n\nIe. algorithms or processing can not continue computation."
 QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:

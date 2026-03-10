@@ -39,7 +39,11 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemattributetable.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutItemAttributeTable
@@ -50,7 +54,7 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
 {
   if ( mLayout )
   {
-    connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
+    connect( mLayout->project(), static_cast< void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
 
     //coverage layer change = regenerate columns
     connect( &mLayout->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
@@ -65,7 +69,7 @@ int QgsLayoutItemAttributeTable::type() const
 
 QIcon QgsLayoutItemAttributeTable::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemTable.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s );
 }
 
 QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout )
@@ -427,7 +431,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     Q_NOWARN_DEPRECATED_PUSH
     if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
     {
@@ -438,7 +441,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
     }
     Q_NOWARN_DEPRECATED_POP
-    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
@@ -566,7 +568,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
     if ( mUseConditionalStyling )
     {
-      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(),  context );
+      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(), context );
       rowStyle = QgsConditionalStyle::compressStyles( styles );
     }
 
@@ -601,7 +603,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
         const QgsEditorWidgetSetup setup = layer->fields().at( idx ).editorWidgetSetup();
 
-        if ( ! setup.isNull() )
+        if ( !setup.isNull() )
         {
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           QVariant cache;
@@ -628,7 +630,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       {
         // Lets assume it's an expression
         auto expression = std::make_unique< QgsExpression >( column.attribute() );
-        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
+        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
 
@@ -725,7 +727,7 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
 
 QgsExpressionContextScope *QgsLayoutItemAttributeTable::scopeForCell( int row, int column ) const
 {
-  std::unique_ptr< QgsExpressionContextScope >scope( QgsLayoutTable::scopeForCell( row, column ) );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsLayoutTable::scopeForCell( row, column ) );
   scope->setFeature( mFeatures.value( row ) );
   scope->setFields( scope->feature().fields() );
   return scope.release();
@@ -762,8 +764,8 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
 {
   QgsExpressionContext context = createExpressionContext();
 
-  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
-       ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
+  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes
+       && ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
   {
     mDataDefinedVectorLayer = nullptr;
 
@@ -787,23 +789,21 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
     return variant;
 
   QString replaced = variant.toString();
-  replaced.replace( mWrapString, QLatin1String( "\n" ) );
+  replaced.replace( mWrapString, "\n"_L1 );
   return replaced;
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 {
-
   QgsLayoutTableColumns allowedColumns { mColumns };
 
   // Filter columns
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-
     QgsVectorLayer *source { sourceLayer() };
 
-    if ( ! source )
+    if ( !source )
     {
       return allowedColumns;
     }
@@ -813,14 +813,14 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 
     for ( const auto &c : std::as_const( allowedColumns ) )
     {
-      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      if ( !c.attribute().isEmpty() && !columnAttributesMap.contains( c.attribute() ) )
       {
-        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        columnAttributesMap[c.attribute()] = QSet<QString>();
         const QgsExpression columnExp { c.attribute() };
         const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
         for ( const auto &cref : constRefs )
         {
-          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          columnAttributesMap[c.attribute()].insert( cref->name() );
           allowedAttributes.insert( cref->name() );
         }
       }
@@ -831,18 +831,23 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
-      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
-      {
-        for ( const auto &f : std::as_const( forbidden ) )
-        {
-          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
-          {
-            return true;
+      allowedColumns.erase(
+        std::remove_if(
+          allowedColumns.begin(),
+          allowedColumns.end(),
+          [&columnAttributesMap, &forbidden]( QgsLayoutTableColumn &c ) -> bool {
+            for ( const auto &f : std::as_const( forbidden ) )
+            {
+              if ( columnAttributesMap[c.attribute()].contains( f ) )
+              {
+                return true;
+              }
+            }
+            return false;
           }
-        }
-        return false;
-      } ), allowedColumns.end() );
-
+        ),
+        allowedColumns.end()
+      );
     }
   }
 
@@ -902,28 +907,28 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
   if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
     return false;
 
-  tableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
-  tableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
-  tableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
-  tableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
-  tableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
-  tableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
-  tableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  tableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
-  tableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
-  tableElem.setAttribute( QStringLiteral( "useConditionalStyling" ), mUseConditionalStyling );
+  tableElem.setAttribute( u"source"_s, QString::number( static_cast< int >( mSource ) ) );
+  tableElem.setAttribute( u"relationId"_s, mRelationId );
+  tableElem.setAttribute( u"showUniqueRowsOnly"_s, mShowUniqueRowsOnly );
+  tableElem.setAttribute( u"showOnlyVisibleFeatures"_s, mShowOnlyVisibleFeatures );
+  tableElem.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
+  tableElem.setAttribute( u"maxFeatures"_s, mMaximumNumberOfFeatures );
+  tableElem.setAttribute( u"filterFeatures"_s, mFilterFeatures ? u"true"_s : u"false"_s );
+  tableElem.setAttribute( u"featureFilter"_s, mFeatureFilter );
+  tableElem.setAttribute( u"wrapString"_s, mWrapString );
+  tableElem.setAttribute( u"useConditionalStyling"_s, mUseConditionalStyling );
 
   if ( mMap )
   {
-    tableElem.setAttribute( QStringLiteral( "mapUuid" ), mMap->uuid() );
+    tableElem.setAttribute( u"mapUuid"_s, mMap->uuid() );
   }
 
   if ( mVectorLayer )
   {
-    tableElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer.layerId );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerName" ), mVectorLayer.name );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerSource" ), mVectorLayer.source );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerProvider" ), mVectorLayer.provider );
+    tableElem.setAttribute( u"vectorLayer"_s, mVectorLayer.layerId );
+    tableElem.setAttribute( u"vectorLayerName"_s, mVectorLayer.name );
+    tableElem.setAttribute( u"vectorLayerSource"_s, mVectorLayer.source );
+    tableElem.setAttribute( u"vectorLayerProvider"_s, mVectorLayer.provider );
   }
   return true;
 }
@@ -939,25 +944,25 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
     return false;
 
-  mSource = QgsLayoutItemAttributeTable::ContentSource( itemElem.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt() );
-  mRelationId = itemElem.attribute( QStringLiteral( "relationId" ), QString() );
+  mSource = QgsLayoutItemAttributeTable::ContentSource( itemElem.attribute( u"source"_s, u"0"_s ).toInt() );
+  mRelationId = itemElem.attribute( u"relationId"_s, QString() );
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
     mCurrentAtlasLayer = mLayout->reportContext().layer();
   }
 
-  mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();
-  mShowOnlyVisibleFeatures = itemElem.attribute( QStringLiteral( "showOnlyVisibleFeatures" ), QStringLiteral( "1" ) ).toInt();
-  mFilterToAtlasIntersection = itemElem.attribute( QStringLiteral( "filterToAtlasIntersection" ), QStringLiteral( "0" ) ).toInt();
-  mFilterFeatures = itemElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
-  mFeatureFilter = itemElem.attribute( QStringLiteral( "featureFilter" ), QString() );
-  mMaximumNumberOfFeatures = itemElem.attribute( QStringLiteral( "maxFeatures" ), QStringLiteral( "5" ) ).toInt();
-  mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
-  mUseConditionalStyling = itemElem.attribute( QStringLiteral( "useConditionalStyling" ), QStringLiteral( "0" ) ).toInt();
+  mShowUniqueRowsOnly = itemElem.attribute( u"showUniqueRowsOnly"_s, u"0"_s ).toInt();
+  mShowOnlyVisibleFeatures = itemElem.attribute( u"showOnlyVisibleFeatures"_s, u"1"_s ).toInt();
+  mFilterToAtlasIntersection = itemElem.attribute( u"filterToAtlasIntersection"_s, u"0"_s ).toInt();
+  mFilterFeatures = itemElem.attribute( u"filterFeatures"_s, u"false"_s ) == "true"_L1;
+  mFeatureFilter = itemElem.attribute( u"featureFilter"_s, QString() );
+  mMaximumNumberOfFeatures = itemElem.attribute( u"maxFeatures"_s, u"5"_s ).toInt();
+  mWrapString = itemElem.attribute( u"wrapString"_s );
+  mUseConditionalStyling = itemElem.attribute( u"useConditionalStyling"_s, u"0"_s ).toInt();
 
   //map
-  mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+  mMapUuid = itemElem.attribute( u"mapUuid"_s );
   if ( mMap )
   {
     disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
@@ -967,10 +972,10 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   // setting new mMap occurs in finalizeRestoreFromXml
 
   //vector layer
-  QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ) );
-  QString layerName = itemElem.attribute( QStringLiteral( "vectorLayerName" ) );
-  QString layerSource = itemElem.attribute( QStringLiteral( "vectorLayerSource" ) );
-  QString layerProvider = itemElem.attribute( QStringLiteral( "vectorLayerProvider" ) );
+  QString layerId = itemElem.attribute( u"vectorLayer"_s );
+  QString layerName = itemElem.attribute( u"vectorLayerName"_s );
+  QString layerSource = itemElem.attribute( u"vectorLayerSource"_s );
+  QString layerProvider = itemElem.attribute( u"vectorLayerProvider"_s );
   mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mVectorLayer.resolveWeakly( mLayout->project() );
 

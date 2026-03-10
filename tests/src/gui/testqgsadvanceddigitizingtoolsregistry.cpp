@@ -18,6 +18,9 @@
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsAdvancedDigitizingToolsRegistry : public QObject
 {
@@ -33,20 +36,16 @@ class TestQgsAdvancedDigitizingToolsRegistry : public QObject
 };
 
 void TestQgsAdvancedDigitizingToolsRegistry::initTestCase()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::init()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingToolsRegistry::cleanup()
-{
-}
+{}
 
 class DummyAdvancedDigitizingTool : public QgsAdvancedDigitizingTool
 {
@@ -66,21 +65,19 @@ void TestQgsAdvancedDigitizingToolsRegistry::guiRegistry()
   QVERIFY( !registry.toolMetadata( QString( "empty" ) ) );
   QVERIFY( registry.toolMetadataNames().isEmpty() );
 
-  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * ) -> QgsAdvancedDigitizingTool * {
-    return new DummyAdvancedDigitizingTool();
-  };
+  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * ) -> QgsAdvancedDigitizingTool * { return new DummyAdvancedDigitizingTool(); };
 
-  QgsAdvancedDigitizingToolMetadata *metadata = new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "dummy" ), QStringLiteral( "My Dummy Tool" ), QIcon(), createTool );
+  QgsAdvancedDigitizingToolMetadata *metadata = new QgsAdvancedDigitizingToolMetadata( u"dummy"_s, u"My Dummy Tool"_s, QIcon(), createTool );
   QVERIFY( registry.addTool( metadata ) );
   const QString name = registry.toolMetadataNames().value( 0 );
-  QCOMPARE( name, QStringLiteral( "dummy" ) );
+  QCOMPARE( name, u"dummy"_s );
 
   // duplicate name not allowed
-  metadata = new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "dummy" ), QStringLiteral( "My Dummy Tool" ), QIcon(), createTool );
+  metadata = new QgsAdvancedDigitizingToolMetadata( u"dummy"_s, u"My Dummy Tool"_s, QIcon(), createTool );
   QVERIFY( !registry.addTool( metadata ) );
 
   QVERIFY( registry.toolMetadata( name ) );
-  QCOMPARE( registry.toolMetadata( name )->visibleName(), QStringLiteral( "My Dummy Tool" ) );
+  QCOMPARE( registry.toolMetadata( name )->visibleName(), u"My Dummy Tool"_s );
 
   QgsAdvancedDigitizingTool *tool = registry.toolMetadata( name )->createTool( nullptr, nullptr );
   QVERIFY( tool );

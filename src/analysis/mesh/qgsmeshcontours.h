@@ -128,10 +128,7 @@ class ANALYSIS_EXPORT QgsMeshContours
 
 
   private:
-    void populateCache(
-      const QgsMeshDatasetIndex &index,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+    void populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     QgsMeshLayer *mMeshLayer = nullptr;
 

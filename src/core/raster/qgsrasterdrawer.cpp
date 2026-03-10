@@ -28,17 +28,18 @@
 #include <QImage>
 #include <QPainter>
 #include <QPdfWriter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
   : mIterator( iterator )
   , mDpiTarget( dpiTarget )
-{
-}
+{}
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator )
   : mIterator( iterator )
-{
-}
+{}
 
 void QgsRasterDrawer::draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback )
 {
@@ -50,7 +51,7 @@ void QgsRasterDrawer::draw( QgsRenderContext &context, QgsRasterViewPort *viewPo
 
 void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
@@ -63,7 +64,8 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // last pipe filter has only 1 band
   const int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, std::floor( static_cast<double>( viewPort->mWidth ) * mDevicePixelRatio ), std::floor( static_cast<double>( viewPort->mHeight ) * mDevicePixelRatio ), viewPort->mDrawnExtent, feedback );
+  mIterator
+    ->startRasterRead( bandNumber, std::floor( static_cast<double>( viewPort->mWidth ) * mDevicePixelRatio ), std::floor( static_cast<double>( viewPort->mHeight ) * mDevicePixelRatio ), viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -77,12 +79,11 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   std::unique_ptr< QgsRasterBlock > block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
-  while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
-                                         block, topLeftCol, topLeftRow ) )
+  while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows, block, topLeftCol, topLeftRow ) )
   {
     if ( !block )
     {
-      QgsDebugError( QStringLiteral( "Cannot get block" ) );
+      QgsDebugError( u"Cannot get block"_s );
       continue;
     }
 
@@ -93,7 +94,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
     QPdfWriter *pdfWriter = dynamic_cast<QPdfWriter *>( p->device() );
     if ( pdfWriter )
     {
-      QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
+      QgsDebugMsgLevel( u"PdfFormat"_s, 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       const QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
@@ -141,8 +142,8 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   }
 
   // top left position in device coords
-  const QPoint tlPoint = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor / mDevicePixelRatio ),
-                                 std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor / mDevicePixelRatio ) );
+  const QPoint tlPoint
+    = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor / mDevicePixelRatio ), std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor / mDevicePixelRatio ) );
   const QgsScopedQPainterState painterState( p );
 
   // Improve rendering of rasters on high DPI screens with Qt's auto scaling enabled
@@ -171,10 +172,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( QRect( tlPoint.x(), tlPoint.y(),
-                       std::ceil( img.width() / mDpiScaleFactor / mDevicePixelRatio ),
-                       std::ceil( img.height() / mDpiScaleFactor / mDevicePixelRatio ) ),
-                img );
+  p->drawImage( QRect( tlPoint.x(), tlPoint.y(), std::ceil( img.width() / mDpiScaleFactor / mDevicePixelRatio ), std::ceil( img.height() / mDpiScaleFactor / mDevicePixelRatio ) ), img );
 
 #if 0
   // For debugging:
@@ -196,4 +194,3 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   p->drawRoundedRect( br, rad, rad );
 #endif
 }
-

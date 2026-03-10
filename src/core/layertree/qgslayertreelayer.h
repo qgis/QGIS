@@ -23,6 +23,10 @@
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayer;
 
 /**
@@ -55,19 +59,24 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeLayer: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsLayerTreeLayer: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns the ID for the map layer associated with this node.
      *
      * \see layer()
      */
-    QString layerId() const { return mRef.layerId; }
+        QString layerId() const
+    {
+      return mRef.layerId;
+    }
 
     /**
      * Returns the map layer associated with this node.
@@ -113,7 +122,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Read layer node from XML. Returns new instance.
@@ -191,8 +200,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     enum LegendNodesSplitBehavior
     {
-      UseDefaultLegendSetting, //!< Inherit default legend column splitting setting
-      AllowSplittingLegendNodesOverMultipleColumns, //!< Allow splitting node's legend nodes across multiple columns
+      UseDefaultLegendSetting,                        //!< Inherit default legend column splitting setting
+      AllowSplittingLegendNodesOverMultipleColumns,   //!< Allow splitting node's legend nodes across multiple columns
       PreventSplittingLegendNodesOverMultipleColumns, //!< Prevent splitting node's legend nodes across multiple columns
     };
 
@@ -254,7 +263,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     void layerWillBeDeleted();
 
   private:
-
 #ifdef SIP_RUN
 
     /**
@@ -269,7 +277,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QgsLayerTreeLayer &operator=( const QgsLayerTreeLayer & ) = delete;
 };
-
 
 
 #endif // QGSLAYERTREELAYER_H

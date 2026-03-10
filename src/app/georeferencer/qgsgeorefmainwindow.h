@@ -24,6 +24,9 @@
 #include "qgssettingstree.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QAction;
 class QActionGroup;
@@ -69,7 +72,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
+    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( u"georeferencer"_s );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
     static const QgsSettingsEntryStringList *settingCreationOptions;

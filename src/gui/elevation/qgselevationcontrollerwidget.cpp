@@ -30,10 +30,13 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPainterPath>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgselevationcontrollerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )
@@ -43,7 +46,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
   mConfigureButton = new QToolButton();
   mConfigureButton->setPopupMode( QToolButton::InstantPopup );
-  mConfigureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+  mConfigureButton->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
   hl->addWidget( mConfigureButton );
@@ -59,9 +62,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mMenu->addAction( mInvertDirectionAction );
 
   mSettingsAction->sizeSpin()->clear();
-  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) {
-    setFixedRangeSize( size < 0 ? -1 : size );
-  } );
+  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) { setFixedRangeSize( size < 0 ? -1 : size ); } );
 
   mMenu->addSeparator();
 
@@ -286,21 +287,18 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   const double limitRange = mLimits.upper() - mLimits.lower();
   const double lowerFraction = ( mRange.lower() - mLimits.lower() ) / limitRange;
   const double upperFraction = ( mRange.upper() - mLimits.lower() ) / limitRange;
-  const int lowerY = !mInverted
-                       ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) )
-                       : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) ), rect().top() + fm.ascent() ) );
-  const int upperY = !mInverted ? ( std::max( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ), rect().top() + fm.ascent() ) )
-                                : ( std::min( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) );
+  const int lowerY
+    = !mInverted
+        ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) )
+        : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) ), rect().top() + fm.ascent() ) );
+  const int upperY
+    = !mInverted
+        ? ( std::max( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ), rect().top() + fm.ascent() ) )
+        : ( std::min( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) );
 
-  const bool lowerIsCloseToLimit = !mInverted
-                                     ? ( lowerY + fm.height() > rect().bottom() - fm.descent() )
-                                     : ( lowerY - fm.height() < rect().top() + fm.ascent() );
-  const bool upperIsCloseToLimit = !mInverted
-                                     ? ( upperY - fm.height() < rect().top() + fm.ascent() )
-                                     : ( upperY + fm.height() > rect().bottom() - fm.descent() );
-  const bool lowerIsCloseToUpperLimit = !mInverted
-                                          ? ( lowerY - fm.height() < rect().top() + fm.ascent() )
-                                          : ( lowerY + fm.height() > rect().bottom() - fm.descent() );
+  const bool lowerIsCloseToLimit = !mInverted ? ( lowerY + fm.height() > rect().bottom() - fm.descent() ) : ( lowerY - fm.height() < rect().top() + fm.ascent() );
+  const bool upperIsCloseToLimit = !mInverted ? ( upperY - fm.height() < rect().top() + fm.ascent() ) : ( upperY + fm.height() > rect().bottom() - fm.descent() );
+  const bool lowerIsCloseToUpperLimit = !mInverted ? ( lowerY - fm.height() < rect().top() + fm.ascent() ) : ( lowerY + fm.height() > rect().bottom() - fm.descent() );
 
   QLocale locale;
 
@@ -309,9 +307,10 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   for ( double value : std::as_const( mSignificantElevations ) )
   {
     const double valueFraction = ( value - mLimits.lower() ) / limitRange;
-    const double verticalCenter = !mInverted
-                                    ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().bottom() - fm.descent() ) )
-                                    : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().top() + fm.ascent() ) );
+    const double verticalCenter
+      = !mInverted
+          ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().bottom() - fm.descent() ) )
+          : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().top() + fm.ascent() ) );
 
     const bool valueIsCloseToLower = verticalCenter + fm.height() > lowerY && verticalCenter - fm.height() < lowerY;
     if ( valueIsCloseToLower )
@@ -321,15 +320,11 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
     if ( valueIsCloseToUpper )
       continue;
 
-    const bool valueIsCloseToLowerLimit = !mInverted
-                                            ? ( verticalCenter + fm.height() > rect().bottom() - fm.descent() )
-                                            : ( verticalCenter - fm.height() < rect().top() + fm.ascent() );
+    const bool valueIsCloseToLowerLimit = !mInverted ? ( verticalCenter + fm.height() > rect().bottom() - fm.descent() ) : ( verticalCenter - fm.height() < rect().top() + fm.ascent() );
     if ( valueIsCloseToLowerLimit )
       continue;
 
-    const bool valueIsCloseToUpperLimit = !mInverted
-                                            ? ( verticalCenter - fm.height() < rect().top() + fm.ascent() )
-                                            : ( verticalCenter + fm.height() > rect().bottom() - fm.descent() );
+    const bool valueIsCloseToUpperLimit = !mInverted ? ( verticalCenter - fm.height() < rect().top() + fm.ascent() ) : ( verticalCenter + fm.height() > rect().bottom() - fm.descent() );
     if ( valueIsCloseToUpperLimit )
       continue;
 

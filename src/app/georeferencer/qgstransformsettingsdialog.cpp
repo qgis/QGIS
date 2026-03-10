@@ -25,12 +25,17 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstransformsettingsdialog.cpp"
 
-const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder = new QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder
+  = new QgsSettingsEntryString( u"last-destination-folder"_s, QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder
+  = new QgsSettingsEntryString( u"last-pdf-folder"_s, QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, const QString &source, const QString &output, QWidget *parent )
   : QDialog( parent )
@@ -78,26 +83,20 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   outputFile->setDialogTitle( tr( "Destination File" ) );
   const QString lastDestinationFolder = settingLastDestinationFolder->value();
   outputFile->setDefaultRoot( lastDestinationFolder.isEmpty() ? QDir::homePath() : lastDestinationFolder );
-  connect( outputFile, &QgsFileWidget::fileChanged, this, [outputFile] {
-    settingLastDestinationFolder->setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
-  } );
+  connect( outputFile, &QgsFileWidget::fileChanged, this, [outputFile] { settingLastDestinationFolder->setValue( QFileInfo( outputFile->filePath() ).absolutePath() ); } );
 
   mPdfMap->setStorageMode( QgsFileWidget::SaveFile );
   mPdfMap->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
   const QString lastPdfFolder = settingLastPdfFolder->value();
   mPdfMap->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [this] {
-    settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
-  } );
+  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [this] { settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() ); } );
 
   mPdfReport->setStorageMode( QgsFileWidget::SaveFile );
   mPdfReport->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfReport->setDialogTitle( tr( "Save Report File As" ) );
   mPdfReport->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [this] {
-    settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
-  } );
+  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [this] { settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() ); } );
 
   connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
   connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
@@ -234,9 +233,7 @@ void QgsTransformSettingsDialog::setLoadInProject( bool enabled )
   cbxLoadInProjectsWhenDone->setChecked( enabled );
 }
 
-void QgsTransformSettingsDialog::outputResolution(
-  double &resX, double &resY
-)
+void QgsTransformSettingsDialog::outputResolution( double &resX, double &resY )
 {
   resX = 0.0;
   resY = 0.0;
@@ -331,10 +328,10 @@ QString QgsTransformSettingsDialog::generateModifiedFileName( const QString &fil
   switch ( mType )
   {
     case Qgis::LayerType::Vector:
-      modifiedFileName.replace( pos, modifiedFileName.size(), QStringLiteral( "gpkg" ) );
+      modifiedFileName.replace( pos, modifiedFileName.size(), u"gpkg"_s );
       break;
     case Qgis::LayerType::Raster:
-      modifiedFileName.replace( pos, modifiedFileName.size(), QStringLiteral( "tif" ) );
+      modifiedFileName.replace( pos, modifiedFileName.size(), u"tif"_s );
       break;
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Mesh:
@@ -352,5 +349,5 @@ QString QgsTransformSettingsDialog::generateModifiedFileName( const QString &fil
 
 void QgsTransformSettingsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_raster/georeferencer.html#defining-the-transformation-settings" ) );
+  QgsHelp::openHelp( u"working_with_raster/georeferencer.html#defining-the-transformation-settings"_s );
 }

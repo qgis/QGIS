@@ -15,12 +15,15 @@
 
 #include "qgsstacobject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links )
   : mId( id )
   , mStacVersion( version )
   , mLinks( links )
-{
-}
+{}
 
 QString QgsStacObject::stacVersion() const
 {
@@ -66,7 +69,7 @@ QString QgsStacObject::url() const
 {
   for ( const QgsStacLink &link : mLinks )
   {
-    if ( link.relation() == QLatin1String( "self" ) )
+    if ( link.relation() == "self"_L1 )
       return link.href();
   }
   return QString();
@@ -76,7 +79,7 @@ QString QgsStacObject::rootUrl() const
 {
   for ( const QgsStacLink &link : mLinks )
   {
-    if ( link.relation() == QLatin1String( "root" ) )
+    if ( link.relation() == "root"_L1 )
       return link.href();
   }
   return QString();
@@ -86,10 +89,8 @@ QString QgsStacObject::parentUrl() const
 {
   for ( const QgsStacLink &link : mLinks )
   {
-    if ( link.relation() == QLatin1String( "parent" ) )
+    if ( link.relation() == "parent"_L1 )
       return link.href();
   }
   return QString();
 }
-
-

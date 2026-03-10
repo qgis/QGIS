@@ -24,9 +24,7 @@ QgsPointCloudRequest::QgsPointCloudRequest() = default;
 
 bool QgsPointCloudRequest::operator==( const QgsPointCloudRequest &other ) const
 {
-  return mIgnoreIndexFilter == other.ignoreIndexFilterEnabled() &&
-         mFilterRect == other.filterRect() &&
-         mAttributes.toFields() == other.attributes().toFields();
+  return mIgnoreIndexFilter == other.ignoreIndexFilterEnabled() && mFilterRect == other.filterRect() && mAttributes.toFields() == other.attributes().toFields();
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudRequest::attributes() const

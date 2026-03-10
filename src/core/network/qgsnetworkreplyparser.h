@@ -19,11 +19,12 @@
 #ifndef QGSNETWORKREPLYPARSER_H
 #define QGSNETWORKREPLYPARSER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QNetworkReply>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

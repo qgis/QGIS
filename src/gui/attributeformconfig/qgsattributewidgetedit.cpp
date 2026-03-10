@@ -19,7 +19,11 @@
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
 
+#include <QString>
+
 #include "moc_qgsattributewidgetedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -122,7 +126,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
     {
       if ( !nmrel.fieldPairs().isEmpty() && nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
       {
-        setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+        setCardinalityCombo( u"%1 (%2)"_s.arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
       }
     }
   }

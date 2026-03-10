@@ -17,41 +17,38 @@
 
 #include <random>
 
+#include <QString>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 #include "moc_qgsambientocclusionrenderentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QTexture2D *depthTexture, Qt3DRender::QLayer *layer, Qt3DRender::QCamera *camera, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), depthTexture );
+  mDepthTextureParameter = new Qt3DRender::QParameter( u"depthTexture"_s, depthTexture );
   mMaterial->addParameter( mDepthTextureParameter );
 
-  mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), camera->farPlane() );
+  mFarPlaneParameter = new Qt3DRender::QParameter( u"farPlane"_s, camera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
-  connect( camera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) {
-    mFarPlaneParameter->setValue( farPlane );
-  } );
-  mNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "nearPlane" ), camera->nearPlane() );
+  connect( camera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) { mFarPlaneParameter->setValue( farPlane ); } );
+  mNearPlaneParameter = new Qt3DRender::QParameter( u"nearPlane"_s, camera->nearPlane() );
   mMaterial->addParameter( mNearPlaneParameter );
-  connect( camera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane ) {
-    mNearPlaneParameter->setValue( nearPlane );
-  } );
-  mProjMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "origProjMatrix" ), camera->projectionMatrix() );
+  connect( camera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane ) { mNearPlaneParameter->setValue( nearPlane ); } );
+  mProjMatrixParameter = new Qt3DRender::QParameter( u"origProjMatrix"_s, camera->projectionMatrix() );
   mMaterial->addParameter( mProjMatrixParameter );
-  connect( camera, &Qt3DRender::QCamera::projectionMatrixChanged, mProjMatrixParameter, [&]( const QMatrix4x4 &projectionMatrix ) {
-    mProjMatrixParameter->setValue( projectionMatrix );
-  } );
-  mAspectRatioParameter = new Qt3DRender::QParameter( QStringLiteral( "uAspectRatio" ), camera->aspectRatio() );
+  connect( camera, &Qt3DRender::QCamera::projectionMatrixChanged, mProjMatrixParameter, [&]( const QMatrix4x4 &projectionMatrix ) { mProjMatrixParameter->setValue( projectionMatrix ); } );
+  mAspectRatioParameter = new Qt3DRender::QParameter( u"uAspectRatio"_s, camera->aspectRatio() );
   mMaterial->addParameter( mAspectRatioParameter );
-  connect( camera, &Qt3DRender::QCamera::aspectRatioChanged, mAspectRatioParameter, [&]( float ratio ) {
-    mAspectRatioParameter->setValue( ratio );
-  } );
-  mTanHalfFovParameter = new Qt3DRender::QParameter( QStringLiteral( "uTanHalfFov" ), tan( camera->fieldOfView() / 2 * M_PI / 180 ) );
+  connect( camera, &Qt3DRender::QCamera::aspectRatioChanged, mAspectRatioParameter, [&]( float ratio ) { mAspectRatioParameter->setValue( ratio ); } );
+  mTanHalfFovParameter = new Qt3DRender::QParameter( u"uTanHalfFov"_s, tan( camera->fieldOfView() / 2 * M_PI / 180 ) );
   mMaterial->addParameter( mTanHalfFovParameter );
-  connect( camera, &Qt3DRender::QCamera::fieldOfViewChanged, mTanHalfFovParameter, [&]( float fov ) {
-    mTanHalfFovParameter->setValue( tan( fov / 2 * M_PI / 180 ) );
-  } );
+  connect( camera, &Qt3DRender::QCamera::fieldOfViewChanged, mTanHalfFovParameter, [&]( float fov ) { mTanHalfFovParameter->setValue( tan( fov / 2 * M_PI / 180 ) ); } );
 
   QVariantList ssaoKernelValues;
 
@@ -60,11 +57,7 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   unsigned int kernelSize = 64;
   for ( unsigned int i = 0; i < kernelSize; ++i )
   {
-    QVector3D sample(
-      randomFloats( generator ) * 2.0 - 1.0,
-      randomFloats( generator ) * 2.0 - 1.0,
-      randomFloats( generator ) * 2.0 - 1.0
-    );
+    QVector3D sample( randomFloats( generator ) * 2.0 - 1.0, randomFloats( generator ) * 2.0 - 1.0, randomFloats( generator ) * 2.0 - 1.0 );
     sample.normalize();
     float scale = static_cast<float>( i ) / static_cast<float>( kernelSize );
     scale = 0.1 + 0.9 * scale * scale;
@@ -76,30 +69,26 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   QVariantList ssaoNoise;
   for ( unsigned int i = 0; i < 16; ++i )
   {
-    QVector3D sample(
-      randomFloats( generator ),
-      randomFloats( generator ),
-      0.0
-    );
+    QVector3D sample( randomFloats( generator ), randomFloats( generator ), 0.0 );
     ssaoNoise.push_back( sample );
   }
-  mAmbientOcclusionKernelParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoKernel[0]" ), ssaoKernelValues );
+  mAmbientOcclusionKernelParameter = new Qt3DRender::QParameter( u"ssaoKernel[0]"_s, ssaoKernelValues );
   mMaterial->addParameter( mAmbientOcclusionKernelParameter );
 
-  Qt3DRender::QParameter *noiseParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoNoise[0]" ), ssaoNoise );
+  Qt3DRender::QParameter *noiseParameter = new Qt3DRender::QParameter( u"ssaoNoise[0]"_s, ssaoNoise );
   mMaterial->addParameter( noiseParameter );
 
-  mIntensityParameter = new Qt3DRender::QParameter( QStringLiteral( "intensity" ), 0.5f );
+  mIntensityParameter = new Qt3DRender::QParameter( u"intensity"_s, 0.5f );
   mMaterial->addParameter( mIntensityParameter );
 
-  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 25.0f );
+  mRadiusParameter = new Qt3DRender::QParameter( u"radius"_s, 25.0f );
   mMaterial->addParameter( mRadiusParameter );
 
-  mThresholdParameter = new Qt3DRender::QParameter( QStringLiteral( "threshold" ), 0.5f );
+  mThresholdParameter = new Qt3DRender::QParameter( u"threshold"_s, 0.5f );
   mMaterial->addParameter( mThresholdParameter );
 
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.frag" );
+  const QString vertexShaderPath = u"qrc:/shaders/ssao_factor_render.vert"_s;
+  const QString fragmentShaderPath = u"qrc:/shaders/ssao_factor_render.frag"_s;
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );

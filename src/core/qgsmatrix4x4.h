@@ -20,6 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A simple 4x4 matrix implementation useful for transformation in 3D space.
@@ -40,10 +44,14 @@ class CORE_EXPORT QgsMatrix4x4
     //! Initializes identity matrix
     QgsMatrix4x4() { setToIdentity(); }
     //! Initializes matrix by setting all values in row-major order
-    QgsMatrix4x4( double m11, double m12, double m13, double m14,
-                  double m21, double m22, double m23, double m24,
-                  double m31, double m32, double m33, double m34,
-                  double m41, double m42, double m43, double m44 );
+    // clang-format off
+    QgsMatrix4x4(
+      double m11, double m12, double m13, double m14,
+      double m21, double m22, double m23, double m24,
+      double m31, double m32, double m33, double m34,
+      double m41, double m42, double m43, double m44
+    );
+    // clang-format on
 
     bool operator==( const QgsMatrix4x4 &other ) const
     {
@@ -57,17 +65,16 @@ class CORE_EXPORT QgsMatrix4x4
       return true;
     }
 
-    bool operator!=( const QgsMatrix4x4 &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsMatrix4x4 &other ) const { return !( *this == other ); }
 
     //! Returns pointer to the matrix data (stored in column-major order)
     const double *constData() const SIP_SKIP { return *m; }
     //! Returns pointer to the matrix data (stored in column-major order)
     double *data() SIP_SKIP { return *m; }
+    // clang-format off
     //! Returns matrix data (in column-major order)
     QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Multiplies this matrix by another that translates coordinates by the components of a \a vector.
@@ -86,9 +93,10 @@ class CORE_EXPORT QgsMatrix4x4
     void setToIdentity() SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>" )
+    QString str = u"<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>"_s
                   .arg( sipCpp->data()[0] )
                   .arg( sipCpp->data()[4] )
                   .arg( sipCpp->data()[8] )
@@ -107,6 +115,7 @@ class CORE_EXPORT QgsMatrix4x4
                   .arg( sipCpp->data()[15] );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

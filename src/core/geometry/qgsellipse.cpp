@@ -2,8 +2,8 @@
                          qgsellipse.cpp
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,6 +24,10 @@
 #include "qgslinestring.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsEllipse::normalizeAxis()
 {
   mSemiMajorAxis = std::fabs( mSemiMajorAxis );
@@ -31,8 +35,7 @@ void QgsEllipse::normalizeAxis()
   if ( mSemiMajorAxis < mSemiMinorAxis )
   {
     std::swap( mSemiMajorAxis, mSemiMinorAxis );
-    mAzimuth = 180.0 / M_PI *
-               QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * ( mAzimuth + 90 ) );
+    mAzimuth = 180.0 / M_PI * QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * ( mAzimuth + 90 ) );
   }
 }
 
@@ -102,24 +105,21 @@ QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint
   return QgsEllipse( centerPt, axis_a, axis_b, azimuth );
 }
 
-bool QgsEllipse::operator ==( const QgsEllipse &elp ) const
+bool QgsEllipse::operator==( const QgsEllipse &elp ) const
 {
-  return ( ( mCenter == elp.mCenter ) &&
-           qgsDoubleNear( mSemiMajorAxis, elp.mSemiMajorAxis, 1E-8 ) &&
-           qgsDoubleNear( mSemiMinorAxis, elp.mSemiMinorAxis, 1E-8 ) &&
-           qgsDoubleNear( mAzimuth, elp.mAzimuth, 1E-8 )
-         );
+  return (
+    ( mCenter == elp.mCenter ) && qgsDoubleNear( mSemiMajorAxis, elp.mSemiMajorAxis, 1E-8 ) && qgsDoubleNear( mSemiMinorAxis, elp.mSemiMinorAxis, 1E-8 ) && qgsDoubleNear( mAzimuth, elp.mAzimuth, 1E-8 )
+  );
 }
 
-bool QgsEllipse::operator !=( const QgsEllipse &elp ) const
+bool QgsEllipse::operator!=( const QgsEllipse &elp ) const
 {
   return !operator==( elp );
 }
 
 bool QgsEllipse::isEmpty() const
 {
-  return ( qgsDoubleNear( mSemiMajorAxis, 0.0, 1E-8 ) ||
-           qgsDoubleNear( mSemiMinorAxis, 0.0, 1E-8 ) );
+  return ( qgsDoubleNear( mSemiMajorAxis, 0.0, 1E-8 ) || qgsDoubleNear( mSemiMinorAxis, 0.0, 1E-8 ) );
 }
 
 void QgsEllipse::setSemiMajorAxis( const double axis_a )
@@ -135,8 +135,7 @@ void QgsEllipse::setSemiMinorAxis( const double axis_b )
 
 void QgsEllipse::setAzimuth( const double azimuth )
 {
-  mAzimuth = 180.0 / M_PI *
-             QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * azimuth );
+  mAzimuth = 180.0 / M_PI * QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * azimuth );
 }
 
 double QgsEllipse::focusDistance() const
@@ -147,8 +146,7 @@ double QgsEllipse::focusDistance() const
 QVector<QgsPoint> QgsEllipse::foci() const
 {
   const double dist_focus = focusDistance();
-  return
-  {
+  return {
     mCenter.project( dist_focus, mAzimuth ),
     mCenter.project( -dist_focus, mAzimuth ),
   };
@@ -177,13 +175,7 @@ double QgsEllipse::perimeter() const
 
 QVector<QgsPoint> QgsEllipse::quadrant() const
 {
-  return
-  {
-    mCenter.project( mSemiMajorAxis, mAzimuth ),
-    mCenter.project( mSemiMinorAxis, mAzimuth + 90 ),
-    mCenter.project( -mSemiMajorAxis, mAzimuth ),
-    mCenter.project( -mSemiMinorAxis, mAzimuth + 90 )
-  };
+  return { mCenter.project( mSemiMajorAxis, mAzimuth ), mCenter.project( mSemiMinorAxis, mAzimuth + 90 ), mCenter.project( -mSemiMajorAxis, mAzimuth ), mCenter.project( -mSemiMinorAxis, mAzimuth + 90 ) };
 }
 
 QgsPointSequence QgsEllipse::points( unsigned int segments ) const
@@ -201,9 +193,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   pts.reserve( x.size() );
   for ( int i = 0; i < x.size(); ++i )
   {
-    pts.append( QgsPoint( x[i], y[i],
-                          hasZ ? z[i] : std::numeric_limits< double >::quiet_NaN(),
-                          hasM ? m[i] : std::numeric_limits< double >::quiet_NaN() ) );
+    pts.append( QgsPoint( x[i], y[i], hasZ ? z[i] : std::numeric_limits< double >::quiet_NaN(), hasM ? m[i] : std::numeric_limits< double >::quiet_NaN() ) );
   }
   return pts;
 }
@@ -245,12 +235,10 @@ void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVec
   const double sinAzimuth = std::sin( azimuth );
   for ( double it : t )
   {
-    const double cosT{ std::cos( it ) };
-    const double sinT{ std::sin( it ) };
-    *xOut++ = centerX + mSemiMajorAxis * cosT * cosAzimuth -
-              mSemiMinorAxis * sinT * sinAzimuth;
-    *yOut++ = centerY + mSemiMajorAxis * cosT * sinAzimuth +
-              mSemiMinorAxis * sinT * cosAzimuth;
+    const double cosT { std::cos( it ) };
+    const double sinT { std::sin( it ) };
+    *xOut++ = centerX + mSemiMajorAxis * cosT * cosAzimuth - mSemiMinorAxis * sinT * sinAzimuth;
+    *yOut++ = centerY + mSemiMajorAxis * cosT * sinAzimuth + mSemiMinorAxis * sinT * cosAzimuth;
     if ( zOut )
       *zOut++ = centerZ;
     if ( mOut )
@@ -325,13 +313,12 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)" )
-          .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
-          .arg( qgsDoubleToString( mSemiMajorAxis, axisPrecision ), 0, 'f' )
-          .arg( qgsDoubleToString( mSemiMinorAxis, axisPrecision ), 0, 'f' )
-          .arg( qgsDoubleToString( mAzimuth, azimuthPrecision ), 0, 'f' );
+    rep = u"Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)"_s.arg( mCenter.asWkt( pointPrecision ), 0, 's' )
+            .arg( qgsDoubleToString( mSemiMajorAxis, axisPrecision ), 0, 'f' )
+            .arg( qgsDoubleToString( mSemiMinorAxis, axisPrecision ), 0, 'f' )
+            .arg( qgsDoubleToString( mAzimuth, azimuthPrecision ), 0, 'f' );
 
   return rep;
 }

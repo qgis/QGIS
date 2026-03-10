@@ -20,7 +20,11 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfeatureselectionmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionManager, QObject *parent )
   : QItemSelectionModel( model, parent )
@@ -74,7 +78,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  QgsDebugMsgLevel( QStringLiteral( "Index count: %1" ).arg( selection.indexes().size() ), 2 );
+  QgsDebugMsgLevel( u"Index count: %1"_s.arg( selection.indexes().size() ), 2 );
 
   const auto constIndexes = selection.indexes();
   for ( const QModelIndex &index : constIndexes )

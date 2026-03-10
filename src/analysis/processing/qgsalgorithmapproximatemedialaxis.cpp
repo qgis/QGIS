@@ -20,6 +20,10 @@
 
 #include "qgsexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef WITH_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
@@ -28,7 +32,7 @@
 
 QString QgsApproximateMedialAxisAlgorithm::name() const
 {
-  return QStringLiteral( "approximatemedialaxis" );
+  return u"approximatemedialaxis"_s;
 }
 
 QString QgsApproximateMedialAxisAlgorithm::displayName() const
@@ -48,16 +52,18 @@ QString QgsApproximateMedialAxisAlgorithm::group() const
 
 QString QgsApproximateMedialAxisAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsApproximateMedialAxisAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Approximate Medial Axis algorithm generates a simplified skeleton of a shape by approximating its medial axis. \n\n"
-                      "The output is a collection of lines that follow the central structure of the shape. The result is a thin, stable set "
-                      "of curves that capture the main topology while ignoring noise.\n\n"
-                      "This algorithm ignores the Z dimensions. If the geometry is 3D, the approximate medial axis will be calculated from "
-                      "its 2D projection." );
+  return QObject::tr(
+    "The Approximate Medial Axis algorithm generates a simplified skeleton of a shape by approximating its medial axis. \n\n"
+    "The output is a collection of lines that follow the central structure of the shape. The result is a thin, stable set "
+    "of curves that capture the main topology while ignoring noise.\n\n"
+    "This algorithm ignores the Z dimensions. If the geometry is 3D, the approximate medial axis will be calculated from "
+    "its 2D projection."
+  );
 }
 
 QString QgsApproximateMedialAxisAlgorithm::shortDescription() const
@@ -73,7 +79,7 @@ QgsApproximateMedialAxisAlgorithm *QgsApproximateMedialAxisAlgorithm::createInst
 QgsFields QgsApproximateMedialAxisAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "length" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"length"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 

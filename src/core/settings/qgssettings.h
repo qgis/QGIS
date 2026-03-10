@@ -24,6 +24,9 @@
 
 #include <QMetaEnum>
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsProxy;
 
@@ -65,7 +68,6 @@ class CORE_EXPORT QgsSettings : public QObject
 {
     Q_OBJECT
   public:
-
     //! Sections for namespaced settings
     enum Section
     {
@@ -86,8 +88,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Constructs a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
      */
-    explicit QgsSettings( const QString &organization,
-                          const QString &application = QString(), QObject *parent = nullptr );
+    explicit QgsSettings( const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application called application
@@ -103,8 +104,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * If no application name is given, the QSettings object will only access the organization-wide
      * locations.
      */
-    QgsSettings( QSettings::Scope scope, const QString &organization,
-                 const QString &application = QString(), QObject *parent = nullptr );
+    QgsSettings( QSettings::Scope scope, const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application called application
@@ -120,8 +120,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * If no application name is given, the QSettings object will only access the organization-wide
      * locations.
      */
-    QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization,
-                 const QString &application = QString(), QObject *parent = nullptr );
+    QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing the settings stored in the file called fileName,
@@ -225,9 +224,9 @@ class CORE_EXPORT QgsSettings : public QObject
      * An optional Section argument can be used to get a value from a specific Section.
      */
 #ifndef SIP_RUN
-    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    Section section = NoSection ) const;
+    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(), Section section = NoSection ) const;
 #else
+    // clang-format off
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
@@ -245,6 +244,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     sipIsErr = !sipRes;
     % End
+// clang-format on
 #endif
 
 
@@ -260,15 +260,13 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setEnumValue
      * \see flagValue
      */
-    template <class T>
-    T enumValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection )
+    template<class T> T enumValue( const QString &key, const T &defaultValue, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v;
@@ -312,9 +310,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see enumValue
      * \see setFlagValue
      */
-    template <class T>
-    void setEnumValue( const QString &key, const T &value,
-                       const Section section = NoSection )
+    template<class T> void setEnumValue( const QString &key, const T &value, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -324,7 +320,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 
@@ -338,15 +334,13 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setFlagValue
      * \see enumValue
      */
-    template <class T>
-    T flagValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection )
+    template<class T> T flagValue( const QString &key, const T &defaultValue, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v = defaultValue;
@@ -402,9 +396,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see flagValue
      * \see setEnumValue
      */
-    template <class T>
-    void setFlagValue( const QString &key, const T &value,
-                       const Section section = NoSection )
+    template<class T> void setFlagValue( const QString &key, const T &value, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -414,7 +406,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 #endif
@@ -499,7 +491,6 @@ class CORE_EXPORT QgsSettings : public QObject
     std::unique_ptr<QSettings> mGlobalSettings;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
-
 };
 
 // as static members cannot be CORE_EXPORTed

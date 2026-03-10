@@ -22,6 +22,10 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeview.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer )
 {
   const QgsMapLayer *layer = layerTreeLayer->layer();
@@ -29,9 +33,9 @@ void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *la
   {
     // post-process vector layer
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "Processing/Configuration/VECTOR_FEATURE_COUNT" ), false ).toBool() )
+    if ( settings.value( u"Processing/Configuration/VECTOR_FEATURE_COUNT"_s, false ).toBool() )
     {
-      layerTreeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
+      layerTreeLayer->setCustomProperty( u"showFeatureCount"_s, true );
     }
   }
 }
@@ -47,16 +51,14 @@ QgsLayerTreeGroup *QgsProcessingGuiUtils::layerTreeResultsGroup( const QgsProces
   // if a specific results group is specified in Processing settings,
   // respect it (and create if necessary)
   QgsSettings settings;
-  const QString resultsGroupName = settings.value( QStringLiteral( "Processing/Configuration/RESULTS_GROUP_NAME" ), QString() ).toString();
+  const QString resultsGroupName = settings.value( u"Processing/Configuration/RESULTS_GROUP_NAME"_s, QString() ).toString();
 
   if ( !resultsGroupName.isEmpty() )
   {
     resultsGroup = destinationProject->layerTreeRoot()->findGroup( resultsGroupName );
     if ( !resultsGroup )
     {
-      resultsGroup = destinationProject->layerTreeRoot()->insertGroup(
-        0, resultsGroupName
-      );
+      resultsGroup = destinationProject->layerTreeRoot()->insertGroup( 0, resultsGroupName );
       resultsGroup->setExpanded( true );
     }
   }
@@ -90,11 +92,7 @@ void QgsProcessingGuiUtils::addResultLayers( const QVector<ResultLayerDetails> &
 {
   // sort added layer tree layers
   QVector<ResultLayerDetails> sortedLayers = layers;
-  std::sort(
-    sortedLayers.begin(), sortedLayers.end(), []( const ResultLayerDetails &a, const ResultLayerDetails &b ) {
-      return a.sortKey < b.sortKey;
-    }
-  );
+  std::sort( sortedLayers.begin(), sortedLayers.end(), []( const ResultLayerDetails &a, const ResultLayerDetails &b ) { return a.sortKey < b.sortKey; } );
 
   bool haveSetActiveLayer = false;
   QgsLayerTreeNode *currentSelectedNode = nullptr;
@@ -139,15 +137,11 @@ void QgsProcessingGuiUtils::addResultLayers( const QVector<ResultLayerDetails> &
       // above the current layer if one was selected, or at top of group if a group was selected
       if ( defaultTargetGroup )
       {
-        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint(
-          defaultTargetGroup, defaultTargetGroupIndex
-        ) );
+        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint( defaultTargetGroup, defaultTargetGroupIndex ) );
       }
       else if ( project )
       {
-        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint(
-          project->layerTreeRoot(), 0
-        ) );
+        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint( project->layerTreeRoot(), 0 ) );
       }
     }
 
@@ -172,9 +166,7 @@ void QgsProcessingGuiUtils::addResultLayers( const QVector<ResultLayerDetails> &
     // reset to the previous insertion point
     if ( project && previousInsertionPoint.has_value() )
     {
-      project->layerTreeRegistryBridge()->setLayerInsertionPoint(
-        *previousInsertionPoint
-      );
+      project->layerTreeRegistryBridge()->setLayerInsertionPoint( *previousInsertionPoint );
     }
   }
 }

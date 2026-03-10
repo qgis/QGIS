@@ -25,8 +25,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshdatasetgrouptreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   : QWidget( parent )
@@ -39,9 +42,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
   connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
   connect( mUnCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
-  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] {
-    this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
-  } );
+  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] { this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer ); } );
 
   connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() {
     const QModelIndex index = mDatasetGroupTreeView->currentIndex();
@@ -98,7 +99,7 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
     return;
 
   QgsSettings settings;
-  const QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  const QString openFileDir = settings.value( u"lastMeshDatasetDir"_s, QDir::homePath(), QgsSettings::App ).toString();
   const QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load mesh datasets" ), openFileDir, QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
 
   if ( openFileString.isEmpty() )
@@ -113,7 +114,7 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
   }
 
   const QFileInfo openFileInfo( openFileString );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
+  settings.setValue( u"lastMeshDatasetDir"_s, openFileInfo.absolutePath(), QgsSettings::App );
   const QFile datasetFile( openFileString );
 
   if ( mMeshLayer->addDatasets( openFileString, QgsProject::instance()->timeSettings()->temporalRange().begin() ) )

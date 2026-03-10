@@ -18,15 +18,17 @@
 #include "qgsproperty.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsAbstractPropertyCollection
 //
 
 QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
   : mName( name )
-{
-
-}
+{}
 
 QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
 {
@@ -111,7 +113,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
   QVariant collection = QgsXmlUtils::readVariant( collectionElem.firstChild().toElement() );
   return loadVariant( collection.toMap(), definitions );
 }
-
 
 
 //
@@ -226,7 +227,7 @@ QgsProperty QgsPropertyCollection::property( int key ) const
 QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
-  return mProperties[ key ];
+  return mProperties[key];
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
@@ -325,8 +326,8 @@ QVariant QgsPropertyCollection::toVariant( const QgsPropertiesDefinition &defini
 {
   QVariantMap collection;
 
-  collection.insert( QStringLiteral( "name" ), name() );
-  collection.insert( QStringLiteral( "type" ), QStringLiteral( "collection" ) );
+  collection.insert( u"name"_s, name() );
+  collection.insert( u"type"_s, u"collection"_s );
 
   QVariantMap properties;
 
@@ -338,7 +339,7 @@ QVariant QgsPropertyCollection::toVariant( const QgsPropertiesDefinition &defini
       properties.insert( definitions.value( it.key() ).name(), it.value().toVariant() );
     }
   }
-  collection.insert( QStringLiteral( "properties" ), properties );
+  collection.insert( u"properties"_s, properties );
   return collection;
 }
 
@@ -348,10 +349,10 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
 
   QVariantMap collectionMap = collection.toMap();
 
-  setName( collectionMap.value( QStringLiteral( "name" ) ).toString() );
+  setName( collectionMap.value( u"name"_s ).toString() );
 
   mCount = 0;
-  QVariantMap properties = collectionMap.value( QStringLiteral( "properties" ) ).toMap();
+  QVariantMap properties = collectionMap.value( u"properties"_s ).toMap();
   for ( auto propertyIterator = properties.constBegin(); propertyIterator != properties.constEnd(); ++propertyIterator )
   {
     // match name to int key
@@ -376,10 +377,7 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mCount++;
 
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasDynamicProperties = mHasDynamicProperties ||
-                            ( prop.isActive() &&
-                              ( prop.propertyType() == Qgis::PropertyType::Field ||
-                                prop.propertyType() == Qgis::PropertyType::Expression ) );
+    mHasDynamicProperties = mHasDynamicProperties || ( prop.isActive() && ( prop.propertyType() == Qgis::PropertyType::Field || prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }
@@ -394,7 +392,8 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other ), mStack()
+  : QgsAbstractPropertyCollection( other )
+  , mStack()
 {
   clear();
 
@@ -558,8 +557,8 @@ bool QgsPropertyCollectionStack::hasProperty( int key ) const
 QVariant QgsPropertyCollectionStack::toVariant( const QgsPropertiesDefinition &definitions ) const
 {
   QVariantMap collection;
-  collection.insert( QStringLiteral( "type" ), QStringLiteral( "stack" ) );
-  collection.insert( QStringLiteral( "name" ), name() );
+  collection.insert( u"type"_s, u"stack"_s );
+  collection.insert( u"name"_s, name() );
 
   QVariantList properties;
 
@@ -569,7 +568,7 @@ QVariant QgsPropertyCollectionStack::toVariant( const QgsPropertiesDefinition &d
     properties.append( child->toVariant( definitions ) );
   }
 
-  collection.insert( QStringLiteral( "properties" ), properties );
+  collection.insert( u"properties"_s, properties );
 
   return collection;
 }
@@ -580,9 +579,9 @@ bool QgsPropertyCollectionStack::loadVariant( const QVariant &collection, const 
 
   QVariantMap collectionMap = collection.toMap();
 
-  setName( collectionMap.value( QStringLiteral( "name" ) ).toString() );
+  setName( collectionMap.value( u"name"_s ).toString() );
 
-  QVariantList properties = collectionMap.value( QStringLiteral( "properties" ) ).toList();
+  QVariantList properties = collectionMap.value( u"properties"_s ).toList();
 
   const auto constProperties = properties;
   for ( const QVariant &property : constProperties )

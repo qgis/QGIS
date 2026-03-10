@@ -38,9 +38,12 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPicture>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsmodelcomponentgraphicitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -56,7 +59,7 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
 
   mFont.setPixelSize( 12 );
 
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mActionEditModelComponent.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mActionEditModelComponent.svg"_s ) );
   QPicture editPicture;
   QPainter painter( &editPicture );
   svg.render( &painter );
@@ -64,7 +67,7 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   mEditButton = new QgsModelDesignerFlatButtonGraphicItem( this, editPicture, QPointF( 0, 0 ) );
   connect( mEditButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::editComponent );
 
-  QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mActionDeleteModelComponent.svg" ) ) );
+  QSvgRenderer svg2( QgsApplication::iconPath( u"mActionDeleteModelComponent.svg"_s ) );
   QPicture deletePicture;
   painter.begin( &deletePicture );
   svg2.render( &painter );
@@ -761,7 +764,7 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelInput.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mIconModelInput.svg"_s ) );
   QPainter painter( &mPicture );
   svg.render( &painter );
   painter.end();
@@ -921,13 +924,25 @@ void QgsModelParameterGraphicItem::deleteComponent()
   {
     if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ), QObject::tr( "Algorithms depend on the selected input.\n"
-                                                                                           "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove input" ),
+        QObject::tr(
+          "Algorithms depend on the selected input.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else if ( model()->otherParametersDependOnParameter( param->parameterName() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ), QObject::tr( "Other inputs depend on the selected input.\n"
-                                                                                           "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove input" ),
+        QObject::tr(
+          "Other inputs depend on the selected input.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else
     {
@@ -970,12 +985,12 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   if ( isSelected() )
   {
     QAction *runSelectedStepsAction = popupmenu->addAction( QObject::tr( "Run Selected Steps…" ) );
-    runSelectedStepsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRunSelected.svg" ) ) );
+    runSelectedStepsAction->setIcon( QgsApplication::getThemeIcon( u"mActionRunSelected.svg"_s ) );
     connect( runSelectedStepsAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runSelected );
   }
 
   QAction *runFromHereAction = popupmenu->addAction( QObject::tr( "Run from Here…" ) );
-  runFromHereAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+  runFromHereAction->setIcon( QgsApplication::getThemeIcon( u"mActionStart.svg"_s ) );
   connect( runFromHereAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::runFromHere );
 
   popupmenu->addSeparator();
@@ -1009,7 +1024,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
       {
         popupmenu->addSeparator();
         QAction *viewOutputLayersAction = popupmenu->addAction( QObject::tr( "View Output Layers" ) );
-        viewOutputLayersAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionShowSelectedLayers.svg" ) ) );
+        viewOutputLayersAction->setIcon( QgsApplication::getThemeIcon( u"mActionShowSelectedLayers.svg"_s ) );
         connect( viewOutputLayersAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::showPreviousResults );
         // enable this action only when the child succeeded
         switch ( mResults.executionStatus() )
@@ -1109,10 +1124,10 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
       case Qt::TopEdge:
       {
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) {
-                        return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
-                      } ),
-                      params.end() );
+        params.erase(
+          std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) { return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination(); } ),
+          params.end()
+        );
         return params.size();
       }
 
@@ -1181,10 +1196,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         if ( index >= child->algorithm()->outputDefinitions().length() )
         {
           // something goes wrong and tried to link to an not existing output
-          QgsMessageLog::logMessage(
-            tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ),
-            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true
-          );
+          QgsMessageLog::logMessage( tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ), "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
           return QString();
         }
 
@@ -1196,18 +1208,15 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
       case Qt::TopEdge:
       {
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) {
-                        return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
-                      } ),
-                      params.end() );
+        params.erase(
+          std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) { return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination(); } ),
+          params.end()
+        );
 
         if ( index >= params.length() )
         {
           // something goes wrong and tried to link to an not existing source parameter
-          QgsMessageLog::logMessage(
-            tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ),
-            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true
-          );
+          QgsMessageLog::logMessage( tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ), "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
           return QString();
         }
 
@@ -1224,33 +1233,31 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           switch ( firstParameterSource.source() )
           {
             case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-              parameterValueAsString = QStringLiteral( ": %1" ).arg(
-                firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) )
-              );
+              parameterValueAsString = u": %1"_s.arg( firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::Expression:
-              parameterValueAsString = QStringLiteral( ": %1" ).arg( firstParameterSource.expression() );
+              parameterValueAsString = u": %1"_s.arg( firstParameterSource.expression() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
-              parameterValueAsString = QStringLiteral( ": %1" ).arg( firstParameterSource.expressionText() );
+              parameterValueAsString = u": %1"_s.arg( firstParameterSource.expressionText() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
-              parameterValueAsString = QStringLiteral( ": <%1>" ).arg( firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
+              parameterValueAsString = u": <%1>"_s.arg( firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelParameter:
             {
               const QString friendlyName = firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) );
-              parameterValueAsString = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": <%1>" ).arg( friendlyName );
+              parameterValueAsString = friendlyName.isEmpty() ? u":"_s : u": <%1>"_s.arg( friendlyName );
               break;
             }
 
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
               const QVariant paramValue = paramSources[0].staticValue();
-              parameterValueAsString = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
+              parameterValueAsString = u": %1"_s.arg( param->userFriendlyString( paramValue ) );
           }
           title += parameterValueAsString;
         }
@@ -1301,8 +1308,14 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
     emit aboutToChange( tr( "Remove %1" ).arg( child->algorithm() ? child->algorithm()->displayName() : tr( "Algorithm" ) ) );
     if ( !model()->removeChildAlgorithm( child->childId() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove algorithm" ), QObject::tr( "Other algorithms depend on the selected one.\n"
-                                                                                               "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove algorithm" ),
+        QObject::tr(
+          "Other algorithms depend on the selected one.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else
     {
@@ -1331,8 +1344,14 @@ void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
     }
     else
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not activate algorithm" ), QObject::tr( "The selected algorithm depends on other currently non-active algorithms.\n"
-                                                                                                 "Activate them them before trying to activate it.." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not activate algorithm" ),
+        QObject::tr(
+          "The selected algorithm depends on other currently non-active algorithms.\n"
+          "Activate them them before trying to activate it.."
+        )
+      );
     }
   }
 }
@@ -1341,7 +1360,7 @@ void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
 QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *output, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( output, model, parent )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelOutput.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mIconModelOutput.svg"_s ) );
   QPainter painter( &mPicture );
   svg.render( &painter );
   painter.end();
@@ -1513,6 +1532,15 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
+{
+  const QString commandId = u"groupbox:%1"_s.arg( groupBox.uuid() );
+  emit aboutToChange( tr( "Edit Group Box" ), commandId );
+  model()->addGroupBox( groupBox );
+  emit changed();
+  emit requestModelRepaint();
+}
+
 void QgsModelGroupBoxGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelGroupBox *box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
@@ -1532,10 +1560,7 @@ void QgsModelGroupBoxGraphicItem::editComponent()
 
     if ( dlg.exec() )
     {
-      emit aboutToChange( tr( "Edit Group Box" ) );
-      model()->addGroupBox( dlg.groupBox() );
-      emit changed();
-      emit requestModelRepaint();
+      applyEdit( dlg.groupBox() );
     }
   }
 }

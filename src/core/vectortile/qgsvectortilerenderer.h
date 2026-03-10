@@ -20,6 +20,10 @@
 #include "qgsfeature.h"
 #include "qgstiles.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRenderContext;
 class QgsReadWriteContext;
 class QgsProject;
@@ -119,17 +123,16 @@ class CORE_EXPORT QgsVectorTileRendererData
  */
 class CORE_EXPORT QgsVectorTileRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "basic" ) )
+    if ( type == "basic"_L1 )
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -147,7 +150,7 @@ class CORE_EXPORT QgsVectorTileRenderer
     //! Returns field names of sub-layers that will be used for rendering. Must be called between startRender/stopRender.
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString> >(); }
 
-    //TODO QGIS 4.0 -- make pure virtual
+    //TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns a list of the layers required for rendering.
@@ -158,7 +161,12 @@ class CORE_EXPORT QgsVectorTileRenderer
      *
      * \since QGIS 3.16
      */
-    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const { Q_UNUSED( context ); Q_UNUSED( tileZoom ); return QSet< QString >() << QString(); }
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( tileZoom );
+      return QSet< QString >() << QString();
+    }
 
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;
@@ -191,7 +199,6 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
     //! Resolves references to other objects - second phase of loading - after readXml()
     virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
-
 };
 
 #endif // QGSVECTORTILERENDERER_H

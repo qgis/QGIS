@@ -20,6 +20,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgsdoublespinbox.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
@@ -29,9 +30,13 @@
 #include "qgspoint.h"
 #include "qgsstatusbar.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircularstringradius.cpp"
 
-const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = QStringLiteral( "circular-string-by-radius" );
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = u"circular-string-by-radius"_s;
 
 QString QgsMapToolShapeCircularStringRadiusMetadata::id() const
 {
@@ -45,7 +50,7 @@ QString QgsMapToolShapeCircularStringRadiusMetadata::name() const
 
 QIcon QgsMapToolShapeCircularStringRadiusMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircularStringRadius.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircularStringRadius.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircularStringRadiusMetadata::category() const
@@ -168,13 +173,29 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
     rubberBandPoints.append( mPoints.last() );
     rubberBandPoints.append( mParentTool->mapPoint( mousePosition ) );
   }
+
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
+
   delete mTempRubberBand;
   Qgis::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
   mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
+
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
+
+  // construct transient geometry for signal, starting with the geometry already captured by the parent tool
+  std::unique_ptr<QgsCompoundCurve> fullCurve( mParentTool->captureCurve() ? mParentTool->captureCurve()->clone() : new QgsCompoundCurve() );
+  if ( mPoints.size() >= 3 )
+  {
+    auto confirmedString = std::make_unique< QgsCircularString >();
+    const int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
+    confirmedString->setPoints( mPoints.mid( 0, rubberBandSize ) );
+    fullCurve->addCurve( confirmedString.release() );
+  }
+  fullCurve->addCurve( cString->clone() );
+
+  setTransientGeometry( QgsGeometry( fullCurve.release() ) );
 }
 
 void QgsMapToolShapeCircularStringRadius::createRadiusSpinBox()

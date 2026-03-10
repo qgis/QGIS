@@ -26,32 +26,36 @@
 #include "lazperf/writers.hpp"
 #include "qgslazdecoder.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Keeps one entry of COPC hierarchy
 struct HierarchyEntry
 {
-  //! Key of the data to which this entry corresponds
-  QgsPointCloudNodeId key;
+    //! Key of the data to which this entry corresponds
+    QgsPointCloudNodeId key;
 
-  /**
+    /**
    * Absolute offset to the data chunk if the pointCount > 0.
    * Absolute offset to a child hierarchy page if the pointCount is -1.
    * 0 if the pointCount is 0.
    */
-  uint64_t offset;
+    uint64_t offset;
 
-  /**
+    /**
    * Size of the data chunk in bytes (compressed size) if the pointCount > 0.
    * Size of the hierarchy page if the pointCount is -1.
    * 0 if the pointCount is 0.
    */
-  int32_t byteSize;
+    int32_t byteSize;
 
-  /**
+    /**
    * If > 0, represents the number of points in the data chunk.
    * If -1, indicates the information for this octree node is found in another hierarchy page.
    * If 0, no point data exists for this key, though may exist for child entries.
    */
-  int32_t pointCount;
+    int32_t pointCount;
 };
 
 typedef QVector<HierarchyEntry> HierarchyEntries;
@@ -181,11 +185,10 @@ bool QgsCopcUpdate::write( const QString &outputFilename, const QHash<QgsPointCl
       // move hierarchy pages to new offset
       e.offset += hierPositionShift;
     }
-    else  // pointCount == 0
+    else // pointCount == 0
     {
       // nothing to do - byte size and offset should be zero
     }
-
   }
 
   // write hierarchy eVLR
@@ -229,7 +232,6 @@ bool QgsCopcUpdate::write( const QString &outputFilename, const QHash<QgsPointCl
 }
 
 
-
 bool QgsCopcUpdate::read( const QString &inputFilename )
 {
   mInputFilename = inputFilename;
@@ -237,7 +239,7 @@ bool QgsCopcUpdate::read( const QString &inputFilename )
   mFile.open( QgsLazDecoder::toNativePath( inputFilename ), std::ios::binary | std::ios::in );
   if ( mFile.fail() )
   {
-    mErrorMessage = QStringLiteral( "Could not open file for reading: %1" ).arg( inputFilename );
+    mErrorMessage = u"Could not open file for reading: %1"_s.arg( inputFilename );
     return false;
   }
 
@@ -257,7 +259,7 @@ bool QgsCopcUpdate::readHeader()
   mHeader = lazperf::header14::create( mFile );
   if ( !mFile )
   {
-    mErrorMessage = QStringLiteral( "Error reading COPC header" );
+    mErrorMessage = u"Error reading COPC header"_s;
     return false;
   }
 
@@ -267,7 +269,7 @@ bool QgsCopcUpdate::readHeader()
   int baseCount = lazperf::baseCount( mHeader.point_format_id );
   if ( baseCount == 0 )
   {
-    mErrorMessage = QStringLiteral( "Bad point record format: %1" ).arg( mHeader.point_format_id );
+    mErrorMessage = u"Bad point record format: %1"_s.arg( mHeader.point_format_id );
     return false;
   }
 
@@ -301,7 +303,7 @@ void QgsCopcUpdate::readChunkTable()
   uint64_t nextChunkOffset = mHeader.point_offset + 8;
   for ( lazperf::chunk ch : mChunks )
   {
-    chunksWithAbsoluteOffsets.push_back( {nextChunkOffset, ch.count} );
+    chunksWithAbsoluteOffsets.push_back( { nextChunkOffset, ch.count } );
     nextChunkOffset += ch.offset;
   }
 }
@@ -312,12 +314,7 @@ void QgsCopcUpdate::readHierarchy()
   // get all hierarchy pages
 
   HierarchyEntries childEntriesToProcess;
-  childEntriesToProcess.push_back( HierarchyEntry
-  {
-    QgsPointCloudNodeId( 0, 0, 0, 0 ),
-    mCopcVlr.root_hier_offset,
-    static_cast<int32_t>( mCopcVlr.root_hier_size ),
-    -1 } );
+  childEntriesToProcess.push_back( HierarchyEntry { QgsPointCloudNodeId( 0, 0, 0, 0 ), mCopcVlr.root_hier_offset, static_cast<int32_t>( mCopcVlr.root_hier_size ), -1 } );
 
   while ( !childEntriesToProcess.empty() )
   {
@@ -343,7 +340,7 @@ void QgsCopcUpdate::readHierarchy()
   lazperf::evlr_header evlr1;
   mFile.seekg( static_cast<long>( mHeader.evlr_offset ) );
 
-  mHierarchyOffset = 0;  // where the hierarchy eVLR payload starts
+  mHierarchyOffset = 0; // where the hierarchy eVLR payload starts
 
   for ( uint32_t i = 0; i < mHeader.evlr_count; ++i )
   {
@@ -369,10 +366,7 @@ void QgsCopcUpdate::readHierarchy()
 }
 
 
-bool QgsCopcUpdate::writeUpdatedFile( const QString &inputFilename,
-                                      const QString &outputFilename,
-                                      const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks,
-                                      QString *errorMessage )
+bool QgsCopcUpdate::writeUpdatedFile( const QString &inputFilename, const QString &outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks, QString *errorMessage )
 {
   QgsCopcUpdate copcUpdate;
   if ( !copcUpdate.read( inputFilename ) )

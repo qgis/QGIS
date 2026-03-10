@@ -37,37 +37,47 @@
 #include "qgsvariantutils.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsCallout::sPropertyDefinitions;
 
 void QgsCallout::initPropertyDefinitions()
 {
-  const QString origin = QStringLiteral( "callouts" );
+  const QString origin = u"callouts"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsCallout::Property::MinimumCalloutLength ), QgsPropertyDefinition( "MinimumCalloutLength", QObject::tr( "Minimum callout length" ), QgsPropertyDefinition::DoublePositive, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast< int >( QgsCallout::Property::MinimumCalloutLength ),
+      QgsPropertyDefinition( "MinimumCalloutLength", QObject::tr( "Minimum callout length" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsCallout::Property::OffsetFromAnchor ), QgsPropertyDefinition( "OffsetFromAnchor", QObject::tr( "Offset from feature" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsCallout::Property::OffsetFromLabel ), QgsPropertyDefinition( "OffsetFromLabel", QObject::tr( "Offset from label" ), QgsPropertyDefinition::DoublePositive, origin ) },
-    { static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ), QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsCallout::Property::AnchorPointPosition ), QgsPropertyDefinition( "AnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Feature's anchor point position" ), QObject::tr( "string " ) + "[<b>pole_of_inaccessibility</b>|<b>point_on_exterior</b>|<b>point_on_surface</b>|<b>centroid</b>]", origin ) },
-    {
-      static_cast< int >( QgsCallout::Property::LabelAnchorPointPosition ), QgsPropertyDefinition( "LabelAnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label's anchor point position" ), QObject::tr( "string " ) + "[<b>point_on_exterior</b>|<b>centroid</b>|<b>TL</b>=Top left|<b>T</b>=Top middle|"
-          "<b>TR</b>=Top right|<br>"
-          "<b>L</b>=Left|<b>R</b>=Right|<br>"
-          "<b>BL</b>=Bottom left|<b>B</b>=Bottom middle|"
-          "<b>BR</b>=Bottom right]", origin )
-    },
+    { static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ),
+      QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast< int >( QgsCallout::Property::AnchorPointPosition ),
+      QgsPropertyDefinition( "AnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Feature's anchor point position" ), QObject::tr( "string " ) + "[<b>pole_of_inaccessibility</b>|<b>point_on_exterior</b>|<b>point_on_surface</b>|<b>centroid</b>]", origin ) },
+    { static_cast< int >( QgsCallout::Property::LabelAnchorPointPosition ),
+      QgsPropertyDefinition(
+        "LabelAnchorPointPosition",
+        QgsPropertyDefinition::DataTypeString,
+        QObject::tr( "Label's anchor point position" ),
+        QObject::tr( "string " )
+          + "[<b>point_on_exterior</b>|<b>centroid</b>|<b>TL</b>=Top left|<b>T</b>=Top middle|"
+            "<b>TR</b>=Top right|<br>"
+            "<b>L</b>=Left|<b>R</b>=Right|<br>"
+            "<b>BL</b>=Bottom left|<b>B</b>=Bottom middle|"
+            "<b>BR</b>=Bottom right]",
+        origin
+      ) },
     { static_cast< int >( QgsCallout::Property::OriginX ), QgsPropertyDefinition( "OriginX", QObject::tr( "Callout origin (X)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::OriginY ), QgsPropertyDefinition( "OriginY", QObject::tr( "Callout origin (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::DestinationX ), QgsPropertyDefinition( "DestinationX", QObject::tr( "Callout destination (X)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::DestinationY ), QgsPropertyDefinition( "DestinationY", QObject::tr( "Callout destination (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::Curvature ), QgsPropertyDefinition( "Curvature", QObject::tr( "Callout line curvature" ), QgsPropertyDefinition::Double, origin ) },
-    {
-      static_cast< int >( QgsCallout::Property::Orientation ), QgsPropertyDefinition( "Orientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Callout curve orientation" ),  QObject::tr( "string " ) + "[<b>auto</b>|<b>clockwise</b>|<b>counterclockwise</b>]", origin )
-    },
-    {
-      static_cast< int >( QgsCallout::Property::Margins ), QgsPropertyDefinition( "Margins", QgsPropertyDefinition::DataTypeString, QObject::tr( "Margins" ), QObject::tr( "string of four doubles '<b>top,right,bottom,left</b>' or array of doubles <b>[top, right, bottom, left]</b>" ) )
-    },
+    { static_cast< int >( QgsCallout::Property::Orientation ),
+      QgsPropertyDefinition( "Orientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Callout curve orientation" ), QObject::tr( "string " ) + "[<b>auto</b>|<b>clockwise</b>|<b>counterclockwise</b>]", origin ) },
+    { static_cast< int >( QgsCallout::Property::Margins ),
+      QgsPropertyDefinition( "Margins", QgsPropertyDefinition::DataTypeString, QObject::tr( "Margins" ), QObject::tr( "string of four doubles '<b>top,right,bottom,left</b>' or array of doubles <b>[top, right, bottom, left]</b>" ) ) },
     { static_cast< int >( QgsCallout::Property::WedgeWidth ), QgsPropertyDefinition( "WedgeWidth", QObject::tr( "Wedge width" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsCallout::Property::CornerRadius ), QgsPropertyDefinition( "CornerRadius", QObject::tr( "Corner radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsCallout::Property::BlendMode ), QgsPropertyDefinition( "BlendMode", QObject::tr( "Callout blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
@@ -76,28 +86,26 @@ void QgsCallout::initPropertyDefinitions()
 
 
 QgsCallout::QgsCallout()
-{
-}
+{}
 
 QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
-  props.insert( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
-  props.insert( QStringLiteral( "labelAnchorPoint" ), encodeLabelAnchorPoint( mLabelAnchorPoint ) );
-  props.insert( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
-  props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
+  props.insert( u"enabled"_s, mEnabled ? "1" : "0" );
+  props.insert( u"anchorPoint"_s, encodeAnchorPoint( mAnchorPoint ) );
+  props.insert( u"labelAnchorPoint"_s, encodeLabelAnchorPoint( mLabelAnchorPoint ) );
+  props.insert( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  props.insert( u"ddProperties"_s, mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
 
 void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteContext & )
 {
-  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString() ).toString() );
-  mLabelAnchorPoint = decodeLabelAnchorPoint( props.value( QStringLiteral( "labelAnchorPoint" ), QString() ).toString() );
-  mBlendMode = QgsPainting::getCompositionMode(
-                 static_cast< Qgis::BlendMode >( props.value( QStringLiteral( "blendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
-  mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
+  mEnabled = props.value( u"enabled"_s, u"0"_s ).toInt();
+  mAnchorPoint = decodeAnchorPoint( props.value( u"anchorPoint"_s, QString() ).toString() );
+  mLabelAnchorPoint = decodeLabelAnchorPoint( props.value( u"labelAnchorPoint"_s, QString() ).toString() );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( props.value( u"blendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  mDataDefinedProperties.loadVariant( props.value( u"ddProperties"_s ), propertyDefinitions() );
 }
 
 bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
@@ -109,8 +117,8 @@ bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const 
 
   const QDomElement calloutPropsElement = QgsXmlUtils::writeVariant( properties( context ), doc );
 
-  QDomElement calloutElement = doc.createElement( QStringLiteral( "callout" ) );
-  calloutElement.setAttribute( QStringLiteral( "type" ), type() );
+  QDomElement calloutElement = doc.createElement( u"callout"_s );
+  calloutElement.setAttribute( u"type"_s, type() );
   calloutElement.appendChild( calloutPropsElement );
 
   element.appendChild( calloutElement );
@@ -124,13 +132,9 @@ void QgsCallout::restoreProperties( const QDomElement &element, const QgsReadWri
 }
 
 void QgsCallout::startRender( QgsRenderContext & )
-{
-
-}
+{}
 void QgsCallout::stopRender( QgsRenderContext & )
-{
-
-}
+{}
 
 bool QgsCallout::containsAdvancedEffects() const
 {
@@ -204,13 +208,13 @@ QgsCallout::AnchorPoint QgsCallout::decodeAnchorPoint( const QString &name, bool
     *ok = true;
   const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == QLatin1String( "pole_of_inaccessibility" ) )
+  if ( cleaned == "pole_of_inaccessibility"_L1 )
     return PoleOfInaccessibility;
-  else if ( cleaned == QLatin1String( "point_on_exterior" ) )
+  else if ( cleaned == "point_on_exterior"_L1 )
     return PointOnExterior;
-  else if ( cleaned == QLatin1String( "point_on_surface" ) )
+  else if ( cleaned == "point_on_surface"_L1 )
     return PointOnSurface;
-  else if ( cleaned == QLatin1String( "centroid" ) )
+  else if ( cleaned == "centroid"_L1 )
     return Centroid;
 
   if ( ok )
@@ -223,13 +227,13 @@ QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
   switch ( anchor )
   {
     case PoleOfInaccessibility:
-      return QStringLiteral( "pole_of_inaccessibility" );
+      return u"pole_of_inaccessibility"_s;
     case PointOnExterior:
-      return QStringLiteral( "point_on_exterior" );
+      return u"point_on_exterior"_s;
     case PointOnSurface:
-      return QStringLiteral( "point_on_surface" );
+      return u"point_on_surface"_s;
     case Centroid:
-      return QStringLiteral( "centroid" );
+      return u"centroid"_s;
   }
   return QString();
 }
@@ -239,25 +243,25 @@ QString QgsCallout::encodeLabelAnchorPoint( QgsCallout::LabelAnchorPoint anchor 
   switch ( anchor )
   {
     case LabelPointOnExterior:
-      return QStringLiteral( "point_on_exterior" );
+      return u"point_on_exterior"_s;
     case LabelCentroid:
-      return QStringLiteral( "centroid" );
+      return u"centroid"_s;
     case LabelTopLeft:
-      return QStringLiteral( "tl" );
+      return u"tl"_s;
     case LabelTopMiddle:
-      return QStringLiteral( "t" );
+      return u"t"_s;
     case LabelTopRight:
-      return QStringLiteral( "tr" );
+      return u"tr"_s;
     case LabelMiddleLeft:
-      return QStringLiteral( "l" );
+      return u"l"_s;
     case LabelMiddleRight:
-      return QStringLiteral( "r" );
+      return u"r"_s;
     case LabelBottomLeft:
-      return QStringLiteral( "bl" );
+      return u"bl"_s;
     case LabelBottomMiddle:
-      return QStringLiteral( "b" );
+      return u"b"_s;
     case LabelBottomRight:
-      return QStringLiteral( "br" );
+      return u"br"_s;
   }
 
   return QString();
@@ -269,25 +273,25 @@ QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &
     *ok = true;
   const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == QLatin1String( "point_on_exterior" ) )
+  if ( cleaned == "point_on_exterior"_L1 )
     return LabelPointOnExterior;
-  else if ( cleaned == QLatin1String( "centroid" ) )
+  else if ( cleaned == "centroid"_L1 )
     return LabelCentroid;
-  else if ( cleaned == QLatin1String( "tl" ) )
+  else if ( cleaned == "tl"_L1 )
     return LabelTopLeft;
-  else if ( cleaned == QLatin1String( "t" ) )
+  else if ( cleaned == "t"_L1 )
     return LabelTopMiddle;
-  else if ( cleaned == QLatin1String( "tr" ) )
+  else if ( cleaned == "tr"_L1 )
     return LabelTopRight;
-  else if ( cleaned == QLatin1String( "l" ) )
+  else if ( cleaned == "l"_L1 )
     return LabelMiddleLeft;
-  else if ( cleaned == QLatin1String( "r" ) )
+  else if ( cleaned == "r"_L1 )
     return LabelMiddleRight;
-  else if ( cleaned == QLatin1String( "bl" ) )
+  else if ( cleaned == "bl"_L1 )
     return LabelBottomLeft;
-  else if ( cleaned == QLatin1String( "b" ) )
+  else if ( cleaned == "b"_L1 )
     return LabelBottomMiddle;
-  else if ( cleaned == QLatin1String( "br" ) )
+  else if ( cleaned == "br"_L1 )
     return LabelBottomRight;
 
   if ( ok )
@@ -345,7 +349,9 @@ QgsGeometry QgsCallout::labelAnchorGeometry( const QRectF &rect, const double an
   return label;
 }
 
-QgsGeometry QgsCallout::calloutLabelPoint( const QRectF &rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned ) const
+QgsGeometry QgsCallout::calloutLabelPoint(
+  const QRectF &rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned
+) const
 {
   pinned = false;
   if ( dataDefinedProperties().isActive( QgsCallout::Property::OriginX ) && dataDefinedProperties().isActive( QgsCallout::Property::OriginY ) )
@@ -484,7 +490,9 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       switch ( anchor )
       {
         case QgsCallout::PoleOfInaccessibility:
-          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) ) ); // really rough (but quick) pole of inaccessibility
+          line = QgsGeometry(
+            labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) )
+          ); // really rough (but quick) pole of inaccessibility
           break;
         case QgsCallout::PointOnSurface:
           line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.pointOnSurface() ) );
@@ -528,7 +536,6 @@ QgsCoordinateTransform QgsCallout::QgsCalloutContext::originalFeatureToMapTransf
 QgsSimpleLineCallout::QgsSimpleLineCallout()
 {
   mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << new QgsSimpleLineSymbolLayer( QColor( 60, 60, 60 ), .3 ) );
-
 }
 
 QgsSimpleLineCallout::~QgsSimpleLineCallout() = default;
@@ -546,9 +553,7 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   , mOffsetFromLabelUnit( other.mOffsetFromLabelUnit )
   , mOffsetFromLabelScale( other.mOffsetFromLabelScale )
   , mDrawCalloutToAllParts( other.mDrawCalloutToAllParts )
-{
-
-}
+{}
 
 QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
@@ -559,7 +564,7 @@ QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const Q
 
 QString QgsSimpleLineCallout::type() const
 {
-  return QStringLiteral( "simple" );
+  return u"simple"_s;
 }
 
 QgsSimpleLineCallout *QgsSimpleLineCallout::clone() const
@@ -573,20 +578,20 @@ QVariantMap QgsSimpleLineCallout::properties( const QgsReadWriteContext &context
 
   if ( mLineSymbol )
   {
-    props[ QStringLiteral( "lineSymbol" ) ] = QgsSymbolLayerUtils::symbolProperties( mLineSymbol.get() );
+    props[u"lineSymbol"_s] = QgsSymbolLayerUtils::symbolProperties( mLineSymbol.get() );
   }
-  props[ QStringLiteral( "minLength" ) ] = mMinCalloutLength;
-  props[ QStringLiteral( "minLengthUnit" ) ] = QgsUnitTypes::encodeUnit( mMinCalloutLengthUnit );
-  props[ QStringLiteral( "minLengthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mMinCalloutLengthScale );
+  props[u"minLength"_s] = mMinCalloutLength;
+  props[u"minLengthUnit"_s] = QgsUnitTypes::encodeUnit( mMinCalloutLengthUnit );
+  props[u"minLengthMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mMinCalloutLengthScale );
 
-  props[ QStringLiteral( "offsetFromAnchor" ) ] = mOffsetFromAnchorDistance;
-  props[ QStringLiteral( "offsetFromAnchorUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
-  props[ QStringLiteral( "offsetFromAnchorMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
-  props[ QStringLiteral( "offsetFromLabel" ) ] = mOffsetFromLabelDistance;
-  props[ QStringLiteral( "offsetFromLabelUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromLabelUnit );
-  props[ QStringLiteral( "offsetFromLabelMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLabelScale );
+  props[u"offsetFromAnchor"_s] = mOffsetFromAnchorDistance;
+  props[u"offsetFromAnchorUnit"_s] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
+  props[u"offsetFromAnchorMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
+  props[u"offsetFromLabel"_s] = mOffsetFromLabelDistance;
+  props[u"offsetFromLabelUnit"_s] = QgsUnitTypes::encodeUnit( mOffsetFromLabelUnit );
+  props[u"offsetFromLabelMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLabelScale );
 
-  props[ QStringLiteral( "drawToAllParts" ) ] = mDrawCalloutToAllParts;
+  props[u"drawToAllParts"_s] = mDrawCalloutToAllParts;
 
   return props;
 }
@@ -595,26 +600,26 @@ void QgsSimpleLineCallout::readProperties( const QVariantMap &props, const QgsRe
 {
   QgsCallout::readProperties( props, context );
 
-  const QString lineSymbolDef = props.value( QStringLiteral( "lineSymbol" ) ).toString();
-  QDomDocument doc( QStringLiteral( "symbol" ) );
+  const QString lineSymbolDef = props.value( u"lineSymbol"_s ).toString();
+  QDomDocument doc( u"symbol"_s );
   doc.setContent( lineSymbolDef );
-  const QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = doc.firstChildElement( u"symbol"_s );
   std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
   if ( lineSymbol )
     mLineSymbol = std::move( lineSymbol );
 
-  mMinCalloutLength = props.value( QStringLiteral( "minLength" ), 0 ).toDouble();
-  mMinCalloutLengthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "minLengthUnit" ) ).toString() );
-  mMinCalloutLengthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "minLengthMapUnitScale" ) ).toString() );
+  mMinCalloutLength = props.value( u"minLength"_s, 0 ).toDouble();
+  mMinCalloutLengthUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"minLengthUnit"_s ).toString() );
+  mMinCalloutLengthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"minLengthMapUnitScale"_s ).toString() );
 
-  mOffsetFromAnchorDistance = props.value( QStringLiteral( "offsetFromAnchor" ), 0 ).toDouble();
-  mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromAnchorUnit" ) ).toString() );
-  mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromAnchorMapUnitScale" ) ).toString() );
-  mOffsetFromLabelDistance = props.value( QStringLiteral( "offsetFromLabel" ), 0 ).toDouble();
-  mOffsetFromLabelUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromLabelUnit" ) ).toString() );
-  mOffsetFromLabelScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromLabelMapUnitScale" ) ).toString() );
+  mOffsetFromAnchorDistance = props.value( u"offsetFromAnchor"_s, 0 ).toDouble();
+  mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"offsetFromAnchorUnit"_s ).toString() );
+  mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"offsetFromAnchorMapUnitScale"_s ).toString() );
+  mOffsetFromLabelDistance = props.value( u"offsetFromLabel"_s, 0 ).toDouble();
+  mOffsetFromLabelUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"offsetFromLabelUnit"_s ).toString() );
+  mOffsetFromLabelScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"offsetFromLabelMapUnitScale"_s ).toString() );
 
-  mDrawCalloutToAllParts = props.value( QStringLiteral( "drawToAllParts" ), false ).toBool();
+  mDrawCalloutToAllParts = props.value( u"drawToAllParts"_s, false ).toBool();
 }
 
 void QgsSimpleLineCallout::startRender( QgsRenderContext &context )
@@ -664,8 +669,7 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
   if ( label.isNull() )
     return;
 
-  auto drawCalloutLine = [this, &context, &calloutContext, &label, &rect, angle, &anchor, originPinned]( const QgsAbstractGeometry * partAnchor )
-  {
+  auto drawCalloutLine = [this, &context, &calloutContext, &label, &rect, angle, &anchor, originPinned]( const QgsAbstractGeometry *partAnchor ) {
     bool destinationPinned = false;
     const QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
     if ( line.isEmpty() )
@@ -685,8 +689,9 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
     if ( minLengthPixels > 0 && lineLength < minLengthPixels )
       return; // too small!
 
-    std::unique_ptr< QgsCurve > calloutCurve( createCalloutLine( qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint(),
-        qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint(), context, rect, angle, anchor, calloutContext ) );
+    std::unique_ptr< QgsCurve > calloutCurve(
+      createCalloutLine( qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint(), qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint(), context, rect, angle, anchor, calloutContext )
+    );
 
     double offsetFromAnchor = mOffsetFromAnchorDistance;
     if ( dataDefinedProperties().isActive( QgsCallout::Property::OffsetFromAnchor ) )
@@ -749,14 +754,11 @@ QgsCurve *QgsSimpleLineCallout::createCalloutLine( const QgsPoint &start, const 
 //
 
 QgsManhattanLineCallout::QgsManhattanLineCallout()
-{
-}
+{}
 
 QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout &other )
   : QgsSimpleLineCallout( other )
-{
-
-}
+{}
 
 
 QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
@@ -768,7 +770,7 @@ QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, cons
 
 QString QgsManhattanLineCallout::type() const
 {
-  return QStringLiteral( "manhattan" );
+  return u"manhattan"_s;
 }
 
 QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
@@ -788,31 +790,28 @@ QgsCurve *QgsManhattanLineCallout::createCalloutLine( const QgsPoint &start, con
 //
 
 QgsCurvedLineCallout::QgsCurvedLineCallout()
-{
-}
+{}
 
 QgsCurvedLineCallout::QgsCurvedLineCallout( const QgsCurvedLineCallout &other )
   : QgsSimpleLineCallout( other )
   , mOrientation( other.mOrientation )
   , mCurvature( other.mCurvature )
-{
-
-}
+{}
 
 QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   auto callout = std::make_unique< QgsCurvedLineCallout >();
   callout->readProperties( properties, context );
 
-  callout->setCurvature( properties.value( QStringLiteral( "curvature" ), 0.1 ).toDouble() );
-  callout->setOrientation( decodeOrientation( properties.value( QStringLiteral( "orientation" ), QStringLiteral( "auto" ) ).toString() ) );
+  callout->setCurvature( properties.value( u"curvature"_s, 0.1 ).toDouble() );
+  callout->setOrientation( decodeOrientation( properties.value( u"orientation"_s, u"auto"_s ).toString() ) );
 
   return callout.release();
 }
 
 QString QgsCurvedLineCallout::type() const
 {
-  return QStringLiteral( "curved" );
+  return u"curved"_s;
 }
 
 QgsCurvedLineCallout *QgsCurvedLineCallout::clone() const
@@ -823,12 +822,14 @@ QgsCurvedLineCallout *QgsCurvedLineCallout::clone() const
 QVariantMap QgsCurvedLineCallout::properties( const QgsReadWriteContext &context ) const
 {
   QVariantMap props = QgsSimpleLineCallout::properties( context );
-  props.insert( QStringLiteral( "curvature" ), mCurvature );
-  props.insert( QStringLiteral( "orientation" ), encodeOrientation( mOrientation ) );
+  props.insert( u"curvature"_s, mCurvature );
+  props.insert( u"orientation"_s, encodeOrientation( mOrientation ) );
   return props;
 }
 
-QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &rect, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
+QgsCurve *QgsCurvedLineCallout::createCalloutLine(
+  const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &rect, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext &
+) const
 {
   double curvature = mCurvature * 100;
   if ( dataDefinedProperties().isActive( QgsCallout::Property::Curvature ) )
@@ -981,11 +982,11 @@ QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const 
 QgsCurvedLineCallout::Orientation QgsCurvedLineCallout::decodeOrientation( const QString &string )
 {
   const QString cleaned = string.toLower().trimmed();
-  if ( cleaned == QLatin1String( "auto" ) )
+  if ( cleaned == "auto"_L1 )
     return Automatic;
-  if ( cleaned == QLatin1String( "clockwise" ) )
+  if ( cleaned == "clockwise"_L1 )
     return Clockwise;
-  if ( cleaned == QLatin1String( "counterclockwise" ) )
+  if ( cleaned == "counterclockwise"_L1 )
     return CounterClockwise;
   return Automatic;
 }
@@ -995,11 +996,11 @@ QString QgsCurvedLineCallout::encodeOrientation( QgsCurvedLineCallout::Orientati
   switch ( orientation )
   {
     case QgsCurvedLineCallout::Automatic:
-      return QStringLiteral( "auto" );
+      return u"auto"_s;
     case QgsCurvedLineCallout::Clockwise:
-      return QStringLiteral( "clockwise" );
+      return u"clockwise"_s;
     case QgsCurvedLineCallout::CounterClockwise:
-      return QStringLiteral( "counterclockwise" );
+      return u"counterclockwise"_s;
   }
   return QString();
 }
@@ -1023,7 +1024,6 @@ void QgsCurvedLineCallout::setCurvature( double curvature )
 {
   mCurvature = curvature;
 }
-
 
 
 //
@@ -1052,9 +1052,7 @@ QgsBalloonCallout::QgsBalloonCallout( const QgsBalloonCallout &other )
   , mCornerRadius( other.mCornerRadius )
   , mCornerRadiusUnit( other.mCornerRadiusUnit )
   , mCornerRadiusScale( other.mCornerRadiusScale )
-{
-
-}
+{}
 
 QgsCallout *QgsBalloonCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
@@ -1065,7 +1063,7 @@ QgsCallout *QgsBalloonCallout::create( const QVariantMap &properties, const QgsR
 
 QString QgsBalloonCallout::type() const
 {
-  return QStringLiteral( "balloon" );
+  return u"balloon"_s;
 }
 
 QgsBalloonCallout *QgsBalloonCallout::clone() const
@@ -1079,28 +1077,28 @@ QVariantMap QgsBalloonCallout::properties( const QgsReadWriteContext &context ) 
 
   if ( mFillSymbol )
   {
-    props[ QStringLiteral( "fillSymbol" ) ] = QgsSymbolLayerUtils::symbolProperties( mFillSymbol.get() );
+    props[u"fillSymbol"_s] = QgsSymbolLayerUtils::symbolProperties( mFillSymbol.get() );
   }
 
   if ( mMarkerSymbol )
   {
-    props[ QStringLiteral( "markerSymbol" ) ] = QgsSymbolLayerUtils::symbolProperties( mMarkerSymbol.get() );
+    props[u"markerSymbol"_s] = QgsSymbolLayerUtils::symbolProperties( mMarkerSymbol.get() );
   }
 
-  props[ QStringLiteral( "offsetFromAnchor" ) ] = mOffsetFromAnchorDistance;
-  props[ QStringLiteral( "offsetFromAnchorUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
-  props[ QStringLiteral( "offsetFromAnchorMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
+  props[u"offsetFromAnchor"_s] = mOffsetFromAnchorDistance;
+  props[u"offsetFromAnchorUnit"_s] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
+  props[u"offsetFromAnchorMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
 
-  props[ QStringLiteral( "margins" ) ] = mMargins.toString();
-  props[ QStringLiteral( "marginsUnit" ) ] = QgsUnitTypes::encodeUnit( mMarginUnit );
+  props[u"margins"_s] = mMargins.toString();
+  props[u"marginsUnit"_s] = QgsUnitTypes::encodeUnit( mMarginUnit );
 
-  props[ QStringLiteral( "wedgeWidth" ) ] = mWedgeWidth;
-  props[ QStringLiteral( "wedgeWidthUnit" ) ] = QgsUnitTypes::encodeUnit( mWedgeWidthUnit );
-  props[ QStringLiteral( "wedgeWidthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mWedgeWidthScale );
+  props[u"wedgeWidth"_s] = mWedgeWidth;
+  props[u"wedgeWidthUnit"_s] = QgsUnitTypes::encodeUnit( mWedgeWidthUnit );
+  props[u"wedgeWidthMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mWedgeWidthScale );
 
-  props[ QStringLiteral( "cornerRadius" ) ] = mCornerRadius;
-  props[ QStringLiteral( "cornerRadiusUnit" ) ] = QgsUnitTypes::encodeUnit( mCornerRadiusUnit );
-  props[ QStringLiteral( "cornerRadiusMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mCornerRadiusScale );
+  props[u"cornerRadius"_s] = mCornerRadius;
+  props[u"cornerRadiusUnit"_s] = QgsUnitTypes::encodeUnit( mCornerRadiusUnit );
+  props[u"cornerRadiusMapUnitScale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mCornerRadiusScale );
 
   return props;
 }
@@ -1110,39 +1108,39 @@ void QgsBalloonCallout::readProperties( const QVariantMap &props, const QgsReadW
   QgsCallout::readProperties( props, context );
 
   {
-    const QString fillSymbolDef = props.value( QStringLiteral( "fillSymbol" ) ).toString();
-    QDomDocument doc( QStringLiteral( "symbol" ) );
+    const QString fillSymbolDef = props.value( u"fillSymbol"_s ).toString();
+    QDomDocument doc( u"symbol"_s );
     doc.setContent( fillSymbolDef );
-    const QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+    const QDomElement symbolElem = doc.firstChildElement( u"symbol"_s );
     std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
     if ( fillSymbol )
       mFillSymbol = std::move( fillSymbol );
   }
 
   {
-    const QString markerSymbolDef = props.value( QStringLiteral( "markerSymbol" ) ).toString();
-    QDomDocument doc( QStringLiteral( "symbol" ) );
+    const QString markerSymbolDef = props.value( u"markerSymbol"_s ).toString();
+    QDomDocument doc( u"symbol"_s );
     doc.setContent( markerSymbolDef );
-    const QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+    const QDomElement symbolElem = doc.firstChildElement( u"symbol"_s );
     std::unique_ptr< QgsMarkerSymbol > markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
     if ( markerSymbol )
       mMarkerSymbol = std::move( markerSymbol );
   }
 
-  mOffsetFromAnchorDistance = props.value( QStringLiteral( "offsetFromAnchor" ), 0 ).toDouble();
-  mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromAnchorUnit" ) ).toString() );
-  mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromAnchorMapUnitScale" ) ).toString() );
+  mOffsetFromAnchorDistance = props.value( u"offsetFromAnchor"_s, 0 ).toDouble();
+  mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"offsetFromAnchorUnit"_s ).toString() );
+  mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"offsetFromAnchorMapUnitScale"_s ).toString() );
 
-  mMargins = QgsMargins::fromString( props.value( QStringLiteral( "margins" ) ).toString() );
-  mMarginUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "marginsUnit" ) ).toString() );
+  mMargins = QgsMargins::fromString( props.value( u"margins"_s ).toString() );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"marginsUnit"_s ).toString() );
 
-  mWedgeWidth = props.value( QStringLiteral( "wedgeWidth" ), 2.64 ).toDouble();
-  mWedgeWidthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "wedgeWidthUnit" ) ).toString() );
-  mWedgeWidthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "wedgeWidthMapUnitScale" ) ).toString() );
+  mWedgeWidth = props.value( u"wedgeWidth"_s, 2.64 ).toDouble();
+  mWedgeWidthUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"wedgeWidthUnit"_s ).toString() );
+  mWedgeWidthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"wedgeWidthMapUnitScale"_s ).toString() );
 
-  mCornerRadius = props.value( QStringLiteral( "cornerRadius" ), 0 ).toDouble();
-  mCornerRadiusUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "cornerRadiusUnit" ) ).toString() );
-  mCornerRadiusScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "cornerRadiusMapUnitScale" ) ).toString() );
+  mCornerRadius = props.value( u"cornerRadius"_s, 0 ).toDouble();
+  mCornerRadiusUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"cornerRadiusUnit"_s ).toString() );
+  mCornerRadiusScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"cornerRadiusMapUnitScale"_s ).toString() );
 }
 
 void QgsBalloonCallout::startRender( QgsRenderContext &context )
@@ -1332,13 +1330,8 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   const double marginTop = context.convertToPainterUnits( top, mMarginUnit );
   const double marginBottom = context.convertToPainterUnits( bottom, mMarginUnit );
 
-  const QRectF expandedRect = rect.height() < 0 ?
-                              QRectF( rect.left() - marginLeft, rect.top() + marginBottom,
-                                      rect.width() + marginLeft + marginRight,
-                                      rect.height() - marginTop - marginBottom ) :
-                              QRectF( rect.left() - marginLeft, rect.top() - marginTop,
-                                      rect.width() + marginLeft + marginRight,
-                                      rect.height() + marginTop + marginBottom );
+  const QRectF expandedRect = rect.height() < 0 ? QRectF( rect.left() - marginLeft, rect.top() + marginBottom, rect.width() + marginLeft + marginRight, rect.height() - marginTop - marginBottom )
+                                                : QRectF( rect.left() - marginLeft, rect.top() - marginTop, rect.width() + marginLeft + marginRight, rect.height() + marginTop + marginBottom );
 
   // IMPORTANT -- check for degenerate height is sometimes >=0, because QRectF are not normalized and we are using painter
   // coordinates with descending vertical axis!

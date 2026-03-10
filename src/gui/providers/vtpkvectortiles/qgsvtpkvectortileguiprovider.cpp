@@ -17,6 +17,10 @@
 
 #include "qgsvtpkvectortileguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <QList>
@@ -36,8 +40,7 @@
 //
 
 QgsVtpkVectorTileSourceWidgetProvider::QgsVtpkVectorTileSourceWidgetProvider()
-{
-}
+{}
 
 QString QgsVtpkVectorTileSourceWidgetProvider::providerKey() const
 {
@@ -49,11 +52,8 @@ bool QgsVtpkVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer )
   if ( layer->providerType() != QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY )
     return false;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-    layer->source()
-  );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -64,12 +64,9 @@ QgsProviderSourceWidget *QgsVtpkVectorTileSourceWidgetProvider::createWidget( Qg
   if ( layer->providerType() != QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY )
     return nullptr;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-    layer->source()
-  );
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, layer->source() );
 
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsVtpkVectorTileSourceWidget( parent );
@@ -81,8 +78,7 @@ QgsProviderSourceWidget *QgsVtpkVectorTileSourceWidgetProvider::createWidget( Qg
 //
 QgsVtpkVectorTileGuiProviderMetadata::QgsVtpkVectorTileGuiProviderMetadata()
   : QgsProviderGuiMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsProviderSourceWidgetProvider *> QgsVtpkVectorTileGuiProviderMetadata::sourceWidgetProviders()
 {

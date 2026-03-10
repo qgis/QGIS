@@ -23,6 +23,10 @@
 #include "qgsdatacollectionitem.h"
 #include "qgsdirectoryitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item which contains various Favorites directories.
@@ -31,7 +35,6 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
      * the item.
@@ -39,14 +42,16 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+    QString str = u"<QgsFavoritesItem: \"%1\">"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *> createChildren() override;
 
     /**
      * Adds a new \a directory to the favorites group.
@@ -85,13 +90,12 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
  * \brief A directory item showing a single favorite directory.
  * \note Not available in Python bindings
 */
-Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated
-class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
+Q_NOWARN_DEPRECATED_PUSH // rename is deprecated
+  class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFavoriteItem.
      *
@@ -102,7 +106,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
      */
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    // TODO QGIS 4.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
+    // TODO QGIS 5.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
     // remove the override!
 
     /**
@@ -111,14 +115,10 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
     bool rename( const QString &name ) override;
 
   private:
-
     QgsFavoritesItem *mFavorites = nullptr;
-
 };
 Q_NOWARN_DEPRECATED_POP
 
 #endif
 
 #endif // QGSFAVORITESITEM_H
-
-

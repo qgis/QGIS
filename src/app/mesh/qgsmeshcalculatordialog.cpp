@@ -41,8 +41,11 @@
 #include <QFontDatabase>
 #include <QMap>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshcalculatordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -113,14 +116,12 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMa
 
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#mesh-calculator" ) );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_mesh/mesh_properties.html#mesh-calculator"_s ); } );
 
   const QgsSettings settings;
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mOutputDatasetFileWidget->setDialogTitle( tr( "Enter Mesh Dataset File" ) );
-  mOutputDatasetFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/MeshCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
+  mOutputDatasetFileWidget->setDefaultRoot( settings.value( u"/MeshCalculator/lastOutputDir"_s, QDir::homePath() ).toString() );
   onOutputFormatChange();
   connect( mOutputDatasetFileWidget, &QgsFileWidget::fileChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
@@ -216,14 +217,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          driver(),
-          groupName(),
-          outputFile(),
-          outputExtent(),
-          startTime(),
-          endTime(),
-          meshLayer()
+          formulaString(), driver(), groupName(), outputFile(), outputExtent(), startTime(), endTime(), meshLayer()
 
         );
       }
@@ -231,14 +225,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          driver(),
-          groupName(),
-          outputFile(),
-          maskGeometry(),
-          startTime(),
-          endTime(),
-          meshLayer()
+          formulaString(), driver(), groupName(), outputFile(), maskGeometry(), startTime(), endTime(), meshLayer()
 
         );
       }
@@ -248,13 +235,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          groupName(),
-          outputExtent(),
-          destination,
-          meshLayer(),
-          startTime(),
-          endTime()
+          formulaString(), groupName(), outputExtent(), destination, meshLayer(), startTime(), endTime()
 
         );
       }
@@ -262,13 +243,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
       {
         calc = std::make_unique<QgsMeshCalculator>(
 
-          formulaString(),
-          groupName(),
-          maskGeometry(),
-          destination,
-          meshLayer(),
-          startTime(),
-          endTime()
+          formulaString(), groupName(), maskGeometry(), destination, meshLayer(), startTime(), endTime()
 
         );
       }
@@ -283,7 +258,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
 void QgsMeshCalculatorDialog::datasetGroupEntry( const QModelIndex &index )
 {
   const QString group = quoteDatasetGroupEntry( datasetGroupName( index ) );
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " %1 " ).arg( group ) );
+  mExpressionTextEdit->insertPlainText( u" %1 "_s.arg( group ) );
 }
 
 void QgsMeshCalculatorDialog::toggleExtendMask()
@@ -298,11 +273,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   QgsMeshDriverMetadata::MeshDriverCapability requiredCapability;
 
   // expression is valid
-  const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid(
-    formulaString(),
-    meshLayer(),
-    requiredCapability
-  );
+  const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid( formulaString(), meshLayer(), requiredCapability );
   const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
@@ -348,7 +319,9 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
     else if ( !filePathValid && !notInFile )
       mExpressionValidLabel->setText( tr( "Invalid file path" ) );
     else if ( !driverValid && !notInFile )
-      mExpressionValidLabel->setText( tr( "Selected driver cannot store data defined on %1" ).arg( requiredCapability == QgsMeshDriverMetadata::CanWriteFaceDatasets ? tr( " faces " ) : tr( " vertices " ) ) );
+      mExpressionValidLabel->setText(
+        tr( "Selected driver cannot store data defined on %1" ).arg( requiredCapability == QgsMeshDriverMetadata::CanWriteFaceDatasets ? tr( " faces " ) : tr( " vertices " ) )
+      );
     else if ( !groupNameValid )
       mExpressionValidLabel->setText( tr( "Invalid group name" ) );
   }
@@ -369,7 +342,7 @@ void QgsMeshCalculatorDialog::onOutputFormatChange()
   if ( !suffix.isEmpty() )
   {
     QString filter = mOutputFormatComboBox->currentText();
-    filter.append( QStringLiteral( " (*.%1)" ).arg( suffix ) );
+    filter.append( u" (*.%1)"_s.arg( suffix ) );
     mOutputDatasetFileWidget->setFilter( filter );
 
     // if output filename is already defined we need to replace old suffix
@@ -400,133 +373,133 @@ void QgsMeshCalculatorDialog::mAllTimesButton_clicked()
 
 void QgsMeshCalculatorDialog::mPlusPushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " + " ) );
+  mExpressionTextEdit->insertPlainText( u" + "_s );
 }
 
 void QgsMeshCalculatorDialog::mMinusPushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " - " ) );
+  mExpressionTextEdit->insertPlainText( u" - "_s );
 }
 
 void QgsMeshCalculatorDialog::mLessButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " < " ) );
+  mExpressionTextEdit->insertPlainText( u" < "_s );
 }
 
 void QgsMeshCalculatorDialog::mLesserEqualButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " <= " ) );
+  mExpressionTextEdit->insertPlainText( u" <= "_s );
 }
 
 void QgsMeshCalculatorDialog::mMultiplyPushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " * " ) );
+  mExpressionTextEdit->insertPlainText( u" * "_s );
 }
 
 void QgsMeshCalculatorDialog::mDividePushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " / " ) );
+  mExpressionTextEdit->insertPlainText( u" / "_s );
 }
 
 void QgsMeshCalculatorDialog::mGreaterButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " > " ) );
+  mExpressionTextEdit->insertPlainText( u" > "_s );
 }
 
 void QgsMeshCalculatorDialog::mGreaterEqualButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " >= " ) );
+  mExpressionTextEdit->insertPlainText( u" >= "_s );
 }
 
 void QgsMeshCalculatorDialog::mOpenBracketPushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ( " ) );
+  mExpressionTextEdit->insertPlainText( u" ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mCloseBracketPushButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ) " ) );
+  mExpressionTextEdit->insertPlainText( u" ) "_s );
 }
 
 void QgsMeshCalculatorDialog::mEqualButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " = " ) );
+  mExpressionTextEdit->insertPlainText( u" = "_s );
 }
 
 void QgsMeshCalculatorDialog::mNotEqualButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " != " ) );
+  mExpressionTextEdit->insertPlainText( u" != "_s );
 }
 
 void QgsMeshCalculatorDialog::mMinButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " min ( A , B ) " ) );
+  mExpressionTextEdit->insertPlainText( u" min ( A , B ) "_s );
 }
 
 void QgsMeshCalculatorDialog::mMaxButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " max ( A , B ) " ) );
+  mExpressionTextEdit->insertPlainText( u" max ( A , B ) "_s );
 }
 
 void QgsMeshCalculatorDialog::mAbsButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " abs ( " ) );
+  mExpressionTextEdit->insertPlainText( u" abs ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mPowButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ^ " ) );
+  mExpressionTextEdit->insertPlainText( u" ^ "_s );
 }
 
 void QgsMeshCalculatorDialog::mIfButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " if ( 1 = 1 , NODATA , NODATA ) " ) );
+  mExpressionTextEdit->insertPlainText( u" if ( 1 = 1 , NODATA , NODATA ) "_s );
 }
 
 void QgsMeshCalculatorDialog::mAndButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " and " ) );
+  mExpressionTextEdit->insertPlainText( u" and "_s );
 }
 
 void QgsMeshCalculatorDialog::mOrButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " or " ) );
+  mExpressionTextEdit->insertPlainText( u" or "_s );
 }
 
 void QgsMeshCalculatorDialog::mNotButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " not " ) );
+  mExpressionTextEdit->insertPlainText( u" not "_s );
 }
 
 void QgsMeshCalculatorDialog::mSumAggrButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sum_aggr ( " ) );
+  mExpressionTextEdit->insertPlainText( u" sum_aggr ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mMaxAggrButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " max_aggr ( " ) );
+  mExpressionTextEdit->insertPlainText( u" max_aggr ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mMinAggrButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " min_aggr ( " ) );
+  mExpressionTextEdit->insertPlainText( u" min_aggr ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mAverageAggrButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " average_aggr ( " ) );
+  mExpressionTextEdit->insertPlainText( u" average_aggr ( "_s );
 }
 
 void QgsMeshCalculatorDialog::mNoDataButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " NODATA " ) );
+  mExpressionTextEdit->insertPlainText( u" NODATA "_s );
 }
 
 QString QgsMeshCalculatorDialog::quoteDatasetGroupEntry( const QString group )
 {
   QString ret( group );
-  ret = QStringLiteral( "\"%1\"" ).arg( ret.replace( "\"", "\\\"" ) );
+  ret = u"\"%1\""_s.arg( ret.replace( "\"", "\\\"" ) );
   return ret;
 }
 
@@ -540,8 +513,7 @@ QString QgsMeshCalculatorDialog::controlSuffix( const QString &fileName ) const
   const QString appropriateSuffix = currentOutputSuffix();
 
   const QString existingSuffix = fileInfo.suffix();
-  if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() )
-       && existingSuffix != appropriateSuffix )
+  if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() ) && existingSuffix != appropriateSuffix )
   {
     const int pos = fileName.lastIndexOf( '.' );
     QString ret = fileName.left( pos + 1 );
@@ -565,13 +537,15 @@ QString QgsMeshCalculatorDialog::currentOutputSuffix() const
 
 void QgsMeshCalculatorDialog::getMeshDrivers()
 {
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
   if ( providerMetadata )
   {
     const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
     for ( const QgsMeshDriverMetadata &meta : allDrivers )
     {
-      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
+      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
+           || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets )
+           || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
         mMeshDrivers[meta.name()] = meta;
     }
   }

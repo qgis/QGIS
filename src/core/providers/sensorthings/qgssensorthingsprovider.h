@@ -22,7 +22,12 @@
 #include "qgssensorthingsshareddata.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 /**
@@ -35,9 +40,8 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
-    static const inline QString SENSORTHINGS_PROVIDER_KEY = QStringLiteral( "sensorthings" );
-    static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = QStringLiteral( "OGC SensorThings API data provider" );
+    static const inline QString SENSORTHINGS_PROVIDER_KEY = u"sensorthings"_s;
+    static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = u"OGC SensorThings API data provider"_s;
 
     QgsSensorThingsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
@@ -79,7 +83,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     void reloadProviderData() final;
 };
 
-class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
+class QgsSensorThingsProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -100,7 +104,6 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
     QgsAbstractProviderConnection *createConnection( const QString &name ) final;
     void deleteConnection( const QString &name ) final;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) final;
-
 };
 
 ///@endcond PRIVATE

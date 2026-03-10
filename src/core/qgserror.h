@@ -22,8 +22,10 @@
 #include <QList>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 // Macro to create Error message including info about where it was created.
-#define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
+#define QGS_ERROR_MESSAGE( message, tag ) QgsErrorMessage( QString( message ), QString( tag ), QString( __FILE__ ), QString( __FUNCTION__ ), __LINE__ )
 
 /**
  * \ingroup core
@@ -80,7 +82,6 @@ class CORE_EXPORT QgsErrorMessage
 class CORE_EXPORT QgsError
 {
   public:
-
     QgsError() = default;
 
     /**
@@ -133,16 +134,21 @@ class CORE_EXPORT QgsError
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+    QString str = u"<QgsError: %1>"_s.arg( sipCpp->message( QgsErrorMessage::Text ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
     //! List of messages
-    QList<QgsErrorMessage> mMessageList;
+    QList<QgsErrorMessage>
+      mMessageList;
 };
 
 #endif

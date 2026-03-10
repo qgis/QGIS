@@ -40,6 +40,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -66,11 +69,8 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags( ( expression && expression->needsGeometry() ) ?
-                                         Qgis::FeatureRequestFlag::NoFlags :
-                                         Qgis::FeatureRequestFlag::NoGeometry )
-                              .setSubsetOfAttributes( lst, layer->fields() );
+  QgsFeatureRequest request
+    = QgsFeatureRequest().setFlags( ( expression && expression->needsGeometry() ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( lst, layer->fields() );
 
   ok = true;
   if ( !selectedOnly )
@@ -236,13 +236,13 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   {
     int srcFieldIndex = -1;
     const QgsVectorLayerJoinInfo *joinInfo { layer->joinBuffer()->joinForFieldIndex( fieldIndex, fields, srcFieldIndex ) };
-    if ( ! joinInfo )
+    if ( !joinInfo )
     {
       return false;
     }
     fieldIndex = srcFieldIndex;
     layer = joinInfo->joinLayer();
-    if ( ! layer )
+    if ( !layer )
     {
       return false;
     }
@@ -260,8 +260,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   int limit = ignoreIds.size() + 1;
   request.setLimit( limit );
 
-  request.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( fieldName ),
-                               QgsExpression::quotedValue( value ) ) );
+  request.setFilterExpression( u"%1=%2"_s.arg( QgsExpression::quotedColumnRef( fieldName ), QgsExpression::quotedValue( value ) ) );
 
   QgsFeature feat;
   QgsFeatureIterator it = layer->getFeatures( request );
@@ -310,7 +309,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
         if ( !base.isEmpty() )
         {
           // strip any existing _1, _2 from the seed
-          const thread_local QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
+          const thread_local QRegularExpression rx( u"(.*)_\\d+"_s );
           QRegularExpressionMatch match = rx.match( base );
           if ( match.hasMatch() )
           {
@@ -370,7 +369,9 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
   if ( field.isNumeric() )
   {
-    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end(), []( const QVariant & a, const QVariant & b ) { return a.toLongLong() < b.toLongLong(); } );
+    QVariant maxVal = existingValues.isEmpty()
+                        ? 0
+                        : *std::max_element( existingValues.begin(), existingValues.end(), []( const QVariant &a, const QVariant &b ) { return a.toLongLong() < b.toLongLong(); } );
     QVariant newVar( maxVal.toLongLong() + 1 );
     if ( field.convertCompatible( newVar ) )
       return newVar;
@@ -390,7 +391,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
         if ( !base.isEmpty() )
         {
           // strip any existing _1, _2 from the seed
-          const thread_local QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
+          const thread_local QRegularExpression rx( u"(.*)_\\d+"_s );
           QRegularExpressionMatch match = rx.match( base );
           if ( match.hasMatch() )
           {
@@ -434,7 +435,6 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
   }
 
   return QVariant();
-
 }
 
 bool QgsVectorLayerUtils::attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex )
@@ -446,13 +446,16 @@ bool QgsVectorLayerUtils::attributeHasConstraints( const QgsVectorLayer *layer, 
     return false;
 
   const QgsFieldConstraints constraints = layer->fields().at( attributeIndex ).constraints();
-  return ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull ||
-           constraints.constraints() & QgsFieldConstraints::ConstraintUnique ||
-           constraints.constraints() & QgsFieldConstraints::ConstraintExpression );
+  return (
+    constraints.constraints() & QgsFieldConstraints::ConstraintNotNull
+    || constraints.constraints() & QgsFieldConstraints::ConstraintUnique
+    || constraints.constraints() & QgsFieldConstraints::ConstraintExpression
+  );
 }
 
-bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
-    QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
+bool QgsVectorLayerUtils::validateAttribute(
+  const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors, QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin
+)
 {
   if ( !layer )
     return false;
@@ -468,7 +471,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
   QgsFieldConstraints constraints = field.constraints();
 
-  if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression && !constraints.constraintExpression().isEmpty()
+  if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression
+       && !constraints.constraintExpression().isEmpty()
        && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) )
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) ) )
   {
@@ -500,8 +504,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) ) )
   {
     bool exempt = false;
-    if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider
-         && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
+    if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     {
       int providerIdx = fields.fieldOriginIndex( attributeIndex );
       exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintNotNull, value );
@@ -509,7 +512,6 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-
       const bool isNullOrUnset { QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) };
       valid = valid && !isNullOrUnset;
 
@@ -522,16 +524,14 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
   }
 
   // if a NOT NULL constraint is violated we don't need to check for UNIQUE
-  if ( ! notNullConstraintViolated )
+  if ( !notNullConstraintViolated )
   {
-
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique
          && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) )
          && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) ) )
     {
       bool exempt = false;
-      if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider
-           && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
+      if ( fields.fieldOrigin( attributeIndex ) == Qgis::FieldOrigin::Provider && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       {
         int providerIdx = fields.fieldOriginIndex( attributeIndex );
         exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintUnique, value );
@@ -539,7 +539,6 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
       if ( !exempt )
       {
-
         bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
         valid = valid && !alreadyExists;
 
@@ -554,8 +553,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
   return valid;
 }
 
-QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
-    const QgsAttributeMap &attributes, QgsExpressionContext *context )
+QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
   QgsFeatureList features { createFeatures( layer, QgsFeaturesDataList() << QgsFeatureData( geometry, attributes ), context ) };
   return features.isEmpty() ? QgsFeature() : features.first();
@@ -583,28 +581,26 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   // Cache unique values
   QMap<int, QSet<QVariant>> uniqueValueCache;
 
-  auto checkUniqueValue = [ & ]( const int fieldIdx, const QVariant & value )
-  {
-    if ( ! uniqueValueCache.contains( fieldIdx ) )
+  auto checkUniqueValue = [&]( const int fieldIdx, const QVariant &value ) {
+    if ( !uniqueValueCache.contains( fieldIdx ) )
     {
       // If the layer is filtered, get unique values from an unfiltered clone
-      if ( ! layer->subsetString().isEmpty() )
+      if ( !layer->subsetString().isEmpty() )
       {
-        std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
-        unfilteredClone->setSubsetString( QString( ) );
-        uniqueValueCache[ fieldIdx ] = unfilteredClone->uniqueValues( fieldIdx );
+        std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone() };
+        unfilteredClone->setSubsetString( QString() );
+        uniqueValueCache[fieldIdx] = unfilteredClone->uniqueValues( fieldIdx );
       }
       else
       {
-        uniqueValueCache[ fieldIdx ] = layer->uniqueValues( fieldIdx );
+        uniqueValueCache[fieldIdx] = layer->uniqueValues( fieldIdx );
       }
     }
-    return uniqueValueCache[ fieldIdx ].contains( value );
+    return uniqueValueCache[fieldIdx].contains( value );
   };
 
   for ( const auto &fd : std::as_const( featuresData ) )
   {
-
     QgsFeature newFeature( fields );
     newFeature.setValid( true );
     newFeature.setGeometry( fd.geometry() );
@@ -627,10 +623,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 2. client side default expression
       // note - deliberately not using else if!
       QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
-      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
-             && checkUniqueValue( idx, v ) )
-             || defaultValueDefinition.applyOnUpdate() )
-           && defaultValueDefinition.isValid() )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint && checkUniqueValue( idx, v ) ) || defaultValueDefinition.applyOnUpdate() ) && defaultValueDefinition.isValid() )
       {
         // client side default expression set - takes precedence over all. Why? Well, this is the only default
         // which QGIS users have control over, so we assume that they're deliberately overriding any
@@ -640,9 +633,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 3. provider side default value clause
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
-             && checkUniqueValue( idx, v ) ) )
-           && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint && checkUniqueValue( idx, v ) ) ) && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
         QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
@@ -655,10 +646,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( QgsVariantUtils::isNull( v ) || ( checkUnique
-             && hasUniqueConstraint
-             && checkUniqueValue( idx, v ) ) )
-           && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
+      if ( ( QgsVariantUtils::isNull( v ) || ( checkUnique && hasUniqueConstraint && checkUniqueValue( idx, v ) ) ) && fields.fieldOrigin( idx ) == Qgis::FieldOrigin::Provider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
         v = layer->dataProvider()->defaultValue( providerIndex );
@@ -683,17 +671,17 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         // value if the constraint is violated
         if ( checkUnique && hasUniqueConstraint )
         {
-          if ( checkUniqueValue( idx,  v ) )
+          if ( checkUniqueValue( idx, v ) )
           {
             // unique constraint violated
-            QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValueFromCache( layer, idx, uniqueValueCache[ idx ], v );
+            QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValueFromCache( layer, idx, uniqueValueCache[idx], v );
             if ( uniqueValue.isValid() )
               v = uniqueValue;
           }
         }
         if ( hasUniqueConstraint )
         {
-          uniqueValueCache[ idx ].insert( v );
+          uniqueValueCache[idx].insert( v );
         }
       }
       newFeature.setAttribute( idx, v );
@@ -703,7 +691,9 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   return result;
 }
 
-QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext, const int maxDepth, int depth, QList<QgsVectorLayer *> referencedLayersBranch )
+QgsFeature QgsVectorLayerUtils::duplicateFeature(
+  QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext, const int maxDepth, int depth, QList<QgsVectorLayer *> referencedLayersBranch
+)
 {
   if ( !layer )
     return QgsFeature();
@@ -781,8 +771,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-  auto getFeatureSource = [ layer = std::move( layer ), &featureSource, feedback ]
-  {
+  auto getFeatureSource = [layer = std::move( layer ), &featureSource, feedback] {
     Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
     QgsVectorLayer *lyr = layer.data();
 
@@ -839,11 +828,11 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
 
 QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
-  Qgis::WkbType inputWkbType( layer->wkbType( ) );
+  Qgis::WkbType inputWkbType( layer->wkbType() );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
-  QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
+  QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields() );
 
   if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey )
   {
@@ -858,12 +847,8 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
 
   // Does geometry need transformations?
   Qgis::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
-  bool newFHasGeom = newFGeomType !=
-                     Qgis::GeometryType::Unknown &&
-                     newFGeomType != Qgis::GeometryType::Null;
-  bool layerHasGeom = inputWkbType !=
-                      Qgis::WkbType::NoGeometry &&
-                      inputWkbType != Qgis::WkbType::Unknown;
+  bool newFHasGeom = newFGeomType != Qgis::GeometryType::Unknown && newFGeomType != Qgis::GeometryType::Null;
+  bool layerHasGeom = inputWkbType != Qgis::WkbType::NoGeometry && inputWkbType != Qgis::WkbType::Unknown;
   // Drop geometry if layer is geometry-less
   if ( ( newFHasGeom && !layerHasGeom ) || !newFHasGeom )
   {
@@ -941,9 +926,9 @@ QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureC
 }
 */
 
-QgsVectorLayerUtils::QgsFeatureData::QgsFeatureData( const QgsGeometry &geometry, const QgsAttributeMap &attributes ):
-  mGeometry( geometry ),
-  mAttributes( attributes )
+QgsVectorLayerUtils::QgsFeatureData::QgsFeatureData( const QgsGeometry &geometry, const QgsAttributeMap &attributes )
+  : mGeometry( geometry )
+  , mAttributes( attributes )
 {}
 
 QgsGeometry QgsVectorLayerUtils::QgsFeatureData::geometry() const
@@ -956,9 +941,9 @@ QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
   return mAttributes;
 }
 
-bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
+bool fieldIsEditablePrivate( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() )
 {
-  return layer->isEditable() &&
+  return ( layer->isEditable() || ( flags & QgsVectorLayerUtils::FieldIsEditableFlag::IgnoreLayerEditability ) ) &&
          !layer->editFormConfig().readOnly( fieldIndex ) &&
          // Provider permissions
          layer->dataProvider() &&
@@ -983,12 +968,11 @@ bool QgsVectorLayerUtils::fieldIsReadOnly( const QgsVectorLayer *layer, int fiel
   else
   {
     // any of these properties makes the field read only
-    if ( !layer->isEditable() ||
-         layer->editFormConfig().readOnly( fieldIndex ) ||
-         !layer->dataProvider() ||
-         ( !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues )
-           && !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) ) ||
-         layer->fields().at( fieldIndex ).isReadOnly() )
+    if ( !layer->isEditable()
+         || layer->editFormConfig().readOnly( fieldIndex )
+         || !layer->dataProvider()
+         || ( !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) )
+         || layer->fields().at( fieldIndex ).isReadOnly() )
       return true;
 
     return false;
@@ -1016,7 +1000,7 @@ bool QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( const QgsVectorLayer
   }
 }
 
-bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
+bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags )
 {
   if ( layer->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
@@ -1034,14 +1018,16 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
         return false;
     }
 
-    return _fieldIsEditable( info->joinLayer(), srcFieldIndex, feature );
+    return fieldIsEditablePrivate( info->joinLayer(), srcFieldIndex, feature );
   }
-  else
-    return _fieldIsEditable( layer, fieldIndex, feature );
+
+  return fieldIsEditablePrivate( layer, fieldIndex, feature, flags );
 }
 
 
-QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
+QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
+  const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector<QgsVectorLayer *> &allRenderedVectorLayers
+)
 {
   class LabelMasksVisitor : public QgsStyleEntityVisitorInterface
   {
@@ -1050,7 +1036,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
       {
         if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
         {
-          currentRule = node.identifier;
+          currentLabelRuleId = node.identifier;
           return true;
         }
         return false;
@@ -1065,12 +1051,11 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
           {
             // transparency is considered has effects because it implies rasterization when masking
             // is involved
-            const bool hasEffects = maskSettings.opacity() < 1 ||
-                                    ( maskSettings.paintEffect() && maskSettings.paintEffect()->enabled() );
-            for ( const auto &r : maskSettings.maskedSymbolLayers() )
+            const bool hasEffects = maskSettings.opacity() < 1 || ( maskSettings.paintEffect() && maskSettings.paintEffect()->enabled() );
+            for ( const QgsSymbolLayerReference &r : maskSettings.maskedSymbolLayers() )
             {
-              QgsMaskedLayer &maskedLayer = maskedLayers[currentRule][r.layerId()];
-              maskedLayer.symbolLayerIds.insert( r.symbolLayerIdV2() );
+              QgsMaskedLayer &maskedLayer = maskedLayers[currentLabelRuleId][r.layerId()];
+              maskedLayer.symbolLayerIdsToMask.insert( r.symbolLayerIdV2() );
               maskedLayer.hasEffects = hasEffects;
             }
           }
@@ -1080,29 +1065,97 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
 
       QHash<QString, QgsMaskedLayers> maskedLayers;
       // Current label rule, empty string for a simple labeling
-      QString currentRule;
+      QString currentLabelRuleId;
   };
 
-  if ( ! layer->labeling() )
-    return {};
-
   LabelMasksVisitor visitor;
-  layer->labeling()->accept( &visitor );
-  return std::move( visitor.maskedLayers );
+
+  if ( layer->labeling() )
+  {
+    layer->labeling()->accept( &visitor );
+  }
+
+  class LabelSelectiveMaskingSetVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override { return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule ); }
+
+      bool visitSymbol( const QgsSymbol *symbol )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( !sl->selectiveMaskingSourceSetId().isEmpty() )
+          {
+            auto it = selectiveMaskingSourceSets.constFind( sl->selectiveMaskingSourceSetId() );
+            if ( it != selectiveMaskingSourceSets.constEnd() )
+            {
+              const QVector<QgsSelectiveMaskSource> maskingSources = it.value().sources();
+              for ( const QgsSelectiveMaskSource &maskSource : maskingSources )
+              {
+                if ( maskSource.sourceType() == Qgis::SelectiveMaskSourceType::Label && maskSource.layerId() == maskingLayerId )
+                {
+                  QgsMaskedLayer &maskedLayer = maskedLayers[maskSource.sourceId()][maskedLayerId];
+                  maskedLayer.symbolLayerIdsToMask.insert( sl->id() );
+                }
+              }
+            }
+          }
+
+          // recurse over sub symbols
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+          {
+            visitSymbol( subSymbol );
+          }
+        }
+
+        return true;
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+            visitSymbol( symbolEntity->symbol() );
+        }
+        return true;
+      }
+
+      QHash<QString, QgsMaskedLayers> maskedLayers;
+      QString maskingLayerId;
+      QString maskedLayerId;
+      QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets;
+  };
+
+  LabelSelectiveMaskingSetVisitor selectiveMaskingSetVisitor;
+  selectiveMaskingSetVisitor.maskingLayerId = layer->id();
+  selectiveMaskingSetVisitor.maskedLayers = std::move( visitor.maskedLayers );
+  selectiveMaskingSetVisitor.selectiveMaskingSourceSets = selectiveMaskingSourceSets;
+  for ( QgsVectorLayer *layer : allRenderedVectorLayers )
+  {
+    if ( layer->renderer() )
+    {
+      selectiveMaskingSetVisitor.maskedLayerId = layer->id();
+      layer->renderer()->accept( &selectiveMaskingSetVisitor );
+    }
+  }
+
+  return std::move( selectiveMaskingSetVisitor.maskedLayers );
 }
 
-QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
+QgsMaskedLayers QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
+  const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector<QgsVectorLayer *> &allRenderedVectorLayers
+)
 {
-  if ( ! layer->renderer() )
+  if ( !layer->renderer() )
     return {};
 
   class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
   {
     public:
-      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
-      {
-        return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
-      }
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override { return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule ); }
 
       // Returns true if the visited symbol has effects
       bool visitSymbol( const QgsSymbol *symbol )
@@ -1119,13 +1172,15 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
           // recurse over sub symbols
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
-            slHasEffects |= visitSymbol( subSymbol );
-
-          for ( const auto &mask : sl->masks() )
           {
-            QgsMaskedLayer &maskedLayer = maskedLayers[mask.layerId()];
+            slHasEffects = visitSymbol( subSymbol ) || slHasEffects;
+          }
+
+          for ( const QgsSymbolLayerReference &thingToMask : sl->masks() )
+          {
+            QgsMaskedLayer &maskedLayer = maskedLayers[thingToMask.layerId()];
             maskedLayer.hasEffects |= slHasEffects;
-            maskedLayer.symbolLayerIds.insert( mask.symbolLayerIdV2() );
+            maskedLayer.symbolLayerIdsToMask.insert( thingToMask.symbolLayerIdV2() );
           }
         }
 
@@ -1147,7 +1202,76 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
 
   SymbolLayerVisitor visitor;
   layer->renderer()->accept( &visitor );
-  return visitor.maskedLayers;
+
+
+  class SymbolLayerSelectiveMaskingSetVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override { return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule ); }
+
+      // Returns true if the visited symbol has effects
+      bool visitSymbol( const QgsSymbol *symbol )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( !sl->selectiveMaskingSourceSetId().isEmpty() )
+          {
+            auto it = selectiveMaskingSourceSets.constFind( sl->selectiveMaskingSourceSetId() );
+            if ( it != selectiveMaskingSourceSets.constEnd() )
+            {
+              const QVector<QgsSelectiveMaskSource> maskingSources = it.value().sources();
+              for ( const QgsSelectiveMaskSource &maskSource : maskingSources )
+              {
+                if ( maskSource.sourceType() == Qgis::SelectiveMaskSourceType::SymbolLayer && maskSource.layerId() == maskingLayerId )
+                {
+                  QgsMaskedLayer &maskedLayer = maskedLayers[maskedLayerId];
+                  maskedLayer.symbolLayerIdsToMask.insert( sl->id() );
+                }
+              }
+            }
+          }
+
+          // recurse over sub symbols
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+          {
+            visitSymbol( subSymbol );
+          }
+        }
+
+        return true;
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+            visitSymbol( symbolEntity->symbol() );
+        }
+        return true;
+      }
+      QgsMaskedLayers maskedLayers;
+      QString maskingLayerId;
+      QString maskedLayerId;
+      QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets;
+  };
+
+  SymbolLayerSelectiveMaskingSetVisitor selectiveMaskingSetVisitor;
+  selectiveMaskingSetVisitor.maskingLayerId = layer->id();
+  selectiveMaskingSetVisitor.maskedLayers = visitor.maskedLayers;
+  selectiveMaskingSetVisitor.selectiveMaskingSourceSets = selectiveMaskingSourceSets;
+  for ( QgsVectorLayer *layer : allRenderedVectorLayers )
+  {
+    if ( layer->renderer() )
+    {
+      selectiveMaskingSetVisitor.maskedLayerId = layer->id();
+      layer->renderer()->accept( &selectiveMaskingSetVisitor );
+    }
+  }
+
+  return selectiveMaskingSetVisitor.maskedLayers;
 }
 
 QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature )
@@ -1267,33 +1391,36 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   // This candidates list is a prioritized list of candidates ranked by "interestingness"!
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static QStringList sCandidates{ QStringLiteral( "name" ),
-                                  QStringLiteral( "title" ),
-                                  QStringLiteral( "heibt" ),
-                                  QStringLiteral( "desc" ),
-                                  QStringLiteral( "nom" ),
-                                  QStringLiteral( "street" ),
-                                  QStringLiteral( "road" ),
-                                  QStringLiteral( "label" ),
-                                  // German candidates
-                                  QStringLiteral( "titel" ),  //#spellok
-                                  QStringLiteral( "beschreibung" ),
-                                  QStringLiteral( "strasse" ),
-                                  QStringLiteral( "beschriftung" ) };
+  static QStringList sCandidates {
+    u"name"_s,
+    u"title"_s,
+    u"heibt"_s,
+    u"desc"_s,
+    u"nom"_s,
+    u"street"_s,
+    u"road"_s,
+    u"label"_s,
+    // German candidates
+    u"titel"_s, //#spellok
+    u"beschreibung"_s,
+    u"strasse"_s,
+    u"beschriftung"_s
+  };
 
   // anti-names
   // this list of strings indicates parts of field names which make the name "less interesting".
   // For instance, we'd normally like to default to a field called "name" or "title", but if instead we
   // find one called "typename" or "typeid", then that's most likely a classification of the feature and not the
   // best choice to default to
-  static QStringList sAntiCandidates{ QStringLiteral( "type" ),
-                                      QStringLiteral( "class" ),
-                                      QStringLiteral( "cat" ),
-                                      // German anti-candidates
-                                      QStringLiteral( "typ" ),
-                                      QStringLiteral( "klasse" ),
-                                      QStringLiteral( "kategorie" )
-                                    };
+  static QStringList sAntiCandidates {
+    u"type"_s,
+    u"class"_s,
+    u"cat"_s,
+    // German anti-candidates
+    u"typ"_s,
+    u"klasse"_s,
+    u"kategorie"_s
+  };
 
   QString bestCandidateName;
   QString bestCandidateContainsName;
@@ -1357,15 +1484,14 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
     // that a lot of readers are not able to deduce its potential presence.
     // So try to look at another field whose name would end with _name
     // And fallback to using the "id" field that should always be filled.
-    if ( candidateName == QLatin1String( "gml_name" ) &&
-         fields.indexOf( QLatin1String( "id" ) ) >= 0 )
+    if ( candidateName == "gml_name"_L1 && fields.indexOf( "id"_L1 ) >= 0 )
     {
       candidateName.clear();
       // Try to find a field ending with "_name", which is not "gml_name"
       for ( const QgsField &field : std::as_const( fields ) )
       {
         const QString fldName = field.name();
-        if ( fldName != QLatin1String( "gml_name" ) && fldName.endsWith( QLatin1String( "_name" ) ) )
+        if ( fldName != "gml_name"_L1 && fldName.endsWith( "_name"_L1 ) )
         {
           candidateName = fldName;
           break;
@@ -1374,7 +1500,7 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
       if ( candidateName.isEmpty() )
       {
         // Fallback to "id"
-        candidateName = QStringLiteral( "id" );
+        candidateName = u"id"_s;
       }
     }
 
@@ -1396,8 +1522,7 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   }
 }
 
-template <typename T, typename ConverterFunc>
-void populateFieldDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
+template<typename T, typename ConverterFunc> void populateFieldDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
 {
   res.resize( values.size() * sizeof( T ) );
   T *data = reinterpret_cast<T *>( res.data() );
@@ -1429,65 +1554,65 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
 
   const QgsField field = fields.at( fieldIndex );
   QByteArray res;
-  switch ( field.type( ) )
+  switch ( field.type() )
   {
     case QMetaType::Int:
     {
-      populateFieldDataArray<int>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      populateFieldDataArray<int>( values, nullValue, res, []( const QVariant &v ) { return v.toInt(); } );
       break;
     }
 
     case QMetaType::UInt:
     {
-      populateFieldDataArray<unsigned int>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      populateFieldDataArray<unsigned int>( values, nullValue, res, []( const QVariant &v ) { return v.toUInt(); } );
       break;
     }
 
     case QMetaType::LongLong:
     {
-      populateFieldDataArray<long long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      populateFieldDataArray<long long>( values, nullValue, res, []( const QVariant &v ) { return v.toLongLong(); } );
       break;
     }
 
     case QMetaType::ULongLong:
     {
-      populateFieldDataArray<unsigned long long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      populateFieldDataArray<unsigned long long>( values, nullValue, res, []( const QVariant &v ) { return v.toULongLong(); } );
       break;
     }
 
     case QMetaType::Double:
     {
-      populateFieldDataArray<double>( values, nullValue, res, []( const QVariant & v ) { return v.toDouble(); } );
+      populateFieldDataArray<double>( values, nullValue, res, []( const QVariant &v ) { return v.toDouble(); } );
       break;
     }
 
     case QMetaType::Long:
     {
-      populateFieldDataArray<long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      populateFieldDataArray<long>( values, nullValue, res, []( const QVariant &v ) { return v.toLongLong(); } );
       break;
     }
 
     case QMetaType::Short:
     {
-      populateFieldDataArray<short>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      populateFieldDataArray<short>( values, nullValue, res, []( const QVariant &v ) { return v.toInt(); } );
       break;
     }
 
     case QMetaType::ULong:
     {
-      populateFieldDataArray<unsigned long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      populateFieldDataArray<unsigned long>( values, nullValue, res, []( const QVariant &v ) { return v.toULongLong(); } );
       break;
     }
 
     case QMetaType::UShort:
     {
-      populateFieldDataArray<unsigned short>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      populateFieldDataArray<unsigned short>( values, nullValue, res, []( const QVariant &v ) { return v.toUInt(); } );
       break;
     }
 
     case QMetaType::Float:
     {
-      populateFieldDataArray<float>( values, nullValue, res, []( const QVariant & v ) { return v.toFloat(); } );
+      populateFieldDataArray<float>( values, nullValue, res, []( const QVariant &v ) { return v.toFloat(); } );
       break;
     }
 
@@ -1496,4 +1621,31 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
   }
 
   return res;
+}
+
+QgsFeatureIds QgsVectorLayerUtils::filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds )
+{
+  if ( !layer )
+    return QgsFeatureIds();
+
+  if ( featureIds.isEmpty() )
+    return QgsFeatureIds();
+
+  // build up an optimised feature request
+  QgsFeatureRequest request;
+  request.setFilterFids( featureIds );
+  request.setNoAttributes();
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+
+  QgsFeatureIds validIds;
+  validIds.reserve( featureIds.size() );
+
+  QgsFeature feat;
+  QgsFeatureIterator it = layer->getFeatures( request );
+  while ( it.nextFeature( feat ) )
+  {
+    validIds.insert( feat.id() );
+  }
+
+  return validIds;
 }

@@ -30,15 +30,16 @@
 #include <QIcon>
 #include <QMimeData>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgslayoutmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )
   , mLayout( layout )
-{
-
-}
+{}
 
 QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
 {
@@ -52,8 +53,7 @@ QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
   return item;
 }
 
-QModelIndex QgsLayoutModel::index( int row, int column,
-                                   const QModelIndex &parent ) const
+QModelIndex QgsLayoutModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( column < 0 || column >= columnCount() )
   {
@@ -172,7 +172,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
     case Qt::UserRole:
       //store item uuid in userrole so we can later get the QModelIndex for a specific item
       return item->uuid();
-    case Qt::UserRole+1:
+    case Qt::UserRole + 1:
       //user role stores reference in column object
       return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
@@ -248,11 +248,11 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     {
       if ( section == Visibility )
       {
-        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( u"/mActionShowAllLayersGray.svg"_s ) );
       }
       else if ( section == LockStatus )
       {
-        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( u"/lockedGray.svg"_s ) );
       }
 
       return QVariant();
@@ -264,7 +264,6 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     default:
       return QAbstractItemModel::headerData( section, orientation, role );
   }
-
 }
 
 Qt::DropActions QgsLayoutModel::supportedDropActions() const
@@ -275,7 +274,7 @@ Qt::DropActions QgsLayoutModel::supportedDropActions() const
 QStringList QgsLayoutModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" );
+  types << u"application/x-vnd.qgis.qgis.composeritemid"_s;
   return types;
 }
 
@@ -300,7 +299,7 @@ QMimeData *QgsLayoutModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
 
-  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ), encodedData );
+  mimeData->setData( u"application/x-vnd.qgis.qgis.composeritemid"_s, encodedData );
   return mimeData;
 }
 
@@ -309,8 +308,7 @@ bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 )
   return item1->zValue() > item2->zValue();
 }
 
-bool QgsLayoutModel::dropMimeData( const QMimeData *data,
-                                   Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsLayoutModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   if ( column != ItemId && column != -1 )
   {
@@ -322,7 +320,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
     return true;
   }
 
-  if ( !data->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) ) )
+  if ( !data->hasFormat( u"application/x-vnd.qgis.qgis.composeritemid"_s ) )
   {
     return false;
   }
@@ -334,7 +332,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) );
+  QByteArray encodedData = data->data( u"application/x-vnd.qgis.qgis.composeritemid"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QList<QgsLayoutItem *> droppedItems;
 
@@ -485,7 +483,6 @@ void QgsLayoutModel::rebuildSceneItemList()
     if ( sceneListPos == row )
     {
       //already in list in correct position, nothing to do
-
     }
     else if ( sceneListPos != -1 )
     {
@@ -669,7 +666,7 @@ bool QgsLayoutModel::reorderItemUp( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
@@ -719,7 +716,7 @@ bool QgsLayoutModel::reorderItemDown( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
@@ -878,7 +875,7 @@ Qt::ItemFlags QgsLayoutModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
     return flags | Qt::ItemIsDropEnabled;
   }

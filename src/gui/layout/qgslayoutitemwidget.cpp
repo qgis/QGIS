@@ -31,8 +31,11 @@
 #include "qgssymbolbutton.h"
 
 #include <QButtonGroup>
+#include <QString>
 
 #include "moc_qgslayoutitemwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutConfigObject
@@ -193,8 +196,7 @@ QgsLayoutItemBaseWidget::QgsLayoutItemBaseWidget( QWidget *parent, QgsLayoutObje
   : QgsPanelWidget( parent )
   , mConfigObject( new QgsLayoutConfigObject( this, layoutObject ) )
   , mObject( layoutObject )
-{
-}
+{}
 
 QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
 {
@@ -224,8 +226,7 @@ bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
 }
 
 void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
-{
-}
+{}
 
 void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
 {
@@ -242,8 +243,7 @@ void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *
 }
 
 void QgsLayoutItemBaseWidget::setMasterLayout( QgsMasterLayoutInterface * )
-{
-}
+{}
 
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
@@ -746,7 +746,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   whileBlocking( mOpacityWidget )->setOpacity( mItem->itemOpacity() );
   whileBlocking( mItemRotationSpinBox )->setValue( mItem->itemRotation() );
   whileBlocking( mExcludeFromPrintsCheckBox )->setChecked( mItem->excludeFromExports() );
-  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString() );
+  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( u"pdfExportGroup"_s ).toString() );
 }
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
@@ -781,10 +781,10 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mFrameColorButton->setColorDialogTitle( tr( "Select Frame Color" ) );
   mFrameColorButton->setAllowOpacity( true );
-  mFrameColorButton->setContext( QStringLiteral( "composer" ) );
+  mFrameColorButton->setContext( u"composer"_s );
 
   if ( QgsLayout *layout = mItem->layout() )
   {
@@ -794,14 +794,12 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
     QStringList existingGroups;
     for ( const QgsLayoutItem *item : std::as_const( items ) )
     {
-      const QString groupName = item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+      const QString groupName = item->customProperty( u"pdfExportGroup"_s ).toString();
       if ( !groupName.isEmpty() && !existingGroups.contains( groupName ) )
         existingGroups.append( groupName );
     }
 
-    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool {
-      return a.localeAwareCompare( b ) < 0;
-    } );
+    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool { return a.localeAwareCompare( b ) < 0; } );
 
     whileBlocking( mExportGroupNameCombo )->clear();
     whileBlocking( mExportGroupNameCombo )->addItems( existingGroups );
@@ -851,7 +849,7 @@ void QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished()
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Export Group Name" ), QgsLayoutItem::UndoExportLayerName );
-    mItem->setCustomProperty( QStringLiteral( "pdfExportGroup" ), mExportGroupNameCombo->currentText() );
+    mItem->setCustomProperty( u"pdfExportGroup"_s, mExportGroupNameCombo->currentText() );
     mItem->layout()->undoStack()->endCommand();
   }
 }
