@@ -678,8 +678,6 @@ void QgsGdalUtils::setupProxy()
     {
       const QNetworkProxy proxy( proxies.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
-      //QStringList excludes;
-      //excludes = settings.value( u"proxy/proxyExcludedUrls"_s, "" ).toStringList();
 
       const QString proxyHost( proxy.hostName() );
       const quint16 proxyPort( proxy.port() );
