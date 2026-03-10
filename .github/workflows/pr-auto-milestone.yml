@@ -18,10 +18,6 @@ on:
 permissions:
   contents: read
 
-env:
-  QGIS_MAJOR_VERSION_MASTER: 4  # Major version for master branch (update when bumping to 5.x)
-  QGIS_MAJOR_VERSION_LTR: 3     # Major version for current LTR (3 for 3.44, will be 4 when 4.2 becomes LTR)
-
 jobs:
   pr-without-milestones:
     runs-on: ubuntu-latest
@@ -30,174 +26,145 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      # Fetch data from GitHub API:
-      # - Recent open PRs and their milestones
-      # - Existing milestones
-      # - Recent git tags (to determine latest released version)
-      - uses: octokit/graphql-action@v2.x
-        id: graphql_request
+      - uses: actions/github-script@v7
         with:
-          query: |
-            query {
+          script: |
+            const MAJOR_VERSION_MASTER = 4; // Update when bumping to 5.x
+            const MAJOR_VERSION_LTR = 3;    // 3 for 3.44, will be 4 when 4.2 becomes LTR
+
+            // LTR minor versions per major version
+            const LTR_MINORS = {
+              3: [44],
+              4: [2, 8, 14, 20, 26, 32, 38, 44, 50], // 2 + 6*n
+            };
+
+            // --- Fetch data from GitHub API ---
+            const { repository } = await github.graphql(`query {
               repository(owner: "qgis", name: "QGIS") {
                 pullRequests(states: OPEN, last: 100) {
-                  edges {
-                    node {
-                      number
-                      title
-                      milestone {
-                        number
-                      }
-                      baseRef {
-                        name
-                      }
-                    }
-                  }
+                  edges { node { number milestone { number } baseRef { name } } }
                 }
                 milestones(orderBy: {field: CREATED_AT, direction: DESC}, first: 50) {
-                  edges {
-                    node {
-                      title
-                      number
-                    }
-                  }
+                  edges { node { title number } }
                 }
                 refs(refPrefix: "refs/tags/", orderBy: {field: TAG_COMMIT_DATE, direction: DESC}, first: 30) {
-                  edges {
-                    node {
-                      name
-                    }
-                  }
+                  edges { node { name } }
                 }
               }
+            }`);
+
+            const prs = repository.pullRequests.edges.map(e => e.node);
+            const milestones = repository.milestones.edges.map(e => e.node);
+            const tags = repository.refs.edges.map(e => e.node.name);
+
+            // --- Helper: parse "final-M_m_p" tag into {major, minor, patch} ---
+            function parseTag(tag) {
+              const m = tag.match(/^final-(\d+)_(\d+)_(\d+)$/);
+              return m ? { major: +m[1], minor: +m[2], patch: +m[3] } : null;
             }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Process all PRs without milestones and assign appropriate milestones
-      - name: Process PRs and assign milestones
-        env:
-          JSON_DATA: ${{ steps.graphql_request.outputs.data }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # get PRs without milestones
-          PRS_TO_PROCESS=$(echo "${JSON_DATA}" | jq -c '.repository.pullRequests.edges[] | select( .node.milestone.number | not ) | {number: .node.number, branch: .node.baseRef.name}')
+            // --- Helper: find max patch version among tags matching major_minor ---
+            function maxRelease(major, minor) {
+              let max = -1;
+              for (const tag of tags) {
+                const parsed = parseTag(tag);
+                if (parsed && parsed.major === major && parsed.minor === minor) {
+                  max = Math.max(max, parsed.patch);
+                }
+              }
+              return max >= 0 ? { major, minor, patch: max } : null;
+            }
 
-          NUMBER_OF_PRS=$(echo "${PRS_TO_PROCESS}" | jq -s '. | length')
-          echo "NUMBER_OF_PRS: ${NUMBER_OF_PRS}"
-          
-          # early exit if no PRs to process
-          [[ ${NUMBER_OF_PRS} == 0 ]] && echo "No PRs without milestones found" && exit 0
+            // --- Helper: find or create milestone, return its number ---
+            async function getOrCreateMilestone(title) {
+              const existing = milestones.find(m => m.title === title);
+              if (existing) {
+                core.info(`Found existing milestone "${title}" (#${existing.number})`);
+                return existing.number;
+              }
+              core.info(`Creating milestone "${title}"`);
+              const { data } = await github.rest.issues.createMilestone({
+                ...context.repo,
+                title,
+              });
+              // Cache it for subsequent PRs
+              milestones.push({ title, number: data.number });
+              return data.number;
+            }
 
-          # Process each PR
-          echo "${PRS_TO_PROCESS}" | while IFS= read -r pr_data; do
-            PR_NUMBER=$(echo "${pr_data}" | jq -r '.number')
-            BASE_BRANCH=$(echo "${pr_data}" | jq -r '.branch')
-            
-            echo "========================================="
-            echo "Processing PR #${PR_NUMBER} (branch: ${BASE_BRANCH})"
-            
-            # Determine milestone increment (0.1 for regular releases, 0.2 for LTR backports)
-            MILESTONE_INCREMENT="0.1"
-            
-            # Handle queued_ltr_backports: targets current LTR + 0.2 patch
-            if [[ ${BASE_BRANCH} == "queued_ltr_backports" ]]; then
-              echo "Special handling: queued_ltr_backports branch"
-              MILESTONE_INCREMENT="0.2"
-              QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_LTR}
-              
-              # Find the latest LTR release based on current LTR major version
-              # For 3.x: LTR is 3.44
-              # For 4.x: LTR series are 4.2, 4.8, 4.14, 4.20, 4.26... (every 6 minor versions starting from 4.2)
-              
-              if [[ ${QGIS_MAJOR_VERSION_LTR} == 3 ]]; then
-                # 3.x LTR: final-3_44_*
-                MAX_RELEASE=$(echo "${JSON_DATA}" | jq -r '.repository.refs.edges[].node.name | select(test("^final-3_44_[0-9]+$"))' | sed -r 's/^final-3_44_([0-9]+)$/44.\1/' | sort -V | tail -1)
-              else
-                # 4.x LTR: final-4_(2|8|14|20|26|32|38|44|50)_* (pattern: 2 + 6*n)
-                MAX_RELEASE=$(echo "${JSON_DATA}" | jq -r '.repository.refs.edges[].node.name | select(test("^final-4_(2|8|14|20|26|32|38|44|50)_[0-9]+$"))' | sed -r 's/^final-4_([0-9]+)_([0-9]+)$/\1.\2/' | sort -V | tail -1)
-              fi
-              
-              if [[ -z ${MAX_RELEASE} ]]; then
-                echo "Error: No LTR release found for version ${QGIS_MAJOR_VERSION_LTR}"
-                exit 1
-              fi
-              
-              echo "Using LTR ${QGIS_MAJOR_VERSION}.${MAX_RELEASE}"
-              
-            else
-              # Regular branch handling (master or release-X_Y)
-              BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
-              if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
-                # Master branch
-                QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
-              else
-                # Release branch
-                QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
-              fi
+            // --- Compute milestone title for a given branch ---
+            function computeMilestoneTitle(branch) {
+              const releaseMatch = branch.match(/^release-(\d+)_(\d+)$/);
 
-              # Extract minor version from release branch name
-              # Examples: master => empty, release-3_38 => _38, release-4_0 => _0
-              MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
+              if (branch === 'queued_ltr_backports') {
+                // LTR backports: find latest LTR release, increment patch by 2
+                const ltrMinors = LTR_MINORS[MAJOR_VERSION_LTR] || [];
+                let best = null;
+                for (const minor of ltrMinors) {
+                  const rel = maxRelease(MAJOR_VERSION_LTR, minor);
+                  if (rel && (!best || rel.minor > best.minor || (rel.minor === best.minor && rel.patch > best.patch))) {
+                    best = rel;
+                  }
+                }
+                if (!best) {
+                  core.warning(`No LTR release found for major version ${MAJOR_VERSION_LTR}`);
+                  return null;
+                }
+                return `${best.major}.${best.minor}.${best.patch + 2}`;
 
-              # Find the highest released version from git tags matching the target branch
-              MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
-            fi
+              } else if (releaseMatch) {
+                // Release branch (e.g. release-4_0): increment patch by 1
+                const major = +releaseMatch[1];
+                const minor = +releaseMatch[2];
+                const rel = maxRelease(major, minor);
+                if (!rel) {
+                  throw new Error(`No release found for ${major}.${minor}`);
+                }
+                return `${rel.major}.${rel.minor}.${rel.patch + 1}`;
 
-            # Calculate milestone version based on latest release:
-            # - Master branch: skip one minor version (e.g., 4.0 → 4.2)
-            # - Release branch: increment patch by 0.1 (e.g., 4.0.0 → 4.0.1)
-            # - LTR backports: increment patch by 0.2 (e.g., 3.44.6 → 3.44.8)
-            if [[ -z ${MINOR_VERSION} ]] && [[ ${BASE_BRANCH} != "queued_ltr_backports" ]]; then
-              # Master branch: add 2.0 to minor version
-              INCREASE_OPERATION="${MAX_RELEASE%.*} + 2.0"
-            else
-              # Release or LTR branch: add to patch version
-              INCREASE_OPERATION="${MAX_RELEASE} + ${MILESTONE_INCREMENT}"
-            fi
-            
-            MILESTONE_VERSION=$(printf "%.1f" $(echo "${INCREASE_OPERATION}" | bc))
-            MILESTONE_TITLE="${QGIS_MAJOR_VERSION}.${MILESTONE_VERSION}"
-            
-            echo "Target milestone: ${MILESTONE_TITLE}"
+              } else {
+                // Master (or any other branch): increment minor by 2
+                // Find the highest minor version tagged for this major
+                let maxMinor = -1;
+                for (const tag of tags) {
+                  const parsed = parseTag(tag);
+                  if (parsed && parsed.major === MAJOR_VERSION_MASTER) {
+                    maxMinor = Math.max(maxMinor, parsed.minor);
+                  }
+                }
+                if (maxMinor < 0) {
+                  throw new Error(`No release found for major version ${MAJOR_VERSION_MASTER}`);
+                }
+                return `${MAJOR_VERSION_MASTER}.${maxMinor + 2}.0`;
+              }
+            }
 
-            # Check if milestone exists in GitHub
-            MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
-            
-            if [[ -z ${MILESTONE_NUMBER} ]]; then
-              echo "Creating new milestone: ${MILESTONE_TITLE}"
-              # Create milestone using GitHub API
-              CREATE_RESPONSE=$(curl -s -X POST \
-                -H "Authorization: token ${GITHUB_TOKEN}" \
-                -H "Accept: application/vnd.github.v3+json" \
-                "https://api.github.com/repos/qgis/QGIS/milestones" \
-                -d "{\"title\":\"${MILESTONE_TITLE}\"}")
-              
-              MILESTONE_NUMBER=$(echo "${CREATE_RESPONSE}" | jq -r '.number')
-              
-              if [[ ${MILESTONE_NUMBER} == "null" ]] || [[ -z ${MILESTONE_NUMBER} ]]; then
-                echo "Error creating milestone. Response: ${CREATE_RESPONSE}"
-                continue
-              fi
-              
-              echo "Created milestone with number: ${MILESTONE_NUMBER}"
-            else
-              echo "Found existing milestone number: ${MILESTONE_NUMBER}"
-            fi
+            // --- Process all PRs without milestones ---
+            const prsToProcess = prs.filter(pr => !pr.milestone);
+            core.info(`PRs without milestones: ${prsToProcess.length}`);
 
-            # Assign milestone to PR
-            echo "Assigning milestone ${MILESTONE_NUMBER} to PR #${PR_NUMBER}"
-            ASSIGN_RESPONSE=$(curl -s -X PATCH \
-              -H "Authorization: token ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/qgis/QGIS/issues/${PR_NUMBER}" \
-              -d "{\"milestone\":${MILESTONE_NUMBER}}")
-            
-            ASSIGNED_MILESTONE=$(echo "${ASSIGN_RESPONSE}" | jq -r '.milestone.number')
-            
-            if [[ ${ASSIGNED_MILESTONE} == ${MILESTONE_NUMBER} ]]; then
-              echo "✓ Successfully assigned milestone ${MILESTONE_TITLE} to PR #${PR_NUMBER}"
-            else
-              echo "✗ Failed to assign milestone to PR #${PR_NUMBER}. Response: ${ASSIGN_RESPONSE}"
-            fi
-          done
+            for (const pr of prsToProcess) {
+              const branch = pr.baseRef?.name;
+              if (!branch) {
+                core.warning(`PR #${pr.number}: no base branch, skipping`);
+                continue;
+              }
+
+              core.info(`\nProcessing PR #${pr.number} (branch: ${branch})`);
+
+              const milestoneTitle = computeMilestoneTitle(branch);
+              if (!milestoneTitle) {
+                core.warning(`PR #${pr.number}: could not determine milestone, skipping`);
+                continue;
+              }
+
+              const milestoneNumber = await getOrCreateMilestone(milestoneTitle);
+
+              await github.rest.issues.update({
+                ...context.repo,
+                issue_number: pr.number,
+                milestone: milestoneNumber,
+              });
+
+              core.info(`✓ PR #${pr.number} → milestone "${milestoneTitle}"`);
+            }
