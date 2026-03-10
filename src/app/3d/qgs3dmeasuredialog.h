@@ -19,6 +19,8 @@
 
 #include "ui_qgsmeasurebase.h"
 
+#include "qgsdistancearea.h"
+
 #include <QDialog>
 
 class Qgs3DMapToolMeasure;
@@ -75,6 +77,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private:
     Qgs3DMapToolMeasure *mTool;
 
+    //! Measurement object
+    QgsDistanceArea mDa;
+
     //! Total length in map distance unit
     double mTotal = 0.0;
 
@@ -90,11 +95,20 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Distance unit of the displayed value
     Qgis::DistanceUnit mDisplayedDistanceUnit = Qgis::DistanceUnit::Unknown;
 
+    //! Area unit of the displayed value
+    Qgis::AreaUnit mDisplayedAreaUnit = Qgis::AreaUnit::Unknown;
+
+    //! Indicates whether we're measuring distances or areas
+    bool mMeasureArea = false;
+
     //! Convert from mMapDistanceUnit to mDisplayedDistanceUnit
     double convertLength( double length, Qgis::DistanceUnit toUnit ) const;
 
     //! formats distance to most appropriate units
     QString formatDistance( double distance ) const;
+
+    //! Formats area to most appropriate units
+    QString formatArea( double area ) const;
 
     //! Show the help page of the 3D measurement tool
     void showHelp();
