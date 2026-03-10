@@ -13,6 +13,7 @@ __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
+import os
 import unittest
 
 from qgis.core import QgsCesiumUtils
@@ -81,13 +82,15 @@ class TestQgsCesiumUtils(QgisTestCase):
         """Test extractTileContent()"""
 
         # invalid data
-        result = QgsCesiumUtils.extractGltfFromTileContent(b"unknown data")
+        result = QgsCesiumUtils.extractTileContent(b"unknown data")
         self.assertEqual(len(result), 0)
 
         # composite tile ("cmpt")
-        with open(os.path.join(TEST_DATA_DIR, "3dtiles", "cmpt", "dragon.cmpt")) as f:
+        with open(
+            os.path.join(TEST_DATA_DIR, "3dtiles", "cmpt", "dragon.cmpt"), "rb"
+        ) as f:
             cmpt_data = f.read()
-        result = QgsCesiumUtils.extractGltfFromTileContent(cmpt_data)
+        result = QgsCesiumUtils.extractTileContent(cmpt_data)
         self.assertEqual(len(result), 2)
         self.assertFalse(result[0].gltf.isEmpty())
         self.assertFalse(result[1].gltf.isEmpty())
@@ -96,11 +99,11 @@ class TestQgsCesiumUtils(QgisTestCase):
         with open(
             os.path.join(
                 TEST_DATA_DIR,
-                "3dtiles",
                 "tiled_scene",
                 "LOD-0",
                 "Mesh-XL-YL-XL-YL.b3dm",
-            )
+            ),
+            "rb",
         ) as f:
             b3dm_data = f.read()
         result = QgsCesiumUtils.extractTileContent(b3dm_data)
