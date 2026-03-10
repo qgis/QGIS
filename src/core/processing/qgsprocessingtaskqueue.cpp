@@ -21,23 +21,18 @@
 
 QgsProcessingTaskQueue *QgsProcessingTaskQueue::sInstance = nullptr;
 
-QgsProcessingQueuedTask::QgsProcessingQueuedTask( const QString &algorithmId,
-    const QVariantMap &parameters,
-    const QString &description )
+QgsProcessingQueuedTask::QgsProcessingQueuedTask( const QString &algorithmId, const QVariantMap &parameters, const QString &description )
   : mAlgorithmId( algorithmId )
   , mParameters( parameters )
   , mDescription( description )
-{
-}
+{}
 
 QgsProcessingTaskQueue::QgsProcessingTaskQueue()
   : QObject( nullptr )
-{
-}
+{}
 
 QgsProcessingTaskQueue::~QgsProcessingTaskQueue()
-{
-}
+{}
 
 QgsProcessingTaskQueue *QgsProcessingTaskQueue::instance()
 {

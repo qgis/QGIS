@@ -40,16 +40,13 @@ class QgsProcessingAlgRunnerTask;
 class CORE_EXPORT QgsProcessingQueuedTask
 {
   public:
-
     /**
      * Constructor for QgsProcessingQueuedTask.
      * \param algorithmId ID of the algorithm to execute
      * \param parameters parameters to pass to the algorithm
      * \param description optional description for the task
      */
-    QgsProcessingQueuedTask( const QString &algorithmId = QString(),
-                             const QVariantMap &parameters = QVariantMap(),
-                             const QString &description = QString() );
+    QgsProcessingQueuedTask( const QString &algorithmId = QString(), const QVariantMap &parameters = QVariantMap(), const QString &description = QString() );
 
     /**
      * Returns the algorithm ID.
@@ -87,7 +84,6 @@ class CORE_EXPORT QgsProcessingTaskQueue : public QObject SIP_NODEFAULTCTORS
     Q_OBJECT
 
   public:
-
     /**
      * Returns the singleton instance of the task queue.
      */
@@ -150,7 +146,6 @@ class CORE_EXPORT QgsProcessingTaskQueue : public QObject SIP_NODEFAULTCTORS
     void queueChanged();
 
   private:
-
     QgsProcessingTaskQueue() SIP_FORCE;
     ~QgsProcessingTaskQueue() override SIP_FORCE;
 

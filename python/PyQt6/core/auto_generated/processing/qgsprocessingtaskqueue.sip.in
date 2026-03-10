@@ -23,10 +23,7 @@ Represents a single queued processing task.
 #include "qgsprocessingtaskqueue.h"
 %End
   public:
-
-    QgsProcessingQueuedTask( const QString &algorithmId = QString(),
-                             const QVariantMap &parameters = QVariantMap(),
-                             const QString &description = QString() );
+    QgsProcessingQueuedTask( const QString &algorithmId = QString(), const QVariantMap &parameters = QVariantMap(), const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingQueuedTask.
 
@@ -69,7 +66,6 @@ overload system resources.
 #include "qgsprocessingtaskqueue.h"
 %End
   public:
-
     static QgsProcessingTaskQueue *instance();
 %Docstring
 Returns the singleton instance of the task queue.

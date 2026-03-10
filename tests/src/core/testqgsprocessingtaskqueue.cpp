@@ -20,6 +20,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingTaskQueue : public QObject
 {
@@ -61,8 +64,7 @@ void TestQgsProcessingTaskQueue::init()
 }
 
 void TestQgsProcessingTaskQueue::cleanup()
-{
-}
+{}
 
 void TestQgsProcessingTaskQueue::testSingleton()
 {
@@ -77,25 +79,25 @@ void TestQgsProcessingTaskQueue::testAddTask()
   QCOMPARE( mQueue->count(), 0 );
 
   QVariantMap params;
-  params[QStringLiteral( "INPUT" )] = QStringLiteral( "test" );
+  params[u"INPUT"_s] = u"test"_s;
 
-  mQueue->addTask( QStringLiteral( "native:buffer" ), params, QStringLiteral( "Test task" ) );
+  mQueue->addTask( u"native:buffer"_s, params, u"Test task"_s );
 
   QVERIFY( !mQueue->isEmpty() );
   QCOMPARE( mQueue->count(), 1 );
 
   const QList<QgsProcessingQueuedTask> tasks = mQueue->tasks();
   QCOMPARE( tasks.count(), 1 );
-  QCOMPARE( tasks.at( 0 ).algorithmId(), QStringLiteral( "native:buffer" ) );
-  QCOMPARE( tasks.at( 0 ).description(), QStringLiteral( "Test task" ) );
+  QCOMPARE( tasks.at( 0 ).algorithmId(), u"native:buffer"_s );
+  QCOMPARE( tasks.at( 0 ).description(), u"Test task"_s );
   QCOMPARE( tasks.at( 0 ).parameters(), params );
 }
 
 void TestQgsProcessingTaskQueue::testRemoveTask()
 {
-  mQueue->addTask( QStringLiteral( "native:buffer" ), QVariantMap(), QStringLiteral( "Task 1" ) );
-  mQueue->addTask( QStringLiteral( "native:clip" ), QVariantMap(), QStringLiteral( "Task 2" ) );
-  mQueue->addTask( QStringLiteral( "native:dissolve" ), QVariantMap(), QStringLiteral( "Task 3" ) );
+  mQueue->addTask( u"native:buffer"_s, QVariantMap(), u"Task 1"_s );
+  mQueue->addTask( u"native:clip"_s, QVariantMap(), u"Task 2"_s );
+  mQueue->addTask( u"native:dissolve"_s, QVariantMap(), u"Task 3"_s );
 
   QCOMPARE( mQueue->count(), 3 );
 
@@ -103,8 +105,8 @@ void TestQgsProcessingTaskQueue::testRemoveTask()
   QCOMPARE( mQueue->count(), 2 );
 
   const QList<QgsProcessingQueuedTask> tasks = mQueue->tasks();
-  QCOMPARE( tasks.at( 0 ).description(), QStringLiteral( "Task 1" ) );
-  QCOMPARE( tasks.at( 1 ).description(), QStringLiteral( "Task 3" ) );
+  QCOMPARE( tasks.at( 0 ).description(), u"Task 1"_s );
+  QCOMPARE( tasks.at( 1 ).description(), u"Task 3"_s );
 
   QVERIFY( !mQueue->removeTask( -1 ) );
   QVERIFY( !mQueue->removeTask( 10 ) );
@@ -113,16 +115,16 @@ void TestQgsProcessingTaskQueue::testRemoveTask()
 
 void TestQgsProcessingTaskQueue::testMoveTaskUp()
 {
-  mQueue->addTask( QStringLiteral( "native:buffer" ), QVariantMap(), QStringLiteral( "Task 1" ) );
-  mQueue->addTask( QStringLiteral( "native:clip" ), QVariantMap(), QStringLiteral( "Task 2" ) );
-  mQueue->addTask( QStringLiteral( "native:dissolve" ), QVariantMap(), QStringLiteral( "Task 3" ) );
+  mQueue->addTask( u"native:buffer"_s, QVariantMap(), u"Task 1"_s );
+  mQueue->addTask( u"native:clip"_s, QVariantMap(), u"Task 2"_s );
+  mQueue->addTask( u"native:dissolve"_s, QVariantMap(), u"Task 3"_s );
 
   QVERIFY( mQueue->moveTaskUp( 1 ) );
 
   const QList<QgsProcessingQueuedTask> tasks = mQueue->tasks();
-  QCOMPARE( tasks.at( 0 ).description(), QStringLiteral( "Task 2" ) );
-  QCOMPARE( tasks.at( 1 ).description(), QStringLiteral( "Task 1" ) );
-  QCOMPARE( tasks.at( 2 ).description(), QStringLiteral( "Task 3" ) );
+  QCOMPARE( tasks.at( 0 ).description(), u"Task 2"_s );
+  QCOMPARE( tasks.at( 1 ).description(), u"Task 1"_s );
+  QCOMPARE( tasks.at( 2 ).description(), u"Task 3"_s );
 
   QVERIFY( !mQueue->moveTaskUp( 0 ) );
   QVERIFY( !mQueue->moveTaskUp( -1 ) );
@@ -131,16 +133,16 @@ void TestQgsProcessingTaskQueue::testMoveTaskUp()
 
 void TestQgsProcessingTaskQueue::testMoveTaskDown()
 {
-  mQueue->addTask( QStringLiteral( "native:buffer" ), QVariantMap(), QStringLiteral( "Task 1" ) );
-  mQueue->addTask( QStringLiteral( "native:clip" ), QVariantMap(), QStringLiteral( "Task 2" ) );
-  mQueue->addTask( QStringLiteral( "native:dissolve" ), QVariantMap(), QStringLiteral( "Task 3" ) );
+  mQueue->addTask( u"native:buffer"_s, QVariantMap(), u"Task 1"_s );
+  mQueue->addTask( u"native:clip"_s, QVariantMap(), u"Task 2"_s );
+  mQueue->addTask( u"native:dissolve"_s, QVariantMap(), u"Task 3"_s );
 
   QVERIFY( mQueue->moveTaskDown( 0 ) );
 
   const QList<QgsProcessingQueuedTask> tasks = mQueue->tasks();
-  QCOMPARE( tasks.at( 0 ).description(), QStringLiteral( "Task 2" ) );
-  QCOMPARE( tasks.at( 1 ).description(), QStringLiteral( "Task 1" ) );
-  QCOMPARE( tasks.at( 2 ).description(), QStringLiteral( "Task 3" ) );
+  QCOMPARE( tasks.at( 0 ).description(), u"Task 2"_s );
+  QCOMPARE( tasks.at( 1 ).description(), u"Task 1"_s );
+  QCOMPARE( tasks.at( 2 ).description(), u"Task 3"_s );
 
   QVERIFY( !mQueue->moveTaskDown( 2 ) );
   QVERIFY( !mQueue->moveTaskDown( -1 ) );
@@ -149,9 +151,9 @@ void TestQgsProcessingTaskQueue::testMoveTaskDown()
 
 void TestQgsProcessingTaskQueue::testClear()
 {
-  mQueue->addTask( QStringLiteral( "native:buffer" ), QVariantMap(), QStringLiteral( "Task 1" ) );
-  mQueue->addTask( QStringLiteral( "native:clip" ), QVariantMap(), QStringLiteral( "Task 2" ) );
-  mQueue->addTask( QStringLiteral( "native:dissolve" ), QVariantMap(), QStringLiteral( "Task 3" ) );
+  mQueue->addTask( u"native:buffer"_s, QVariantMap(), u"Task 1"_s );
+  mQueue->addTask( u"native:clip"_s, QVariantMap(), u"Task 2"_s );
+  mQueue->addTask( u"native:dissolve"_s, QVariantMap(), u"Task 3"_s );
 
   QCOMPARE( mQueue->count(), 3 );
   QVERIFY( !mQueue->isEmpty() );
@@ -166,10 +168,10 @@ void TestQgsProcessingTaskQueue::testQueueChanged()
 {
   QSignalSpy spy( mQueue, &QgsProcessingTaskQueue::queueChanged );
 
-  mQueue->addTask( QStringLiteral( "native:buffer" ), QVariantMap(), QStringLiteral( "Task 1" ) );
+  mQueue->addTask( u"native:buffer"_s, QVariantMap(), u"Task 1"_s );
   QCOMPARE( spy.count(), 1 );
 
-  mQueue->addTask( QStringLiteral( "native:clip" ), QVariantMap(), QStringLiteral( "Task 2" ) );
+  mQueue->addTask( u"native:clip"_s, QVariantMap(), u"Task 2"_s );
   QCOMPARE( spy.count(), 2 );
 
   mQueue->removeTask( 0 );
@@ -178,7 +180,7 @@ void TestQgsProcessingTaskQueue::testQueueChanged()
   mQueue->moveTaskUp( 0 );
   QCOMPARE( spy.count(), 3 );
 
-  mQueue->addTask( QStringLiteral( "native:dissolve" ), QVariantMap(), QStringLiteral( "Task 3" ) );
+  mQueue->addTask( u"native:dissolve"_s, QVariantMap(), u"Task 3"_s );
   QCOMPARE( spy.count(), 4 );
 
   mQueue->moveTaskDown( 0 );
@@ -191,16 +193,16 @@ void TestQgsProcessingTaskQueue::testQueueChanged()
 void TestQgsProcessingTaskQueue::testTaskProperties()
 {
   QVariantMap params;
-  params[QStringLiteral( "INPUT" )] = QStringLiteral( "layer1" );
-  params[QStringLiteral( "DISTANCE" )] = 10.0;
+  params[u"INPUT"_s] = u"layer1"_s;
+  params[u"DISTANCE"_s] = 10.0;
 
-  const QgsProcessingQueuedTask task( QStringLiteral( "native:buffer" ), params, QStringLiteral( "Buffer task" ) );
+  const QgsProcessingQueuedTask task( u"native:buffer"_s, params, u"Buffer task"_s );
 
-  QCOMPARE( task.algorithmId(), QStringLiteral( "native:buffer" ) );
-  QCOMPARE( task.description(), QStringLiteral( "Buffer task" ) );
+  QCOMPARE( task.algorithmId(), u"native:buffer"_s );
+  QCOMPARE( task.description(), u"Buffer task"_s );
   QCOMPARE( task.parameters(), params );
-  QCOMPARE( task.parameters().value( QStringLiteral( "INPUT" ) ).toString(), QStringLiteral( "layer1" ) );
-  QCOMPARE( task.parameters().value( QStringLiteral( "DISTANCE" ) ).toDouble(), 10.0 );
+  QCOMPARE( task.parameters().value( u"INPUT"_s ).toString(), u"layer1"_s );
+  QCOMPARE( task.parameters().value( u"DISTANCE"_s ).toDouble(), 10.0 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingTaskQueue )
