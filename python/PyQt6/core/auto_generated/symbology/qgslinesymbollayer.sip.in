@@ -981,7 +981,7 @@ Trim units can be retrieved by calling
 
 .. seealso:: :py:func:`trimDistanceStartMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceStart( double distance );
@@ -1001,7 +1001,7 @@ Trim units can be set by calling
 
 .. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceStartUnit( Qgis::RenderUnit unit );
@@ -1016,7 +1016,7 @@ Sets the ``unit`` for the trim distance for the start of the line.
 
 .. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     Qgis::RenderUnit trimDistanceStartUnit() const;
@@ -1031,7 +1031,7 @@ Returns the unit for the trim distance for the start of the line.
 
 .. seealso:: :py:func:`trimDistanceStartMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     const QgsMapUnitScale &trimDistanceStartMapUnitScale() const;
@@ -1047,7 +1047,7 @@ line.
 
 .. seealso:: :py:func:`trimDistanceStartUnit`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceStartMapUnitScale( const QgsMapUnitScale &scale );
@@ -1063,7 +1063,7 @@ line.
 
 .. seealso:: :py:func:`setTrimDistanceStartUnit`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     double trimDistanceEnd() const;
@@ -1083,7 +1083,7 @@ Trim units can be retrieved by calling
 
 .. seealso:: :py:func:`trimDistanceEndMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceEnd( double distance );
@@ -1103,7 +1103,7 @@ Trim units can be set by calling
 
 .. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceEndUnit( Qgis::RenderUnit unit );
@@ -1118,7 +1118,7 @@ Sets the ``unit`` for the trim distance for the end of the line.
 
 .. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     Qgis::RenderUnit trimDistanceEndUnit() const;
@@ -1133,7 +1133,7 @@ Returns the unit for the trim distance for the end of the line.
 
 .. seealso:: :py:func:`trimDistanceEndMapUnitScale`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     const QgsMapUnitScale &trimDistanceEndMapUnitScale() const;
@@ -1149,7 +1149,7 @@ line.
 
 .. seealso:: :py:func:`trimDistanceEndUnit`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale );
@@ -1165,7 +1165,7 @@ line.
 
 .. seealso:: :py:func:`setTrimDistanceEndUnit`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     virtual void renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context );

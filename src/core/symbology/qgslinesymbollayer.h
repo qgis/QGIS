@@ -826,7 +826,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceStartUnit()
      * \see trimDistanceStartMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     double trimDistanceStart() const { return mTrimDistanceStart; }
 
@@ -841,7 +841,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceStartUnit()
      * \see setTrimDistanceStartMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     void setTrimDistanceStart( double distance ) { mTrimDistanceStart = distance; }
 
@@ -853,7 +853,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceStart()
      * \see setTrimDistanceStartMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     void setTrimDistanceStartUnit( Qgis::RenderUnit unit ) { mTrimDistanceStartUnit = unit; }
 
@@ -865,7 +865,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceStart()
      * \see trimDistanceStartMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     Qgis::RenderUnit trimDistanceStartUnit() const { return mTrimDistanceStartUnit; }
 
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceStart()
      * \see trimDistanceStartUnit()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     const QgsMapUnitScale &trimDistanceStartMapUnitScale() const { return mTrimDistanceStartMapUnitScale; }
 
@@ -889,7 +889,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceStart()
      * \see setTrimDistanceStartUnit()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     void setTrimDistanceStartMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceStartMapUnitScale = scale; }
 
@@ -904,7 +904,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceEndUnit()
      * \see trimDistanceEndMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     double trimDistanceEnd() const { return mTrimDistanceEnd; }
 
@@ -919,7 +919,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceEndUnit()
      * \see setTrimDistanceEndMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     void setTrimDistanceEnd( double distance ) { mTrimDistanceEnd = distance; }
 
@@ -931,7 +931,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceEnd()
      * \see setTrimDistanceEndMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     void setTrimDistanceEndUnit( Qgis::RenderUnit unit ) { mTrimDistanceEndUnit = unit; }
 
@@ -943,7 +943,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceEnd()
      * \see trimDistanceEndMapUnitScale()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     Qgis::RenderUnit trimDistanceEndUnit() const { return mTrimDistanceEndUnit; }
 
@@ -955,7 +955,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see trimDistanceEnd()
      * \see trimDistanceEndUnit()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     const QgsMapUnitScale &trimDistanceEndMapUnitScale() const { return mTrimDistanceEndMapUnitScale; }
 
@@ -967,7 +967,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setTrimDistanceEnd()
      * \see setTrimDistanceEndUnit()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
     */
     void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceEndMapUnitScale = scale; }
 
