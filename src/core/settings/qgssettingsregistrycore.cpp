@@ -248,6 +248,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( u"Raster/defaultOversampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( u"Raster/defaultEarlyResampling"_s, true );
   QgsFavoritesItem::settingsFavoriteDirs->copyValueFromKey( u"browser/favourites"_s, true );
+  QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
