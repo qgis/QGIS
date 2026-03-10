@@ -10,6 +10,7 @@
 
 
 
+
 class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ A browser item which contains various Favorites directories.
 #include "qgsfavoritesitem.h"
 %End
   public:
+
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 %Docstring
 Constructor for QgsFavoritesItem. Accepts a path argument specifying the
