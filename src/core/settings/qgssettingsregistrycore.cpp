@@ -248,6 +248,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( u"Raster/defaultOversampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( u"Raster/defaultEarlyResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"Raster/defaultZoomedInResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
   QgsFavoritesItem::settingsFavoriteDirs->copyValueFromKey( u"browser/favourites"_s, true );
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
 
