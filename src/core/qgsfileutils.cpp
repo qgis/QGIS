@@ -635,7 +635,7 @@ QString QgsFileUtils::uniquePath( const QString &path )
   return uniquePath;
 }
 
-bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination, CopyFlags flags )
+bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination, CopyFlags flags, const QStringList &excludePatterns )
 {
   QDir sourceDir( source );
   if ( !sourceDir.exists() )
@@ -654,6 +654,13 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
     }
   }
 
+  QVector< QRegularExpression > excludeRegExs;
+  excludeRegExs.reserve( excludePatterns.size() );
+  for ( const QString &pattern : excludePatterns )
+  {
+    excludeRegExs.append( QRegularExpression( pattern ) );
+  }
+
   bool copiedAll = true;
 
   QDir::Filters fileFilters = QDir::Files;
@@ -665,6 +672,23 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   for ( const QString &file : files )
   {
     const QString srcFileName = sourceDir.filePath( file );
+
+    bool skip = false;
+    for ( const QRegularExpression &excludeRegEx : std::as_const( excludeRegExs ) )
+    {
+      const QRegularExpressionMatch match = excludeRegEx.match( srcFileName );
+      if ( match.hasMatch() )
+      {
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcFileName, excludeRegEx.pattern() ), 1 );
+        skip = true;
+        break;
+      }
+    }
+    if ( skip )
+    {
+      continue;
+    }
+
     const QString destFileName = destDir.filePath( file );
     if ( !QFile::copy( srcFileName, destFileName ) )
     {
@@ -682,8 +706,25 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   for ( const QString &dir : dirs )
   {
     const QString srcDirName = sourceDir.filePath( dir );
+
+    bool skip = false;
+    for ( const QRegularExpression &excludeRegEx : std::as_const( excludeRegExs ) )
+    {
+      const QRegularExpressionMatch match = excludeRegEx.match( srcDirName );
+      if ( match.hasMatch() )
+      {
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcDirName, excludeRegEx.pattern() ), 1 );
+        skip = true;
+        break;
+      }
+    }
+    if ( skip )
+    {
+      continue;
+    }
+
     const QString destDirName = destDir.filePath( dir );
-    if ( !copyDirectory( srcDirName, destDirName, flags ) )
+    if ( !copyDirectory( srcDirName, destDirName, flags, excludePatterns ) )
     {
       copiedAll = false;
     }
