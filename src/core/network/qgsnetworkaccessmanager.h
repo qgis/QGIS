@@ -40,6 +40,7 @@
 using namespace Qt::StringLiterals;
 
 class QgsFeedback;
+class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
 
 /**
@@ -765,6 +766,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     //! Settings entry network timeout
     static const QgsSettingsEntryInteger *settingsNetworkTimeout;
+    //! Settings entry for whether proxy is enabled
+    static const QgsSettingsEntryBool *settingsProxyEnabled;
 #endif
 
     /**

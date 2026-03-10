@@ -50,6 +50,7 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( u"network-timeout"_s, QgsSettingsTree::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
+const QgsSettingsEntryBool *QgsNetworkAccessManager::settingsProxyEnabled = new QgsSettingsEntryBool( u"proxy-enabled"_s, QgsSettingsTree::sTreeProxy, false, u"Whether network proxy is enabled"_s );
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -756,7 +757,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   QStringList excludes;
   QStringList noProxyURLs;
 
-  const bool proxyEnabled = settings.value( u"proxy/proxyEnabled"_s, false ).toBool();
+  const bool proxyEnabled = settingsProxyEnabled->value();
   if ( proxyEnabled )
   {
     // This settings is keep for retrocompatibility, the returned proxy for these URL is the default one,

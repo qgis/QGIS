@@ -84,6 +84,7 @@ using namespace Qt::StringLiterals;
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
@@ -16971,7 +16972,7 @@ void QgisApp::namSetup()
 void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth )
 {
   QgsSettings settings;
-  if ( !settings.value( u"proxy/proxyEnabled"_s, false ).toBool() || settings.value( u"proxy/proxyType"_s, "" ).toString() == "DefaultProxy"_L1 )
+  if ( !QgsNetworkAccessManager::settingsProxyEnabled->value() || settings.value( u"proxy/proxyType"_s, "" ).toString() == "DefaultProxy"_L1 )
   {
     auth->setUser( QString() );
     return;
