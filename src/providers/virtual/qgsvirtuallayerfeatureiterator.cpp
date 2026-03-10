@@ -97,17 +97,13 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         const bool do_exact = request.flags() & Qgis::FeatureRequestFlag::ExactIntersect;
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
-        wheres << u"%1Intersects(%2,BuildMbr(?,?,?,?))"_s
-                    .arg( do_exact ? "" : "Mbr", quotedColumn( mSource->mDefinition.geometryField() ) );
+        wheres << u"%1Intersects(%2,BuildMbr(?,?,?,?))"_s.arg( do_exact ? "" : "Mbr", quotedColumn( mSource->mDefinition.geometryField() ) );
 
-        binded << mFilterRect.xMinimum() << mFilterRect.yMinimum()
-               << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+        binded << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
       }
       else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
       {
-        wheres << u"%1=%2"_s
-                    .arg( quotedColumn( mSource->mDefinition.uid() ) )
-                    .arg( request.filterFid() );
+        wheres << u"%1=%2"_s.arg( quotedColumn( mSource->mDefinition.uid() ) ).arg( request.filterFid() );
       }
       else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids )
       {
@@ -136,8 +132,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         else // never return a feature if the id is negative
           offset = u" LIMIT 0"_s;
       }
-      if ( !mFilterRect.isNull() && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox
-           && mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
+      if ( !mFilterRect.isNull() && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
       {
         // if an exact intersection is requested, prepare the geometry to intersect
         const QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
@@ -209,9 +204,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
     }
     // the last column is the geometry, if any
-    if ( ( !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
-           || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() ) )
-         && !mSource->mDefinition.geometryField().isNull() && mSource->mDefinition.geometryField() != "*no*"_L1 )
+    if ( ( !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() ) )
+         && !mSource->mDefinition.geometryField().isNull()
+         && mSource->mDefinition.geometryField() != "*no*"_L1 )
     {
       columns += "," + quotedColumn( mSource->mDefinition.geometryField() );
     }
@@ -379,8 +374,7 @@ QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLaye
   , mTableName( p->mTableName )
   , mSubset( p->mSubset )
   , mCrs( p->crs() )
-{
-}
+{}
 
 QgsFeatureIterator QgsVirtualLayerFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

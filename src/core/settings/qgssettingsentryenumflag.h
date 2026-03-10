@@ -36,11 +36,9 @@ using namespace Qt::StringLiterals;
  * \note This template class has a dedicated handling in sipify.py
  * \since QGIS 3.20
  */
-template <typename T>
-class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
+template<typename T> class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
@@ -55,11 +53,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
      * \since QGIS 3.30
      */
     QgsSettingsEntryEnumFlag( const QString &name, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryBaseTemplate<T>( name,
-                                         parent,
-                                         QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
-                                         description,
-                                         options )
+      : QgsSettingsEntryBaseTemplate<T>( name, parent, QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ), description, options )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
@@ -80,11 +74,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
      * \note for Python bindings, a custom implementation is achieved in Python directly
      */
     QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryBaseTemplate<T>( key,
-                                         section,
-                                         QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
-                                         description,
-                                         options )
+      : QgsSettingsEntryBaseTemplate<T>( key, section, QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ), description, options )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
@@ -163,20 +153,13 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
         return false;
     }
 
-    Qgis::SettingsType settingsType() const override
-    {
-      return Qgis::SettingsType::EnumFlag;
-    }
+    Qgis::SettingsType settingsType() const override { return Qgis::SettingsType::EnumFlag; }
 
-    QString typeId() const override
-    {
-      return u"%1-%2"_s.arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
-    }
+    QString typeId() const override { return u"%1-%2"_s.arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() ); }
 
   private:
     T mDefaultValue;
     QMetaEnum mMetaEnum;
-
 };
 
 #endif // QGSSETTINGSENTRYENUMFLAG_H

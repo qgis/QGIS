@@ -80,7 +80,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     }
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
   public:
     Q_PROPERTY( QColor color READ color WRITE setColor )

@@ -28,10 +28,7 @@ int QgsVectorTileDataProvider::DATA_ROW = QNetworkRequest::User + 2;
 int QgsVectorTileDataProvider::DATA_ZOOM = QNetworkRequest::User + 3;
 int QgsVectorTileDataProvider::DATA_SOURCE_ID = QNetworkRequest::User + 4;
 
-QgsVectorTileDataProvider::QgsVectorTileDataProvider(
-  const QString &uri,
-  const ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
+QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mShared( new QgsVectorTileDataProviderSharedData )
 {}
@@ -111,7 +108,6 @@ QImage QgsVectorTileDataProvider::spriteImage() const
 
   return QImage();
 }
-
 
 
 QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData()

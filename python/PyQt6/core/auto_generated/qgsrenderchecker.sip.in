@@ -26,7 +26,6 @@ to an expected result or render time.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsRenderChecker();
 %Docstring
 Constructor for QgsRenderChecker.
@@ -231,7 +230,9 @@ Test using two arbitrary images (map renderer will not be used)
    Make sure to call setExpectedImage and setRenderedImage first.
 %End
 
-    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
+    bool compareImages(
+      const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags()
+    );
 %Docstring
 Test using two arbitrary images at the specified paths for equality.
 

@@ -139,10 +139,7 @@ struct VTable
       init_();
     }
 
-    ~VTable()
-    {
-      delete mProvider;
-    }
+    ~VTable() { delete mProvider; }
 
     QgsVectorDataProvider *provider() { return mProvider; }
 
@@ -555,7 +552,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
     }
 
     // request for rtree filtering
-    if ( ( indexInfo->aConstraint[i].usable ) &&
+    if ( ( indexInfo->aConstraint[i].usable )
+         &&
          // request on _search_frame_ column
          ( vtab->fields().count() + 1 == indexInfo->aConstraint[i].iColumn ) && ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {

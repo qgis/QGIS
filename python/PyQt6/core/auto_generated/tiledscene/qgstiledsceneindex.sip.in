@@ -31,7 +31,6 @@ or transferred between threads.
 %End
   public:
 
-
     ~QgsTiledSceneIndex();
 
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );

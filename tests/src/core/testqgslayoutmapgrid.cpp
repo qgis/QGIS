@@ -36,7 +36,8 @@ class TestQgsLayoutMapGrid : public QgsTest
 
   public:
     TestQgsLayoutMapGrid()
-      : QgsTest( u"Layout Map Grid Tests"_s, u"composer_mapgrid"_s ) {}
+      : QgsTest( u"Layout Map Grid Tests"_s, u"composer_mapgrid"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -1229,7 +1230,9 @@ void TestQgsLayoutMapGrid::dataDefinedDrawAnnotation()
   map->grid()->setAnnotationPosition( Qgis::MapGridAnnotationPosition::OutsideMapFrame, Qgis::MapGridBorderSide::Top );
   map->grid()->setAnnotationPosition( Qgis::MapGridAnnotationPosition::OutsideMapFrame, Qgis::MapGridBorderSide::Bottom );
 
-  map->grid()->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation, QgsProperty::fromExpression( u"case when @grid_axis = 'x' then @grid_number < 787000 when @grid_axis ='y' then @grid_number >= 3342000 end"_s ) );
+  map->grid()
+    ->dataDefinedProperties()
+    .setProperty( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation, QgsProperty::fromExpression( u"case when @grid_axis = 'x' then @grid_number < 787000 when @grid_axis ='y' then @grid_number >= 3342000 end"_s ) );
   map->grid()->refresh();
   map->updateBoundingRect();
 

@@ -45,10 +45,7 @@ using namespace Qt::StringLiterals;
 
 /******************* QgsGrassModuleOptions *******************/
 
-QgsGrassModuleOptions::QgsGrassModuleOptions(
-  QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface, bool direct
-)
+QgsGrassModuleOptions::QgsGrassModuleOptions( QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, bool direct )
   : mIface( iface )
   , mTools( tools )
   , mModule( module )
@@ -67,10 +64,7 @@ QStringList QgsGrassModuleOptions::arguments()
 /*************** QgsGrassModuleStandardOptions ***********************/
 
 QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
-  QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface,
-  QString xname, QDomElement confDocElem,
-  bool direct, QWidget *parent, Qt::WindowFlags f
+  QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, QString xname, QDomElement confDocElem, bool direct, QWidget *parent, Qt::WindowFlags f
 )
   : QWidget( parent, f )
   , QgsGrassModuleOptions( tools, module, iface, direct )
@@ -196,12 +190,11 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
           QString age = promptElem.attribute( u"age"_s );
 
           //QgsDebugMsgLevel("element = " + element + " age = " + age, 3);
-          if ( age == "old"_L1 && ( element == "vector"_L1 || element == "cell"_L1 || element == "strds"_L1 || element == "stvds"_L1 || element == "str3ds"_L1 || element == "stds"_L1 )
+          if ( age == "old"_L1
+               && ( element == "vector"_L1 || element == "cell"_L1 || element == "strds"_L1 || element == "stvds"_L1 || element == "str3ds"_L1 || element == "stds"_L1 )
                && confDomElement.attribute( u"widget"_s ) != "text"_L1 )
           {
-            QgsGrassModuleInput *mi = new QgsGrassModuleInput(
-              mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this
-            );
+            QgsGrassModuleInput *mi = new QgsGrassModuleInput( mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
 
             layout->addWidget( mi );
             created = true;
@@ -211,9 +204,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
         if ( !created )
         {
-          QgsGrassModuleOption *so = new QgsGrassModuleOption(
-            mModule, key, confDomElement, descDocElem, gnode, mDirect, this
-          );
+          QgsGrassModuleOption *so = new QgsGrassModuleOption( mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
 
           layout->addWidget( so );
           mParams.append( so );
@@ -237,19 +228,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == "ogr"_L1 )
       {
-        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
-          mModule, QgsGrassModuleGdalInput::Ogr, key, confDomElement,
-          descDocElem, gnode, mDirect, this
-        );
+        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput( mModule, QgsGrassModuleGdalInput::Ogr, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
       else if ( optionType == "gdal"_L1 )
       {
-        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
-          mModule, QgsGrassModuleGdalInput::Gdal, key, confDomElement,
-          descDocElem, gnode, mDirect, this
-        );
+        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput( mModule, QgsGrassModuleGdalInput::Gdal, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
@@ -257,45 +242,32 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         if ( confDomElement.hasAttribute( u"layer"_s ) )
         {
-          QgsGrassModuleVectorField *mi = new QgsGrassModuleVectorField(
-            mModule, this, key, confDomElement,
-            descDocElem, gnode, mDirect, this
-          );
+          QgsGrassModuleVectorField *mi = new QgsGrassModuleVectorField( mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
           layout->addWidget( mi );
           mParams.append( mi );
         }
         else
         {
-          QgsGrassModuleField *mi = new QgsGrassModuleField(
-            mModule, key, confDomElement,
-            descDocElem, gnode, mDirect, this
-          );
+          QgsGrassModuleField *mi = new QgsGrassModuleField( mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
           layout->addWidget( mi );
           mParams.append( mi );
         }
       }
       else if ( optionType == "selection"_L1 )
       {
-        QgsGrassModuleSelection *mi = new QgsGrassModuleSelection(
-          mModule, this, key, confDomElement,
-          descDocElem, gnode, mDirect, this
-        );
+        QgsGrassModuleSelection *mi = new QgsGrassModuleSelection( mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
       else if ( optionType == "file"_L1 )
       {
-        QgsGrassModuleFile *mi = new QgsGrassModuleFile(
-          mModule, key, confDomElement, descDocElem, gnode, mDirect, this
-        );
+        QgsGrassModuleFile *mi = new QgsGrassModuleFile( mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
       else if ( optionType == "flag"_L1 )
       {
-        QgsGrassModuleFlag *flag = new QgsGrassModuleFlag(
-          mModule, key, confDomElement, descDocElem, gnode, mDirect, this
-        );
+        QgsGrassModuleFlag *flag = new QgsGrassModuleFlag( mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
 
         layout->addWidget( flag );
         mParams.append( flag );
@@ -408,8 +380,7 @@ QStringList QgsGrassModuleStandardOptions::arguments()
   {
     QStringList list = mParams[i]->options();
 
-    for ( QStringList::Iterator it = list.begin();
-          it != list.end(); ++it )
+    for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
     {
       arg.append( *it );
     }
@@ -782,8 +753,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
       }
 
       // TODO: best way to set resolution ?
-      if ( item->type() == QgsGrassObject::Raster
-           && rasterCount == 0 )
+      if ( item->type() == QgsGrassObject::Raster && rasterCount == 0 )
       {
         QgsGrass::copyRegionResolution( &mapWindow, window );
       }
@@ -912,10 +882,17 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
     QString pathVariable = QgsGrassModule::libraryPathVariable();
     QgsDebugError( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
-                  + "<br><br>" + pathVariable + "=" + environment.value( pathVariable )
-                  + "<br><br>PATH=" + environment.value( u"PATH"_s )
-                  + "<br><br>PYTHONPATH=" + environment.value( u"PYTHONPATH"_s )
-                  + "<br><br>" + tr( "command" ) + u": %1 %2<br>%3<br>%4"_s.arg( cmd, arguments.join( ' '_L1 ), process.readAllStandardOutput().constData(), process.readAllStandardError().constData() );
+                  + "<br><br>"
+                  + pathVariable
+                  + "="
+                  + environment.value( pathVariable )
+                  + "<br><br>PATH="
+                  + environment.value( u"PATH"_s )
+                  + "<br><br>PYTHONPATH="
+                  + environment.value( u"PYTHONPATH"_s )
+                  + "<br><br>"
+                  + tr( "command" )
+                  + u": %1 %2<br>%3<br>%4"_s.arg( cmd, arguments.join( ' '_L1 ), process.readAllStandardOutput().constData(), process.readAllStandardError().constData() );
     QgsDebugError( msg );
     errors << msg;
     return gDoc;
@@ -977,8 +954,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   if ( !ok )
   {
-    QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     errors << errmsg;
   }

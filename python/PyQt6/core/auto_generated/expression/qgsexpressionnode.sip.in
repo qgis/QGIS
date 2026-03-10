@@ -53,7 +53,6 @@ Abstract base class for all nodes that can appear in an expression.
     }
 %End
   public:
-
     enum NodeType /BaseType=IntEnum/
     {
       ntUnaryOperator,
@@ -71,7 +70,6 @@ Abstract base class for all nodes that can appear in an expression.
     struct NamedNode
     {
       public:
-
         NamedNode( const QString &name, QgsExpressionNode *node );
 %Docstring
 Constructor for NamedNode
@@ -221,6 +219,7 @@ Returns a set of all functions which are used in this expression.
    is not affected by any previous calls to :py:func:`QgsExpressionNode.prepare()`.
 %End
 
+
     virtual bool needsGeometry() const = 0;
 %Docstring
 Abstract virtual method which returns if the geometry is required to
@@ -297,7 +296,6 @@ applied.
 %End
 
   protected:
-
     QgsExpressionNode();
     QgsExpressionNode( const QgsExpressionNode &other );
 

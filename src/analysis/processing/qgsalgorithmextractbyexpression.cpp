@@ -61,10 +61,12 @@ void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExtractByExpressionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an input layer. "
-                      "The criteria for adding features to the resulting layer is based on a QGIS expression.\n\n"
-                      "For help with QGIS expression functions, see the inbuilt help for specific functions "
-                      "which is available in the expression builder." );
+  return QObject::tr(
+    "This algorithm creates a new vector layer that only contains matching features from an input layer. "
+    "The criteria for adding features to the resulting layer is based on a QGIS expression.\n\n"
+    "For help with QGIS expression functions, see the inbuilt help for specific functions "
+    "which is available in the expression builder."
+  );
 }
 
 QString QgsExtractByExpressionAlgorithm::shortDescription() const

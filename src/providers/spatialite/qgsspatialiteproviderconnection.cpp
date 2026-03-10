@@ -86,7 +86,9 @@ QString QgsSpatiaLiteProviderConnection::tableUri( const QString &schema, const 
   return uri() + u" table=%1"_s.arg( QgsSqliteUtils::quotedIdentifier( name ) );
 }
 
-void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
+void QgsSpatiaLiteProviderConnection::createVectorTable(
+  const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+) const
 {
   checkCapability( Capability::CreateVectorTable );
   if ( !schema.isEmpty() )
@@ -99,17 +101,8 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, 
   QMap<int, int> map;
   QString errCause;
   QString createdLayerUri;
-  Qgis::VectorExportResult res = QgsSpatiaLiteProvider::createEmptyLayer(
-    uri() + u" table=%1 (geom)"_s.arg( QgsSqliteUtils::quotedIdentifier( name ) ),
-    fields,
-    wkbType,
-    srs,
-    overwrite,
-    &map,
-    createdLayerUri,
-    &errCause,
-    &opts
-  );
+  Qgis::VectorExportResult res
+    = QgsSpatiaLiteProvider::createEmptyLayer( uri() + u" table=%1 (geom)"_s.arg( QgsSqliteUtils::quotedIdentifier( name ) ), fields, wkbType, srs, overwrite, &map, createdLayerUri, &errCause, &opts );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -206,8 +199,7 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
       ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
       if ( ret != SQLITE_OK )
       {
-        QgsDebugError( u"Failed to run VACUUM after deleting table on database %1"_s
-                         .arg( pathFromUri() ) );
+        QgsDebugError( u"Failed to run VACUUM after deleting table on database %1"_s.arg( pathFromUri() ) );
       }
 
       QgsSqliteHandle::closeDb( hndl );
@@ -228,14 +220,11 @@ void QgsSpatiaLiteProviderConnection::renameVectorTable( const QString &schema, 
     QgsMessageLog::logMessage( u"Schema is not supported by Spatialite, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
   // TODO: maybe an index?
-  QString sql( u"ALTER TABLE %1 RENAME TO %2"_s
-                 .arg( QgsSqliteUtils::quotedIdentifier( name ), QgsSqliteUtils::quotedIdentifier( newName ) ) );
+  QString sql( u"ALTER TABLE %1 RENAME TO %2"_s.arg( QgsSqliteUtils::quotedIdentifier( name ), QgsSqliteUtils::quotedIdentifier( newName ) ) );
   executeSqlDirect( sql );
-  sql = u"UPDATE geometry_columns SET f_table_name = lower(%2) WHERE lower(f_table_name) = lower(%1)"_s
-          .arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( newName ) );
+  sql = u"UPDATE geometry_columns SET f_table_name = lower(%2) WHERE lower(f_table_name) = lower(%1)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( newName ) );
   executeSqlDirect( sql );
-  sql = u"UPDATE layer_styles SET f_table_name = lower(%2) WHERE f_table_name = lower(%1)"_s
-          .arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( newName ) );
+  sql = u"UPDATE layer_styles SET f_table_name = lower(%2) WHERE f_table_name = lower(%1)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( newName ) );
   try
   {
     executeSqlDirect( sql );
@@ -441,10 +430,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
   // Filters
   if ( flags )
   {
-    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [&]( const QgsAbstractDatabaseProviderConnection::TableProperty &ti ) {
-                       return !( ti.flags() & flags );
-                     } ),
-                     tableInfo.end() );
+    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [&]( const QgsAbstractDatabaseProviderConnection::TableProperty &ti ) { return !( ti.flags() & flags ); } ), tableInfo.end() );
   }
   return tableInfo;
 }
@@ -478,10 +464,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SingleLineString,
     GeometryColumnCapability::SinglePolygon,
   };
-  mSqlLayerDefinitionCapabilities = {
-    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
-    Qgis::SqlLayerDefinitionCapability::GeometryColumn
-  };
+  mSqlLayerDefinitionCapabilities = { Qgis::SqlLayerDefinitionCapability::SubsetStringFilter, Qgis::SqlLayerDefinitionCapability::GeometryColumn };
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
@@ -727,405 +710,432 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection
    */
 
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
-    { { Qgis::SqlKeywordCategory::Math, { // SQL math functions
-                                          u"Abs( x [Double precision] )"_s, u"Acos( x [Double precision] )"_s, u"Asin( x [Double precision] )"_s, u"Atan( x [Double precision] )"_s, u"Ceil( x [Double precision] )"_s, u"Cos( x [Double precision] )"_s, u"Cot( x [Double precision] )"_s, u"Degrees( x [Double precision] )"_s, u"Exp( x [Double precision] )"_s, u"Floor( x [Double precision] )"_s, u"Ln( x [Double precision] )"_s, u"Log( b [Double precision] , x [Double precision] )"_s, u"Log2( x [Double precision] )"_s, u"Log10( x [Double precision] )"_s, u"PI( void )"_s, u"Pow( x [Double precision] , y [Double precision] )"_s, u"Radians( x [Double precision] )"_s, u"Sign( x [Double precision] )"_s, u"Sin( x [Double precision] )"_s, u"Sqrt( x [Double precision] )"_s, u"Stddev_pop( x [Double precision] )"_s, u"Stddev_samp( x [Double precision] )"_s, u"Tan( x [Double precision] )"_s, u"Var_pop( x [Double precision] )"_s, u"Var_samp( x [Double precision] )"_s
-                                        } },
-      { Qgis::SqlKeywordCategory::Function, {
+    { { Qgis::SqlKeywordCategory::Math,
+        { // SQL math functions
+          u"Abs( x [Double precision] )"_s,
+          u"Acos( x [Double precision] )"_s,
+          u"Asin( x [Double precision] )"_s,
+          u"Atan( x [Double precision] )"_s,
+          u"Ceil( x [Double precision] )"_s,
+          u"Cos( x [Double precision] )"_s,
+          u"Cot( x [Double precision] )"_s,
+          u"Degrees( x [Double precision] )"_s,
+          u"Exp( x [Double precision] )"_s,
+          u"Floor( x [Double precision] )"_s,
+          u"Ln( x [Double precision] )"_s,
+          u"Log( b [Double precision] , x [Double precision] )"_s,
+          u"Log2( x [Double precision] )"_s,
+          u"Log10( x [Double precision] )"_s,
+          u"PI( void )"_s,
+          u"Pow( x [Double precision] , y [Double precision] )"_s,
+          u"Radians( x [Double precision] )"_s,
+          u"Sign( x [Double precision] )"_s,
+          u"Sin( x [Double precision] )"_s,
+          u"Sqrt( x [Double precision] )"_s,
+          u"Stddev_pop( x [Double precision] )"_s,
+          u"Stddev_samp( x [Double precision] )"_s,
+          u"Tan( x [Double precision] )"_s,
+          u"Var_pop( x [Double precision] )"_s,
+          u"Var_samp( x [Double precision] )"_s
+        } },
+      { Qgis::SqlKeywordCategory::Function,
+        {
 
-                                              // Specific
-                                              u"last_insert_rowid"_s,
+          // Specific
+          u"last_insert_rowid"_s,
 
-                                              // SQL Version Info [and build options testing] functions
-                                              u"spatialite_version( void )"_s,
-                                              u"spatialite_target_cpu( void )"_s,
-                                              u"proj4_version( void )"_s,
-                                              u"geos_version( void )"_s,
-                                              u"lwgeom_version( void )"_s,
-                                              u"libxml2_version( void )"_s,
-                                              u"HasIconv( void )"_s,
-                                              u"HasMathSQL( void )"_s,
-                                              u"HasGeoCallbacks( void )"_s,
-                                              u"HasProj( void )"_s,
-                                              u"HasGeos( void )"_s,
-                                              u"HasGeosAdvanced( void )"_s,
-                                              u"HasGeosTrunk( void )"_s,
-                                              u"HasLwGeom( void )"_s,
-                                              u"HasLibXML2( void )"_s,
-                                              u"HasEpsg( void )"_s,
-                                              u"HasFreeXL( void )"_s,
-                                              u"HasGeoPackage( void )"_s,
+          // SQL Version Info [and build options testing] functions
+          u"spatialite_version( void )"_s,
+          u"spatialite_target_cpu( void )"_s,
+          u"proj4_version( void )"_s,
+          u"geos_version( void )"_s,
+          u"lwgeom_version( void )"_s,
+          u"libxml2_version( void )"_s,
+          u"HasIconv( void )"_s,
+          u"HasMathSQL( void )"_s,
+          u"HasGeoCallbacks( void )"_s,
+          u"HasProj( void )"_s,
+          u"HasGeos( void )"_s,
+          u"HasGeosAdvanced( void )"_s,
+          u"HasGeosTrunk( void )"_s,
+          u"HasLwGeom( void )"_s,
+          u"HasLibXML2( void )"_s,
+          u"HasEpsg( void )"_s,
+          u"HasFreeXL( void )"_s,
+          u"HasGeoPackage( void )"_s,
 
-                                              // Generic SQL functions
-                                              u"CastToInteger( value [Generic] )"_s,
-                                              u"CastToDouble( value [Generic] )"_s,
-                                              u"CastToText( value [Generic] )"_s,
-                                              u"CastToBlob( value [Generic] )"_s,
-                                              u"ForceAsNull( val1 [Generic] , val2 [Generic])"_s,
-                                              u"CreateUUID( void )"_s,
-                                              u"MD5Checksum( BLOB | TEXT )"_s,
-                                              u"MD5TotalChecksum( BLOB | TEXT )"_s,
+          // Generic SQL functions
+          u"CastToInteger( value [Generic] )"_s,
+          u"CastToDouble( value [Generic] )"_s,
+          u"CastToText( value [Generic] )"_s,
+          u"CastToBlob( value [Generic] )"_s,
+          u"ForceAsNull( val1 [Generic] , val2 [Generic])"_s,
+          u"CreateUUID( void )"_s,
+          u"MD5Checksum( BLOB | TEXT )"_s,
+          u"MD5TotalChecksum( BLOB | TEXT )"_s,
 
-                                              // SQL utility functions for BLOB objects
-                                              u"IsZipBlob( content [BLOB] )"_s,
-                                              u"IsPdfBlob( content [BLOB] )"_s,
-                                              u"IsGifBlob( image [BLOB] )"_s,
-                                              u"IsPngBlob( image [BLOB] )"_s,
-                                              u"IsTiffBlob( image [BLOB] )"_s,
-                                              u"IsJpegBlob( image [BLOB] )"_s,
-                                              u"IsExifBlob( image [BLOB] )"_s,
-                                              u"IsExifGpsBlob( image [BLOB] )"_s,
-                                              u"IsWebpBlob( image [BLOB] )"_s,
-                                              u"GetMimeType( payload [BLOB] )"_s,
-                                              u"BlobFromFile( filepath [String] )"_s,
-                                              u"BlobToFile( payload [BLOB] , filepath [String] )"_s,
-                                              u"CountUnsafeTriggers( )"_s,
+          // SQL utility functions for BLOB objects
+          u"IsZipBlob( content [BLOB] )"_s,
+          u"IsPdfBlob( content [BLOB] )"_s,
+          u"IsGifBlob( image [BLOB] )"_s,
+          u"IsPngBlob( image [BLOB] )"_s,
+          u"IsTiffBlob( image [BLOB] )"_s,
+          u"IsJpegBlob( image [BLOB] )"_s,
+          u"IsExifBlob( image [BLOB] )"_s,
+          u"IsExifGpsBlob( image [BLOB] )"_s,
+          u"IsWebpBlob( image [BLOB] )"_s,
+          u"GetMimeType( payload [BLOB] )"_s,
+          u"BlobFromFile( filepath [String] )"_s,
+          u"BlobToFile( payload [BLOB] , filepath [String] )"_s,
+          u"CountUnsafeTriggers( )"_s,
 
-                                              // SQL functions supporting XmlBLOB
-                                              u"XB_Create(  xmlPayload [BLOB] )"_s,
-                                              u"XB_GetPayload( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
-                                              u"XB_GetDocument( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
-                                              u"XB_SchemaValidate(  xmlObject [XmlBLOB] , schemaURI [Text] [ , compressed [Boolean] ] )"_s,
-                                              u"XB_Compress( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_Uncompress( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsValid( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsCompressed( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsSchemaValidated( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsIsoMetadata( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsSldSeVectorStyle( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsSldSeRasterStyle( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_IsSvg( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetDocumentSize( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetEncoding( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetSchemaURI( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetInternalSchemaURI( xmlPayload [BLOB] )"_s,
-                                              u"XB_GetFileId( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_SetFileId( xmlObject [XmlBLOB] , fileId [String] )"_s,
-                                              u"XB_AddFileId( xmlObject [XmlBLOB] , fileId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
-                                              u"XB_GetParentId( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_SetParentId( xmlObject [XmlBLOB] , parentId [String] )"_s,
-                                              u"XB_AddParentId( xmlObject [XmlBLOB] , parentId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
-                                              u"XB_GetTitle( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetAbstract( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetGeometry( xmlObject [XmlBLOB] )"_s,
-                                              u"XB_GetLastParseError( [void] )"_s,
-                                              u"XB_GetLastValidateError( [void] )"_s,
-                                              u"XB_IsValidXPathExpression( expr [Text] )"_s,
-                                              u"XB_GetLastXPathError( [void] )"_s,
-                                              u"XB_CacheFlush( [void] )"_s,
-                                              u"XB_LoadXML( filepath-or-URL [String] )"_s,
-                                              u"XB_StoreXML( XmlObject [XmlBLOB] , filepath [String] )"_s,
+          // SQL functions supporting XmlBLOB
+          u"XB_Create(  xmlPayload [BLOB] )"_s,
+          u"XB_GetPayload( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
+          u"XB_GetDocument( xmlObject [XmlBLOB] [ , indent [Integer] ] )"_s,
+          u"XB_SchemaValidate(  xmlObject [XmlBLOB] , schemaURI [Text] [ , compressed [Boolean] ] )"_s,
+          u"XB_Compress( xmlObject [XmlBLOB] )"_s,
+          u"XB_Uncompress( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsValid( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsCompressed( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSchemaValidated( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsIsoMetadata( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSldSeVectorStyle( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSldSeRasterStyle( xmlObject [XmlBLOB] )"_s,
+          u"XB_IsSvg( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetDocumentSize( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetEncoding( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetSchemaURI( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetInternalSchemaURI( xmlPayload [BLOB] )"_s,
+          u"XB_GetFileId( xmlObject [XmlBLOB] )"_s,
+          u"XB_SetFileId( xmlObject [XmlBLOB] , fileId [String] )"_s,
+          u"XB_AddFileId( xmlObject [XmlBLOB] , fileId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
+          u"XB_GetParentId( xmlObject [XmlBLOB] )"_s,
+          u"XB_SetParentId( xmlObject [XmlBLOB] , parentId [String] )"_s,
+          u"XB_AddParentId( xmlObject [XmlBLOB] , parentId [String] , IdNameSpacePrefix [String] , IdNameSpaceURI [String] , CsNameSpacePrefix [String] , CsNameSpaceURI [String] )"_s,
+          u"XB_GetTitle( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetAbstract( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetGeometry( xmlObject [XmlBLOB] )"_s,
+          u"XB_GetLastParseError( [void] )"_s,
+          u"XB_GetLastValidateError( [void] )"_s,
+          u"XB_IsValidXPathExpression( expr [Text] )"_s,
+          u"XB_GetLastXPathError( [void] )"_s,
+          u"XB_CacheFlush( [void] )"_s,
+          u"XB_LoadXML( filepath-or-URL [String] )"_s,
+          u"XB_StoreXML( XmlObject [XmlBLOB] , filepath [String] )"_s,
 
-                                            } },
-      { Qgis::SqlKeywordCategory::Geospatial, {
-                                                // SQL functions reporting GEOS / LWGEOM errors and warnings
-                                                u"GEOS_GetLastWarningMsg( [void] )"_s,
-                                                u"GEOS_GetLastErrorMsg( [void] )"_s,
-                                                u"GEOS_GetLastAuxErrorMsg( [void] )"_s,
-                                                u"GEOS_GetCriticalPointFromMsg( [void] )"_s,
-                                                u"LWGEOM_GetLastWarningMsg( [void] )"_s,
-                                                u"LWGEOM_GetLastErrorMsg( [void] )"_s,
+        } },
+      { Qgis::SqlKeywordCategory::Geospatial,
+        {
+          // SQL functions reporting GEOS / LWGEOM errors and warnings
+          u"GEOS_GetLastWarningMsg( [void] )"_s,
+          u"GEOS_GetLastErrorMsg( [void] )"_s,
+          u"GEOS_GetLastAuxErrorMsg( [void] )"_s,
+          u"GEOS_GetCriticalPointFromMsg( [void] )"_s,
+          u"LWGEOM_GetLastWarningMsg( [void] )"_s,
+          u"LWGEOM_GetLastErrorMsg( [void] )"_s,
 
-                                                // SQL length/distance unit-conversion functions
-                                                u"CvtToKm( x [Double precision] )"_s,
-                                                u"CvtToDm( x [Double precision] )"_s,
-                                                u"CvtToCm( x [Double precision] )"_s,
-                                                u"CvtToMm( x [Double precision] )"_s,
-                                                u"CvtToKmi( x [Double precision] )"_s,
-                                                u"CvtToIn( x [Double precision] )"_s,
-                                                u"CvtToFt( x [Double precision] )"_s,
-                                                u"CvtToYd( x [Double precision] )"_s,
-                                                u"CvtToMi( x [Double precision] )"_s,
-                                                u"CvtToFath( x [Double precision] )"_s,
-                                                u"CvtToCh( x [Double precision] )"_s,
-                                                u"CvtToLink( x [Double precision] )"_s,
-                                                u"CvtToUsIn( x [Double precision] )"_s,
-                                                u"CvtToUsFt( x [Double precision] )"_s,
-                                                u"CvtToUsYd( x [Double precision] )"_s,
-                                                u"CvtToUsMi( x [Double precision] )"_s,
-                                                u"CvtToUsCh( x [Double precision] )"_s,
-                                                u"CvtToIndFt( x [Double precision] )"_s,
-                                                u"CvtToIndYd( x [Double precision] )"_s,
-                                                u"CvtToIndCh( x [Double precision] )"_s,
+          // SQL length/distance unit-conversion functions
+          u"CvtToKm( x [Double precision] )"_s,
+          u"CvtToDm( x [Double precision] )"_s,
+          u"CvtToCm( x [Double precision] )"_s,
+          u"CvtToMm( x [Double precision] )"_s,
+          u"CvtToKmi( x [Double precision] )"_s,
+          u"CvtToIn( x [Double precision] )"_s,
+          u"CvtToFt( x [Double precision] )"_s,
+          u"CvtToYd( x [Double precision] )"_s,
+          u"CvtToMi( x [Double precision] )"_s,
+          u"CvtToFath( x [Double precision] )"_s,
+          u"CvtToCh( x [Double precision] )"_s,
+          u"CvtToLink( x [Double precision] )"_s,
+          u"CvtToUsIn( x [Double precision] )"_s,
+          u"CvtToUsFt( x [Double precision] )"_s,
+          u"CvtToUsYd( x [Double precision] )"_s,
+          u"CvtToUsMi( x [Double precision] )"_s,
+          u"CvtToUsCh( x [Double precision] )"_s,
+          u"CvtToIndFt( x [Double precision] )"_s,
+          u"CvtToIndYd( x [Double precision] )"_s,
+          u"CvtToIndCh( x [Double precision] )"_s,
 
-                                                // SQL conversion functions from DD/DMS notations (longitude/latitude)
-                                                u"LongLatToDMS( longitude [Double precision] , latitude [Double precision] )"_s,
-                                                u"LongitudeFromDMS( dms_expression [Sting] )"_s,
+          // SQL conversion functions from DD/DMS notations (longitude/latitude)
+          u"LongLatToDMS( longitude [Double precision] , latitude [Double precision] )"_s,
+          u"LongitudeFromDMS( dms_expression [Sting] )"_s,
 
-                                                // SQL utility functions [
-                                                u"GeomFromExifGpsBlob( image [BLOB] )"_s,
-                                                u"ST_Point( x [Double precision] , y [Double precision]  )"_s,
-                                                u"MakeLine( pt1 [PointGeometry] , pt2 [PointGeometry] )"_s,
-                                                u"MakeLine( geom [PointGeometry] )"_s,
-                                                u"MakeLine( geom [MultiPointGeometry] , direction [Boolean] )"_s,
-                                                u"SquareGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
-                                                u"TriangularGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
-                                                u"HexagonalGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
-                                                u"Extent( geom [Geometry] )"_s,
-                                                u"ToGARS( geom [Geometry] )"_s,
-                                                u"GARSMbr( code [String] )"_s,
-                                                u"MbrMinX( geom [Geometry])"_s,
-                                                u"MbrMinY( geom [Geometry])"_s,
-                                                u"MbrMaxX( geom [Geometry])"_s,
-                                                u"MbrMaxY( geom [Geometry])"_s,
-                                                u"ST_MinZ( geom [Geometry])"_s,
-                                                u"ST_MaxZ( geom [Geometry])"_s,
-                                                u"ST_MinM( geom [Geometry])"_s,
-                                                u"ST_MaxM( geom [Geometry])"_s,
+          // SQL utility functions [
+          u"GeomFromExifGpsBlob( image [BLOB] )"_s,
+          u"ST_Point( x [Double precision] , y [Double precision]  )"_s,
+          u"MakeLine( pt1 [PointGeometry] , pt2 [PointGeometry] )"_s,
+          u"MakeLine( geom [PointGeometry] )"_s,
+          u"MakeLine( geom [MultiPointGeometry] , direction [Boolean] )"_s,
+          u"SquareGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"TriangularGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"HexagonalGrid( geom [ArealGeometry] , size [Double precision] [ , edges_only [Boolean] , [ origing [PointGeometry] ] ] )"_s,
+          u"Extent( geom [Geometry] )"_s,
+          u"ToGARS( geom [Geometry] )"_s,
+          u"GARSMbr( code [String] )"_s,
+          u"MbrMinX( geom [Geometry])"_s,
+          u"MbrMinY( geom [Geometry])"_s,
+          u"MbrMaxX( geom [Geometry])"_s,
+          u"MbrMaxY( geom [Geometry])"_s,
+          u"ST_MinZ( geom [Geometry])"_s,
+          u"ST_MaxZ( geom [Geometry])"_s,
+          u"ST_MinM( geom [Geometry])"_s,
+          u"ST_MaxM( geom [Geometry])"_s,
 
-                                                // SQL functions for constructing a geometric object given its Well-known Text Representation
-                                                u"GeomFromText( wkt [String] [ , SRID [Integer]] )"_s,
-                                                u"ST_WKTToSQL( wkt [String] )"_s,
-                                                u"PointFromText( wktPoint [String] [ , SRID [Integer]] )"_s,
-                                                u"LineFromText( wktLineString [String] [ , SRID [Integer]] )"_s,
-                                                u"PolyFromText( wktPolygon [String] [ , SRID [Integer]] )"_s,
-                                                u"MPointFromText( wktMultiPoint [String] [ , SRID [Integer]] )"_s,
-                                                u"MLineFromText( wktMultiLineString [String] [ , SRID [Integer]] )"_s,
-                                                u"MPolyFromText( wktMultiPolygon [String] [ , SRID [Integer]] )"_s,
-                                                u"GeomCollFromText( wktGeometryCollection [String] [ , SRID [Integer]] )"_s,
-                                                u"BdPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
-                                                u"BdMPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
+          // SQL functions for constructing a geometric object given its Well-known Text Representation
+          u"GeomFromText( wkt [String] [ , SRID [Integer]] )"_s,
+          u"ST_WKTToSQL( wkt [String] )"_s,
+          u"PointFromText( wktPoint [String] [ , SRID [Integer]] )"_s,
+          u"LineFromText( wktLineString [String] [ , SRID [Integer]] )"_s,
+          u"PolyFromText( wktPolygon [String] [ , SRID [Integer]] )"_s,
+          u"MPointFromText( wktMultiPoint [String] [ , SRID [Integer]] )"_s,
+          u"MLineFromText( wktMultiLineString [String] [ , SRID [Integer]] )"_s,
+          u"MPolyFromText( wktMultiPolygon [String] [ , SRID [Integer]] )"_s,
+          u"GeomCollFromText( wktGeometryCollection [String] [ , SRID [Integer]] )"_s,
+          u"BdPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
+          u"BdMPolyFromText( wktMultilinestring [String] [ , SRID [Integer]] )"_s,
 
-                                                // SQL functions for constructing a geometric object given its Well-known Binary Representation
-                                                u"GeomFromWKB( wkbGeometry [Binary] [ , SRID [Integer]] )"_s,
-                                                u"ST_WKBToSQL( wkbGeometry [Binary] )"_s,
-                                                u"PointFromWKB( wkbPoint [Binary] [ , SRID [Integer]] )"_s,
-                                                u"LineFromWKB( wkbLineString [Binary] [ , SRID [Integer]] )"_s,
-                                                u"PolyFromWKB( wkbPolygon [Binary] [ , SRID [Integer]] )"_s,
-                                                u"MPointFromWKB( wkbMultiPoint [Binary] [ , SRID [Integer]] )"_s,
-                                                u"MLineFromWKB( wkbMultiLineString [Binary] [ , SRID [Integer]] )"_s,
-                                                u"MPolyFromWKB( wkbMultiPolygon [Binary] [ , SRID [Integer]] )"_s,
-                                                u"GeomCollFromWKB( wkbGeometryCollection [Binary] [ , SRID [Integer]] )"_s,
-                                                u"BdPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
-                                                u"BdMPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
+          // SQL functions for constructing a geometric object given its Well-known Binary Representation
+          u"GeomFromWKB( wkbGeometry [Binary] [ , SRID [Integer]] )"_s,
+          u"ST_WKBToSQL( wkbGeometry [Binary] )"_s,
+          u"PointFromWKB( wkbPoint [Binary] [ , SRID [Integer]] )"_s,
+          u"LineFromWKB( wkbLineString [Binary] [ , SRID [Integer]] )"_s,
+          u"PolyFromWKB( wkbPolygon [Binary] [ , SRID [Integer]] )"_s,
+          u"MPointFromWKB( wkbMultiPoint [Binary] [ , SRID [Integer]] )"_s,
+          u"MLineFromWKB( wkbMultiLineString [Binary] [ , SRID [Integer]] )"_s,
+          u"MPolyFromWKB( wkbMultiPolygon [Binary] [ , SRID [Integer]] )"_s,
+          u"GeomCollFromWKB( wkbGeometryCollection [Binary] [ , SRID [Integer]] )"_s,
+          u"BdPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
+          u"BdMPolyFromWKB( wkbMultilinestring [Binary] [ , SRID [Integer]] )"_s,
 
-                                                // SQL functions for obtaining the Well-known Text / Well-known Binary Representation of a geometric object
-                                                u"AsText( geom [Geometry] )"_s,
-                                                u"AsWKT( geom [Geometry] [ , precision [Integer] ] )"_s,
-                                                u"AsBinary( geom [Geometry] )"_s,
+          // SQL functions for obtaining the Well-known Text / Well-known Binary Representation of a geometric object
+          u"AsText( geom [Geometry] )"_s,
+          u"AsWKT( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"AsBinary( geom [Geometry] )"_s,
 
-                                                // SQL functions supporting exotic geometric formats
-                                                u"AsSVG( geom [Geometry] [ , relative [Integer] [ , precision [Integer] ] ] )"_s,
-                                                u"AsKml( geom [Geometry] [ , precision [Integer] ] )"_s,
-                                                u"GeomFromKml( KmlGeometry [String] )"_s,
-                                                u"AsGml( geom [Geometry] [ , precision [Integer] ] )"_s,
-                                                u"GeomFromGML( gmlGeometry [String] )"_s,
-                                                u"AsGeoJSON( geom [Geometry] [ , precision [Integer] [ , options [Integer] ] ] )"_s,
-                                                u"GeomFromGeoJSON( geoJSONGeometry [String] )"_s,
-                                                u"AsEWKB( geom [Geometry] )"_s,
-                                                u"GeomFromEWKB( ewkbGeometry [String] )"_s,
-                                                u"AsEWKT( geom [Geometry] )"_s,
-                                                u"GeomFromEWKT( ewktGeometry [String] )"_s,
-                                                u"AsFGF( geom [Geometry] )"_s,
-                                                u"GeomFromFGF( fgfGeometry [Binary] [ , SRID [Integer]] )"_s,
+          // SQL functions supporting exotic geometric formats
+          u"AsSVG( geom [Geometry] [ , relative [Integer] [ , precision [Integer] ] ] )"_s,
+          u"AsKml( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"GeomFromKml( KmlGeometry [String] )"_s,
+          u"AsGml( geom [Geometry] [ , precision [Integer] ] )"_s,
+          u"GeomFromGML( gmlGeometry [String] )"_s,
+          u"AsGeoJSON( geom [Geometry] [ , precision [Integer] [ , options [Integer] ] ] )"_s,
+          u"GeomFromGeoJSON( geoJSONGeometry [String] )"_s,
+          u"AsEWKB( geom [Geometry] )"_s,
+          u"GeomFromEWKB( ewkbGeometry [String] )"_s,
+          u"AsEWKT( geom [Geometry] )"_s,
+          u"GeomFromEWKT( ewktGeometry [String] )"_s,
+          u"AsFGF( geom [Geometry] )"_s,
+          u"GeomFromFGF( fgfGeometry [Binary] [ , SRID [Integer]] )"_s,
 
-                                                // SQL functions on type Geometry
-                                                u"Dimension( geom [Geometry] )"_s,
-                                                u"CoordDimension( geom [Geometry] )"_s,
-                                                u"ST_NDims( geom [Geometry] )"_s,
-                                                u"ST_Is3D( geom [Geometry] )"_s,
-                                                u"ST_IsMeasured( geom [Geometry] )"_s,
-                                                u"GeometryType( geom [Geometry] )"_s,
-                                                u"SRID( geom [Geometry] )"_s,
-                                                u"SetSRID( geom [Geometry] , SRID [Integer] )"_s,
-                                                u"IsEmpty( geom [Geometry] )"_s,
-                                                u"IsSimple( geom [Geometry] )"_s,
-                                                u"IsValid( geom [Geometry] )"_s,
-                                                u"IsValidReason( geom [Geometry] )"_s,
-                                                u"IsValidDetail( geom [Geometry] )"_s,
-                                                u"Boundary( geom [Geometry] )"_s,
-                                                u"Envelope( geom [Geometry] )"_s,
-                                                u"ST_Expand( geom [Geometry] , amount [Double precision] )"_s,
-                                                u"ST_NPoints( geom [Geometry] )"_s,
-                                                u"ST_NRings( geom [Geometry] )"_s,
-                                                u"ST_Reverse( geom [Geometry] )"_s,
-                                                u"ST_ForceLHR( geom [Geometry] )"_s,
+          // SQL functions on type Geometry
+          u"Dimension( geom [Geometry] )"_s,
+          u"CoordDimension( geom [Geometry] )"_s,
+          u"ST_NDims( geom [Geometry] )"_s,
+          u"ST_Is3D( geom [Geometry] )"_s,
+          u"ST_IsMeasured( geom [Geometry] )"_s,
+          u"GeometryType( geom [Geometry] )"_s,
+          u"SRID( geom [Geometry] )"_s,
+          u"SetSRID( geom [Geometry] , SRID [Integer] )"_s,
+          u"IsEmpty( geom [Geometry] )"_s,
+          u"IsSimple( geom [Geometry] )"_s,
+          u"IsValid( geom [Geometry] )"_s,
+          u"IsValidReason( geom [Geometry] )"_s,
+          u"IsValidDetail( geom [Geometry] )"_s,
+          u"Boundary( geom [Geometry] )"_s,
+          u"Envelope( geom [Geometry] )"_s,
+          u"ST_Expand( geom [Geometry] , amount [Double precision] )"_s,
+          u"ST_NPoints( geom [Geometry] )"_s,
+          u"ST_NRings( geom [Geometry] )"_s,
+          u"ST_Reverse( geom [Geometry] )"_s,
+          u"ST_ForceLHR( geom [Geometry] )"_s,
 
-                                                // SQL functions attempting to repair malformed Geometries
-                                                u"SanitizeGeometry( geom [Geometry] )"_s,
+          // SQL functions attempting to repair malformed Geometries
+          u"SanitizeGeometry( geom [Geometry] )"_s,
 
-                                                // SQL Geometry-compression functions
-                                                u"CompressGeometry( geom [Geometry] )"_s,
-                                                u"UncompressGeometry( geom [Geometry] )"_s,
+          // SQL Geometry-compression functions
+          u"CompressGeometry( geom [Geometry] )"_s,
+          u"UncompressGeometry( geom [Geometry] )"_s,
 
-                                                // SQL Geometry-type casting functions
-                                                u"CastToPoint( geom [Geometry] )"_s,
-                                                u"CastToLinestring( geom [Geometry] )"_s,
-                                                u"CastToPolygon( geom [Geometry] )"_s,
-                                                u"CastToMultiPoint( geom [Geometry] )"_s,
-                                                u"CastToMultiLinestring( geom [Geometry] )"_s,
-                                                u"CastToMultiPolygon( geom [Geometry] )"_s,
-                                                u"CastToGeometryCollection( geom [Geometry] )"_s,
-                                                u"CastToMulti( geom [Geometry] )"_s,
-                                                u"CastToSingle( geom [Geometry] )"_s,
+          // SQL Geometry-type casting functions
+          u"CastToPoint( geom [Geometry] )"_s,
+          u"CastToLinestring( geom [Geometry] )"_s,
+          u"CastToPolygon( geom [Geometry] )"_s,
+          u"CastToMultiPoint( geom [Geometry] )"_s,
+          u"CastToMultiLinestring( geom [Geometry] )"_s,
+          u"CastToMultiPolygon( geom [Geometry] )"_s,
+          u"CastToGeometryCollection( geom [Geometry] )"_s,
+          u"CastToMulti( geom [Geometry] )"_s,
+          u"CastToSingle( geom [Geometry] )"_s,
 
-                                                // SQL Space-dimensions casting functions
-                                                u"CastToXY( geom [Geometry] )"_s,
-                                                u"CastToXYZ( geom [Geometry] )"_s,
-                                                u"CastToXYM( geom [Geometry] )"_s,
-                                                u"CastToXYZM( geom [Geometry] )"_s,
+          // SQL Space-dimensions casting functions
+          u"CastToXY( geom [Geometry] )"_s,
+          u"CastToXYZ( geom [Geometry] )"_s,
+          u"CastToXYM( geom [Geometry] )"_s,
+          u"CastToXYZM( geom [Geometry] )"_s,
 
-                                                // SQL functions on type Point
-                                                u"X( pt [Point] )"_s,
-                                                u"Y( pt [Point] )"_s,
-                                                u"Z( pt [Point] )"_s,
-                                                u"M( pt [Point] )"_s,
+          // SQL functions on type Point
+          u"X( pt [Point] )"_s,
+          u"Y( pt [Point] )"_s,
+          u"Z( pt [Point] )"_s,
+          u"M( pt [Point] )"_s,
 
-                                                // SQL functions on type Curve [Linestring or Ring]
-                                                u"StartPoint( c [Curve] )"_s,
-                                                u"EndPoint( c [Curve] )"_s,
-                                                u"GLength( c [Curve] )"_s,
-                                                u"Perimeter( s [Surface] )"_s,
-                                                u"GeodesicLength( c [Curve] )"_s,
-                                                u"GreatCircleLength( c [Curve] )"_s,
-                                                u"IsClosed( c [Curve] )"_s,
-                                                u"IsRing( c [Curve] )"_s,
-                                                u"PointOnSurface( s [Surface/Curve] )"_s,
-                                                u"Simplify( c [Curve] , tolerance [Double precision] )"_s,
-                                                u"SimplifyPreserveTopology( c [Curve] , tolerance [Double precision] )"_s,
+          // SQL functions on type Curve [Linestring or Ring]
+          u"StartPoint( c [Curve] )"_s,
+          u"EndPoint( c [Curve] )"_s,
+          u"GLength( c [Curve] )"_s,
+          u"Perimeter( s [Surface] )"_s,
+          u"GeodesicLength( c [Curve] )"_s,
+          u"GreatCircleLength( c [Curve] )"_s,
+          u"IsClosed( c [Curve] )"_s,
+          u"IsRing( c [Curve] )"_s,
+          u"PointOnSurface( s [Surface/Curve] )"_s,
+          u"Simplify( c [Curve] , tolerance [Double precision] )"_s,
+          u"SimplifyPreserveTopology( c [Curve] , tolerance [Double precision] )"_s,
 
-                                                // SQL functions on type LineString
-                                                u"NumPoints( line [LineString] )"_s,
-                                                u"PointN( line [LineString] , n [Integer] )"_s,
-                                                u"AddPoint( line [LineString] , point [Point] [ , position [Integer] ] )"_s,
-                                                u"SetPoint( line [LineString] , position [Integer] , point [Point] )"_s,
-                                                u"RemovePoint( line [LineString] , position [Integer] )"_s,
+          // SQL functions on type LineString
+          u"NumPoints( line [LineString] )"_s,
+          u"PointN( line [LineString] , n [Integer] )"_s,
+          u"AddPoint( line [LineString] , point [Point] [ , position [Integer] ] )"_s,
+          u"SetPoint( line [LineString] , position [Integer] , point [Point] )"_s,
+          u"RemovePoint( line [LineString] , position [Integer] )"_s,
 
-                                                // SQL functions on type Surface [Polygon or Ring]
-                                                u"Centroid( s [Surface] )"_s,
-                                                u"Area( s [Surface] )"_s,
+          // SQL functions on type Surface [Polygon or Ring]
+          u"Centroid( s [Surface] )"_s,
+          u"Area( s [Surface] )"_s,
 
-                                                // SQL functions on type Polygon
-                                                u"ExteriorRing( polyg [Polygon] )"_s,
-                                                u"NumInteriorRing( polyg [Polygon] )"_s,
-                                                u"InteriorRingN( polyg [Polygon] , n [Integer] )"_s,
+          // SQL functions on type Polygon
+          u"ExteriorRing( polyg [Polygon] )"_s,
+          u"NumInteriorRing( polyg [Polygon] )"_s,
+          u"InteriorRingN( polyg [Polygon] , n [Integer] )"_s,
 
-                                                // SQL functions on type GeomCollection
-                                                u"NumGeometries( geom [GeomCollection] )"_s,
-                                                u"GeometryN( geom [GeomCollection] , n [Integer] )"_s,
+          // SQL functions on type GeomCollection
+          u"NumGeometries( geom [GeomCollection] )"_s,
+          u"GeometryN( geom [GeomCollection] , n [Integer] )"_s,
 
-                                                // SQL functions that test approximate spatial relationships via MBRs
-                                                u"MbrEqual( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrDisjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrTouches( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrWithin( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrOverlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"ST_EnvIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"MbrContains( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          // SQL functions that test approximate spatial relationships via MBRs
+          u"MbrEqual( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrDisjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrTouches( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrWithin( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrOverlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_EnvIntersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"MbrContains( geom1 [Geometry] , geom2 [Geometry] )"_s,
 
-                                                // SQL functions that test spatial relationships
-                                                u"Equals( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Disjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Touches( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Within( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Overlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Crosses( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Intersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Contains( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Covers( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"CoveredBy( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"Relate( geom1 [Geometry] , geom2 [Geometry] , patternMatrix [String] )"_s,
+          // SQL functions that test spatial relationships
+          u"Equals( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Disjoint( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Touches( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Within( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Overlaps( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Crosses( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Intersects( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Contains( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Covers( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"CoveredBy( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"Relate( geom1 [Geometry] , geom2 [Geometry] , patternMatrix [String] )"_s,
 
-                                                // SQL functions for distance relationships
-                                                u"Distance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          // SQL functions for distance relationships
+          u"Distance( geom1 [Geometry] , geom2 [Geometry] )"_s,
 
-                                                // SQL functions that implement spatial operators
-                                                u"MakeValid( geom [Geometry] )"_s,
-                                                u"MakeValidDiscarded( geom [Geometry] )"_s,
-                                                u"Segmentize( geom [Geometry], dist [Double precision]  )"_s,
-                                                u"Split( geom [Geometry], blade [Geometry]  )"_s,
-                                                u"SplitLeft( geom [Geometry], blade [Geometry]  )"_s,
-                                                u"SplitRight( geom [Geometry], blade [Geometry]  )"_s,
-                                                u"Azimuth( pt1 [Geometry], pt2 [Geometry]  )"_s,
-                                                u"Project( start_point [Geometry], distance [Double precision], azimuth [Double precision]  )"_s,
-                                                u"SnapToGrid( geom [Geometry] , size [Double precision]  )"_s,
-                                                u"GeoHash( geom [Geometry] )"_s,
-                                                u"AsX3D( geom [Geometry] )"_s,
-                                                u"MaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"ST_3DDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"ST_3DMaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
-                                                u"ST_Node( geom [Geometry] )"_s,
-                                                u"SelfIntersections( geom [Geometry] )"_s,
+          // SQL functions that implement spatial operators
+          u"MakeValid( geom [Geometry] )"_s,
+          u"MakeValidDiscarded( geom [Geometry] )"_s,
+          u"Segmentize( geom [Geometry], dist [Double precision]  )"_s,
+          u"Split( geom [Geometry], blade [Geometry]  )"_s,
+          u"SplitLeft( geom [Geometry], blade [Geometry]  )"_s,
+          u"SplitRight( geom [Geometry], blade [Geometry]  )"_s,
+          u"Azimuth( pt1 [Geometry], pt2 [Geometry]  )"_s,
+          u"Project( start_point [Geometry], distance [Double precision], azimuth [Double precision]  )"_s,
+          u"SnapToGrid( geom [Geometry] , size [Double precision]  )"_s,
+          u"GeoHash( geom [Geometry] )"_s,
+          u"AsX3D( geom [Geometry] )"_s,
+          u"MaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_3DDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_3DMaxDistance( geom1 [Geometry] , geom2 [Geometry] )"_s,
+          u"ST_Node( geom [Geometry] )"_s,
+          u"SelfIntersections( geom [Geometry] )"_s,
 
-                                                // SQL functions for coordinate transformations
-                                                u"Transform( geom [Geometry] , newSRID [Integer] )"_s,
-                                                u"SridFromAuthCRS( auth_name [String] , auth_SRID [Integer] )"_s,
-                                                u"ShiftCoords( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] )"_s,
-                                                u"ST_Translate( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] , shiftZ [Double precision] )"_s,
-                                                u"ST_Shift_Longitude( geom [Geometry] )"_s,
-                                                u"NormalizeLonLat( geom [Geometry] )"_s,
-                                                u"ScaleCoords( geom [Geometry] , scaleX [Double precision] [ , scaleY [Double precision] ] )"_s,
-                                                u"RotateCoords( geom [Geometry] , angleInDegrees [Double precision] )"_s,
-                                                u"ReflectCoords( geom [Geometry] , xAxis [Integer] , yAxis [Integer] )"_s,
-                                                u"SwapCoords( geom [Geometry] )"_s,
+          // SQL functions for coordinate transformations
+          u"Transform( geom [Geometry] , newSRID [Integer] )"_s,
+          u"SridFromAuthCRS( auth_name [String] , auth_SRID [Integer] )"_s,
+          u"ShiftCoords( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] )"_s,
+          u"ST_Translate( geom [Geometry] , shiftX [Double precision] , shiftY [Double precision] , shiftZ [Double precision] )"_s,
+          u"ST_Shift_Longitude( geom [Geometry] )"_s,
+          u"NormalizeLonLat( geom [Geometry] )"_s,
+          u"ScaleCoords( geom [Geometry] , scaleX [Double precision] [ , scaleY [Double precision] ] )"_s,
+          u"RotateCoords( geom [Geometry] , angleInDegrees [Double precision] )"_s,
+          u"ReflectCoords( geom [Geometry] , xAxis [Integer] , yAxis [Integer] )"_s,
+          u"SwapCoords( geom [Geometry] )"_s,
 
-                                                // SQL functions for Spatial-MetaData and Spatial-Index handling
-                                                u"InitSpatialMetaData( void )"_s,
-                                                u"InsertEpsgSrid( srid [Integer] )"_s,
-                                                u"DiscardGeometryColumn( table [String] , column [String] )"_s,
-                                                u"RegisterVirtualGeometry( table [String] )"_s,
-                                                u"DropVirtualGeometry( table [String] )"_s,
-                                                u"CreateSpatialIndex( table [String] , column [String] )"_s,
-                                                u"CreateMbrCache( table [String] , column [String] )"_s,
-                                                u"DisableSpatialIndex( table [String] , column [String] )"_s,
-                                                u"CheckShadowedRowid( table [String] )"_s,
-                                                u"CheckWithoutRowid( table [String] )"_s,
-                                                u"CheckSpatialIndex( void )"_s,
-                                                u"RecoverSpatialIndex( [ no_check"_s,
-                                                u"InvalidateLayerStatistics( [ void )"_s,
-                                                u"UpdateLayerStatistics( [ void )"_s,
-                                                u"GetLayerExtent( table [String] [ , column [String] [ , mode [Boolean]] ] )"_s,
-                                                u"CreateTopologyTables( SRID [Integer] , dims"_s,
-                                                u"CreateRasterCoveragesTable( [void] )"_s,
+          // SQL functions for Spatial-MetaData and Spatial-Index handling
+          u"InitSpatialMetaData( void )"_s,
+          u"InsertEpsgSrid( srid [Integer] )"_s,
+          u"DiscardGeometryColumn( table [String] , column [String] )"_s,
+          u"RegisterVirtualGeometry( table [String] )"_s,
+          u"DropVirtualGeometry( table [String] )"_s,
+          u"CreateSpatialIndex( table [String] , column [String] )"_s,
+          u"CreateMbrCache( table [String] , column [String] )"_s,
+          u"DisableSpatialIndex( table [String] , column [String] )"_s,
+          u"CheckShadowedRowid( table [String] )"_s,
+          u"CheckWithoutRowid( table [String] )"_s,
+          u"CheckSpatialIndex( void )"_s,
+          u"RecoverSpatialIndex( [ no_check"_s,
+          u"InvalidateLayerStatistics( [ void )"_s,
+          u"UpdateLayerStatistics( [ void )"_s,
+          u"GetLayerExtent( table [String] [ , column [String] [ , mode [Boolean]] ] )"_s,
+          u"CreateTopologyTables( SRID [Integer] , dims"_s,
+          u"CreateRasterCoveragesTable( [void] )"_s,
 
-                                                // SQL functions supporting the MetaCatalog and related Statistics
-                                                u"CreateMetaCatalogTables( transaction [Integer] )"_s,
-                                                u"UpdateMetaCatalogStatistics( transaction [Integer] , table_name [String] , column_name [String] )"_s,
+          // SQL functions supporting the MetaCatalog and related Statistics
+          u"CreateMetaCatalogTables( transaction [Integer] )"_s,
+          u"UpdateMetaCatalogStatistics( transaction [Integer] , table_name [String] , column_name [String] )"_s,
 
-                                                // SQL functions supporting SLD/SE Styled Layers
-                                                u"CreateStylingTables()"_s,
-                                                u"RegisterExternalGraphic( xlink_href [String] , resource [BLOB] )"_s,
-                                                u"RegisterVectorStyledLayer( f_table_name [String] , f_geometry_column [String] , style [BLOB] )"_s,
-                                                u"RegisterRasterStyledLayer( coverage_name [String] , style [BLOB] )"_s,
-                                                u"RegisterStyledGroup( group_name [String] , f_table_name [String] , f_geometry_column [String] [ , paint_order [Integer] ] )"_s,
-                                                u"SetStyledGroupInfos( group_name [String] , title [String] , abstract [String] )"_s,
-                                                u"RegisterGroupStyle( group_name [String] , style [BLOB] )"_s,
+          // SQL functions supporting SLD/SE Styled Layers
+          u"CreateStylingTables()"_s,
+          u"RegisterExternalGraphic( xlink_href [String] , resource [BLOB] )"_s,
+          u"RegisterVectorStyledLayer( f_table_name [String] , f_geometry_column [String] , style [BLOB] )"_s,
+          u"RegisterRasterStyledLayer( coverage_name [String] , style [BLOB] )"_s,
+          u"RegisterStyledGroup( group_name [String] , f_table_name [String] , f_geometry_column [String] [ , paint_order [Integer] ] )"_s,
+          u"SetStyledGroupInfos( group_name [String] , title [String] , abstract [String] )"_s,
+          u"RegisterGroupStyle( group_name [String] , style [BLOB] )"_s,
 
-                                                // SQL functions supporting ISO Metadata
-                                                u"CreateIsoMetadataTables()"_s,
-                                                u"RegisterIsoMetadata( scope [String] , metadata [BLOB] )"_s,
-                                                u"GetIsoMetadataId( fileIdentifier [String] )"_s,
+          // SQL functions supporting ISO Metadata
+          u"CreateIsoMetadataTables()"_s,
+          u"RegisterIsoMetadata( scope [String] , metadata [BLOB] )"_s,
+          u"GetIsoMetadataId( fileIdentifier [String] )"_s,
 
-                                                // SQL functions implementing FDO/OGR compatibility
-                                                u"CheckSpatialMetaData( void )"_s,
-                                                u"AutoFDOStart( void )"_s,
-                                                u"AutoFDOStop( void )"_s,
-                                                u"InitFDOSpatialMetaData( void )"_s,
-                                                u"DiscardFDOGeometryColumn( table [String] , column [String] )"_s,
+          // SQL functions implementing FDO/OGR compatibility
+          u"CheckSpatialMetaData( void )"_s,
+          u"AutoFDOStart( void )"_s,
+          u"AutoFDOStop( void )"_s,
+          u"InitFDOSpatialMetaData( void )"_s,
+          u"DiscardFDOGeometryColumn( table [String] , column [String] )"_s,
 
-                                                // SQL functions implementing OGC GeoPackage compatibility
-                                                u"CheckGeoPackageMetaData( void )"_s,
-                                                u"AutoGPKGStart( void )"_s,
-                                                u"AutoGPKGStop( void )"_s,
-                                                u"gpkgCreateBaseTables( void )"_s,
-                                                u"gpkgInsertEpsgSRID( srid [Integer] )"_s,
-                                                u"gpkgAddTileTriggers( tile_table_name [String] )"_s,
-                                                u"gpkgGetNormalZoom( tile_table_name [String] , inverted_zoom_level [Integer] )"_s,
-                                                u"gpkgGetNormalRow( tile_table_name [String] , normal_zoom_level [Integer] , inverted_row_number [Integer] )"_s,
-                                                u"gpkgGetImageType( image [Blob] )"_s,
-                                                u"gpkgAddGeometryTriggers( table_name [String] , geometry_column_name [String] )"_s,
-                                                u"gpkgAddSpatialIndex( table_name [String] , geometry_column_name [String] )"_s,
-                                                u"gpkgMakePoint (x [Double precision] , y [Double precision] )"_s,
-                                                u"gpkgMakePointZ (x [Double precision] , y [Double precision] , z [Double precision] )"_s,
-                                                u"gpkgMakePointM (x [Double precision] , y [Double precision] , m [Double precision] )"_s,
-                                                u"gpkgMakePointZM (x [Double precision] , y [Double precision] , z [Double precision] , m [Double precision] )"_s,
-                                                u"IsValidGPB( geom [Blob] )"_s,
-                                                u"AsGPB( geom [BLOB encoded geometry] )"_s,
-                                                u"GeomFromGPB( geom [GPKG Blob Geometry] )"_s,
-                                                u"CastAutomagic( geom [Blob] )"_s,
-                                                u"GPKG_IsAssignable( expected_type_name [String] , actual_type_name [String] )"_s,
+          // SQL functions implementing OGC GeoPackage compatibility
+          u"CheckGeoPackageMetaData( void )"_s,
+          u"AutoGPKGStart( void )"_s,
+          u"AutoGPKGStop( void )"_s,
+          u"gpkgCreateBaseTables( void )"_s,
+          u"gpkgInsertEpsgSRID( srid [Integer] )"_s,
+          u"gpkgAddTileTriggers( tile_table_name [String] )"_s,
+          u"gpkgGetNormalZoom( tile_table_name [String] , inverted_zoom_level [Integer] )"_s,
+          u"gpkgGetNormalRow( tile_table_name [String] , normal_zoom_level [Integer] , inverted_row_number [Integer] )"_s,
+          u"gpkgGetImageType( image [Blob] )"_s,
+          u"gpkgAddGeometryTriggers( table_name [String] , geometry_column_name [String] )"_s,
+          u"gpkgAddSpatialIndex( table_name [String] , geometry_column_name [String] )"_s,
+          u"gpkgMakePoint (x [Double precision] , y [Double precision] )"_s,
+          u"gpkgMakePointZ (x [Double precision] , y [Double precision] , z [Double precision] )"_s,
+          u"gpkgMakePointM (x [Double precision] , y [Double precision] , m [Double precision] )"_s,
+          u"gpkgMakePointZM (x [Double precision] , y [Double precision] , z [Double precision] , m [Double precision] )"_s,
+          u"IsValidGPB( geom [Blob] )"_s,
+          u"AsGPB( geom [BLOB encoded geometry] )"_s,
+          u"GeomFromGPB( geom [GPKG Blob Geometry] )"_s,
+          u"CastAutomagic( geom [Blob] )"_s,
+          u"GPKG_IsAssignable( expected_type_name [String] , actual_type_name [String] )"_s,
 
-                                              } } }
+        } } }
   );
 }
 

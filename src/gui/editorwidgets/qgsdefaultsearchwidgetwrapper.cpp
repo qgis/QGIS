@@ -33,8 +33,7 @@ using namespace Qt::StringLiterals;
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
   , mCaseString( u"LIKE"_s )
-{
-}
+{}
 
 QString QgsDefaultSearchWidgetWrapper::expression() const
 {
@@ -82,8 +81,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
         exp = QString::number( doubleValue, 'f', QLocale::FloatingPointShortest );
       }
     }
-    str = u"%1 %2 '%3'"_s
-            .arg( QgsExpression::quotedColumnRef( fieldName ), isNumeric ? u"="_s : mCaseString, isNumeric ? exp.replace( '\'', "''"_L1 ) : '%' + exp.replace( '\'', "''"_L1 ) + '%' ); // escape quotes
+    str = u"%1 %2 '%3'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), isNumeric ? u"="_s : mCaseString, isNumeric ? exp.replace( '\'', "''"_L1 ) : '%' + exp.replace( '\'', "''"_L1 ) + '%' ); // escape quotes
   }
   mExpression = str;
 }
@@ -227,11 +225,9 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
       if ( flags & EqualTo || flags & NotEqualTo )
       {
         if ( mCheckbox && mCheckbox->isChecked() )
-          return fieldName + ( ( flags & EqualTo ) ? "=" : "<>" )
-                 + QgsExpression::quotedString( mLineEdit->text() );
+          return fieldName + ( ( flags & EqualTo ) ? "=" : "<>" ) + QgsExpression::quotedString( mLineEdit->text() );
         else
-          return u"lower(%1)"_s.arg( fieldName )
-                 + ( ( flags & EqualTo ) ? "=" : "<>" ) + u"lower(%1)"_s.arg( QgsExpression::quotedString( mLineEdit->text() ) );
+          return u"lower(%1)"_s.arg( fieldName ) + ( ( flags & EqualTo ) ? "=" : "<>" ) + u"lower(%1)"_s.arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
       else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
       {

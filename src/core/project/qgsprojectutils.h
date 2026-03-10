@@ -33,9 +33,7 @@ class QgsMapLayer;
 */
 class CORE_EXPORT QgsProjectUtils
 {
-
   public:
-
     /**
      * Returns a list of all layers in the specified \a project which match the given \a path.
      *
@@ -71,9 +69,6 @@ class CORE_EXPORT QgsProjectUtils
      * \since QGIS 4.0
      */
     static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project );
-
 };
 
 #endif // QGSPROJECTUTILS_H
-
-

@@ -423,7 +423,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * \see flashGeometries()
      */
-    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
+    void flashFeatureIds(
+      QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500
+    );
 
     /**
      * Causes a set of \a geometries to flash within the canvas.
@@ -436,7 +438,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * \see flashFeatureIds()
      */
-    void flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
+    void flashGeometries(
+      const QList<QgsGeometry> &geometries,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      const QColor &startColor = QColor( 255, 0, 0, 255 ),
+      const QColor &endColor = QColor( 255, 0, 0, 0 ),
+      int flashes = 3,
+      int duration = 500
+    );
 
     //! Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
@@ -523,8 +532,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \note not available in Python bindings
      * \since QGIS 3.40
      */
-    template<typename T>
-    QVector<T> layers() const { return mapSettings().layers<T>(); }
+    template<typename T> QVector<T> layers() const { return mapSettings().layers<T>(); }
 #endif
 
     /**
@@ -768,10 +776,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \see defaultExpressionContextScope()
      * \note not available in Python bindings
      */
-    const QgsExpressionContextScope &expressionContextScope() const SIP_SKIP
-    {
-      return mExpressionContextScope;
-    }
+    const QgsExpressionContextScope &expressionContextScope() const SIP_SKIP { return mExpressionContextScope; }
 
     /**
      * Creates a new scope which contains default variables and functions relating to the map canvas.

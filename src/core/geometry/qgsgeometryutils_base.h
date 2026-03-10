@@ -35,7 +35,7 @@ email                : loic dot bartoletti at oslandia dot com
 class CORE_EXPORT QgsGeometryUtilsBase
 {
   public:
-
+    // clang-format off
     /**
      * Returns the squared 3D distance between (\a x1, \a y1, \a z1) and (\a x2, \a y2, \a z2).
      *
@@ -43,6 +43,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.36
      */
     static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ) + ( z1 - z2 ) * ( z1 - z2 ); }
+    // clang-format on
 
     /**
      * Returns the 3D distance between (\a x1, \a y1, \a z1) and (\a x2, \a y2, \a z2).

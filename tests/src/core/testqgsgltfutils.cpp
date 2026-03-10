@@ -40,13 +40,11 @@ class TestQgsGltfUtils : public QObject
 
 //runs before all tests
 void TestQgsGltfUtils::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsGltfUtils::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsGltfUtils::testImageResourceType()
 {

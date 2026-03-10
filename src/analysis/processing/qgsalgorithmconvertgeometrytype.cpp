@@ -50,10 +50,12 @@ QString QgsConvertGeometryTypeAlgorithm::groupId() const
 
 QString QgsConvertGeometryTypeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a new layer based on an existing one, with a different type of geometry.\n\n"
-                      "Not all conversions are possible. For instance, a line layer can be converted to a "
-                      "point layer, but a point layer cannot be converted to a line layer.\n\n"
-                      "See the \"Polygonize\" or \"Lines to polygons\" algorithms for alternative options." );
+  return QObject::tr(
+    "This algorithm generates a new layer based on an existing one, with a different type of geometry.\n\n"
+    "Not all conversions are possible. For instance, a line layer can be converted to a "
+    "point layer, but a point layer cannot be converted to a line layer.\n\n"
+    "See the \"Polygonize\" or \"Lines to polygons\" algorithms for alternative options."
+  );
 }
 
 QString QgsConvertGeometryTypeAlgorithm::shortDescription() const
@@ -70,11 +72,7 @@ void QgsConvertGeometryTypeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  QStringList geometryTypes = QStringList() << QObject::tr( "Centroids" )
-                                            << QObject::tr( "Nodes" )
-                                            << QObject::tr( "Linestrings" )
-                                            << QObject::tr( "Multilinestrings" )
-                                            << QObject::tr( "Polygons" );
+  QStringList geometryTypes = QStringList() << QObject::tr( "Centroids" ) << QObject::tr( "Nodes" ) << QObject::tr( "Linestrings" ) << QObject::tr( "Multilinestrings" ) << QObject::tr( "Polygons" );
 
   addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "New geometry type" ), geometryTypes ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Converted" ) ) );

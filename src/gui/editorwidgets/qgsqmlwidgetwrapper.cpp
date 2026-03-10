@@ -100,7 +100,8 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
   mQmlCode = qmlCode;
 
   bool ok = false;
-  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  const thread_local QRegularExpression
+    expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mQmlCode );
   while ( !ok && matchIt.hasNext() )
   {

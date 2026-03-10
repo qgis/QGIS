@@ -136,10 +136,16 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
   }
   else
   {
-    notify( title, tr( "The layer “%1” cannot be deleted because it is in the current project as “%2”,"
-                       " remove it from the project and retry." )
-                     .arg( path, projectLayer->name() ),
-            context, Qgis::MessageLevel::Warning );
+    notify(
+      title,
+      tr(
+        "The layer “%1” cannot be deleted because it is in the current project as “%2”,"
+        " remove it from the project and retry."
+      )
+        .arg( path, projectLayer->name() ),
+      context,
+      Qgis::MessageLevel::Warning
+    );
   }
 }
 
@@ -178,14 +184,13 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "Raster" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddRasterLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );
     }
-    QgsSourceSelectProvider::Capabilities capabilities() override
-    {
-      return QgsSourceSelectProvider::Capability::ConfigureFromUri;
-    };
+    QgsSourceSelectProvider::Capabilities capabilities() override { return QgsSourceSelectProvider::Capability::ConfigureFromUri; };
 };
 
 //
@@ -193,8 +198,7 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 //
 
 QgsGdalSourceWidgetProvider::QgsGdalSourceWidgetProvider()
-{
-}
+{}
 
 QString QgsGdalSourceWidgetProvider::providerKey() const
 {
@@ -231,8 +235,7 @@ QgsProviderSourceWidget *QgsGdalSourceWidgetProvider::createWidget( QgsMapLayer 
 //
 QgsGdalGuiProviderMetadata::QgsGdalGuiProviderMetadata()
   : QgsProviderGuiMetadata( PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsGdalGuiProviderMetadata::sourceSelectProviders()
 {
@@ -243,10 +246,7 @@ QList<QgsSourceSelectProvider *> QgsGdalGuiProviderMetadata::sourceSelectProvide
 
 QList<QgsDataItemGuiProvider *> QgsGdalGuiProviderMetadata::dataItemGuiProviders()
 {
-  return {
-    new QgsGdalItemGuiProvider(),
-    new QgsGdalCloudDataItemGuiProvider()
-  };
+  return { new QgsGdalItemGuiProvider(), new QgsGdalCloudDataItemGuiProvider() };
 }
 
 QList<QgsProviderSourceWidgetProvider *> QgsGdalGuiProviderMetadata::sourceWidgetProviders()

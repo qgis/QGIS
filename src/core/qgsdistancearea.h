@@ -53,7 +53,6 @@ struct geod_geodesic;
 class CORE_EXPORT QgsDistanceArea
 {
   public:
-
     QgsDistanceArea();
     ~QgsDistanceArea();
 
@@ -362,7 +361,6 @@ class CORE_EXPORT QgsDistanceArea
     QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
 
   private:
-
     // Calculates area of polygon on ellipsoid
     double computePolygonArea( const QVector<QgsPointXY> &points ) const;
 
@@ -399,8 +397,6 @@ class CORE_EXPORT QgsDistanceArea
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurve *curve ) const;
     double measurePolygon( const QgsCurve *curve ) const;
-
 };
 
 #endif
-

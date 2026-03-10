@@ -44,8 +44,7 @@ QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCa
   : QgsOptionsDialogBase( settingsKey, parent, fl, settings )
   , mCanvas( canvas )
   , mLayer( layer )
-{
-}
+{}
 
 void QgsLayerPropertiesDialog::setMetadataWidget( QgsMetadataWidget *widget, QWidget *page )
 {
@@ -169,12 +168,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-  QString fileName = QFileDialog::getOpenFileName(
-    this,
-    tr( "Load layer properties from style file" ),
-    lastUsedDir,
-    tr( "QGIS Layer Style File" ) + " (*.qml)"
-  );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), lastUsedDir, tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
     return;
 
@@ -206,12 +200,7 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-  QString outputFileName = QFileDialog::getSaveFileName(
-    this,
-    tr( "Save layer properties as style file" ),
-    lastUsedDir,
-    tr( "QGIS Layer Style File" ) + " (*.qml)"
-  );
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), lastUsedDir, tr( "QGIS Layer Style File" ) + " (*.qml)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -376,7 +365,9 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
         QString errorMessage;
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
         {
-          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+          if ( QMessageBox::
+                 question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
+               == QMessageBox::No )
           {
             return;
           }
@@ -451,7 +442,9 @@ void QgsLayerPropertiesDialog::saveStyleAs()
 
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
         {
-          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+          if ( QMessageBox::
+                 question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
+               == QMessageBox::No )
           {
             return;
           }

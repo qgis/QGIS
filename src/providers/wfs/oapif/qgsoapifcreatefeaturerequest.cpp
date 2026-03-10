@@ -29,8 +29,7 @@ using namespace nlohmann;
 
 QgsOapifCreateFeatureRequest::QgsOapifCreateFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
-{
-}
+{}
 
 QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *sharedData, const QgsFeature &f, const QString &contentCrs, bool hasAxisInverted )
 {

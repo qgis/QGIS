@@ -68,7 +68,8 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterLayout( u"LAYOUT"_s, QObject::tr( "Print layout" ) ) );
 
-  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  auto layersParam
+    = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
@@ -100,20 +101,14 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   simplify->setFlags( simplify->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( simplify.release() );
 
-  const QStringList textExportOptions {
-    QObject::tr( "Always Export Text as Paths (Recommended)" ),
-    QObject::tr( "Always Export Text as Text Objects" ),
-    QObject::tr( "Prefer Exporting Text as Text Objects" )
-  };
+  const QStringList
+    textExportOptions { QObject::tr( "Always Export Text as Paths (Recommended)" ), QObject::tr( "Always Export Text as Text Objects" ), QObject::tr( "Prefer Exporting Text as Text Objects" ) };
 
   auto textFormat = std::make_unique<QgsProcessingParameterEnum>( u"TEXT_FORMAT"_s, QObject::tr( "Text export" ), textExportOptions, false, 0 );
   textFormat->setFlags( textFormat->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textFormat.release() );
 
-  const QStringList imageCompressionOptions {
-    QObject::tr( "Lossy (JPEG)" ),
-    QObject::tr( "Lossless" )
-  };
+  const QStringList imageCompressionOptions { QObject::tr( "Lossy (JPEG)" ), QObject::tr( "Lossless" ) };
 
   auto imageCompression = std::make_unique<QgsProcessingParameterEnum>( u"IMAGE_COMPRESSION"_s, QObject::tr( "Image compression" ), imageCompressionOptions, false, 0 );
   imageCompression->setFlags( imageCompression->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -211,15 +206,22 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
     }
 
     case QgsLayoutExporter::FileError:
-      throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) ) );
+      throw QgsProcessingException(
+        !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( dest ) )
+      );
 
     case QgsLayoutExporter::PrintError:
       throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Could not create print device." ) );
 
     case QgsLayoutExporter::MemoryError:
-      throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Exporting the PDF "
-                                                                                                                "resulted in a memory overflow.\n\n"
-                                                                                                                "Please try a lower resolution or a smaller paper size." ) );
+      throw QgsProcessingException(
+        !exporter.errorMessage().isEmpty() ? exporter.errorMessage()
+                                           : QObject::tr(
+                                               "Exporting the PDF "
+                                               "resulted in a memory overflow.\n\n"
+                                               "Please try a lower resolution or a smaller paper size."
+                                             )
+      );
 
     case QgsLayoutExporter::SvgLayerError:
     case QgsLayoutExporter::IteratorError:

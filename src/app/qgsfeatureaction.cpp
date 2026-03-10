@@ -44,8 +44,7 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
   , mFeature( &f )
   , mActionId( actionId )
   , mIdx( defaultAttr )
-{
-}
+{}
 
 void QgsFeatureAction::execute()
 {
@@ -174,7 +173,9 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr<QgsExpressionContextScope> scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
+QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
+  const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr<QgsExpressionContextScope> scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight
+)
 {
   if ( !mLayer || !mLayer->isEditable() )
     return AddFeatureResult::LayerStateError;

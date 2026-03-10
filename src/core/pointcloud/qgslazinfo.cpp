@@ -28,7 +28,8 @@ using namespace Qt::StringLiterals;
 
 // QgsLazInfo
 
-QgsLazInfo::QgsLazInfo() { }
+QgsLazInfo::QgsLazInfo()
+{}
 
 uint32_t QgsLazInfo::firstVariableLengthRecord() const
 {
@@ -60,7 +61,7 @@ void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
   if ( !mIsValid )
     return;
   uint64_t currentOffset = 0;
-  for ( uint64_t i = 0; i < ( uint64_t )mVlrCount && currentOffset < length; ++i )
+  for ( uint64_t i = 0; i < ( uint64_t ) mVlrCount && currentOffset < length; ++i )
   {
     lazperf::vlr_header vlrHeader;
     vlrHeader.fill( data + currentOffset, 54 );
@@ -125,20 +126,20 @@ void QgsLazInfo::parseCrs()
 QVariantMap QgsLazInfo::toMetadata() const
 {
   QVariantMap metadata;
-  metadata[ u"creation_year"_s ] = mHeader.creation.year;
-  metadata[ u"creation_day"_s ] = mHeader.creation.day;
-  metadata[ u"major_version"_s ] = mHeader.version.major;
-  metadata[ u"minor_version"_s ] = mHeader.version.minor;
-  metadata[ u"dataformat_id"_s ] = mHeader.pointFormat();
-  metadata[ u"scale_x"_s ] = mScale.x();
-  metadata[ u"scale_y"_s ] = mScale.y();
-  metadata[ u"scale_z"_s ] = mScale.z();
-  metadata[ u"offset_x"_s ] = mOffset.x();
-  metadata[ u"offset_y"_s ] = mOffset.y();
-  metadata[ u"offset_z"_s ] = mOffset.z();
-  metadata[ u"project_id"_s ] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
-  metadata[ u"system_id"_s ] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
-  metadata[ u"software_id"_s ] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
+  metadata[u"creation_year"_s] = mHeader.creation.year;
+  metadata[u"creation_day"_s] = mHeader.creation.day;
+  metadata[u"major_version"_s] = mHeader.version.major;
+  metadata[u"minor_version"_s] = mHeader.version.minor;
+  metadata[u"dataformat_id"_s] = mHeader.pointFormat();
+  metadata[u"scale_x"_s] = mScale.x();
+  metadata[u"scale_y"_s] = mScale.y();
+  metadata[u"scale_z"_s] = mScale.z();
+  metadata[u"offset_x"_s] = mOffset.x();
+  metadata[u"offset_y"_s] = mOffset.y();
+  metadata[u"offset_z"_s] = mOffset.z();
+  metadata[u"project_id"_s] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
+  metadata[u"system_id"_s] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
+  metadata[u"software_id"_s] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
   return metadata;
 }
 
@@ -282,13 +283,13 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
 {
   QgsLazInfo lazInfo;
 
-  char headerRawData[ 375 ];
+  char headerRawData[375];
   file.seekg( 0 );
   file.read( headerRawData, 375 );
   lazInfo.parseRawHeader( headerRawData, 375 );
 
   int vlrDataSize = lazInfo.firstPointRecordOffset() - lazInfo.firstVariableLengthRecord();
-  std::unique_ptr<char[]> vlrEntriesRawData( new char[ vlrDataSize ] );
+  std::unique_ptr<char[]> vlrEntriesRawData( new char[vlrDataSize] );
   file.seekg( lazInfo.firstVariableLengthRecord() );
   file.read( vlrEntriesRawData.get(), vlrDataSize );
   lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
@@ -355,8 +356,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
     {
       QgsDebugError( u"Request failed: "_s + url.toString() );
 
-      lazInfo.mError = u"Range query %1-%2 to \"%3\" failed: \"%4\""_s.arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
-                       .arg( url.toString() ).arg( req.errorMessage() );
+      lazInfo.mError = u"Range query %1-%2 to \"%3\" failed: \"%4\""_s.arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
     QByteArray vlrDataRaw = req.reply().content();

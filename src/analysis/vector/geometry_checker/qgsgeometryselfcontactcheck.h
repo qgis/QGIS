@@ -34,7 +34,8 @@ class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryChec
     Q_DECLARE_TR_FUNCTIONS( QgsGeometrySelfContactCheck )
   public:
     QgsGeometrySelfContactCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsSingleGeometryCheck( context, configuration ) {}
+      : QgsSingleGeometryCheck( context, configuration )
+    {}
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }

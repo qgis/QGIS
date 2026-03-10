@@ -289,7 +289,30 @@ void QgsAuthOAuth2Config::setToDefaults()
 
 bool QgsAuthOAuth2Config::operator==( const QgsAuthOAuth2Config &other ) const
 {
-  return ( other.version() == this->version() && other.configType() == this->configType() && other.grantFlow() == this->grantFlow() && other.name() == this->name() && other.description() == this->description() && other.requestUrl() == this->requestUrl() && other.tokenUrl() == this->tokenUrl() && other.refreshTokenUrl() == this->refreshTokenUrl() && other.redirectHost() == this->redirectHost() && other.redirectUrl() == this->redirectUrl() && other.redirectPort() == this->redirectPort() && other.clientId() == this->clientId() && other.clientSecret() == this->clientSecret() && other.username() == this->username() && other.password() == this->password() && other.scope() == this->scope() && other.apiKey() == this->apiKey() && other.persistToken() == this->persistToken() && other.accessMethod() == this->accessMethod() && other.customHeader() == this->customHeader() && other.requestTimeout() == this->requestTimeout() && other.queryPairs() == this->queryPairs() );
+  return (
+    other.version() == this->version()
+    && other.configType() == this->configType()
+    && other.grantFlow() == this->grantFlow()
+    && other.name() == this->name()
+    && other.description() == this->description()
+    && other.requestUrl() == this->requestUrl()
+    && other.tokenUrl() == this->tokenUrl()
+    && other.refreshTokenUrl() == this->refreshTokenUrl()
+    && other.redirectHost() == this->redirectHost()
+    && other.redirectUrl() == this->redirectUrl()
+    && other.redirectPort() == this->redirectPort()
+    && other.clientId() == this->clientId()
+    && other.clientSecret() == this->clientSecret()
+    && other.username() == this->username()
+    && other.password() == this->password()
+    && other.scope() == this->scope()
+    && other.apiKey() == this->apiKey()
+    && other.persistToken() == this->persistToken()
+    && other.accessMethod() == this->accessMethod()
+    && other.customHeader() == this->customHeader()
+    && other.requestTimeout() == this->requestTimeout()
+    && other.queryPairs() == this->queryPairs()
+  );
 }
 
 bool QgsAuthOAuth2Config::operator!=( const QgsAuthOAuth2Config &other ) const
@@ -334,9 +357,7 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
     emit validityChanged( mValid );
 }
 
-bool QgsAuthOAuth2Config::loadConfigTxt(
-  const QByteArray &configtxt, QgsAuthOAuth2Config::ConfigFormat format
-)
+bool QgsAuthOAuth2Config::loadConfigTxt( const QByteArray &configtxt, QgsAuthOAuth2Config::ConfigFormat format )
 {
   QString errStr;
 
@@ -423,9 +444,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
   return true;
 }
 
-QByteArray QgsAuthOAuth2Config::saveConfigTxt(
-  QgsAuthOAuth2Config::ConfigFormat format, bool pretty, bool *ok
-) const
+QByteArray QgsAuthOAuth2Config::saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat format, bool pretty, bool *ok ) const
 {
   QByteArray out;
   bool res = false;
@@ -514,12 +533,7 @@ QVariantMap QgsAuthOAuth2Config::mappedProperties() const
 }
 
 // static
-QByteArray QgsAuthOAuth2Config::serializeFromVariant(
-  const QVariantMap &variant,
-  QgsAuthOAuth2Config::ConfigFormat format,
-  bool pretty,
-  bool *ok
-)
+QByteArray QgsAuthOAuth2Config::serializeFromVariant( const QVariantMap &variant, QgsAuthOAuth2Config::ConfigFormat format, bool pretty, bool *ok )
 {
   QByteArray out;
   bool res = false;
@@ -539,11 +553,7 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
 }
 
 // static
-QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
-  const QByteArray &serial,
-  QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok
-)
+QVariantMap QgsAuthOAuth2Config::variantFromSerialized( const QByteArray &serial, QgsAuthOAuth2Config::ConfigFormat format, bool *ok )
 {
   QVariantMap vmap;
   QString errStr;
@@ -588,12 +598,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
 }
 
 //static
-bool QgsAuthOAuth2Config::writeOAuth2Config(
-  const QString &filepath,
-  QgsAuthOAuth2Config *config,
-  QgsAuthOAuth2Config::ConfigFormat format,
-  bool pretty
-)
+bool QgsAuthOAuth2Config::writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, QgsAuthOAuth2Config::ConfigFormat format, bool pretty )
 {
   bool res = false;
   const QByteArray configtxt = config->saveConfigTxt( format, pretty, &res );
@@ -632,12 +637,7 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
 }
 
 // static
-QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
-  const QString &configdirectory,
-  QObject *parent,
-  QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok
-)
+QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs( const QString &configdirectory, QObject *parent, QgsAuthOAuth2Config::ConfigFormat format, bool *ok )
 {
   QList<QgsAuthOAuth2Config *> configs = QList<QgsAuthOAuth2Config *>();
   const bool res = false;
@@ -712,12 +712,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
 }
 
 // static
-QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
-  const QString &configdirectory,
-  QObject *parent,
-  QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok
-)
+QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs( const QString &configdirectory, QObject *parent, QgsAuthOAuth2Config::ConfigFormat format, bool *ok )
 {
   QgsStringMap configs = QgsStringMap();
   const bool res = false;
@@ -800,8 +795,7 @@ QStringList QgsAuthOAuth2Config::configLocations( const QString &extradir )
 {
   QStringList dirs;
   // in order of override preference, i.e. user over pkg dir
-  dirs << QgsAuthOAuth2Config::oauth2ConfigsPkgDataDir()
-       << QgsAuthOAuth2Config::oauth2ConfigsUserSettingsDir();
+  dirs << QgsAuthOAuth2Config::oauth2ConfigsPkgDataDir() << QgsAuthOAuth2Config::oauth2ConfigsUserSettingsDir();
 
   if ( !extradir.isEmpty() )
   {
@@ -825,9 +819,7 @@ QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, con
     {
       continue;
     }
-    const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
-      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok
-    );
+    const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs( configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
     if ( ok )
     {
       QgsStringMap::const_iterator i = newconfigs.constBegin();

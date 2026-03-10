@@ -30,7 +30,9 @@ using namespace Qt::StringLiterals;
 
 bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return QgsSingleGeometryCheckError::isEqual( other ) && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
+  return QgsSingleGeometryCheckError::isEqual( other )
+         && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1
+         && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
 }
 
 bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QList<QgsGeometryCheck::Change> &changes )
@@ -40,7 +42,10 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QList<QgsGeomet
 
   for ( const QgsGeometryCheck::Change &change : changes )
   {
-    if ( change.vidx.vertex == mIntersection.segment1 || change.vidx.vertex == mIntersection.segment1 + 1 || change.vidx.vertex == mIntersection.segment2 || change.vidx.vertex == mIntersection.segment2 + 1 )
+    if ( change.vidx.vertex == mIntersection.segment1
+         || change.vidx.vertex == mIntersection.segment1 + 1
+         || change.vidx.vertex == mIntersection.segment2
+         || change.vidx.vertex == mIntersection.segment2 + 1 )
     {
       return false;
     }
@@ -67,7 +72,9 @@ void QgsGeometrySelfIntersectionCheckError::update( const QgsSingleGeometryCheck
   mIntersection.point = err->mIntersection.point;
 }
 
-void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometrySelfIntersectionCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;
@@ -301,10 +308,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
 
 QStringList QgsGeometrySelfIntersectionCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "Split feature into a multi-part feature" )
-                                     << tr( "Split feature into multiple single-part features" )
-                                     << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "Split feature into a multi-part feature" ) << tr( "Split feature into multiple single-part features" ) << tr( "No action" );
   return methods;
 }
 

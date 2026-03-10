@@ -2554,7 +2554,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertIsInstance(rl, QgsRasterLayer)
         self.assertEqual(
             rl.source(),
-            "tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3",
+            "tilePixelRation=1&type=xyz&url=https%3A%2F%2Fyyyyyy%2Fv1%2Ftiles%2Ftexturereliefshade%2FEPSG%3A3857%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.webp&zmax=20&zmin=3",
         )
         self.assertEqual(rl.providerType(), "wms")
 
@@ -2566,7 +2566,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(raster_layer.name(), "Texture-Relief")
         self.assertEqual(
             raster_layer.source(),
-            "tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3",
+            "tilePixelRation=1&type=xyz&url=https%3A%2F%2Fyyyyyy%2Fv1%2Ftiles%2Ftexturereliefshade%2FEPSG%3A3857%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.webp&zmax=20&zmin=3",
         )
         self.assertEqual(
             raster_layer.pipe()
@@ -2756,6 +2756,64 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(
             prop.asExpression(),
             "CASE WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 16 THEN color_hsla(color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'alpha')) WHEN @vector_tile_zoom >= 16 THEN color_hsla(color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'alpha')) ELSE color_hsla(color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('roof', 'cooling_tower') THEN color_rgba(210,210,214,255) ELSE color_rgba(184,184,188,255) END,'alpha')) END",
+        )
+
+    def testComplexLineColor(self):
+        context = QgsMapBoxGlStyleConversionContext()
+
+        style = {
+            "id": "road_fill",
+            "type": "line",
+            "source": "base_v1.0.0",
+            "source-layer": "transportation",
+            "minzoom": 4,
+            "layout": {
+                "line-cap": "round",
+                "line-join": "round",
+                "visibility": "visible",
+            },
+            "paint": {
+                "line-color": [
+                    "match",
+                    ["get", "class"],
+                    [
+                        "motorway",
+                        "trunk",
+                        "motorway_construction",
+                        "trunk_construction",
+                    ],
+                    "rgb(248, 207, 117)",
+                    [
+                        "case",
+                        ["has", "is_route"],
+                        [
+                            "match",
+                            ["get", "is_route"],
+                            [5, 10],
+                            "rgb(250, 182, 158)",
+                            [6, 7, 8],
+                            "rgb(250, 243, 158)",
+                            "rgb(255, 255, 255)",
+                        ],
+                        "rgb(255, 255, 255)",
+                    ],
+                ],
+                "line-width": 10,
+                "line-opacity": 1,
+            },
+        }
+
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(
+            style,
+            context,
+        )
+
+        self.assertTrue(has_renderer)
+        dd_props = rendererStyle.symbol()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.Property.StrokeColor)
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE WHEN \"class\" IN ('motorway','trunk','motorway_construction','trunk_construction') THEN '#f8cf75' ELSE CASE WHEN (\"is_route\" IS NOT NULL) THEN CASE WHEN \"is_route\" IN (5, 10) THEN color_rgba(250,182,158,255) WHEN \"is_route\" IN (6, 7, 8) THEN color_rgba(250,243,158,255) ELSE color_rgba(255,255,255,255) END ELSE color_rgba(255,255,255,255) END END",
         )
 
     def testRetrieveSprite(self):

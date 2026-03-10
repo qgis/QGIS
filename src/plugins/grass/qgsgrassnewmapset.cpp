@@ -507,8 +507,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
       defaultExtent = fromWgs84Transform.transformBoundingBox( boundsWgs84 );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
   if ( defaultExtent.isEmpty() )
   {
@@ -615,8 +614,7 @@ void QgsGrassNewMapset::loadRegions()
 
   if ( !doc.setContent( &file, &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read locations file (%1):" ).arg( path )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read locations file (%1):" ).arg( path ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     QgsGrass::warning( errmsg );
     file.close();
@@ -1114,9 +1112,7 @@ void QgsGrassNewMapset::createMapset()
 
   if ( mOpenNewMapsetCheckBox->isChecked() )
   {
-    QString error = QgsGrass::openMapset(
-      mDirectoryWidget->filePath(), location, mapset
-    );
+    QString error = QgsGrass::openMapset( mDirectoryWidget->filePath(), location, mapset );
 
     if ( !error.isEmpty() )
     {

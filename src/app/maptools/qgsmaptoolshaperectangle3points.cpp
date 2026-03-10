@@ -83,9 +83,9 @@ QgsMapToolShapeAbstract *QgsMapToolShapeRectangle3PointsMetadata::factory( QgsMa
 }
 
 QgsMapToolShapeRectangle3Points::QgsMapToolShapeRectangle3Points( const QString &id, QgsMapToolShapeRectangle3PointsMetadata::CreateMode createMode, QgsMapToolCapture *parentTool )
-  : QgsMapToolShapeRectangleAbstract( id, parentTool ), mCreateMode( createMode )
-{
-}
+  : QgsMapToolShapeRectangleAbstract( id, parentTool )
+  , mCreateMode( createMode )
+{}
 
 
 bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )

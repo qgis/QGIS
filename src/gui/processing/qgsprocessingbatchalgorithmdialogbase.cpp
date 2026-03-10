@@ -155,11 +155,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     pushCommandInfo( QString::fromStdString( QgsJsonUtils::jsonFromVariant( results ).dump() ) );
     pushInfo( QString() );
 
-    mResults.append( QVariantMap(
-      { { u"parameters"_s, mCurrentParameters },
-        { u"results"_s, results }
-      }
-    ) );
+    mResults.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"results"_s, results } } ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
     executeNext();
@@ -176,11 +172,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     setInfo( tr( "Algorithm %1 failed…" ).arg( algorithm()->displayName() ), false, false );
     reportError( tr( "Execution failed after %1 seconds" ).arg( mCurrentStepTimer.elapsed() / 1000.0, 2 ), false );
 
-    mErrors.append( QVariantMap(
-      { { u"parameters"_s, mCurrentParameters },
-        { u"errors"_s, taskErrors }
-      }
-    ) );
+    mErrors.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"errors"_s, taskErrors } } ) );
     executeNext();
   }
 }

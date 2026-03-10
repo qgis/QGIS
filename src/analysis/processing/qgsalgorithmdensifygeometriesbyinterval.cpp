@@ -51,11 +51,13 @@ QString QgsDensifyGeometriesByIntervalAlgorithm::groupId() const
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon or line layer and generates a new one "
-                      "in which the geometries have a larger number of vertices than the original one.\n\n"
-                      "Geometries are densified by adding additional vertices on "
-                      "edges that have a maximum distance of the interval parameter "
-                      "in map units." );
+  return QObject::tr(
+    "This algorithm takes a polygon or line layer and generates a new one "
+    "in which the geometries have a larger number of vertices than the original one.\n\n"
+    "Geometries are densified by adding additional vertices on "
+    "edges that have a maximum distance of the interval parameter "
+    "in map units."
+  );
 }
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::shortDescription() const

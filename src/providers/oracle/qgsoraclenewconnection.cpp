@@ -69,8 +69,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     // User can set database without host and port, meaning he is using a service (tnsnames.ora)
     // if he sets host, port has to be set also (and vice versa)
     // https://github.com/qgis/QGIS/issues/38979
-    if ( port.length() == 0
-         && ( !txtHost->text().isEmpty() || txtDatabase->text().isEmpty() ) )
+    if ( port.length() == 0 && ( !txtHost->text().isEmpty() || txtDatabase->text().isEmpty() ) )
     {
       port = u"1521"_s;
     }
@@ -126,13 +125,26 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + u"selected"_s, txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
-  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !hasAuthConfigID
+       && mAuthSettings->storePasswordIsChecked()
+       && QMessageBox::question(
+            this,
+            tr( "Saving Passwords" ),
+            tr(
+              "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on "
+              "Windows. If you do not want this to happen, please press the Cancel button.\n"
+            ),
+            QMessageBox::Ok | QMessageBox::Cancel
+          ) == QMessageBox::Cancel )
   {
     return;
   }
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + u"/service"_s ) || settings.contains( baseKey + txtName->text() + u"/host"_s ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 )
+       && ( settings.contains( baseKey + txtName->text() + u"/service"_s ) || settings.contains( baseKey + txtName->text() + u"/host"_s ) )
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel )
+            == QMessageBox::Cancel )
   {
     return;
   }
@@ -190,7 +202,8 @@ void QgsOracleNewConnection::accept()
 void QgsOracleNewConnection::testConnection()
 {
   QgsDataSourceUri uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), mAuthSettings->username(), mAuthSettings->password(), QgsDataSourceUri::SslPrefer /* meaningless for oracle */, mAuthSettings->configId() );
+  uri
+    .setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), mAuthSettings->username(), mAuthSettings->password(), QgsDataSourceUri::SslPrefer /* meaningless for oracle */, mAuthSettings->configId() );
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( u"dboptions"_s, txtOptions->text() );
   if ( !txtWorkspace->text().isEmpty() )
@@ -222,8 +235,7 @@ void QgsOracleNewConnection::updateOkButtonState()
   // if he sets host, port has to be set also (and vice versa)
   // https://github.com/qgis/QGIS/issues/38979
 
-  bool enabled = !txtName->text().isEmpty() && !txtDatabase->text().isEmpty()
-                 && ( txtHost->text().isEmpty() == txtPort->text().isEmpty() );
+  bool enabled = !txtName->text().isEmpty() && !txtDatabase->text().isEmpty() && ( txtHost->text().isEmpty() == txtPort->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
   btnConnect->setEnabled( enabled );
 }

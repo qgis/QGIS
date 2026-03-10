@@ -29,8 +29,7 @@ class QgsRubberBand;
 class FeatureFilter : public QgsPointLocator::MatchFilter
 {
   public:
-    FeatureFilter()
-    {}
+    FeatureFilter() {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
@@ -326,8 +325,7 @@ void QgsMapToolTrimExtendFeature::extendLimit()
   }
 
   QgsVectorLayer *refLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  refLayer = refLayer ? refLayer : mVlayer ? mVlayer
-                                           : mLimitLayer;
+  refLayer = refLayer ? refLayer : mVlayer ? mVlayer : mLimitLayer;
 
   // Compute intersection between the line that extends the limit segment and the
   // edges of the map canvas

@@ -158,12 +158,8 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
   minMaxOrigin.setExtent( mStatisticsExtentCombo->currentData().value<Qgis::RasterRangeExtent>() );
   minMaxOrigin.setStatAccuracy( cboAccuracy->currentData().value<Qgis::RasterRangeAccuracy>() );
 
-  minMaxOrigin.setCumulativeCutLower(
-    mCumulativeCutLowerDoubleSpinBox->value() / 100.0
-  );
-  minMaxOrigin.setCumulativeCutUpper(
-    mCumulativeCutUpperDoubleSpinBox->value() / 100.0
-  );
+  minMaxOrigin.setCumulativeCutLower( mCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  minMaxOrigin.setCumulativeCutUpper( mCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
   minMaxOrigin.setStdDevFactor( mStdDevSpinBox->value() );
 
   return minMaxOrigin;

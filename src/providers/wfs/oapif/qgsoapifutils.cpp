@@ -24,6 +24,8 @@ using namespace Qt::StringLiterals;
 
 const QString OAPIF_PROVIDER_DEFAULT_CRS = u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s;
 
+const QString PSEUDO_JSONFG_MEDIA_TYPE = u"application/fg+json"_s;
+
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
   std::vector<Link> links;
@@ -65,6 +67,18 @@ std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
               if ( length.is_number_integer() )
               {
                 link.length = length.get<qint64>();
+              }
+            }
+            if ( jLink.contains( "profile" ) )
+            {
+              const auto profile = jLink["profile"];
+              if ( profile.is_array() )
+              {
+                for ( const auto &jProfile : profile )
+                {
+                  if ( jProfile.is_string() )
+                    link.profiles << QString::fromStdString( jProfile.get<std::string>() );
+                }
               }
             }
             links.push_back( link );
@@ -116,7 +130,7 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
       // Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
       const thread_local QRegularExpression splitOnComma( R"(\s*,\s*(?=(?:[^"<]|"[^"]*"|<[^>]*>)*$))" );
       const QStringList links = QString::fromUtf8( headerKeyValue.second ).split( splitOnComma );
-      QString nextUrlCandidate;
+      QString nextUrlCandidate, nextUrlCandidateJsonFGPlus, nextUrlCandidateJsonFG;
       for ( const QString &link : std::as_const( links ) )
       {
         if ( link.isEmpty() || link[0] != '<'_L1 )
@@ -131,7 +145,7 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
         // Split on semi-colon, except when they are in double quotes, and skip padding space before/after separator
         const thread_local QRegularExpression splitOnSemiColon( R"(\s*;\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
         const QStringList linkParts = link.mid( idxSemiColon + 1 ).split( splitOnSemiColon );
-        QString rel, type;
+        QString rel, type, profile;
         for ( const QString &linkPart : std::as_const( linkParts ) )
         {
           // Split on equal, except when they are in double quotes, and skip padding space before/after separator
@@ -153,6 +167,10 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
             {
               type = value;
             }
+            else if ( key == "profile"_L1 )
+            {
+              profile = value;
+            }
           }
         }
         if ( rel == "next"_L1 )
@@ -161,6 +179,22 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
           {
             nextUrl = href;
             break;
+          }
+          else if ( type == "application/geo+json"_L1 && formatType == PSEUDO_JSONFG_MEDIA_TYPE )
+          {
+            if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg"_L1 )
+            {
+              nextUrl = href;
+              break;
+            }
+            else if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"_L1 )
+            {
+              nextUrlCandidateJsonFGPlus = href;
+            }
+            else if ( profile.isEmpty() )
+            {
+              nextUrlCandidateJsonFG = href;
+            }
           }
           else if ( nextUrlCandidate.isEmpty() && !href.contains( "f="_L1 ) )
           {
@@ -172,7 +206,11 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
         }
       }
 
-      if ( nextUrl.isEmpty() && !nextUrlCandidate.isEmpty() )
+      if ( nextUrl.isEmpty() && !nextUrlCandidateJsonFGPlus.isEmpty() )
+        nextUrl = nextUrlCandidateJsonFGPlus;
+      else if ( nextUrl.isEmpty() && !nextUrlCandidateJsonFG.isEmpty() )
+        nextUrl = nextUrlCandidateJsonFG;
+      else if ( nextUrl.isEmpty() && !nextUrlCandidate.isEmpty() )
         nextUrl = nextUrlCandidate;
       break;
     }

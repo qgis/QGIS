@@ -350,8 +350,7 @@ bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelI
   QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
   if ( QgsNetworkLoggerRequestGroup *request = dynamic_cast<QgsNetworkLoggerRequestGroup *>( node ) )
   {
-    if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled )
-         & !mShowSuccessful )
+    if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled ) & !mShowSuccessful )
       return false;
     else if ( request->status() == QgsNetworkLoggerRequestGroup::Status::TimeOut && !mShowTimeouts )
       return false;

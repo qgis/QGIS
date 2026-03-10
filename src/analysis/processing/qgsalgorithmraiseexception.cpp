@@ -59,11 +59,13 @@ QString QgsRaiseExceptionAlgorithm::groupId() const
 
 QString QgsRaiseExceptionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises an exception and cancels a model's execution.\n\n"
-                      "The exception message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the exception will only "
-                      "be raised if the expression result is true. A false result indicates that no exception "
-                      "will be raised, and the model execution can continue uninterrupted." );
+  return QObject::tr(
+    "This algorithm raises an exception and cancels a model's execution.\n\n"
+    "The exception message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the exception will only "
+    "be raised if the expression result is true. A false result indicates that no exception "
+    "will be raised, and the model execution can continue uninterrupted."
+  );
 }
 
 QString QgsRaiseExceptionAlgorithm::shortDescription() const
@@ -138,11 +140,13 @@ QString QgsRaiseWarningAlgorithm::groupId() const
 
 QString QgsRaiseWarningAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises a warning message in the log.\n\n"
-                      "The warning message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the warning will only "
-                      "be logged if the expression result is true. A false result indicates that no warning "
-                      "will be logged." );
+  return QObject::tr(
+    "This algorithm raises a warning message in the log.\n\n"
+    "The warning message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the warning will only "
+    "be logged if the expression result is true. A false result indicates that no warning "
+    "will be logged."
+  );
 }
 
 QString QgsRaiseWarningAlgorithm::shortDescription() const
@@ -218,11 +222,13 @@ QString QgsRaiseMessageAlgorithm::groupId() const
 
 QString QgsRaiseMessageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm raises an information message in the log.\n\n"
-                      "The message can be customized, and optionally an expression based condition "
-                      "can be specified. If an expression condition is used, then the message will only "
-                      "be logged if the expression result is true. A false result indicates that no message "
-                      "will be logged." );
+  return QObject::tr(
+    "This algorithm raises an information message in the log.\n\n"
+    "The message can be customized, and optionally an expression based condition "
+    "can be specified. If an expression condition is used, then the message will only "
+    "be logged if the expression result is true. A false result indicates that no message "
+    "will be logged."
+  );
 }
 
 QString QgsRaiseMessageAlgorithm::shortDescription() const

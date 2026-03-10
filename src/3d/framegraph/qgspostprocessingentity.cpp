@@ -58,25 +58,17 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
   mFarPlaneParameter = new Qt3DRender::QParameter( u"farPlane"_s, mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) {
-    mFarPlaneParameter->setValue( farPlane );
-  } );
+  connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) { mFarPlaneParameter->setValue( farPlane ); } );
   mNearPlaneParameter = new Qt3DRender::QParameter( u"nearPlane"_s, mMainCamera->nearPlane() );
   mMaterial->addParameter( mNearPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane ) {
-    mNearPlaneParameter->setValue( nearPlane );
-  } );
+  connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane ) { mNearPlaneParameter->setValue( nearPlane ); } );
 
   mLightFarPlaneParameter = new Qt3DRender::QParameter( u"lightFarPlane"_s, mLightCamera->farPlane() );
   mMaterial->addParameter( mLightFarPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::farPlaneChanged, mLightFarPlaneParameter, [&]( float farPlane ) {
-    mLightFarPlaneParameter->setValue( farPlane );
-  } );
+  connect( mLightCamera, &Qt3DRender::QCamera::farPlaneChanged, mLightFarPlaneParameter, [&]( float farPlane ) { mLightFarPlaneParameter->setValue( farPlane ); } );
   mLightNearPlaneParameter = new Qt3DRender::QParameter( u"lightNearPlane"_s, mLightCamera->nearPlane() );
   mMaterial->addParameter( mLightNearPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::nearPlaneChanged, mLightNearPlaneParameter, [&]( float nearPlane ) {
-    mLightNearPlaneParameter->setValue( nearPlane );
-  } );
+  connect( mLightCamera, &Qt3DRender::QCamera::nearPlaneChanged, mLightNearPlaneParameter, [&]( float nearPlane ) { mLightNearPlaneParameter->setValue( nearPlane ); } );
 
   mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( u"invertedCameraView"_s, mMainCamera->viewMatrix().inverted() );
   mMaterial->addParameter( mMainCameraInvViewMatrixParameter );
@@ -85,9 +77,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   connect( mMainCamera, &Qt3DRender::QCamera::projectionMatrixChanged, mMainCameraInvProjMatrixParameter, [&]( const QMatrix4x4 &projectionMatrix ) {
     mMainCameraInvProjMatrixParameter->setValue( projectionMatrix.inverted() );
   } );
-  connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, mMainCameraInvViewMatrixParameter, [&]() {
-    mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
-  } );
+  connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, mMainCameraInvViewMatrixParameter, [&]() { mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() ); } );
 
   mShadowMinX = new Qt3DRender::QParameter( u"shadowMinX"_s, QVariant::fromValue( 0.0f ) );
   mShadowMaxX = new Qt3DRender::QParameter( u"shadowMaxX"_s, QVariant::fromValue( 0.0f ) );
@@ -157,11 +147,13 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   mLightCamera->rotateAboutViewCenter( QQuaternion::rotationTo( QVector3D( 0.0f, 0.0f, -1.0f ), lightDirection ) );
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
+  // clang-format off
   mLightCamera->lens()->setOrthographicProjection(
     -0.7f * ( maxX - minX ), 0.7f * ( maxX - minX ),
     -0.7f * ( maxY - minY ), 0.7f * ( maxY - minY ),
     1.0f, 2 * ( lookingAt - lightPosition ).length()
   );
+  // clang-format on
 
   setupShadowRenderingExtent( minX, maxX, minY, maxY );
   setupDirectionalLight( lightPosition, lightDirection );

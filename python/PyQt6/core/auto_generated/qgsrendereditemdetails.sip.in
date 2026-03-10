@@ -14,7 +14,7 @@
 #include "qgsrenderedannotationitemdetails.h"
 %End
 
-class QgsRenderedItemDetails
+  class QgsRenderedItemDetails
 {
 %Docstring(signature="appended")
 Base class for detailed information about a rendered item.
@@ -26,7 +26,6 @@ Base class for detailed information about a rendered item.
 #include "qgsrendereditemdetails.h"
 %End
   public:
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsRenderedAnnotationItemDetails *>( sipCpp ) )
       sipType = sipType_QgsRenderedAnnotationItemDetails;

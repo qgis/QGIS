@@ -178,7 +178,9 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \see addPage()
      * \since QGIS 3.14
      */
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList(), const QString &key = QString() );
+    void insertPage(
+      const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList(), const QString &key = QString()
+    );
 
   public slots:
 

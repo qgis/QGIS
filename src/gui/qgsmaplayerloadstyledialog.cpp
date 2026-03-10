@@ -56,7 +56,9 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
     mFileLabel->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
     mFileWidget->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
     mFromDbWidget->setVisible( type == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase );
-    mDeleteButton->setVisible( type == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && mLayer->dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::DeleteFromDatabase ) );
+    mDeleteButton->setVisible(
+      type == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && mLayer->dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::DeleteFromDatabase )
+    );
 
     mStyleCategoriesListView->setEnabled( currentStyleType() != QgsLayerPropertiesDialog::StyleType::SLD );
     updateLoadButtonState();
@@ -132,9 +134,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsMapLayerLoadStyleDialog::showHelp );
   connect( mLoadButton, &QPushButton::clicked, this, &QDialog::accept );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::deleteStyleFromDB );
-  connect( this, &QgsMapLayerLoadStyleDialog::rejected, [this] {
-    QgsSettings().setValue( u"style/lastLoadStyleTypeSelection"_s, currentStyleType() );
-  } );
+  connect( this, &QgsMapLayerLoadStyleDialog::rejected, [this] { QgsSettings().setValue( u"style/lastLoadStyleTypeSelection"_s, currentStyleType() ); } );
 
   setTabOrder( mRelatedTable, mOthersTable );
 
@@ -314,7 +314,8 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
   QString msgError;
   const QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ), QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ), QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
     return;
 
   mLayer->deleteStyleFromDatabase( mSelectedStyleId, msgError );
@@ -350,7 +351,11 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
-  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DatasourceDatabase && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection() ) ) || ( type != QgsLayerPropertiesDialog::DatasourceDatabase && !mFileWidget->filePath().isEmpty() ) || type == QgsLayerPropertiesDialog::UserDatabase );
+  mLoadButton->setEnabled(
+    ( type == QgsLayerPropertiesDialog::DatasourceDatabase && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection() ) )
+    || ( type != QgsLayerPropertiesDialog::DatasourceDatabase && !mFileWidget->filePath().isEmpty() )
+    || type == QgsLayerPropertiesDialog::UserDatabase
+  );
 }
 
 void QgsMapLayerLoadStyleDialog::showHelp()

@@ -30,14 +30,14 @@ class QgsLineString;
  */
 class CORE_EXPORT QgsLineSegment2D
 {
-
   public:
-
+    // clang-format off
     /**
      * Constructor for a QgsLineSegment2D from the specified \a start point to
      * the \a end point.
      */
     QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end ) SIP_HOLDGIL
+      // clang-format on
   : mStart( start )
     , mEnd( end )
     {}

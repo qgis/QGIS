@@ -82,7 +82,8 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometr
   return errors;
 }
 
-void QgsGeometrySelfContactCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
+void QgsGeometrySelfContactCheck::
+  fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
 {
   Q_UNUSED( featurePools )
   if ( method == NoChange )

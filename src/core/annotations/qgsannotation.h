@@ -51,7 +51,6 @@ class QgsFillSymbol;
 
 class CORE_EXPORT QgsAnnotation : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
     Q_PROPERTY( QSizeF frameSize READ frameSize WRITE setFrameSize )
 
   public:
-
     /**
      * Constructor for QgsAnnotation.
      */
@@ -339,7 +337,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void mapLayerChanged();
 
   protected:
-
     /**
      * Renders the annotation's contents to a target /a context at the specified /a size.
      * Derived classes should implement their custom annotation drawing logic here.
@@ -377,7 +374,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void copyCommonProperties( QgsAnnotation *target ) const;
 
   private:
-
     //! Draws the annotation frame to a destination painter
     void drawFrame( QgsRenderContext &context ) const;
 
@@ -420,8 +416,6 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Roughly 10 pixels at 96 dpi, to match earlier version rendering
     double mSegmentPointWidthMm = 2.64;
-
 };
 
 #endif // QGSANNOTATION_H
-

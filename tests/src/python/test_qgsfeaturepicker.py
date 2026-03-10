@@ -57,9 +57,9 @@ class TestQgsRelationEditWidget(QgisTestCase):
     def testSetFeature(self):
         layer = createLayer()
         w = QgsFeaturePickerWidget()
+        spy = QSignalSpy(w.featureChanged)
         w.setLayer(layer)
         w.setFeature(2)
-        spy = QSignalSpy(w.currentFeatureChanged)
         spy.wait()
         self.assertEqual(w.findChild(QComboBox).lineEdit().text(), "test2")
         self.assertTrue(
@@ -82,7 +82,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
         self.assertEqual(w.findChild(QComboBox).lineEdit().text(), "test1")
 
     def testFetchLimit(self):
-        layer = createLayer()
+        layer = createLayer(manyFeatures=True)
         w = QgsFeaturePickerWidget()
         w.setAllowNull(False)
         w.setFetchLimit(20)

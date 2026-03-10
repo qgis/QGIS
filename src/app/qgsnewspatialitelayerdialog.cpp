@@ -270,7 +270,8 @@ void QgsNewSpatialiteLayerDialog::selectionChanged()
 
 bool QgsNewSpatialiteLayerDialog::createDb()
 {
-  QString dbPath = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ), QDir::homePath(), tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
+  QString dbPath
+    = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ), QDir::homePath(), tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
 
   if ( dbPath.isEmpty() )
     return false;
@@ -362,7 +363,9 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
     if ( !currentFound )
     {
-      if ( QMessageBox::question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::
+             question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return false;
       }
@@ -417,8 +420,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   // create the geometry column and the spatial index
   if ( mGeometryTypeBox->currentIndex() != 0 )
   {
-    const QString sqlAddGeom = u"select AddGeometryColumn(%1,%2,%3,%4,%5)"_s
-                                 .arg( QgsSqliteUtils::quotedString( leLayerName->text() ), QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
+    const QString sqlAddGeom = u"select AddGeometryColumn(%1,%2,%3,%4,%5)"_s.arg( QgsSqliteUtils::quotedString( leLayerName->text() ), QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
                                  .arg( mCrsId.split( ':' ).value( 1, u"0"_s ).toInt() )
                                  .arg( QgsSqliteUtils::quotedString( selectedType() ) )
                                  .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
@@ -432,8 +434,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
       return false;
     }
 
-    const QString sqlCreateIndex = u"select CreateSpatialIndex(%1,%2)"_s
-                                     .arg( QgsSqliteUtils::quotedString( leLayerName->text() ), QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
+    const QString sqlCreateIndex = u"select CreateSpatialIndex(%1,%2)"_s.arg( QgsSqliteUtils::quotedString( leLayerName->text() ), QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
     QgsDebugMsgLevel( sqlCreateIndex, 2 );
 
     rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
@@ -446,7 +447,12 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( u"%1 table='%2'%3 sql="_s.arg( mDatabaseComboBox->currentConnectionUri(), leLayerName->text(), mGeometryTypeBox->currentIndex() != 0 ? u"(%1)"_s.arg( leGeometryColumn->text() ) : QString() ), leLayerName->text(), u"spatialite"_s, options );
+  QgsVectorLayer *layer = new QgsVectorLayer(
+    u"%1 table='%2'%3 sql="_s.arg( mDatabaseComboBox->currentConnectionUri(), leLayerName->text(), mGeometryTypeBox->currentIndex() != 0 ? u"(%1)"_s.arg( leGeometryColumn->text() ) : QString() ),
+    leLayerName->text(),
+    u"spatialite"_s,
+    options
+  );
   if ( layer->isValid() )
   {
     // Reload connections to refresh browser panel

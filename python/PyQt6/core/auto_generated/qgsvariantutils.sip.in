@@ -21,7 +21,6 @@ types.
 #include "qgsvariantutils.h"
 %End
   public:
-
     static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
 %Docstring
 Returns a user-friendly translated string representing a QVariant

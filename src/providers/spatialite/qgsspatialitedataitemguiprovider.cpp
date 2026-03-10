@@ -61,9 +61,14 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     const QList<QgsSLConnectionItem *> slConnectionItems = QgsDataItem::filteredItems<QgsSLConnectionItem>( selection );
     QAction *actionDeleteConnection = new QAction( slConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDeleteConnection, &QAction::triggered, this, [slConnectionItems, context] {
-      QgsDataItemGuiProviderUtils::deleteConnections( slConnectionItems, []( const QString &connectionName ) {
-        QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
-        providerMetadata->deleteConnection( connectionName ); }, context );
+      QgsDataItemGuiProviderUtils::deleteConnections(
+        slConnectionItems,
+        []( const QString &connectionName ) {
+          QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
+          providerMetadata->deleteConnection( connectionName );
+        },
+        context
+      );
     } );
     menu->addAction( actionDeleteConnection );
   }
@@ -73,7 +78,8 @@ bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataI
 {
   if ( QgsSLLayerItem *layerItem = qobject_cast<QgsSLLayerItem *>( item ) )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ), QObject::tr( "Are you sure you want to delete %1?" ).arg( layerItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ), QObject::tr( "Are you sure you want to delete %1?" ).arg( layerItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return false;
 
     const QgsDataSourceUri uri( layerItem->uri() );
@@ -134,7 +140,9 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
   if ( SpatiaLiteUtils::createDb( filename, errCause ) )
   {
     QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
-    std::unique_ptr<QgsSpatiaLiteProviderConnection> providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( u"dbname='%1'"_s.arg( filename ), QVariantMap() ) ) );
+    std::unique_ptr<QgsSpatiaLiteProviderConnection> providerConnection(
+      qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( u"dbname='%1'"_s.arg( filename ), QVariantMap() ) )
+    );
     if ( providerConnection )
     {
       const QFileInfo fi( filename );
@@ -257,7 +265,8 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
       connectionItemPointer->refresh();
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context )
@@ -280,5 +289,6 @@ void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *
       connectionItemPointer->refresh();
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::
+    handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }

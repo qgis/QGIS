@@ -483,7 +483,10 @@ namespace QgsWms
         //number of atlas features might be restricted
         if ( nAtlasFeatures > maxAtlasFeatures )
         {
-          throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QString( "%1 atlas features have been requested, but the project configuration only allows printing %2 atlas features at a time" ).arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
+          throw QgsBadRequestException(
+            QgsServiceException::QGIS_InvalidParameterValue,
+            QString( "%1 atlas features have been requested, but the project configuration only allows printing %2 atlas features at a time" ).arg( nAtlasFeatures ).arg( maxAtlasFeatures )
+          );
         }
 
         QString filterString;
@@ -1843,7 +1846,18 @@ namespace QgsWms
     return result;
   }
 
-  bool QgsRenderer::featureInfoFromVectorLayer( QgsVectorLayer *layer, const QgsPointXY *infoPoint, int nFeatures, QDomDocument &infoDocument, QDomElement &layerElement, const QgsMapSettings &mapSettings, QgsRenderContext &renderContext, const QString &version, QgsRectangle *featureBBox, QgsGeometry *filterGeom ) const
+  bool QgsRenderer::featureInfoFromVectorLayer(
+    QgsVectorLayer *layer,
+    const QgsPointXY *infoPoint,
+    int nFeatures,
+    QDomDocument &infoDocument,
+    QDomElement &layerElement,
+    const QgsMapSettings &mapSettings,
+    QgsRenderContext &renderContext,
+    const QString &version,
+    QgsRectangle *featureBBox,
+    QgsGeometry *filterGeom
+  ) const
   {
     if ( !layer )
     {
@@ -1995,7 +2009,14 @@ namespace QgsWms
         int gmlVersion = mWmsParameters.infoFormatVersion();
         QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
-          &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
+          &feature,
+          layer,
+          infoDocument,
+          outputCrs,
+          mapSettings,
+          typeName,
+          withGeom,
+          gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           ,
           &attributes
@@ -2016,10 +2037,17 @@ namespace QgsWms
         QgsEditFormConfig editConfig = layer->editFormConfig();
         if ( QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop )
         {
-          writeAttributesTabLayout( editConfig, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
+          writeAttributesTabLayout(
+            editConfig,
+            layer,
+            fields,
+            featureAttributes,
+            infoDocument,
+            featureElement,
+            renderContext
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-                                    ,
-                                    &attributes
+            ,
+            &attributes
 #endif
           );
         }
@@ -2027,10 +2055,17 @@ namespace QgsWms
         {
           for ( int i = 0; i < featureAttributes.count(); ++i )
           {
-            writeVectorLayerAttribute( i, layer, fields, featureAttributes, infoDocument, featureElement, renderContext
+            writeVectorLayerAttribute(
+              i,
+              layer,
+              fields,
+              featureAttributes,
+              infoDocument,
+              featureElement,
+              renderContext
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-                                       ,
-                                       &attributes
+              ,
+              &attributes
 #endif
             );
           }
@@ -2114,7 +2149,16 @@ namespace QgsWms
     return true;
   }
 
-  void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  void QgsRenderer::writeAttributesTabGroup(
+    const QgsAttributeEditorElement *group,
+    QgsVectorLayer *layer,
+    const QgsFields &fields,
+    QgsAttributes &featureAttributes,
+    QDomDocument &doc,
+    QDomElement &parentElem,
+    QgsRenderContext &renderContext,
+    QStringList *attributes
+  ) const
   {
     const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
     if ( container )
@@ -2151,7 +2195,9 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::writeAttributesTabLayout( QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  void QgsRenderer::writeAttributesTabLayout(
+    QgsEditFormConfig &config, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes
+  ) const
   {
     QgsAttributeEditorContainer *editorContainer = config.invisibleRootContainer();
     if ( !editorContainer )
@@ -2162,7 +2208,9 @@ namespace QgsWms
     writeAttributesTabGroup( editorContainer, layer, fields, featureAttributes, doc, featureElem, renderContext, attributes );
   }
 
-  void QgsRenderer::writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes ) const
+  void QgsRenderer::writeVectorLayerAttribute(
+    int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes
+  ) const
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
     Q_UNUSED( attributes );
@@ -2194,7 +2242,9 @@ namespace QgsWms
     featureElem.appendChild( attributeElement );
   }
 
-  bool QgsRenderer::featureInfoFromMeshLayer( QgsMeshLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const
+  bool QgsRenderer::featureInfoFromMeshLayer(
+    QgsMeshLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version
+  ) const
   {
     Q_UNUSED( version )
     Q_UNUSED( mapSettings )
@@ -2329,7 +2379,9 @@ namespace QgsWms
     return true;
   }
 
-  bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const
+  bool QgsRenderer::featureInfoFromRasterLayer(
+    QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version
+  ) const
   {
     Q_UNUSED( version )
 
@@ -2346,9 +2398,7 @@ namespace QgsWms
     }
 
     const Qgis::RasterIdentifyFormat identifyFormat(
-      static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature )
-        ? Qgis::RasterIdentifyFormat::Feature
-        : Qgis::RasterIdentifyFormat::Value
+      static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature ) ? Qgis::RasterIdentifyFormat::Feature : Qgis::RasterIdentifyFormat::Value
     );
 
     QgsRasterIdentifyResult identifyResult;
@@ -2358,7 +2408,9 @@ namespace QgsWms
       const QgsCoordinateTransform transform { mapSettings.destinationCrs(), layer->crs(), mapSettings.transformContext() };
       if ( !transform.isValid() )
       {
-        throw QgsBadRequestException( QgsServiceException::OGC_InvalidCRS, u"CRS transform error from %1 to %2 in layer %3"_s.arg( mapSettings.destinationCrs().authid() ).arg( layer->crs().authid() ).arg( layer->name() ) );
+        throw QgsBadRequestException(
+          QgsServiceException::OGC_InvalidCRS, u"CRS transform error from %1 to %2 in layer %3"_s.arg( mapSettings.destinationCrs().authid() ).arg( layer->crs().authid() ).arg( layer->name() )
+        );
       }
       identifyResult = layer->dataProvider()->identify( *infoPoint, identifyFormat, transform.transform( extent ), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
     }
@@ -2390,9 +2442,7 @@ namespace QgsWms
           feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
         }
         feature.setFields( fields );
-        QDomElement elem = createFeatureGML(
-          &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-        );
+        QDomElement elem = createFeatureGML( &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
         layerElement.appendChild( elem );
       }
       else
@@ -2420,9 +2470,7 @@ namespace QgsWms
             const QgsFeatureList storeFeatures = featureStore.features();
             for ( const QgsFeature &feature : storeFeatures )
             {
-              QDomElement elem = createFeatureGML(
-                &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-              );
+              QDomElement elem = createFeatureGML( &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
               layerElement.appendChild( elem );
             }
           }
@@ -2571,11 +2619,7 @@ namespace QgsWms
       }
 
       //double quote
-      if ( tokenIt->size() > 2
-           && ( *tokenIt )[0] == QChar( '"' )
-           && ( *tokenIt )[tokenIt->size() - 1] == QChar( '"' )
-           && ( *tokenIt )[1] != QChar( '"' )
-           && ( *tokenIt )[tokenIt->size() - 2] != QChar( '"' ) )
+      if ( tokenIt->size() > 2 && ( *tokenIt )[0] == QChar( '"' ) && ( *tokenIt )[tokenIt->size() - 1] == QChar( '"' ) && ( *tokenIt )[1] != QChar( '"' ) && ( *tokenIt )[tokenIt->size() - 2] != QChar( '"' ) )
       {
         continue;
       }
@@ -3134,12 +3178,7 @@ namespace QgsWms
           properties[name.toStdString()] = value.toStdString();
         }
 
-        json["features"].push_back(
-          { { "type", "Feature" },
-            { "id", layerName.toStdString() },
-            { "properties", properties }
-          }
-        );
+        json["features"].push_back( { { "type", "Feature" }, { "id", layerName.toStdString() }, { "properties", properties } } );
       }
     }
 #ifdef QGISDEBUG
@@ -3151,15 +3190,7 @@ namespace QgsWms
   }
 
   QDomElement QgsRenderer::createFeatureGML(
-    const QgsFeature *feat,
-    QgsVectorLayer *layer,
-    QDomDocument &doc,
-    QgsCoordinateReferenceSystem &crs,
-    const QgsMapSettings &mapSettings,
-    const QString &typeName,
-    bool withGeom,
-    int version,
-    QStringList *attributes
+    const QgsFeature *feat, QgsVectorLayer *layer, QDomDocument &doc, QgsCoordinateReferenceSystem &crs, const QgsMapSettings &mapSettings, const QString &typeName, bool withGeom, int version, QStringList *attributes
   ) const
   {
     //qgs:%TYPENAME%
@@ -3181,8 +3212,7 @@ namespace QgsWms
     QgsGeometry geom = feat->geometry();
 
     QgsExpressionContext expressionContext;
-    expressionContext << QgsExpressionContextUtils::globalScope()
-                      << QgsExpressionContextUtils::projectScope( mProject );
+    expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( mProject );
     if ( layer )
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );
@@ -3403,8 +3433,7 @@ namespace QgsWms
     double mapUnitTolerance = 0.0;
     if ( ml->geometryType() == Qgis::GeometryType::Polygon )
     {
-      if ( !mWmsParameters.polygonTolerance().isEmpty()
-           && mWmsParameters.polygonToleranceAsInt() > 0 )
+      if ( !mWmsParameters.polygonTolerance().isEmpty() && mWmsParameters.polygonToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.polygonToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -3415,8 +3444,7 @@ namespace QgsWms
     }
     else if ( ml->geometryType() == Qgis::GeometryType::Line )
     {
-      if ( !mWmsParameters.lineTolerance().isEmpty()
-           && mWmsParameters.lineToleranceAsInt() > 0 )
+      if ( !mWmsParameters.lineTolerance().isEmpty() && mWmsParameters.lineToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.lineToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -3427,8 +3455,7 @@ namespace QgsWms
     }
     else //points
     {
-      if ( !mWmsParameters.pointTolerance().isEmpty()
-           && mWmsParameters.pointToleranceAsInt() > 0 )
+      if ( !mWmsParameters.pointTolerance().isEmpty() && mWmsParameters.pointToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.pointToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -3734,7 +3761,10 @@ namespace QgsWms
           xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"ogc"_s, u"http://www.opengis.net/ogc"_s ) );
           if ( QDomDocument::ParseResult result = filterXml.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing ); !result )
           {
-            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, u"Filter string rejected. Error %1:%2 : %3. The XML string was: %4"_s.arg( QString::number( result.errorLine ), QString::number( result.errorColumn ), result.errorMessage, filter.mFilter ) );
+            throw QgsBadRequestException(
+              QgsServiceException::QGIS_InvalidParameterValue,
+              u"Filter string rejected. Error %1:%2 : %3. The XML string was: %4"_s.arg( QString::number( result.errorLine ), QString::number( result.errorColumn ), result.errorMessage, filter.mFilter )
+            );
           }
 
           QDomElement filterElem = filterXml.firstChildElement();
@@ -3750,16 +3780,18 @@ namespace QgsWms
           // QGIS (SQL) filter
           if ( !testFilterStringSafety( filter.mFilter ) )
           {
-            throw QgsSecurityException( QStringLiteral( "The filter string %1"
-                                                        " has been rejected because of security reasons."
-                                                        " Note: Text strings have to be enclosed in single or double quotes."
-                                                        " A space between each word / special character is mandatory."
-                                                        " Allowed Keywords and special characters are"
-                                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
-                                                        " Not allowed are semicolons in the filter expression." )
-                                          .arg(
-                                            filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' )
-                                          ) );
+            throw QgsSecurityException(
+              QStringLiteral(
+                "The filter string %1"
+                " has been rejected because of security reasons."
+                " Note: Text strings have to be enclosed in single or double quotes."
+                " A space between each word / special character is mandatory."
+                " Allowed Keywords and special characters are"
+                " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
+                " Not allowed are semicolons in the filter expression."
+              )
+                .arg( filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' ) )
+            );
           }
 
           QString newSubsetString = filter.mFilter;
@@ -3879,10 +3911,14 @@ namespace QgsWms
         else
         {
           QStringList expElems;
-          expElems << QgsExpression::quotedColumnRef( dim.fieldName )
-                   << u"<="_s << QgsExpression::quotedValue( defValue )
-                   << u"AND"_s << QgsExpression::quotedColumnRef( dim.endFieldName )
-                   << u">="_s << QgsExpression::quotedValue( defValue );
+          expElems
+            << QgsExpression::quotedColumnRef( dim.fieldName )
+            << u"<="_s
+            << QgsExpression::quotedValue( defValue )
+            << u"AND"_s
+            << QgsExpression::quotedColumnRef( dim.endFieldName )
+            << u">="_s
+            << QgsExpression::quotedValue( defValue );
           expList << expElems.join( ' ' );
         }
       }
@@ -3930,24 +3966,37 @@ namespace QgsWms
             if ( endFieldIndex == -1 )
             {
               // The field values are between min and max range
-              expElems << QgsExpression::quotedColumnRef( dim.fieldName )
-                       << u">="_s << QgsExpression::quotedValue( rangeMin )
-                       << u"AND"_s << QgsExpression::quotedColumnRef( dim.fieldName )
-                       << u"<="_s << QgsExpression::quotedValue( rangeMax );
+              expElems
+                << QgsExpression::quotedColumnRef( dim.fieldName )
+                << u">="_s
+                << QgsExpression::quotedValue( rangeMin )
+                << u"AND"_s
+                << QgsExpression::quotedColumnRef( dim.fieldName )
+                << u"<="_s
+                << QgsExpression::quotedValue( rangeMax );
             }
             else
             {
               // The start field or the end field are lesser than min range
               // or the start field or the end field are greater than min range
-              expElems << u"("_s << QgsExpression::quotedColumnRef( dim.fieldName )
-                       << u">="_s << QgsExpression::quotedValue( rangeMin )
-                       << u"OR"_s << QgsExpression::quotedColumnRef( dim.endFieldName )
-                       << u">="_s << QgsExpression::quotedValue( rangeMin )
-                       << u") AND ("_s << QgsExpression::quotedColumnRef( dim.fieldName )
-                       << u"<="_s << QgsExpression::quotedValue( rangeMax )
-                       << u"OR"_s << QgsExpression::quotedColumnRef( dim.endFieldName )
-                       << u"<="_s << QgsExpression::quotedValue( rangeMax )
-                       << u")"_s;
+              expElems
+                << u"("_s
+                << QgsExpression::quotedColumnRef( dim.fieldName )
+                << u">="_s
+                << QgsExpression::quotedValue( rangeMin )
+                << u"OR"_s
+                << QgsExpression::quotedColumnRef( dim.endFieldName )
+                << u">="_s
+                << QgsExpression::quotedValue( rangeMin )
+                << u") AND ("_s
+                << QgsExpression::quotedColumnRef( dim.fieldName )
+                << u"<="_s
+                << QgsExpression::quotedValue( rangeMax )
+                << u"OR"_s
+                << QgsExpression::quotedColumnRef( dim.endFieldName )
+                << u"<="_s
+                << QgsExpression::quotedValue( rangeMax )
+                << u")"_s;
             }
             dimExplist << expElems.join( ' ' );
           }
@@ -3969,10 +4018,14 @@ namespace QgsWms
               // The start field is lesser or equal to
               // and the end field is greater or equal to
               QStringList expElems;
-              expElems << QgsExpression::quotedColumnRef( dim.fieldName )
-                       << u"<="_s << QgsExpression::quotedValue( dimVariant )
-                       << u"AND"_s << QgsExpression::quotedColumnRef( dim.endFieldName )
-                       << u">="_s << QgsExpression::quotedValue( dimVariant );
+              expElems
+                << QgsExpression::quotedColumnRef( dim.fieldName )
+                << u"<="_s
+                << QgsExpression::quotedValue( dimVariant )
+                << u"AND"_s
+                << QgsExpression::quotedColumnRef( dim.endFieldName )
+                << u">="_s
+                << QgsExpression::quotedValue( dimVariant );
               dimExplist << expElems.join( ' ' );
             }
           }

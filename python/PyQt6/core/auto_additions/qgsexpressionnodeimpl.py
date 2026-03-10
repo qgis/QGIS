@@ -26,12 +26,12 @@ QgsExpressionNodeBinaryOperator.boPow = QgsExpressionNodeBinaryOperator.BinaryOp
 QgsExpressionNodeBinaryOperator.boConcat = QgsExpressionNodeBinaryOperator.BinaryOperator.boConcat
 try:
     QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)
-    QgsExpressionNodeFunction.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'clone', 'isStatic']
+    QgsExpressionNodeFunction.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'needsGeometry', 'clone', 'isStatic']
     QgsExpressionNodeFunction.__group__ = ['expression']
 except (NameError, AttributeError):
     pass
 try:
-    QgsExpressionNodeUnaryOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'clone', 'isStatic']
+    QgsExpressionNodeUnaryOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'needsGeometry', 'clone', 'isStatic']
     QgsExpressionNodeUnaryOperator.__group__ = ['expression']
 except (NameError, AttributeError):
     pass
@@ -46,17 +46,17 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsExpressionNodeBetweenOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'clone', 'isStatic']
+    QgsExpressionNodeBetweenOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'needsGeometry', 'clone', 'isStatic']
     QgsExpressionNodeBetweenOperator.__group__ = ['expression']
 except (NameError, AttributeError):
     pass
 try:
-    QgsExpressionNodeInOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'clone', 'isStatic']
+    QgsExpressionNodeInOperator.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'needsGeometry', 'clone', 'isStatic']
     QgsExpressionNodeInOperator.__group__ = ['expression']
 except (NameError, AttributeError):
     pass
 try:
-    QgsExpressionNodeLiteral.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'clone', 'isStatic']
+    QgsExpressionNodeLiteral.__overridden_methods__ = ['nodeType', 'prepareNode', 'evalNode', 'dump', 'referencedColumns', 'referencedVariables', 'referencedFunctions', 'needsGeometry', 'clone', 'isStatic']
     QgsExpressionNodeLiteral.__group__ = ['expression']
 except (NameError, AttributeError):
     pass

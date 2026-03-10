@@ -19,7 +19,6 @@ Raster identify results container.
 #include "qgsrasteridentifyresult.h"
 %End
   public:
-
     QgsRasterIdentifyResult();
 
     QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results );
@@ -82,8 +81,6 @@ Sets the last error
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

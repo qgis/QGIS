@@ -23,8 +23,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QS
   , mSubPartId( subPartId )
   , mGeometry( std::move( geometry ) )
   , mSize( size )
-{
-}
+{}
 
 QgsLabelFeature::~QgsLabelFeature()
 {

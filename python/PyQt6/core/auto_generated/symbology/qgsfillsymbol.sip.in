@@ -18,7 +18,6 @@ A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 #include "qgsfillsymbol.h"
 %End
   public:
-
     static std::unique_ptr< QgsFillSymbol > createSimple( const QVariantMap &properties );
 %Docstring
 Create a fill symbol with one symbol layer: SimpleFill with specified
@@ -59,7 +58,6 @@ style.
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -87,12 +87,10 @@ void TestQgsProcessingSfcgalAlgs::cleanupTestCase()
 }
 
 void TestQgsProcessingSfcgalAlgs::init()
-{
-}
+{}
 
 void TestQgsProcessingSfcgalAlgs::cleanup()
-{
-}
+{}
 
 QgsGeometry TestQgsProcessingSfcgalAlgs::openWktFile( const QString &wktFile )
 {

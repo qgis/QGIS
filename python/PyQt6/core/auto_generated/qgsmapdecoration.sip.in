@@ -21,7 +21,6 @@ Interface for map decorations.
 #include "qgsmapdecoration.h"
 %End
   public:
-
     QgsMapDecoration();
 
     virtual ~QgsMapDecoration();
@@ -48,7 +47,6 @@ position relative to the map canvas (e.g. title, copyright...)
 %End
 
   protected:
-
     void setDisplayName( const QString &name );
 %Docstring
 Sets the map decoration display ``name``.

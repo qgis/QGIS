@@ -31,9 +31,7 @@ using namespace Qt::StringLiterals;
 
 QgsGlowEffect::QgsGlowEffect()
   : mColor( Qt::white )
-{
-
-}
+{}
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   : QgsPaintEffect( other )
@@ -264,9 +262,7 @@ QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &
 
 QgsOuterGlowEffect::QgsOuterGlowEffect()
   : QgsGlowEffect()
-{
-
-}
+{}
 
 QgsPaintEffect *QgsOuterGlowEffect::create( const QVariantMap &map )
 {
@@ -288,9 +284,7 @@ QgsOuterGlowEffect *QgsOuterGlowEffect::clone() const
 
 QgsInnerGlowEffect::QgsInnerGlowEffect()
   : QgsGlowEffect()
-{
-
-}
+{}
 
 QgsPaintEffect *QgsInnerGlowEffect::create( const QVariantMap &map )
 {

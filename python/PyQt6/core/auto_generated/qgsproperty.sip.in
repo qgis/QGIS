@@ -26,7 +26,6 @@ and blend modes.
 #include "qgsproperty.h"
 %End
   public:
-
     enum StandardPropertyTemplate /BaseType=IntEnum/
     {
       Boolean,
@@ -196,7 +195,6 @@ inexpensively copied.
 #include "qgsproperty.h"
 %End
   public:
-
     static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
 %Docstring
 Convert a map of QgsProperty to a map of QVariant This is useful to save

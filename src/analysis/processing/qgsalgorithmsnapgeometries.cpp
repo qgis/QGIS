@@ -39,17 +39,25 @@ QString QgsSnapGeometriesAlgorithm::displayName() const
 
 QString QgsSnapGeometriesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries "
-                      "from another layer, or to geometries within the same layer." )
+  return QObject::tr(
+           "This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries "
+           "from another layer, or to geometries within the same layer."
+         )
          + u"\n\n"_s
-         + QObject::tr( "A tolerance is specified in layer units to control how close vertices need "
-                        "to be to the reference layer geometries before they are snapped." )
+         + QObject::tr(
+           "A tolerance is specified in layer units to control how close vertices need "
+           "to be to the reference layer geometries before they are snapped."
+         )
          + u"\n\n"_s
-         + QObject::tr( "Snapping occurs to both nodes and edges. Depending on the snapping behavior, "
-                        "either nodes or edges will be preferred." )
+         + QObject::tr(
+           "Snapping occurs to both nodes and edges. Depending on the snapping behavior, "
+           "either nodes or edges will be preferred."
+         )
          + u"\n\n"_s
-         + QObject::tr( "Vertices will be inserted or removed as required to make the geometries match "
-                        "the reference geometries." );
+         + QObject::tr(
+           "Vertices will be inserted or removed as required to make the geometries match "
+           "the reference geometries."
+         );
 }
 
 QString QgsSnapGeometriesAlgorithm::shortDescription() const
@@ -90,14 +98,19 @@ bool QgsSnapGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
 
 void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE_LAYER"_s, QObject::tr( "Reference layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    u"INPUT"_s,
+    QObject::tr( "Input layer" ),
+    QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    u"REFERENCE_LAYER"_s,
+    QObject::tr( "Reference layer" ),
+    QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+  ) );
 
   auto tolParam = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 10.0, u"INPUT"_s, false, 0.00000001 );
-  tolParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 8 } } ) } } )
-    }
-  );
+  tolParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 8 } } ) } } ) } );
   addParameter( tolParam.release() );
 
   const QStringList options = QStringList()

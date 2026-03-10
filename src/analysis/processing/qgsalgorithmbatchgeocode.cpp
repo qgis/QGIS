@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 QgsBatchGeocodeAlgorithm::QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder )
   : QgsProcessingFeatureBasedAlgorithm()
   , mGeocoder( geocoder )
-{
-}
+{}
 
 QStringList QgsBatchGeocodeAlgorithm::tags() const
 {
@@ -57,7 +56,9 @@ void QgsBatchGeocodeAlgorithm::initParameters( const QVariantMap &configuration 
   {
     const QgsFields newFields = mGeocoder->appendedFields();
     for ( const QgsField &newField : newFields )
-      addParameter( new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+      addParameter(
+        new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true )
+      );
   }
 }
 

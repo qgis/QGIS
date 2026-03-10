@@ -23,7 +23,6 @@ Contains basic properties for a Processing algorithm.
 #include "qgsprocessingregistry.h"
 %End
   public:
-
     QString displayName;
 
     QIcon icon;
@@ -44,7 +43,6 @@ rather accessed through :py:func:`QgsApplication.processingRegistry()`.
 #include "qgsprocessingregistry.h"
 %End
   public:
-
     QgsProcessingRegistry( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingRegistry.

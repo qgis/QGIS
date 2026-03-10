@@ -22,7 +22,6 @@ Assorted helper methods for reading and writing chunks of XML.
 %End
   public:
 
-
     static Qgis::DistanceUnit readMapUnits( const QDomElement &element );
 %Docstring
 Decodes a distance unit from a DOM element.

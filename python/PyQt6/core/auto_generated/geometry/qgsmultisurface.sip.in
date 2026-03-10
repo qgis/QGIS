@@ -9,7 +9,7 @@
 
 
 
-class QgsMultiSurface: QgsGeometryCollection
+class QgsMultiSurface : QgsGeometryCollection
 {
 %Docstring(signature="appended")
 Multi surface geometry collection.
@@ -19,7 +19,6 @@ Multi surface geometry collection.
 #include "qgsmultisurface.h"
 %End
   public:
-
     QgsMultiSurface() /HoldGIL/;
 %Docstring
 Constructor for an empty multisurface geometry.

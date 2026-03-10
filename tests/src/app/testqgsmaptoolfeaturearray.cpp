@@ -266,9 +266,7 @@ void TestQgsMapToolFeatureArray::testFeatureArrayFeatureCount()
 
   // Polygon 2154 layer
   mCanvas->setCurrentLayer( mLayerPolygon2154 );
-  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform(
-    QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext()
-  );
+  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext() );
   utils.mouseClick( 0, 5, Qt::LeftButton );
   utils.mouseClick( 12, 9, Qt::LeftButton );
   QCOMPARE( mLayerPolygon2154->featureCount(), 5 );
@@ -393,9 +391,7 @@ void TestQgsMapToolFeatureArray::testFeatureArrayFeatureSpacing()
 
   // Polygon 2154 layer
   mCanvas->setCurrentLayer( mLayerPolygon2154 );
-  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform(
-    QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext()
-  );
+  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext() );
   utils.mouseClick( 0, 5, Qt::LeftButton );
   utils.mouseClick( 0, 10.7, Qt::LeftButton );
   QCOMPARE( mLayerPolygon2154->featureCount(), 4 );
@@ -517,9 +513,7 @@ void TestQgsMapToolFeatureArray::testFeatureArrayFeatureCountAndSpacing()
 
   // Polygon 2154 layer
   mCanvas->setCurrentLayer( mLayerPolygon2154 );
-  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform(
-    QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext()
-  );
+  QgsCoordinateTransform tr2154to3946 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateTransformContext() );
   utils.mouseClick( 0, 5, Qt::LeftButton );
   utils.mouseClick( 0, 8.3, Qt::LeftButton );
   QCOMPARE( mLayerPolygon2154->featureCount(), 7 );

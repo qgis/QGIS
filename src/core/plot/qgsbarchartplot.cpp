@@ -143,17 +143,13 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         QPoint bottomRight;
         if ( flipAxes() )
         {
-          topLeft = QPoint( plotArea.x() + zero,
-                            plotArea.bottom() - x - barWidth );
-          bottomRight = QPoint( plotArea.x() + y,
-                                plotArea.bottom() - x );
+          topLeft = QPoint( plotArea.x() + zero, plotArea.bottom() - x - barWidth );
+          bottomRight = QPoint( plotArea.x() + y, plotArea.bottom() - x );
         }
         else
         {
-          topLeft = QPoint( plotArea.left() + x,
-                            plotArea.y() + plotArea.height() - y );
-          bottomRight = QPoint( plotArea.left() + x + barWidth,
-                                plotArea.y() + plotArea.height() - zero );
+          topLeft = QPoint( plotArea.left() + x, plotArea.y() + plotArea.height() - y );
+          bottomRight = QPoint( plotArea.left() + x + barWidth, plotArea.y() + plotArea.height() - zero );
         }
 
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
@@ -253,4 +249,21 @@ QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( Qgs
   }
 
   return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
+}
+
+void QgsBarChartPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+  {
+    return;
+  }
+
+  if ( const Qgs2DXyPlot *plotXy = dynamic_cast<const Qgs2DXyPlot *>( plot ) )
+  {
+    Qgs2DXyPlot::copyCommonProperties( plotXy );
+  }
+  else if ( const Qgs2DPlot *plotPie = dynamic_cast<const Qgs2DPlot *>( plot ) )
+  {
+    Qgs2DPlot::copyCommonProperties( plotPie );
+  }
 }

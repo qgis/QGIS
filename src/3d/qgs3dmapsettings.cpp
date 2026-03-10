@@ -43,9 +43,7 @@ using namespace Qt::StringLiterals;
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )
 {
-  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() {
-    QgsProject::instance()->setDirty();
-  } );
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() { QgsProject::instance()->setDirty(); } );
   connectChangedSignalsToSettingsChanged();
   mTerrainSettings = std::make_unique<QgsFlatTerrainSettings>();
 }
@@ -109,9 +107,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
       mLightSources << source->clone();
   }
 
-  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() {
-    QgsProject::instance()->setDirty();
-  } );
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() { QgsProject::instance()->setDirty(); } );
   connectChangedSignalsToSettingsChanged();
 }
 
@@ -126,21 +122,25 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QgsProjectDirtyBlocker blocker( QgsProject::instance() );
   QDomElement elemOrigin = elem.firstChildElement( u"origin"_s );
+  // clang-format off
   mOrigin = QgsVector3D(
     elemOrigin.attribute( u"x"_s ).toDouble(),
     elemOrigin.attribute( u"y"_s ).toDouble(),
     elemOrigin.attribute( u"z"_s ).toDouble()
   );
+  // clang-format on
 
   QDomElement elemExtent = elem.firstChildElement( u"extent"_s );
   if ( !elemExtent.isNull() )
   {
+    // clang-format off
     mExtent = QgsRectangle(
       elemExtent.attribute( u"xMin"_s ).toDouble(),
       elemExtent.attribute( u"yMin"_s ).toDouble(),
       elemExtent.attribute( u"xMax"_s ).toDouble(),
       elemExtent.attribute( u"yMax"_s ).toDouble()
     );
+    // clang-format on
 
     mShowExtentIn2DView = elemExtent.attribute( u"showIn2dView"_s, u"0"_s ).toInt();
   }
@@ -269,7 +269,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", u"1"_s ).toInt();
 
   QDomElement elemNavigationSync = elem.firstChildElement( u"navigation-sync"_s );
-  mViewSyncMode = ( Qgis::ViewSyncModeFlags )( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
+  mViewSyncMode = static_cast<Qgis::ViewSyncModeFlags>( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
   mVisualizeViewFrustum = elemNavigationSync.attribute( u"view-frustum-visualization-enabled"_s, u"0"_s ).toInt();
 
   QDomElement elemDebugSettings = elem.firstChildElement( u"debug-settings"_s );

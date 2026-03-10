@@ -212,7 +212,14 @@ struct QgsWmsDimensionProperty
 
     bool operator==( const QgsWmsDimensionProperty &other ) const
     {
-      return name == other.name && units == other.units && unitSymbol == other.unitSymbol && defaultValue == other.defaultValue && extent == other.extent && multipleValues == other.multipleValues && nearestValue == other.nearestValue && current == other.current;
+      return name == other.name
+             && units == other.units
+             && unitSymbol == other.unitSymbol
+             && defaultValue == other.defaultValue
+             && extent == other.extent
+             && multipleValues == other.multipleValues
+             && nearestValue == other.nearestValue
+             && current == other.current;
     }
 };
 
@@ -405,18 +412,10 @@ struct QgsWmsLayerProperty
  */
 struct QgsWmstDates
 {
-    QgsWmstDates( QList<QDateTime> dates )
-    {
-      dateTimes = dates;
-    }
-    QgsWmstDates()
-    {
-    }
+    QgsWmstDates( QList<QDateTime> dates ) { dateTimes = dates; }
+    QgsWmstDates() {}
 
-    bool operator==( const QgsWmstDates &other ) const
-    {
-      return dateTimes == other.dateTimes;
-    }
+    bool operator==( const QgsWmstDates &other ) const { return dateTimes == other.dateTimes; }
 
     QList<QDateTime> dateTimes;
 };
@@ -426,20 +425,14 @@ struct QgsWmstDates
  */
 struct QgsWmstExtentPair
 {
-    QgsWmstExtentPair()
-    {
-    }
+    QgsWmstExtentPair() {}
 
     QgsWmstExtentPair( QgsWmstDates dates, QgsTimeDuration resolution )
       : dates( dates )
       , resolution( resolution )
-    {
-    }
+    {}
 
-    bool operator==( const QgsWmstExtentPair &other ) const
-    {
-      return dates == other.dates && resolution == other.resolution;
-    }
+    bool operator==( const QgsWmstExtentPair &other ) const { return dates == other.dates && resolution == other.resolution; }
 
     QgsWmstDates dates;
     QgsTimeDuration resolution;

@@ -95,12 +95,10 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   }
   const int band = mGrayBandComboBox->currentBand();
 
-  QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
-    provider->dataType( band )
-  ) );
+  QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType ) ( provider->dataType( band ) ) );
   e->setMinimumValue( QgsDoubleValidator::toDouble( mMinLineEdit->text() ) );
   e->setMaximumValue( QgsDoubleValidator::toDouble( mMaxLineEdit->text() ) );
-  e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
+  e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementComboBox->currentData().toInt() ) );
 
   QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
@@ -138,11 +136,9 @@ void QgsSingleBandGrayRendererWidget::minMaxModified()
 {
   if ( !mDisableMinMaxWidgetRefresh )
   {
-    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
-      mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )
-      );
+      mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
     }
     mMinMaxWidget->userHasSetManualMinMaxValues();
     emit widgetChanged();
@@ -204,9 +200,7 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
       mMaxLineEdit->setText( QLocale().toString( ce->maximumValue() ) );
       mDisableMinMaxWidgetRefresh = false;
       //contrast enhancement algorithm
-      mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int ) ( ce->contrastEnhancementAlgorithm() ) )
-      );
+      mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( ( int ) ( ce->contrastEnhancementAlgorithm() ) ) );
     }
 
     mMinMaxWidget->setFromMinMaxOrigin( gr->minMaxOrigin() );

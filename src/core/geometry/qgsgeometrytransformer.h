@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsAbstractGeometryTransformer
 {
   public:
-
     virtual ~QgsAbstractGeometryTransformer() = default;
 
     /**
@@ -57,8 +56,7 @@ class CORE_EXPORT QgsAbstractGeometryTransformer
      *       return True, x*3, y+10, z, m
      * \endcode
      */
-    virtual bool transformPoint( double &x SIP_INOUT, double &y SIP_INOUT, double &z SIP_INOUT, double &m  SIP_INOUT ) = 0;
-
+    virtual bool transformPoint( double &x SIP_INOUT, double &y SIP_INOUT, double &z SIP_INOUT, double &m SIP_INOUT ) = 0;
 };
 
 #endif // QGSGEOMETRYTRANSFORMER_H

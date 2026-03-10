@@ -41,7 +41,6 @@
  */
 class CORE_EXPORT QgsAbstractProviderConnection
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
@@ -56,7 +55,7 @@ class CORE_EXPORT QgsAbstractProviderConnection
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -113,10 +112,8 @@ class CORE_EXPORT QgsAbstractProviderConnection
     void setConfiguration( const QVariantMap &configuration );
 
   private:
-
     QString mUri;
     QVariantMap mConfiguration;
-
 };
 
 #endif // QGSABSTRACTPROVIDERCONNECTION_H

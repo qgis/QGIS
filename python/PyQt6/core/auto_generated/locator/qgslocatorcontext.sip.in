@@ -22,7 +22,6 @@ Encapsulates the properties relating to the context of a locator search.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsLocatorContext();
 
     QgsRectangle targetExtent;
@@ -32,10 +31,7 @@ Encapsulates the properties relating to the context of a locator search.
     QgsCoordinateTransformContext transformContext;
 
     bool usingPrefix;
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

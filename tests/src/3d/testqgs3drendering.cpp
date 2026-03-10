@@ -509,11 +509,8 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -743,11 +740,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
 
@@ -885,11 +879,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1172,9 +1163,7 @@ void TestQgs3DRendering::testLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 300.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 300.0 );
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 300.0 ) << QVector4D( -0.866025, 0.5, 0, 300.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1406,9 +1395,7 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( -0.866025, 0.5, 0, 432.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 125.0 );
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( -0.866025, 0.5, 0, 432.0 ) << QVector4D( 0.5, 0.866025, 0, 125.0 );
 
   scene->enableClipping( clipPlanesEquations );
 
@@ -1665,16 +1652,7 @@ void TestQgs3DRendering::testAnimationExport()
   const QString dir = QDir::temp().path();
   QString error;
 
-  const bool success = Qgs3DUtils::exportAnimation(
-    animSettings,
-    map,
-    1,
-    dir,
-    "test3danimation###.png",
-    QSize( 600, 400 ),
-    error,
-    nullptr
-  );
+  const bool success = Qgs3DUtils::exportAnimation( animSettings, map, 1, dir, "test3danimation###.png", QSize( 600, 400 ), error, nullptr );
 
   QVERIFY( success );
   QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( u"test3danimation001.png"_s ) ) ) );
@@ -1728,10 +1706,7 @@ void TestQgs3DRendering::testInstancedRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 660.0 ) << QVector4D( 0.5, 0.866025, 0, 685.0 ) << QVector4D( -0.5, -0.866025, 0, 650.0 );
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
@@ -1831,10 +1806,7 @@ void TestQgs3DRendering::testModelPointRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 660.0 ) << QVector4D( 0.5, 0.866025, 0, 685.0 ) << QVector4D( -0.5, -0.866025, 0, 650.0 );
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.

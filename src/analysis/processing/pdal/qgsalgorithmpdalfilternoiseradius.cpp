@@ -78,7 +78,7 @@ void QgsPdalFilterNoiseRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 
   createVpcOutputFormatParameter();
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered (radius algorithm)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered noise" ) ) );
 }
 
 QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -103,7 +103,15 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVaria
     removeNoisePoints = "true";
   }
 
-  QStringList args = { u"filter_noise"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=radius"_s, u"--remove-noise-points=%1"_s.arg( removeNoisePoints ), u"--radius-min-k=%1"_s.arg( minK ), u"--radius-radius=%1"_s.arg( radius ) };
+  QStringList args = {
+    u"filter_noise"_s,
+    u"--input=%1"_s.arg( layer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
+    u"--algorithm=radius"_s,
+    u"--remove-noise-points=%1"_s.arg( removeNoisePoints ),
+    u"--radius-min-k=%1"_s.arg( minK ),
+    u"--radius-radius=%1"_s.arg( radius )
+  };
 
   applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );

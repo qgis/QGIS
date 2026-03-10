@@ -21,8 +21,7 @@
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsTextEditWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

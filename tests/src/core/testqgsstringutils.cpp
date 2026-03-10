@@ -50,20 +50,16 @@ class TestQgsStringUtils : public QObject
 };
 
 void TestQgsStringUtils::initTestCase()
-{
-}
+{}
 
 void TestQgsStringUtils::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsStringUtils::init()
-{
-}
+{}
 
 void TestQgsStringUtils::cleanup()
-{
-}
+{}
 
 void TestQgsStringUtils::levenshtein()
 {

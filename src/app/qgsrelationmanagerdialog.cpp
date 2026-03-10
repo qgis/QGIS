@@ -209,8 +209,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
     relation.setReferencedLayer( addDlg.referencedLayerId() );
     QString relationId = addDlg.relationId();
     if ( addDlg.relationId().isEmpty() )
-      relationId = u"%1_%2_%3_%4"_s
-                     .arg( addDlg.referencingLayerId().left( 10 ), addDlg.references().at( 0 ).first, addDlg.referencedLayerId().left( 10 ), addDlg.references().at( 0 ).second );
+      relationId = u"%1_%2_%3_%4"_s.arg( addDlg.referencingLayerId().left( 10 ), addDlg.references().at( 0 ).first, addDlg.referencedLayerId().left( 10 ), addDlg.references().at( 0 ).second );
 
     QStringList existingNames;
 

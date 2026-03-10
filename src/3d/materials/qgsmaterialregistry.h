@@ -128,7 +128,14 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
      *
      * An optional \a icon can be specified to represent the material type.
      */
-    QgsMaterialSettingsMetadata( const QString &type, const QString &visibleName, QgsMaterialSettingsCreateFunc pfCreate, QgsMaterialSettingsSupportsTechniqueFunc pfSupportsTechnique, QgsMaterialSettingsWidgetFunc pfWidget = nullptr, const QIcon &icon = QIcon() )
+    QgsMaterialSettingsMetadata(
+      const QString &type,
+      const QString &visibleName,
+      QgsMaterialSettingsCreateFunc pfCreate,
+      QgsMaterialSettingsSupportsTechniqueFunc pfSupportsTechnique,
+      QgsMaterialSettingsWidgetFunc pfWidget = nullptr,
+      const QIcon &icon = QIcon()
+    )
       : QgsMaterialSettingsAbstractMetadata( type, visibleName, icon )
       , mCreateFunc( pfCreate )
       , mSupportsTechniqueFunc( pfSupportsTechnique )

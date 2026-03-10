@@ -26,9 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection *parent )
   : QgsAbstractReportSection( parent )
-{
-
-}
+{}
 
 QString QgsReportSectionFieldGroup::description() const
 {
@@ -306,4 +304,3 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
 }
 
 ///@endcond
-

@@ -35,10 +35,10 @@ class QgsSymbolLayerId;
 
 struct QgsMaskedLayer
 {
-  bool hasEffects = false;
+    bool hasEffects = false;
 
-  // masked symbol layers
-  QSet<QString> symbolLayerIdsToMask;
+    // masked symbol layers
+    QSet<QString> symbolLayerIdsToMask;
 };
 
 //! masked layers where key is the layer id of the layer that WILL be masked
@@ -54,7 +54,6 @@ typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 class CORE_EXPORT QgsVectorLayerUtils
 {
   public:
-
     /**
      * \ingroup core
      * \class QgsDuplicateFeatureContext
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsDuplicateFeatureContext
     {
       public:
-
         QgsDuplicateFeatureContext() = default;
 
         /**
@@ -97,7 +95,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsFeatureData
     {
       public:
-
         /**
          * Constructs a new QgsFeatureData with given \a geometry and \a attributes
          */
@@ -215,9 +212,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
-    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
-                                   QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
-                                   QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
+    static bool validateAttribute(
+      const QgsVectorLayer *layer,
+      const QgsFeature &feature,
+      int attributeIndex,
+      QStringList &errors SIP_OUT,
+      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
+      QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
+    );
 
     /**
      * Creates a new feature ready for insertion into a layer. Default values and constraints
@@ -227,10 +229,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * automatically inserted into the layer.
      * \see createFeatures()
      */
-    static QgsFeature createFeature( const QgsVectorLayer *layer,
-                                     const QgsGeometry &geometry = QgsGeometry(),
-                                     const QgsAttributeMap &attributes = QgsAttributeMap(),
-                                     QgsExpressionContext *context = nullptr );
+    static QgsFeature createFeature(
+      const QgsVectorLayer *layer, const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap(), QgsExpressionContext *context = nullptr
+    );
 
     /**
      * Creates a set of new features ready for insertion into a layer. Default values and constraints
@@ -239,10 +240,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see createFeature()
      * \since QGIS 3.6
      */
-    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
-                                          const QgsFeaturesDataList &featuresData,
-                                          QgsExpressionContext *context = nullptr );
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context = nullptr );
 
+    // clang-format off
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
@@ -253,6 +253,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \a referencedLayersBranch the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT, const int maxDepth = 0, int depth SIP_PYARGREMOVE = 0, QList<QgsVectorLayer *> referencedLayersBranch SIP_PYARGREMOVE = QList<QgsVectorLayer *>() );
+    // clang-format on
 
 
     /**
@@ -388,9 +389,9 @@ class CORE_EXPORT QgsVectorLayerUtils
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QgsMaskedLayers> collectObjectsMaskedByLabelsFromLayer( const QgsVectorLayer *layer,
-        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
-        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> collectObjectsMaskedByLabelsFromLayer(
+      const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector< QgsVectorLayer * > &allRenderedVectorLayers
+    ) SIP_SKIP;
 
     /**
      * Returns all objects that will be masked by the symbol layers for a given vector \a layer.
@@ -401,9 +402,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer,
-        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
-        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
+    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer(
+      const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector< QgsVectorLayer * > &allRenderedVectorLayers
+    ) SIP_SKIP;
 
     /**
      * Returns a descriptive string for a \a feature, suitable for displaying to the user.
@@ -432,7 +433,13 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
+    static bool impactsCascadeFeatures(
+      const QgsVectorLayer *layer,
+      const QgsFeatureIds &fids,
+      const QgsProject *project,
+      QgsDuplicateFeatureContext &context SIP_OUT,
+      QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags()
+    );
 
 #ifndef SIP_RUN
 
@@ -527,6 +534,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
 #else
+    // clang-format off
 
     /**
      * Converts field values from an iterator to an array of data.
@@ -583,6 +591,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     }
     % End
 
+// clang-format on
 #endif
 };
 

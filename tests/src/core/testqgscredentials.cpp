@@ -41,10 +41,7 @@ class TestCredentials : public QgsCredentials
       return true;
     }
 
-    bool requestMasterPassword( QString &, bool ) override
-    {
-      return true;
-    }
+    bool requestMasterPassword( QString &, bool ) override { return true; }
 
   public:
     QString mUsername;

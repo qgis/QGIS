@@ -159,10 +159,7 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
       , fid( fid )
     {}
 
-    bool acceptMatch( const QgsPointLocator::Match &match ) override
-    {
-      return match.layer() == layer && match.featureId() == fid;
-    }
+    bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.layer() == layer && match.featureId() == fid; }
 
   private:
     const QgsVectorLayer *layer = nullptr;
@@ -181,7 +178,8 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
     QgsVertexTool *vertextool = nullptr;
 
     MatchCollectingFilter( QgsVertexTool *vertextool )
-      : vertextool( vertextool ) {}
+      : vertextool( vertextool )
+    {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
@@ -216,7 +214,8 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
   public:
     explicit SelectedMatchFilter( double tol, QgsLockedFeature *selectedFeature )
       : mTolerance( tol )
-      , mLockedFeature( selectedFeature ) {}
+      , mLockedFeature( selectedFeature )
+    {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
@@ -696,11 +695,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     if ( showInvisibleFeatureWarning )
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "Invisible vertices were not selected" ),
-        tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ),
-        Qgis::MessageLevel::Warning
-      );
+      QgisApp::instance()
+        ->messageBar()
+        ->pushMessage( tr( "Invisible vertices were not selected" ), tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ), Qgis::MessageLevel::Warning );
     }
 
     // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature
@@ -973,9 +970,8 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
         }
         else
         {
-          layerSettings = QgsSnappingConfig::IndividualLayerSettings(
-            vlayer == currentVlayer, static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ), tol, Qgis::MapToolUnit::Project, 0.0, 0.0
-          );
+          layerSettings = QgsSnappingConfig::
+            IndividualLayerSettings( vlayer == currentVlayer, static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ), tol, Qgis::MapToolUnit::Project, 0.0, 0.0 );
         }
 
         config.setIndividualLayerSettings( vlayer, layerSettings );
@@ -1016,7 +1012,8 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       }
       else
       {
-        layerSettings = QgsSnappingConfig::IndividualLayerSettings( vlayer->isEditable(), static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ), tol, Qgis::MapToolUnit::Project, 0.0, 0.0 );
+        layerSettings = QgsSnappingConfig::
+          IndividualLayerSettings( vlayer->isEditable(), static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ), tol, Qgis::MapToolUnit::Project, 0.0, 0.0 );
       }
       config.setIndividualLayerSettings( vlayer, layerSettings );
     }
@@ -2913,11 +2910,7 @@ void QgsVertexTool::toggleVertexCurve()
   else
   {
     // TODO support more than just 1 vertex
-    QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Could not convert vertex" ),
-      tr( "Conversion can only be done on exactly one vertex." ),
-      Qgis::Info
-    );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Could not convert vertex" ), tr( "Conversion can only be done on exactly one vertex." ), Qgis::Info );
     return;
   }
 
@@ -2925,11 +2918,7 @@ void QgsVertexTool::toggleVertexCurve()
   {
     if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "Could not convert vertex" ),
-        tr( "Cannot convert vertex before it is added." ),
-        Qgis::Warning
-      );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Could not convert vertex" ), tr( "Cannot convert vertex before it is added." ), Qgis::Warning );
       return;
     }
     stopDragging();
@@ -2939,11 +2928,9 @@ void QgsVertexTool::toggleVertexCurve()
 
   if ( !QgsWkbTypes::isCurvedType( layer->wkbType() ) )
   {
-    QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Could not convert vertex" ),
-      tr( "Layer of type %1 does not support curved geometries." ).arg( QgsWkbTypes::displayString( layer->wkbType() ) ),
-      Qgis::Warning
-    );
+    QgisApp::instance()
+      ->messageBar()
+      ->pushMessage( tr( "Could not convert vertex" ), tr( "Layer of type %1 does not support curved geometries." ).arg( QgsWkbTypes::displayString( layer->wkbType() ) ), Qgis::Warning );
     return;
   }
 
@@ -2962,11 +2949,7 @@ void QgsVertexTool::toggleVertexCurve()
   else
   {
     layer->destroyEditCommand();
-    QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Could not convert vertex" ),
-      tr( "Start/end of vertices of features and arcs can not be converted." ),
-      Qgis::Warning
-    );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Could not convert vertex" ), tr( "Start/end of vertices of features and arcs can not be converted." ), Qgis::Warning );
   }
 
   QgsVertexEditor *editor = vertexEditor();

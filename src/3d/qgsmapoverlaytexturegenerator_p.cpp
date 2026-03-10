@@ -32,8 +32,7 @@ QgsMapOverlayTextureGenerator::QgsMapOverlayTextureGenerator( const Qgs3DMapSett
   : m3DMapSettings( mapSettings )
   , mSize( QSize( size, size ) )
   , mLastJobId( 0 )
-{
-}
+{}
 
 QgsMapOverlayTextureGenerator::~QgsMapOverlayTextureGenerator()
 {
@@ -98,9 +97,10 @@ void QgsMapOverlayTextureGenerator::onRenderingFinished()
   painter.setPen( Qt::NoPen );
 
   QPolygon arrow;
-  arrow << QPoint( 0, -arrowSize )     // arrowhead
-        << QPoint( -arrowSize / 3, 0 ) // left corner
-        << QPoint( arrowSize / 3, 0 ); // right corner
+  arrow
+    << QPoint( 0, -arrowSize )     // arrowhead
+    << QPoint( -arrowSize / 3, 0 ) // left corner
+    << QPoint( arrowSize / 3, 0 ); // right corner
 
   painter.translate( center );
   // Qt applies rotation in a clockwise direction with the Y-axis points downward

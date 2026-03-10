@@ -24,7 +24,6 @@ functions for work with the layer tree are in
 #include "qgslayertree.h"
 %End
   public:
-
     static bool isGroup( QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid group node
@@ -58,7 +57,7 @@ Create a new empty layer tree
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QList<QgsMapLayer *> customLayerOrder() const;
+        QList<QgsMapLayer *> customLayerOrder() const;
 %Docstring
 The order in which layers will be rendered on the canvas. Will only be
 used if the property hasCustomLayerOrder is ``True``. If you need the

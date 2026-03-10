@@ -26,13 +26,7 @@ schema and the table name.
 #include "qgsfieldsitem.h"
 %End
   public:
-
-    QgsFieldsItem( QgsDataItem *parent /TransferThis/,
-                   const QString &path,
-                   const QString &connectionUri,
-                   const QString &providerKey,
-                   const QString &schema,
-                   const QString &tableName );
+    QgsFieldsItem( QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema, const QString &tableName );
 %Docstring
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
@@ -55,7 +49,7 @@ layer and field information from the ``connectionUri``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     virtual QIcon icon();
@@ -125,9 +119,7 @@ parent :py:class:`QgsFieldsItem` object.
 #include "qgsfieldsitem.h"
 %End
   public:
-
-    QgsFieldItem( QgsDataItem *parent /TransferThis/,
-                  const QgsField &field );
+    QgsFieldItem( QgsDataItem *parent /TransferThis/, const QgsField &field );
 %Docstring
 Constructor for QgsFieldItem, with the specified ``parent`` item and
 ``field``.
@@ -145,7 +137,7 @@ Constructor for QgsFieldItem, with the specified ``parent`` item and
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QIcon icon();
+        virtual QIcon icon();
 
 
     QgsField field() const;
@@ -159,8 +151,6 @@ Returns the field definition.
 
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -25,7 +25,6 @@ Contains utilities for working with Cesium data.
 %End
   public:
 
-
     static QgsBox3D parseRegion( const QVariantList &region );
 %Docstring
 Parses a ``region`` object from a Cesium JSON document to a 3D box.
@@ -51,9 +50,9 @@ Applies a ``transform`` to a sphere.
 
     struct B3DMContents
     {
-      QByteArray gltf;
+        QByteArray gltf;
 
-      QgsVector3D rtcCenter;
+        QgsVector3D rtcCenter;
     };
 
     static B3DMContents extractGltfFromB3dm( const QByteArray &tileContent );
@@ -64,9 +63,9 @@ Extracts GLTF binary data and other contents from the legacy b3dm
 
     struct TileContents
     {
-      QByteArray gltf;
+        QByteArray gltf;
 
-      QgsVector3D rtcCenter;
+        QgsVector3D rtcCenter;
     };
 
     static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
@@ -77,7 +76,6 @@ Parses tile content. Returns empty byte array on error.
 
    cmpt, pnts, i3dm tile types are currently not supported
 %End
-
 };
 
 /************************************************************************

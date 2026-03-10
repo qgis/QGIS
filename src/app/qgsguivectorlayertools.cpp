@@ -43,7 +43,12 @@ bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttri
   QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, context.parentWidget() );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
   connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
-  const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, context.showModal(), std::unique_ptr<QgsExpressionContextScope>( context.additionalExpressionContextScope() ? new QgsExpressionContextScope( *context.additionalExpressionContextScope() ) : nullptr ), context.hideParent() );
+  const QgsFeatureAction::AddFeatureResult result = a->addFeature(
+    defaultValues,
+    context.showModal(),
+    std::unique_ptr<QgsExpressionContextScope>( context.additionalExpressionContextScope() ? new QgsExpressionContextScope( *context.additionalExpressionContextScope() ) : nullptr ),
+    context.hideParent()
+  );
   if ( !feature )
     delete f;
 
@@ -164,7 +169,9 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
   return res;
 }
 
-bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
+bool QgsGuiVectorLayerTools::copyMoveFeatures(
+  QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg
+) const
 {
   bool res = QgsVectorLayerTools::copyMoveFeatures( layer, request, dx, dy, errorMsg, topologicalEditing, topologicalLayer, childrenInfoMsg );
 
@@ -227,13 +234,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   connect( showMore, &QToolButton::triggered, showMore, &QObject::deleteLater );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
-  QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
-    tr( "Commit errors" ),
-    tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
-    showMore,
-    Qgis::MessageLevel::Warning,
-    0,
-    QgisApp::instance()->messageBar()
-  );
+  QgsMessageBarItem *errorMsg
+    = new QgsMessageBarItem( tr( "Commit errors" ), tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ), showMore, Qgis::MessageLevel::Warning, 0, QgisApp::instance()->messageBar() );
   QgisApp::instance()->messageBar()->pushItem( errorMsg );
 }

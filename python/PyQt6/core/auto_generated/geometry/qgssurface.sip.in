@@ -10,7 +10,7 @@
 
 
 
-class QgsSurface: QgsAbstractGeometry
+class QgsSurface : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Surface geometry type.
@@ -20,7 +20,6 @@ Surface geometry type.
 #include "qgssurface.h"
 %End
   public:
-
     virtual QgsBox3D boundingBox3D() const;
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
@@ -28,7 +27,6 @@ Surface geometry type.
 
 
   protected:
-
     virtual void clearCache() const;
 
 

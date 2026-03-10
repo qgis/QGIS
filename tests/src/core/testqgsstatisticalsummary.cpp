@@ -44,20 +44,16 @@ class TestQgsStatisticSummary : public QObject
 };
 
 void TestQgsStatisticSummary::initTestCase()
-{
-}
+{}
 
 void TestQgsStatisticSummary::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsStatisticSummary::init()
-{
-}
+{}
 
 void TestQgsStatisticSummary::cleanup()
-{
-}
+{}
 
 void TestQgsStatisticSummary::stats()
 {

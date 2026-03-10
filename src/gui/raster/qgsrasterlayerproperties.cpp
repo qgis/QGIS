@@ -260,10 +260,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   }
   else
   {
-    mContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    mContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   // Initialize with layer center
@@ -358,7 +359,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QString pyramidFormat( u"<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>"_s );
   QString pyramidHeader = tr( "Description" );
   QString pyramidSentence1 = tr( "Large resolution raster layers can slow navigation in QGIS." );
-  QString pyramidSentence2 = tr( "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom." );
+  QString pyramidSentence2 = tr(
+    "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom."
+  );
   QString pyramidSentence3 = tr( "You must have write access in the directory where the original data is stored to build pyramids." );
   QString pyramidSentence4 = tr( "Please note that building internal pyramids may alter the original data file and once created they cannot be removed!" );
   QString pyramidSentence5 = tr( "Please note that building internal pyramids could corrupt your image - always make a backup of your data first!" );
@@ -442,7 +445,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 ) || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
+      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 )
+           || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
       {
         mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
       }
@@ -716,8 +720,7 @@ void QgsRasterLayerProperties::sync()
   mRasterTransparencyWidget->syncToLayer();
   mLabelingWidget->syncToLayer( mRasterLayer );
 
-  if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32
-       || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
+  if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32 || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     mRasterTransparencyWidget->gboxNoDataValue->setEnabled( false );
     mRasterTransparencyWidget->gboxCustomTransparency->setEnabled( false );
@@ -725,8 +728,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
-  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
-          || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
+  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids )
     {
@@ -1004,13 +1006,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QString res = provider->buildPyramids(
-    myPyramidList,
-    resamplingMethod,
-    cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(),
-    QStringList(),
-    feedback.get()
-  );
+  QString res = provider->buildPyramids( myPyramidList, resamplingMethod, cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(), QStringList(), feedback.get() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
@@ -1026,8 +1022,14 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
     }
     else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
-      QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "The file was not writable. Some formats do not "
-                                                                 "support pyramid overviews. Consult the GDAL documentation if in doubt." ) );
+      QMessageBox::warning(
+        this,
+        tr( "Building Pyramids" ),
+        tr(
+          "The file was not writable. Some formats do not "
+          "support pyramid overviews. Consult the GDAL documentation if in doubt."
+        )
+      );
     }
     else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {

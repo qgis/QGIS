@@ -24,6 +24,7 @@ selections.
 %End
   public:
     QgsIFeatureSelectionManager( QObject *parent /TransferThis/ );
+
     virtual int selectedFeatureCount() = 0;
 %Docstring
 Returns the number of features that are selected in this layer.

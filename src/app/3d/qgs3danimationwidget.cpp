@@ -211,16 +211,7 @@ void Qgs3DAnimationWidget::onExportAnimation()
 
     connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
-    const bool success = Qgs3DUtils::exportAnimation(
-      animation(),
-      *mMap,
-      dialog.fps(),
-      dialog.outputDirectory(),
-      dialog.fileNameExpression(),
-      dialog.frameSize(),
-      error,
-      &progressFeedback
-    );
+    const bool success = Qgs3DUtils::exportAnimation( animation(), *mMap, dialog.fps(), dialog.outputDirectory(), dialog.fileNameExpression(), dialog.frameSize(), error, &progressFeedback );
 
     progressTask.reset();
 

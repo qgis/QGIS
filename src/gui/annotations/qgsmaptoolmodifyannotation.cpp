@@ -42,17 +42,9 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     void insert( int index, const QgsRectangle &bounds )
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
-      const float aMin[2] {
-        scaledBounds[0], scaledBounds[1]
-      };
-      const float aMax[2] {
-        scaledBounds[2], scaledBounds[3]
-      };
-      this->Insert(
-        aMin,
-        aMax,
-        index
-      );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Insert( aMin, aMax, index );
     }
 
     /**
@@ -64,17 +56,9 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     void remove( int index, const QgsRectangle &bounds )
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
-      const float aMin[2] {
-        scaledBounds[0], scaledBounds[1]
-      };
-      const float aMax[2] {
-        scaledBounds[2], scaledBounds[3]
-      };
-      this->Remove(
-        aMin,
-        aMax,
-        index
-      );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Remove( aMin, aMax, index );
     }
 
     /**
@@ -85,29 +69,16 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function<bool( int index )> &callback ) const
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
-      const float aMin[2] {
-        scaledBounds[0], scaledBounds[1]
-      };
-      const float aMax[2] {
-        scaledBounds[2], scaledBounds[3]
-      };
-      this->Search(
-        aMin,
-        aMax,
-        callback
-      );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Search( aMin, aMax, callback );
       return true;
     }
 
   private:
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return {
-        static_cast<float>( bounds.xMinimum() ),
-        static_cast<float>( bounds.yMinimum() ),
-        static_cast<float>( bounds.xMaximum() ),
-        static_cast<float>( bounds.yMaximum() )
-      };
+      return { static_cast<float>( bounds.xMinimum() ), static_cast<float>( bounds.yMinimum() ), static_cast<float>( bounds.xMaximum() ), static_cast<float>( bounds.yMaximum() ) };
     }
 };
 ///@endcond
@@ -158,7 +129,8 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       {
         const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
-        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y(), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
+        QgsAnnotationItemEditOperationTranslateItem
+          operation( mSelectedItemId, delta.x(), delta.y(), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
         std::unique_ptr<QgsAnnotationItemEditOperationTransientResults> operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
@@ -180,7 +152,14 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
         const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
+        QgsAnnotationItemEditOperationMoveNode operation(
+          mSelectedItemId,
+          mTargetNode.id(),
+          QgsPoint( mTargetNode.point() ),
+          QgsPoint( endPointLayer ),
+          event->pixelPoint().x() - mMoveStartPointPixels.x(),
+          event->pixelPoint().y() - mMoveStartPointPixels.y()
+        );
         std::unique_ptr<QgsAnnotationItemEditOperationTransientResults> operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
@@ -300,7 +279,8 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         {
           const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
-          QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y(), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
+          QgsAnnotationItemEditOperationTranslateItem
+            operation( mSelectedItemId, delta.x(), delta.y(), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
           switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
@@ -335,7 +315,14 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         if ( layer )
         {
           const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ), event->pixelPoint().x() - mMoveStartPointPixels.x(), event->pixelPoint().y() - mMoveStartPointPixels.y() );
+          QgsAnnotationItemEditOperationMoveNode operation(
+            mSelectedItemId,
+            mTargetNode.id(),
+            QgsPoint( mTargetNode.point() ),
+            QgsPoint( endPointLayer ),
+            event->pixelPoint().x() - mMoveStartPointPixels.x(),
+            event->pixelPoint().y() - mMoveStartPointPixels.y()
+          );
           switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
@@ -442,10 +429,7 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
         clearHoveredItem();
         event->ignore(); // disable default shortcut handling
       }
-      else if ( event->key() == Qt::Key_Left
-                || event->key() == Qt::Key_Right
-                || event->key() == Qt::Key_Up
-                || event->key() == Qt::Key_Down )
+      else if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down )
       {
         if ( !layer )
           return;

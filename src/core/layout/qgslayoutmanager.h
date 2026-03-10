@@ -52,7 +52,6 @@ class CORE_EXPORT QgsLayoutManager : public QgsAbstractProjectStoredObjectManage
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutManager. The project will become the parent object for this
      * manager.
@@ -158,12 +157,9 @@ class CORE_EXPORT QgsLayoutManager : public QgsAbstractProjectStoredObjectManage
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 
   protected:
-
     void setupObjectConnections( QgsMasterLayoutInterface *layout ) override;
 
   private:
-
-
 };
 
 

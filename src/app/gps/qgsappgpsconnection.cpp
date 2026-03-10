@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsAppGpsConnection::~QgsAppGpsConnection()
 {
@@ -247,9 +246,7 @@ void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
   QgisApp::instance()->statusBarIface()->clearMessage();
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
-  connect( configureButton, &QPushButton::clicked, configureButton, [] {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s );
-  } );
+  connect( configureButton, &QPushButton::clicked, configureButton, [] { QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s ); } );
   mConnectionMessageItem->layout()->addWidget( configureButton );
   QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, Qgis::MessageLevel::Critical );
 }

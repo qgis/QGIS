@@ -39,7 +39,6 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProxyProgressTask, with the specified \a description.
      */
@@ -77,12 +76,10 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
     void canceled();
 
   private:
-
     QWaitCondition mNotFinishedWaitCondition;
     QMutex mNotFinishedMutex;
     bool mAlreadyFinished = false;
     bool mResult = true;
-
 };
 
 /**
@@ -99,7 +96,6 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
 class CORE_EXPORT QgsScopedProxyProgressTask
 {
   public:
-
     /**
      * Constructor for QgsScopedProxyProgressTask, with the specified \a description.
      */
@@ -116,7 +112,6 @@ class CORE_EXPORT QgsScopedProxyProgressTask
     void setProgress( double progress );
 
   private:
-
     QgsProxyProgressTask *mTask = nullptr;
 
 #ifdef SIP_RUN

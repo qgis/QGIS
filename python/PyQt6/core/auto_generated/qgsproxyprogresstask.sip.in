@@ -26,7 +26,6 @@ manager.
 #include "qgsproxyprogresstask.h"
 %End
   public:
-
     QgsProxyProgressTask( const QString &description, bool canCancel = false );
 %Docstring
 Constructor for QgsProxyProgressTask, with the specified
@@ -83,7 +82,6 @@ when it goes out of scope.
 #include "qgsproxyprogresstask.h"
 %End
   public:
-
     QgsScopedProxyProgressTask( const QString &description );
 %Docstring
 Constructor for QgsScopedProxyProgressTask, with the specified

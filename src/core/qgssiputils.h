@@ -30,8 +30,8 @@
 class CORE_EXPORT QgsSipUtils
 {
   public:
-
 #ifdef SIP_RUN
+    // clang-format off
     /**
      * Returns TRUE if an object is currently owned by Python.
      *
@@ -49,8 +49,8 @@ class CORE_EXPORT QgsSipUtils
       sipRes = false;
     }
     % End
+// clang-format on
 #endif
-
 };
 
 #endif //QGSSIPUTILS_H

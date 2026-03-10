@@ -35,14 +35,13 @@ class QgsFields;
 class CORE_EXPORT QgsAttributeTableConfig
 {
   public:
-
     /**
      * The type of an attribute table column.
      */
     enum Type
     {
-      Field,    //!< This column represents a field
-      Action    //!< This column represents an action widget
+      Field, //!< This column represents a field
+      Action //!< This column represents an action widget
     };
 
     /**
@@ -50,22 +49,22 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     struct CORE_EXPORT ColumnConfig
     {
-      ColumnConfig() = default;
+        ColumnConfig() = default;
 
-      // TODO c++20 - replace with = default
-      bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 
-      //! The type of this column.
-      QgsAttributeTableConfig::Type type = Field;
+        //! The type of this column.
+        QgsAttributeTableConfig::Type type = Field;
 
-      //! The name of the attribute if this column represents a field
-      QString name;
+        //! The name of the attribute if this column represents a field
+        QString name;
 
-      //! Flag that controls if the column is hidden
-      bool hidden = false;
+        //! Flag that controls if the column is hidden
+        bool hidden = false;
 
-      //! Width of column, or -1 for default width
-      int width = -1;
+        //! Width of column, or -1 for default width
+        int width = -1;
     };
 
     /**
@@ -73,8 +72,8 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     enum ActionWidgetStyle
     {
-      ButtonList,   //!< A list of buttons
-      DropDown      //!< A tool button with a drop-down to select the current action
+      ButtonList, //!< A list of buttons
+      DropDown    //!< A tool button with a drop-down to select the current action
     };
 
     QgsAttributeTableConfig() = default;
@@ -100,18 +99,20 @@ class CORE_EXPORT QgsAttributeTableConfig
     int size() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Maps a visible column index to its original column index.
      * \param visibleColumn index of visible column
      * \returns corresponding index when hidden columns are considered
      */
-    int mapVisibleColumnToIndex( int visibleColumn ) const;
+      int mapVisibleColumnToIndex( int visibleColumn ) const;
 
     /**
      * Set the list of columns visible in the attribute table.
@@ -176,6 +177,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     int columnWidth( int column ) const;
 #else
+    // clang-format off
 
     /**
      * Returns the width of a column, or -1 if column should use default width.
@@ -197,6 +199,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -209,6 +212,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setColumnWidth( int column, int width );
 #else
+      // clang-format off
 
     /**
      * Sets the width of a column.
@@ -229,6 +233,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       sipCpp->setColumnWidth( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -240,6 +245,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     bool columnHidden( int column ) const;
 #else
+      // clang-format off
 
     /**
      * Returns TRUE if the specified column is hidden.
@@ -261,6 +267,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -273,6 +280,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setColumnHidden( int column, bool hidden );
 #else
+      // clang-format off
 
     /**
      * Sets whether the specified column should be hidden.
@@ -293,6 +301,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       sipCpp->setColumnHidden( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -311,7 +320,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
 
-    bool operator!= ( const QgsAttributeTableConfig &other ) const;
+    bool operator!=( const QgsAttributeTableConfig &other ) const;
 
   private:
     QVector<ColumnConfig> mColumns;

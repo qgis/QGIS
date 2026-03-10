@@ -30,10 +30,10 @@ using namespace Qt::StringLiterals;
 
 QgsPointCloud3DSymbol::QgsPointCloud3DSymbol()
   : QgsAbstract3DSymbol()
-{
-}
+{}
 
-QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {}
+QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol()
+{}
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
@@ -130,8 +130,7 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QString QgsSingleColorPointCloud3DSymbol::symbolType() const
 {
@@ -181,8 +180,7 @@ void QgsSingleColorPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 
 QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QgsColorRampPointCloud3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
@@ -280,8 +278,7 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 
 QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QString QgsRgbPointCloud3DSymbol::symbolType() const
 {
@@ -457,8 +454,7 @@ void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancemen
 
 QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QgsClassificationPointCloud3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
 {

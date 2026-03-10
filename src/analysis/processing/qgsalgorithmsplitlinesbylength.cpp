@@ -56,9 +56,11 @@ QString QgsSplitLinesByLengthAlgorithm::groupId() const
 
 QString QgsSplitLinesByLengthAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a line (or curve) layer and splits each feature into multiple parts, "
-                      "where each part is of a specified maximum length.\n\n"
-                      "Z and M values at the start and end of the new line substrings are linearly interpolated from existing values." );
+  return QObject::tr(
+    "This algorithm takes a line (or curve) layer and splits each feature into multiple parts, "
+    "where each part is of a specified maximum length.\n\n"
+    "Z and M values at the start and end of the new line substrings are linearly interpolated from existing values."
+  );
 }
 
 QString QgsSplitLinesByLengthAlgorithm::shortDescription() const

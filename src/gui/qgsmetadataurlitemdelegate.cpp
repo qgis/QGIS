@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 MetadataUrlItemDelegate::MetadataUrlItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *MetadataUrlItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

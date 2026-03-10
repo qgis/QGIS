@@ -22,7 +22,6 @@ index.
 #include "qgsspatialindexkdbushdata.h"
 %End
   public:
-
     QgsSpatialIndexKDBushData( QgsFeatureId id, double x, double y );
 %Docstring
 Constructor for QgsSpatialIndexKDBushData, for a feature with the given

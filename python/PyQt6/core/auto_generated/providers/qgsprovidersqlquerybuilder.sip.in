@@ -25,7 +25,6 @@ specific SQL syntax.
 #include "qgsprovidersqlquerybuilder.h"
 %End
   public:
-
     virtual ~QgsProviderSqlQueryBuilder();
 
     virtual QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const;

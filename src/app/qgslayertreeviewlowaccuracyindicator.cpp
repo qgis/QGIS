@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewLowAccuracyIndicatorProvider::QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewLowAccuracyIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
@@ -44,8 +43,7 @@ void QgsLayerTreeViewLowAccuracyIndicatorProvider::disconnectSignals( QgsMapLaye
 }
 
 void QgsLayerTreeViewLowAccuracyIndicatorProvider::onIndicatorClicked( const QModelIndex & )
-{
-}
+{}
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::iconName( QgsMapLayer * )
 {
@@ -90,8 +88,7 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
 
   return QString();
 }
@@ -134,8 +131,7 @@ bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *lay
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
 
   return false;
 }

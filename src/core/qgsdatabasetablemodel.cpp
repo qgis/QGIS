@@ -91,7 +91,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
   if ( index.row() - ( mAllowEmpty ? 1 : 0 ) >= mTables.count() )
     return QVariant();
 
-  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[ index.row() - ( mAllowEmpty ? 1 : 0 ) ];
+  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[index.row() - ( mAllowEmpty ? 1 : 0 )];
   switch ( role )
   {
     case static_cast< int >( CustomRole::Empty ):
@@ -167,7 +167,6 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
 
     case static_cast< int >( CustomRole::CustomInfo ):
       return table.info();
-
   }
 
   return QVariant();
@@ -218,7 +217,7 @@ void QgsDatabaseTableModel::refresh()
     }
   }
 
-  for ( const  QgsAbstractDatabaseProviderConnection::TableProperty &newTable : newTables )
+  for ( const QgsAbstractDatabaseProviderConnection::TableProperty &newTable : newTables )
   {
     if ( !mTables.contains( newTable ) )
     {

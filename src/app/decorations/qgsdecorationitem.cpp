@@ -50,8 +50,7 @@ using namespace Qt::StringLiterals;
 
 QgsDecorationItem::QgsDecorationItem( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsDecorationItem::update()
 {

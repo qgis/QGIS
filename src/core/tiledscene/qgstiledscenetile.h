@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsTiledSceneTile
 {
   public:
-
     /**
      * Constructor for an invalid tile.
      *
@@ -185,7 +184,6 @@ class CORE_EXPORT QgsTiledSceneTile
     double mGeometricError = 0;
     QUrl mBaseUrl;
     QVariantMap mMetadata;
-
 };
 
 #endif // QGSTILEDSCENETILE_H

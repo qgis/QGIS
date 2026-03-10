@@ -292,7 +292,12 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QLocale().toString( mOutputExtent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QLocale().toString( mOutputExtent.yMaximum(), 'f', decimals ) );
 
-  QString condensed = u"%1,%2,%3,%4"_s.arg( QString::number( mOutputExtent.xMinimum(), 'f', decimals ), QString::number( mOutputExtent.xMaximum(), 'f', decimals ), QString::number( mOutputExtent.yMinimum(), 'f', decimals ), QString::number( mOutputExtent.yMaximum(), 'f', decimals ) );
+  QString condensed = u"%1,%2,%3,%4"_s.arg(
+    QString::number( mOutputExtent.xMinimum(), 'f', decimals ),
+    QString::number( mOutputExtent.xMaximum(), 'f', decimals ),
+    QString::number( mOutputExtent.yMinimum(), 'f', decimals ),
+    QString::number( mOutputExtent.yMaximum(), 'f', decimals )
+  );
   condensed += u" [%1]"_s.arg( mOutputCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
@@ -417,9 +422,7 @@ void QgsExtentWidget::layerMenuAboutToShow()
       act->setCheckable( true );
       act->setChecked( true );
     }
-    connect( act, &QAction::triggered, this, [this, layerId] {
-      setExtentToLayerExtent( layerId );
-    } );
+    connect( act, &QAction::triggered, this, [this, layerId] { setExtentToLayerExtent( layerId ); } );
     mLayerMenu->addAction( act );
     mLayerMenuActions << act;
   }

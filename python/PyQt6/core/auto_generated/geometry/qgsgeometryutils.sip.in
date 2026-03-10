@@ -26,7 +26,6 @@ Contains various geometry utility functions.
 #include "qgsgeometryutils.h"
 %End
   public:
-
     static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) /Factory/;
 %Docstring
 Returns list of linestrings extracted from the passed geometry. The
@@ -57,10 +56,7 @@ specified vertex.
 :return: distance to vertex (following geometry)
 %End
 
-    static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
-                                    double distance,
-                                    QgsVertexId &previousVertex /Out/,
-                                    QgsVertexId &nextVertex /Out/ );
+    static bool verticesAtDistance( const QgsAbstractGeometry &geometry, double distance, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
 %Docstring
 Retrieves the vertices which are before and after the interpolated point
 at a specified distance along a linestring (or polygon boundary).
@@ -89,9 +85,7 @@ Returns the distance between a point and an infinite line.
 .. versionadded:: 3.26
 %End
 
-    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
-                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-                                        QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
 %Docstring
 Compute the intersection of a line and a circle. If the intersection has
 two solutions (points), the closest point to the initial
@@ -161,9 +155,9 @@ Returns the number of tangents (either 0 or 2).
       QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
       QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) /HoldGIL/;
 %Docstring
-Calculates the inner tangent points for two circles, centered at \a
-center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
-respectively.
+Calculates the inner tangent points for two circles, centered at
+``center1`` and ``center2`` and with radii of ``radius1`` and
+``radius2`` respectively.
 
 The inner tangent points correspond to the points at which the two lines
 which are drawn so that they are tangential to both circles and are

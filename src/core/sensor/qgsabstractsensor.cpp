@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 QgsAbstractSensor::QgsAbstractSensor( QObject *parent )
   : QObject( parent )
   , mId( QUuid::createUuid().toString() )
-{
-}
+{}
 
 QString QgsAbstractSensor::name() const
 {

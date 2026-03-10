@@ -43,8 +43,7 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   mShapeStyleSymbol = QgsMarkerSymbol::createSimple( properties );
   refreshSymbol();
 
-  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
   } );
@@ -80,11 +79,10 @@ void QgsLayoutItemMarker::refreshSymbol()
     sym->startRender( rc );
     QRectF bounds = sym->bounds( QPointF( 0, 0 ), rc );
     sym->stopRender( rc );
-    mPoint = QPointF( -bounds.left() * 25.4 / lLayout->renderContext().dpi(),
-                      -bounds.top() * 25.4 / lLayout->renderContext().dpi() );
+    mPoint = QPointF( -bounds.left() * 25.4 / lLayout->renderContext().dpi(), -bounds.top() * 25.4 / lLayout->renderContext().dpi() );
     bounds.translate( mPoint );
 
-    const QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size()  * 25.4 / lLayout->renderContext().dpi(), Qgis::LayoutUnit::Millimeters );
+    const QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size() * 25.4 / lLayout->renderContext().dpi(), Qgis::LayoutUnit::Millimeters );
     mFixedSize = mLayout->renderContext().measurementConverter().convert( newSizeMm, sizeWithUnits().units() );
 
     attemptResize( mFixedSize );
@@ -142,13 +140,11 @@ QgsLayoutItemMap *QgsLayoutItemMarker::linkedMap() const
 QgsLayoutNorthArrowHandler::NorthMode QgsLayoutItemMarker::northMode() const
 {
   return mNorthArrowHandler->northMode();
-
 }
 
 void QgsLayoutItemMarker::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode )
 {
   mNorthArrowHandler->setNorthMode( mode );
-
 }
 
 double QgsLayoutItemMarker::northOffset() const

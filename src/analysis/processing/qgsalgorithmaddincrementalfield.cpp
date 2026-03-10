@@ -37,21 +37,25 @@ QString QgsAddIncrementalFieldAlgorithm::displayName() const
 
 QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.\n\n"
-                      "This field can be used as a unique ID for features in the layer. The new attribute "
-                      "is not added to the input layer but a new layer is generated instead.\n\n"
-                      "The initial starting value for the incremental series can be specified.\n\n"
-                      "Specifying an optional modulus value will restart the count to START whenever the field value reaches the modulus value.\n\n"
-                      "Optionally, grouping fields can be specified. If group fields are present, then the field value will "
-                      "be reset for each combination of these group field values.\n\n"
-                      "The sort order for features may be specified, if so, then the incremental field will respect "
-                      "this sort order." );
+  return QObject::tr(
+    "This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.\n\n"
+    "This field can be used as a unique ID for features in the layer. The new attribute "
+    "is not added to the input layer but a new layer is generated instead.\n\n"
+    "The initial starting value for the incremental series can be specified.\n\n"
+    "Specifying an optional modulus value will restart the count to START whenever the field value reaches the modulus value.\n\n"
+    "Optionally, grouping fields can be specified. If group fields are present, then the field value will "
+    "be reset for each combination of these group field values.\n\n"
+    "The sort order for features may be specified, if so, then the incremental field will respect "
+    "this sort order."
+  );
 }
 
 QString QgsAddIncrementalFieldAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Adds a new integer field to a vector layer, with a sequential value for each feature, "
-                      "usable as a unique ID for features in the layer." );
+  return QObject::tr(
+    "Adds a new integer field to a vector layer, with a sequential value for each feature, "
+    "usable as a unique ID for features in the layer."
+  );
 }
 
 QStringList QgsAddIncrementalFieldAlgorithm::tags() const
