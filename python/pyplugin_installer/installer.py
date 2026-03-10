@@ -319,15 +319,20 @@ class QgsPluginInstaller(QObject):
         self.exportPluginsToManager()
 
     # ----------------------------------------- #
-    def showPluginManagerWhenReady(self, tab_index: int = -1) -> None:
+    def showPluginManagerWhenReady(
+        self, tab_index: int = -1, search_term: str = ""
+    ) -> None:
         """
         Open the plugin manager window.
 
         If fetching is still in progress, it shows the progress window first
-        Optionally pass the index of tab to be opened
+        Optionally pass the index of tab to be opened and a search term
+        to filter plugins in the manager
 
         :param tab_index: index of the tab to be opened
         :type tab_index: int
+        :param search_term: text used to filter plugins in the manager
+        :type search_term: str
         """
         if self.message_bar_widget:
             if not sip.isdeleted(self.message_bar_widget):
@@ -347,7 +352,7 @@ class QgsPluginInstaller(QObject):
         except (ValueError, TypeError):
             tab_index = -1
 
-        iface.pluginManagerInterface().showPluginManager(tab_index)
+        iface.pluginManagerInterface().showPluginManager(tab_index, search_term)
 
     # ----------------------------------------- #
     def onManagerClose(self):
