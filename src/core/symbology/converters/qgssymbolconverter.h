@@ -34,7 +34,6 @@ class QgsSymbol;
 class CORE_EXPORT QgsSymbolConverterContext
 {
   public:
-
     /**
      * Constructor for QgsSymbolConverterContext.
      *
@@ -96,7 +95,6 @@ class CORE_EXPORT QgsSymbolConverterContext
     void setTypeHint( Qgis::SymbolType hint ) { mTypeHint = hint; }
 
   private:
-
 #ifdef SIP_RUN
     QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
 #endif
@@ -122,7 +120,6 @@ class CORE_EXPORT QgsSymbolConverterContext
 */
 class CORE_EXPORT QgsAbstractSymbolConverter
 {
-
   public:
     virtual ~QgsAbstractSymbolConverter();
 
@@ -180,7 +177,6 @@ class CORE_EXPORT QgsAbstractSymbolConverter
      * deserialization of symbols.
      */
     virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0 SIP_THROW( QgsNotSupportedException );
-
 };
 
 #endif //QGSSYMBOLCONVERTER_H

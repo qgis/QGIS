@@ -32,9 +32,7 @@ class QgsMarkerSymbol;
  */
 class CORE_EXPORT QgsSymbolConverterEsriRest : public QgsAbstractSymbolConverter
 {
-
   public:
-
     Qgis::SymbolConverterCapabilities capabilities() const override;
     QString name() const override;
     QString formatName() const override;
@@ -57,7 +55,6 @@ class CORE_EXPORT QgsSymbolConverterEsriRest : public QgsAbstractSymbolConverter
     static Qt::BrushStyle convertFillStyle( const QString &style );
 
   private:
-
     static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsFillSymbol > parseEsriPictureFillSymbolJson( const QVariantMap &symbolData );
@@ -68,7 +65,6 @@ class CORE_EXPORT QgsSymbolConverterEsriRest : public QgsAbstractSymbolConverter
     static Qgis::MarkerShape parseEsriMarkerShape( const QString &style );
 
     friend class TestQgsArcGisRestUtils;
-
 };
 
 #endif // QGSSYMBOLCONVERTERESRIREST_H
