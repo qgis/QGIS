@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAbstractSymbolConverter
      *
      * This should be an untranslated string identifying the converter.
      *
-     * \see displayName()
+     * \see formatName()
      */
     virtual QString name() const = 0;
 
