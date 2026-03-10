@@ -24,6 +24,8 @@
 #include "qgssymbolconverterqml.h"
 #include "qgssymbolconvertersld.h"
 
+#include "moc_qgssymbolconverterregistry.cpp"
+
 QgsSymbolConverterRegistry::QgsSymbolConverterRegistry( QObject *parent )
   : QObject( parent )
 {}
