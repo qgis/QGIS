@@ -144,7 +144,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
             }
             else
             {
-              QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+              QgisApp::instance()
+                ->messageBar()
+                ->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
               return;
             }
           }
@@ -153,7 +155,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
         case PropertyStatus::CurrentExpressionInvalid:
         {
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” has an invalid expression set for label rotation" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+          QgisApp::instance()
+            ->messageBar()
+            ->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” has an invalid expression set for label rotation" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
           return;
         }
       }
@@ -166,8 +170,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         // Convert to degree
-        mCurrentRotation = mCurrentRotation
-                           * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(), Qgis::AngleUnit::Degrees );
+        mCurrentRotation = mCurrentRotation * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(), Qgis::AngleUnit::Degrees );
 
         mStartRotation = mCurrentRotation;
         createRubberBands();

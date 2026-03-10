@@ -45,10 +45,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       mQgisApp = new QgisApp();
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void test()
     {
@@ -62,13 +59,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       options.driverName = "GPKG";
       options.layerName = "test";
       QString newFilename;
-      const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-        &ml,
-        fileName,
-        ml.transformContext(),
-        options, nullptr,
-        &newFilename
-      ) );
+      const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &ml, fileName, ml.transformContext(), options, nullptr, &newFilename ) );
 
       QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
       QgsVectorLayer layer( u"%1|layername=test"_s.arg( newFilename ), "src_test", "ogr" );
@@ -109,17 +100,11 @@ class TestQgsMergeattributesDialog : public QgsTest
 
       QgsField uniqueField( u"unique"_s, QMetaType::Type::Int );
       QgsFieldConstraints constraints;
-      constraints.setConstraint(
-        QgsFieldConstraints::ConstraintUnique
-      );
-      uniqueField.setConstraints(
-        constraints
-      );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+      uniqueField.setConstraints( constraints );
 
       QgsField notUniqueField( u"not_unique"_s, QMetaType::Type::Int );
-      QVERIFY( ml.dataProvider()->addAttributes(
-        { uniqueField, notUniqueField }
-      ) );
+      QVERIFY( ml.dataProvider()->addAttributes( { uniqueField, notUniqueField } ) );
 
       ml.updateFields();
       QCOMPARE( ml.fields().at( 0 ).constraints().constraints(), QgsFieldConstraints::ConstraintUnique );

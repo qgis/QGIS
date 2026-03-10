@@ -23,8 +23,7 @@
 
 QgsModelDesignerInputsTreeWidget::QgsModelDesignerInputsTreeWidget( QWidget *parent )
   : QTreeWidget( parent )
-{
-}
+{}
 
 QMimeData *QgsModelDesignerInputsTreeWidget::mimeData( const QList<QTreeWidgetItem *> &items ) const
 {

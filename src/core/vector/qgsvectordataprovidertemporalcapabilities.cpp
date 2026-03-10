@@ -18,9 +18,8 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 
 QgsVectorDataProviderTemporalCapabilities::QgsVectorDataProviderTemporalCapabilities( bool enabled )
-  :  QgsDataProviderTemporalCapabilities( enabled )
-{
-}
+  : QgsDataProviderTemporalCapabilities( enabled )
+{}
 
 Qgis::VectorDataProviderTemporalMode QgsVectorDataProviderTemporalCapabilities::mode() const
 {

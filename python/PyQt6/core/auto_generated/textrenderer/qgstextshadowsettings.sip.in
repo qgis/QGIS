@@ -24,7 +24,6 @@ Container for settings relating to a text shadow.
 #include "qgstextshadowsettings.h"
 %End
   public:
-
     enum ShadowPlacement /BaseType=IntEnum/
     {
       ShadowLowest,

@@ -36,7 +36,14 @@ using namespace Qt::StringLiterals;
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    DummyAlgorithm( const QString &name, const QString &group, Qgis::ProcessingAlgorithmFlags flags = Qgis::ProcessingAlgorithmFlags(), const QString &tags = QString(), const QString &shortDescription = QString(), const QString &displayName = QString() )
+    DummyAlgorithm(
+      const QString &name,
+      const QString &group,
+      Qgis::ProcessingAlgorithmFlags flags = Qgis::ProcessingAlgorithmFlags(),
+      const QString &tags = QString(),
+      const QString &shortDescription = QString(),
+      const QString &displayName = QString()
+    )
       : mName( name )
       , mDisplayName( displayName )
       , mGroup( group )
@@ -72,12 +79,8 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
       : mId( id )
       , mName( name )
       , mAlgs( algs )
-    {
-    }
-    ~DummyProvider() override
-    {
-      qDeleteAll( mAlgs );
-    }
+    {}
+    ~DummyProvider() override { qDeleteAll( mAlgs ); }
 
     QString id() const override { return mId; }
     bool isActive() const override { return mActive; }

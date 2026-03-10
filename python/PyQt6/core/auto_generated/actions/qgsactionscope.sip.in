@@ -52,7 +52,7 @@ Show in attribute table and work on the layer or selection.
 #include <QHash>
 %End
 
-    explicit QgsActionScope();
+      explicit QgsActionScope();
 %Docstring
 Creates a new invalid action scope.
 %End
@@ -151,6 +151,7 @@ expression variables in here, they are extracted automatically from the
 %Docstring
 Returns ``True`` if this scope is valid.
 %End
+
     Py_hash_t __hash__();
 %MethodCode
     sipRes = qHash( *sipCpp );

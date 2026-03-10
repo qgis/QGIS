@@ -43,8 +43,7 @@ QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &o
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
-{
-}
+{}
 
 QgsNineCellFilter::Result QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
@@ -256,12 +255,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
   const cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
-  auto kernel = cl::KernelFunctor<
-    cl::Buffer &,
-    cl::Buffer &,
-    cl::Buffer &,
-    cl::Buffer &,
-    cl::Buffer &>( program, "processNineCellWindow" );
+  auto kernel = cl::KernelFunctor< cl::Buffer &, cl::Buffer &, cl::Buffer &, cl::Buffer &, cl::Buffer &>( program, "processNineCellWindow" );
 
   // Rotate buffer index
   std::vector<int> rowIndex = { 0, 1, 2 };
@@ -316,7 +310,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
       else // Read line i + 1 and put it into scanline 3
-        // Overwrite from input, skip first and last
+      // Overwrite from input, skip first and last
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
@@ -347,10 +341,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
   else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-    if ( GDALDatasetRunCloseWithoutDestroyingEx(
-           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-         )
-         != CE_None )
+    if ( GDALDatasetRunCloseWithoutDestroyingEx( outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
     {
       return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::CreateOutputError;
     }
@@ -483,7 +474,8 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
     for ( int xIndex = 0; xIndex < xSize; ++xIndex )
     {
       // cells(x, y) x11, x21, x31, x12, x22, x32, x13, x23, x33
-      resultLine[xIndex] = processNineCellWindow( &scanLine1[xIndex], &scanLine1[xIndex + 1], &scanLine1[xIndex + 2], &scanLine2[xIndex], &scanLine2[xIndex + 1], &scanLine2[xIndex + 2], &scanLine3[xIndex], &scanLine3[xIndex + 1], &scanLine3[xIndex + 2] );
+      resultLine[xIndex]
+        = processNineCellWindow( &scanLine1[xIndex], &scanLine1[xIndex + 1], &scanLine1[xIndex + 2], &scanLine2[xIndex], &scanLine2[xIndex + 1], &scanLine2[xIndex + 2], &scanLine3[xIndex], &scanLine3[xIndex + 1], &scanLine3[xIndex + 2] );
     }
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
@@ -507,10 +499,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
   else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-    if ( GDALDatasetRunCloseWithoutDestroyingEx(
-           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-         )
-         != CE_None )
+    if ( GDALDatasetRunCloseWithoutDestroyingEx( outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
     {
       return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::OutputBandError;
     }

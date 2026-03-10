@@ -924,13 +924,25 @@ void QgsModelParameterGraphicItem::deleteComponent()
   {
     if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ), QObject::tr( "Algorithms depend on the selected input.\n"
-                                                                                           "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove input" ),
+        QObject::tr(
+          "Algorithms depend on the selected input.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else if ( model()->otherParametersDependOnParameter( param->parameterName() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ), QObject::tr( "Other inputs depend on the selected input.\n"
-                                                                                           "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove input" ),
+        QObject::tr(
+          "Other inputs depend on the selected input.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else
     {
@@ -1112,10 +1124,10 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
       case Qt::TopEdge:
       {
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) {
-                        return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
-                      } ),
-                      params.end() );
+        params.erase(
+          std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) { return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination(); } ),
+          params.end()
+        );
         return params.size();
       }
 
@@ -1184,10 +1196,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         if ( index >= child->algorithm()->outputDefinitions().length() )
         {
           // something goes wrong and tried to link to an not existing output
-          QgsMessageLog::logMessage(
-            tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ),
-            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true
-          );
+          QgsMessageLog::logMessage( tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ), "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
           return QString();
         }
 
@@ -1199,18 +1208,15 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
       case Qt::TopEdge:
       {
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) {
-                        return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
-                      } ),
-                      params.end() );
+        params.erase(
+          std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition *param ) { return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination(); } ),
+          params.end()
+        );
 
         if ( index >= params.length() )
         {
           // something goes wrong and tried to link to an not existing source parameter
-          QgsMessageLog::logMessage(
-            tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ),
-            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true
-          );
+          QgsMessageLog::logMessage( tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ), "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
           return QString();
         }
 
@@ -1227,9 +1233,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           switch ( firstParameterSource.source() )
           {
             case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-              parameterValueAsString = u": %1"_s.arg(
-                firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) )
-              );
+              parameterValueAsString = u": %1"_s.arg( firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::Expression:
@@ -1304,8 +1308,14 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
     emit aboutToChange( tr( "Remove %1" ).arg( child->algorithm() ? child->algorithm()->displayName() : tr( "Algorithm" ) ) );
     if ( !model()->removeChildAlgorithm( child->childId() ) )
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not remove algorithm" ), QObject::tr( "Other algorithms depend on the selected one.\n"
-                                                                                               "Remove them before trying to remove it." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not remove algorithm" ),
+        QObject::tr(
+          "Other algorithms depend on the selected one.\n"
+          "Remove them before trying to remove it."
+        )
+      );
     }
     else
     {
@@ -1334,8 +1344,14 @@ void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
     }
     else
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not activate algorithm" ), QObject::tr( "The selected algorithm depends on other currently non-active algorithms.\n"
-                                                                                                 "Activate them them before trying to activate it.." ) );
+      QMessageBox::warning(
+        nullptr,
+        QObject::tr( "Could not activate algorithm" ),
+        QObject::tr(
+          "The selected algorithm depends on other currently non-active algorithms.\n"
+          "Activate them them before trying to activate it.."
+        )
+      );
     }
   }
 }

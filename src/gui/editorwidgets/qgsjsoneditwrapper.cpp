@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsJsonEditWrapper::QgsJsonEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-{
-}
+{}
 
 QVariant QgsJsonEditWrapper::value() const
 {

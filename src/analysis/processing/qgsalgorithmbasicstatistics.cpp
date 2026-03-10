@@ -39,7 +39,8 @@ QString QgsBasicStatisticsAlgorithm::displayName() const
 
 QStringList QgsBasicStatisticsAlgorithm::tags() const
 {
-  return QObject::tr( "stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,count,distinct,unique,variance,median,quartile,range,majority,minority,summary" ).split( ',' );
+  return QObject::tr( "stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,count,distinct,unique,variance,median,quartile,range,majority,minority,summary" )
+    .split( ',' );
 }
 
 QString QgsBasicStatisticsAlgorithm::group() const
@@ -54,7 +55,10 @@ QString QgsBasicStatisticsAlgorithm::groupId() const
 
 QString QgsBasicStatisticsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates basic statistics from the analysis of values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported. The statistics returned will depend on the field type." );
+  return QObject::tr(
+    "This algorithm generates basic statistics from the analysis of values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported. The statistics "
+    "returned will depend on the field type."
+  );
 }
 
 QString QgsBasicStatisticsAlgorithm::shortDescription() const
@@ -220,7 +224,9 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+)
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -262,28 +268,48 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVari
   outputs.insert( u"THIRDQUARTILE"_s, stat.thirdQuartile() );
   outputs.insert( u"IQR"_s, stat.interQuartileRange() );
 
-  data << QObject::tr( "Count: %1" ).arg( stat.count() )
-       << QObject::tr( "Unique values: %1" ).arg( stat.variety() )
-       << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-       << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
-       << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
-       << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
-       << QObject::tr( "Range: %1" ).arg( stat.range() )
-       << QObject::tr( "Sum: %1" ).arg( stat.sum(), 0, 'f' )
-       << QObject::tr( "Mean value: %1" ).arg( stat.mean(), 0, 'f' )
-       << QObject::tr( "Median value: %1" ).arg( stat.median(), 0, 'f' )
-       << QObject::tr( "Standard deviation: %1" ).arg( stat.stDev(), 0, 'f', 12 )
-       << QObject::tr( "Coefficient of Variation: %1" ).arg( cv, 0, 'f' )
-       << QObject::tr( "Minority (rarest occurring value): %1" ).arg( stat.minority() )
-       << QObject::tr( "Majority (most frequently occurring value): %1" ).arg( stat.majority() )
-       << QObject::tr( "First quartile: %1" ).arg( stat.firstQuartile(), 0, 'f' )
-       << QObject::tr( "Third quartile: %1" ).arg( stat.thirdQuartile(), 0, 'f' )
-       << QObject::tr( "Interquartile Range (IQR): %1" ).arg( stat.interQuartileRange() );
+  data
+    << QObject::tr( "Count: %1" ).arg( stat.count() )
+    << QObject::tr( "Unique values: %1" ).arg( stat.variety() )
+    << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
+    << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
+    << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
+    << QObject::tr( "Range: %1" ).arg( stat.range() )
+    << QObject::tr( "Sum: %1" ).arg( stat.sum(), 0, 'f' )
+    << QObject::tr( "Mean value: %1" ).arg( stat.mean(), 0, 'f' )
+    << QObject::tr( "Median value: %1" ).arg( stat.median(), 0, 'f' )
+    << QObject::tr( "Standard deviation: %1" ).arg( stat.stDev(), 0, 'f', 12 )
+    << QObject::tr( "Coefficient of Variation: %1" ).arg( cv, 0, 'f' )
+    << QObject::tr( "Minority (rarest occurring value): %1" ).arg( stat.minority() )
+    << QObject::tr( "Majority (most frequently occurring value): %1" ).arg( stat.majority() )
+    << QObject::tr( "First quartile: %1" ).arg( stat.firstQuartile(), 0, 'f' )
+    << QObject::tr( "Third quartile: %1" ).arg( stat.thirdQuartile(), 0, 'f' )
+    << QObject::tr( "Interquartile Range (IQR): %1" ).arg( stat.interQuartileRange() );
 
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"RANGE"_s ) << outputs.value( u"SUM"_s ) << outputs.value( u"MEAN"_s ) << outputs.value( u"MEDIAN"_s ) << outputs.value( u"STD_DEV"_s ) << outputs.value( u"CV"_s ) << outputs.value( u"MINORITY"_s ) << outputs.value( u"MAJORITY"_s ) << outputs.value( u"FIRSTQUARTILE"_s ) << outputs.value( u"THIRDQUARTILE"_s ) << outputs.value( u"IQR"_s ) );
+    f.setAttributes(
+      QgsAttributes()
+      << outputs.value( u"COUNT"_s )
+      << outputs.value( u"UNIQUE"_s )
+      << outputs.value( u"EMPTY"_s )
+      << outputs.value( u"FILLED"_s )
+      << outputs.value( u"MIN"_s )
+      << outputs.value( u"MAX"_s )
+      << outputs.value( u"RANGE"_s )
+      << outputs.value( u"SUM"_s )
+      << outputs.value( u"MEAN"_s )
+      << outputs.value( u"MEDIAN"_s )
+      << outputs.value( u"STD_DEV"_s )
+      << outputs.value( u"CV"_s )
+      << outputs.value( u"MINORITY"_s )
+      << outputs.value( u"MAJORITY"_s )
+      << outputs.value( u"FIRSTQUARTILE"_s )
+      << outputs.value( u"THIRDQUARTILE"_s )
+      << outputs.value( u"IQR"_s )
+    );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
@@ -293,7 +319,9 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVari
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
+  const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+)
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -323,18 +351,28 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVar
   outputs.insert( u"MAX"_s, stat.statistic( Qgis::DateTimeStatistic::Max ) );
   outputs.insert( u"RANGE"_s, stat.range().seconds() );
 
-  data << QObject::tr( "Count: %1" ).arg( stat.count() )
-       << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
-       << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-       << QObject::tr( "NOT NULL (filled) values: %1" ).arg( stat.count() - stat.countMissing() )
-       << QObject::tr( "Minimum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Min ) ) )
-       << QObject::tr( "Maximum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Max ) ) )
-       << QObject::tr( "Range (seconds): %1" ).arg( stat.range().seconds() );
+  data
+    << QObject::tr( "Count: %1" ).arg( stat.count() )
+    << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
+    << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( stat.count() - stat.countMissing() )
+    << QObject::tr( "Minimum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Min ) ) )
+    << QObject::tr( "Maximum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Max ) ) )
+    << QObject::tr( "Range (seconds): %1" ).arg( stat.range().seconds() );
 
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"RANGE"_s ) );
+    f.setAttributes(
+      QgsAttributes()
+      << outputs.value( u"COUNT"_s )
+      << outputs.value( u"UNIQUE"_s )
+      << outputs.value( u"EMPTY"_s )
+      << outputs.value( u"FILLED"_s )
+      << outputs.value( u"MIN"_s )
+      << outputs.value( u"MAX"_s )
+      << outputs.value( u"RANGE"_s )
+    );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
@@ -344,7 +382,9 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVar
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+)
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -378,22 +418,36 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVaria
   outputs.insert( u"MINORITY"_s, stat.minority() );
   outputs.insert( u"MAJORITY"_s, stat.majority() );
 
-  data << QObject::tr( "Count: %1" ).arg( stat.count() )
-       << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
-       << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-       << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
-       << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
-       << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
-       << QObject::tr( "Minimum length: %1" ).arg( stat.minLength() )
-       << QObject::tr( "Maximum length: %1" ).arg( stat.maxLength() )
-       << QObject::tr( "Mean length: %1" ).arg( stat.meanLength(), 0, 'f' )
-       << QObject::tr( "Minority: %1" ).arg( stat.minority() )
-       << QObject::tr( "Majority: %1" ).arg( stat.majority() );
+  data
+    << QObject::tr( "Count: %1" ).arg( stat.count() )
+    << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
+    << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
+    << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
+    << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
+    << QObject::tr( "Minimum length: %1" ).arg( stat.minLength() )
+    << QObject::tr( "Maximum length: %1" ).arg( stat.maxLength() )
+    << QObject::tr( "Mean length: %1" ).arg( stat.meanLength(), 0, 'f' )
+    << QObject::tr( "Minority: %1" ).arg( stat.minority() )
+    << QObject::tr( "Majority: %1" ).arg( stat.majority() );
 
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"MIN_LENGTH"_s ) << outputs.value( u"MAX_LENGTH"_s ) << outputs.value( u"MEAN_LENGTH"_s ) << outputs.value( u"MINORITY"_s ) << outputs.value( u"MAJORITY"_s ) );
+    f.setAttributes(
+      QgsAttributes()
+      << outputs.value( u"COUNT"_s )
+      << outputs.value( u"UNIQUE"_s )
+      << outputs.value( u"EMPTY"_s )
+      << outputs.value( u"FILLED"_s )
+      << outputs.value( u"MIN"_s )
+      << outputs.value( u"MAX"_s )
+      << outputs.value( u"MIN_LENGTH"_s )
+      << outputs.value( u"MAX_LENGTH"_s )
+      << outputs.value( u"MEAN_LENGTH"_s )
+      << outputs.value( u"MINORITY"_s )
+      << outputs.value( u"MAJORITY"_s )
+    );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );

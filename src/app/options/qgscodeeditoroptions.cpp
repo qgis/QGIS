@@ -153,15 +153,9 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mSizeSpin->setValue( font.pointSize() );
   mOverrideFontGroupBox->setChecked( !settings.value( u"codeEditor/fontfamily"_s, QString(), QgsSettings::Gui ).toString().isEmpty() );
 
-  connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
-    updatePreview();
-  } );
-  connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [this] {
-    updatePreview();
-  } );
-  connect( mOverrideFontGroupBox, &QGroupBox::toggled, this, [this] {
-    updatePreview();
-  } );
+  connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { updatePreview(); } );
+  connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [this] { updatePreview(); } );
+  connect( mOverrideFontGroupBox, &QGroupBox::toggled, this, [this] { updatePreview(); } );
 
   mBashPreview = new QgsCodeEditorShell( nullptr, QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage::Bash );
   QVBoxLayout *vl = new QVBoxLayout();
@@ -185,9 +179,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mListLanguage->addItem( tr( "Bash" ) );
   mListLanguage->addItem( tr( "Batch" ) );
 
-  connect( mListLanguage, &QListWidget::currentRowChanged, this, [this] {
-    mPreviewStackedWidget->setCurrentIndex( mListLanguage->currentRow() );
-  } );
+  connect( mListLanguage, &QListWidget::currentRowChanged, this, [this] { mPreviewStackedWidget->setCurrentIndex( mListLanguage->currentRow() ); } );
 
   auto addSearchHighlight = []( QgsCodeEditor *editor, int start, int length ) {
     editor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );
@@ -452,8 +444,7 @@ void QgsCodeEditorOptionsWidget::updatePreview()
 //
 QgsCodeEditorOptionsFactory::QgsCodeEditorOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), u"code_editor"_s )
-{
-}
+{}
 
 QIcon QgsCodeEditorOptionsFactory::icon() const
 {

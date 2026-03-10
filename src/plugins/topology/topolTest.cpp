@@ -53,11 +53,13 @@ topolTest::topolTest( QgisInterface *qgsIface )
   mTestCanceled = false;
 
   // one layer tests
-  mTopologyRuleMap.insert( tr( "must not have invalid geometries" ), TopologyRule( &topolTest::checkValid, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
+  mTopologyRuleMap
+    .insert( tr( "must not have invalid geometries" ), TopologyRule( &topolTest::checkValid, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have dangles" ), TopologyRule( &topolTest::checkDanglingLines, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
-  mTopologyRuleMap.insert( tr( "must not have duplicates" ), TopologyRule( &topolTest::checkDuplicates, false, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
+  mTopologyRuleMap
+    .insert( tr( "must not have duplicates" ), TopologyRule( &topolTest::checkDuplicates, false, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have pseudos" ), TopologyRule( &topolTest::checkPseudos, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
@@ -65,20 +67,27 @@ topolTest::topolTest( QgisInterface *qgsIface )
 
   mTopologyRuleMap.insert( tr( "must not have gaps" ), TopologyRule( &topolTest::checkGaps, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
-  mTopologyRuleMap.insert( tr( "must not have multi-part geometries" ), TopologyRule( &topolTest::checkMultipart, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
+  mTopologyRuleMap
+    .insert( tr( "must not have multi-part geometries" ), TopologyRule( &topolTest::checkMultipart, false, false, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   // two layer tests
-  mTopologyRuleMap.insert( tr( "must not overlap with" ), TopologyRule( &topolTest::checkOverlapWithLayer, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
+  mTopologyRuleMap
+    .insert( tr( "must not overlap with" ), TopologyRule( &topolTest::checkOverlapWithLayer, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
-  mTopologyRuleMap.insert( tr( "must be covered by" ), TopologyRule( &topolTest::checkPointCoveredBySegment, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line << Qgis::GeometryType::Polygon ) );
+  mTopologyRuleMap
+    .insert( tr( "must be covered by" ), TopologyRule( &topolTest::checkPointCoveredBySegment, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line << Qgis::GeometryType::Polygon ) );
 
-  mTopologyRuleMap.insert( tr( "must be covered by endpoints of" ), TopologyRule( &topolTest::checkPointCoveredByLineEnds, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
+  mTopologyRuleMap
+    .insert( tr( "must be covered by endpoints of" ), TopologyRule( &topolTest::checkPointCoveredByLineEnds, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
-  mTopologyRuleMap.insert( tr( "end points must be covered by" ), TopologyRule( &topolTest::checkyLineEndsCoveredByPoints, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
+  mTopologyRuleMap
+    .insert( tr( "end points must be covered by" ), TopologyRule( &topolTest::checkyLineEndsCoveredByPoints, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Line, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
 
-  mTopologyRuleMap.insert( tr( "must be inside" ), TopologyRule( &topolTest::checkPointInPolygon, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
+  mTopologyRuleMap
+    .insert( tr( "must be inside" ), TopologyRule( &topolTest::checkPointInPolygon, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
-  mTopologyRuleMap.insert( tr( "must contain" ), TopologyRule( &topolTest::checkPolygonContainsPoint, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
+  mTopologyRuleMap
+    .insert( tr( "must contain" ), TopologyRule( &topolTest::checkPolygonContainsPoint, true, true, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon, QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
 }
 
 topolTest::~topolTest()
@@ -168,7 +177,8 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
   const QgsGeometry canvasExtentPoly = QgsGeometry::fromRect( qgsInterface->mapCanvas()->extent() );
 
 
-  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end;
+        pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
     const QgsPointXY p = pointIt->first;
     const QgsFeatureId k = pointIt->second;
@@ -630,7 +640,8 @@ ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer
   const QgsGeometry canvasExtentPoly = QgsGeometry::fromRect( qgsInterface->mapCanvas()->extent() );
 
 
-  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end;
+        pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
     const QgsPointXY p = pointIt->first;
     const QgsFeatureId k = pointIt->second;
@@ -1205,8 +1216,7 @@ ErrorList topolTest::checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *lay
       continue;
     }
 
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() );
-         collection && collection->numGeometries() > 1 )
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() ); collection && collection->numGeometries() > 1 )
     {
       const QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;

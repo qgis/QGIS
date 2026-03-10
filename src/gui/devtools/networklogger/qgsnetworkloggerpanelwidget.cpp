@@ -195,7 +195,13 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
     mLogger->enableLogging( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
-    if ( QMessageBox::warning( this, tr( "Save Network Log" ), tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::warning(
+           this,
+           tr( "Save Network Log" ),
+           tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ),
+           QMessageBox::Yes | QMessageBox::No
+         )
+         == QMessageBox::No )
       return;
 
     const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Network Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );

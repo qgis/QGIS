@@ -29,7 +29,8 @@ SIP_NO_FILE
  * \brief Configuration widget for value relation widgets.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueRelationConfigDlgBase
+class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget,
+                                             private Ui::QgsValueRelationConfigDlgBase
 {
     Q_OBJECT
 

@@ -43,7 +43,8 @@ class APP_EXPORT QgsMapToolShapeEllipseCenterPoint : public QgsMapToolShapeEllip
 
   public:
     QgsMapToolShapeEllipseCenterPoint( QgsMapToolCapture *parentTool )
-      : QgsMapToolShapeEllipseAbstract( QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID, parentTool ) {}
+      : QgsMapToolShapeEllipseAbstract( QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID, parentTool )
+    {}
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

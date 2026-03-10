@@ -32,7 +32,6 @@
  */
 class CORE_EXPORT QgsDataProviderTemporalCapabilities
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsRasterDataProviderTemporalCapabilities *>( sipCpp ) )
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities
     {
       sipType = sipType_QgsVectorDataProviderTemporalCapabilities;
     }
-    else if ( dynamic_cast < QgsMeshDataProviderTemporalCapabilities * >( sipCpp ) )
+    else if ( dynamic_cast< QgsMeshDataProviderTemporalCapabilities * >( sipCpp ) )
     {
       sipType = sipType_QgsMeshDataProviderTemporalCapabilities;
     }
@@ -51,7 +50,7 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -83,7 +82,6 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities
     void setHasTemporalCapabilities( bool available ) { mHasTemporalCapabilities = available; }
 
   private:
-
     bool mHasTemporalCapabilities = false;
 };
 

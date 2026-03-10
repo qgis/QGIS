@@ -369,7 +369,9 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param fl window flags for dialog
      * \param layer associated vector layer
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = nullptr );
+    QgsTextFormatDialog(
+      const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = nullptr
+    );
 
     /**
      * Returns the current formatting settings defined by the widget.

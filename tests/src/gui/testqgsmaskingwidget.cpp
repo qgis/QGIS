@@ -34,7 +34,8 @@ class TestQgsMaskingWidget : public QgsTest
 
   public:
     TestQgsMaskingWidget()
-      : QgsTest( u"Masking widget Tests"_s ) {}
+      : QgsTest( u"Masking widget Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -52,16 +53,13 @@ void TestQgsMaskingWidget::initTestCase()
 }
 
 void TestQgsMaskingWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMaskingWidget::init()
-{
-}
+{}
 
 void TestQgsMaskingWidget::cleanup()
-{
-}
+{}
 
 void TestQgsMaskingWidget::testTreeWidget()
 {

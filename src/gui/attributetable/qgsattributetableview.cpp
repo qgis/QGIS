@@ -206,7 +206,12 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
     mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFeatureSelectionManager, mFilterModel );
     setSelectionModel( mFeatureSelectionModel );
     mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-    connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsAttributeTableView::* )( const QModelIndexList &indexes )>( &QgsAttributeTableView::repaintRequested ) );
+    connect(
+      mFeatureSelectionModel,
+      static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ),
+      this,
+      static_cast<void ( QgsAttributeTableView::* )( const QModelIndexList &indexes )>( &QgsAttributeTableView::repaintRequested )
+    );
     connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsAttributeTableView::* )()>( &QgsAttributeTableView::repaintRequested ) );
 
     connect( mFilterModel->layer(), &QgsVectorLayer::editingStarted, this, &QgsAttributeTableView::recreateActionWidgets );
@@ -262,8 +267,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    const QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name()
-                                                                                                              : QString();
+    const QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QString();
     QAction *act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
     act->setData( "user_action" );
@@ -462,8 +466,7 @@ void QgsAttributeTableView::modelDeleted()
 
 void QgsAttributeTableView::selectRow( int row, bool anchor )
 {
-  if ( selectionBehavior() == QTableView::SelectColumns
-       || ( selectionMode() == QTableView::SingleSelection && selectionBehavior() == QTableView::SelectItems ) )
+  if ( selectionBehavior() == QTableView::SelectColumns || ( selectionMode() == QTableView::SingleSelection && selectionBehavior() == QTableView::SelectItems ) )
     return;
 
   if ( row >= 0 && row < model()->rowCount() )
@@ -472,17 +475,13 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
     const QModelIndex index = model()->index( row, column );
     QItemSelectionModel::SelectionFlags command = selectionCommand( index );
     selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
-    if ( ( anchor && !( command & QItemSelectionModel::Current ) )
-         || ( selectionMode() == QTableView::SingleSelection ) )
+    if ( ( anchor && !( command & QItemSelectionModel::Current ) ) || ( selectionMode() == QTableView::SingleSelection ) )
       mRowSectionAnchor = row;
 
-    if ( selectionMode() != QTableView::SingleSelection
-         && command.testFlag( QItemSelectionModel::Toggle ) )
+    if ( selectionMode() != QTableView::SingleSelection && command.testFlag( QItemSelectionModel::Toggle ) )
     {
       if ( anchor )
-        mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
-                                   ? QItemSelectionModel::Deselect
-                                   : QItemSelectionModel::Select;
+        mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index ) ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
       command &= ~QItemSelectionModel::Toggle;
       command |= mCtrlDragSelectionFlag;
       if ( !anchor )

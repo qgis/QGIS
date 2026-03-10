@@ -161,7 +161,9 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget(
+      QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context
+    ) SIP_FACTORY;
 
     /**
      * Creates a new parameter definition widget allowing for configuration of an instance of
@@ -184,7 +186,13 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.10
      */
-    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr
+    ) SIP_FACTORY;
 
     /**
      * Creates a new widget for configuring a Processing model \a component.
@@ -195,7 +203,8 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 4.0
      */
-    QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const SIP_FACTORY;
+    QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
+      SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

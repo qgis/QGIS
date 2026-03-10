@@ -71,14 +71,15 @@ QString QgsRasterFeaturePreservingSmoothingAlgorithm::groupId() const
 
 QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm applies the Feature-Preserving DEM Smoothing (FPDEMS) method, as described by Lindsay et al. (2019).\n\n"
-                      "It is effective at removing surface roughness from Digital Elevation Models (DEMs) without significantly altering sharp features such as breaks-in-slope, stream banks, or terrace scarps. "
-                      "This makes it superior to standard low-pass filters (e.g., mean, median, Gaussian) or resampling, which often blur distinct topographic features.\n\n"
-                      "The algorithm works in three steps:\n"
-                      "1. Calculating surface normal 3D vectors for each grid cell.\n"
-                      "2. Smoothing the normal vector field using a filter that applies more weight to neighbors with similar surface normals (preserving edges).\n"
-                      "3. Iteratively updating the elevations in the DEM to match the smoothed normal field.\n\n"
-                      "References: Lindsay, John et al (2019): LiDAR DEM Smoothing and the Preservation of Drainage Features. Remote Sensing, Vol. 11, Issue 16, https://doi.org/10.3390/rs11161926"
+  return QObject::tr(
+    "This algorithm applies the Feature-Preserving DEM Smoothing (FPDEMS) method, as described by Lindsay et al. (2019).\n\n"
+    "It is effective at removing surface roughness from Digital Elevation Models (DEMs) without significantly altering sharp features such as breaks-in-slope, stream banks, or terrace scarps. "
+    "This makes it superior to standard low-pass filters (e.g., mean, median, Gaussian) or resampling, which often blur distinct topographic features.\n\n"
+    "The algorithm works in three steps:\n"
+    "1. Calculating surface normal 3D vectors for each grid cell.\n"
+    "2. Smoothing the normal vector field using a filter that applies more weight to neighbors with similar surface normals (preserving edges).\n"
+    "3. Iteratively updating the elevations in the DEM to match the smoothed normal field.\n\n"
+    "References: Lindsay, John et al (2019): LiDAR DEM Smoothing and the Preservation of Drainage Features. Remote Sensing, Vol. 11, Issue 16, https://doi.org/10.3390/rs11161926"
   );
 }
 
@@ -97,25 +98,31 @@ void QgsRasterFeaturePreservingSmoothingAlgorithm::initAlgorithm( const QVariant
   radiusParam->setHelp( QObject::tr( "Radius of the filter kernel. A radius of 5 results in an 11x11 kernel." ) );
   addParameter( radiusParam.release() );
 
-  auto thresholdParam = std::make_unique<QgsProcessingParameterNumber>( u"THRESHOLD"_s, QObject::tr( "Normal difference threshold (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 90.0 );
-  thresholdParam->setHelp( QObject::tr( "Maximum angular difference (in degrees) between the normal vector of the center cell and a neighbor for the neighbor to be included in the filter. Higher values result in more neighbors being included, producing smoother surfaces. A range of 10-20 degrees is typically optimal." ) );
+  auto thresholdParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"THRESHOLD"_s, QObject::tr( "Normal difference threshold (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 90.0 );
+  thresholdParam->setHelp(
+    QObject::tr(
+      "Maximum angular difference (in degrees) between the normal vector of the center cell and a neighbor for the neighbor to be included in the filter. Higher values result in more neighbors being "
+      "included, producing smoother surfaces. A range of 10-20 degrees is typically optimal."
+    )
+  );
   addParameter( thresholdParam.release() );
 
   auto iterParam = std::make_unique<QgsProcessingParameterNumber>( u"ITERATIONS"_s, QObject::tr( "Elevation update iterations" ), Qgis::ProcessingNumberParameterType::Integer, 3, false, 1, 50 );
   iterParam->setHelp( QObject::tr( "Number of times the smoothing process (elevation update) is repeated. Increasing this value from the default of 3 will result in significantly greater smoothing." ) );
   addParameter( iterParam.release() );
 
-  auto maxDiffParam = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ELEVATION_CHANGE"_s, QObject::tr( "Maximum elevation change" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
-  maxDiffParam->setHelp( QObject::tr( "The allowed maximum height change of any cell in one iteration. If the calculated change exceeds this value, the elevation remains unchanged. This prevents excessive deviation from the original surface." ) );
+  auto maxDiffParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ELEVATION_CHANGE"_s, QObject::tr( "Maximum elevation change" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
+  maxDiffParam->setHelp(
+    QObject::tr( "The allowed maximum height change of any cell in one iteration. If the calculated change exceeds this value, the elevation remains unchanged. This prevents excessive deviation from the original surface." )
+  );
   addParameter( maxDiffParam.release() );
 
   auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.00000001 );
   zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
   zFactorParam->setFlags( zFactorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  zFactorParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
-    }
-  );
+  zFactorParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } ) } );
   addParameter( zFactorParam.release() );
 
   auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
@@ -365,7 +372,9 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
 
       for ( int r = 0; r < iterRows; ++r )
       {
-        feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 2.0 / 3.0 + ( ( static_cast< double >( iteration ) / iterations ) + ( r / static_cast< double >( iterRows ) ) / iterations ) / 3.0 ) );
+        feedback->setProgress(
+          maxProgressDuringBlockWriting * iter.progress( mBand, 2.0 / 3.0 + ( ( static_cast< double >( iteration ) / iterations ) + ( r / static_cast< double >( iterRows ) ) / iterations ) / 3.0 )
+        );
         for ( int c = 0; c < iterCols; ++c )
         {
           const std::size_t idx = static_cast<std::size_t>( r ) * iterCols + c;

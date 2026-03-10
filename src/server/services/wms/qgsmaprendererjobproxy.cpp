@@ -32,9 +32,7 @@ using namespace Qt::StringLiterals;
 namespace QgsWms
 {
 
-  QgsMapRendererJobProxy::QgsMapRendererJobProxy(
-    bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider
-  )
+  QgsMapRendererJobProxy::QgsMapRendererJobProxy( bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider )
     : mParallelRendering( parallelRendering )
     , mFeatureFilterProvider( featureFilterProvider )
   {

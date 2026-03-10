@@ -56,11 +56,13 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"ORIGINAL"_s, QObject::tr( "Original layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"REVISED"_s, QObject::tr( "Revised layer" ) ) );
 
-  auto compareAttributesParam = std::make_unique<QgsProcessingParameterField>( u"COMPARE_ATTRIBUTES"_s, QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(), u"ORIGINAL"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  auto compareAttributesParam = std::make_unique<
+    QgsProcessingParameterField>( u"COMPARE_ATTRIBUTES"_s, QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(), u"ORIGINAL"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
   compareAttributesParam->setDefaultToAllFields( true );
   addParameter( compareAttributesParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterDefinition> matchTypeParam = std::make_unique<QgsProcessingParameterEnum>( u"MATCH_TYPE"_s, QObject::tr( "Geometry comparison behavior" ), QStringList() << QObject::tr( "Exact Match" ) << QObject::tr( "Tolerant Match (Topological Equality)" ), false, 1 );
+  std::unique_ptr<QgsProcessingParameterDefinition> matchTypeParam = std::make_unique<
+    QgsProcessingParameterEnum>( u"MATCH_TYPE"_s, QObject::tr( "Geometry comparison behavior" ), QStringList() << QObject::tr( "Exact Match" ) << QObject::tr( "Tolerant Match (Topological Equality)" ), false, 1 );
   matchTypeParam->setFlags( matchTypeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( matchTypeParam.release() );
 
@@ -75,23 +77,25 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDetectVectorChangesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm compares two vector layers, and determines which features are unchanged, added or deleted between "
-                      "the two. It is designed for comparing two different versions of the same dataset.\n\n"
-                      "When comparing features, the original and revised feature geometries will be compared against each other. Depending "
-                      "on the Geometry Comparison Behavior setting, the comparison will either be made using an exact comparison (where "
-                      "geometries must be an exact match for each other, including the order and count of vertices) or a topological "
-                      "comparison only (where geometries are considered equal if all of their component edges overlap. E.g. "
-                      "lines with the same vertex locations but opposite direction will be considered equal by this method). If the topological "
-                      "comparison is selected then any z or m values present in the geometries will not be compared.\n\n"
-                      "By default, the algorithm compares all attributes from the original and revised features. If the Attributes to Consider for Match "
-                      "parameter is changed, then only the selected attributes will be compared (e.g. allowing users to ignore a timestamp or ID field "
-                      "which is expected to change between the revisions).\n\n"
-                      "If any features in the original or revised layers do not have an associated geometry, then care must be taken to ensure "
-                      "that these features have a unique set of attributes selected for comparison. If this condition is not met, warnings will be "
-                      "raised and the resultant outputs may be misleading.\n\n"
-                      "The algorithm outputs three layers, one containing all features which are considered to be unchanged between the revisions, "
-                      "one containing features deleted from the original layer which are not present in the revised layer, and one containing features "
-                      "added to the revised layer which are not present in the original layer." );
+  return QObject::tr(
+    "This algorithm compares two vector layers, and determines which features are unchanged, added or deleted between "
+    "the two. It is designed for comparing two different versions of the same dataset.\n\n"
+    "When comparing features, the original and revised feature geometries will be compared against each other. Depending "
+    "on the Geometry Comparison Behavior setting, the comparison will either be made using an exact comparison (where "
+    "geometries must be an exact match for each other, including the order and count of vertices) or a topological "
+    "comparison only (where geometries are considered equal if all of their component edges overlap. E.g. "
+    "lines with the same vertex locations but opposite direction will be considered equal by this method). If the topological "
+    "comparison is selected then any z or m values present in the geometries will not be compared.\n\n"
+    "By default, the algorithm compares all attributes from the original and revised features. If the Attributes to Consider for Match "
+    "parameter is changed, then only the selected attributes will be compared (e.g. allowing users to ignore a timestamp or ID field "
+    "which is expected to change between the revisions).\n\n"
+    "If any features in the original or revised layers do not have an associated geometry, then care must be taken to ensure "
+    "that these features have a unique set of attributes selected for comparison. If this condition is not met, warnings will be "
+    "raised and the resultant outputs may be misleading.\n\n"
+    "The algorithm outputs three layers, one containing all features which are considered to be unchanged between the revisions, "
+    "one containing features deleted from the original layer which are not present in the revised layer, and one containing features "
+    "added to the revised layer which are not present in the original layer."
+  );
 }
 
 QString QgsDetectVectorChangesAlgorithm::shortDescription() const
@@ -120,17 +124,27 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
   {
     case Exact:
       if ( mOriginal->wkbType() != mRevised->wkbType() )
-        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2). Consider using the \"Tolerant Match\" option instead." ).arg( QgsWkbTypes::displayString( mRevised->wkbType() ), QgsWkbTypes::displayString( mOriginal->wkbType() ) ) );
+        throw QgsProcessingException(
+          QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2). Consider using the \"Tolerant Match\" option instead." )
+            .arg( QgsWkbTypes::displayString( mRevised->wkbType() ), QgsWkbTypes::displayString( mOriginal->wkbType() ) )
+        );
       break;
 
     case Topological:
       if ( QgsWkbTypes::geometryType( mOriginal->wkbType() ) != QgsWkbTypes::geometryType( mRevised->wkbType() ) )
-        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2)" ).arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mRevised->wkbType() ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mOriginal->wkbType() ) ) ) );
+        throw QgsProcessingException(
+          QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2)" )
+            .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mRevised->wkbType() ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mOriginal->wkbType() ) ) )
+        );
       break;
   }
 
   if ( mOriginal->sourceCrs() != mRevised->sourceCrs() )
-    feedback->reportError( QObject::tr( "CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching" ).arg( mOriginal->sourceCrs().userFriendlyIdentifier(), mRevised->sourceCrs().userFriendlyIdentifier() ), false );
+    feedback->reportError(
+      QObject::tr( "CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching" )
+        .arg( mOriginal->sourceCrs().userFriendlyIdentifier(), mRevised->sourceCrs().userFriendlyIdentifier() ),
+      false
+    );
 
   mFieldsToCompare = parameterAsStrings( parameters, u"COMPARE_ATTRIBUTES"_s, context );
   mOriginalFieldsToCompareIndices.reserve( mFieldsToCompare.size() );
@@ -214,10 +228,14 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     {
       if ( originalNullGeometryAttributes.contains( attrs ) )
       {
-        feedback->reportError( QObject::tr( "A non-unique set of comparison attributes was found for "
-                                            "one or more features without geometries - results may be misleading (features %1 and %2)" )
-                                 .arg( f.id() )
-                                 .arg( originalNullGeometryAttributes.value( attrs ) ) );
+        feedback->reportError(
+          QObject::tr(
+            "A non-unique set of comparison attributes was found for "
+            "one or more features without geometries - results may be misleading (features %1 and %2)"
+          )
+            .arg( f.id() )
+            .arg( originalNullGeometryAttributes.value( attrs ) )
+        );
       }
       else
       {

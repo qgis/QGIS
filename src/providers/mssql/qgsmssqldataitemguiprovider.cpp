@@ -138,7 +138,9 @@ bool QgsMssqlDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGu
     const QgsMssqlLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete %1" ).arg( typeName ), QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::
+           question( nullptr, QObject::tr( "Delete %1" ).arg( typeName ), QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return true;
 
     QString errCause;
@@ -251,7 +253,14 @@ void QgsMssqlDataItemGuiProvider::createSchema( QgsMssqlConnectionItem *connItem
 void QgsMssqlDataItemGuiProvider::truncateTable( QgsMssqlLayerItem *layerItem )
 {
   const QgsMssqlLayerProperty &layerInfo = layerItem->layerInfo();
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ), QObject::tr( "Are you sure you want to truncate [%1].[%2]?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question(
+         nullptr,
+         QObject::tr( "Truncate Table" ),
+         QObject::tr( "Are you sure you want to truncate [%1].[%2]?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
+         QMessageBox::Yes | QMessageBox::No,
+         QMessageBox::No
+       )
+       != QMessageBox::Yes )
     return;
 
   QString errCause;
@@ -417,7 +426,8 @@ bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connect
     }
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsMssqlDataItemGuiProvider::handleImportVector( QgsMssqlConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
@@ -450,5 +460,6 @@ void QgsMssqlDataItemGuiProvider::handleImportVector( QgsMssqlConnectionItem *co
     }
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::
+    handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
 }

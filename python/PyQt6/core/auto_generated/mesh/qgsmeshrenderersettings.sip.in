@@ -94,7 +94,6 @@ Represents a mesh renderer settings for scalar datasets.
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
     enum DataResamplingMethod /BaseType=IntEnum/
     {
 
@@ -233,7 +232,6 @@ arrows.
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
     enum ArrowScalingMethod /BaseType=IntEnum/
     {
 
@@ -415,7 +413,6 @@ particle traces.
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
     double maximumTailLength() const;
 %Docstring
 Returns the maximum tail length
@@ -555,7 +552,6 @@ Represents a renderer settings for vector datasets.
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
     enum Symbology /BaseType=IntEnum/
     {
       //! Displaying vector dataset with arrows
@@ -773,7 +769,6 @@ Represents all mesh renderer settings.
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
     QgsMeshRendererSettings();
 %Docstring
 Constructs renderer with default single layer averaging method

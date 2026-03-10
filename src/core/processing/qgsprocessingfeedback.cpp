@@ -45,9 +45,7 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
   : mLogFeedback( logFeedback )
-{
-
-}
+{}
 
 void QgsProcessingFeedback::setProgressText( const QString &text )
 {
@@ -80,8 +78,7 @@ void QgsProcessingFeedback::reportError( const QString &error, bool )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::MessageLevel::Critical );
 
-  log( u"<span style=\"color:red\">%1</span><br/>"_s.arg( error.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ),
-       error + '\n' );
+  log( u"<span style=\"color:red\">%1</span><br/>"_s.arg( error.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ), error + '\n' );
 }
 
 void QgsProcessingFeedback::pushWarning( const QString &warning )
@@ -89,8 +86,7 @@ void QgsProcessingFeedback::pushWarning( const QString &warning )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::MessageLevel::Warning );
 
-  log( u"<span style=\"color:#b85a20;\">%1</span><br/>"_s.arg( warning.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ) + u"<br/>"_s,
-       warning + '\n' );
+  log( u"<span style=\"color:#b85a20;\">%1</span><br/>"_s.arg( warning.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ) + u"<br/>"_s, warning + '\n' );
 }
 
 void QgsProcessingFeedback::pushInfo( const QString &info )
@@ -116,8 +112,7 @@ void QgsProcessingFeedback::pushCommandInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
-  log( u"<code>%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ),
-       info + '\n' );
+  log( u"<code>%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
 }
 
 void QgsProcessingFeedback::pushDebugInfo( const QString &info )
@@ -125,8 +120,7 @@ void QgsProcessingFeedback::pushDebugInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
-  log( u"<span style=\"color:#777\">%1</span><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ),
-       info + '\n' );
+  log( u"<span style=\"color:#777\">%1</span><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
 }
 
 void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
@@ -134,8 +128,7 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
-  log( u"<code style=\"color:#777\">%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ),
-       info + '\n' );
+  log( u"<code style=\"color:#777\">%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
 }
 
 void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )
@@ -154,7 +147,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
 
 #ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
+#if PDAL_VERSION_MAJOR_INT > 1 || ( PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7 )
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
 #else
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::GetFullVersionString() ) ) );
@@ -201,8 +194,7 @@ void QgsProcessingFeedback::pushFormattedResults( const QgsProcessingAlgorithm *
     const QString formattedValue = output->valueAsFormattedString( results.value( output->name() ), context, ok );
     if ( ok )
     {
-      pushFormattedMessage( u"<code>&nbsp;&nbsp;%1: %2</code>"_s.arg( output->name(), formattedValue ),
-                            u"  %1: %2"_s.arg( output->name(), textValue ) );
+      pushFormattedMessage( u"<code>&nbsp;&nbsp;%1: %2</code>"_s.arg( output->name(), formattedValue ), u"  %1: %2"_s.arg( output->name(), textValue ) );
     }
   }
 }

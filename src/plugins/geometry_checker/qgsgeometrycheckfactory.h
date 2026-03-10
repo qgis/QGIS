@@ -34,8 +34,7 @@ class QgsGeometryCheckFactory
     static QString sSettingsGroup;
 };
 
-template<class T>
-class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
+template<class T> class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
     void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const override;
     bool checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const override;
@@ -50,10 +49,7 @@ class QgsGeometryCheckFactoryRegistry
       instance()->mFactories.append( factory );
       return true;
     }
-    static const QList<const QgsGeometryCheckFactory *> &getCheckFactories()
-    {
-      return instance()->mFactories;
-    }
+    static const QList<const QgsGeometryCheckFactory *> &getCheckFactories() { return instance()->mFactories; }
 
   private:
     QList<const QgsGeometryCheckFactory *> mFactories;

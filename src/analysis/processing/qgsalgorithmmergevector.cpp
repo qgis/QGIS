@@ -68,14 +68,16 @@ QString QgsMergeVectorAlgorithm::shortDescription() const
 
 QString QgsMergeVectorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm combines multiple vector layers of the same geometry type into a single one.\n\n"
-                      "The attribute table of the resulting layer will contain the fields from all input layers. "
-                      "If fields with the same name but different types are found then the exported field will be automatically converted into a string type field. "
-                      "Optionally, new fields storing the original layer name and source can be added.\n\n"
-                      "If any input layers contain Z or M values, then the output layer will also contain these values. Similarly, "
-                      "if any of the input layers are multi-part, the output layer will also be a multi-part layer.\n\n"
-                      "Optionally, the destination coordinate reference system (CRS) for the merged layer can be set. If it is not set, the CRS will be "
-                      "taken from the first input layer. All layers will all be reprojected to match this CRS." );
+  return QObject::tr(
+    "This algorithm combines multiple vector layers of the same geometry type into a single one.\n\n"
+    "The attribute table of the resulting layer will contain the fields from all input layers. "
+    "If fields with the same name but different types are found then the exported field will be automatically converted into a string type field. "
+    "Optionally, new fields storing the original layer name and source can be added.\n\n"
+    "If any input layers contain Z or M values, then the output layer will also contain these values. Similarly, "
+    "if any of the input layers are multi-part, the output layer will also be a multi-part layer.\n\n"
+    "Optionally, the destination coordinate reference system (CRS) for the merged layer can be set. If it is not set, the CRS will be "
+    "taken from the first input layer. All layers will all be reprojected to match this CRS."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMergeVectorAlgorithm::documentationFlags() const
@@ -139,8 +141,10 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( outputType != Qgis::WkbType::Unknown && outputType != Qgis::WkbType::NoGeometry )
     {
       if ( QgsWkbTypes::geometryType( outputType ) != QgsWkbTypes::geometryType( layerWkbType ) )
-        throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )
-                                        .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) ) );
+        throw QgsProcessingException(
+          QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )
+            .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) )
+        );
 
       if ( QgsWkbTypes::hasM( layerWkbType ) && !QgsWkbTypes::hasM( outputType ) )
       {
@@ -177,9 +181,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
           found = true;
           if ( destField.type() != sourceField.type() )
           {
-            feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). "
-                                                "%1 field will be converted to string type." )
-                                     .arg( sourceField.name(), layerName, sourceField.typeName(), destField.typeName() ) );
+            feedback->pushWarning(
+              QObject::tr(
+                "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). "
+                "%1 field will be converted to string type."
+              )
+                .arg( sourceField.name(), layerName, sourceField.typeName(), destField.typeName() )
+            );
             destField.setType( QMetaType::Type::QString );
             destField.setSubType( QMetaType::Type::UnknownType );
             destField.setLength( 0 );
@@ -187,16 +195,24 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
           }
           else if ( destField.type() == QMetaType::Type::QString && destField.length() < sourceField.length() )
           {
-            feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different field length than the destination layer (%3 vs %4). "
-                                                "%1 field length will be extended to match the larger of the two." )
-                                     .arg( sourceField.name(), layerName, QString::number( sourceField.length() ), QString::number( destField.length() ) ) );
+            feedback->pushWarning(
+              QObject::tr(
+                "%1 field in layer %2 has different field length than the destination layer (%3 vs %4). "
+                "%1 field length will be extended to match the larger of the two."
+              )
+                .arg( sourceField.name(), layerName, QString::number( sourceField.length() ), QString::number( destField.length() ) )
+            );
             destField.setLength( sourceField.length() );
           }
           else if ( destField.type() == QMetaType::Type::Double && destField.precision() < sourceField.precision() )
           {
-            feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different field precision than the destination layer (%3 vs %4). "
-                                                "%1 field precision will be extended to match the larger of the two." )
-                                     .arg( sourceField.name(), layerName, QString::number( sourceField.length() ), QString::number( destField.length() ) ) );
+            feedback->pushWarning(
+              QObject::tr(
+                "%1 field in layer %2 has different field precision than the destination layer (%3 vs %4). "
+                "%1 field precision will be extended to match the larger of the two."
+              )
+                .arg( sourceField.name(), layerName, QString::number( sourceField.length() ), QString::number( destField.length() ) )
+            );
             destField.setPrecision( sourceField.precision() );
           }
           break;

@@ -30,7 +30,9 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry(
   return errors;
 }
 
-void QgsGeometryMultipartCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryMultipartCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;
@@ -75,9 +77,6 @@ void QgsGeometryMultipartCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryMultipartCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "Convert to single part feature" )
-                                     << tr( "Delete feature" )
-                                     << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "Convert to single part feature" ) << tr( "Delete feature" ) << tr( "No action" );
   return methods;
 }

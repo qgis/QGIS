@@ -31,7 +31,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext(
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset
+)
   : Qgs3DRenderContext( context )
   , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
@@ -107,8 +109,7 @@ void QgsPointCloud3DRenderContext::updateExtent()
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"pointcloud"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsPointCloudLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -122,8 +123,7 @@ QgsAbstract3DRenderer *QgsPointCloudLayer3DRendererMetadata::createRenderer( QDo
 
 
 QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer()
-{
-}
+{}
 
 void QgsPointCloudLayer3DRenderer::setLayer( QgsPointCloudLayer *layer )
 {
@@ -168,11 +168,32 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl, -1, coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity(
+      map,
+      pcl,
+      -1,
+      coordinateTransform,
+      mSymbol->clone(),
+      static_cast<float>( maximumScreenError() ),
+      showBoundingBoxes(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(),
+      mPointBudget
+    );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {
-    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsVirtualPointCloudEntity(
+      map,
+      pcl,
+      coordinateTransform,
+      mSymbol->clone(),
+      static_cast<float>( maximumScreenError() ),
+      showBoundingBoxes(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(),
+      mPointBudget
+    );
   }
   return entity;
 }
@@ -271,9 +292,7 @@ bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer 
     return false;
   }
 
-  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>(
-    static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
-  );
+  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>( static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() ) );
   // we need to retain some settings from the previous symbol, like point size
   const QgsPointCloud3DSymbol *oldSymbol = symbol();
   if ( oldSymbol )

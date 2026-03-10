@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 
 QgsVtpkTiles::QgsVtpkTiles( const QString &filename )
   : mFilename( filename )
-{
-}
+{}
 
 QgsVtpkTiles::~QgsVtpkTiles()
 {
@@ -51,7 +50,7 @@ QgsVtpkTiles::~QgsVtpkTiles()
 bool QgsVtpkTiles::open()
 {
   if ( mZip )
-    return true;  // already opened
+    return true; // already opened
 
   const QByteArray fileNamePtr = mFilename.toUtf8();
   int rc = 0;
@@ -108,8 +107,8 @@ QVariantMap QgsVtpkTiles::metadata() const
   zip_file *file = zip_fopen( mZip, name, 0 );
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     mMetadata = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -145,8 +144,8 @@ QVariantMap QgsVtpkTiles::styleDefinition() const
   zip_file *file = zip_fopen( mZip, name, 0 );
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     style = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -186,8 +185,8 @@ QVariantMap QgsVtpkTiles::spriteDefinition() const
     zip_file *file = zip_fopen( mZip, name, 0 );
     if ( zip_fread( file, buf.get(), len ) != -1 )
     {
-      buf[ len ] = '\0';
-      std::string jsonString( buf.get( ) );
+      buf[len] = '\0';
+      std::string jsonString( buf.get() );
       definition = QgsJsonUtils::parseJson( jsonString ).toMap();
       zip_fclose( file );
       file = nullptr;
@@ -230,7 +229,7 @@ QImage QgsVtpkTiles::spriteImage() const
     zip_file *file = zip_fopen( mZip, name, 0 );
     if ( zip_fread( file, buf.get(), len ) != -1 )
     {
-      buf[ len ] = '\0';
+      buf[len] = '\0';
 
       result = QImage::fromData( reinterpret_cast<const uchar *>( buf.get() ), len );
 
@@ -343,7 +342,7 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
 QVariantMap QgsVtpkTiles::rootTileMap() const
 {
   // make sure metadata has been read already
-  ( void )metadata();
+  ( void ) metadata();
 
   if ( mHasReadTileMap || mTileMapPath.isEmpty() )
     return mRootTileMap;
@@ -370,8 +369,8 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
 
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     mRootTileMap = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -409,12 +408,7 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
   const QVariantMap fullExtent = md.value( u"fullExtent"_s ).toMap();
   if ( !fullExtent.isEmpty() )
   {
-    QgsRectangle fullExtentRect(
-      fullExtent.value( u"xmin"_s ).toDouble(),
-      fullExtent.value( u"ymin"_s ).toDouble(),
-      fullExtent.value( u"xmax"_s ).toDouble(),
-      fullExtent.value( u"ymax"_s ).toDouble()
-    );
+    QgsRectangle fullExtentRect( fullExtent.value( u"xmin"_s ).toDouble(), fullExtent.value( u"ymin"_s ).toDouble(), fullExtent.value( u"xmax"_s ).toDouble(), fullExtent.value( u"ymax"_s ).toDouble() );
 
     const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( u"spatialReference"_s ).toMap() );
     const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), context );
@@ -444,12 +438,9 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   const int fileRow = mPacketSize * static_cast< int >( std::floor( y / static_cast< double>( mPacketSize ) ) );
   const int fileCol = mPacketSize * static_cast< int >( std::floor( x / static_cast< double>( mPacketSize ) ) );
 
-  const QString tileName = u"R%1C%2"_s
-                           .arg( fileRow, 4, 16, '0'_L1 )
-                           .arg( fileCol, 4, 16, '0'_L1 );
+  const QString tileName = u"R%1C%2"_s.arg( fileRow, 4, 16, '0'_L1 ).arg( fileCol, 4, 16, '0'_L1 );
 
-  const QString fileName = u"p12/tile/L%1/%2.bundle"_s
-                           .arg( z, 2, 10, '0'_L1 ).arg( tileName );
+  const QString fileName = u"p12/tile/L%1/%2.bundle"_s.arg( z, 2, 10, '0'_L1 ).arg( tileName );
   struct zip_stat stat;
   zip_stat_init( &stat );
   zip_stat( mZip, fileName.toLocal8Bit().constData(), 0, &stat );
@@ -498,4 +489,3 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 
   return res;
 }
-

@@ -409,19 +409,13 @@ bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar
   {
     if ( trustStatus == Qgis::ProjectTrustStatus::Trusted )
     {
-      messageBar->pushMessage(
-        tr( "Security warning" ),
-        tr( "The loaded project contains embedded scripts which have been allowed execution." ),
-        embeddedScriptMode == Qgis::EmbeddedScriptMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
-      );
+      messageBar
+        ->pushMessage( tr( "Security warning" ), tr( "The loaded project contains embedded scripts which have been allowed execution." ), embeddedScriptMode == Qgis::EmbeddedScriptMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info );
     }
     else
     {
-      messageBar->pushMessage(
-        tr( "Security warning" ),
-        tr( "The loaded project contains embedded scripts which have been denied execution." ),
-        embeddedScriptMode == Qgis::EmbeddedScriptMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
-      );
+      messageBar
+        ->pushMessage( tr( "Security warning" ), tr( "The loaded project contains embedded scripts which have been denied execution." ), embeddedScriptMode == Qgis::EmbeddedScriptMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info );
     }
   }
 

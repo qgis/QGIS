@@ -39,11 +39,39 @@ class QgsDistanceWithinAlgorithm : public QgsProcessingAlgorithm
 {
   protected:
     void addDistanceParameter();
-    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext );
+    void process(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *referenceSource,
+      double distance,
+      const QgsProperty &distanceProperty,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback,
+      QgsExpressionContext &expressionContext
+    );
 
   private:
-    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext );
-    void processByIteratingOverReferenceSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback );
+    void processByIteratingOverTargetSource(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *referenceSource,
+      double distance,
+      const QgsProperty &distanceProperty,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback,
+      QgsExpressionContext &expressionContext
+    );
+    void processByIteratingOverReferenceSource(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *referenceSource,
+      double distance,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback
+    );
 };
 
 

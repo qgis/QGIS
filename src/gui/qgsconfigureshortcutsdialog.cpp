@@ -318,7 +318,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
         if ( actionOnExisting == ActionOnExisting::Ask )
         {
-          const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+          const int res = QMessageBox::
+            question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
           if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
           {
             if ( res == QMessageBox::NoToAll )
@@ -375,7 +376,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
           if ( actionOnExisting == ActionOnExisting::Ask )
           {
-            const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+            const int res = QMessageBox::
+              question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
             if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
             {
               if ( res == QMessageBox::NoToAll )

@@ -53,7 +53,9 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, Qg
   }
 }
 
-bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result ) //this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
+bool MathUtils::BarycentricToXY(
+  double u, double v, double w, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result
+) //this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
 {
   Q_UNUSED( w )
 
@@ -71,7 +73,13 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
     const double denominator = ( ( p2->y() - p3->y() ) * ( p1->x() - p3->x() ) - ( p3->y() - p1->y() ) * ( p3->x() - p2->x() ) );
     if ( denominator != 0 ) //drop out py in the two equations
     {
-      px = ( 2 * u * area * ( p1->x() - p3->x() ) - 2 * v * area * ( p3->x() - p2->x() ) - p2->x() * p3->y() * ( p1->x() - p3->x() ) + p3->x() * p1->y() * ( p3->x() - p2->x() ) + p3->x() * p2->y() * ( p1->x() - p3->x() ) - p1->x() * p3->y() * ( p3->x() - p2->x() ) ) / denominator;
+      px = ( 2 * u * area * ( p1->x() - p3->x() )
+             - 2 * v * area * ( p3->x() - p2->x() )
+             - p2->x() * p3->y() * ( p1->x() - p3->x() )
+             + p3->x() * p1->y() * ( p3->x() - p2->x() )
+             + p3->x() * p2->y() * ( p1->x() - p3->x() )
+             - p1->x() * p3->y() * ( p3->x() - p2->x() ) )
+           / denominator;
       if ( ( p3->x() - p2->x() ) != 0 )
       {
         py = ( 2 * u * area - px * ( p2->y() - p3->y() ) - p2->x() * p3->y() + p3->x() * p2->y() ) / ( p3->x() - p2->x() );
@@ -83,7 +91,13 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
     }
     else //drop out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
     {
-      py = ( 2 * u * area * ( p3->y() - p1->y() ) - 2 * v * area * ( p2->y() - p3->y() ) - p2->x() * p3->y() * ( p3->y() - p1->y() ) + p3->x() * p1->y() * ( p2->y() - p3->y() ) + p3->x() * p2->y() * ( p3->y() - p1->y() ) - p1->x() * p3->y() * ( p2->y() - p3->y() ) ) / ( ( p3->x() - p2->x() ) * ( p3->y() - p1->y() ) - ( p1->x() - p3->x() ) * ( p2->y() - p3->y() ) );
+      py = ( 2 * u * area * ( p3->y() - p1->y() )
+             - 2 * v * area * ( p2->y() - p3->y() )
+             - p2->x() * p3->y() * ( p3->y() - p1->y() )
+             + p3->x() * p1->y() * ( p2->y() - p3->y() )
+             + p3->x() * p2->y() * ( p3->y() - p1->y() )
+             - p1->x() * p3->y() * ( p2->y() - p3->y() ) )
+           / ( ( p3->x() - p2->x() ) * ( p3->y() - p1->y() ) - ( p1->x() - p3->x() ) * ( p2->y() - p3->y() ) );
       if ( ( p2->y() - p3->y() ) != 0 )
       {
         px = ( 2 * u * area - py * ( p3->x() - p2->x() ) - p2->x() * p3->y() + p3->x() * p2->y() ) / ( p2->y() - p3->y() );
@@ -141,8 +155,16 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
     }
     else
     {
-      result->setX( 0.5 * ( p1->x() * p1->x() * p2->y() - p1->x() * p1->x() * p3->y() - p3->x() * p3->x() * p2->y() - p1->y() * p2->x() * p2->x() - p1->y() * p1->y() * p3->y() - p3->y() * p3->y() * p2->y() + p1->y() * p1->y() * p2->y() + p3->y() * p2->x() * p2->x() - p1->y() * p2->y() * p2->y() + p1->y() * p3->y() * p3->y() + p1->y() * p3->x() * p3->x() + p3->y() * p2->y() * p2->y() ) / denominator );
-      result->setY( -0.5 * ( p3->x() * p2->x() * p2->x() + p2->x() * p1->y() * p1->y() + p3->x() * p2->y() * p2->y() - p3->x() * p1->x() * p1->x() + p1->x() * p3->y() * p3->y() - p3->x() * p1->y() * p1->y() - p1->x() * p2->x() * p2->x() - p2->x() * p3->y() * p3->y() - p1->x() * p2->y() * p2->y() - p2->x() * p3->x() * p3->x() + p1->x() * p3->x() * p3->x() + p2->x() * p1->x() * p1->x() ) / denominator );
+      result->setX(
+        0.5
+        * ( p1->x() * p1->x() * p2->y() - p1->x() * p1->x() * p3->y() - p3->x() * p3->x() * p2->y() - p1->y() * p2->x() * p2->x() - p1->y() * p1->y() * p3->y() - p3->y() * p3->y() * p2->y() + p1->y() * p1->y() * p2->y() + p3->y() * p2->x() * p2->x() - p1->y() * p2->y() * p2->y() + p1->y() * p3->y() * p3->y() + p1->y() * p3->x() * p3->x() + p3->y() * p2->y() * p2->y() )
+        / denominator
+      );
+      result->setY(
+        -0.5
+        * ( p3->x() * p2->x() * p2->x() + p2->x() * p1->y() * p1->y() + p3->x() * p2->y() * p2->y() - p3->x() * p1->x() * p1->x() + p1->x() * p3->y() * p3->y() - p3->x() * p1->y() * p1->y() - p1->x() * p2->x() * p2->x() - p2->x() * p3->y() * p3->y() - p1->x() * p2->y() * p2->y() - p2->x() * p3->x() * p3->x() + p1->x() * p3->x() * p3->x() + p2->x() * p1->x() * p1->x() )
+        / denominator
+      );
 
       return true;
     }
@@ -642,7 +664,9 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     double xg2, yg2, zg2; //the coordinates of the second result
 
     //calculate xg
-    const double xgalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
+    const double xgalpha1
+      = 1
+        / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( xgalpha1 < 0 )
     {
       QgsDebugError( u"warning, only complex solution of xg"_s );
@@ -652,7 +676,9 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     xg2 = -sqrt( xgalpha1 ) * ( -yt * yw * xt + yt * yt * xw + xw * zt * zt - zt * xt * zw );
 
     //calculate yg
-    const double ygalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
+    const double ygalpha1
+      = 1
+        / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( ygalpha1 < 0 )
     {
       QgsDebugError( u"warning, only complex solution of yg"_s );
@@ -662,7 +688,9 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     yg2 = std::sqrt( ygalpha1 ) * ( -yw * xt * xt - zt * zt * yw + zt * yt * zw + yt * xw * xt );
 
     //calculate zg
-    const double zgalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
+    const double zgalpha1
+      = 1
+        / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( zgalpha1 < 0 )
     {
       QgsDebugError( u"warning, only complex solution of zg"_s );
@@ -701,8 +729,10 @@ double MathUtils::planeTest( QgsPoint *test, QgsPoint *pt1, QgsPoint *pt2, QgsPo
 {
   if ( test && pt1 && pt2 && pt3 )
   {
-    const double a = ( pt1->z() * ( pt2->y() - pt3->y() ) + pt2->z() * ( pt3->y() - pt1->y() ) + pt3->z() * ( pt1->y() - pt2->y() ) ) / ( ( pt1->x() - pt2->x() ) * ( pt2->y() - pt3->y() ) - ( pt2->x() - pt3->x() ) * ( pt1->y() - pt2->y() ) );
-    const double b = ( pt1->z() * ( pt2->x() - pt3->x() ) + pt2->z() * ( pt3->x() - pt1->x() ) + pt3->z() * ( pt1->x() - pt2->x() ) ) / ( ( pt1->y() - pt2->y() ) * ( pt2->x() - pt3->x() ) - ( pt2->y() - pt3->y() ) * ( pt1->x() - pt2->x() ) );
+    const double a = ( pt1->z() * ( pt2->y() - pt3->y() ) + pt2->z() * ( pt3->y() - pt1->y() ) + pt3->z() * ( pt1->y() - pt2->y() ) )
+                     / ( ( pt1->x() - pt2->x() ) * ( pt2->y() - pt3->y() ) - ( pt2->x() - pt3->x() ) * ( pt1->y() - pt2->y() ) );
+    const double b = ( pt1->z() * ( pt2->x() - pt3->x() ) + pt2->z() * ( pt3->x() - pt1->x() ) + pt3->z() * ( pt1->x() - pt2->x() ) )
+                     / ( ( pt1->y() - pt2->y() ) * ( pt2->x() - pt3->x() ) - ( pt2->y() - pt3->y() ) * ( pt1->x() - pt2->x() ) );
     const double c = pt1->z() - a * pt1->x() - b * pt1->y();
     const double zpredicted = test->x() * a + test->y() * b + c;
     return ( test->z() - zpredicted );

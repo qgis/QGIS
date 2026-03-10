@@ -63,15 +63,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   {
     QComboBox *cb = new QComboBox( parent );
     for ( Qgis::WkbType type :
-          {
-            Qgis::WkbType::Point,
-            Qgis::WkbType::LineString,
-            Qgis::WkbType::Polygon,
-            Qgis::WkbType::MultiPoint,
-            Qgis::WkbType::MultiLineString,
-            Qgis::WkbType::MultiPolygon,
-            Qgis::WkbType::NoGeometry
-          } )
+          { Qgis::WkbType::Point, Qgis::WkbType::LineString, Qgis::WkbType::Polygon, Qgis::WkbType::MultiPoint, Qgis::WkbType::MultiLineString, Qgis::WkbType::MultiPolygon, Qgis::WkbType::NoGeometry } )
     {
       cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
     }
@@ -235,8 +227,7 @@ void QgsOracleSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsOracleSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                  .arg( cmbConnections->currentText() );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
@@ -400,7 +391,8 @@ void QgsOracleSourceSelect::btnConnect_clicked()
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
 
-  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(), QgsOracleConn::schemaToRestrict( cmbConnections->currentText() ), uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask
+    = new QgsOracleColumnTypeTask( cmbConnections->currentText(), QgsOracleConn::schemaToRestrict( cmbConnections->currentText() ), uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() );
 
   connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleSourceSelect::setLayerType );
   connect( mColumnTypeTask, &QgsTask::taskCompleted, this, &QgsOracleSourceSelect::columnTaskFinished );

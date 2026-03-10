@@ -56,8 +56,14 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s << u"postgres"_s );
+  setDataProviders(
+    QStringList()
+    << u"ows"_s
+    << u"wfs"_s // convert to lowercase
+    << u"wcs"_s
+    << u"wms"_s
+    << u"postgres"_s
+  );
 }
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
@@ -141,30 +147,21 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   const QString pkiTempFileBase = u"tmppki_%1.pem"_s;
 
   // save client cert to temp file
-  const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    pkibundle->clientCert().toPem()
-  );
+  const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), pkibundle->clientCert().toPem() );
   if ( certFilePath.isEmpty() )
   {
     return false;
   }
 
   // save client cert key to temp file
-  const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    pkibundle->clientCertKey().toPem()
-  );
+  const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), pkibundle->clientCertKey().toPem() );
   if ( keyFilePath.isEmpty() )
   {
     return false;
   }
 
   // save CAs to temp file
-  const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    QgsApplication::authManager()->trustedCaCertsPemText()
-  );
+  const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), QgsApplication::authManager()->trustedCaCertsPemText() );
   if ( caFilePath.isEmpty() )
   {
     return false;

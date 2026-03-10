@@ -20,7 +20,6 @@ Encapsulates information relating to a GPS satellite.
 #include "qgssatelliteinformation.h"
 %End
   public:
-
     int id;
 
     bool inUse;

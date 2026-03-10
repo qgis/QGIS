@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewOfflineIndicatorProvider::QgsLayerTreeViewOfflineIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewOfflineIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {

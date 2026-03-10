@@ -78,7 +78,6 @@ the render context's paint device.
     }
 %End
   public:
-
     enum DrawMode /BaseType=IntEnum/
     {
       Modifier,
@@ -233,7 +232,6 @@ the paint effect is used in a :py:class:`QgsEffectStack`.
 
   protected:
 
-
     virtual void draw( QgsRenderContext &context ) = 0;
 %Docstring
 Handles drawing of the effect's result on to the specified render
@@ -350,7 +348,6 @@ then the original picture will be rendered as a vector.
 #include "qgspainteffect.h"
 %End
   public:
-
     QgsDrawSourceEffect();
 
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
@@ -415,7 +412,6 @@ Returns the blend mode for the effect
 %End
 
   protected:
-
     virtual void draw( QgsRenderContext &context );
 
 
@@ -431,7 +427,6 @@ Manages painter saving and restoring required for effect drawing.
 #include "qgspainteffect.h"
 %End
   public:
-
     QgsEffectPainter( QgsRenderContext &renderContext );
 %Docstring
 QgsEffectPainter constructor
@@ -461,7 +456,6 @@ Sets the effect to be painted
   private:
     const QgsEffectPainter &operator=( const QgsEffectPainter & );
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

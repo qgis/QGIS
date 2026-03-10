@@ -133,7 +133,14 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
   if ( !useIntersect )
   {
     // select by bounding boxes only
-    if ( mSource->mLayerType == QgsGrassProvider::Point || mSource->mLayerType == QgsGrassProvider::Centroid || mSource->mLayerType == QgsGrassProvider::Line || mSource->mLayerType == QgsGrassProvider::Face || mSource->mLayerType == QgsGrassProvider::Boundary || mSource->mLayerType == QgsGrassProvider::TopoPoint || mSource->mLayerType == QgsGrassProvider::TopoLine || mSource->mEditing )
+    if ( mSource->mLayerType == QgsGrassProvider::Point
+         || mSource->mLayerType == QgsGrassProvider::Centroid
+         || mSource->mLayerType == QgsGrassProvider::Line
+         || mSource->mLayerType == QgsGrassProvider::Face
+         || mSource->mLayerType == QgsGrassProvider::Boundary
+         || mSource->mLayerType == QgsGrassProvider::TopoPoint
+         || mSource->mLayerType == QgsGrassProvider::TopoLine
+         || mSource->mEditing )
     {
       QgsDebugMsgLevel( "Vect_select_lines_by_box", 3 );
       int type = mSource->mGrassType;
@@ -167,7 +174,14 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
     Vect_append_point( polygon, rect.xMinimum(), rect.yMaximum(), 0 );
     Vect_append_point( polygon, rect.xMinimum(), rect.yMinimum(), 0 );
 
-    if ( mSource->mLayerType == QgsGrassProvider::Point || mSource->mLayerType == QgsGrassProvider::Centroid || mSource->mLayerType == QgsGrassProvider::Line || mSource->mLayerType == QgsGrassProvider::Face || mSource->mLayerType == QgsGrassProvider::Boundary || mSource->mLayerType == QgsGrassProvider::TopoPoint || mSource->mLayerType == QgsGrassProvider::TopoLine || mSource->mEditing )
+    if ( mSource->mLayerType == QgsGrassProvider::Point
+         || mSource->mLayerType == QgsGrassProvider::Centroid
+         || mSource->mLayerType == QgsGrassProvider::Line
+         || mSource->mLayerType == QgsGrassProvider::Face
+         || mSource->mLayerType == QgsGrassProvider::Boundary
+         || mSource->mLayerType == QgsGrassProvider::TopoPoint
+         || mSource->mLayerType == QgsGrassProvider::TopoLine
+         || mSource->mEditing )
     {
       QgsDebugMsgLevel( "Vect_select_lines_by_polygon", 3 );
       int type = mSource->mGrassType;
@@ -297,7 +311,15 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
       cat = 0;
       type = 0;
       lid = 0;
-      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 cidxFieldIndex() = %4 cidxFieldNumCats() = %5" ).arg( mNextLid ).arg( mNextCidx ).arg( mSource->mLayer->map()->numLines() ).arg( mSource->mLayer->cidxFieldIndex() ).arg( mSource->mLayer->cidxFieldNumCats() ), 3 );
+      QgsDebugMsgLevel(
+        QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 cidxFieldIndex() = %4 cidxFieldNumCats() = %5" )
+          .arg( mNextLid )
+          .arg( mNextCidx )
+          .arg( mSource->mLayer->map()->numLines() )
+          .arg( mSource->mLayer->cidxFieldIndex() )
+          .arg( mSource->mLayer->cidxFieldNumCats() ),
+        3
+      );
       if ( mSource->mEditing )
       {
         // TODO should be numLines before editing started (?), but another layer

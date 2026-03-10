@@ -35,8 +35,7 @@ using namespace Qt::StringLiterals;
 
 QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface )
   : mServerInterface( serverInterface )
-{
-}
+{}
 
 void QgsServerFilter::requestReady()
 {

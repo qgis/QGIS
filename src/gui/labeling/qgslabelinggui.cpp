@@ -55,9 +55,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr );
+    expContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::atlasScope( nullptr );
   }
 
   if ( mLayer )
@@ -157,9 +155,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
-      applySettings();
-    } );
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] { applySettings(); } );
     panel->openPanel( widget );
   }
   else
@@ -167,9 +163,7 @@ void QgsLabelingGui::showObstacleSettings()
     QgsLabelSettingsWidgetDialog dialog( widget, this );
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
-    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"style_library/label_settings.html#obstacles"_s );
-    } );
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"style_library/label_settings.html#obstacles"_s ); } );
 
     if ( dialog.exec() )
     {
@@ -214,9 +208,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
-      applySettings();
-    } );
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] { applySettings(); } );
     panel->openPanel( widget );
   }
   else
@@ -224,9 +216,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     QgsLabelSettingsWidgetDialog dialog( widget, this );
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
-    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"style_library/label_settings.html#placement-for-line-layers"_s );
-    } );
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"style_library/label_settings.html#placement-for-line-layers"_s ); } );
 
     if ( dialog.exec() )
     {
@@ -262,9 +252,7 @@ void QgsLabelingGui::showDuplicateSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
-      applySettings();
-    } );
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] { applySettings(); } );
     panel->openPanel( widget );
   }
   else
@@ -319,8 +307,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorTileLayer *layer, QgsMapCanvas *mapCanv
 QgsLabelingGui::QgsLabelingGui( QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mMode( NoLabels )
-{
-}
+{}
 
 
 QgsLabelingGui::QgsLabelingGui( QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent )
@@ -710,7 +697,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );
-  lyr.placementSettings().setWhitespaceCollisionHandling( mCheckWhitespaceIsNotACollision->isChecked() ? Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions : Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision );
+  lyr.placementSettings().setWhitespaceCollisionHandling(
+    mCheckWhitespaceIsNotACollision->isChecked() ? Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions : Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision
+  );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
   lyr.lineSettings().setCurvedLabelMode( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() );
@@ -924,7 +913,8 @@ void QgsLabelingGui::saveFormat()
       // check if there is no settings with same name
       if ( style->labelSettingsNames().contains( saveDlg.name() ) )
       {
-        const int res = QMessageBox::warning( this, tr( "Save Label Settings" ), tr( "Label settings with the name '%1' already exist. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
+        const int res
+          = QMessageBox::warning( this, tr( "Save Label Settings" ), tr( "Label settings with the name '%1' already exist. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           return;
@@ -1070,7 +1060,10 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
       }
       else if ( geometry.type() != configuredGeometryType )
       {
-        mGeometryGeneratorWarningLabel->setText( u"<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>"_s.arg( tr( "Result of the expression does not match configured geometry type." ), tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) ) );
+        mGeometryGeneratorWarningLabel->setText(
+          u"<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>"_s
+            .arg( tr( "Result of the expression does not match configured geometry type." ), tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) )
+        );
         valid = false;
       }
     }
@@ -1079,9 +1072,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
   // The collapsible groupbox internally changes the visibility of this
   // Work around by setting the visibility deferred in the next event loop cycle.
   QTimer *timer = new QTimer();
-  connect( timer, &QTimer::timeout, this, [this, valid]() {
-    mGeometryGeneratorWarningLabel->setVisible( !valid );
-  } );
+  connect( timer, &QTimer::timeout, this, [this, valid]() { mGeometryGeneratorWarningLabel->setVisible( !valid ); } );
   connect( timer, &QTimer::timeout, timer, &QTimer::deleteLater );
   timer->start( 0 );
 }

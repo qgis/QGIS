@@ -56,4 +56,3 @@ QString QgsAttributeEditorHtmlElement::typeIdentifier() const
 {
   return u"attributeEditorHtmlElement"_s;
 }
-

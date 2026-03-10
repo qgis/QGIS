@@ -13,7 +13,7 @@
 
 
 
-class QgsRunProcess: QObject /NoDefaultCtors/
+class QgsRunProcess : QObject /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 Executes an external program/script.
@@ -76,7 +76,6 @@ https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 #include "qgsrunprocess.h"
 %End
   public:
-
     QgsBlockingProcess( const QString &program, const QStringList &arguments );
 %Docstring
 Constructor for the given ``program``, with the specified list of

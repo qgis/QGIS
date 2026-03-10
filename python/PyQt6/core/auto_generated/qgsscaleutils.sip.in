@@ -19,7 +19,6 @@ Contains utility functions for working with map scales.
 #include "qgsscaleutils.h"
 %End
   public:
-
     static bool saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage );
 %Docstring
 Save scales to the given file

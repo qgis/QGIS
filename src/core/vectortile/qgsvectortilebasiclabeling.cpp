@@ -59,8 +59,7 @@ void QgsVectorTileBasicLabelingStyle::readXml( const QDomElement &elem, const Qg
 
 
 QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling()
-{
-}
+{}
 
 QString QgsVectorTileBasicLabeling::type() const
 {
@@ -115,7 +114,6 @@ QgsVectorTileBasicLabelProvider::QgsVectorTileBasicLabelProvider( QgsVectorTileL
   : QgsVectorTileLabelProvider( layer )
   , mStyles( styles )
 {
-
   for ( int i = 0; i < mStyles.count(); ++i )
   {
     const QgsVectorTileBasicLabelingStyle &style = mStyles[i];
@@ -168,7 +166,7 @@ QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders(
   QList<QgsAbstractLabelProvider *> lst;
   for ( QgsVectorLayerLabelProvider *subprovider : std::as_const( mSubProviders ) )
   {
-    if ( subprovider )  // sub-providers that failed to initialize are set to null
+    if ( subprovider ) // sub-providers that failed to initialize are set to null
       lst << subprovider;
   }
   return lst;
@@ -222,7 +220,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
 
     QgsVectorLayerLabelProvider *subProvider = mSubProviders[i];
     if ( !subProvider )
-      continue;  // sub-providers that failed to initialize are set to null
+      continue; // sub-providers that failed to initialize are set to null
 
     if ( layerStyle.layerName().isEmpty() )
     {

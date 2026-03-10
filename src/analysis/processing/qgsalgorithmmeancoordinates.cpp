@@ -58,11 +58,13 @@ void QgsMeanCoordinatesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsMeanCoordinatesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes a point layer with the center of mass of geometries in an input layer.\n\n"
-                      "An attribute can be specified as containing weights to be applied to each feature when computing the center of mass.\n\n"
-                      "If an attribute is selected in the <Unique ID field> parameter, features will be grouped according "
-                      "to values in this field. Instead of a single point with the center of mass of the whole layer, "
-                      "the output layer will contain a center of mass for the features in each category." );
+  return QObject::tr(
+    "This algorithm computes a point layer with the center of mass of geometries in an input layer.\n\n"
+    "An attribute can be specified as containing weights to be applied to each feature when computing the center of mass.\n\n"
+    "If an attribute is selected in the <Unique ID field> parameter, features will be grouped according "
+    "to values in this field. Instead of a single point with the center of mass of the whole layer, "
+    "the output layer will contain a center of mass for the features in each category."
+  );
 }
 
 QString QgsMeanCoordinatesAlgorithm::shortDescription() const

@@ -74,7 +74,9 @@ void TestQgsVectorLayerUndoCommand::changeAttribute()
   cmd = std::make_unique<QgsVectorLayerUndoCommandChangeAttribute>(
     mLayerEditBuffer,
     1, // Positive (not-new) non-existent FID
-    0, "newvalue", "oldvalue"
+    0,
+    "newvalue",
+    "oldvalue"
   );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );
@@ -84,7 +86,9 @@ void TestQgsVectorLayerUndoCommand::changeAttribute()
   cmd = std::make_unique<QgsVectorLayerUndoCommandChangeAttribute>(
     mLayerEditBuffer,
     -1, // Negative (new) non-existent FID
-    0, "newvalue", "oldvalue"
+    0,
+    "newvalue",
+    "oldvalue"
   );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );

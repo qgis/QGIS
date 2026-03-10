@@ -66,6 +66,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
 #include "qgsstylemanagerdialog.h"
@@ -261,32 +262,24 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), menu );
     addAsFavorite->setIcon( QgsApplication::getThemeIcon( u"/mIconFavorites.svg"_s ) );
     menu->addAction( addAsFavorite );
-    connect( addAsFavorite, &QAction::triggered, this, [this, directoryItem] {
-      addFavorite( directoryItem );
-    } );
+    connect( addAsFavorite, &QAction::triggered, this, [this, directoryItem] { addFavorite( directoryItem ); } );
   }
   else if ( inFavDirs )
   {
     if ( QgsFavoriteItem *favoriteItem = qobject_cast<QgsFavoriteItem *>( item ) )
     {
       QAction *actionRename = new QAction( tr( "Rename Favorite…" ), menu );
-      connect( actionRename, &QAction::triggered, this, [this, favoriteItem] {
-        renameFavorite( favoriteItem );
-      } );
+      connect( actionRename, &QAction::triggered, this, [this, favoriteItem] { renameFavorite( favoriteItem ); } );
       menu->addAction( actionRename );
 
       QAction *removeFavoriteAction = new QAction( tr( "Remove Favorite" ), menu );
-      connect( removeFavoriteAction, &QAction::triggered, this, [this, favoriteItem] {
-        removeFavorite( favoriteItem );
-      } );
+      connect( removeFavoriteAction, &QAction::triggered, this, [this, favoriteItem] { removeFavorite( favoriteItem ); } );
       menu->addAction( removeFavoriteAction );
       menu->addSeparator();
     }
   }
   QAction *hideAction = new QAction( tr( "Hide from Browser" ), menu );
-  connect( hideAction, &QAction::triggered, this, [this, directoryItem] {
-    hideDirectory( directoryItem );
-  } );
+  connect( hideAction, &QAction::triggered, this, [this, directoryItem] { hideDirectory( directoryItem ); } );
   menu->addAction( hideAction );
 
   QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
@@ -328,9 +321,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     hiddenMenu->addSeparator();
 
     QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
-    connect( moreAction, &QAction::triggered, this, [] {
-      QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mOptionsPageDataSources"_s );
-    } );
+    connect( moreAction, &QAction::triggered, this, [] { QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mOptionsPageDataSources"_s ); } );
     hiddenMenu->addAction( moreAction );
   }
   if ( count > 0 )
@@ -344,35 +335,27 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     const QPixmap icon = QgsColorButton::createMenuIcon( directoryItem->iconColor(), true );
     actionSetIconColor->setIcon( icon );
   }
-  connect( actionSetIconColor, &QAction::triggered, this, [this, directoryItem] {
-    changeDirectoryColor( directoryItem );
-  } );
+  connect( actionSetIconColor, &QAction::triggered, this, [this, directoryItem] { changeDirectoryColor( directoryItem ); } );
   menu->addAction( actionSetIconColor );
   if ( directoryItem->iconColor().isValid() )
   {
     QAction *actionClearIconColor = new QAction( tr( "Clear Custom Color" ), menu );
-    connect( actionClearIconColor, &QAction::triggered, this, [this, directoryItem] {
-      clearDirectoryColor( directoryItem );
-    } );
+    connect( actionClearIconColor, &QAction::triggered, this, [this, directoryItem] { clearDirectoryColor( directoryItem ); } );
     menu->addAction( actionClearIconColor );
   }
 
   QMenu *scanningMenu = new QMenu( tr( "Scanning" ), menu );
 
   QAction *monitorAction = new QAction( tr( "Monitor for Changes" ), scanningMenu );
-  connect( monitorAction, &QAction::triggered, this, [this, directoryItem] {
-    toggleMonitor( directoryItem );
-  } );
+  connect( monitorAction, &QAction::triggered, this, [this, directoryItem] { toggleMonitor( directoryItem ); } );
   monitorAction->setCheckable( true );
   monitorAction->setChecked( directoryItem->isMonitored() );
   scanningMenu->addAction( monitorAction );
 
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), scanningMenu );
-  connect( fastScanAction, &QAction::triggered, this, [this, directoryItem] {
-    toggleFastScan( directoryItem );
-  } );
+  connect( fastScanAction, &QAction::triggered, this, [this, directoryItem] { toggleFastScan( directoryItem ); } );
   fastScanAction->setCheckable( true );
-  fastScanAction->setChecked( settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( item->path() ) );
+  fastScanAction->setChecked( QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value().contains( item->path() ) );
 
   scanningMenu->addAction( fastScanAction );
   menu->addMenu( scanningMenu );
@@ -380,25 +363,19 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   menu->addSeparator();
 
   QAction *openFolder = new QAction( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ), tr( "Open Directory…" ), menu );
-  connect( openFolder, &QAction::triggered, this, [directoryItem] {
-    QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) );
-  } );
+  connect( openFolder, &QAction::triggered, this, [directoryItem] { QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) ); } );
   menu->addAction( openFolder );
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
   {
     QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ), tr( "Open in Terminal…" ), menu );
-    connect( openTerminal, &QAction::triggered, this, [directoryItem] {
-      QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
-    } );
+    connect( openTerminal, &QAction::triggered, this, [directoryItem] { QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() ); } );
     menu->addAction( openTerminal );
     menu->addSeparator();
   }
 
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
-  connect( propertiesAction, &QAction::triggered, this, [this, directoryItem, context] {
-    showProperties( directoryItem, context );
-  } );
+  connect( propertiesAction, &QAction::triggered, this, [this, directoryItem, context] { showProperties( directoryItem, context ); } );
   menu->addAction( propertiesAction );
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
@@ -406,9 +383,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
       QAction *action = menu->addAction( tr( "Directory Properties…" ) );
-      connect( action, &QAction::triggered, dirItem, [dirItem] {
-        QgsGui::nativePlatformInterface()->showFileProperties( dirItem->dirPath() );
-      } );
+      connect( action, &QAction::triggered, dirItem, [dirItem] { QgsGui::nativePlatformInterface()->showFileProperties( dirItem->dirPath() ); } );
     }
   }
 }
@@ -467,8 +442,7 @@ void QgsAppDirectoryItemGuiProvider::hideDirectory( QgsDirectoryItem *item )
 
 void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
 {
-  QgsSettings settings;
-  QStringList fastScanDirs = settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList();
+  QStringList fastScanDirs = QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value();
   int idx = fastScanDirs.indexOf( item->path() );
   if ( idx != -1 )
   {
@@ -478,7 +452,7 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
   {
     fastScanDirs << item->path();
   }
-  settings.setValue( u"qgis/scanItemsFastScanUris"_s, fastScanDirs );
+  QgsSettingsRegistryCore::settingsScanItemsFastScanUris->setValue( fastScanDirs );
 }
 
 void QgsAppDirectoryItemGuiProvider::toggleMonitor( QgsDirectoryItem *item )
@@ -594,9 +568,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         if ( fi.suffix().compare( ext, Qt::CaseInsensitive ) == 0 )
         {
           QAction *viewAction = new QAction( tr( "Open %1 Externally…" ).arg( name ), menu );
-          connect( viewAction, &QAction::triggered, this, [filename] {
-            QDesktopServices::openUrl( QUrl::fromLocalFile( filename ) );
-          } );
+          connect( viewAction, &QAction::triggered, this, [filename] { QDesktopServices::openUrl( QUrl::fromLocalFile( filename ) ); } );
 
           // we want this action to be at the top
           QAction *beforeAction = menu->actions().value( 0 );
@@ -674,8 +646,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         manageFileMenu->addAction( renameAction );
       }
 
-      const QString deleteText = selectedFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
-                                                            : tr( "Delete Selected Files…" );
+      const QString deleteText = selectedFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() ) : tr( "Delete Selected Files…" );
       QAction *deleteAction = new QAction( deleteText, menu );
       connect( deleteAction, &QAction::triggered, this, [selectedFiles, selectedParents, context] {
         // Check if the files correspond to paths in the project
@@ -693,15 +664,19 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
           allFilesWithSidecars.unite( QgsFileUtils::sidecarFilesForPath( file ) );
         }
         QStringList sortedAllFilesWithSidecars( qgis::setToList( allFilesWithSidecars ) );
-        std::sort( sortedAllFilesWithSidecars.begin(), sortedAllFilesWithSidecars.end(), []( const QString &a, const QString &b ) {
-          return a.compare( b, Qt::CaseInsensitive ) < 0;
-        } );
+        std::sort( sortedAllFilesWithSidecars.begin(), sortedAllFilesWithSidecars.end(), []( const QString &a, const QString &b ) { return a.compare( b, Qt::CaseInsensitive ) < 0; } );
 
         bool removeLayers = false;
         if ( layersList.empty() )
         {
           // generic warning
-          QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ), sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %n file(s)?", nullptr, sortedAllFilesWithSidecars.size() ) : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ), QMessageBox::Yes | QMessageBox::No );
+          QMessageBox message(
+            QMessageBox::Warning,
+            sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+            sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %n file(s)?", nullptr, sortedAllFilesWithSidecars.size() )
+                                                  : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+            QMessageBox::Yes | QMessageBox::No
+          );
           message.setDefaultButton( QMessageBox::No );
 
           if ( sortedAllFilesWithSidecars.size() > 1 )
@@ -721,7 +696,13 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         }
         else
         {
-          QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ), sortedAllFilesWithSidecars.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" ) : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+          QMessageBox message(
+            QMessageBox::Warning,
+            sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+            sortedAllFilesWithSidecars.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" )
+                                                  : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( selectedFiles.at( 0 ) ).fileName() ),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+          );
           message.setDefaultButton( QMessageBox::Cancel );
           message.setButtonText( QMessageBox::Yes, tr( "Delete and Remove Layers" ) );
           message.setButtonText( QMessageBox::No, tr( "Delete and Retain Layers" ) );
@@ -817,14 +798,10 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
           menu->addSeparator();
 
         QAction *showInFilesAction = menu->addAction( tr( "Show in Files" ) );
-        connect( showInFilesAction, &QAction::triggered, this, [item] {
-          QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( item->path() );
-        } );
+        connect( showInFilesAction, &QAction::triggered, this, [item] { QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( item->path() ); } );
 
         QAction *filePropertiesAction = menu->addAction( tr( "File Properties…" ) );
-        connect( filePropertiesAction, &QAction::triggered, this, [item] {
-          QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-        } );
+        connect( filePropertiesAction, &QAction::triggered, this, [item] { QgsGui::nativePlatformInterface()->showFileProperties( item->path() ); } );
       }
     }
   }
@@ -872,7 +849,12 @@ bool QgsAppFileItemGuiProvider::rename( const QString &oldPath, const QString &n
   bool updateLayers = false;
   if ( !layersList.empty() )
   {
-    QMessageBox message( QMessageBox::Warning, tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ), tr( "The file %1 exists in the current project. Are you sure you want to rename it?" ).arg( QFileInfo( oldPath ).fileName() ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    QMessageBox message(
+      QMessageBox::Warning,
+      tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ),
+      tr( "The file %1 exists in the current project. Are you sure you want to rename it?" ).arg( QFileInfo( oldPath ).fileName() ),
+      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+    );
     message.setDefaultButton( QMessageBox::Cancel );
     message.setButtonText( QMessageBox::Yes, tr( "Rename and Update Layer Paths" ) );
     message.setButtonText( QMessageBox::No, tr( "Rename but Leave Layer Paths" ) );
@@ -1069,12 +1051,9 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
     }
 
-    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer “%1”…" ).arg( layerItem->name() )
-                                                                       : tr( "Delete Selected Layers…" );
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : tr( "Delete Selected Layers…" );
     QAction *deleteAction = new QAction( deleteText, menu );
-    connect( deleteAction, &QAction::triggered, this, [this, selectedDeletableItemPaths, context] {
-      deleteLayers( selectedDeletableItemPaths, context );
-    } );
+    connect( deleteAction, &QAction::triggered, this, [this, selectedDeletableItemPaths, context] { deleteLayers( selectedDeletableItemPaths, context ); } );
 
     QgsDataItemGuiProviderUtils::addToSubMenu( menu, deleteAction, tr( "Manage" ) );
   }
@@ -1082,12 +1061,9 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( !menu->isEmpty() )
     menu->addSeparator();
 
-  const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" )
-                                                     : tr( "Add Selected Layers to Project" );
+  const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" ) : tr( "Add Selected Layers to Project" );
   QAction *addAction = new QAction( addText, menu );
-  connect( addAction, &QAction::triggered, this, [this, selectedItems] {
-    addLayersFromItems( selectedItems );
-  } );
+  connect( addAction, &QAction::triggered, this, [this, selectedItems] { addLayersFromItems( selectedItems ); } );
   menu->addAction( addAction );
 
   for ( QAction *action : menu->actions() )
@@ -1107,9 +1083,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   }
 
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
-  connect( propertiesAction, &QAction::triggered, this, [this, layerItem, context] {
-    showPropertiesForItem( layerItem, context );
-  } );
+  connect( propertiesAction, &QAction::triggered, this, [this, layerItem, context] { showPropertiesForItem( layerItem, context ); } );
   menu->addAction( propertiesAction );
 }
 
@@ -1234,9 +1208,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   {
     QAction *openAction = new QAction( tr( "Open Project" ), menu );
     const QString projectPath = projectItem->path();
-    connect( openAction, &QAction::triggered, this, [projectPath] {
-      QgisApp::instance()->openProject( projectPath );
-    } );
+    connect( openAction, &QAction::triggered, this, [projectPath] { QgisApp::instance()->openProject( projectPath ); } );
     menu->addAction( openAction );
 
     QAction *extractAction = new QAction( tr( "Extract Symbols…" ), menu );
@@ -1386,7 +1358,8 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
-        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SetFieldDomain )
+        if ( conn
+             && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SetFieldDomain )
              && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
         {
           const QStringList domains = conn->fieldDomainNames();
@@ -1663,8 +1636,7 @@ QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataI
 }
 
 QgsDatabaseItemGuiProvider::QgsDatabaseItemGuiProvider()
-{
-}
+{}
 
 QString QgsDatabaseItemGuiProvider::name()
 {
@@ -1828,10 +1800,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         if ( !itemParentName.isEmpty() )
         {
           std::unique_ptr<QgsProviderSqlQueryBuilder> queryBuilder( conn2->queryBuilder() );
-          sql = queryBuilder->createLimitQueryForTable(
-            conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) ? itemParentName : QString(),
-            tableName, 10
-          );
+          sql = queryBuilder->createLimitQueryForTable( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) ? itemParentName : QString(), tableName, 10 );
         }
 
         openSqlDialog( connectionUri, providerKey, sql, context, itemName );
@@ -1886,14 +1855,17 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     // Move to schema should not be available for connections and schemata
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     const bool isTable = static_cast< bool >( layerItem );
-    if ( selectedItems.size() == 1 && layerItem && layerItem->mapLayerType() == Qgis::LayerType::Vector && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameVectorTable ) )
+    if ( selectedItems.size() == 1
+         && layerItem
+         && layerItem->mapLayerType() == Qgis::LayerType::Vector
+         && conn
+         && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameVectorTable ) )
     {
       // some providers implement their own Rename Table action, with provider-specific logic.
       // Until we can make the generic method flexible enough to handle that logic, hide the generic
       // action from these providers so we don't get two different Rename actions.
 
-      const bool providerImplementsRename = layerItem->providerKey() == "postgresraster"_L1 || layerItem->providerKey() == u"postgres"_s
-                                            || qobject_cast< QgsGeoPackageVectorLayerItem * >( layerItem );
+      const bool providerImplementsRename = layerItem->providerKey() == "postgresraster"_L1 || layerItem->providerKey() == "postgres"_L1 || qobject_cast< QgsGeoPackageVectorLayerItem * >( layerItem );
       if ( !providerImplementsRename )
       {
         QAction *renameTableAction = new QAction( tr( "Rename Table…" ), menu );
@@ -1905,6 +1877,15 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         QPointer< QgsLayerItem > layerItem( qobject_cast<QgsLayerItem *>( item ) );
 
         connect( renameTableAction, &QAction::triggered, renameTableAction, [providerKey, connectionUri, schema, tableName, context, layerItem = std::move( layerItem )] {
+          if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, layerItem->uri() ).isEmpty() )
+          {
+            if ( context.messageBar() )
+            {
+              context.messageBar()->pushCritical( tr( "Rename Table" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+            }
+            return;
+          }
+
           QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
           if ( !md )
             return;
@@ -2031,7 +2012,6 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           {
             ( void ) ex;
           }
-          conn.reset();
 
           if ( selectedItems.count() == 1 )
           {
@@ -2044,10 +2024,11 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               }
               return;
             }
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), tableName, targetSchema, context, true );
+            bool success = moveTableToSchema( conn.get(), item->parent()->name(), tableName, targetSchema, context, true );
             if ( !success )
               return;
+
+            conn.reset();
 
             // refresh parent item (schema)
             if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
@@ -2091,8 +2072,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
             for ( const QgsDataItem *selectedItem : selectedItems )
             {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
+              bool success = moveTableToSchema( conn.get(), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
 
               if ( success )
               {
@@ -2102,6 +2082,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                   schemasToRefresh.insert( selectedItem->parent()->name() );
               }
             }
+            conn.reset();
 
             if ( !qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
               return;
@@ -2129,7 +2110,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       }
     }
 
-    if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
+    if ( isTable
+         && conn
+         && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex )
+         && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
     {
       QAction *createSpatialIndexAction = new QAction( tr( "Create Spatial Index" ), menu );
       QAction *deleteSpatialIndexAction = new QAction( tr( "Delete Spatial Index…" ), menu );
@@ -2180,7 +2164,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
 
       connect( deleteSpatialIndexAction, &QAction::triggered, deleteSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Spatial Index" ), tr( "Are you sure that you want to delete spatial index from %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+        if ( QMessageBox::
+               question( nullptr, tr( "Delete Spatial Index" ), tr( "Are you sure that you want to delete spatial index from %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             == QMessageBox::Yes )
         {
           QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
           if ( !md )
@@ -2280,7 +2266,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
   }
 }
 
-bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser )
+bool QgsDatabaseItemGuiProvider::moveTableToSchema(
+  QgsAbstractDatabaseProviderConnection *conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser
+)
 {
   QString errCause;
 
@@ -2412,7 +2400,9 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
           }
         }
 
-        if ( !exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ), tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+        if ( !exists
+             || QMessageBox::question( nullptr, tr( "Overwrite Layer" ), tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes | QMessageBox::No )
+                  == QMessageBox::Yes )
         {
           QgsVectorLayer *vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
 
@@ -2492,7 +2482,8 @@ bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMime
   providerOptions.insert( u"update"_s, true );
   providerOptions.insert( u"overwrite"_s, true );
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
 }
 
 void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataItemGuiContext context )
@@ -2526,7 +2517,8 @@ void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataI
   providerOptions.insert( u"update"_s, true );
   providerOptions.insert( u"overwrite"_s, true );
 
-  return QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
 }
 
 void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName )
@@ -2586,10 +2578,7 @@ QString QgsFieldDomainItemGuiProvider::name()
 
 void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
-  if ( qobject_cast<QgsFieldDomainsItem *>( item )
-       || qobject_cast<QgsGeoPackageCollectionItem *>( item )
-       || qobject_cast<QgsFileDataCollectionItem *>( item )
-       || qobject_cast<QgsFieldDomainItem *>( item ) )
+  if ( qobject_cast<QgsFieldDomainsItem *>( item ) || qobject_cast<QgsGeoPackageCollectionItem *>( item ) || qobject_cast<QgsFileDataCollectionItem *>( item ) || qobject_cast<QgsFieldDomainItem *>( item ) )
   {
     QString providerKey;
     QString connectionUri;
@@ -2672,27 +2661,21 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
           {
             QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
             createFieldDomainMenu->addAction( rangeDomainAction );
-            connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
-              createDomain( Qgis::FieldDomainType::Range );
-            } );
+            connect( rangeDomainAction, &QAction::triggered, this, [createDomain] { createDomain( Qgis::FieldDomainType::Range ); } );
           }
 
           if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
           {
             QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
             createFieldDomainMenu->addAction( codedDomainAction );
-            connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
-              createDomain( Qgis::FieldDomainType::Coded );
-            } );
+            connect( codedDomainAction, &QAction::triggered, this, [createDomain] { createDomain( Qgis::FieldDomainType::Coded ); } );
           }
 
           if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
           {
             QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
             createFieldDomainMenu->addAction( globDomainAction );
-            connect( globDomainAction, &QAction::triggered, this, [createDomain] {
-              createDomain( Qgis::FieldDomainType::Glob );
-            } );
+            connect( globDomainAction, &QAction::triggered, this, [createDomain] { createDomain( Qgis::FieldDomainType::Glob ); } );
           }
         }
       }
@@ -2898,10 +2881,14 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
       metadata += "<table class=\"list-view\">\n"_L1;
 
 
-      metadata += u"<tr><td class=\"highlight\">"_s + tr( "Minimum" ) + u"</td><td>"_s
+      metadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Minimum" )
+                  + u"</td><td>"_s
                   + u"%1 %2"_s.arg( rangeDomain->minimum().toString(), rangeDomain->minimumIsInclusive() ? tr( "(inclusive)" ) : tr( "(exclusive)" ) )
                   + u"</td></tr>\n"_s;
-      metadata += u"<tr><td class=\"highlight\">"_s + tr( "Maximum" ) + u"</td><td>"_s
+      metadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Maximum" )
+                  + u"</td><td>"_s
                   + u"%1 %2"_s.arg( rangeDomain->maximum().toString(), rangeDomain->maximumIsInclusive() ? tr( "(inclusive)" ) : tr( "(exclusive)" ) )
                   + u"</td></tr>\n"_s;
 
@@ -2968,8 +2955,7 @@ QgsFieldDomainsDetailsWidget::QgsFieldDomainsDetailsWidget( QWidget *parent, con
             std::unique_ptr<QgsFieldDomain> domain( conn->fieldDomain( name ) );
             if ( domain )
             {
-              metadata += u"<tr><td class=\"highlight\">"_s + domain->name() + u"</td><td>"_s + domain->typeName()
-                          + u"</td><td>"_s + domain->description() + u"</td></tr>\n"_s;
+              metadata += u"<tr><td class=\"highlight\">"_s + domain->name() + u"</td><td>"_s + domain->typeName() + u"</td><td>"_s + domain->description() + u"</td></tr>\n"_s;
             }
           }
           catch ( QgsProviderConnectionException &ex )
@@ -3061,7 +3047,8 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
           QPointer<QgsDataItem> itemWeakPointer( item );
 
           connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer = std::move( itemWeakPointer ), context] {
-            if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ), tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+            if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ), tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ), QMessageBox::Yes | QMessageBox::No )
+                 == QMessageBox::Yes )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
               try
@@ -3085,9 +3072,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       }
     }
   }
-  else if ( qobject_cast<QgsRelationshipsItem *>( item )
-            || qobject_cast<QgsGeoPackageCollectionItem *>( item )
-            || qobject_cast<QgsFileDataCollectionItem *>( item ) )
+  else if ( qobject_cast<QgsRelationshipsItem *>( item ) || qobject_cast<QgsGeoPackageCollectionItem *>( item ) || qobject_cast<QgsFileDataCollectionItem *>( item ) )
   {
     QString providerKey;
     QString connectionUri;
@@ -3200,8 +3185,7 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
 
   if ( relation.cardinality() != Qgis::RelationshipCardinality::ManyToMany )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s + tr( "Tables" ) + u"</td><td>"_s
-                + u"%1 → %2"_s.arg( relation.referencedLayerName(), relation.referencingLayerName() ) + u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s + tr( "Tables" ) + u"</td><td>"_s + u"%1 → %2"_s.arg( relation.referencedLayerName(), relation.referencingLayerName() ) + u"</td></tr>\n"_s;
 
     metadata += u"<tr><td class=\"highlight\">"_s + tr( "Fields" ) + u"</td><td>"_s;
     QStringList fieldMetadata;
@@ -3214,8 +3198,11 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
   }
   else
   {
-    metadata += u"<tr><td class=\"highlight\">"_s + tr( "Tables" ) + u"</td><td>"_s
-                + u"%1 → %2 → %3"_s.arg( relation.referencedLayerName(), relation.mappingTableName(), relation.referencingLayerName() ) + u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Tables" )
+                + u"</td><td>"_s
+                + u"%1 → %2 → %3"_s.arg( relation.referencedLayerName(), relation.mappingTableName(), relation.referencingLayerName() )
+                + u"</td></tr>\n"_s;
 
     metadata += u"<tr><td class=\"highlight\">"_s + tr( "Fields" ) + u"</td><td>"_s;
     QStringList fieldMetadata;
@@ -3291,9 +3278,14 @@ QgsRelationshipsDetailsWidget::QgsRelationshipsDetailsWidget( QWidget *parent, c
           if ( i % 2 )
             rowClass = u"class=\"odd-row\""_s;
 
-          metadata += u"<tr %1><td class=\"highlight\">"_s.arg( rowClass ) + relation.name() + u"</td><td>"_s + relation.referencedLayerName()
-                      + u" → "_s + relation.referencingLayerName()
-                      + u"</td><td>"_s + QObject::tr( "%1 (%2)" ).arg( QgsRelation::cardinalityToDisplayString( relation.cardinality() ), QgsRelation::strengthToDisplayString( relation.strength() ) )
+          metadata += u"<tr %1><td class=\"highlight\">"_s.arg( rowClass )
+                      + relation.name()
+                      + u"</td><td>"_s
+                      + relation.referencedLayerName()
+                      + u" → "_s
+                      + relation.referencingLayerName()
+                      + u"</td><td>"_s
+                      + QObject::tr( "%1 (%2)" ).arg( QgsRelation::cardinalityToDisplayString( relation.cardinality() ), QgsRelation::strengthToDisplayString( relation.strength() ) )
                       + u"</td></tr>\n"_s;
           i++;
         }
@@ -3354,7 +3346,19 @@ QgsFieldsDetailsWidget::QgsFieldsDetailsWidget( QWidget *parent, const QString &
           QString rowClass;
           if ( i % 2 )
             rowClass = u"class=\"odd-row\""_s;
-          metadata += "<tr "_L1 + rowClass + "><td>"_L1 + myField.displayNameWithAlias() + "</td><td>"_L1 + myField.typeName() + "</td><td>"_L1 + QString::number( myField.length() ) + "</td><td>"_L1 + QString::number( myField.precision() ) + "</td><td>"_L1 + myField.comment() + "</td></tr>\n"_L1;
+          metadata += "<tr "_L1
+                      + rowClass
+                      + "><td>"_L1
+                      + myField.displayNameWithAlias()
+                      + "</td><td>"_L1
+                      + myField.typeName()
+                      + "</td><td>"_L1
+                      + QString::number( myField.length() )
+                      + "</td><td>"_L1
+                      + QString::number( myField.precision() )
+                      + "</td><td>"_L1
+                      + myField.comment()
+                      + "</td></tr>\n"_L1;
         }
         metadata += "</table>\n<br><br>\n"_L1;
 

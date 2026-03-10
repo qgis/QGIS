@@ -26,7 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling )
+QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread(
+  const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling
+)
   : mService( service )
   , mHost( host )
   , mDatabase( database )
@@ -66,28 +68,27 @@ void QgsMssqlGeomColumnTypeThread::run()
     return;
   }
 
-  for ( QList<QgsMssqlLayerProperty>::iterator it = layerProperties.begin(),
-                                               end = layerProperties.end();
-        it != end; ++it )
+  for ( QList<QgsMssqlLayerProperty>::iterator it = layerProperties.begin(), end = layerProperties.end(); it != end; ++it )
   {
     QgsMssqlLayerProperty &layerProperty = *it;
 
     if ( !mStopped )
     {
-      const QString table = u"%1[%2]"_s
-                              .arg( layerProperty.schemaName.isEmpty() ? QString() : u"[%1]."_s.arg( layerProperty.schemaName ), layerProperty.tableName );
+      const QString table = u"%1[%2]"_s.arg( layerProperty.schemaName.isEmpty() ? QString() : u"[%1]."_s.arg( layerProperty.schemaName ), layerProperty.tableName );
 
       QString query;
       if ( mDisableInvalidGeometryHandling )
       {
-        query = QStringLiteral( "SELECT %3"
-                                " UPPER([%1].STGeometryType()),"
-                                " [%1].STSrid,"
-                                " [%1].HasZ,"
-                                " [%1].HasM"
-                                " FROM %2"
-                                " WHERE [%1] IS NOT NULL %4"
-                                " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM" )
+        query = QStringLiteral(
+                  "SELECT %3"
+                  " UPPER([%1].STGeometryType()),"
+                  " [%1].STSrid,"
+                  " [%1].HasZ,"
+                  " [%1].HasM"
+                  " FROM %2"
+                  " WHERE [%1] IS NOT NULL %4"
+                  " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM"
+        )
                   .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : u" AND %1"_s.arg( layerProperty.sql ) );
       }
       else

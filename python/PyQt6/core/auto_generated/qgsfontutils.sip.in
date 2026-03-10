@@ -20,7 +20,6 @@ Contains utility functions for working with fonts.
 #include "qgsfontutils.h"
 %End
   public:
-
     static bool fontMatchOnSystem( const QFont &f );
 %Docstring
 Check whether exact font is on system

@@ -24,8 +24,7 @@
 QgsFeatureDownloaderProgressTask::QgsFeatureDownloaderProgressTask( const QString &description, long long totalCount )
   : QgsTask( description, QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mTotalCount( totalCount )
-{
-}
+{}
 
 bool QgsFeatureDownloaderProgressTask::run()
 {

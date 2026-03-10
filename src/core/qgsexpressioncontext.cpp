@@ -42,12 +42,10 @@ const QString QgsExpressionContext::EXPR_CLUSTER_COLOR( u"cluster_color"_s );
 
 QgsExpressionContextScope::QgsExpressionContextScope( const QString &name )
   : mName( name )
-{
-
-}
+{}
 
 QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContextScope &other )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mName( other.mName )
   , mVariables( other.mVariables )
   , mHasFeature( other.mHasFeature )
@@ -56,7 +54,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mGeometry( other.mGeometry )
   , mHiddenVariables( other.mHiddenVariables )
   , mLayerStores( other.mLayerStores )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -75,8 +73,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( QgsExpressionContextScope 
   , mGeometry( std::move( other.mGeometry ) )
   , mHiddenVariables( std::move( other.mHiddenVariables ) )
   , mLayerStores( std::move( other.mLayerStores ) )
-{
-}
+{}
 
 QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpressionContextScope &other )
 {
@@ -219,7 +216,7 @@ class QgsExpressionContextVariableCompare
   public:
     explicit QgsExpressionContextVariableCompare( const QgsExpressionContextScope &scope )
       : mScope( scope )
-    {  }
+    {}
 
     bool operator()( const QString &a, const QString &b ) const
     {
@@ -308,7 +305,6 @@ void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsRe
     }
     else
       addHiddenVariable( key );
-
   }
 }
 
@@ -349,7 +345,7 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
 }
 
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
-  : mStack{}
+  : mStack {}
 {
   //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
@@ -373,8 +369,7 @@ QgsExpressionContext::QgsExpressionContext( QgsExpressionContext &&other )
   , mLoadLayerFunction( std::move( other.mLoadLayerFunction ) )
   , mDestinationStore( std::move( other.mDestinationStore ) )
   , mCachedValues( std::move( other.mCachedValues ) )
-{
-}
+{}
 
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
 {
@@ -564,13 +559,12 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   {
     const QStringList scopeHiddenVariables = scope->hiddenVariables();
     for ( const QString &name : scopeHiddenVariables )
-      hiddenVariables << name ;
+      hiddenVariables << name;
   }
 
   for ( const QString &variable : constAllVariables )
   {
-    if ( variable.startsWith( '_' ) ||
-         hiddenVariables.contains( variable ) )
+    if ( variable.startsWith( '_' ) || hiddenVariables.contains( variable ) )
       continue;
 
     filtered << variable;
@@ -762,8 +756,7 @@ void QgsExpressionContext::setOriginalValueVariable( const QVariant &value )
   if ( mStack.isEmpty() )
     mStack.append( new QgsExpressionContextScope() );
 
-  mStack.last()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE,
-                              value, true ) );
+  mStack.last()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE, value, true ) );
 }
 
 void QgsExpressionContext::setCachedValue( const QString &key, const QVariant &value ) const

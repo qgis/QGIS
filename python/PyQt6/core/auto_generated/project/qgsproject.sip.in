@@ -37,9 +37,8 @@ reference open within the main QGIS application.
 %End
   public:
 
-
     enum class DataDefinedServerProperty /BaseType=IntEnum/
-      {
+    {
       NoProperty,
       AllProperties,
       WMSOnlineResource,
@@ -787,7 +786,9 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup(
+      const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags()
+    );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1291,8 +1292,7 @@ otherwise.
 %End
 
 
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
-                                       bool addToLegend = true );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/, bool addToLegend = true );
 %Docstring
 Add a list of layers to the map of loaded layers.
 
@@ -1323,8 +1323,7 @@ addToLegend is ``True``.
 .. seealso:: :py:func:`addMapLayer`
 %End
 
-    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
-                              bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/, bool addToLegend = true );
 %Docstring
 Add a layer to the map of loaded layers.
 
@@ -1827,9 +1826,9 @@ Sets the elevation shading renderer used for global map shading
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  signals:
+        signals :
 
-    void cleared();
+      void cleared();
 %Docstring
 Emitted when the project is cleared (and additionally when an open
 project is cleared just before a new project is read).
@@ -2534,7 +2533,6 @@ directly. Instead, use :py:func:`QgsProject.blockDirtying()`
 #include "qgsproject.h"
 %End
   public:
-
     QgsProjectDirtyBlocker( QgsProject *project );
 %Docstring
 Constructor for QgsProjectDirtyBlocker.
@@ -2549,7 +2547,6 @@ this object.
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
-
 
 
 

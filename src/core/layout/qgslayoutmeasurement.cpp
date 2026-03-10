@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const Qgis::LayoutUnit units )
   : mLength( length )
   , mUnits( units )
-{
-}
+{}
 
 QString QgsLayoutMeasurement::encodeMeasurement() const
 {
@@ -53,7 +52,7 @@ bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement other ) const
 
 bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator+( const double v ) const

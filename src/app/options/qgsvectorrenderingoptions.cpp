@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>
@@ -40,21 +41,23 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   QgsSettings settings;
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( u"/qgis/simplifyDrawingHints"_s, Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked(
+    settings.enumValue( u"/qgis/simplifyDrawingHints"_s, Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification
+  );
   mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol->value() );
   mSimplifyDrawingAtProvider->setChecked( !QgsVectorLayer::settingsSimplifyLocal->value() );
 
   //segmentation tolerance type
   mToleranceTypeComboBox->addItem( tr( "Maximum Angle" ), QgsAbstractGeometry::MaximumAngle );
   mToleranceTypeComboBox->addItem( tr( "Maximum Difference" ), QgsAbstractGeometry::MaximumDifference );
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( u"/qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsSettingsRegistryGui::settingsSegmentationToleranceType->value();
   int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
   if ( toleranceTypeIndex != -1 )
   {
     mToleranceTypeComboBox->setCurrentIndex( toleranceTypeIndex );
   }
 
-  double tolerance = settings.value( u"/qgis/segmentationTolerance"_s, "0.01745" ).toDouble();
+  double tolerance = QgsSettingsRegistryGui::settingsSegmentationTolerance->value();
   if ( toleranceType == QgsAbstractGeometry::MaximumAngle )
   {
     tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
@@ -99,13 +102,13 @@ void QgsVectorRenderingOptionsWidget::apply()
 
   //curve segmentation
   QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType ) mToleranceTypeComboBox->currentData().toInt();
-  settings.setEnumValue( u"/qgis/segmentationToleranceType"_s, segmentationType );
+  QgsSettingsRegistryGui::settingsSegmentationToleranceType->setValue( segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
   if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
   {
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
-  settings.setValue( u"/qgis/segmentationTolerance"_s, segmentationTolerance );
+  QgsSettingsRegistryGui::settingsSegmentationTolerance->setValue( segmentationTolerance );
 }
 
 
@@ -114,8 +117,7 @@ void QgsVectorRenderingOptionsWidget::apply()
 //
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), u"vector"_s )
-{
-}
+{}
 
 QIcon QgsVectorRenderingOptionsFactory::icon() const
 {

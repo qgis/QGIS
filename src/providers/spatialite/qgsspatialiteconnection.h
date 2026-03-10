@@ -148,25 +148,13 @@ class QgsSqliteHandle
       mDatabase = std::move( database );
     }
 
-    sqlite3 *handle()
-    {
-      return mDatabase.get();
-    }
+    sqlite3 *handle() { return mDatabase.get(); }
 
-    QString dbPath() const
-    {
-      return mDbPath;
-    }
+    QString dbPath() const { return mDbPath; }
 
-    bool isValid() const
-    {
-      return mIsValid;
-    }
+    bool isValid() const { return mIsValid; }
 
-    void invalidate()
-    {
-      mIsValid = false;
-    }
+    void invalidate() { mIsValid = false; }
 
     /**
      * Returns a possibly cached SQLite DB object from \a path, if \a shared is FALSE

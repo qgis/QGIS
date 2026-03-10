@@ -39,7 +39,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsScaleBarSettings
 {
   public:
-
     QgsScaleBarSettings();
 
     ~QgsScaleBarSettings();
@@ -622,7 +621,6 @@ class CORE_EXPORT QgsScaleBarSettings
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
   private:
-
     //! Number of segments on right side
     int mNumSegments = 2;
     //! Number of segments on left side
@@ -672,8 +670,6 @@ class CORE_EXPORT QgsScaleBarSettings
     Qgis::DistanceUnit mUnits = Qgis::DistanceUnit::Meters;
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
-
 };
 
 #endif // QGSSCALEBARSETTINGS_H
-

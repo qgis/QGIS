@@ -142,8 +142,7 @@ void TestQgsRangeWidgetWrapper::init()
 }
 
 void TestQgsRangeWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsRangeWidgetWrapper::test_setDoubleRange()
 {

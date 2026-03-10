@@ -50,19 +50,14 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   if ( urlPath == requestPrefix )
   {
     QUrl url { context.request()->url() };
-    url.setPath( u"%1/index.%2"_s
-                   .arg( requestPrefix, QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
+    url.setPath( u"%1/index.%2"_s.arg( requestPrefix, QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
     context.response()->setStatusCode( 302 );
     context.response()->setHeader( u"Location"_s, url.toString() );
   }
   else
   {
     const json projects = projectsData( *context.request() );
-    json data {
-      { "links", links( context ) },
-      { "projects", projects },
-      { "projects_count", projects.size() }
-    };
+    json data { { "links", links( context ) }, { "projects", projects }, { "projects_count", projects.size() } };
     write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
   }
 }

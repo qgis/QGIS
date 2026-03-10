@@ -28,7 +28,6 @@ the GUI behavior of :py:class:`QgsLayoutItems`.
 #include "qgslayoutitemregistry.h"
 %End
   public:
-
     QgsLayoutItemAbstractMetadata( int type, const QString &visibleName, const QString &visiblePluralName = QString() );
 %Docstring
 Constructor for QgsLayoutItemAbstractMetadata with the specified class
@@ -97,7 +96,6 @@ handles the GUI behavior of :py:class:`QgsLayoutMultiFrames`.
 #include "qgslayoutitemregistry.h"
 %End
   public:
-
     QgsLayoutMultiFrameAbstractMetadata( int type, const QString &visibleName );
 %Docstring
 Constructor for QgsLayoutMultiFrameAbstractMetadata with the specified
@@ -158,7 +156,6 @@ behavior of layout items.
 #include "qgslayoutitemregistry.h"
 %End
   public:
-
     enum ItemType /BaseType=IntEnum/
     {
       LayoutItem,
@@ -353,9 +350,6 @@ the specified ``type``.
   private:
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );
 };
-
-
-
 
 
 /************************************************************************

@@ -217,7 +217,12 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
       if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
       {
         // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-        feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ), QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
+        feedback->pushFormattedMessage(
+          QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
+            .arg( layer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
+          QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
+            .arg( layer->name(), QString(), QString() )
+        );
         mLayers.removeAll( layer );
         delete layer;
       }
@@ -372,9 +377,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
     QString addOsm = useOsm ? osm : QString();
     QString tmsConvention = tms ? u"true"_s : u"false"_s;
     QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
-    QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s
-                           .arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() )
-                           .arg( mTileFormat.toLower() );
+    QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() ).arg( mTileFormat.toLower() );
 
     QString html = QStringLiteral(
                      "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
@@ -524,11 +527,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   mMbtilesWriter->setMetadataValue( "type", u"overlay"_s );
   mMbtilesWriter->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
   mMbtilesWriter->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
-  QString boundsStr = QString( "%1,%2,%3,%4" )
-                        .arg( mWgs84Extent.xMinimum() )
-                        .arg( mWgs84Extent.yMinimum() )
-                        .arg( mWgs84Extent.xMaximum() )
-                        .arg( mWgs84Extent.yMaximum() );
+  QString boundsStr = QString( "%1,%2,%3,%4" ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( "bounds", boundsStr );
 
   mTotalTiles = 0;

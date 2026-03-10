@@ -33,8 +33,7 @@ QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerIn
   : mProject( project )
   , mInterface( interface )
   , mFlags()
-{
-}
+{}
 
 QgsWmsRenderContext::~QgsWmsRenderContext()
 {
@@ -286,10 +285,8 @@ QString QgsWmsRenderContext::layerNickname( const QgsMapLayer &layer ) const
 {
   QString name = layer.serverProperties()->shortName();
   // For external layers we cannot use the layer id because it's not known to the client, use layer name instead.
-  if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) && std::find_if( mExternalLayers.cbegin(), mExternalLayers.cend(), [&layer]( const QgsMapLayer *l ) {
-                                                               return l->id() == layer.id();
-                                                             } )
-                                                               == mExternalLayers.cend() )
+  if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject )
+       && std::find_if( mExternalLayers.cbegin(), mExternalLayers.cend(), [&layer]( const QgsMapLayer *l ) { return l->id() == layer.id(); } ) == mExternalLayers.cend() )
   {
     name = layer.id();
   }
@@ -788,8 +785,7 @@ bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
 
   const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-  if ( std::numeric_limits<int>::max() / bytes_per_line < height
-       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
+  if ( std::numeric_limits<int>::max() / bytes_per_line < height || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
   {
     return false;
   }
@@ -823,8 +819,7 @@ QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
 
   // Adapt width / height if the aspect ratio does not correspond with the BBOX.
   // Required by WMS spec. 1.3.
-  if ( aspectRatio
-       && mParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+  if ( aspectRatio && mParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
   {
     QgsRectangle extent = mParameters.bboxAsRectangle();
     if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )

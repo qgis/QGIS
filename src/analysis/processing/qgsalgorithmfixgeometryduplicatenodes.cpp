@@ -74,45 +74,26 @@ void QgsFixGeometryDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &co
 {
   Q_UNUSED( configuration )
 
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
-    u"id"_s, u"ERRORS"_s
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"PART_IDX"_s, QObject::tr( "Field of part index" ),
-    u"gc_partidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"RING_IDX"_s, QObject::tr( "Field of ring index" ),
-    u"gc_ringidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ),
-    u"gc_vertidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Fixed duplicate vertices layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"REPORT"_s, QObject::tr( "Report layer from fixing duplicate vertices" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
   );
+  addParameter( new QgsProcessingParameterFeatureSource( u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ), u"id"_s, u"ERRORS"_s ) );
+  addParameter( new QgsProcessingParameterField( u"PART_IDX"_s, QObject::tr( "Field of part index" ), u"gc_partidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"RING_IDX"_s, QObject::tr( "Field of ring index" ), u"gc_ringidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ), u"gc_vertidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Fixed duplicate vertices layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"REPORT"_s, QObject::tr( "Report layer from fixing duplicate vertices" ), Qgis::ProcessingSourceType::VectorPoint ) );
+
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -151,9 +132,7 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
@@ -161,9 +140,7 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
   reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
-    parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
@@ -214,11 +191,7 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
         &check,
         QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
         errorFeature.geometry().asPoint(),
-        QgsVertexId(
-          errorFeature.attribute( partIdxFieldName ).toInt(),
-          errorFeature.attribute( ringIdxFieldName ).toInt(),
-          errorFeature.attribute( vertexIdxFieldName ).toInt()
-        )
+        QgsVertexId( errorFeature.attribute( partIdxFieldName ).toInt(), errorFeature.attribute( ringIdxFieldName ).toInt(), errorFeature.attribute( vertexIdxFieldName ).toInt() )
       );
       for ( const QgsGeometryCheck::Changes &changes : std::as_const( changesList ) )
         checkError.handleChanges( changes );

@@ -85,8 +85,7 @@ void QgsCodeEditorCSS::initializeLexer()
 //
 QgsQsciLexerCSS::QgsQsciLexerCSS( QObject *parent )
   : QsciLexerCSS( parent )
-{
-}
+{}
 
 QString QgsQsciLexerCSS::description( int style ) const
 {

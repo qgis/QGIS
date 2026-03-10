@@ -115,12 +115,10 @@ void TestQgsOgrUtils::cleanupTestCase()
 }
 
 void TestQgsOgrUtils::init()
-{
-}
+{}
 
 void TestQgsOgrUtils::cleanup()
-{
-}
+{}
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 {
@@ -721,7 +719,8 @@ void TestQgsOgrUtils::stringToFeatureList()
   QVERIFY( features.isEmpty() );
 
   // geojson string with 1 feature
-  features = QgsOgrUtils::stringToFeatureList( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}"_s, fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::
+    stringToFeatureList( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}"_s, fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
@@ -732,9 +731,12 @@ void TestQgsOgrUtils::stringToFeatureList()
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
 
   // geojson string with 2 features
-  features = QgsOgrUtils::stringToFeatureList( "{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}},"
-                                               " {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\"}}]}",
-                                               fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::stringToFeatureList(
+    "{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}},"
+    " {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\"}}]}",
+    fields,
+    QTextCodec::codecForName( "System" )
+  );
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
@@ -762,7 +764,8 @@ void TestQgsOgrUtils::stringToFields()
   QCOMPARE( fields.count(), 0 );
 
   // geojson string
-  fields = QgsOgrUtils::stringToFields( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}"_s, QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::
+    stringToFields( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}"_s, QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
@@ -770,7 +773,10 @@ void TestQgsOgrUtils::stringToFields()
   QCOMPARE( fields.at( 1 ).type(), QMetaType::Type::Double );
 
   // geojson string with 2 features
-  fields = QgsOgrUtils::stringToFields( u"{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}, {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\",\"height\":6.5}}]}"_s, QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::stringToFields(
+    u"{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}, {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\",\"height\":6.5}}]}"_s,
+    QTextCodec::codecForName( "System" )
+  );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
@@ -795,22 +801,33 @@ void TestQgsOgrUtils::parseStyleString_data()
   QTest::addColumn<QString>( "string" );
   QTest::addColumn<QVariantMap>( "expected" );
 
-  QTest::newRow( "symbol" ) << QStringLiteral( R"""(SYMBOL(a:0,c:#000000,s:12pt,id:"mapinfo-sym-35,ogr-sym-10"))""" ) << QVariantMap { { "symbol", QVariantMap {
-                                                                                                                                                     { "a", "0" },
-                                                                                                                                                     { "c", "#000000" },
-                                                                                                                                                     { "s", "12pt" },
-                                                                                                                                                     { "id", "mapinfo-sym-35,ogr-sym-10" },
-                                                                                                                                                   } } };
+  QTest::newRow( "symbol" )
+    << QStringLiteral( R"""(SYMBOL(a:0,c:#000000,s:12pt,id:"mapinfo-sym-35,ogr-sym-10"))""" )
+    << QVariantMap {
+         { "symbol",
+           QVariantMap {
+             { "a", "0" },
+             { "c", "#000000" },
+             { "s", "12pt" },
+             { "id", "mapinfo-sym-35,ogr-sym-10" },
+           } }
+       };
 
-  QTest::newRow( "pen" ) << QStringLiteral( R"""(PEN(w:2px,c:#ffb060,id:"mapinfo-pen-14,ogr-pen-6",p:"8 2 1 2px"))""" ) << QVariantMap { { "pen", QVariantMap {
-                                                                                                                                                    { "w", "2px" },
-                                                                                                                                                    { "c", "#ffb060" },
-                                                                                                                                                    { "id", "mapinfo-pen-14,ogr-pen-6" },
-                                                                                                                                                    { "p", "8 2 1 2px" },
-                                                                                                                                                  } } };
+  QTest::newRow( "pen" )
+    << QStringLiteral( R"""(PEN(w:2px,c:#ffb060,id:"mapinfo-pen-14,ogr-pen-6",p:"8 2 1 2px"))""" )
+    << QVariantMap {
+         { "pen",
+           QVariantMap {
+             { "w", "2px" },
+             { "c", "#ffb060" },
+             { "id", "mapinfo-pen-14,ogr-pen-6" },
+             { "p", "8 2 1 2px" },
+           } }
+       };
 
-  QTest::newRow( "brush and pen" ) << QStringLiteral( R"""(BRUSH(FC:#ff8000,bc:#f0f000,id:"mapinfo-brush-6,ogr-brush-4");pen(W:3px,c:#e00000,id:"mapinfo-pen-2,ogr-pen-0"))""" )
-                                   << QVariantMap { { "brush", QVariantMap { { "fc", "#ff8000" }, { "bc", "#f0f000" }, { "id", "mapinfo-brush-6,ogr-brush-4" } } }, { "pen", QVariantMap { { "w", "3px" }, { "c", "#e00000" }, { "id", "mapinfo-pen-2,ogr-pen-0" } } } };
+  QTest::newRow( "brush and pen" )
+    << QStringLiteral( R"""(BRUSH(FC:#ff8000,bc:#f0f000,id:"mapinfo-brush-6,ogr-brush-4");pen(W:3px,c:#e00000,id:"mapinfo-pen-2,ogr-pen-0"))""" )
+    << QVariantMap { { "brush", QVariantMap { { "fc", "#ff8000" }, { "bc", "#f0f000" }, { "id", "mapinfo-brush-6,ogr-brush-4" } } }, { "pen", QVariantMap { { "w", "3px" }, { "c", "#e00000" }, { "id", "mapinfo-pen-2,ogr-pen-0" } } } };
 }
 
 void TestQgsOgrUtils::parseStyleString()
@@ -1002,7 +1019,13 @@ void TestQgsOgrUtils::ogrCrsConversion()
   }
 
   {
-    OGRSpatialReferenceH srs = OSRNewSpatialReference( "PROJCS[\"GDA94 / Vicgrid\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"latitude_of_origin\",-37],PARAMETER[\"central_meridian\",145],PARAMETER[\"standard_parallel_1\",-36],PARAMETER[\"standard_parallel_2\",-38],PARAMETER[\"false_easting\",2500000],PARAMETER[\"false_northing\",2500000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"3111\"]]" );
+    OGRSpatialReferenceH srs = OSRNewSpatialReference(
+      "PROJCS[\"GDA94 / Vicgrid\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS "
+      "1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY["
+      "\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"latitude_of_origin\",-37],PARAMETER[\"central_meridian\",145],PARAMETER[\"standard_"
+      "parallel_1\",-36],PARAMETER[\"standard_parallel_2\",-38],PARAMETER[\"false_easting\",2500000],PARAMETER[\"false_northing\",2500000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS["
+      "\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"3111\"]]"
+    );
     // Check that we used EPSG:3111 to instantiate the CRS, and thus get the
     // extent from PROJ
     const QgsCoordinateReferenceSystem crs( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
@@ -1378,11 +1401,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   OGRCodedValue v3;
   v3.pszCode = nullptr;
   v3.pszValue = nullptr;
-  OGRCodedValue values[] = {
-    v1,
-    v2,
-    v3
-  };
+  OGRCodedValue values[] = { v1, v2, v3 };
   OGRFieldDomainH domain = OGR_CodedFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, values );
 
   std::unique_ptr<QgsFieldDomain> res = QgsOgrUtils::convertFieldDomain( domain );
@@ -1510,10 +1529,15 @@ void TestQgsOgrUtils::testConvertToFieldDomain()
   QVERIFY( dynamic_cast<QgsRangeFieldDomain *>( res.get() )->maximumIsInclusive() );
 
   // coded
-  QgsCodedFieldDomain codedDomain( u"name"_s, u"desc"_s, QMetaType::Type::QString, {
-                                                                                     QgsCodedValue( "aa", "aaaa" ),
-                                                                                     QgsCodedValue( "bb", "bbbb" ),
-                                                                                   } );
+  QgsCodedFieldDomain codedDomain(
+    u"name"_s,
+    u"desc"_s,
+    QMetaType::Type::QString,
+    {
+      QgsCodedValue( "aa", "aaaa" ),
+      QgsCodedValue( "bb", "bbbb" ),
+    }
+  );
   domain = QgsOgrUtils::convertFieldDomain( &codedDomain );
   res = QgsOgrUtils::convertFieldDomain( domain );
   OGR_FldDomain_Destroy( domain );
@@ -1599,7 +1623,8 @@ void TestQgsOgrUtils::testConvertGdalRelationship()
 
 void TestQgsOgrUtils::testConvertToGdalRelationship()
 {
-  QgsWeakRelation rel( u"id"_s, u"name"_s, Qgis::RelationshipStrength::Association, u"referencing_layer_id"_s, u"referencing_layer_name"_s, u"/some_data.gdb|layername=referencing"_s, u"ogr"_s, u"referenced_layer_id"_s, u"referenced_layer_name"_s, u"/some_data.gdb|layername=referenced"_s, u"ogr"_s );
+  QgsWeakRelation
+    rel( u"id"_s, u"name"_s, Qgis::RelationshipStrength::Association, u"referencing_layer_id"_s, u"referencing_layer_name"_s, u"/some_data.gdb|layername=referencing"_s, u"ogr"_s, u"referenced_layer_id"_s, u"referenced_layer_name"_s, u"/some_data.gdb|layername=referenced"_s, u"ogr"_s );
   rel.setReferencedLayerFields( QStringList() << u"fielda"_s << u"fieldb"_s );
   rel.setReferencingLayerFields( QStringList() << u"fieldc"_s << u"fieldd"_s );
   rel.setCardinality( Qgis::RelationshipCardinality::OneToMany );
@@ -1634,7 +1659,19 @@ void TestQgsOgrUtils::testConvertToGdalRelationship()
 
   QCOMPARE( GDALRelationshipGetType( relationH.get() ), GDALRelationshipType::GRT_ASSOCIATION );
 
-  rel = QgsWeakRelation( u"id"_s, u"name"_s, Qgis::RelationshipStrength::Composition, u"referencing_layer_id"_s, u"referencing_layer_name"_s, u"/some_data.gdb|layername=referencing"_s, u"ogr"_s, u"referenced_layer_id"_s, u"referenced_layer_name"_s, u"/some_data.gdb|layername=referenced"_s, u"ogr"_s );
+  rel = QgsWeakRelation(
+    u"id"_s,
+    u"name"_s,
+    Qgis::RelationshipStrength::Composition,
+    u"referencing_layer_id"_s,
+    u"referencing_layer_name"_s,
+    u"/some_data.gdb|layername=referencing"_s,
+    u"ogr"_s,
+    u"referenced_layer_id"_s,
+    u"referenced_layer_name"_s,
+    u"/some_data.gdb|layername=referenced"_s,
+    u"ogr"_s
+  );
   relationH = QgsOgrUtils::convertRelationship( rel, error );
   QCOMPARE( GDALRelationshipGetType( relationH.get() ), GDALRelationshipType::GRT_COMPOSITE );
 
@@ -1671,7 +1708,19 @@ void TestQgsOgrUtils::testConvertToGdalRelationship()
   QCOMPARE( error, u"Parent and mapping table must be from the same dataset"_s );
   error.clear();
 
-  rel = QgsWeakRelation( u"id"_s, u"name"_s, Qgis::RelationshipStrength::Composition, u"referencing_layer_id"_s, u"referencing_layer_name"_s, u"/some_data.gdb|layername=referencing"_s, u"ogr"_s, u"referenced_layer_id"_s, u"referenced_layer_name"_s, u"/some_other_data.gdb|layername=referenced"_s, u"ogr"_s );
+  rel = QgsWeakRelation(
+    u"id"_s,
+    u"name"_s,
+    Qgis::RelationshipStrength::Composition,
+    u"referencing_layer_id"_s,
+    u"referencing_layer_name"_s,
+    u"/some_data.gdb|layername=referencing"_s,
+    u"ogr"_s,
+    u"referenced_layer_id"_s,
+    u"referenced_layer_name"_s,
+    u"/some_other_data.gdb|layername=referenced"_s,
+    u"ogr"_s
+  );
   relationH = QgsOgrUtils::convertRelationship( rel, error );
   QVERIFY( !relationH.get() );
   QCOMPARE( error, u"Parent and child table must be from the same dataset"_s );

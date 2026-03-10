@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsziputils.h"
 
 #include <QApplication>
@@ -53,18 +54,16 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   setColumnCount( 1 );
 
-  const QgsSettings settings;
-  const int red = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  const int green = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  const int blue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  const QColor canvasColor( red, green, blue );
+  const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   QStandardItem *emptyProjectItem = new QStandardItem();
   emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
   emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Blank ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "Blank" ), static_cast<int>( CustomRole::TitleRole ) );
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) ); } );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() {
+    emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
+  } );
   emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );
   appendRow( emptyProjectItem );
@@ -117,11 +116,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   }
 
   // Use default canvas color when preview image is missing
-  const QgsSettings settings;
-  const int red = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  const int green = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  const int blue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  const QColor canvasColor( red, green, blue );
+  const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   // Refill with templates from this directory
   for ( const QFileInfo &file : files )

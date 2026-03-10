@@ -39,7 +39,6 @@ from qgis.core import (
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import (
-    QT_VERSION_STR,
     QByteArray,
     QCoreApplication,
     QDate,
@@ -664,14 +663,8 @@ class Repositories(QObject):
                         .text()
                         .strip()
                     )
-                    supports_qt6 = pluginNodes.item(i).firstChildElement(
-                        "supports_qt6"
-                    ).text().strip().upper() in ["TRUE", "YES"]
                     if not qgisMaximumVersion:
-                        if qgisMinimumVersion[0] == "3" and supports_qt6:
-                            qgisMaximumVersion = "4.99"
-                        else:
-                            qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                        qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement(
                         "disabled"
@@ -838,27 +831,13 @@ class Plugins(QObject):
         if os.path.exists(metadataFile):
             version = normalizeVersion(pluginMetadata("version"))
 
-        qt_version = int(QT_VERSION_STR.split(".")[0])
-        supports_qt6 = pluginMetadata("supportsQt6").strip().upper() in ("TRUE", "YES")
-        if (
-            qt_version == 6
-            and not supports_qt6
-            and "QGIS_DISABLE_SUPPORTS_QT6_CHECK" not in os.environ
-        ):
-            error = "incompatible"
-            errorDetails = QCoreApplication.translate(
-                "QgsPluginInstaller", "Plugin does not support Qt6 versions of QGIS"
-            )
-        elif version:
+        if version:
             qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
             if not qgisMinimumVersion:
                 qgisMinimumVersion = "0"
             qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
             if not qgisMaximumVersion:
-                if qgisMinimumVersion[0] == "3" and supports_qt6:
-                    qgisMaximumVersion = "4.99"
-                else:
-                    qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
             # if compatible, add the plugin to the list
             if not isCompatible(
                 pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion

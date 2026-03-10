@@ -137,11 +137,7 @@ QVector<QgsMeshVertex> QgsMdalProvider::vertices() const
       break;
     for ( int i = 0; i < verticesRead; i++ )
     {
-      QgsMeshVertex vertex(
-        buffer[3 * i],
-        buffer[3 * i + 1],
-        buffer[3 * i + 2]
-      );
+      QgsMeshVertex vertex( buffer[3 * i], buffer[3 * i + 1], buffer[3 * i + 2] );
       ret[vertexIndex + i] = vertex;
     }
     vertexIndex += verticesRead;
@@ -166,10 +162,7 @@ QVector<QgsMeshEdge> QgsMdalProvider::edges() const
       break;
     for ( int i = 0; i < edgesRead; i++ )
     {
-      QgsMeshEdge edge(
-        startBuffer[i],
-        endBuffer[i]
-      );
+      QgsMeshEdge edge( startBuffer[i], endBuffer[i] );
       ret[edgeIndex + i] = edge;
     }
     edgeIndex += edgesRead;
@@ -314,14 +307,7 @@ bool QgsMdalProvider::persistDatasetGroup(
       break;
   }
 
-  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
-    mMeshH,
-    meta.name().toStdString().c_str(),
-    location,
-    meta.isScalar(),
-    driver,
-    outputFilePath.toStdString().c_str()
-  );
+  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup( mMeshH, meta.name().toStdString().c_str(), location, meta.isScalar(), driver, outputFilePath.toStdString().c_str() );
   if ( !g )
     return true;
 
@@ -395,14 +381,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
       break;
   }
 
-  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
-    mMeshH,
-    meta.name().toStdString().c_str(),
-    location,
-    meta.isScalar(),
-    driver,
-    outputFilePath.toStdString().c_str()
-  );
+  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup( mMeshH, meta.name().toStdString().c_str(), location, meta.isScalar(), driver, outputFilePath.toStdString().c_str() );
   if ( !g )
     return true;
 
@@ -823,18 +802,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
   bool isTemporal = MDAL_G_isTemporal( group );
 
-  QgsMeshDatasetGroupMetadata meta(
-    name,
-    uri,
-    isScalar,
-    type,
-    min,
-    max,
-    maximumVerticalLevels,
-    referenceTime,
-    isTemporal,
-    metadata
-  );
+  QgsMeshDatasetGroupMetadata meta( name, uri, isScalar, type, min, max, maximumVerticalLevels, referenceTime, isTemporal, metadata );
 
   return meta;
 }
@@ -855,13 +823,7 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
   MDAL_D_minimumMaximum( dataset, &min, &max );
   const int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
 
-  QgsMeshDatasetMetadata meta(
-    time,
-    isValid,
-    min,
-    max,
-    maxLevels
-  );
+  QgsMeshDatasetMetadata meta( time, isValid, min, max, maxLevels );
 
   return meta;
 }
@@ -1213,8 +1175,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     // special handling for .adf files -- although mdal reports support for the .adf file format, we only
     // want to report sublayers for tdenv.adf or tdenv9.adf files (otherwise we are reporting that any arcinfo grids or coverages are meshes)
-    if ( suffix == "adf"_L1
-         && !info.completeBaseName().startsWith( "tdenv"_L1, Qt::CaseInsensitive ) )
+    if ( suffix == "adf"_L1 && !info.completeBaseName().startsWith( "tdenv"_L1, Qt::CaseInsensitive ) )
       return {};
   }
 

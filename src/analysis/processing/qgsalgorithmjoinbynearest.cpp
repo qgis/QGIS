@@ -59,7 +59,9 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_2"_s, QObject::tr( "Input layer 2" ) ) );
 
-  addParameter( new QgsProcessingParameterField( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+  addParameter(
+    new QgsProcessingParameterField( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  );
 
   addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
 
@@ -71,9 +73,8 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 
-  auto nonMatchingSink = std::make_unique<QgsProcessingParameterFeatureSink>(
-    u"NON_MATCHING"_s, QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
-  );
+  auto nonMatchingSink
+    = std::make_unique<QgsProcessingParameterFeatureSink>( u"NON_MATCHING"_s, QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false );
   // TODO GUI doesn't support advanced outputs yet
   //nonMatchingSink->setFlags(nonMatchingSink->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( nonMatchingSink.release() );
@@ -84,22 +85,24 @@ void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsJoinByNearestAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the "
-                      "input one, with additional attributes in its attribute table.\n\n"
-                      "The additional attributes and their values are taken from a second vector layer, where features are joined "
-                      "by finding the closest features from each layer. By default only the single nearest feature is joined,"
-                      "but optionally the join can use the n-nearest neighboring features instead. If multiple features are found "
-                      "with identical distances these will all be returned (even if the total number of features exceeds the specified "
-                      "maximum feature count).\n\n"
-                      "If a maximum distance is specified, then only features which are closer than this distance "
-                      "will be matched.\n\n"
-                      "The output features will contain the selected attributes from the nearest feature, "
-                      "along with new attributes for the distance to the near feature, the index of the feature, "
-                      "and the coordinates of the closest point on the input feature (feature_x, feature_y) "
-                      "to the matched nearest feature, and the coordinates of the closet point on the matched feature "
-                      "(nearest_x, nearest_y).\n\n"
-                      "This algorithm uses purely Cartesian calculations for distance, and does not consider "
-                      "geodetic or ellipsoid properties when determining feature proximity." );
+  return QObject::tr(
+    "This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the "
+    "input one, with additional attributes in its attribute table.\n\n"
+    "The additional attributes and their values are taken from a second vector layer, where features are joined "
+    "by finding the closest features from each layer. By default only the single nearest feature is joined,"
+    "but optionally the join can use the n-nearest neighboring features instead. If multiple features are found "
+    "with identical distances these will all be returned (even if the total number of features exceeds the specified "
+    "maximum feature count).\n\n"
+    "If a maximum distance is specified, then only features which are closer than this distance "
+    "will be matched.\n\n"
+    "The output features will contain the selected attributes from the nearest feature, "
+    "along with new attributes for the distance to the near feature, the index of the feature, "
+    "and the coordinates of the closest point on the input feature (feature_x, feature_y) "
+    "to the matched nearest feature, and the coordinates of the closet point on the matched feature "
+    "(nearest_x, nearest_y).\n\n"
+    "This algorithm uses purely Cartesian calculations for distance, and does not consider "
+    "geodetic or ellipsoid properties when determining feature proximity."
+  );
 }
 
 QString QgsJoinByNearestAlgorithm::shortDescription() const
@@ -187,7 +190,9 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString destNonMatching1;
-  std::unique_ptr<QgsFeatureSink> sinkNonMatching1( parameterAsSink( parameters, u"NON_MATCHING"_s, context, destNonMatching1, input->fields(), input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sinkNonMatching1(
+    parameterAsSink( parameters, u"NON_MATCHING"_s, context, destNonMatching1, input->fields(), input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey )
+  );
   if ( parameters.value( u"NON_MATCHING"_s ).isValid() && !sinkNonMatching1 )
     throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING"_s ) );
 
@@ -196,25 +201,30 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   QHash<QgsFeatureId, QgsAttributes> input2AttributeCache;
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
-  const QgsSpatialIndex index( f2, [&]( const QgsFeature &f ) -> bool {
-    i++;
-    if ( feedback->isCanceled() )
-      return false;
+  const QgsSpatialIndex index(
+    f2,
+    [&]( const QgsFeature &f ) -> bool {
+      i++;
+      if ( feedback->isCanceled() )
+        return false;
 
-    feedback->setProgress( i * step );
+      feedback->setProgress( i * step );
 
-    if ( !f.hasGeometry() )
+      if ( !f.hasGeometry() )
+        return true;
+
+      // only keep selected attributes
+      QgsAttributes attributes;
+      for ( int field2Index : fields2Indices )
+      {
+        attributes << f.attribute( field2Index );
+      }
+      input2AttributeCache.insert( f.id(), attributes );
+
       return true;
-
-    // only keep selected attributes
-    QgsAttributes attributes;
-    for ( int field2Index : fields2Indices )
-    {
-      attributes << f.attribute( field2Index );
-    }
-    input2AttributeCache.insert( f.id(), attributes );
-
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   QgsFeature f;
 
@@ -269,7 +279,9 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
 
       if ( nearest.count() > neighbors + ( sameSourceAndTarget ? 1 : 0 ) )
       {
-        feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %n feature(s) instead of %1", nullptr, nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors ) );
+        feedback->pushInfo(
+          QObject::tr( "Multiple matching features found at same distance from search feature, found %n feature(s) instead of %1", nullptr, nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors )
+        );
       }
       QgsFeature out;
       out.setGeometry( f.geometry() );

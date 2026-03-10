@@ -32,14 +32,11 @@
  */
 class CORE_EXPORT QgsRasterDataProviderElevationProperties : public QgsDataProviderElevationProperties
 {
-
   public:
-
     /**
      * Constructor for QgsRasterDataProviderElevationProperties.
      */
     QgsRasterDataProviderElevationProperties();
-
 };
 
 #endif // QGSRASTERDATAPROVIDERELEVATIONPROPERTIES_H

@@ -321,7 +321,13 @@ QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
 // QgsProcessingMultipleInputPanelWidget
 //
 
-QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent )
+QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget(
+  const QgsProcessingParameterMultipleLayers *parameter,
+  const QVariantList &selectedOptions,
+  const QList<QgsProcessingModelChildParameterSource> &modelSources,
+  QgsProcessingModelAlgorithm *model,
+  QWidget *parent
+)
   : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), selectedOptions, parent )
   , mParameter( parameter )
 {
@@ -484,17 +490,26 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
           break;
 
         case Qgis::GeometryType::Point:
-          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorPoint )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer
+               || parameter->layerType() == Qgis::ProcessingSourceType::Vector
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorPoint )
             acceptable = true;
           break;
 
         case Qgis::GeometryType::Line:
-          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorLine )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer
+               || parameter->layerType() == Qgis::ProcessingSourceType::Vector
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorLine )
             acceptable = true;
           break;
 
         case Qgis::GeometryType::Polygon:
-          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Vector || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry || parameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
+          if ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer
+               || parameter->layerType() == Qgis::ProcessingSourceType::Vector
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorAnyGeometry
+               || parameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
             acceptable = true;
           break;
 
@@ -507,10 +522,12 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
         res.append( u.providerKey != "ogr"_L1 ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
     }
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Raster )
-              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster ) && u.providerKey == "gdal"_L1 )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster )
+              && u.providerKey == "gdal"_L1 )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Mesh )
-              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) && u.providerKey == "mdal"_L1 )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh )
+              && u.providerKey == "mdal"_L1 )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
               && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) )
@@ -812,7 +829,14 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 // QgsProcessingMultipleInputDialog
 //
 
-QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog(
+  const QgsProcessingParameterMultipleLayers *parameter,
+  const QVariantList &selectedOptions,
+  const QList<QgsProcessingModelChildParameterSource> &modelSources,
+  QgsProcessingModelAlgorithm *model,
+  QWidget *parent,
+  Qt::WindowFlags flags
+)
   : QDialog( parent, flags )
 {
   setWindowTitle( tr( "Multiple Selection" ) );

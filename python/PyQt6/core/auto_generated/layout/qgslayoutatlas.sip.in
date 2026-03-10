@@ -30,7 +30,6 @@ calling :py:func:`QgsPrintLayout.atlas()`.
 #include "qgslayoutatlas.h"
 %End
   public:
-
     QgsLayoutAtlas( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for new QgsLayoutAtlas.
@@ -435,9 +434,6 @@ Emitted when atlas rendering has ended.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

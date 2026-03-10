@@ -31,9 +31,7 @@ using namespace Qt::StringLiterals;
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-{
-
-}
+{}
 
 void QgsProjectViewSettings::reset()
 {
@@ -83,7 +81,7 @@ void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectE
   mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
 }
 
-bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad( )
+bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad()
 {
   return mRestoreProjectExtentOnProjectLoad;
 }
@@ -113,12 +111,12 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
     const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
 
     QList< QgsMapLayer * > nonBaseMapLayers;
-    std::copy_if( layers.begin(), layers.end(),
-                  std::back_inserter( nonBaseMapLayers ),
-    []( const QgsMapLayer * layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ) && !( layer->properties() & Qgis::MapLayerProperty::Is3DBasemapLayer ); } );
+    std::copy_if( layers.begin(), layers.end(), std::back_inserter( nonBaseMapLayers ), []( const QgsMapLayer *layer ) {
+      return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ) && !( layer->properties() & Qgis::MapLayerProperty::Is3DBasemapLayer );
+    } );
 
     // unless ALL layers from the project are basemap layers, we exclude these by default as their extent won't be useful for the project.
-    if ( !nonBaseMapLayers.empty( ) )
+    if ( !nonBaseMapLayers.empty() )
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( nonBaseMapLayers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
     else
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );

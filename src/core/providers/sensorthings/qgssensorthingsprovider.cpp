@@ -48,8 +48,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
   const QUrl url( QgsSensorThingsSharedData::parseUrl( mSharedData->mRootUri ) );
 
   QNetworkRequest request = QNetworkRequest( url );
-  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsProvider"_s )
-  mSharedData->mHeaders.updateNetworkRequest( request );
+  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsProvider"_s ) mSharedData->mHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( mSharedData->mAuthCfg );
@@ -108,7 +107,6 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
     {
       switch ( mSharedData->mEntityType )
       {
-
         case Qgis::SensorThingsEntity::Invalid:
         case Qgis::SensorThingsEntity::Thing:
         case Qgis::SensorThingsEntity::Location:
@@ -223,9 +221,7 @@ Qgis::VectorProviderCapabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
-                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
-                                       | Qgis::VectorProviderCapability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
 
   return c;
 }
@@ -337,10 +333,9 @@ void QgsSensorThingsProvider::reloadProviderData()
 // QgsSensorThingsProviderMetadata
 //
 
-QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata():
-  QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
-{
-}
+QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata()
+  : QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
+{}
 
 QIcon QgsSensorThingsProviderMetadata::icon() const
 {
@@ -490,15 +485,13 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     dsUri.setParam( u"referer"_s, parts.value( u"referer"_s ).toString() );
   }
 
-  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity(
-                                      parts.value( u"entity"_s ).toString() );
+  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity( parts.value( u"entity"_s ).toString() );
   if ( entity == Qgis::SensorThingsEntity::Invalid )
     entity = QgsSensorThingsUtils::stringToEntity( parts.value( u"entity"_s ).toString() );
 
   if ( entity != Qgis::SensorThingsEntity::Invalid )
   {
-    dsUri.setParam( u"entity"_s,
-                    qgsEnumValueToKey( entity ) );
+    dsUri.setParam( u"entity"_s, qgsEnumValueToKey( entity ) );
   }
 
   const QVariantList expandToParam = parts.value( u"expandTo"_s ).toList();

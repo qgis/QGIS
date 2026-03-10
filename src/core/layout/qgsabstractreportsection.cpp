@@ -56,8 +56,7 @@ QgsProject *QgsAbstractReportSection::project()
 
 void QgsAbstractReportSection::setContext( const QgsReportSectionContext &context )
 {
-  auto setReportContext = [&context]( QgsLayout * layout )
-  {
+  auto setReportContext = [&context]( QgsLayout *layout ) {
     if ( context.currentLayer )
     {
       layout->reportContext().blockSignals( true );
@@ -160,7 +159,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
     {
       appendChild( section.get() );
       section->readXml( currentSectionElem, doc, context );
-      ( void )section.release(); //ownership was transferred already
+      ( void ) section.release(); //ownership was transferred already
     }
   }
 
@@ -325,8 +324,7 @@ bool QgsAbstractReportSection::next()
         mCurrentLayout = body;
         return true;
       }
-    }
-    while ( bodiesAvailable );
+    } while ( bodiesAvailable );
 
     // all children and bodies have spent their content, so move to the footer
     mNextSection = Footer;
@@ -475,4 +473,3 @@ bool QgsAbstractReportSection::readPropertiesFromElement( const QDomElement &, c
 }
 
 ///@endcond
-

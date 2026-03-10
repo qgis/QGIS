@@ -46,8 +46,18 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << u"postgres"_s << u"oracle"_s << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s << u"ogr"_s << u"gdal"_s << u"proxy"_s );
+  setDataProviders(
+    QStringList()
+    << u"postgres"_s
+    << u"oracle"_s
+    << u"ows"_s
+    << u"wfs"_s // convert to lowercase
+    << u"wcs"_s
+    << u"wms"_s
+    << u"ogr"_s
+    << u"gdal"_s
+    << u"proxy"_s
+  );
 }
 
 QString QgsAuthBasicMethod::key() const
@@ -122,10 +132,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     cas = QgsApplication::authManager()->trustedCaCerts();
     // save CAs to temp file
     const QString tempFileBase = u"tmp_basic_%1.pem"_s;
-    const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-      tempFileBase.arg( QUuid::createUuid().toString() ),
-      QgsAuthCertUtils::certsToPemText( cas )
-    );
+    const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile( tempFileBase.arg( QUuid::createUuid().toString() ), QgsAuthCertUtils::certsToPemText( cas ) );
     if ( !caFilePath.isEmpty() )
     {
       caparam = "sslrootcert='" + caFilePath + "'";

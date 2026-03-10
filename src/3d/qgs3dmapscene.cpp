@@ -272,11 +272,13 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
     distance += zRange.upper();
 
   // subtract map origin so coordinates are relative to it
+  // clang-format off
   mCameraController->setViewFromTop(
     static_cast<float>( center.x() - origin.x() ),
     static_cast<float>( center.y() - origin.y() ),
     static_cast<float>( distance )
   );
+  // clang-format on
 }
 
 QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
@@ -395,35 +397,27 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     {
       float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
       float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+      // clang-format off
       projMatrix = {
         fovCotan / camera->aspectRatio(), 0, 0, 0,
         0, fovCotan, 0, 0,
         0, 0, -1, -2,
         0, 0, -1, 0
       };
+      // clang-format on
       break;
     }
     case Qt3DRender::QCameraLens::OrthographicProjection:
     {
       Qt3DRender::QCameraLens *lens = camera->lens();
+      // clang-format off
       projMatrix = {
-        2.0f / ( lens->right() - lens->left() ),
-        0,
-        0,
-        0,
-        0,
-        2.0f / ( lens->top() - lens->bottom() ),
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ),
-        -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
-        -1.0f,
-        1.0f,
+        2.0f / ( lens->right() - lens->left() ), 0, 0, 0,
+        0, 2.0f / ( lens->top() - lens->bottom() ), 0, 0,
+        0, 0, 1, 0,
+        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ), -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ), -1.0f, 1.0f
       };
+      // clang-format on
       break;
     }
     default:
@@ -976,9 +970,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   const QList<QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
   for ( QgsLineMaterial *lm : childLineMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] {
-      lm->setViewportSize( mEngine->size() );
-    } );
+    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
 
     lm->setViewportSize( mEngine->size() );
   }
@@ -986,9 +978,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   const QList<QgsPoint3DBillboardMaterial *> childBillboardMaterials = newEntity->findChildren<QgsPoint3DBillboardMaterial *>();
   for ( QgsPoint3DBillboardMaterial *bm : childBillboardMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] {
-      bm->setViewportSize( mEngine->size() );
-    } );
+    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
 
     bm->setViewportSize( mEngine->size() );
   }
@@ -1100,9 +1090,7 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
 
   Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
   mEntityCameraViewCenter->addComponent( trCameraViewCenter );
-  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] {
-    trCameraViewCenter->setTranslation( camera->viewCenter() );
-  } );
+  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] { trCameraViewCenter->setTranslation( camera->viewCenter() ); } );
 
   Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
   materialCameraViewCenter->setAmbient( Qt::red );
@@ -1115,9 +1103,7 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
   mEntityCameraViewCenter->setParent( this );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] {
-    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
-  } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() ); } );
 }
 
 void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
@@ -1166,11 +1152,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     {
       case QgsSkyboxEntity::DistinctTexturesSkybox:
         faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity(
-          faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s],
-          faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s],
-          this
-        );
+        mSkybox = new QgsCubeFacesSkyboxEntity( faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
         break;
       case QgsSkyboxEntity::PanoramicSkybox:
         mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
@@ -1385,13 +1367,9 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
   mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
 
-  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) {
-    trRotationCenter->setTranslation( center );
-  } );
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) { trRotationCenter->setTranslation( center ); } );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] {
-    mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
-  } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] { mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() ); } );
 }
 
 void Qgs3DMapScene::on3DAxisSettingsChanged()

@@ -52,12 +52,14 @@ QString QgsMinimumBoundingGeometryAlgorithm::groupId() const
 
 QString QgsMinimumBoundingGeometryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates geometries which enclose the features from an input layer.\n\n"
-                      "Numerous enclosing geometry types are supported, including bounding "
-                      "boxes (envelopes), oriented rectangles, circles and convex hulls.\n\n"
-                      "Optionally, the features can be grouped by a field. If set, this "
-                      "causes the output layer to contain one feature per grouped value with "
-                      "a minimal geometry covering just the features with matching values." );
+  return QObject::tr(
+    "This algorithm creates geometries which enclose the features from an input layer.\n\n"
+    "Numerous enclosing geometry types are supported, including bounding "
+    "boxes (envelopes), oriented rectangles, circles and convex hulls.\n\n"
+    "Optionally, the features can be grouped by a field. If set, this "
+    "causes the output layer to contain one feature per grouped value with "
+    "a minimal geometry covering just the features with matching values."
+  );
 }
 
 QString QgsMinimumBoundingGeometryAlgorithm::shortDescription() const
@@ -73,12 +75,12 @@ QgsMinimumBoundingGeometryAlgorithm *QgsMinimumBoundingGeometryAlgorithm::create
 void QgsMinimumBoundingGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter(
+    new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true )
+  );
 
-  QStringList geometryTypes = QStringList() << QObject::tr( "Envelope (Bounding Box)" )
-                                            << QObject::tr( "Minimum Oriented Rectangle" )
-                                            << QObject::tr( "Minimum Enclosing Circle" )
-                                            << QObject::tr( "Convex Hull" );
+  QStringList geometryTypes
+    = QStringList() << QObject::tr( "Envelope (Bounding Box)" ) << QObject::tr( "Minimum Oriented Rectangle" ) << QObject::tr( "Minimum Enclosing Circle" ) << QObject::tr( "Convex Hull" );
 
   addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "Geometry type" ), geometryTypes ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Bounding geometry" ), Qgis::ProcessingSourceType::VectorPolygon ) );

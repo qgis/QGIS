@@ -64,7 +64,6 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
 
   private:
     QString mParentLayerParameterName;
-
 };
 
 #ifndef SIP_RUN
@@ -80,52 +79,23 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
 class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterAggregate( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterAggregate( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "A mapping of field names and aggregate type. Used for the Aggregate algorithm." );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "A mapping of field names and aggregate type. Used for the Aggregate algorithm." ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "Field Aggregates" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "Field Aggregates" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterAggregate::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterAggregate::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterAggregate"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterAggregate"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterAggregate"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterAggregate"_s; }
 
-    QStringList acceptedPythonTypes() const override
-    {
-      return QStringList() << QObject::tr( "list[dict]: list of aggregate definitions as dictionaries" );
-    }
+    QStringList acceptedPythonTypes() const override { return QStringList() << QObject::tr( "list[dict]: list of aggregate definitions as dictionaries" ); }
 
-    QStringList acceptedParameterTypes() const override
-    {
-      return QStringList()
-             << QgsProcessingParameterAggregate::typeName();
-    }
+    QStringList acceptedParameterTypes() const override { return QStringList() << QgsProcessingParameterAggregate::typeName(); }
 
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList();
-    }
-
+    QStringList acceptedOutputTypes() const override { return QStringList(); }
 };
 
 ///@endcond

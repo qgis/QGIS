@@ -24,29 +24,32 @@ it requires an implemented :py:func:`~clone` method.
 #include "qgsexpressioncontext.h"
 %End
   public:
-
-    QgsScopedExpressionFunction( const QString &fnname,
-                                 int params,
-                                 const QString &group,
-                                 const QString &helpText = QString(),
-                                 bool usesGeometry = false,
-                                 const QSet<QString> &referencedColumns = QSet<QString>(),
-                                 bool lazyEval = false,
-                                 bool handlesNull = false,
-                                 bool isContextual = true );
+    QgsScopedExpressionFunction(
+      const QString &fnname,
+      int params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      bool handlesNull = false,
+      bool isContextual = true
+    );
 %Docstring
 Create a new QgsScopedExpressionFunction
 %End
 
-    QgsScopedExpressionFunction( const QString &fnname,
-                                 const QgsExpressionFunction::ParameterList &params,
-                                 const QString &group,
-                                 const QString &helpText = QString(),
-                                 bool usesGeometry = false,
-                                 const QSet<QString> &referencedColumns = QSet<QString>(),
-                                 bool lazyEval = false,
-                                 bool handlesNull = false,
-                                 bool isContextual = true );
+    QgsScopedExpressionFunction(
+      const QString &fnname,
+      const QgsExpressionFunction::ParameterList &params,
+      const QString &group,
+      const QString &helpText = QString(),
+      bool usesGeometry = false,
+      const QSet<QString> &referencedColumns = QSet<QString>(),
+      bool lazyEval = false,
+      bool handlesNull = false,
+      bool isContextual = true
+    );
 %Docstring
 Create a new QgsScopedExpressionFunction using named parameters.
 %End
@@ -92,11 +95,9 @@ with :py:class:`QgsExpressionContextScope` objects.
 #include "qgsexpressioncontext.h"
 %End
   public:
-
     struct StaticVariable
     {
-
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() );
+        StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() );
 %Docstring
 Constructor for StaticVariable.
 
@@ -110,15 +111,15 @@ Constructor for StaticVariable.
                     in expression builder widgets
 %End
 
-      QString name;
+        QString name;
 
-      QVariant value;
+        QVariant value;
 
-      bool readOnly;
+        bool readOnly;
 
-      bool isStatic;
+        bool isStatic;
 
-      QString description;
+        QString description;
     };
 
     QgsExpressionContextScope( const QString &name = QString() );
@@ -500,7 +501,6 @@ with :py:class:`QgsExpressionContext` objects.
 #include "qgsexpressioncontext.h"
 %End
   public:
-
     QgsExpressionContext();
 
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );

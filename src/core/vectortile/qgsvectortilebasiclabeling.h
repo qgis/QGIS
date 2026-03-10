@@ -30,7 +30,6 @@ class QgsPalLayerSettings;
 class CORE_EXPORT QgsVectorTileBasicLabelingStyle
 {
   public:
-
     //! Sets labeling configuration of this style
     void setLabelSettings( const QgsPalLayerSettings &settings ) { mLabelSettings = settings; }
     //! Returns labeling configuration of this style
@@ -115,10 +114,7 @@ class CORE_EXPORT QgsVectorTileBasicLabelingStyle
 
 
     //! Returns whether the style is active at given zoom level (also checks "enabled" flag)
-    bool isActive( int zoomLevel ) const
-    {
-      return mEnabled && ( mMinZoomLevel == -1 || zoomLevel >= mMinZoomLevel ) && ( mMaxZoomLevel == -1 || zoomLevel <= mMaxZoomLevel );
-    }
+    bool isActive( int zoomLevel ) const { return mEnabled && ( mMinZoomLevel == -1 || zoomLevel >= mMinZoomLevel ) && ( mMaxZoomLevel == -1 || zoomLevel <= mMaxZoomLevel ); }
 
     //! Writes object content to given DOM element
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

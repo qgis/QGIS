@@ -34,8 +34,7 @@ QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString 
   : mStyleName( stName )
   , mLayerName( laName )
   , mGeometryType( geomType )
-{
-}
+{}
 
 QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other )
 {
@@ -108,8 +107,7 @@ void QgsVectorTileBasicRendererStyle::readXml( const QDomElement &elem, const Qg
 
 
 QgsVectorTileBasicRenderer::QgsVectorTileBasicRenderer()
-{
-}
+{}
 
 QString QgsVectorTileBasicRenderer::type() const
 {
@@ -120,7 +118,7 @@ QgsVectorTileBasicRenderer *QgsVectorTileBasicRenderer::clone() const
 {
   QgsVectorTileBasicRenderer *r = new QgsVectorTileBasicRenderer;
   r->mStyles = mStyles;
-  r->mStyles.detach();  // make a deep copy to make sure symbols get cloned
+  r->mStyles.detach(); // make a deep copy to make sure symbols get cloned
   return r;
 }
 
@@ -304,8 +302,7 @@ void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature>
 
     for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
     {
-      if ( ( featureTileZoom >= 0 && !layerStyle.isActive( featureTileZoom ) )
-           || !layerStyle.symbol() || layerStyle.layerName() == "background"_L1 )
+      if ( ( featureTileZoom >= 0 && !layerStyle.isActive( featureTileZoom ) ) || !layerStyle.symbol() || layerStyle.layerName() == "background"_L1 )
         continue;
 
       if ( !layerStyle.layerName().isEmpty() && !featureTileLayer.isEmpty() && layerStyle.layerName() != featureTileLayer )
@@ -455,15 +452,19 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyleWi
   pointFillColor.setAlpha( 100 );
   double pointSize = Qgis::DEFAULT_POINT_SIZE;
 
-  return simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
-                      lineStrokeColor, lineStrokeWidth,
-                      pointFillColor, pointStrokeColor, pointSize );
+  return simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth, lineStrokeColor, lineStrokeWidth, pointFillColor, pointStrokeColor, pointSize );
 }
 
 QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
-  const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
-  const QColor &lineStrokeColor, double lineStrokeWidth,
-  const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize )
+  const QColor &polygonFillColor,
+  const QColor &polygonStrokeColor,
+  double polygonStrokeWidth,
+  const QColor &lineStrokeColor,
+  double lineStrokeWidth,
+  const QColor &pointFillColor,
+  const QColor &pointStrokeColor,
+  double pointSize
+)
 {
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer();
   fillSymbolLayer->setFillColor( polygonFillColor );

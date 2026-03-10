@@ -165,9 +165,7 @@ void TestQgsMeshLayer::initTestCase()
   QDateTime referenceTime = mMemoryLayer->dataProvider()->temporalCapabilities()->referenceTime();
   QCOMPARE( referenceTime, QDateTime( QDate( 2017, 2, 27 ), QTime( 1, 2, 3 ), Qt::UTC ) );
   QVERIFY( !mMemoryLayer->supportsEditing() );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMemoryLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMemoryLayer );
 
   // MDAL Layer
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
@@ -190,9 +188,7 @@ void TestQgsMeshLayer::initTestCase()
   QVERIFY( mMdalLayer->isValid() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
 
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMdalLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMdalLayer );
 
   // Memory 1D layer
   mMemory1DLayer = new QgsMeshLayer( readFile( "/lines.txt" ), "Lines Memory", "mesh_memory" );
@@ -211,9 +207,7 @@ void TestQgsMeshLayer::initTestCase()
   QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
 
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMemory1DLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMemory1DLayer );
 
   // MDAL 1D Layer
   uri = QString( mDataDir + "/lines.2dm" );
@@ -236,9 +230,7 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMdal1DLayer->datasetGroupTreeRootItem()->childCount(), 5 );
 
   QVERIFY( mMdal1DLayer->isValid() );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMdal1DLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMdal1DLayer );
 
 
   // MDAL 3D Layer
@@ -246,9 +238,7 @@ void TestQgsMeshLayer::initTestCase()
   mMdal3DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
 
   QVERIFY( mMdal3DLayer->isValid() );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMdal3DLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMdal3DLayer );
 }
 
 void TestQgsMeshLayer::cleanupTestCase()
@@ -998,11 +988,7 @@ void TestQgsMeshLayer::test_path()
   datasetFile.copy( dir1.filePath( u"dataseGroup.dat"_s ) );
 
   QString meshLayerUri = u"2DM:\""_s + dir1.filePath( u"quad_and_triangle.2dm"_s ) + u"\""_s;
-  auto meshLayer = std::make_unique<QgsMeshLayer>(
-    meshLayerUri,
-    u"mesh layer"_s,
-    u"mdal"_s
-  );
+  auto meshLayer = std::make_unique<QgsMeshLayer>( meshLayerUri, u"mesh layer"_s, u"mdal"_s );
   Q_ASSERT( meshLayer->isValid() );
   meshLayer->addDatasets( dir1.filePath( u"dataseGroup.dat"_s ) );
 
@@ -1533,7 +1519,28 @@ void TestQgsMeshLayer::test_dataset_group_item_tree_item()
     QVERIFY( rootItem->childFromDatasetGroupIndex( i )->isEnabled() );
 
   QStringList names;
-  names << "Bed Elevation" << "temperature" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" << "velocity" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" << "water depth" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" << "water surface elevation" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums";
+  names
+    << "Bed Elevation"
+    << "temperature"
+    << "Maximums"
+    << "Minimums"
+    << "Time at Maximums"
+    << "Time at Minimums"
+    << "velocity"
+    << "Maximums"
+    << "Minimums"
+    << "Time at Maximums"
+    << "Time at Minimums"
+    << "water depth"
+    << "Maximums"
+    << "Minimums"
+    << "Time at Maximums"
+    << "Time at Minimums"
+    << "water surface elevation"
+    << "Maximums"
+    << "Minimums"
+    << "Time at Maximums"
+    << "Time at Minimums";
 
   for ( int i = 0; i < rootItem->totalChildCount(); ++i )
     QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
@@ -1670,9 +1677,7 @@ void TestQgsMeshLayer::test_memory_dataset_group()
   QCOMPARE( mMdalLayer->datasetGroupCount(), 6 );
   QCOMPARE( mMdalLayer->extraDatasetGroupCount(), 1 );
 
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> goodDatasetGroupFaces(
-    new QgsMeshMemoryDatasetGroup( u"good faces datasets"_s, QgsMeshDatasetGroupMetadata::DataOnFaces )
-  );
+  auto goodDatasetGroupFaces = std::make_unique<QgsMeshMemoryDatasetGroup>( u"good faces datasets"_s, QgsMeshDatasetGroupMetadata::DataOnFaces );
   std::unique_ptr<QgsMeshMemoryDatasetGroup> badDatasetGroupFaces( new QgsMeshMemoryDatasetGroup );
   badDatasetGroupFaces->setDataType( QgsMeshDatasetGroupMetadata::DataOnFaces );
   for ( int i = 1; i < 10; i++ )
@@ -2465,11 +2470,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
 
 void TestQgsMeshLayer::testHaveSameParentQuantity()
 {
-  QgsMeshLayer layer1(
-    testDataPath( "mesh/netcdf_parent_quantity.nc" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer1( testDataPath( "mesh/netcdf_parent_quantity.nc" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer1.isValid() );
 
   QVERIFY( QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
@@ -2477,11 +2478,7 @@ void TestQgsMeshLayer::testHaveSameParentQuantity()
   QVERIFY( QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 2 ), QgsMeshDatasetIndex( 3 ) ) );
   QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer1, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 4 ) ) );
 
-  QgsMeshLayer layer2(
-    testDataPath( "mesh/mesh_z_ws_d.nc" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer2( testDataPath( "mesh/mesh_z_ws_d.nc" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer2.isValid() );
 
   QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer2, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
@@ -2538,11 +2535,7 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QCOMPARE( found, false );
 
   // layer with several separated parts
-  QgsMeshLayer layer(
-    testDataPath( "mesh/several_parts.2dm" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer( testDataPath( "mesh/several_parts.2dm" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer.isValid() );
 
   datasetIndex = QgsMeshDatasetIndex( 0, 0 );
@@ -2600,11 +2593,7 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
 
 void TestQgsMeshLayer::testDatasetsUniquePath()
 {
-  QgsMeshLayer layer(
-    testDataPath( "mesh/quad_and_triangle.2dm" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer( testDataPath( "mesh/quad_and_triangle.2dm" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer.isValid() );
 
   QString path = testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" );
@@ -2621,11 +2610,7 @@ void TestQgsMeshLayer::testDatasetsUniquePath()
 
 void TestQgsMeshLayer::testRemoveDatasets()
 {
-  QgsMeshLayer layer(
-    testDataPath( "mesh/quad_and_triangle.2dm" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer( testDataPath( "mesh/quad_and_triangle.2dm" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer.isValid() );
 
   // add datasets with same name
@@ -2649,11 +2634,7 @@ void TestQgsMeshLayer::testRemoveDatasets()
 void TestQgsMeshLayer::testClone()
 {
   // layer
-  QgsMeshLayer layer(
-    testDataPath( "mesh/several_parts.2dm" ),
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  QgsMeshLayer layer( testDataPath( "mesh/several_parts.2dm" ), u"mesh"_s, u"mdal"_s );
   QVERIFY( layer.isValid() );
 
   // add additional dataset

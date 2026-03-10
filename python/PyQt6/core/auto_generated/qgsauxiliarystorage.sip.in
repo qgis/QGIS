@@ -40,7 +40,6 @@ source layer is not and edition of a joined field is also possible.
 #include "qgsauxiliarystorage.h"
 %End
   public:
-
     QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 %Docstring
 Constructor
@@ -264,7 +263,6 @@ Providing some utility methods to manage auxiliary storage.
 #include "qgsauxiliarystorage.h"
 %End
   public:
-
     QgsAuxiliaryStorage( const QgsProject &project, bool copy = true );
 %Docstring
 Constructor.

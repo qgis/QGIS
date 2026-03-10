@@ -61,7 +61,8 @@ class TestQgsVertexEditor : public QgsTest
 };
 
 TestQgsVertexEditor::TestQgsVertexEditor()
-  : QgsTest( u"Vertex Editor tests"_s ) {}
+  : QgsTest( u"Vertex Editor tests"_s )
+{}
 
 //runs before all tests
 void TestQgsVertexEditor::initTestCase()

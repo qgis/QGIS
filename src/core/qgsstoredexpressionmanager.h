@@ -26,12 +26,14 @@
 #include <QUuid>
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsstoredexpressionmanager.h>
 % End
+// clang-format on
 #endif
 
-class QDomNode;
+  class QDomNode;
 class QDomDocument;
 
 /**
@@ -42,7 +44,6 @@ class QDomDocument;
 class CORE_EXPORT QgsStoredExpression
 {
   public:
-
     /**
      * Categories of use cases
      * FilterExpression for stored expressions to filter attribute table
@@ -50,9 +51,9 @@ class CORE_EXPORT QgsStoredExpression
      */
     enum Category SIP_ENUM_BASETYPE( IntFlag )
     {
-      FilterExpression        = 1 << 0, //!< Expressions to filter features
-      DefaultValueExpression  = 1 << 1,  //!< Expressions to determine default values (not yet used)
-      All                     = FilterExpression | DefaultValueExpression
+      FilterExpression = 1 << 0,       //!< Expressions to filter features
+      DefaultValueExpression = 1 << 1, //!< Expressions to determine default values (not yet used)
+      All = FilterExpression | DefaultValueExpression
     };
 
 #ifndef SIP_RUN
@@ -94,7 +95,6 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     Q_OBJECT
 
   public:
-
     QgsStoredExpressionManager() = default;
 
     /**
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param tag               category of the expression use case - default FilterExpression
     *  \returns generated id
     */
-    QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+    QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag = QgsStoredExpression::Category::FilterExpression );
 
     /**
     * Removes an expression to the list
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param expression        new expression text
     *  \param tag               new category of the expression use case
     */
-    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const QgsStoredExpression::Category &tag );
 
     /**
     * Appends a list of expressions to the existing list
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *
     *  \param tag               category of the expression use case - default all
     */
-    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
+    QList< QgsStoredExpression > storedExpressions( const QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
 
 
     /**
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param expression        id of the expression as identification
     *  \param tag               category of the expression use case - default all
     */
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 
     //! Clears list of stored expressions
     void clearStoredExpressions();

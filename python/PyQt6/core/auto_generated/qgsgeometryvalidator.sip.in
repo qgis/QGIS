@@ -20,7 +20,6 @@ Validates geometries using the QGIS geometry validation model.
 #include "qgsgeometryvalidator.h"
 %End
   public:
-
     QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = 0, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 %Docstring
 Constructor for QgsGeometryValidator.

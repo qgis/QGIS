@@ -75,40 +75,44 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
     //sidebar style
     const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
 
-    QString style = QStringLiteral( "QListWidget#mOptionsListWidget {"
-                                    "    background-color: rgba(69, 69, 69, 0);"
-                                    "    outline: 0;"
-                                    "}"
-                                    "QFrame#mOptionsListFrame {"
-                                    "    background-color: rgba(69, 69, 69, 220);"
-                                    "}"
-                                    "QListWidget#mOptionsListWidget::item {"
-                                    "    color: white;"
-                                    "    padding: %1px;"
-                                    "}"
-                                    "QListWidget#mOptionsListWidget::item::selected {"
-                                    "    color: palette(window-text);"
-                                    "    background-color:palette(window);"
-                                    "    padding-right: 0px;"
-                                    "}" )
+    QString style = QStringLiteral(
+                      "QListWidget#mOptionsListWidget {"
+                      "    background-color: rgba(69, 69, 69, 0);"
+                      "    outline: 0;"
+                      "}"
+                      "QFrame#mOptionsListFrame {"
+                      "    background-color: rgba(69, 69, 69, 220);"
+                      "}"
+                      "QListWidget#mOptionsListWidget::item {"
+                      "    color: white;"
+                      "    padding: %1px;"
+                      "}"
+                      "QListWidget#mOptionsListWidget::item::selected {"
+                      "    color: palette(window-text);"
+                      "    background-color:palette(window);"
+                      "    padding-right: 0px;"
+                      "}"
+    )
                       .arg( frameMargin );
 
-    style += QStringLiteral( "QTreeView#mOptionsTreeView {"
-                             "    background-color: rgba(69, 69, 69, 0);"
-                             "    outline: 0;"
-                             "}"
-                             "QFrame#mOptionsListFrame {"
-                             "    background-color: rgba(69, 69, 69, 220);"
-                             "}"
-                             "QTreeView#mOptionsTreeView::item {"
-                             "    color: white;"
-                             "    padding: %1px;"
-                             "}"
-                             "QTreeView#mOptionsTreeView::item::selected, QTreeView#mOptionsTreeView::branch::selected {"
-                             "    color: palette(window-text);"
-                             "    background-color:palette(window);"
-                             "    padding-right: 0px;"
-                             "}" )
+    style += QStringLiteral(
+               "QTreeView#mOptionsTreeView {"
+               "    background-color: rgba(69, 69, 69, 0);"
+               "    outline: 0;"
+               "}"
+               "QFrame#mOptionsListFrame {"
+               "    background-color: rgba(69, 69, 69, 220);"
+               "}"
+               "QTreeView#mOptionsTreeView::item {"
+               "    color: white;"
+               "    padding: %1px;"
+               "}"
+               "QTreeView#mOptionsTreeView::item::selected, QTreeView#mOptionsTreeView::branch::selected {"
+               "    color: palette(window-text);"
+               "    background-color:palette(window);"
+               "    padding-right: 0px;"
+               "}"
+    )
                .arg( frameMargin );
 
     const QString toolbarSpacing = opts.value( u"toolbarSpacing"_s, QString() ).toString();
@@ -126,10 +130,12 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
     // Fix selection color on losing focus (Windows)
     const QPalette palette = qApp->palette();
 
-    ss += QString( "QTableView {"
-                   "selection-background-color: %1;"
-                   "selection-color: %2;"
-                   "}" )
+    ss += QString(
+            "QTableView {"
+            "selection-background-color: %1;"
+            "selection-color: %2;"
+            "}"
+    )
             .arg( palette.highlight().color().name(), palette.highlightedText().color().name() );
   }
 

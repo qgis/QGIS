@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
-{
-}
+{}
 
 Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
 
@@ -125,12 +124,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       QMap<QString, QString> derivedAttributes;
       QString x;
       QString y;
-      QgsCoordinateUtils::formatCoordinatePartsForProject(
-        QgsProject::instance(),
-        QgsPointXY( mapCoords.x(), mapCoords.y() ),
-        mCanvas->mapSettings()->crs(),
-        6, x, y
-      );
+      QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject::instance(), QgsPointXY( mapCoords.x(), mapCoords.y() ), mCanvas->mapSettings()->crs(), 6, x, y );
 
       derivedAttributes.insert( tr( "(clicked coordinate X)" ), x );
       derivedAttributes.insert( tr( "(clicked coordinate Y)" ), y );

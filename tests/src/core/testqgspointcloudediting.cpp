@@ -40,7 +40,8 @@ class TestQgsPointCloudEditing : public QgsTest
 
   public:
     TestQgsPointCloudEditing()
-      : QgsTest( u"Point Cloud Editing Tests"_s, u"pointcloud_editing"_s ) {}
+      : QgsTest( u"Point Cloud Editing Tests"_s, u"pointcloud_editing"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

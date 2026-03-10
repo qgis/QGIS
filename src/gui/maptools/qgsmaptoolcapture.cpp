@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsbezierdata.h"
 #include "qgsbeziermarker.h"
+#include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
@@ -208,8 +209,7 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 bool QgsMapToolCapture::tracingEnabled()
 {
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
-  return tracer && ( !tracer->actionEnableTracing() || tracer->actionEnableTracing()->isChecked() )
-         && ( !tracer->actionEnableSnapping() || tracer->actionEnableSnapping()->isChecked() );
+  return tracer && ( !tracer->actionEnableTracing() || tracer->actionEnableTracing()->isChecked() ) && ( !tracer->actionEnableSnapping() || tracer->actionEnableSnapping()->isChecked() );
 }
 
 
@@ -386,10 +386,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::CircularGeometries ) )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
-      const QgsGeometry curved = linear.convertToCurves(
-        QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value(),
-        QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value()
-      );
+      const QgsGeometry curved
+        = linear.convertToCurves( QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value(), QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value() );
       if ( QgsWkbTypes::flatType( curved.wkbType() ) != Qgis::WkbType::CompoundCurve )
       {
         mCaptureCurve.clear();
@@ -549,8 +547,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   // Poly-Bézier mode: handle press to add anchor and start drag
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
-       && ( mode() == CaptureLine || mode() == CapturePolygon ) )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
     if ( e->button() == Qt::LeftButton )
     {
@@ -686,16 +683,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       else if ( mBezierDragAnchorIndex >= 0 )
       {
         // Creating new anchor: update both handles symmetrically
-        const QgsPoint &anchor = mBezierData->anchor( mBezierDragAnchorIndex );
-        const int leftHandleIdx = mBezierDragAnchorIndex * 2;
-        const int rightHandleIdx = mBezierDragAnchorIndex * 2 + 1;
-
-        // Right handle follows mouse
-        mBezierData->moveHandle( rightHandleIdx, mapPoint );
-
-        // Left handle goes opposite direction: anchor - (mouse - anchor) = 2*anchor - mouse
-        const QgsPoint leftHandle( anchor.x() * 2 - mapPoint.x(), anchor.y() * 2 - mapPoint.y() );
-        mBezierData->moveHandle( leftHandleIdx, leftHandle );
+        mBezierData->calculateSymmetricHandles( mBezierDragAnchorIndex, mapPoint );
       }
 
       // Update visualization
@@ -1164,8 +1152,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
   // Handle Poly-Bézier mode: delete the last anchor with its handles
   // This must be checked before the standard size() check since Poly-Bézier
   // doesn't use mCaptureCurve during capture
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
-       && mBezierData && mBezierData->anchorCount() > 0 )
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier && mBezierData && mBezierData->anchorCount() > 0 )
   {
     mBezierData->deleteAnchor( mBezierData->anchorCount() - 1 );
     if ( mBezierMarker )
@@ -1227,7 +1214,10 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
     if ( ct.isValid() && !ct.isShortCircuited() )
     {
-      mCaptureCurve.removeCurve( mCaptureCurve.nCurves() - 1 );
+      const int previousCurveIndex = mCaptureCurve.nCurves() - 1;
+      const QgsCurve *curve = mCaptureCurve.curveAt( previousCurveIndex );
+      if ( curve && curve->numPoints() > 2 )
+        mCaptureCurve.removeCurve( previousCurveIndex );
     }
     if ( mCaptureCurve.numPoints() == 2 && mCaptureCurve.nCurves() == 1 )
     {
@@ -1470,8 +1460,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0
-       || !( capabilities() & ValidateGeometries ) )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0 || !( capabilities() & ValidateGeometries ) )
     return;
 
   if ( mValidator )
@@ -2126,6 +2115,26 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        {
+          if ( QgsWkbTypes::flatType( vlayer->wkbType() ) == Qgis::WkbType::CircularString )
+          {
+            if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( captureCurve() ) )
+            {
+              // if there is only one segment the compound curve will be casted to circular string
+              // otherwise the user will see a warning on the message bar saying that a compound
+              // curve can't be added on a circular string layer
+              if ( compound->nCurves() == 1 )
+              {
+                if ( const QgsCircularString *circularPart = qgsgeometry_cast<const QgsCircularString *>( compound->curveAt( 0 ) ) )
+                {
+                  curveToAdd.reset( circularPart->clone() );
+                }
+              }
+            }
+          }
+        }
+
         g = QgsGeometry( curveToAdd->clone() );
         geometryCaptured( g );
         lineCaptured( curveToAdd.release() );

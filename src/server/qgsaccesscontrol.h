@@ -53,10 +53,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     }
 
 
-    ~QgsAccessControl() override
-    {
-      delete mPluginsAccessControls;
-    }
+    ~QgsAccessControl() override { delete mPluginsAccessControls; }
 
     QgsAccessControl &operator=( const QgsAccessControl &other )
     {

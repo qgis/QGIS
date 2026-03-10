@@ -40,7 +40,6 @@ class QgsLayerTreeModelLegendNode;
 class CORE_EXPORT QgsTiledSceneRenderContext
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneRenderContext.
      */
@@ -86,11 +85,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      *
      * \see textureCoordinates()
      */
-    void setTextureCoordinates(
-      float textureX1, float textureY1,
-      float textureX2, float textureY2,
-      float textureX3, float textureY3
-    );
+    void setTextureCoordinates( float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3 );
 
     /**
      * Returns the current texture coordinates.
@@ -108,7 +103,6 @@ class CORE_EXPORT QgsTiledSceneRenderContext
     QgsFeedback *mFeedback = nullptr;
     QImage mTextureImage;
     float mTextureCoordinates[6] { 0, 0, 0, 0, 0, 0 };
-
 };
 
 /**
@@ -121,7 +115,6 @@ class CORE_EXPORT QgsTiledSceneRenderContext
  */
 class CORE_EXPORT QgsTiledSceneRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -133,7 +126,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
     else
       sipType = 0;
 
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -277,7 +270,6 @@ class CORE_EXPORT QgsTiledSceneRenderer
     virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) = 0;
 
   protected:
-
     /**
      * Copies common tiled scene renderer properties (such as screen error) to the \a destination renderer.
      */
@@ -312,7 +304,6 @@ class CORE_EXPORT QgsTiledSceneRenderer
     double mMaximumScreenError = 3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
     bool mTileBorderRendering = false;
-
 };
 
 #endif // QGSTILEDSCENERENDERER_H

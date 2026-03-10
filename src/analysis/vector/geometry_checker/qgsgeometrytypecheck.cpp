@@ -151,10 +151,7 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
 
 QStringList QgsGeometryTypeCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" )
-                                     << tr( "Delete feature" )
-                                     << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" ) << tr( "Delete feature" ) << tr( "No action" );
   return methods;
 }
 

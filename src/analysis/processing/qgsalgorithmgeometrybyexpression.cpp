@@ -57,18 +57,22 @@ QString QgsGeometryByExpressionAlgorithm::outputName() const
 
 QString QgsGeometryByExpressionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm updates existing geometries (or creates new geometries) for input "
-                      "features by use of a QGIS expression. This allows complex geometry modifications "
-                      "which can utilize all the flexibility of the QGIS expression engine to manipulate "
-                      "and create geometries for output features.\n\n"
-                      "For help with QGIS expression functions, see the inbuilt help for specific functions "
-                      "which is available in the expression builder." );
+  return QObject::tr(
+    "This algorithm updates existing geometries (or creates new geometries) for input "
+    "features by use of a QGIS expression. This allows complex geometry modifications "
+    "which can utilize all the flexibility of the QGIS expression engine to manipulate "
+    "and create geometries for output features.\n\n"
+    "For help with QGIS expression functions, see the inbuilt help for specific functions "
+    "which is available in the expression builder."
+  );
 }
 
 QString QgsGeometryByExpressionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Updates existing geometries (or creates new geometries) for input "
-                      "features by use of a QGIS expression." );
+  return QObject::tr(
+    "Updates existing geometries (or creates new geometries) for input "
+    "features by use of a QGIS expression."
+  );
 }
 
 QgsGeometryByExpressionAlgorithm *QgsGeometryByExpressionAlgorithm::createInstance() const
@@ -93,7 +97,9 @@ Qgis::ProcessingFeatureSourceFlags QgsGeometryByExpressionAlgorithm::sourceFlags
 
 void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 )
+  );
   addParameter( new QgsProcessingParameterBoolean( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( u"WITH_M"_s, QObject::tr( "Output geometry has m values" ), false ) );
   addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Geometry expression" ), u"@geometry"_s, u"INPUT"_s ) );

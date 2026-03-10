@@ -46,7 +46,6 @@ class QgsProfileRequest;
 class QgsProfileSnapContext;
 
 
-
 /**
  * \brief Implementation of QgsAbstractProfileResults for point cloud layers.
  *
@@ -56,20 +55,18 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileResults
 {
-
   public:
-
     QgsPointCloudLayerProfileResults();
     ~QgsPointCloudLayerProfileResults() override;
 
     struct PointResult
     {
-      double x = 0;
-      double y = 0;
-      double z = 0;
-      double distanceAlongCurve = 0;
-      double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
-      QRgb color;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double distanceAlongCurve = 0;
+        double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
+        QRgb color;
     };
 
     /**
@@ -95,7 +92,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
-    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -103,7 +100,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 
   private:
-
     GEOSSTRtree *mPointIndex = nullptr;
     QPointer< QgsPointCloudLayer > mLayer;
     QgsCoordinateReferenceSystem mCurveCrs;
@@ -135,7 +131,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
     virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
 
   protected:
-
     /**
      * Collects point cloud data along a curve within the specified range and tolerance.
      *
@@ -210,7 +205,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
      * \param zRange Vertical range for filtering points.
      * \return Number of successfully processed nodes.
      */
-    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
 
     /**
      * Visits a point cloud block and collects points within the given Z range and search geometry.
@@ -263,9 +258,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
  */
 class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
-
   public:
-
     /**
      * Constructor for QgsPointCloudLayerProfileGenerator.
      */
@@ -305,9 +298,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayer
  */
 class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -336,9 +327,7 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstr
  */
 class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
-
   public:
-
     /**
      * Constructor for QgsTriangulatedPointCloudLayerProfileGenerator.
      */

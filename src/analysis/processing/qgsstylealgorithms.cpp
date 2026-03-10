@@ -35,11 +35,7 @@ void QgsCombineStylesAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
 
-  const QStringList options = QStringList()
-                              << QObject::tr( "Symbols" )
-                              << QObject::tr( "Color ramps" )
-                              << QObject::tr( "Text formats" )
-                              << QObject::tr( "Label settings" );
+  const QStringList options = QStringList() << QObject::tr( "Symbols" ) << QObject::tr( "Color ramps" ) << QObject::tr( "Text formats" ) << QObject::tr( "Label settings" );
   addParameter( new QgsProcessingParameterEnum( u"OBJECTS"_s, QObject::tr( "Objects to combine" ), options, true, QVariantList() << 0 << 1 << 2 << 3 ) );
   addOutput( new QgsProcessingOutputNumber( u"SYMBOLS"_s, QObject::tr( "Symbol count" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"COLORRAMPS"_s, QObject::tr( "Color ramp count" ) ) );
@@ -74,8 +70,10 @@ QString QgsCombineStylesAlgorithm::groupId() const
 
 QString QgsCombineStylesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm combines multiple QGIS style databases into a single style database. If any symbols exist with duplicate names between the different "
-                      "source databases these will be renamed to have unique names in the output combined database." );
+  return QObject::tr(
+    "This algorithm combines multiple QGIS style databases into a single style database. If any symbols exist with duplicate names between the different "
+    "source databases these will be renamed to have unique names in the output combined database."
+  );
 }
 
 QString QgsCombineStylesAlgorithm::shortDescription() const

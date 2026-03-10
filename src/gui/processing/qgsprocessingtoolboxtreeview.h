@@ -53,7 +53,12 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. Since QGIS 3.40
      */
-    QgsProcessingToolboxTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr, QgsProcessingRecentAlgorithmLog *recentLog = nullptr, QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
+    QgsProcessingToolboxTreeView(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      QgsProcessingRegistry *registry = nullptr,
+      QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr
+    );
 
     /**
      * Sets the processing \a registry associated with the view.
@@ -64,11 +69,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. Since QGIS 3.40
      */
-    void setRegistry(
-      QgsProcessingRegistry *registry,
-      QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
-      QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr
-    );
+    void setRegistry( QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog = nullptr, QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
 
     /**
      * Sets the toolbox proxy model used to drive the view.

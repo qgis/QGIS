@@ -33,11 +33,7 @@
 #endif
 
 QgsFieldMappingWidget::QgsFieldMappingWidget(
-  QWidget *parent,
-  const QgsFields &sourceFields,
-  const QgsFields &destinationFields,
-  const QMap<QString, QString> &expressions,
-  const QList< QgsVectorDataProvider::NativeType > &nativeTypes
+  QWidget *parent, const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, const QList< QgsVectorDataProvider::NativeType > &nativeTypes
 )
   : QgsPanelWidget( parent )
 {
@@ -245,8 +241,7 @@ std::list<int> QgsFieldMappingWidget::selectedRows()
 
 QgsFieldMappingExpressionDelegate::QgsFieldMappingExpressionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 void QgsFieldMappingExpressionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
@@ -325,8 +320,7 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
 QgsFieldMappingTypeDelegate::QgsFieldMappingTypeDelegate( const QList< QgsVectorDataProvider::NativeType > &nativeTypes, QObject *parent )
   : QStyledItemDelegate( parent )
   , mNativeTypes( nativeTypes.isEmpty() ? QgsFieldMappingModel::supportedDataTypes() : nativeTypes )
-{
-}
+{}
 
 QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

@@ -22,7 +22,6 @@ Utility functions for use when clipping map renders.
 #include "qgsmapclippingutils.h"
 %End
   public:
-
     static QList< QgsMapClippingRegion > collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer );
 %Docstring
 Collects the list of map clipping regions from a ``context`` which apply

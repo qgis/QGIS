@@ -48,10 +48,7 @@ static QList<QgsFeature> _pointFeatures()
    */
 
   QList<QgsFeature> feats;
-  feats << _pointFeature( 1, 1, 1 )
-        << _pointFeature( 2, -1, 1 )
-        << _pointFeature( 3, -1, -1 )
-        << _pointFeature( 4, 1, -1 );
+  feats << _pointFeature( 1, 1, 1 ) << _pointFeature( 2, -1, 1 ) << _pointFeature( 3, -1, -1 ) << _pointFeature( 4, 1, -1 );
   return feats;
 }
 
@@ -66,10 +63,7 @@ class TestQgsSpatialIndex : public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
     }
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testQuery()
     {

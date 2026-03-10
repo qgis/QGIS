@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 
 bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
@@ -59,8 +58,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString &spacers )
 
 bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 {
-  if ( mAcceptedStatuses.contains( u"invalid"_s )
-       && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
+  if ( mAcceptedStatuses.contains( u"invalid"_s ) && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     // Don't accept if the "invalid" filter is set and the plugin is OK
     return false;
@@ -70,9 +68,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   const QString statusexp = sourceModel()->data( index, PLUGIN_STATUSEXP_ROLE ).toString();
   if ( status.endsWith( 'Z' ) )
     status.chop( 1 );
-  if ( !mAcceptedStatuses.isEmpty()
-       && !mAcceptedStatuses.contains( u"invalid"_s )
-       && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )
+  if ( !mAcceptedStatuses.isEmpty() && !mAcceptedStatuses.contains( u"invalid"_s ) && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )
   {
     // Don't accept if the status doesn't match
     return false;

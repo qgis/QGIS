@@ -130,10 +130,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
 
-  if ( role == Qt::BackgroundRole
-       || role == Qt::ForegroundRole
-       || role == Qt::DecorationRole
-       || role == Qt::FontRole )
+  if ( role == Qt::BackgroundRole || role == Qt::ForegroundRole || role == Qt::DecorationRole || role == Qt::FontRole )
   {
     QgsVectorLayer *layer = mFilterModel->layer();
     QgsFeature feat;

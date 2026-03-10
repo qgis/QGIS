@@ -4,3 +4,7 @@
 3a4f8bcdad4f843d7217116ac1cb94b6b6c3fb8b # clang-format src/3d + server
 148c4220b0893d34acc61fccdee9e4ad396c4a0b # Mass conversion to use u""_s and ""_L1 operators
 5110dcbc695c0d4867e95449117ddd8f726b8ae1 # substitute QLatin1Char('x') with 'x'_L1
+fc7ae590e963cdc2314c5f35544419afafd9e6c8 # clang-format on src/core
+ec2cd479d61dccdd4def450d6f9f34c40a21d15d # clang-format on src/3d
+25bda3fe44a7e4f6f6f649fc68b364b2174816fe # clang-format on src/3d
+3d4199245e0cb201ed1499791e4cac4b25e9a623 # clanf-format

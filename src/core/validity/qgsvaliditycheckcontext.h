@@ -34,14 +34,13 @@ class QgsLayout;
  */
 class CORE_EXPORT QgsValidityCheckContext
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsLayoutValidityCheckContext *>( sipCpp ) != NULL )
       sipType = sipType_QgsLayoutValidityCheckContext;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsValidityCheckContext
     //! Available check context types
     enum ContextType
     {
-      TypeLayoutContext = 1, //!< Layout context, see QgsLayoutValidityCheckContext
+      TypeLayoutContext = 1,   //!< Layout context, see QgsLayoutValidityCheckContext
       TypeUserContext = 10001, //!< Starting point for user contexts
     };
 
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsValidityCheckContext
     virtual int type() const = 0;
 
     virtual ~QgsValidityCheckContext() = default;
-
 };
 
 /**
@@ -75,7 +73,6 @@ class CORE_EXPORT QgsValidityCheckContext
 class CORE_EXPORT QgsLayoutValidityCheckContext : public QgsValidityCheckContext
 {
   public:
-
     /**
      * Constructor for QgsLayoutValidityCheckContext for the specified \a layout.
      */
@@ -89,6 +86,5 @@ class CORE_EXPORT QgsLayoutValidityCheckContext : public QgsValidityCheckContext
      * Pointer to the layout which the check is being run against.
      */
     QgsLayout *layout = nullptr;
-
 };
 #endif // QGSVALIDITYCHECKCONTEXT_H

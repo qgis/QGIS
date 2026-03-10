@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsMaskRenderSettings
 {
   public:
-
     QgsMaskRenderSettings();
 
     /**
@@ -57,9 +56,7 @@ class CORE_EXPORT QgsMaskRenderSettings
     void setSimplificationTolerance( double tolerance );
 
   private:
-
     double mSimplifyTolerance = 0;
-
 };
 
 #endif // QGSMASKRENDERSETTINGS_H

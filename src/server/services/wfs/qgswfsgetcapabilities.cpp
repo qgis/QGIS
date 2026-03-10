@@ -114,8 +114,7 @@ namespace QgsWfs
     filterCapabilitiesElement.appendChild( spatialCapabilitiesElement );
     //GeometryOperands
     QStringList geometryOperands;
-    geometryOperands << u"gml:Point"_s << u"gml:LineString"_s << u"gml:Polygon"_s
-                     << u"gml:Envelope"_s;
+    geometryOperands << u"gml:Point"_s << u"gml:LineString"_s << u"gml:Polygon"_s << u"gml:Envelope"_s;
     QDomElement geometryOperandsElem = doc.createElement( u"ogc:GeometryOperands"_s );
     for ( const QString &geometryOperand : geometryOperands )
     {
@@ -127,9 +126,7 @@ namespace QgsWfs
     spatialCapabilitiesElement.appendChild( geometryOperandsElem );
     //SpatialOperators
     QStringList spatialOperators;
-    spatialOperators << u"Equals"_s << u"Disjoint"_s << u"Touches"_s
-                     << u"Within"_s << u"Overlaps"_s << u"Crosses"_s
-                     << u"Intersects"_s << u"Contains"_s << u"BBOX"_s;
+    spatialOperators << u"Equals"_s << u"Disjoint"_s << u"Touches"_s << u"Within"_s << u"Overlaps"_s << u"Crosses"_s << u"Intersects"_s << u"Contains"_s << u"BBOX"_s;
     QDomElement spatialOperatorsElem = doc.createElement( u"ogc:SpatialOperators"_s );
     for ( const QString &spatialOperator : spatialOperators )
     {
@@ -144,9 +141,7 @@ namespace QgsWfs
     scalarCapabilitiesElement.appendChild( logicalOperatorsElement );
     // ComparisonOperators
     QStringList comparisonOperators;
-    comparisonOperators << u"LessThan"_s << u"GreaterThan"_s
-                        << u"LessThanEqualTo"_s << u"GreaterThanEqualTo"_s
-                        << u"EqualTo"_s << u"Like"_s << u"Between"_s;
+    comparisonOperators << u"LessThan"_s << u"GreaterThan"_s << u"LessThanEqualTo"_s << u"GreaterThanEqualTo"_s << u"EqualTo"_s << u"Like"_s << u"Between"_s;
     QDomElement comparisonOperatorsElem = doc.createElement( u"ogc:ComparisonOperators"_s );
     for ( const QString &comparisonOperator : comparisonOperators )
     {
@@ -387,7 +382,8 @@ namespace QgsWfs
     QDomElement getFeatureElement = operationElement.cloneNode().toElement();
     getFeatureElement.setAttribute( u"name"_s, u"GetFeature"_s );
     // GetFeature outputFormat
-    const QDomElement gfOutputFormatParameterElement = getParameterElement( doc, u"outputFormat"_s, QStringList() << u"text/xml; subtype=gml/2.1.2"_s << u"text/xml; subtype=gml/3.1.1"_s << u"application/vnd.geo+json"_s );
+    const QDomElement gfOutputFormatParameterElement
+      = getParameterElement( doc, u"outputFormat"_s, QStringList() << u"text/xml; subtype=gml/2.1.2"_s << u"text/xml; subtype=gml/3.1.1"_s << u"application/vnd.geo+json"_s );
     getFeatureElement.appendChild( gfOutputFormatParameterElement );
     // GetFeature resultType
     const QDomElement resultTypeParameterElement = getParameterElement( doc, u"resultType"_s, QStringList() << u"results"_s << u"hits"_s );
@@ -399,7 +395,8 @@ namespace QgsWfs
     QDomElement transactionElement = operationElement.cloneNode().toElement();
     transactionElement.setAttribute( u"name"_s, u"Transaction"_s );
     // GetFeature inputFormat
-    const QDomElement inputFormatParameterElement = getParameterElement( doc, u"inputFormat"_s, QStringList() << u"text/xml; subtype=gml/2.1.2"_s << u"text/xml; subtype=gml/3.1.1"_s << u"application/vnd.geo+json"_s );
+    const QDomElement inputFormatParameterElement
+      = getParameterElement( doc, u"inputFormat"_s, QStringList() << u"text/xml; subtype=gml/2.1.2"_s << u"text/xml; subtype=gml/3.1.1"_s << u"application/vnd.geo+json"_s );
     transactionElement.appendChild( inputFormatParameterElement );
     // Add
     oprationsElement.appendChild( transactionElement );
@@ -534,7 +531,9 @@ namespace QgsWfs
           operationsElement.appendChild( operationElement );
         }
 
-        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && ( !layer->isSpatial() || provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) && wfstUpdateLayersId.contains( layer->id() ) )
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues )
+             && ( !layer->isSpatial() || provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries )
+             && wfstUpdateLayersId.contains( layer->id() ) )
         {
           //wfs:Update element
           QDomElement operationElement = doc.createElement( u"Operation"_s );
@@ -578,11 +577,19 @@ namespace QgsWfs
       QDomElement bBoxElement = doc.createElement( u"ows:WGS84BoundingBox"_s );
       bBoxElement.setAttribute( u"dimensions"_s, u"2"_s );
       QDomElement lCornerElement = doc.createElement( u"ows:LowerCorner"_s );
-      const QDomText lCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
+      const QDomText lCornerText = doc.createTextNode(
+        qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision )
+        + " "
+        + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision )
+      );
       lCornerElement.appendChild( lCornerText );
       bBoxElement.appendChild( lCornerElement );
       QDomElement uCornerElement = doc.createElement( u"ows:UpperCorner"_s );
-      const QDomText uCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
+      const QDomText uCornerText = doc.createTextNode(
+        qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision )
+        + " "
+        + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision )
+      );
       uCornerElement.appendChild( uCornerText );
       bBoxElement.appendChild( uCornerElement );
       layerElem.appendChild( bBoxElement );

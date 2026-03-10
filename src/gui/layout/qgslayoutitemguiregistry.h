@@ -209,7 +209,17 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      *
      * If \a isNodeBased is TRUE, then the corresponding item is a node based item.
      */
-    QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon, const QgsLayoutItemWidgetFunc &pfWidget = nullptr, const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr, const QString &groupId = QString(), bool isNodeBased = false, QgsLayoutItemAbstractGuiMetadata::Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags(), const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr )
+    QgsLayoutItemGuiMetadata(
+      int type,
+      const QString &visibleName,
+      const QIcon &creationIcon,
+      const QgsLayoutItemWidgetFunc &pfWidget = nullptr,
+      const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr,
+      const QString &groupId = QString(),
+      bool isNodeBased = false,
+      QgsLayoutItemAbstractGuiMetadata::Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags(),
+      const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr
+    )
       : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )

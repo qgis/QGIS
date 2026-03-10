@@ -60,7 +60,19 @@ class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactor
 
   public:
     //! Constructs the factory
-    QgsAnnotationLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsAnnotationLayer *layer, int leafLevel, Qgis::AltitudeClamping clamping, double zOffset, bool showCallouts, const QColor &calloutLineColor, double calloutLineWidth, const QgsTextFormat &textFormat, double zMin, double zMax );
+    QgsAnnotationLayerChunkLoaderFactory(
+      const Qgs3DRenderContext &context,
+      QgsAnnotationLayer *layer,
+      int leafLevel,
+      Qgis::AltitudeClamping clamping,
+      double zOffset,
+      bool showCallouts,
+      const QColor &calloutLineColor,
+      double calloutLineWidth,
+      const QgsTextFormat &textFormat,
+      double zMin,
+      double zMax
+    );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -132,7 +144,18 @@ class QgsAnnotationLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     //! Constructs the entity.
-    explicit QgsAnnotationLayerChunkedEntity( Qgs3DMapSettings *map, QgsAnnotationLayer *layer, Qgis::AltitudeClamping clamping, double zOffset, bool showCallouts, const QColor &calloutLineColor, double calloutLineWidth, const QgsTextFormat &textFormat, double zMin, double zMax );
+    explicit QgsAnnotationLayerChunkedEntity(
+      Qgs3DMapSettings *map,
+      QgsAnnotationLayer *layer,
+      Qgis::AltitudeClamping clamping,
+      double zOffset,
+      bool showCallouts,
+      const QColor &calloutLineColor,
+      double calloutLineWidth,
+      const QgsTextFormat &textFormat,
+      double zMin,
+      double zMax
+    );
     ~QgsAnnotationLayerChunkedEntity() override;
 
   private slots:
