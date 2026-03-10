@@ -215,7 +215,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
 
   // single settings - added in 4.2
-  settingsMeasurePlanimetric->copyValueFromKey( u"measure/planimetric"_s, true );
+  // Old code used QgsSettings::Core section, so the actual QSettings key has a "core/" prefix
+  settingsMeasurePlanimetric->copyValueFromKey( u"core/measure/planimetric"_s, true );
   settingsMeasureKeepBaseUnit->copyValueFromKey( u"qgis/measure/keepbaseunit"_s, true );
   settingsMeasureKeepBaseUnit->copyValueFromKey( u"/qgis/measure/keepbaseunit"_s, true );
   settingsMeasureDecimalPlaces->copyValueFromKey( u"qgis/measure/decimalplaces"_s, true );
