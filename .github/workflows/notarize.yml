@@ -1,0 +1,20 @@
+---
+name: 🍎 Notarize - One Shot
+on:
+  push:
+    branches:
+      - notarize
+
+jobs:
+  build:
+    name: trigger notarization
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger notarization
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.NOTARIZE_TOKEN }}" \
+            https://api.github.com/repos/qgis/qgis-notarize/dispatches \
+            -d '{"event_type":"notarize_dmg","client_payload":{"release_tag":"final-4_0_0"}}'
