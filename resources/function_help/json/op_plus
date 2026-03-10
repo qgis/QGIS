@@ -2,7 +2,7 @@
   "name": "+",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Addition of two values. If one of the values is NULL the result will be NULL.",
+  "description": "Addition of two values. If one of the values is NULL the result will be NULL. When used with a color and a number, adds the number to each RGB (or CMYK) component of the color, clamping results to [0, 1]. Color alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -22,6 +22,9 @@
   }, {
     "expression": "to_datetime('2020-08-01 12:00:00') + '1 day 2 hours'",
     "returns": "2020-08-02T14:00:00"
+  }, {
+    "expression": "color_rgbf(0.2, 0.4, 0.6) + 0.1",
+    "returns": "RGBA: 0.30,0.50,0.70,1.00"
   }],
-  "tags": ["addition", "null", "result", "values"]
+  "tags": ["addition", "null", "result", "values", "color"]
 }

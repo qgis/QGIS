@@ -498,7 +498,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         // it doesn't make sense to support these operations with color element on the right
         if ( !colorLeft && ( mOp == boPlus || mOp == boMinus || mOp == boDiv ) )
         {
-          parent->setEvalErrorString( tr( "Can't perform /, +, - with Color on the right" ) );
+          parent->setEvalErrorString( tr( "Can't perform /, +, - with a color value on the right" ) );
           return QVariant();
         }
 
