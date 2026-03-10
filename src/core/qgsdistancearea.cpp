@@ -471,7 +471,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
         QString::number( distance, 'f', 7 ),
         QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ),
         QString::number( result, 'f', 7 ),
-        mCoordTransform.sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s,
+        sourceToEllipsoid().sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s,
         QgsUnitTypes::toString( sourceCrs().mapUnits() )
       )
       .arg( azimuth )
@@ -846,7 +846,7 @@ Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const
 
 Qgis::AreaUnit QgsDistanceArea::areaUnits() const
 {
-  return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters : QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
+  return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters : QgsUnitTypes::distanceToAreaUnit( sourceToEllipsoid().sourceCrs().mapUnits() );
 }
 
 double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
