@@ -185,7 +185,6 @@ void QgsProcessingTaskQueueDialog::executeNextTask()
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
-  context->setLoadLayerOnCompletion( true );
 
   auto feedback = std::make_unique<QgsProcessingFeedback>();
 
