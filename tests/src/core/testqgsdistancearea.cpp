@@ -471,10 +471,15 @@ PROJCRS["Hanseong PCS",
 
 void TestQgsDistanceArea::setCrsEllipsoidLogic()
 {
+  bool missingGridHandlerCalled = false;
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler(
+    [&missingGridHandlerCalled]( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & ) { missingGridHandlerCalled = true; }
+  );
+
   // set everything to WGS84 first
   QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
-  QgsProject::instance()->setCrs( wgs84, true );
-  QgsProject::instance()->setEllipsoid( wgs84.ellipsoidAcronym() );
+
+  QgsCoordinateTransformContext transformContext;
 
   // by default the transform is dirty
   QgsDistanceArea calc;
@@ -485,7 +490,8 @@ void TestQgsDistanceArea::setCrsEllipsoidLogic()
   QVERIFY( !calc.mCoordTransformDirty );
 
   // if source CRS is set the transform is dirty again
-  calc.setSourceCrs( wgs84, QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( wgs84, transformContext );
+  QVERIFY( missingGridHandlerCalled == false );
   QVERIFY( calc.mCoordTransformDirty );
   QCOMPARE( calc.sourceCrs(), wgs84 );
 
@@ -495,7 +501,8 @@ void TestQgsDistanceArea::setCrsEllipsoidLogic()
   QVERIFY( transform.destinationCrs().ellipsoidAcronym().isEmpty() );
 
   // set elipsoid, should mark transform dirty again
-  QVERIFY( calc.setEllipsoid( QgsProject::instance()->ellipsoid() ) );
+  QVERIFY( calc.setEllipsoid( wgs84.ellipsoidAcronym() ) );
+  QVERIFY( missingGridHandlerCalled == false );
   QVERIFY( calc.mCoordTransformDirty );
   QCOMPARE( calc.ellipsoid(), wgs84.ellipsoidAcronym() );
 
@@ -506,17 +513,17 @@ void TestQgsDistanceArea::setCrsEllipsoidLogic()
 
   // now change the project to a different CRS with a different ellipsoid
   QgsCoordinateReferenceSystem moonCrs( "IAU_2015:30100" );
-  QgsProject::instance()->setCrs( moonCrs, true );
-  QgsProject::instance()->setEllipsoid( moonCrs.ellipsoidAcronym() );
 
   // set CRS, should be dirty and with proper CRS, but the ellipsoid is still old
-  calc.setSourceCrs( moonCrs, QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( moonCrs, transformContext );
+  QVERIFY( missingGridHandlerCalled == false );
   QVERIFY( calc.mCoordTransformDirty );
   QCOMPARE( calc.sourceCrs(), moonCrs );
   QCOMPARE( calc.ellipsoid(), wgs84.ellipsoidAcronym() );
 
   // add ellipsoid, should be dirty and with proper ellipsoid
-  calc.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  calc.setEllipsoid( moonCrs.ellipsoidAcronym() );
+  QVERIFY( missingGridHandlerCalled == false );
   QVERIFY( calc.mCoordTransformDirty );
   QCOMPARE( calc.ellipsoid(), moonCrs.ellipsoidAcronym() );
 
