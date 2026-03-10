@@ -16971,8 +16971,7 @@ void QgisApp::namSetup()
 
 void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth )
 {
-  QgsSettings settings;
-  if ( !QgsNetworkAccessManager::settingsProxyEnabled->value() || settings.value( u"proxy/proxyType"_s, "" ).toString() == "DefaultProxy"_L1 )
+  if ( !QgsNetworkAccessManager::settingsProxyEnabled->value() || QgsNetworkAccessManager::settingsProxyType->value() == "DefaultProxy"_L1 )
   {
     auth->setUser( QString() );
     return;

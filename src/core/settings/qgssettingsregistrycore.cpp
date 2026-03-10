@@ -211,6 +211,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsProcessing::settingsTempPath->copyValueFromKey( u"Processing/Configuration/TEMP_PATH2"_s, true );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( u"qgis/networkAndProxy/networkTimeout"_s, true );
+  QgsNetworkAccessManager::settingsUserAgent->copyValueFromKey( u"qgis/networkAndProxy/userAgent"_s, true );
+  QgsNetworkAccessManager::settingsUserAgent->copyValueFromKey( u"/qgis/networkAndProxy/userAgent"_s, true );
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
 
@@ -253,6 +255,14 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
   // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
+  QgsNetworkAccessManager::settingsProxyHost->copyValueFromKey( u"proxy/proxyHost"_s, true );
+  QgsNetworkAccessManager::settingsProxyPort->copyValueFromKey( u"proxy/proxyPort"_s, true );
+  QgsNetworkAccessManager::settingsProxyUser->copyValueFromKey( u"proxy/proxyUser"_s, true );
+  QgsNetworkAccessManager::settingsProxyPassword->copyValueFromKey( u"proxy/proxyPassword"_s, true );
+  QgsNetworkAccessManager::settingsProxyType->copyValueFromKey( u"proxy/proxyType"_s, true );
+  QgsNetworkAccessManager::settingsProxyExcludedUrls->copyValueFromKey( u"proxy/proxyExcludedUrls"_s, true );
+  QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
+  QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
