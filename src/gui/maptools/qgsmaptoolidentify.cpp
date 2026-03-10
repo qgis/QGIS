@@ -47,6 +47,7 @@
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
 #include "qgstiles.h"
 #include "qgsunittypes.h"
@@ -1503,7 +1504,7 @@ QString QgsMapToolIdentify::formatArea( double area ) const
 QString QgsMapToolIdentify::formatDistance( double distance, Qgis::DistanceUnit unit ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   return QgsDistanceArea::formatDistance( distance, mCoordinatePrecision, unit, baseUnit );
 }
@@ -1511,7 +1512,7 @@ QString QgsMapToolIdentify::formatDistance( double distance, Qgis::DistanceUnit 
 QString QgsMapToolIdentify::formatArea( double area, Qgis::AreaUnit unit ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   return QgsDistanceArea::formatArea( area, mCoordinatePrecision, unit, baseUnit );
 }

@@ -66,6 +66,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
 #include "qgsstylemanagerdialog.h"
@@ -354,7 +355,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), scanningMenu );
   connect( fastScanAction, &QAction::triggered, this, [this, directoryItem] { toggleFastScan( directoryItem ); } );
   fastScanAction->setCheckable( true );
-  fastScanAction->setChecked( settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( item->path() ) );
+  fastScanAction->setChecked( QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value().contains( item->path() ) );
 
   scanningMenu->addAction( fastScanAction );
   menu->addMenu( scanningMenu );
@@ -441,8 +442,7 @@ void QgsAppDirectoryItemGuiProvider::hideDirectory( QgsDirectoryItem *item )
 
 void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
 {
-  QgsSettings settings;
-  QStringList fastScanDirs = settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList();
+  QStringList fastScanDirs = QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value();
   int idx = fastScanDirs.indexOf( item->path() );
   if ( idx != -1 )
   {
@@ -452,7 +452,7 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
   {
     fastScanDirs << item->path();
   }
-  settings.setValue( u"qgis/scanItemsFastScanUris"_s, fastScanDirs );
+  QgsSettingsRegistryCore::settingsScanItemsFastScanUris->setValue( fastScanDirs );
 }
 
 void QgsAppDirectoryItemGuiProvider::toggleMonitor( QgsDirectoryItem *item )

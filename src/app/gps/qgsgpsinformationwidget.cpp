@@ -27,6 +27,7 @@
 #include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsstatusbar.h"
 
 #include <QString>
@@ -305,8 +306,8 @@ void QgsGpsInformationWidget::updateTrackInformation()
   const double directTrackLength = mDigitizing->trackDistanceFromStart();
 
   const QgsSettings settings;
-  const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
-  const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  const bool keepBaseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
+  const int decimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
 
   if ( totalTrackLength > 0 )
   {

@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 #include "qgsunittypes.h"
 
@@ -161,7 +162,7 @@ void QgsMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  mDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mCanvasUnits = mCanvas->mapUnits();
 
   // Configure QgsDistanceArea
@@ -445,7 +446,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
