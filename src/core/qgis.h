@@ -832,7 +832,7 @@ int QgisEvent = QEvent::User + 1;
     enum class SymbolRotationMode : int
     {
       RespectMapRotation, //!< Entity is rotated along with the map
-      IgnoreMapRotation, //!< Entity ignores map rotation
+      IgnoreMapRotation,  //!< Entity ignores map rotation
     };
     Q_ENUM( SymbolRotationMode )
 
