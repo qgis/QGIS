@@ -17,7 +17,6 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsbabelformatregistry.h"
-#include "qgsfavoritesitem.h"
 #include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
@@ -252,7 +251,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
-  QgsFavoritesItem::settingsFavoriteDirs->copyValueFromKey( u"browser/favourites"_s, true );
+  // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
