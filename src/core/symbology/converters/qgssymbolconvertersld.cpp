@@ -55,7 +55,6 @@ QVariant QgsSymbolConverterSld::toVariant( const QgsSymbol *symbol, QgsSymbolCon
 
   QgsSldExportContext sldExportContext;
 
-  QVariantMap props;
   QDomElement root = doc.createElement( u"Rule"_s );
   symbol->toSld( doc, root, sldExportContext );
   doc.appendChild( root );
@@ -125,7 +124,6 @@ std::unique_ptr< QgsSymbol > QgsSymbolConverterSld::createSymbol( const QVariant
   QDomElement childElem = ruleElem.firstChildElement();
   while ( !childElem.isNull() )
   {
-    const QString c = childElem.localName();
     if ( childElem.localName().endsWith( "Symbolizer"_L1 ) )
     {
       QgsSymbolLayerUtils::createSymbolLayerListFromSld( childElem, geomType, layers );
