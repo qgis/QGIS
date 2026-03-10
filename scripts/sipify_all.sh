@@ -78,7 +78,7 @@ It is not aimed to be manually edited
         echo "*** Missing header: $header for sipfile $sipfile"
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
-        mkdir -p python/$path
+        mkdir -p ${root_dir}/$path
         CLASS_MAP_CALL=
         if [[ ${CLASS_MAP} -eq 1 ]]; then
           CLASS_MAP_CALL="-c ${module_dir}/class_map.yaml"
