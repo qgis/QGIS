@@ -37,6 +37,8 @@ class QgsFilterLineEdit;
 class QToolButton;
 class QCheckBox;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -106,6 +108,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( u"code-editor"_s );
     static const QgsSettingsEntryBool *settingContextHelpHover;
+    //! Settings entry for code editor font family override
+    static const QgsSettingsEntryString *settingFontFamily;
+    //! Settings entry for code editor font size override
+    static const QgsSettingsEntryInteger *settingFontSize;
 #endif
 
     /**

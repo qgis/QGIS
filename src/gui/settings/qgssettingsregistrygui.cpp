@@ -17,6 +17,7 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsapplication.h"
+#include "qgscodeeditor.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -131,6 +132,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsSegmentationToleranceType->copyValueFromKey( u"qgis/segmentationToleranceType"_s, true );
   settingsSegmentationToleranceType->copyValueFromKey( u"/qgis/segmentationToleranceType"_s, true );
   QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->copyValueFromKey( u"gui/maxEntriesRelationWidget"_s, true );
+  QgsCodeEditor::settingFontFamily->copyValueFromKey( u"gui/codeEditor/fontfamily"_s, true );
+  QgsCodeEditor::settingFontSize->copyValueFromKey( u"gui/codeEditor/fontsize"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
