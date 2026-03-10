@@ -468,6 +468,39 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(fm.data(fm.index(0, 0), Qt.ItemDataRole.DisplayRole), "2")
         self.assertEqual(fm.data(fm.index(1, 0), Qt.ItemDataRole.DisplayRole), "1")
 
+    def testEmptyModel(self):
+        layer = QgsVectorLayer("Point?", "testEmptyModel", "memory")
+
+        self.assertTrue(layer.startEditing())
+
+        # Add a feature and check that model is updated
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
+        self.assertTrue(layer.addFeature(f))
+
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        self.assertEqual(am.rowCount(), 1)
+        # It should really be 0 but since 2017 we return 1 for some obscure reason
+        self.assertEqual(am.columnCount(), 1)
+
+        field = QgsField("fld", QVariant.Int)
+        self.assertTrue(layer.addAttribute(field))
+        # Still 1 !
+        self.assertEqual(am.columnCount(), 1)
+
+        layer.beginEditCommand("Deleted attribute")
+        self.assertTrue(layer.deleteAttribute(0))
+        layer.endEditCommand()
+
+        # Still 1 !
+        self.assertEqual(am.columnCount(), 1)
+
+        # Check reload model does not crash on empty model
+        am.reload(am.index(0, 0), am.index(am.rowCount() - 1, am.columnCount() - 1))
+
 
 if __name__ == "__main__":
     unittest.main()

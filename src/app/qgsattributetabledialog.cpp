@@ -1038,14 +1038,26 @@ void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
 
       if ( fieldIdx != -1 && attributes.contains( fieldIdx ) )
         mLayer->setDisplayExpression( mLayer->fields().count() > 0 ? mLayer->fields().at( 0 ).name() : QString() );
+
+      // store the deleted attributes column index to update the model after deletion
+      QList<int> columnsToRemove;
+      for ( int attribute : std::as_const( attributes ) )
+      {
+        columnsToRemove.append( masterModel->fieldCol( attribute ) );
+      }
+
+      std::sort( columnsToRemove.begin(), columnsToRemove.end() );
+
+      for ( int col = static_cast<int>( columnsToRemove.count() ) - 1; col >= 0; --col )
+      {
+        masterModel->removeColumn( col );
+      }
     }
     else
     {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), Qgis::MessageLevel::Warning );
       mLayer->destroyEditCommand();
     }
-    // update model - a field has been added or updated
-    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
   }
 }
 
