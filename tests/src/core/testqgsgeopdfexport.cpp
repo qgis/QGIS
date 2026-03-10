@@ -989,20 +989,20 @@ void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
   QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 0 );
 
   QgsFields fields;
-  fields.append( QgsField( u"a1"_s, QMetaType::Type::Int ) );
-  fields.append( QgsField( u"a2"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "a2" ), QMetaType::Type::Int ) );
   QgsFeature f( fields );
 
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geospatialPdfExporter.pushRenderedFeature( u"layer1"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group1"_s );
-  geospatialPdfExporter.pushRenderedFeature( u"layer1"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group_1_and_2"_s );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), QStringLiteral( "group1" ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), QStringLiteral( "group_1_and_2" ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
-  renderedBounds = QgsGeometry::fromWkt( u"LineString(1 1, 2 2)"_s );
-  geospatialPdfExporter.pushRenderedFeature( u"layer2"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group2"_s );
-  geospatialPdfExporter.pushRenderedFeature( u"layer2"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group_1_and_2"_s );
+  renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), QStringLiteral( "group2" ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), QStringLiteral( "group_1_and_2" ) );
 
   QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
   QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
@@ -1013,12 +1013,12 @@ void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
 
   for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == "layer1"_L1 )
+    if ( it.mapLayerId == QStringLiteral( "layer1" ) )
     {
       layer1Path = it.sourceVectorPath;
       layer1Layer = it.sourceVectorLayer;
     }
-    else if ( it.mapLayerId == "layer2"_L1 )
+    else if ( it.mapLayerId == QStringLiteral( "layer2" ) )
     {
       layer2Path = it.sourceVectorPath;
       layer2Layer = it.sourceVectorLayer;
@@ -1028,19 +1028,19 @@ void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
   // test creation of the composition xml
   QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
-  detail.mapLayerId = u"raster_layer"_s;
-  detail.name = u"raster_layer_g1"_s;
-  detail.group = u"group1"_s;
+  detail.mapLayerId = QStringLiteral( "raster_layer" );
+  detail.name = QStringLiteral( "raster_layer_g1" );
+  detail.group = QStringLiteral( "group1" );
   renderedLayers << detail;
 
-  detail.mapLayerId = u"raster_layer"_s;
-  detail.name = u"raster_layer_g1and2"_s;
-  detail.group = u"group_1_and_2"_s;
+  detail.mapLayerId = QStringLiteral( "raster_layer" );
+  detail.name = QStringLiteral( "raster_layer_g1and2" );
+  detail.group = QStringLiteral( "group_1_and_2" );
   renderedLayers << detail;
 
-  detail.mapLayerId = u"raster_layer"_s;
-  detail.name = u"raster_layer_global"_s;
-  detail.group = u""_s;
+  detail.mapLayerId = QStringLiteral( "raster_layer" );
+  detail.name = QStringLiteral( "raster_layer_global" );
+  detail.group = QString();
   renderedLayers << detail;
 
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
@@ -1050,35 +1050,35 @@ void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
   QDomDocument doc;
   doc.setContent( composition );
 
-  QDomNodeList layerTreeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( layerTreeList.count(), 4 );
 
-  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), u"group1"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "group1" ) );
   QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().count(), 2 );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group1_layer1"_s );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( u"id"_s ), u"group1_raster_layer"_s );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"raster_layer_g1"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group1_layer1" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group1_raster_layer" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "raster_layer_g1" ) );
 
-  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), u"group2"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "group2" ) );
   QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().count(), 1 );
-  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group2_layer2"_s );
-  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group2_layer2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
 
-  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), u"group_1_and_2"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "group_1_and_2" ) );
   QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().count(), 3 );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group_1_and_2_layer1"_s );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( u"id"_s ), u"group_1_and_2_layer2"_s );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( u"id"_s ), u"group_1_and_2_raster_layer"_s );
-  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( u"name"_s ), u"raster_layer_g1and2"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group_1_and_2_layer1" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group_1_and_2_layer2" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "group_1_and_2_raster_layer" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "raster_layer_g1and2" ) );
 
-  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( u"name"_s ), u"raster_layer_global"_s );
+  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "raster_layer_global" ) );
   QCOMPARE( layerTreeList.at( 3 ).toElement().childNodes().count(), 0 );
 
-  QCOMPARE( doc.elementsByTagName( u"Content"_s ).count(), 1 );
-  QDomNodeList ifLayerOnList = doc.elementsByTagName( u"Content"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Content" ) ).count(), 1 );
+  QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "Content" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( ifLayerOnList.count(), 7 );
 
   QStringList groupedLayerIds;
@@ -1088,18 +1088,18 @@ void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
     QCOMPARE( ifLayerOnList.at( i ).toElement().childNodes().count(), 1 );
     const QDomElement child = ifLayerOnList.at( i ).toElement().childNodes().at( 0 ).toElement();
     const QString tagName = child.tagName();
-    QVERIFY( ( QStringList() << u"IfLayerOn"_s << u"PDF"_s ).contains( tagName ) );
-    if ( tagName == "IfLayerOn"_L1 )
-      groupedLayerIds << child.attribute( u"layerId"_s );
+    QVERIFY( ( QStringList() << QStringLiteral( "IfLayerOn" ) << QStringLiteral( "PDF" ) ).contains( tagName ) );
+    if ( tagName == QStringLiteral( "IfLayerOn" ) )
+      groupedLayerIds << child.attribute( QStringLiteral( "layerId" ) );
     else
-      rootLayerIds << ifLayerOnList.at( i ).toElement().attribute( u"layerId"_s );
+      rootLayerIds << ifLayerOnList.at( i ).toElement().attribute( QStringLiteral( "layerId" ) );
   }
 
   std::sort( groupedLayerIds.begin(), groupedLayerIds.end() );
 
-  const QStringList ref { u"group1_layer1"_s, u"group1_raster_layer"_s, u"group2_layer2"_s, u"group_1_and_2_layer1"_s, u"group_1_and_2_layer2"_s, u"group_1_and_2_raster_layer"_s };
+  const QStringList ref { QStringLiteral( "group1_layer1" ), QStringLiteral( "group1_raster_layer" ), QStringLiteral( "group2_layer2" ), QStringLiteral( "group_1_and_2_layer1" ), QStringLiteral( "group_1_and_2_layer2" ), QStringLiteral( "group_1_and_2_raster_layer" ) };
   QCOMPARE( groupedLayerIds, ref );
-  QCOMPARE( rootLayerIds, QStringList() << u"raster_layer"_s );
+  QCOMPARE( rootLayerIds, QStringList() << QStringLiteral( "raster_layer" ) );
 }
 
 QGSTEST_MAIN( TestQgsGeospatialPdfExport )
