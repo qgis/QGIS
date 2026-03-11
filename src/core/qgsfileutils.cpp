@@ -679,7 +679,7 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
       const QRegularExpressionMatch match = excludeRegEx.match( srcFileName );
       if ( match.hasMatch() )
       {
-        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcFileName, excludeRegEx.pattern() ), 1 );
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcFileName, excludeRegEx.pattern() ), 2 );
         skip = true;
         break;
       }
@@ -713,7 +713,7 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
       const QRegularExpressionMatch match = excludeRegEx.match( srcDirName );
       if ( match.hasMatch() )
       {
-        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcDirName, excludeRegEx.pattern() ), 1 );
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcDirName, excludeRegEx.pattern() ), 2 );
         skip = true;
         break;
       }
