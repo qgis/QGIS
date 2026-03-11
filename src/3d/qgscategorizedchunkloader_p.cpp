@@ -20,10 +20,12 @@
 #include "qgsabstractterrainsettings.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
+#include "qgscategorizedsymbolutils.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgsfields.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
@@ -132,6 +134,12 @@ void QgsCategorizedChunkLoader::processFeature( const QgsFeature &feature ) cons
   handler->processFeature( feature, mContext );
 }
 
+QString QgsCategorizedChunkLoader::filter() const
+{
+  const QgsVectorLayer *layer = mFactory->mLayer;
+  return QgsCategorizedSymbolUtils<QgsCategorized3DRenderer>::buildCategorizedFilter( mFactory->mAttributeName, layer->fields(), *mFactory->mCategories );
+}
+
 void QgsCategorizedChunkLoader::start()
 {
   QgsChunkNode *node = chunk();
@@ -153,6 +161,12 @@ void QgsCategorizedChunkLoader::start()
   request.setDestinationCrs( mContext.crs(), mContext.transformContext() );
   request.setSubsetOfAttributes( attributesNames, layer->fields() );
   request.setFilterRect( rect );
+
+  const QString rendererFilter = filter();
+  if ( !rendererFilter.isEmpty() )
+  {
+    request.setFilterExpression( rendererFilter );
+  }
 
   //
   // this will be run in a background thread

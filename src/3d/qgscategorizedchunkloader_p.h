@@ -102,6 +102,7 @@ class QgsCategorizedChunkLoader : public QgsChunkLoader
   private:
     const QSet<QString> prepareHandlers( const QgsBox3D &chunkExtent );
     void processFeature( const QgsFeature &feature ) const;
+    QString filter() const;
 
   private:
     const QgsCategorizedChunkLoaderFactory *mFactory = nullptr;

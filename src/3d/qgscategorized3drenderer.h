@@ -146,6 +146,7 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
 {
   public:
     using Category = Qgs3DRendererCategory;
+    using Categories = Qgs3DCategoryList;
 
     //! Construct renderer with the given categories
     QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );

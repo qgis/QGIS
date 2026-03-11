@@ -153,6 +153,7 @@ specification of rules for 3D symbols.
 %End
   public:
     typedef Qgs3DRendererCategory Category;
+    typedef Qgs3DCategoryList Categories;
 
     QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );
 %Docstring
