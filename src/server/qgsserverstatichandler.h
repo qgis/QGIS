@@ -25,7 +25,7 @@ using namespace Qt::StringLiterals;
 
 /**
  * \ingroup server
- * \brief Serves static files from the static path (resources/server/api/wfs3/static).
+ * \brief Serves static files from the static path (resources/server/api/ogc/static).
  * \see QgsServerOgcApiHandler::staticPath()
  * \since QGIS 3.16
  */
