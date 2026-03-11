@@ -103,7 +103,8 @@ Returns height (altitude) of the symbol (in map units)
 Sets height (altitude) of the symbol (in map units)
 %End
 
-    QgsAbstractMaterialSettings *materialSettings() const;
+    virtual QgsAbstractMaterialSettings *materialSettings() const;
+
 %Docstring
 Returns material settings used for shading of the symbol
 %End

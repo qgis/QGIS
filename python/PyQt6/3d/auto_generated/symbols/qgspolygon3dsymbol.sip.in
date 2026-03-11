@@ -111,7 +111,8 @@ Returns extrusion height (in map units)
 Sets extrusion height (in map units)
 %End
 
-    QgsAbstractMaterialSettings *materialSettings() const;
+    virtual QgsAbstractMaterialSettings *materialSettings() const;
+
 %Docstring
 Returns material settings used for shading of the symbol
 %End

@@ -61,3 +61,8 @@ bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCo
 
 void QgsAbstract3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer * )
 {}
+
+QgsAbstractMaterialSettings *QgsAbstract3DSymbol::materialSettings() const
+{
+  return nullptr;
+}
