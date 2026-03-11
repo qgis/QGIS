@@ -34,15 +34,9 @@ class TestQgsFileUploader : public QObject
 
   public slots:
     //! Called when the download has completed successfully
-    void uploadCompleted()
-    {
-      mCompleted = true;
-    }
+    void uploadCompleted() { mCompleted = true; }
     //! Called when the download was canceled by the user
-    void uploadCanceled()
-    {
-      mCanceled = true;
-    }
+    void uploadCanceled() { mCanceled = true; }
     //! Called when an error makes the download fail
     void uploadError( QStringList errorMessages )
     {
@@ -152,10 +146,12 @@ void TestQgsFileUploader::testSslError_data()
   QTest::addColumn<QString>( "url" );
   QTest::addColumn<QString>( "result" );
 
-  QTest::newRow( "expired" ) << "https://expired.badssl.com/"
-                             << "Upload failed: SSL handshake failed: The certificate has expired";
-  QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-                                 << "Upload failed: SSL handshake failed: The certificate is self-signed, and untrusted";
+  QTest::newRow( "expired" )
+    << "https://expired.badssl.com/"
+    << "Upload failed: SSL handshake failed: The certificate has expired";
+  QTest::newRow( "self-signed" )
+    << "https://self-signed.badssl.com/"
+    << "Upload failed: SSL handshake failed: The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileUploader::testSslError()

@@ -47,8 +47,7 @@ QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url
 
 
 QgsFileUploader::~QgsFileUploader()
-{
-}
+{}
 
 void QgsFileUploader::startUpload()
 {
@@ -58,7 +57,6 @@ void QgsFileUploader::startUpload()
   {
     QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
   }
-
 
 
   auto multiPart = std::make_unique<QHttpMultiPart>( QHttpMultiPart::FormDataType );
@@ -71,10 +69,7 @@ void QgsFileUploader::startUpload()
   QMimeType mimeType = db.mimeTypeForFile( file->fileName() );
 
   filePart.setHeader( QNetworkRequest::ContentTypeHeader, mimeType.name() );
-  filePart.setHeader( QNetworkRequest::ContentDispositionHeader, u"form-data; %1filename=\"%2\""_s.arg(
-                        ( mFormName.isEmpty() ) ? QString( "" ) : u"name=\"%1\"; "_s.arg( mFormName ),
-                        fi.fileName()
-                      ) );
+  filePart.setHeader( QNetworkRequest::ContentDispositionHeader, u"form-data; %1filename=\"%2\""_s.arg( ( mFormName.isEmpty() ) ? QString( "" ) : u"name=\"%1\"; "_s.arg( mFormName ), fi.fileName() ) );
   if ( !file->open( QIODevice::ReadOnly ) )
   {
     error( tr( "Error reading file %1" ).arg( mFile.fileName() ) );
@@ -105,7 +100,7 @@ void QgsFileUploader::startUpload()
   {
     // upload successful, nothing to do it's all good
   }
-  else if ( errorCode == QgsBlockingNetworkRequest:: TimeoutError )
+  else if ( errorCode == QgsBlockingNetworkRequest::TimeoutError )
   {
     error( tr( "Network request %1 timed out" ).arg( networkRequest->errorMessage() ) );
   }
@@ -113,7 +108,7 @@ void QgsFileUploader::startUpload()
   {
     error( tr( "Upload failed, Server returned: %1" ).arg( networkRequest->errorMessage() ) );
   }
-  else  // All other errors
+  else // All other errors
   {
     error( tr( "Upload failed: %1" ).arg( networkRequest->errorMessage() ) );
   }
@@ -147,7 +142,7 @@ void QgsFileUploader::error( const QString &errorMessage )
 void QgsFileUploader::onFinished()
 {
   // when canceled
-  if ( ! mErrors.isEmpty() || mUploadCanceled )
+  if ( !mErrors.isEmpty() || mUploadCanceled )
   {
     if ( mFile.isOpen() )
       mFile.close();
@@ -178,4 +173,3 @@ void QgsFileUploader::onUploadProgress( qint64 bytesSent, qint64 bytesTotal )
   }
   emit uploadProgress( bytesSent, bytesTotal );
 }
-

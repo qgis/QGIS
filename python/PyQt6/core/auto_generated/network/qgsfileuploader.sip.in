@@ -30,7 +30,6 @@ canceled. An optional authentication configuration can be specified.
 #include "qgsfileuploader.h"
 %End
   public:
-
     QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString(), bool delayStart = true );
 %Docstring
 QgsFileUploader

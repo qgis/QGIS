@@ -42,7 +42,6 @@ class CORE_EXPORT QgsFileUploader : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * QgsFileUploader
      * \param uploadFileName file name of the file to upload to the server
@@ -94,7 +93,6 @@ class CORE_EXPORT QgsFileUploader : public QObject
     ~QgsFileUploader() override;
 
   private:
-
     /**
      * Abort current request and show an error if the instance has GUI
      * notifications enabled.

@@ -66,8 +66,11 @@ QString QgsFileUploaderAlgorithm::groupId() const
 
 QString QgsFileUploaderAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm uploads a file to the URL via a HTTP(S) request\n\n"
-             "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when the URL endpoint requires a form name key." );
+  return tr(
+    "This algorithm uploads a file to the URL via a HTTP(S) request\n\n"
+    "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when the URL endpoint requires a form name "
+    "key."
+  );
 }
 
 QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
@@ -77,11 +80,15 @@ QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
 
 void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"FILE"_s, QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All files (%1)" ).arg( "*.*"_L1 ) ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"FILE"_s, QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All files (%1)" ).arg( "*.*"_L1 ) )
+  );
   addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "Destination URL" ), QVariant(), false, false ) );
 
   auto formNameParam = std::make_unique<QgsProcessingParameterString>( u"FORM_NAME"_s, tr( "Form name field" ), QString(), false, true );
-  formNameParam->setHelp( QObject::tr( "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point requires a form name key" ) );
+  formNameParam->setHelp(
+    QObject::tr( "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point requires a form name key" )
+  );
   addParameter( formNameParam.release() );
 }
 
