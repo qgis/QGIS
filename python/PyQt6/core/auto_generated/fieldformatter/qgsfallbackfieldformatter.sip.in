@@ -20,7 +20,6 @@ The values will be returned unmodified.
 #include "qgsfallbackfieldformatter.h"
 %End
   public:
-
     QgsFallbackFieldFormatter();
     virtual QString id() const;
 

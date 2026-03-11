@@ -36,7 +36,6 @@ copy and pass between threads without issue.
 #include "qgsblockingnetworkrequest.h"
 %End
   public:
-
     enum ErrorCode /BaseType=IntEnum/
     {
       NoError,

@@ -212,10 +212,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mProfileComboBox->blockSignals( false );
   // mProfileComboBox->setCurrentIndex( 0 );
   const QgsSettings mySettings;
-  mProfileComboBox->setCurrentIndex( mProfileComboBox->findData( mySettings.value(
-    mProvider + "/driverOptions/" + format.toLower() + "/defaultProfile",
-    "z_adefault"
-  ) ) );
+  mProfileComboBox->setCurrentIndex( mProfileComboBox->findData( mySettings.value( mProvider + "/driverOptions/" + format.toLower() + "/defaultProfile", "z_adefault" ) ) );
   updateOptions();
 }
 
@@ -355,7 +352,8 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     }
     else
     {
-      QMessageBox::warning( this, QString(), tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
+      QMessageBox::
+        warning( this, QString(), tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
     }
   }
 

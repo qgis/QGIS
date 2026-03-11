@@ -74,11 +74,7 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
 
   if ( !layer )
   {
-    QgisApp::instance()->messageBar()->pushMessage(
-      QObject::tr( "No active vector layer" ),
-      QObject::tr( "To select features, choose a vector layer in the layers panel" ),
-      Qgis::MessageLevel::Info
-    );
+    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
   }
   return layer;
 }
@@ -208,11 +204,7 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugError( u"Caught CRS exception "_s );
-    QgisApp::instance()->messageBar()->pushMessage(
-      QObject::tr( "CRS Exception" ),
-      QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      Qgis::MessageLevel::Warning
-    );
+    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "CRS Exception" ), QObject::tr( "Selection extends beyond layer's coordinate system" ), Qgis::MessageLevel::Warning );
     return false;
   }
 }
@@ -506,7 +498,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 }
 
 
-QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions( QgsMapCanvas *canvas, QgsVectorLayer *vectorLayer, Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry, QObject *parent )
+QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions(
+  QgsMapCanvas *canvas, QgsVectorLayer *vectorLayer, Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry, QObject *parent
+)
   : QObject( parent )
   , mCanvas( canvas )
   , mVectorLayer( vectorLayer )

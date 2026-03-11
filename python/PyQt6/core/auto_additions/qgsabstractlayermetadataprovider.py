@@ -9,6 +9,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractLayerMetadataProvider.__virtual_methods__ = ['search']
     QgsAbstractLayerMetadataProvider.__abstract_methods__ = ['id', 'search']
     QgsAbstractLayerMetadataProvider.__group__ = ['metadata']
 except (NameError, AttributeError):

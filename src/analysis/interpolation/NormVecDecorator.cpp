@@ -302,7 +302,9 @@ NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
 }
 
 
-bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1, Vector3D *v1, PointState *state1, QgsPoint &p2, int &ptn2, Vector3D *v2, PointState *state2, QgsPoint &p3, int &ptn3, Vector3D *v3, PointState *state3 )
+bool NormVecDecorator::getTriangle(
+  double x, double y, QgsPoint &p1, int &ptn1, Vector3D *v1, PointState *state1, QgsPoint &p2, int &ptn2, Vector3D *v2, PointState *state2, QgsPoint &p3, int &ptn3, Vector3D *v3, PointState *state3
+)
 {
   if ( v1 && v2 && v3 && state1 && state2 && state3 )
   {

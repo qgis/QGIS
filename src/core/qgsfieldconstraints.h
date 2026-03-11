@@ -36,14 +36,13 @@ class CORE_EXPORT QgsFieldConstraints
     Q_PROPERTY( Constraints constraints READ constraints )
 
   public:
-
     /**
      * Constraints which may be present on a field.
      */
     enum Constraint SIP_ENUM_BASETYPE( IntFlag )
     {
-      ConstraintNotNull = 1, //!< Field may not be null
-      ConstraintUnique = 1 << 1, //!< Field must have a unique value
+      ConstraintNotNull = 1,         //!< Field may not be null
+      ConstraintUnique = 1 << 1,     //!< Field must have a unique value
       ConstraintExpression = 1 << 2, //!< Field has an expression constraint set. See constraintExpression().
     };
     Q_DECLARE_FLAGS( Constraints, Constraint )
@@ -54,8 +53,8 @@ class CORE_EXPORT QgsFieldConstraints
     enum ConstraintOrigin
     {
       ConstraintOriginNotSet = 0, //!< Constraint is not set
-      ConstraintOriginProvider, //!< Constraint was set at data provider
-      ConstraintOriginLayer, //!< Constraint was set by layer
+      ConstraintOriginProvider,   //!< Constraint was set at data provider
+      ConstraintOriginLayer,      //!< Constraint was set by layer
     };
 
     /**
@@ -64,8 +63,8 @@ class CORE_EXPORT QgsFieldConstraints
     enum ConstraintStrength
     {
       ConstraintStrengthNotSet = 0, //!< Constraint is not set
-      ConstraintStrengthHard, //!< Constraint must be honored before feature can be accepted
-      ConstraintStrengthSoft, //!< User is warned if constraint is violated but feature can still be accepted
+      ConstraintStrengthHard,       //!< Constraint must be honored before feature can be accepted
+      ConstraintStrengthSoft,       //!< User is warned if constraint is violated but feature can still be accepted
     };
 
     /**
@@ -162,7 +161,6 @@ class CORE_EXPORT QgsFieldConstraints
     bool operator==( const QgsFieldConstraints &other ) const;
 
   private:
-
     //! Constraints
     Constraints mConstraints;
 

@@ -32,8 +32,7 @@ Qgs3DRenderContext::Qgs3DRenderContext( const Qgs3DRenderContext &other )
   , mTerrainSettings( std::unique_ptr<QgsAbstractTerrainSettings>( other.mTerrainSettings->clone() ) )
   , mExpressionContext( other.mExpressionContext )
   , mTerrainGenerator( other.mTerrainGenerator )
-{
-}
+{}
 
 Qgs3DRenderContext::~Qgs3DRenderContext() = default;
 

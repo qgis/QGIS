@@ -216,7 +216,9 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
        * \param parent The parent widget.
        * \param context the symbol widget context
        */
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsWidget(
+      QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext()
+    );
 
     /**
      * Returns the current set rule.
@@ -275,7 +277,9 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
      * \param parent parent widget
      * \param context symbol widget context
      */
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog(
+      QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext()
+    );
 
     QgsRuleBasedRenderer::Rule *rule() { return mPropsWidget->rule(); }
 

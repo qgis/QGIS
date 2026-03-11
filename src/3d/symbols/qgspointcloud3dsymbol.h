@@ -83,7 +83,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Returns the byte stride for the geometries used to for the vertex buffer
     virtual unsigned int byteStride() = 0;
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
-    virtual void fillMaterial( QgsMaterial *material ) = 0 SIP_SKIP;
+    virtual void fillMaterial( QgsMaterial *material ) SIP_SKIP = 0;
 
     /**
      * Returns whether points are triangulated to render solid surface

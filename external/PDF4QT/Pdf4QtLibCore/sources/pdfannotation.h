@@ -608,6 +608,9 @@ public:
     /// \param type Annotation type
     static bool isTypeEditable(AnnotationType type);
 
+    /// Returns true, if annotation is link with URI action
+    static bool isExternalLinkAnnotation(const PDFAnnotation* annotation);
+
 protected:
     virtual QColor getStrokeColor() const;
     virtual QColor getFillColor() const;

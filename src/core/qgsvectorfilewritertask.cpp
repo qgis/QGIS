@@ -38,7 +38,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
   }
   if ( !mOptions.feedback )
   {
-    mOwnedFeedback = std::make_unique<QgsFeedback>( );
+    mOwnedFeedback = std::make_unique<QgsFeedback>();
     mOptions.feedback = mOwnedFeedback.get();
   }
 
@@ -64,8 +64,7 @@ bool QgsVectorFileWriterTask::run()
   connect( mOptions.feedback, &QgsFeedback::progressChanged, this, &QgsVectorFileWriterTask::setProgress );
 
 
-  mError = QgsVectorFileWriter::writeAsVectorFormatV2(
-             mWriterDetails, mDestFileName, mTransformContext, mOptions, &mNewFilename, &mNewLayer, &mErrorMessage, mSinkFlags );
+  mError = QgsVectorFileWriter::writeAsVectorFormatV2( mWriterDetails, mDestFileName, mTransformContext, mOptions, &mNewFilename, &mNewLayer, &mErrorMessage, mSinkFlags );
   return mError == QgsVectorFileWriter::NoError;
 }
 

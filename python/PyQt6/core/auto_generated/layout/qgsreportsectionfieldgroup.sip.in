@@ -26,7 +26,6 @@ A report section consisting of a features.
 #include "qgsreportsectionfieldgroup.h"
 %End
   public:
-
     enum SectionVisibility /BaseType=IntEnum/
     {
       IncludeWhenFeaturesFound,
@@ -182,7 +181,6 @@ Sets the visibility mode for the footer.
 
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );

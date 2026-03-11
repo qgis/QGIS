@@ -53,20 +53,16 @@ class TestQgsLayoutGui : public QObject
 };
 
 void TestQgsLayoutGui::initTestCase()
-{
-}
+{}
 
 void TestQgsLayoutGui::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsLayoutGui::init()
-{
-}
+{}
 
 void TestQgsLayoutGui::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutGui::itemTypeComboBox()
 {

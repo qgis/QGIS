@@ -49,7 +49,7 @@ using namespace Qt::StringLiterals;
  *
  * \see QgsPointXY
  */
-class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
+class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
 {
     Q_GADGET
 
@@ -59,7 +59,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     Q_PROPERTY( double m READ m WRITE setM )
 
   public:
-
     /**
      * Construct a point with the provided initial coordinate values.
      *
@@ -87,8 +86,15 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
+    QgsPoint(
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
+      double m = std::numeric_limits<double>::quiet_NaN(),
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown
+    );
 #else
+    // clang-format off
     QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
@@ -134,6 +140,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -151,7 +158,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \note Not available in Python bindings
      */
-    explicit QgsPoint( Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+    explicit QgsPoint(
+      Qgis::WkbType wkbType,
+      double x = std::numeric_limits<double>::quiet_NaN(),
+      double y = std::numeric_limits<double>::quiet_NaN(),
+      double z = std::numeric_limits<double>::quiet_NaN(),
+      double m = std::numeric_limits<double>::quiet_NaN()
+    ) SIP_SKIP;
 
     /**
      * Create a new point from a QVector3D.
@@ -184,14 +197,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
 #ifndef SIP_RUN
   private:
-    bool fuzzyHelper( double epsilon,
-                      const QgsAbstractGeometry &other,
-                      bool is3DFlag,
-                      bool isMeasureFlag,
-                      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
-                      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
-                      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
-                      std::function<bool( double, double, double, double, double )> comparator2D ) const
+    bool fuzzyHelper(
+      double epsilon,
+      const QgsAbstractGeometry &other,
+      bool is3DFlag,
+      bool isMeasureFlag,
+      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
+      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
+      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
+      std::function<bool( double, double, double, double, double )> comparator2D
+    ) const
     {
       const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
       if ( !pt )
@@ -219,7 +234,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif // !SIP_RUN
 
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper(
                epsilon,
@@ -714,11 +731,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsPoint: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

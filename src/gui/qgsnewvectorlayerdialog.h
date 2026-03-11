@@ -44,7 +44,9 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
      *
      * \deprecated QGIS 3.4.5. Use execAndCreateLayer() instead.
      */
-    Q_DECL_DEPRECATED static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QString runAndCreateLayer(
+      QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString()
+    ) SIP_DEPRECATED;
 
     /**
      * Runs the dialog and creates a layer matching the dialog parameters.
@@ -67,7 +69,13 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
      *
      * \since QGIS 3.4.5
      */
-    static QString execAndCreateLayer( QString &errorMessage SIP_OUT, QWidget *parent = nullptr, const QString &initialPath = QString(), QString *encoding SIP_OUT = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QString execAndCreateLayer(
+      QString &errorMessage SIP_OUT,
+      QWidget *parent = nullptr,
+      const QString &initialPath = QString(),
+      QString *encoding SIP_OUT = nullptr,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem()
+    );
 
     /**
      * New dialog constructor.

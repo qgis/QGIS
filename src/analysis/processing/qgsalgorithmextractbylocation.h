@@ -53,7 +53,16 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
     void addPredicateParameter();
     Predicate reversePredicate( Predicate predicate ) const;
     QStringList predicateOptionsList() const;
-    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds() );
+    void process(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *intersectSource,
+      const QList<int> &selectedPredicates,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback,
+      const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds()
+    );
 
   protected:
     QgsCoordinateReferenceSystem mTargetCrs;
@@ -61,8 +70,26 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
     long long mIntersectFeatureCount = 0;
 
   private:
-    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
-    void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
+    void processByIteratingOverTargetSource(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *intersectSource,
+      const QList<int> &selectedPredicates,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback,
+      const QgsFeatureIds &skipTargetFeatureIds
+    );
+    void processByIteratingOverIntersectSource(
+      const QgsProcessingContext &context,
+      QgsFeatureSource *targetSource,
+      QgsFeatureSource *intersectSource,
+      const QList<int> &selectedPredicates,
+      const std::function<void( const QgsFeature & )> &handleFeatureFunction,
+      bool onlyRequireTargetIds,
+      QgsProcessingFeedback *feedback,
+      const QgsFeatureIds &skipTargetFeatureIds
+    );
 };
 
 

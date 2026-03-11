@@ -35,7 +35,9 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url ), mFeatureFormat( featureFormat )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
+  , mFeatureFormat( featureFormat )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -157,17 +159,21 @@ void QgsOapifItemsRequest::processReply()
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
   QgsDebugMsgLevel( u"OGR data source open start time: %1"_s.arg( time( nullptr ) ), 5 );
-  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
-    qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) )
-  );
+  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>( qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) ) );
   QgsDebugMsgLevel( u"OGR data source open end time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !vectorProvider || !vectorProvider->isValid() )
   {
     VSIUnlink( vsimemFilename.toUtf8().constData() );
     VSIUnlink( CPLResetExtension( vsimemFilename.toUtf8().constData(), "gfs" ) );
-    mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
-    mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Loading of items failed" ) );
+
+    // Some requests can lead to no features detected for which the JSON-FG
+    // driver returns a dataset without layers.
+    if ( extension != "json"_L1 || ( buffer.indexOf( "\"numberReturned\":0" ) < 0 && buffer.indexOf( "\"features\":[]" ) < 0 ) )
+    {
+      mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
+      mAppLevelError = ApplicationLevelError::JsonError;
+      mErrorMessage = errorMessageWithReason( tr( "Loading of items failed" ) );
+    }
     emit gotResponse();
     return;
   }
@@ -199,7 +205,7 @@ void QgsOapifItemsRequest::processReply()
   {
     idField = mFields.indexOf( "id"_L1 );
     // If no "id" field, then use the first field if it contains "id" in it.
-    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( "id"_L1, 0, Qt::CaseInsensitive ) )
+    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( "id"_L1, 0, Qt::CaseInsensitive ) >= 0 )
     {
       idField = 0;
     }
@@ -214,6 +220,10 @@ void QgsOapifItemsRequest::processReply()
     if ( idField >= 0 )
     {
       id = f.attribute( idField ).toString();
+    }
+    else if ( mFeatureFormat == PSEUDO_JSONFG_MEDIA_TYPE )
+    {
+      id = QString::number( f.id() );
     }
     mFeatures.push_back( QgsFeatureUniqueIdPair( f, id ) );
   }

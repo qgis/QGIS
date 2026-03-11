@@ -90,7 +90,18 @@ class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttri
 
   private:
     void insertRow( int row, const QgsAction &action );
-    void insertRow( int row, Qgis::AttributeActionType type, const QString &name, const QString &actionText, const QString &iconPath, bool capture, const QString &shortTitle, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable = false );
+    void insertRow(
+      int row,
+      Qgis::AttributeActionType type,
+      const QString &name,
+      const QString &actionText,
+      const QString &iconPath,
+      bool capture,
+      const QString &shortTitle,
+      const QSet<QString> &actionScopes,
+      const QString &notificationMessage,
+      bool isEnabledOnlyWhenEditable = false
+    );
     void swapRows( int row1, int row2 );
     QgsAction rowToAction( int row ) const;
 

@@ -28,13 +28,15 @@
 using namespace Qt::StringLiterals;
 
 QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name, bool required, QgsServerQueryStringParameter::Type type, const QString &description, const QVariant &defaultValue )
-  : mName( name ), mRequired( required ), mType( type ), mDescription( description ), mDefaultValue( defaultValue )
-{
-}
+  : mName( name )
+  , mRequired( required )
+  , mType( type )
+  , mDescription( description )
+  , mDefaultValue( defaultValue )
+{}
 
 QgsServerQueryStringParameter::~QgsServerQueryStringParameter()
-{
-}
+{}
 
 QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &context ) const
 {

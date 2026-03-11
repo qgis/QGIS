@@ -41,7 +41,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
      * this field is not unique (since QGIS 4.0)
      *
      */
-    QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject = nullptr, const int uniqueIdFieldIndex = -1 );
+    QgsGeometryCheckContext(
+      int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject = nullptr, const int uniqueIdFieldIndex = -1
+    );
 
     /**
      * The tolerance to allow for in geometry checks.
@@ -89,8 +91,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
 
   private:
 #ifdef SIP_RUN
-    QgsGeometryCheckContext( const QgsGeometryCheckContext &rh )
-    {}
+    QgsGeometryCheckContext( const QgsGeometryCheckContext &rh ) {}
 #endif
 };
 

@@ -30,7 +30,8 @@
 using namespace Qt::StringLiterals;
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -85,9 +86,7 @@ void QgsOapifSingleItemRequest::processReply()
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
-  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
-    qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) )
-  );
+  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>( qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) ) );
   if ( !vectorProvider || !vectorProvider->isValid() )
   {
     VSIUnlink( vsimemFilename.toUtf8().constData() );

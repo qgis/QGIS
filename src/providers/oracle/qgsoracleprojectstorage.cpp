@@ -167,13 +167,16 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  const QString metadataExpr = u"%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3"_s.arg( QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsOracleConn::quotedValue( "\" }" ) );
+  const QString metadataExpr = u"%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3"_s
+                                 .arg( QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsOracleConn::quotedValue( "\" }" ) );
 
-  const QString sql( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
-                                     "USING dual "
-                                     "ON (name = :projectname) "
-                                     "WHEN MATCHED THEN UPDATE SET metadata = %2, content = :content "
-                                     "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)" )
+  const QString sql( QStringLiteral(
+                       "MERGE INTO %1.\"qgis_projects\" "
+                       "USING dual "
+                       "ON (name = :projectname) "
+                       "WHEN MATCHED THEN UPDATE SET metadata = %2, content = :content "
+                       "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)"
+  )
                        .arg( QgsOracleConn::quotedIdentifier( projectUri.owner ), metadataExpr ) );
 
   QgsDatabaseQueryLogWrapper logWrapper { sql, uri, u"oracle"_s, ORIGINATOR_CLASS, QUERY_ORIGIN };
@@ -182,8 +185,7 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   QSqlQuery qry( *pconn.get() );
   if ( !qry.prepare( sql ) )
   {
-    QgsDebugError( u"SQL: %1\nERROR: %2"_s
-                     .arg( qry.lastQuery(), qry.lastError().text() ) );
+    QgsDebugError( u"SQL: %1\nERROR: %2"_s.arg( qry.lastQuery(), qry.lastError().text() ) );
     return false;
   }
 
@@ -192,7 +194,9 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
 
   if ( !qry.exec() )
   {
-    QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
+    QString errCause
+      = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." )
+          .arg( projectUri.projectName, projectUri.connInfo.username() );
     context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     return false;
   }

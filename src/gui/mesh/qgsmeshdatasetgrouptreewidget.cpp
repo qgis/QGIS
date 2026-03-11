@@ -42,9 +42,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
   connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
   connect( mUnCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
-  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] {
-    this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
-  } );
+  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] { this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer ); } );
 
   connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() {
     const QModelIndex index = mDatasetGroupTreeView->currentIndex();

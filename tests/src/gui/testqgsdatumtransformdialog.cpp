@@ -57,16 +57,13 @@ void TestQgsDatumTransformDialog::initTestCase()
 }
 
 void TestQgsDatumTransformDialog::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsDatumTransformDialog::init()
-{
-}
+{}
 
 void TestQgsDatumTransformDialog::cleanup()
-{
-}
+{}
 
 void TestQgsDatumTransformDialog::defaultTransform()
 {
@@ -88,15 +85,18 @@ void TestQgsDatumTransformDialog::defaultTransform()
   def = dlg2.defaultDatumTransform();
   QCOMPARE( def.sourceCrs.authid(), u"EPSG:4326"_s );
   QCOMPARE( def.destinationCrs.authid(), u"EPSG:26742"_s );
-  if ( def.proj == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
+  if ( def.proj
+       == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
   {
     QCOMPARE( def.proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_s );
   }
-  else if ( def.proj == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_cnhpgn.tif +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
+  else if ( def.proj
+            == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_cnhpgn.tif +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
   {
     QCOMPARE( def.proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_cnhpgn.tif +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_s );
   }
-  else if ( def.proj == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
+  else if ( def.proj
+            == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_L1 )
   {
     QCOMPARE( def.proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=us_noaa_conus.tif +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft"_s );
   }
@@ -109,7 +109,8 @@ void TestQgsDatumTransformDialog::defaultTransform()
 void TestQgsDatumTransformDialog::fallback()
 {
   // don't default to allow fallback
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem( u"EPSG:7844"_s ), QgsCoordinateReferenceSystem( u"EPSG:4283"_s ), false, true, false, qMakePair( -1, -1 ), nullptr, Qt::WindowFlags(), QString(), nullptr, false );
+  QgsDatumTransformDialog
+    dlg( QgsCoordinateReferenceSystem( u"EPSG:7844"_s ), QgsCoordinateReferenceSystem( u"EPSG:4283"_s ), false, true, false, qMakePair( -1, -1 ), nullptr, Qt::WindowFlags(), QString(), nullptr, false );
 
   const QgsDatumTransformDialog::TransformInfo def = dlg.selectedDatumTransform();
   QCOMPARE( def.sourceCrs.authid(), u"EPSG:7844"_s );

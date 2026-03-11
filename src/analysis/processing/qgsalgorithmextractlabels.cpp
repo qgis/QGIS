@@ -71,44 +71,21 @@ QString QgsExtractLabelsAlgorithm::groupId() const
 
 void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExtent(
-    u"EXTENT"_s,
-    QObject::tr( "Map extent" )
-  ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Map extent" ) ) );
 
-  addParameter( new QgsProcessingParameterScale(
-    u"SCALE"_s,
-    QObject::tr( "Map scale" )
-  ) );
+  addParameter( new QgsProcessingParameterScale( u"SCALE"_s, QObject::tr( "Map scale" ) ) );
 
-  auto mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>(
-    u"MAP_THEME"_s,
-    QObject::tr( "Map theme" ),
-    QVariant(), true
-  );
+  auto mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>( u"MAP_THEME"_s, QObject::tr( "Map theme" ), QVariant(), true );
   mapThemeParameter->setHelp( QObject::tr( "This parameter is optional. When left unset, the algorithm will fallback to extracting labels from all currently visible layers in the project." ) );
   addParameter( mapThemeParameter.release() );
 
-  addParameter( new QgsProcessingParameterBoolean(
-    u"INCLUDE_UNPLACED"_s,
-    QObject::tr( "Include unplaced labels" ),
-    QVariant( true )
-  ) );
+  addParameter( new QgsProcessingParameterBoolean( u"INCLUDE_UNPLACED"_s, QObject::tr( "Include unplaced labels" ), QVariant( true ) ) );
 
-  auto dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
-    u"DPI"_s,
-    QObject::tr( "Map resolution (in DPI)" ),
-    Qgis::ProcessingNumberParameterType::Double,
-    QVariant( 96.0 ), true
-  );
+  auto dpiParameter = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "Map resolution (in DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant( 96.0 ), true );
   dpiParameter->setFlags( dpiParameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParameter.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s,
-    QObject::tr( "Extracted labels" ),
-    Qgis::ProcessingSourceType::VectorPoint
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted labels" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsExtractLabelsAlgorithm::shortDescription() const
@@ -123,9 +100,12 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractLabelsAlgorithm::documenta
 
 QString QgsExtractLabelsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts label information from a rendered map at a given extent and scale.\n\n"
-                      "If a map theme is provided, the rendered map will match the visibility and symbology of that theme. If left blank, all visible layers from the project will be used.\n\n"
-                      "Extracted label information include: position (served as point geometries), the associated layer name and feature ID, label text, rotation (in degree, clockwise), multiline alignment, and font details." );
+  return QObject::tr(
+    "This algorithm extracts label information from a rendered map at a given extent and scale.\n\n"
+    "If a map theme is provided, the rendered map will match the visibility and symbology of that theme. If left blank, all visible layers from the project will be used.\n\n"
+    "Extracted label information include: position (served as point geometries), the associated layer name and feature ID, label text, rotation (in degree, clockwise), multiline alignment, and font "
+    "details."
+  );
 }
 
 QgsExtractLabelsAlgorithm *QgsExtractLabelsAlgorithm::createInstance() const
@@ -139,8 +119,7 @@ class ExtractLabelSink : public QgsLabelSink
     ExtractLabelSink( const QMap<QString, QString> &mapLayerNames, QgsProcessingFeedback *feedback )
       : mMapLayerNames( mapLayerNames )
       , mFeedback( feedback )
-    {
-    }
+    {}
 
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) override
     {
@@ -247,9 +226,7 @@ class ExtractLabelSink : public QgsLabelSink
           break;
       }
 
-      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 )
-                                     ? -( label->getAlpha() * 180 / M_PI ) + 360
-                                     : 0.0;
+      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 ) ? -( label->getAlpha() * 180 / M_PI ) + 360 : 0.0;
 
       const QFont font = labelFeature->definedFont();
       const QString fontFamily = font.family();
@@ -307,20 +284,38 @@ class ExtractLabelSink : public QgsLabelSink
           buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::Property::BufferOpacity ).toDouble() / 100.0 );
         }
 
-        bufferSize = buffer.sizeUnit() == Qgis::RenderUnit::Percentage
-                       ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
-                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
+        bufferSize = buffer.sizeUnit() == Qgis::RenderUnit::Percentage ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
+                                                                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
         bufferSize = bufferSize * 72 / context.painter()->device()->logicalDpiX();
         bufferColor = buffer.color().name();
         bufferOpacity = buffer.opacity() * 100;
       }
 
       QgsAttributes attributes;
-      attributes << mMapLayerNames.value( layerId ) << fid
-                 << labelText << label->getWidth() << label->getHeight() << labelRotation << unplacedLabel
-                 << fontFamily << fontSize << fontItalic << fontBold << fontUnderline << fontStyle << fontLetterSpacing << fontWordSpacing
-                 << labelAlignment << formatLineHeight << formatColor << formatOpacity
-                 << bufferDraw << bufferSize << bufferColor << bufferOpacity;
+      attributes
+        << mMapLayerNames.value( layerId )
+        << fid
+        << labelText
+        << label->getWidth()
+        << label->getHeight()
+        << labelRotation
+        << unplacedLabel
+        << fontFamily
+        << fontSize
+        << fontItalic
+        << fontBold
+        << fontUnderline
+        << fontStyle
+        << fontLetterSpacing
+        << fontWordSpacing
+        << labelAlignment
+        << formatLineHeight
+        << formatColor
+        << formatOpacity
+        << bufferDraw
+        << bufferSize
+        << bufferColor
+        << bufferOpacity;
 
       double x = label->getX();
       double y = label->getY();
@@ -405,9 +400,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( context.project() )
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( context.project() ) << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
   mapSettings.setExpressionContext( expressionContext );
 
   QgsNullPaintDevice nullPaintDevice;

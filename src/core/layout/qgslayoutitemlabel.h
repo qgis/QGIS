@@ -32,12 +32,11 @@ class QgsDistanceArea;
  * \ingroup core
  * \brief A layout item subclass for text labels.
  */
-class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemLabel : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     //! Label modes
     enum Mode
     {
@@ -150,14 +149,22 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * \see hAlign()
      * \see setVAlign()
      */
-    void setHAlign( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; invalidateCache(); }
+    void setHAlign( Qt::AlignmentFlag alignment )
+    {
+      mHAlignment = alignment;
+      invalidateCache();
+    }
 
     /**
      * Sets for the vertical \a alignment of the label.
      * \see vAlign()
      * \see setHAlign()
      */
-    void setVAlign( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; invalidateCache(); }
+    void setVAlign( Qt::AlignmentFlag alignment )
+    {
+      mVAlignment = alignment;
+      invalidateCache();
+    }
 
     /**
      * Returns the horizontal margin between the edge of the frame and the label

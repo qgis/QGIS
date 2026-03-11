@@ -32,11 +32,7 @@ using namespace Qt::StringLiterals;
 QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;
   map[QgsServerOgcApi::ContentType::JSON] = QStringList { u"application/json"_s };
-  map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList {
-    u"application/geo+json"_s,
-    u"application/vnd.geo+json"_s,
-    u"application/geojson"_s
-  };
+  map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList { u"application/geo+json"_s, u"application/vnd.geo+json"_s, u"application/geojson"_s };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { u"text/html"_s };
   map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { u"application/vnd.oai.openapi+json;version=3.0"_s };
   map[QgsServerOgcApi::ContentType::XML] = QStringList { u"application/xml"_s };
@@ -51,9 +47,12 @@ QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServ
 
 
 QgsServerOgcApi::QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description, const QString &version )
-  : QgsServerApi( serverIface ), mRootPath( rootPath ), mName( name ), mDescription( description ), mVersion( version )
-{
-}
+  : QgsServerApi( serverIface )
+  , mRootPath( rootPath )
+  , mName( name )
+  , mDescription( description )
+  , mVersion( version )
+{}
 
 QgsServerOgcApi::~QgsServerOgcApi()
 {
@@ -155,9 +154,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApi::contentTypeFromExtension( const st
 {
   const QString exts = QString::fromStdString( extension );
   const auto constMimeTypes( QgsServerOgcApi::contentTypeMimes() );
-  for ( auto it = constMimeTypes.constBegin();
-        it != constMimeTypes.constEnd();
-        ++it )
+  for ( auto it = constMimeTypes.constBegin(); it != constMimeTypes.constEnd(); ++it )
   {
     const auto constValues = it.value();
     for ( const auto &value : constValues )

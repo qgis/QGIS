@@ -47,10 +47,7 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
       setSize( QSizeF( width, height ) );
     }
 
-    void setRenderer( QgsProfilePlotRenderer *renderer )
-    {
-      mRenderer = renderer;
-    }
+    void setRenderer( QgsProfilePlotRenderer *renderer ) { mRenderer = renderer; }
 
     QRectF plotArea()
     {
@@ -97,18 +94,24 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers( u"MAP_LAYERS"_s, QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
   addParameter( new QgsProcessingParameterNumber( u"WIDTH"_s, QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( u"HEIGHT"_s, QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
-  addParameter( new QgsProcessingParameterMapLayer( u"TERRAIN_LAYER"_s, QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) );
+  addParameter(
+    new QgsProcessingParameterMapLayer( u"TERRAIN_LAYER"_s, QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) )
+  );
 
-  auto minimumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_DISTANCE"_s, QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumDistanceParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_DISTANCE"_s, QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumDistanceParam->setFlags( minimumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumDistanceParam.release() );
-  auto maximumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_DISTANCE"_s, QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumDistanceParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_DISTANCE"_s, QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumDistanceParam->setFlags( maximumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumDistanceParam.release() );
-  auto minimumElevationParam = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_ELEVATION"_s, QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumElevationParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_ELEVATION"_s, QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumElevationParam->setFlags( minimumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumElevationParam.release() );
-  auto maximumElevationParam = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_ELEVATION"_s, QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumElevationParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_ELEVATION"_s, QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumElevationParam->setFlags( maximumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumElevationParam.release() );
 

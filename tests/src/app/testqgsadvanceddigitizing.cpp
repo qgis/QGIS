@@ -164,8 +164,7 @@ void TestQgsAdvancedDigitizing::cleanupTestCase()
 }
 
 void TestQgsAdvancedDigitizing::init()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizing::cleanup()
 {
@@ -624,8 +623,10 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
 
   utils.mouseClick( 0, -2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setX( u"2.02"_s, // shouldn't snap to (2 2)
-                                       QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX(
+    u"2.02"_s, // shouldn't snap to (2 2)
+    QgsAdvancedDigitizingDockWidget::ReturnPressed
+  );
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( -2, -2, Qt::RightButton );
 

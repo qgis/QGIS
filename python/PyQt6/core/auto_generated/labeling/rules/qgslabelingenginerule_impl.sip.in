@@ -24,7 +24,6 @@ too close or too far from features from a different layer.
 #include "qgslabelingenginerule_impl.h"
 %End
   public:
-
     QgsAbstractLabelingEngineRuleDistanceFromFeature();
     ~QgsAbstractLabelingEngineRuleDistanceFromFeature();
     virtual bool prepare( QgsRenderContext &context );
@@ -157,7 +156,6 @@ numbers will try harder to avoid violating the rule.
 %End
 
   protected:
-
     virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
 
 
@@ -180,7 +178,6 @@ features from a different layer.
 #include "qgslabelingenginerule_impl.h"
 %End
   public:
-
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
     ~QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
     virtual QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const /Factory/;
@@ -197,7 +194,7 @@ features from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  private:
+    private:
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 };
 
@@ -232,7 +229,7 @@ features from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  private:
+    private:
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
 };
 
@@ -277,7 +274,7 @@ labels from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsMapLayer *labeledLayer() const;
+      QgsMapLayer *labeledLayer() const;
 %Docstring
 Returns the layer providing the labels.
 
@@ -397,7 +394,6 @@ features from a different layer.
 #include "qgslabelingenginerule_impl.h"
 %End
   public:
-
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
     ~QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
     virtual QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *clone() const /Factory/;
@@ -423,7 +419,7 @@ features from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsMapLayer *labeledLayer() const;
+      QgsMapLayer *labeledLayer() const;
 %Docstring
 Returns the layer providing the labels.
 

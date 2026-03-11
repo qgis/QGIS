@@ -812,11 +812,7 @@ void TestQgsTriangulatedSurface::testBoundingBoxIntersects()
   QgsTriangulatedSurface surface1;
   QVERIFY( !surface1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
 
-  QgsTriangle *triangle1 = new QgsTriangle(
-    QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ),
-    QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ),
-    QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 )
-  );
+  QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ), QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
   surface1.addPatch( triangle1 );
 
   QVERIFY( surface1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
@@ -1066,7 +1062,9 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ), QgsPoint( Qgis::WkbType::PointZ, 1, 0, 11 ), QgsPoint( Qgis::WkbType::PointZ, 2, 0, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
+  expectedSimpleGML3 = QString(
+    u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s
+  );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1074,7 +1072,9 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 10, 10 ), QgsPoint( Qgis::WkbType::PointZ, 11, 10, 11 ), QgsPoint( Qgis::WkbType::PointZ, 12, 10, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
+  expectedSimpleGML3 = QString(
+    u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s
+  );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1084,7 +1084,9 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 2, 0, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
+  expectedSimpleGML3 = QString(
+    u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s
+  );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1092,7 +1094,9 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 12, 10, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
+  expectedSimpleGML3 = QString(
+    u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s
+  );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 

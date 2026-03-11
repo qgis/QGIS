@@ -43,14 +43,18 @@ QStringList QgsShortestPathPointToLayerAlgorithm::tags() const
 
 QString QgsShortestPathPointToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between a given start point "
-                      "and multiple end points defined by a point vector layer." );
+  return QObject::tr(
+    "This algorithm computes optimal (shortest or fastest) route between a given start point "
+    "and multiple end points defined by a point vector layer."
+  );
 }
 
 QString QgsShortestPathPointToLayerAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Computes optimal (shortest or fastest) route between a given start point "
-                      "and multiple end points defined by a point vector layer." );
+  return QObject::tr(
+    "Computes optimal (shortest or fastest) route between a given start point "
+    "and multiple end points defined by a point vector layer."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsShortestPathPointToLayerAlgorithm::documentationFlags() const
@@ -69,9 +73,15 @@ void QgsShortestPathPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPoint( u"START_POINT"_s, QObject::tr( "Start point" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"END_POINTS"_s, QObject::tr( "Vector layer with end points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork
+    = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
   maxEndPointDistanceFromNetwork->setFlags( maxEndPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  maxEndPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the start and end points to the network layer.If the start point is further from the network than this distance an error will be raised. If the end feature is further from the network than this distance it will be treated as non-routable." ) );
+  maxEndPointDistanceFromNetwork->setHelp(
+    QObject::tr(
+      "Specifies an optional limit on the distance from the start and end points to the network layer.If the start point is further from the network than this distance an error will be raised. If "
+      "the end feature is further from the network than this distance it will be treated as non-routable."
+    )
+  );
   addParameter( maxEndPointDistanceFromNetwork.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
@@ -196,8 +206,7 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
     idxEnd = graph->findVertex( snappedPoint );
     if ( tree.at( idxEnd ) == -1 )
     {
-      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." )
-                               .arg( startPoint.toString(), originalPoint.toString() ) );
+      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." ).arg( startPoint.toString(), originalPoint.toString() ) );
       feat.clearGeometry();
       attributes = sourceAttributes.value( i );
       attributes.append( QVariant() );

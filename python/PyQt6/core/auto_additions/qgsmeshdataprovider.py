@@ -27,7 +27,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsMeshDatasetSourceInterface.__virtual_methods__ = ['persistDatasetGroup']
     QgsMeshDatasetSourceInterface.__abstract_methods__ = ['addDataset', 'extraDatasets', 'datasetGroupCount', 'datasetCount', 'datasetGroupMetadata', 'datasetMetadata', 'datasetValue', 'datasetValues', 'dataset3dValues', 'isFaceActive', 'areFacesActive', 'persistDatasetGroup']
     QgsMeshDatasetSourceInterface.__group__ = ['mesh']
 except (NameError, AttributeError):

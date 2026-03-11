@@ -143,8 +143,9 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      CodeFolding = 1 << 0,              //!< Indicates that code folding should be enabled for the editor
-      ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close \since QGIS 3.32
+      CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
+      ImmediatelyUpdateHistory
+      = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close \since QGIS 3.32
     };
     Q_ENUM( Flag )
 
@@ -169,7 +170,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param flags flags controlling behavior of code editor (since QGIS 3.28)
      * \param mode code editor mode (since QGIS 3.30)
      */
-    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+    QgsCodeEditor(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      const QString &title = QString(),
+      bool folding = false,
+      bool margin = false,
+      QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(),
+      QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor
+    );
 
     /**
      * Set the widget title
@@ -299,7 +307,12 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    void setCustomAppearance( const QString &scheme = QString(), const QMap<QgsCodeEditorColorScheme::ColorRole, QColor> &customColors = QMap<QgsCodeEditorColorScheme::ColorRole, QColor>(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+    void setCustomAppearance(
+      const QString &scheme = QString(),
+      const QMap<QgsCodeEditorColorScheme::ColorRole, QColor> &customColors = QMap<QgsCodeEditorColorScheme::ColorRole, QColor>(),
+      const QString &fontFamily = QString(),
+      int fontSize = 0
+    ) SIP_SKIP;
 
     /**
      * Adds a \a warning message and indicator to the specified a \a lineNumber.

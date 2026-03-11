@@ -21,8 +21,7 @@
 
 QgsPointCloudExpression::QgsPointCloudExpression()
   : d( new QgsPointCloudExpressionPrivate )
-{
-}
+{}
 
 QgsPointCloudExpression::QgsPointCloudExpression( const QString &subsetString )
   : d( new QgsPointCloudExpressionPrivate )
@@ -130,7 +129,7 @@ void QgsPointCloudExpression::detach()
 
   if ( d->ref > 1 )
   {
-    ( void )d->ref.deref();
+    ( void ) d->ref.deref();
 
     d = new QgsPointCloudExpressionPrivate( *d );
   }
@@ -202,7 +201,7 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() cons
 bool QgsPointCloudExpression::checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage )
 {
   QgsPointCloudExpression exp( expression );
-  ( void )exp.prepare( block );
+  ( void ) exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }

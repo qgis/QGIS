@@ -27,7 +27,6 @@ algorithms and parameters.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class PythonOutputType
     {
       PythonQgsProcessingAlgorithmSubclass,

@@ -1,7 +1,15 @@
 name: 📅 Auto set milestone on PR
 
+# This workflow automatically assigns milestones to newly opened PRs based on:
+# - The target branch (master vs release branch)
+# - The latest released version found in git tags
+# - Master PRs get milestone +2 minor versions from latest (e.g., 4.0 latest -> 4.2 milestone)
+# - Release branch PRs get milestone +0.1 patch version (e.g., 4.0.0 latest -> 4.0.1 milestone)
+# - Works for both 3.x and 4.x release branches (major version auto-detected from branch name)
+
 on:
   workflow_call:
+  workflow_dispatch:
   pull_request_target:
     types:
       - opened
@@ -10,8 +18,7 @@ permissions:
   contents: read
 
 env:
-  QGIS_MAJOR_VERSION: 3
-  LAST_MINOR_VERSION_FOR_3X: 44
+  QGIS_MAJOR_VERSION_MASTER: 4  # Major version for master branch (update when bumping to 5.x)
 
 jobs:
   pr-without-milestones:
@@ -21,7 +28,10 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      # list the tags and milestones
+      # Fetch data from GitHub API:
+      # - Recent open PRs and their milestones
+      # - Existing milestones
+      # - Recent git tags (to determine latest released version)
       - uses: octokit/graphql-action@v2.x
         id: graphql_request
         with:
@@ -62,93 +72,95 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # take the first unprocessed PR and determine if some remain
-      - name: Filter PR to check
-        id: extract_data
+      # Process all PRs without milestones and assign appropriate milestones
+      - name: Process PRs and assign milestones
         env:
           JSON_DATA: ${{ steps.graphql_request.outputs.data }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # get PRs without milestones
-          PRS_TO_PROCESS=$(echo "${JSON_DATA}" | jq '.repository.pullRequests.edges[] | select( .node.milestone.number | not ) | .node.number')
+          PRS_TO_PROCESS=$(echo "${JSON_DATA}" | jq -c '.repository.pullRequests.edges[] | select( .node.milestone.number | not ) | {number: .node.number, branch: .node.baseRef.name}')
 
           NUMBER_OF_PRS=$(echo "${PRS_TO_PROCESS}" | jq -s '. | length')
           echo "NUMBER_OF_PRS: ${NUMBER_OF_PRS}"
-          # early exit
-          [[ ${NUMBER_OF_PRS} == 0 ]] && echo "has_milestone_to_set=0" >> $GITHUB_OUTPUT && exit 0
+          
+          # early exit if no PRs to process
+          [[ ${NUMBER_OF_PRS} == 0 ]] && echo "No PRs without milestones found" && exit 0
 
-          # Take the first
-          PR_NUMBER=$(echo "${PRS_TO_PROCESS}" | jq -s '. | first')
-          echo "PR_NUMBER: ${PR_NUMBER}"
+          # Process each PR
+          echo "${PRS_TO_PROCESS}" | while IFS= read -r pr_data; do
+            PR_NUMBER=$(echo "${pr_data}" | jq -r '.number')
+            BASE_BRANCH=$(echo "${pr_data}" | jq -r '.branch')
+            
+            echo "========================================="
+            echo "Processing PR #${PR_NUMBER} (branch: ${BASE_BRANCH})"
+            
+            # Extract major and minor version from branch name
+            # Examples: master => major=4 (from env), minor=empty
+            #           release-3_38 => major=3, minor=_38
+            #           release-4_0 => major=4, minor=_0
+            BRANCH_MAJOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-([0-9])_[0-9]+/\1/;t;d')
+            if [[ -z ${BRANCH_MAJOR_VERSION} ]]; then
+              # Master branch - use the environment variable
+              QGIS_MAJOR_VERSION=${QGIS_MAJOR_VERSION_MASTER}
+            else
+              # Release branch - use the detected major version
+              QGIS_MAJOR_VERSION=${BRANCH_MAJOR_VERSION}
+            fi
 
-          # Not used for now
-          RE_RUN_JOB=$(echo "${JSON_DATA}" | jq -s '. | length > 1')
-          echo "RE_RUN_JOB: ${RE_RUN_JOB}"
+            # Extract minor version from release branch name
+            # Examples: master => empty, release-3_38 => _38, release-4_0 => _0, release-4_2 => _2
+            MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
 
-          # Get the base branch
-          BASE_BRANCH=$(echo "${JSON_DATA}" | jq -r ".repository.pullRequests.edges[] | select( .node.number == ${PR_NUMBER} ) | .node.baseRef.name")
-          echo "BASE_BRANCH: ${BASE_BRANCH}"
+            # Find the highest released version from git tags matching the target branch
+            MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
 
-          # master => NOTHING, release_3-10 => _10
-          MINOR_VERSION=$(echo ${BASE_BRANCH} | sed -r -e 's/^release-[0-9]_([0-9]+)/_\1/;t;d')
-          echo "MINOR_VERSION: ${MINOR_VERSION}"
-
-          # get the max release from the tags
-          MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
-          echo "MAX_RELEASE: ${MAX_RELEASE}"
-
-          # bump to QGIS 4.0 if last version
-            if [[ -z ${MINOR_VERSION} ]] && [[ ${MAX_RELEASE} =~ ^${LAST_MINOR_VERSION_FOR_3X}(\.[0-9]+)?$ ]]; then
-            MILESTONE_TITLE=4.0.0
-          else
-            # increase the number to get milestone: round+2 for master, +0.1 for release_xxx branches
+            # Calculate milestone version based on latest release:
+            # - Master branch: skip one minor version (e.g., 3.38 released -> 3.40 milestone, 4.0 released -> 4.2 milestone)
+            # - Release branch: increment patch version (e.g., 3.38.0 released -> 3.38.1 milestone, 4.0.0 released -> 4.0.1 milestone)
             INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
-            echo "INCREASE_OPERATION: ${INCREASE_OPERATION}"
-            MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${INCREASE_OPERATION}" | bc)
-          fi
-          echo "MILESTONE_TITLE: ${MILESTONE_TITLE}"
+            MILESTONE_VERSION=$(printf "%.1f" $(echo "${INCREASE_OPERATION}" | bc))
+            MILESTONE_TITLE="${QGIS_MAJOR_VERSION}.${MILESTONE_VERSION}"
+            
+            echo "Target milestone: ${MILESTONE_TITLE}"
 
-          MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
-          echo "MILESTONE_NUMBER: ${MILESTONE_NUMBER}"
+            # Check if milestone exists in GitHub
+            MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
+            
+            if [[ -z ${MILESTONE_NUMBER} ]]; then
+              echo "Creating new milestone: ${MILESTONE_TITLE}"
+              # Create milestone using GitHub API
+              CREATE_RESPONSE=$(curl -s -X POST \
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/qgis/QGIS/milestones" \
+                -d "{\"title\":\"${MILESTONE_TITLE}\"}")
+              
+              MILESTONE_NUMBER=$(echo "${CREATE_RESPONSE}" | jq -r '.number')
+              
+              if [[ ${MILESTONE_NUMBER} == "null" ]] || [[ -z ${MILESTONE_NUMBER} ]]; then
+                echo "Error creating milestone. Response: ${CREATE_RESPONSE}"
+                continue
+              fi
+              
+              echo "Created milestone with number: ${MILESTONE_NUMBER}"
+            else
+              echo "Found existing milestone number: ${MILESTONE_NUMBER}"
+            fi
 
-          HAS_MILESTONE_TO_CREATE=$([[ -z ${MILESTONE_NUMBER} ]] && echo "1" || echo "0" )
-          echo "HAS_MILESTONE_TO_CREATE: ${HAS_MILESTONE_TO_CREATE}"
-
-          echo "has_milestone_to_set=1" >> $GITHUB_OUTPUT
-          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
-          echo "milestone_title=${MILESTONE_TITLE}" >> $GITHUB_OUTPUT
-          echo "milestone_number=${MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
-          echo "has_milestone_to_create=${HAS_MILESTONE_TO_CREATE}" >> $GITHUB_OUTPUT
-
-      # create the milestone if needed
-      - name: Create milestone if needed
-        id: create_milestone
-        if: steps.extract_data.outputs.has_milestone_to_set == 1 && steps.extract_data.outputs.has_milestone_to_create == 1
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/qgis/QGIS/milestones
-          title: ${{ steps.extract_data.outputs.milestone_title }}. # see https://github.com/octokit/request-action/issues/26 (warnings are OK)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Compute the milestone number
-      - name: Compute milestone number from existing or created
-        id: compute_milestone
-        if: always() && steps.extract_data.outputs.has_milestone_to_set == 1
-        env:
-          MILESTONE_NUMBER_EXISTING: ${{ steps.extract_data.outputs.milestone_number }}
-          MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
-        run: |
-          FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || echo $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq .number ))
-          echo "FINAL_MILESTONE_NUMBER: ${FINAL_MILESTONE_NUMBER}"
-          echo "milestone_number=${FINAL_MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
-
-      # update PR with milestone
-      - name: update PR milestone
-        if: steps.extract_data.outputs.has_milestone_to_set == 1
-        uses: octokit/request-action@v2.x
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          route: PATCH /repos/qgis/QGIS/issues/:pull_number
-          pull_number: ${{ steps.extract_data.outputs.pr_number }}
-          milestone: ${{ steps.compute_milestone.outputs.milestone_number }}
+            # Assign milestone to PR
+            echo "Assigning milestone ${MILESTONE_NUMBER} to PR #${PR_NUMBER}"
+            ASSIGN_RESPONSE=$(curl -s -X PATCH \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/qgis/QGIS/issues/${PR_NUMBER}" \
+              -d "{\"milestone\":${MILESTONE_NUMBER}}")
+            
+            ASSIGNED_MILESTONE=$(echo "${ASSIGN_RESPONSE}" | jq -r '.milestone.number')
+            
+            if [[ ${ASSIGNED_MILESTONE} == ${MILESTONE_NUMBER} ]]; then
+              echo "✓ Successfully assigned milestone ${MILESTONE_TITLE} to PR #${PR_NUMBER}"
+            else
+              echo "✗ Failed to assign milestone to PR #${PR_NUMBER}. Response: ${ASSIGN_RESPONSE}"
+            fi
+          done

@@ -47,11 +47,7 @@ void QgsWmsNewConnection::detectFormat()
 
   if ( !res )
   {
-    QMessageBox::warning(
-      this,
-      tr( "WMS Provider" ),
-      capDownload.lastError()
-    );
+    QMessageBox::warning( this, tr( "WMS Provider" ), capDownload.lastError() );
     return;
   }
 

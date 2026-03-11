@@ -36,12 +36,16 @@ void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &c
 {
   if ( connectionNames.size() > 1 )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connections" ), QObject::tr( "Are you sure you want to remove all %1 selected connections?" ).arg( connectionNames.size() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::
+           question( nullptr, QObject::tr( "Remove Connections" ), QObject::tr( "Are you sure you want to remove all %1 selected connections?" ).arg( connectionNames.size() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return;
   }
   else
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ), QObject::tr( "Are you sure you want to remove the connection to “%1”?" ).arg( connectionNames.at( 0 ) ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::
+           question( nullptr, QObject::tr( "Remove Connection" ), QObject::tr( "Are you sure you want to remove the connection to “%1”?" ).arg( connectionNames.at( 0 ) ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return;
   }
 
@@ -67,7 +71,18 @@ const QString QgsDataItemGuiProviderUtils::uniqueName( const QString &name, cons
   return newConnectionName;
 }
 
-bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationSchema, QgsDataItemGuiContext context, const QString &shortTitle, const QString &longTitle, const QVariantMap &destinationProviderOptions, const std::function<void()> &onSuccessfulCompletion, const std::function<void( Qgis::VectorExportResult, const QString & )> &onError, QObject *connectionContext )
+bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection,
+  const QgsMimeDataUtils::Uri &sourceUri,
+  const QString &destinationSchema,
+  QgsDataItemGuiContext context,
+  const QString &shortTitle,
+  const QString &longTitle,
+  const QVariantMap &destinationProviderOptions,
+  const std::function<void()> &onSuccessfulCompletion,
+  const std::function<void( Qgis::VectorExportResult, const QString & )> &onError,
+  QObject *connectionContext
+)
 {
   if ( !connection )
     return false;
@@ -104,35 +119,36 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   };
 
   // when export is successful:
-  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-    if ( !tableComment.isEmpty() )
-    {
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
-      try
+  QObject::
+    connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
+      if ( !tableComment.isEmpty() )
       {
-        QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( connectionProvider );
-        connection.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) );
-      }
-      catch ( QgsProviderConnectionException &e )
-      {
-        pushError( QObject::tr( "Could not retrieve connection details:\n\n%1" ).arg( e.what() ) );
-        return;
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
+        try
+        {
+          QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( connectionProvider );
+          connection.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Could not retrieve connection details:\n\n%1" ).arg( e.what() ) );
+          return;
+        }
+
+        try
+        {
+          connection->setTableComment( destSchema, destTableName, tableComment );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+          return;
+        }
       }
 
-      try
-      {
-        connection->setTableComment( destSchema, destTableName, tableComment );
-      }
-      catch ( QgsProviderConnectionException &e )
-      {
-        pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-        return;
-      }
-    }
-
-    context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
-    onSuccessfulCompletion();
-  } );
+      context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
+      onSuccessfulCompletion();
+    } );
 
   // when an error occurs:
   QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, connectionContext, [onError, shortTitle, pushError, longTitle]( Qgis::VectorExportResult error, const QString &errorMessage ) {
@@ -148,7 +164,17 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   return true;
 }
 
-void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, const QString &destinationSchema, QgsDataItemGuiContext context, const QString &shortTitle, const QString &longTitle, const QVariantMap &destinationProviderOptions, const std::function<void()> &onSuccessfulCompletion, const std::function<void( Qgis::VectorExportResult, const QString & )> &onError, QObject *connectionContext )
+void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection,
+  const QString &destinationSchema,
+  QgsDataItemGuiContext context,
+  const QString &shortTitle,
+  const QString &longTitle,
+  const QVariantMap &destinationProviderOptions,
+  const std::function<void()> &onSuccessfulCompletion,
+  const std::function<void( Qgis::VectorExportResult, const QString & )> &onError,
+  QObject *connectionContext
+)
 {
   if ( !connection )
     return;
@@ -184,35 +210,36 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   };
 
   // when export is successful:
-  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-    if ( !tableComment.isEmpty() )
-    {
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
-      try
+  QObject::
+    connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
+      if ( !tableComment.isEmpty() )
       {
-        QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( connectionProvider );
-        connection.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) );
-      }
-      catch ( QgsProviderConnectionException &e )
-      {
-        pushError( QObject::tr( "Could not retrieve connection details:\n\n%1" ).arg( e.what() ) );
-        return;
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
+        try
+        {
+          QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( connectionProvider );
+          connection.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Could not retrieve connection details:\n\n%1" ).arg( e.what() ) );
+          return;
+        }
+
+        try
+        {
+          connection->setTableComment( destSchema, destTableName, tableComment );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+          return;
+        }
       }
 
-      try
-      {
-        connection->setTableComment( destSchema, destTableName, tableComment );
-      }
-      catch ( QgsProviderConnectionException &e )
-      {
-        pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-        return;
-      }
-    }
-
-    context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
-    onSuccessfulCompletion();
-  } );
+      context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
+      onSuccessfulCompletion();
+    } );
 
   // when an error occurs:
   QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, connectionContext, [onError, shortTitle, pushError, longTitle]( Qgis::VectorExportResult error, const QString &errorMessage ) {

@@ -33,8 +33,7 @@ using namespace Qt::StringLiterals;
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
   : QAbstractTableModel( parent )
-{
-}
+{}
 
 void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 {
@@ -71,11 +70,7 @@ int QgsGCPListModel::columnCount( const QModelIndex & ) const
 
 QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !mGCPList
-       || index.row() < 0
-       || index.row() >= mGCPList->size()
-       || index.column() < 0
-       || index.column() >= columnCount() )
+  if ( !mGCPList || index.row() < 0 || index.row() >= mGCPList->size() || index.column() < 0 || index.column() >= columnCount() )
     return QVariant();
 
   const Column column = static_cast<Column>( index.column() );
@@ -232,11 +227,7 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
 
 bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !mGCPList
-       || index.row() < 0
-       || index.row() >= mGCPList->size()
-       || index.column() < 0
-       || index.column() >= columnCount() )
+  if ( !mGCPList || index.row() < 0 || index.row() >= mGCPList->size() || index.column() < 0 || index.column() >= columnCount() )
     return false;
 
   QgsGeorefDataPoint *point = mGCPList->at( index.row() );
@@ -300,11 +291,7 @@ bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, 
 
 Qt::ItemFlags QgsGCPListModel::flags( const QModelIndex &index ) const
 {
-  if ( !mGCPList
-       || index.row() < 0
-       || index.row() >= mGCPList->size()
-       || index.column() < 0
-       || index.column() >= columnCount() )
+  if ( !mGCPList || index.row() < 0 || index.row() >= mGCPList->size() || index.column() < 0 || index.column() >= columnCount() )
     return QAbstractTableModel::flags( index );
 
   const Column column = static_cast<Column>( index.column() );

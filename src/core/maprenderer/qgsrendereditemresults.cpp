@@ -29,7 +29,6 @@ using namespace Qt::StringLiterals;
 class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDetails *, float, 2, float>
 {
   public:
-
     explicit QgsRenderedItemResultsSpatialIndex( const QgsRectangle &maxBounds )
       : mXMin( maxBounds.xMinimum() )
       , mYMin( maxBounds.yMinimum() )
@@ -42,18 +41,9 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     void insert( const QgsRenderedItemDetails *details, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      const float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      const float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Insert(
-        aMin,
-        aMax,
-        details );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Insert( aMin, aMax, details );
     }
 
     /**
@@ -64,18 +54,9 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     bool intersects( const QgsRectangle &bounds, const std::function< bool( const QgsRenderedItemDetails *details )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      const float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      const float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Search(
-        aMin,
-        aMax,
-        callback );
+      const float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      const float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Search( aMin, aMax, callback );
       return true;
     }
 
@@ -90,21 +71,14 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
       if ( mUseScale )
-        return
-      {
-        static_cast< float >( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
-        static_cast< float >( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
-        static_cast< float >( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
-        static_cast< float >( ( std::min( bounds.yMaximum(), mMaxBounds.yMaximum() ) - mYMin ) / mYRes )
-      };
+        return {
+          static_cast< float >( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
+          static_cast< float >( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
+          static_cast< float >( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
+          static_cast< float >( ( std::min( bounds.yMaximum(), mMaxBounds.yMaximum() ) - mYMin ) / mYRes )
+        };
       else
-        return
-      {
-        static_cast< float >( bounds.xMinimum() ),
-        static_cast< float >( bounds.yMinimum() ),
-        static_cast< float >( bounds.xMaximum() ),
-        static_cast< float >( bounds.yMaximum() )
-      };
+        return { static_cast< float >( bounds.xMinimum() ), static_cast< float >( bounds.yMinimum() ), static_cast< float >( bounds.xMaximum() ), static_cast< float >( bounds.yMaximum() ) };
     }
 };
 ///@endcond
@@ -112,9 +86,7 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
 QgsRenderedItemResults::QgsRenderedItemResults( const QgsRectangle &extent )
   : mExtent( extent.buffered( std::max( extent.width(), extent.height() ) * 1000 ) ) // RTree goes crazy if we insert geometries outside the bounds, so buffer them right out to be safe
   , mAnnotationItemsIndex( std::make_unique< QgsRenderedItemResultsSpatialIndex >( mExtent ) )
-{
-
-}
+{}
 
 QgsRenderedItemResults::~QgsRenderedItemResults() = default;
 
@@ -123,10 +95,7 @@ QList<QgsRenderedItemDetails *> QgsRenderedItemResults::renderedItems() const
   QList< QgsRenderedItemDetails * > res;
   for ( const auto &it : mDetails )
   {
-    std::transform( it.second.begin(), it.second.end(), std::back_inserter( res ), []( const auto & detail )
-    {
-      return detail.get();
-    } );
+    std::transform( it.second.begin(), it.second.end(), std::back_inserter( res ), []( const auto &detail ) { return detail.get(); } );
   }
   return res;
 }
@@ -135,8 +104,7 @@ QList<const QgsRenderedAnnotationItemDetails *> QgsRenderedItemResults::rendered
 {
   QList<const QgsRenderedAnnotationItemDetails *> res;
 
-  mAnnotationItemsIndex->intersects( bounds, [&res]( const QgsRenderedItemDetails * details )->bool
-  {
+  mAnnotationItemsIndex->intersects( bounds, [&res]( const QgsRenderedItemDetails *details ) -> bool {
     res << qgis::down_cast< const QgsRenderedAnnotationItemDetails * >( details );
     return true;
   } );
@@ -163,7 +131,7 @@ void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *
       mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
 
 
-    mDetails[ details->layerId() ].emplace_back( std::unique_ptr< QgsRenderedItemDetails >( details ) );
+    mDetails[details->layerId()].emplace_back( std::unique_ptr< QgsRenderedItemDetails >( details ) );
   }
 }
 
@@ -215,5 +183,3 @@ void QgsRenderedItemResults::eraseResultsFromLayers( const QStringList &layerIds
       mDetails.erase( it );
   }
 }
-
-

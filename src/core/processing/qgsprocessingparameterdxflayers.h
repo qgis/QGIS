@@ -88,39 +88,22 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
 class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterDxfLayers( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterDxfLayers( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "An input allowing selection of multiple layers for export to DXF file." );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "An input allowing selection of multiple layers for export to DXF file." ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "DXF Layers" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "DXF Layers" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterDxfLayers::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterDxfLayers::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterDxfLayers"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterDxfLayers"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterDxfLayers"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterDxfLayers"_s; }
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" )
+      return QStringList()
+             << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" )
              << QObject::tr( "list[str]: list of layer IDs" )
              << QObject::tr( "list[str]: list of layer names" )
              << QObject::tr( "list[str]: list of layer sources" )

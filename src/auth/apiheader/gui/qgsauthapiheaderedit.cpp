@@ -161,8 +161,7 @@ void QgsAuthApiHeaderEdit::addHeaderPairRow( const QString &key, const QString &
   const int rowCount = tblwdgHeaderPairs->rowCount();
   tblwdgHeaderPairs->insertRow( rowCount );
 
-  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                  | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItem = new QTableWidgetItem( key );
   keyItem->setFlags( itemFlags );

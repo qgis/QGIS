@@ -91,10 +91,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
       case Qt::ItemDataRole::ToolTipRole:
       {
         const QgsLayerMetadataFormatter formatter { mResult.metadata().at( index.row() ) };
-        return tr( R"HTML(<html><body><!-- metadata headers ---><h3>Identification</h3>%1</body></html>)HTML" )
-          .arg(
-            formatter.identificationSectionHtml()
-          );
+        return tr( R"HTML(<html><body><!-- metadata headers ---><h3>Identification</h3>%1</body></html>)HTML" ).arg( formatter.identificationSectionHtml() );
         break;
       }
       case Qt::ItemDataRole::DecorationRole:
@@ -179,9 +176,7 @@ void QgsLayerMetadataResultsModel::reloadAsync()
     auto thread = std::make_unique<QThread>();
     fetcher->moveToThread( thread.get() );
     // Forward signals to the model
-    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [this]( const QgsLayerMetadataSearchResults &results ) {
-      resultsReady( results );
-    } );
+    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [this]( const QgsLayerMetadataSearchResults &results ) { resultsReady( results ); } );
     connect( thread.get(), &QThread::started, fetcher.get(), &QgsMetadataResultsFetcher::fetchMetadata );
     mWorkerThreads.push_back( std::move( thread ) );
     mWorkers.push_back( std::move( fetcher ) );
@@ -228,8 +223,7 @@ QgsMetadataResultsFetcher::QgsMetadataResultsFetcher( const QgsAbstractLayerMeta
   : mLayerMetadataProvider( metadataProvider )
   , mSearchContext( searchContext )
   , mFeedback( feedback )
-{
-}
+{}
 
 void QgsMetadataResultsFetcher::fetchMetadata()
 {

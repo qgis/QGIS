@@ -20,7 +20,6 @@ Utility class that encapsulates an action based on vector attributes.
 #include "qgsaction.h"
 %End
   public:
-
     QgsAction();
 
     QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false );
@@ -34,7 +33,16 @@ Create a new QgsAction
                 when an action is run
 %End
 
-    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
+    QgsAction(
+      Qgis::AttributeActionType type,
+      const QString &description,
+      const QString &action,
+      const QString &icon,
+      bool capture,
+      const QString &shortTitle = QString(),
+      const QSet<QString> &actionScopes = QSet<QString>(),
+      const QString &notificationMessage = QString()
+    );
 %Docstring
 Create a new QgsAction
 
@@ -52,7 +60,17 @@ Create a new QgsAction
                             trigger the action
 %End
 
-    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
+    QgsAction(
+      const QUuid &id,
+      Qgis::AttributeActionType type,
+      const QString &description,
+      const QString &action,
+      const QString &icon,
+      bool capture,
+      const QString &shortTitle = QString(),
+      const QSet<QString> &actionScopes = QSet<QString>(),
+      const QString &notificationMessage = QString()
+    );
 %Docstring
 Create a new QgsAction
 
@@ -190,7 +208,7 @@ Sets an expression context scope to use for running the action.
 Returns an expression context scope used for running the action.
 %End
 
-    QString html( ) const;
+    QString html() const;
 %Docstring
 Returns an HTML table with the basic information about this action.
 

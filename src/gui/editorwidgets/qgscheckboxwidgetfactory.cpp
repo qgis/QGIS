@@ -21,8 +21,7 @@
 
 QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsCheckboxWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

@@ -177,8 +177,7 @@ void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( u"META_ATTRIBUTION"_s, QObject::tr( "Metadata: Attribution" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( u"META_VERSION"_s, QObject::tr( "Metadata: Version" ), QVariant(), false, true ) );
   auto metaTypeParam = std::make_unique<QgsProcessingParameterString>( u"META_TYPE"_s, QObject::tr( "Metadata: Type" ), QVariant(), false, true );
-  metaTypeParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << u"overlay"_s << u"baselayer"_s } } ) }
-  } );
+  metaTypeParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << u"overlay"_s << u"baselayer"_s } } ) } } );
   addParameter( metaTypeParam.release() );
   addParameter( new QgsProcessingParameterString( u"META_CENTER"_s, QObject::tr( "Metadata: Center" ), QVariant(), false, true ) );
 }

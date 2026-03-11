@@ -53,8 +53,7 @@
 using namespace Qt::StringLiterals;
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-{
-}
+{}
 
 QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
 {

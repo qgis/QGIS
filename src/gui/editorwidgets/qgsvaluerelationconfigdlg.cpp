@@ -45,9 +45,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mDescriptionExpression, &QgsFieldExpressionWidget::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsValueRelationConfigDlg::layerChanged );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
-  connect( mOrderByField, &QAbstractButton::toggled, mOrderByFieldName, [this]( bool enabled ) {
-    mOrderByFieldName->setEnabled( enabled );
-  } );
+  connect( mOrderByField, &QAbstractButton::toggled, mOrderByFieldName, [this]( bool enabled ) { mOrderByFieldName->setEnabled( enabled ); } );
 
   mOrderByGroupBox->setCollapsed( true );
 
@@ -73,9 +71,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
     mNofColumns->setEnabled( checked );
   } );
 
-  connect( mUseCompleter, &QCheckBox::stateChanged, this, [this]( int state ) {
-    mCompleterMatchFromStart->setEnabled( static_cast<Qt::CheckState>( state ) == Qt::CheckState::Checked );
-  } );
+  connect( mUseCompleter, &QCheckBox::stateChanged, this, [this]( int state ) { mCompleterMatchFromStart->setEnabled( static_cast<Qt::CheckState>( state ) == Qt::CheckState::Checked ); } );
 
   mCompleterMatchFromStart->setEnabled( mUseCompleter->isChecked() );
 
@@ -151,7 +147,9 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mFilterExpression->setPlainText( config.value( u"FilterExpression"_s ).toString() );
   mUseCompleter->setChecked( config.value( u"UseCompleter"_s ).toBool() );
   // Default is MatchStartsWith for backwards compatibility
-  const Qt::MatchFlags completerMatchFlags { config.contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config.value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
+  const Qt::MatchFlags completerMatchFlags {
+    config.contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config.value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith
+  };
   mCompleterMatchFromStart->setChecked( completerMatchFlags.testFlag( Qt::MatchFlag::MatchStartsWith ) );
 }
 

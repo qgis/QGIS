@@ -28,8 +28,7 @@ QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsBox3D &box3D,
   , mError( error )
   , mNodeId( nodeId )
   , mParent( parent )
-{
-}
+{}
 
 QgsChunkNode::~QgsChunkNode()
 {

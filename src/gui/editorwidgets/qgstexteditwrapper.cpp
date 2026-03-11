@@ -35,8 +35,7 @@ using namespace Qt::StringLiterals;
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 QVariant QgsTextEditWrapper::value() const
 {

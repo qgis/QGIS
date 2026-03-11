@@ -27,12 +27,11 @@ class QgsLayoutMultiFrame;
  * \ingroup core
  * \brief Base class for frame items, which form a layout multiframe item.
 */
-class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutFrame : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutFrame, with the specified parent \a layout
      * and belonging to a \a multiFrame.
@@ -113,7 +112,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     ExportLayerBehavior exportLayerBehavior() const override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
@@ -132,7 +130,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     bool mHideBackgroundIfEmpty = false;
 
     friend class QgsLayoutMultiFrame;
-
 };
 
 #endif // QGSLAYOUTFRAME_H

@@ -63,9 +63,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     //selection handles are being shown, get mouse action for current cursor position
     Qgis::MouseHandlesAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
 
-    if ( mouseAction != Qgis::MouseHandlesAction::MoveItem
-         && mouseAction != Qgis::MouseHandlesAction::NoAction
-         && mouseAction != Qgis::MouseHandlesAction::SelectItem )
+    if ( mouseAction != Qgis::MouseHandlesAction::MoveItem && mouseAction != Qgis::MouseHandlesAction::NoAction && mouseAction != Qgis::MouseHandlesAction::SelectItem )
     {
       //mouse is over a resize handle, so propagate event onward
       event->ignore();

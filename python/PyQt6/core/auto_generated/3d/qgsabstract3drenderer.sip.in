@@ -56,7 +56,6 @@ Resolves references to other objects - second phase of loading - after
 %End
 
   protected:
-
     QgsAbstract3DRenderer();
 
   private:

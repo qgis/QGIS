@@ -68,10 +68,7 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
-  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame ]
-  {
-    handleFrameRemoval( frame );
-  } );
+  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame] { handleFrameRemoval( frame ); } );
   if ( mLayout && !frame->scene() )
   {
     mLayout->addLayoutItem( frame );
@@ -173,7 +170,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       else
       {
         //add new pages if required
-        for ( int p = mLayout->pageCollection()->pageCount() - 1 ; p < page; ++p )
+        for ( int p = mLayout->pageCollection()->pageCount() - 1; p < page; ++p )
         {
           mLayout->pageCollection()->extendByNewPage();
         }
@@ -192,7 +189,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
         }
         case ExtendToNextPage:
         {
-          frameHeight = ( currentY + currentPageHeight ) > totalHeight ?  totalHeight - currentY : currentPageHeight;
+          frameHeight = ( currentY + currentPageHeight ) > totalHeight ? totalHeight - currentY : currentPageHeight;
           break;
         }
 
@@ -207,9 +204,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       }
 
       //create new frame
-      QgsLayoutFrame *newFrame = createNewFrame( currentItem,
-                                 QPointF( currentItem->pos().x(), newFrameY ),
-                                 QSizeF( currentItem->rect().width(), frameHeight ) );
+      QgsLayoutFrame *newFrame = createNewFrame( currentItem, QPointF( currentItem->pos().x(), newFrameY ), QSizeF( currentItem->rect().width(), frameHeight ) );
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -247,9 +242,7 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
 }
 
 void QgsLayoutMultiFrame::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty )
-{
-
-}
+{}
 
 QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size )
 {
@@ -411,9 +404,7 @@ void QgsLayoutMultiFrame::handlePageChange()
       //copy last frame to current page
       auto newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
 
-      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
-                                             mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
-                                             lastFrame->rect().width(), lastFrame->rect().height() ) );
+      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(), mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(), lastFrame->rect().width(), lastFrame->rect().height() ) );
       lastFrame = newFrame.get();
       addFrame( newFrame.release(), false );
     }
@@ -584,7 +575,5 @@ bool QgsLayoutMultiFrame::writePropertiesToElement( QDomElement &, QDomDocument 
 
 bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-
   return true;
 }
-

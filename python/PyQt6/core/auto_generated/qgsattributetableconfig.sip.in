@@ -21,7 +21,6 @@ The configuration is specific for one vector layer.
 #include "qgsattributetableconfig.h"
 %End
   public:
-
     enum Type /BaseType=IntEnum/
     {
       Field,
@@ -30,16 +29,16 @@ The configuration is specific for one vector layer.
 
     struct ColumnConfig
     {
-      ColumnConfig();
+        ColumnConfig();
 
 
-      QgsAttributeTableConfig::Type type;
+        QgsAttributeTableConfig::Type type;
 
-      QString name;
+        QString name;
 
-      bool hidden;
+        bool hidden;
 
-      int width;
+        int width;
     };
 
     enum ActionWidgetStyle /BaseType=IntEnum/
@@ -76,7 +75,7 @@ Returns the number of columns in the configuration.
     sipRes = sipCpp->size();
 %End
 
-    int mapVisibleColumnToIndex( int visibleColumn ) const;
+      int mapVisibleColumnToIndex( int visibleColumn ) const;
 %Docstring
 Maps a visible column index to its original column index.
 
@@ -254,7 +253,7 @@ Compare this configuration's columns name, type, and order to ``other``.
 The column's width is not considered.
 %End
 
-    bool operator!= ( const QgsAttributeTableConfig &other ) const;
+    bool operator!=( const QgsAttributeTableConfig &other ) const;
 
 };
 

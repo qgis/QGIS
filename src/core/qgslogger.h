@@ -98,7 +98,6 @@ class QFile;
 class CORE_EXPORT QgsLogger
 {
   public:
-
     /**
      * Goes to qDebug.
      * \param msg the message to be printed
@@ -122,8 +121,7 @@ class CORE_EXPORT QgsLogger
      * Prints out a variable/value pair for types with overloaded operator<<
      * \note not available in Python bindings
      */
-    template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
-        int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
+    template<typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr, int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {
       std::ostringstream os;
       os << var.toLocal8Bit().data() << " = " << val;
@@ -190,10 +188,8 @@ class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
     {
       QgsLogger::debug( u"Entering."_s, 2, _file, _func, _line );
     }
-    ~QgsScopeLogger()
-    {
-      QgsLogger::debug( u"Leaving."_s, 2, _file, _func, _line );
-    }
+    ~QgsScopeLogger() { QgsLogger::debug( u"Leaving."_s, 2, _file, _func, _line ); }
+
   private:
     const char *_file = nullptr;
     const char *_func = nullptr;

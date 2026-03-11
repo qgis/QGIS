@@ -184,7 +184,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     {
         //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
         explicit Exception( const QString &msg )
-          : std::runtime_error( msg.toUtf8().constData() ) {}
+          : std::runtime_error( msg.toUtf8().constData() )
+        {}
     };
 
     struct Color
@@ -435,10 +436,14 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \param qgisModule append GRASS major version (for modules built in qgis)
      * \throws QgsGrass::Exception
     */
-    static QProcess *startModule( const QString &gisdbase, const QString &location, const QString &mapset, const QString &moduleName, const QStringList &arguments, QTemporaryFile &gisrcFile, bool qgisModule = true );
+    static QProcess *startModule(
+      const QString &gisdbase, const QString &location, const QString &mapset, const QString &moduleName, const QStringList &arguments, QTemporaryFile &gisrcFile, bool qgisModule = true
+    );
 
     //! Run a GRASS module in any gisdbase/location
-    static QByteArray runModule( const QString &gisdbase, const QString &location, const QString &mapset, const QString &moduleName, const QStringList &arguments, int timeOut = 30000, bool qgisModule = true );
+    static QByteArray runModule(
+      const QString &gisdbase, const QString &location, const QString &mapset, const QString &moduleName, const QStringList &arguments, int timeOut = 30000, bool qgisModule = true
+    );
 
     /**
      * Returns the info string from qgis.g.info module.
@@ -454,7 +459,20 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \param sampleSize sample size for statistics
      * \param timeOut timeout
      */
-    static QString getInfo( const QString &info, const QString &gisdbase, const QString &location, const QString &mapset = "PERMANENT", const QString &map = QString(), const QgsGrassObject::Type type = QgsGrassObject::None, double x = 0.0, double y = 0.0, const QgsRectangle &extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
+    static QString getInfo(
+      const QString &info,
+      const QString &gisdbase,
+      const QString &location,
+      const QString &mapset = "PERMANENT",
+      const QString &map = QString(),
+      const QgsGrassObject::Type type = QgsGrassObject::None,
+      double x = 0.0,
+      double y = 0.0,
+      const QgsRectangle &extent = QgsRectangle(),
+      int sampleRows = 0,
+      int sampleCols = 0,
+      int timeOut = 30000
+    );
 
     //! Get location projection
     static QgsCoordinateReferenceSystem crs( const QString &gisdbase, const QString &location, QString &error );
@@ -476,7 +494,19 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * extent and sampleSize are stats options
      * \param error set to error if happens
      */
-    static QHash<QString, QString> info( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map, QgsGrassObject::Type type, const QString &info, const QgsRectangle &extent, int sampleRows, int sampleCols, int timeOut, QString &error );
+    static QHash<QString, QString> info(
+      const QString &gisdbase,
+      const QString &location,
+      const QString &mapset,
+      const QString &map,
+      QgsGrassObject::Type type,
+      const QString &info,
+      const QgsRectangle &extent,
+      int sampleRows,
+      int sampleCols,
+      int timeOut,
+      QString &error
+    );
 
     //! List of Color
     static QList<QgsGrass::Color> colors( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map, QString &error );
@@ -557,10 +587,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Dirs where GRASS modules (executables or scripts) should be searched for
     // On windows it also includes path to msys/bin/ for commands like sed, grep etc. (should be separated?)
     // It does not contain paths from PATH environment variable
-    static QStringList grassModulesPaths()
-    {
-      return sGrassModulesPaths;
-    }
+    static QStringList grassModulesPaths() { return sGrassModulesPaths; }
 
     // path to QGIS GRASS modules like qgis.g.info etc.
     static QString qgisGrassModulePath()

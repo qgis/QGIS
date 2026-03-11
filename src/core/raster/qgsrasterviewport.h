@@ -33,37 +33,37 @@
 
 struct CORE_EXPORT QgsRasterViewPort
 {
-  /**
+    /**
    * \brief Coordinate (in output device coordinate system) of top left corner
    * of the part of the raster that is to be rendered.
   */
-  QgsPointXY mTopLeftPoint;
+    QgsPointXY mTopLeftPoint;
 
-  /**
+    /**
    * \brief Coordinate (in output device coordinate system) of bottom right corner
    * of the part of the raster that is to be rendered.
   */
-  QgsPointXY mBottomRightPoint;
+    QgsPointXY mBottomRightPoint;
 
-  //! \brief Width, number of columns to be rendered
-  qgssize mWidth;
+    //! \brief Width, number of columns to be rendered
+    qgssize mWidth;
 
-  //! \brief Height, number of rows to be rendered
-  qgssize mHeight;
+    //! \brief Height, number of rows to be rendered
+    qgssize mHeight;
 
-  //! \brief Intersection of current map extent and layer extent, in map (destination) CRS
-  QgsRectangle mDrawnExtent;
+    //! \brief Intersection of current map extent and layer extent, in map (destination) CRS
+    QgsRectangle mDrawnExtent;
 
-  //! \brief Source (layer) coordinate system
-  QgsCoordinateReferenceSystem mSrcCRS;
+    //! \brief Source (layer) coordinate system
+    QgsCoordinateReferenceSystem mSrcCRS;
 
-  //! \brief Target (map) coordinate system
-  QgsCoordinateReferenceSystem mDestCRS;
+    //! \brief Target (map) coordinate system
+    QgsCoordinateReferenceSystem mDestCRS;
 
-  /**
+    /**
    * Coordinate transform context
    */
-  QgsCoordinateTransformContext mTransformContext;
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif //QGSRASTERVIEWPORT_H

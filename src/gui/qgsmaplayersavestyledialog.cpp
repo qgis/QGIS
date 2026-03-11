@@ -48,7 +48,9 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
     mFileLabel->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
     mFileWidget->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
     mSaveToDbWidget->setVisible( type == QgsLayerPropertiesDialog::DatasourceDatabase );
-    mSaveToSldWidget->setVisible( type == QgsLayerPropertiesDialog::SLD && layer->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( layer )->geometryType() == Qgis::GeometryType::Polygon );
+    mSaveToSldWidget->setVisible(
+      type == QgsLayerPropertiesDialog::SLD && layer->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( layer )->geometryType() == Qgis::GeometryType::Polygon
+    );
     mStyleCategoriesListView->setEnabled( type != QgsLayerPropertiesDialog::SLD );
     mFileWidget->setFilter( type == QgsLayerPropertiesDialog::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();

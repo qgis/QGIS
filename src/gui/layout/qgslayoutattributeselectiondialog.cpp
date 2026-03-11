@@ -45,8 +45,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutAttributeTableColumnModelBase::QgsLayoutAttributeTableColumnModelBase( QgsLayoutItemAttributeTable *table, QObject *parent )
   : QAbstractTableModel( parent )
   , mTable( table )
-{
-}
+{}
 
 QModelIndex QgsLayoutAttributeTableColumnModelBase::index( int row, int column, const QModelIndex &parent ) const
 {
@@ -365,8 +364,7 @@ QVector<QgsLayoutTableColumn> &QgsLayoutTableSortModel::columns() const
 
 QgsLayoutColumnAlignmentDelegate::QgsLayoutColumnAlignmentDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnAlignmentDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -422,8 +420,7 @@ QgsLayoutColumnSourceDelegate::QgsLayoutColumnSourceDelegate( QgsVectorLayer *vl
   , mVectorLayer( vlayer )
   , mLayoutObject( layoutObject )
   , mForceExpressions( forceExpressions )
-{
-}
+{}
 
 QgsExpressionContext QgsLayoutColumnSourceDelegate::createExpressionContext() const
 {
@@ -448,7 +445,9 @@ QWidget *QgsLayoutColumnSourceDelegate::createEditor( QWidget *parent, const QSt
   fieldExpression->registerExpressionContextGenerator( this );
 
   //listen out for field changes
-  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this] { const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor(); } );
+  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this] {
+    const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor();
+  } );
   return fieldExpression;
 }
 
@@ -486,8 +485,7 @@ void QgsLayoutColumnSourceDelegate::commitAndCloseEditor()
 
 QgsLayoutColumnSortOrderDelegate::QgsLayoutColumnSortOrderDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnSortOrderDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -551,8 +549,7 @@ void QgsLayoutColumnSortOrderDelegate::updateEditorGeometry( QWidget *editor, co
 
 QgsLayoutColumnWidthDelegate::QgsLayoutColumnWidthDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutColumnWidthDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

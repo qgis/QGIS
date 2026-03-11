@@ -58,9 +58,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   setPanelTitle( tr( "Elevation Profile Properties" ) );
 
   mCopyFromDockMenu = new QMenu( this );
-  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] {
-    sBuildCopyMenuFunction( this, mCopyFromDockMenu );
-  } );
+  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] { sBuildCopyMenuFunction( this, mCopyFromDockMenu ); } );
 
   connect( mActionRefresh, &QAction::triggered, this, [this] {
     if ( !mProfile )
@@ -445,8 +443,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  for ( Qgis::DistanceUnit unit :
-        {
+  for ( Qgis::DistanceUnit unit : {
           Qgis::DistanceUnit::Kilometers,
           Qgis::DistanceUnit::Meters,
           Qgis::DistanceUnit::Centimeters,
@@ -878,8 +875,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
 
 void QgsLayoutElevationProfileWidget::layoutAtlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled && mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer()
-       && mProfile->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Line )
+  if ( atlasEnabled && mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer() && mProfile->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Line )
   {
     mCheckControlledByAtlas->setEnabled( true );
   }

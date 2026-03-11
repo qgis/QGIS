@@ -402,7 +402,17 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Returns count of items copied, excluding skipped items.
      */
-    static int copyItems( const QList<ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+    static int copyItems(
+      const QList<ItemDetails> &items,
+      QgsStyle *src,
+      QgsStyle *dst,
+      QWidget *parentWidget,
+      std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
+      bool isImport,
+      const QStringList &importTags,
+      bool addToFavorites,
+      bool ignoreSourceTags
+    );
 
     QgsMessageBar *mMessageBar = nullptr;
 

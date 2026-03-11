@@ -48,7 +48,8 @@ class TestQgsVectorLayer : public QgsTest
     Q_OBJECT
   public:
     TestQgsVectorLayer()
-      : QgsTest( u"Vector Renderer Tests"_s ) {}
+      : QgsTest( u"Vector Renderer Tests"_s )
+    {}
 
   private:
     bool mTestHasError = false;
@@ -80,6 +81,7 @@ class TestQgsVectorLayer : public QgsTest
     void testFieldExpression();
     void testFieldAggregateExpression();
     void testAddFeatureExtentUpdated();
+    void testSelectByIdsValidation();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -100,9 +102,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(), myDbfFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpNonSpatialLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpNonSpatialLayer );
   //
   //create a point layer that will be used in all tests...
   //
@@ -110,9 +110,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -121,9 +119,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
 
   //
@@ -133,9 +129,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 }
 
 void TestQgsVectorLayer::cleanupTestCase()
@@ -518,11 +512,12 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
     QCOMPARE( layerLine->extent3D(), QgsBox3D( 1, 1, std::numeric_limits<double>::quiet_NaN(), 7, 12, std::numeric_limits<double>::quiet_NaN() ) );
   } );
 
-  connect( layerLine, &QgsVectorLayer::featureDeleted, this, [&layerLine, &lineF1]( const QgsFeatureId &fid ) {
-    QCOMPARE( fid, lineF1.id() );
-    QCOMPARE( layerLine->extent(), QgsRectangle() );
-    QCOMPARE( layerLine->extent3D(), QgsBox3D() );
-  }
+  connect(
+    layerLine, &QgsVectorLayer::featureDeleted, this, [&layerLine, &lineF1]( const QgsFeatureId &fid ) {
+      QCOMPARE( fid, lineF1.id() );
+      QCOMPARE( layerLine->extent(), QgsRectangle() );
+      QCOMPARE( layerLine->extent3D(), QgsBox3D() );
+    }
 
   );
 
@@ -542,6 +537,57 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
   delete layerLine;
 }
 
+void TestQgsVectorLayer::testSelectByIdsValidation()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id:integer"_s, u"test"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f1( layer->fields() );
+  f1.setAttribute( 0, 1 );
+  QgsFeature f2( layer->fields() );
+  f2.setAttribute( 0, 2 );
+  QgsFeature f3( layer->fields() );
+  f3.setAttribute( 0, 3 );
+  QgsFeature f4( layer->fields() );
+  f4.setAttribute( 0, 4 );
+  QgsFeature f5( layer->fields() );
+  f5.setAttribute( 0, 5 );
+
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 << f5 );
+  QCOMPARE( layer->featureCount(), 5L );
+
+  QgsFeatureIds testIds = { 1, 2, 99, 100, 3 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, false );
+  QCOMPARE( layer->selectedFeatureCount(), 5 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 5 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
+
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 3 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 3 );
+  QCOMPARE( layer->selectedFeatureIds(), QgsFeatureIds() << 1 << 2 << 3 );
+
+  testIds = { 99, 100, 200 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 0 );
+  QVERIFY( layer->selectedFeatureIds().isEmpty() );
+
+  testIds = { 1, 2, 3, 4, 5 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 5 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 5 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
+
+  testIds = { 1, 2 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 2 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
+
+  testIds = { 3, 99 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::AddToSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 3 ); // Should have 1, 2, 3
+  QCOMPARE( layer->selectedFeatureIds(), QgsFeatureIds() << 1 << 2 << 3 );
+}
 
 QGSTEST_MAIN( TestQgsVectorLayer )
 #include "testqgsvectorlayer.moc"

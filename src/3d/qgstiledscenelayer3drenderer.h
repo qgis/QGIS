@@ -63,7 +63,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

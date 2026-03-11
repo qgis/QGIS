@@ -67,13 +67,11 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 
   public:
     QgsTestExternalStorageStoredContent( const QString &filePath, const QString &url )
-      : QgsExternalStorageStoredContent(), mUrl( filePath.endsWith( "mydir"_L1 ) ? url + "mydir/" : url )
+      : QgsExternalStorageStoredContent()
+      , mUrl( filePath.endsWith( "mydir"_L1 ) ? url + "mydir/" : url )
     {}
 
-    void store() override
-    {
-      setStatus( Qgis::ContentStatus::Running );
-    }
+    void store() override { setStatus( Qgis::ContentStatus::Running ); }
 
     void cancel() override
     {
@@ -88,10 +86,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
       emit errorOccurred( mErrorString );
     }
 
-    void setProgress( double progress )
-    {
-      emit progressChanged( progress );
-    }
+    void setProgress( double progress ) { emit progressChanged( progress ); }
 
     void finish()
     {
@@ -99,10 +94,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
       emit stored();
     }
 
-    QString url() const override
-    {
-      return mUrl;
-    }
+    QString url() const override { return mUrl; }
 
   private:
     QString mUrl;
@@ -141,16 +133,13 @@ void TestQgsExternalStorageFileWidget::initTestCase()
 }
 
 void TestQgsExternalStorageFileWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsExternalStorageFileWidget::init()
-{
-}
+{}
 
 void TestQgsExternalStorageFileWidget::cleanup()
-{
-}
+{}
 
 void TestQgsExternalStorageFileWidget::testLayout_data()
 {

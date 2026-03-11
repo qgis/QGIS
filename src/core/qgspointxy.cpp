@@ -35,8 +35,7 @@ QgsPointXY::QgsPointXY( const QgsPointXY &p )
   : mX( p.x() )
   , mY( p.y() )
   , mIsEmpty( p.isEmpty() )
-{
-}
+{}
 
 QgsPointXY::QgsPointXY( const QgsPoint &point )
 {

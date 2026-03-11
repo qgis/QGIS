@@ -48,8 +48,7 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::nonExclusiveFilterFlags()
 {
-  return QList<FilterFlag>()
-         << CaseInsensitive;
+  return QList<FilterFlag>() << CaseInsensitive;
 }
 
 QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag flag )
@@ -94,8 +93,7 @@ QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx
   : QgsWidgetWrapper( vl, nullptr, parent )
   , mExpression( QString() )
   , mFieldIdx( fieldIdx )
-{
-}
+{}
 
 QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::supportedFlags() const
 {

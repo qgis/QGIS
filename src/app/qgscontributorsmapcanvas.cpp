@@ -88,15 +88,31 @@ void QgsContributorsMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( featureCount == 1 )
     {
-      QString details = u"**%1**"_s.arg( f.attribute( u"Name"_s ).toString() );
-      QString gitNickname = f.attribute( u"GIT Nickname"_s ).toString();
-      if ( !gitNickname.isEmpty() )
+      QString details;
+      if ( f.attribute( u"has_github_account"_s ).toBool() )
       {
-        details += u" / [@%1](https://github.com/%1/)"_s.arg( gitNickname );
+        details += u"**[@%1](https://github.com/%1/)**"_s.arg( f.attribute( u"login"_s ).toString() );
       }
-      if ( f.attribute( u"Committer"_s ).toBool() )
+      else
       {
-        details += u"\n\n%1"_s.arg( tr( "Committer" ) );
+        details += u"**%1**"_s.arg( f.attribute( u"login"_s ).toString() );
+      }
+
+      details += u"\n\n*%1*\n\n"_s.arg( tr( "Contributions" ) );
+      const int qgisCoreContributions = f.attribute( u"qgis_core"_s ).toInt();
+      const int documentationContributions = f.attribute( u"documentation"_s ).toInt();
+      const int webSitesContributions = f.attribute( u"web_sites"_s ).toInt();
+      if ( qgisCoreContributions > 0 )
+      {
+        details += u"*%1 **%2***\n\n"_s.arg( tr( "Core:" ) ).arg( qgisCoreContributions );
+      }
+      if ( documentationContributions > 0 )
+      {
+        details += u"*%1 **%2***\n\n"_s.arg( tr( "Documentation:" ) ).arg( documentationContributions );
+      }
+      if ( webSitesContributions > 0 )
+      {
+        details += u"*%1 **%2***\n\n"_s.arg( tr( "Web sites:" ) ).arg( webSitesContributions );
       }
 
       mContributorsMapFloatingPanel->setText( details );
@@ -121,7 +137,7 @@ QgsRectangle QgsContributorsMapTool::filterRectForMouseEvent( QgsMapMouseEvent *
 {
   const QgsMapSettings mapSettings = mCanvas->mapSettings();
   const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
+  double searchRadius = context.convertToMapUnits( 5.5, Qgis::RenderUnit::Millimeters );
   const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
   return toLayerCoordinates( mContributorsMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
 }
@@ -154,7 +170,8 @@ void QgsContributorsMapFloatingPanel::setText( const QString &text )
 QgsContributorsMapCanvas::QgsContributorsMapCanvas( QWidget *parent )
   : QgsMapCanvas( parent )
 {
-  mContributorsMapBaseLayer = std::make_unique<QgsRasterLayer>( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  mContributorsMapBaseLayer
+    = std::make_unique<QgsRasterLayer>( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
   mContributorsMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + u"/resources/data/contributors.json"_s, tr( "Contributors" ), "ogr"_L1 );
   bool ok = false;
   mContributorsMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + u"/resources/data/contributors_map.qml"_s, ok );

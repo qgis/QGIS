@@ -58,7 +58,9 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   mStackedDiagramModeComboBox->addItem( tr( "Vertical" ), QgsDiagramSettings::Vertical );
 
   mStackedDiagramSpacingSpinBox->setClearValue( 0 );
-  mStackedDiagramSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mStackedDiagramSpacingUnitComboBox->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   connect( mStackedDiagramModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mStackedDiagramSpacingSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
@@ -377,8 +379,7 @@ void QgsStackedDiagramPropertiesDialog::showHelp()
 
 QgsStackedDiagramPropertiesModel::QgsStackedDiagramPropertiesModel( QObject *parent )
   : QAbstractTableModel( parent )
-{
-}
+{}
 
 QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 {

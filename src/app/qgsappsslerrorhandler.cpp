@@ -30,10 +30,7 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
 
-  const QString hostport( u"%1:%2"_s
-                            .arg( reply->url().host() )
-                            .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                            .trimmed() );
+  const QString hostport( u"%1:%2"_s.arg( reply->url().host() ).arg( reply->url().port() != -1 ? reply->url().port() : 443 ).trimmed() );
   const QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
   const QString dgsthostport( u"%1:%2"_s.arg( digest, hostport ) );
 

@@ -31,7 +31,18 @@
 ///@cond NOT_STABLE
 
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker )
+QgsModelArrowItem::QgsModelArrowItem(
+  QgsModelComponentGraphicItem *startItem,
+  Qt::Edge startEdge,
+  int startIndex,
+  bool startIsOutgoing,
+  Marker startMarker,
+  QgsModelComponentGraphicItem *endItem,
+  Qt::Edge endEdge,
+  int endIndex,
+  bool endIsIncoming,
+  Marker endMarker
+)
   : QObject( nullptr )
   , mStartItem( startItem )
   , mStartEdge( startEdge )
@@ -60,18 +71,15 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
   : QgsModelArrowItem( startItem, startEdge, startIndex, true, startMarker, endItem, Qt::LeftEdge, -1, true, endMarker )
-{
-}
+{}
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker )
   : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, startMarker, endItem, endEdge, endIndex, true, endMarker )
-{
-}
+{}
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
   : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, startMarker, endItem, Qt::LeftEdge, -1, true, endMarker )
-{
-}
+{}
 
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
@@ -176,8 +184,7 @@ void QgsModelArrowItem::updatePath()
   bool endHasSpecificDirectionalFlow = qobject_cast<QgsModelChildAlgorithmGraphicItem *>( mEndItem );
 
   // some specific exceptions to the above
-  if ( qobject_cast<QgsModelCommentGraphicItem *>( mStartItem )
-       || qobject_cast<QgsModelCommentGraphicItem *>( mEndItem ) )
+  if ( qobject_cast<QgsModelCommentGraphicItem *>( mStartItem ) || qobject_cast<QgsModelCommentGraphicItem *>( mEndItem ) )
   {
     // comments can be freely attached to any side of an algorithm item without directional flow
     startHasSpecificDirectionalFlow = false;

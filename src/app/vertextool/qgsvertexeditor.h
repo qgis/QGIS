@@ -46,8 +46,7 @@ class APP_EXPORT QgsVertexEntry
     QgsVertexEntry( const QgsPoint &p, QgsVertexId vertexId )
       : mPoint( p )
       , mVertexId( vertexId )
-    {
-    }
+    {}
 
     QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
     QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;

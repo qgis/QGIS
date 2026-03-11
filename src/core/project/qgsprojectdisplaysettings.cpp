@@ -240,13 +240,13 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
   QDomElement element = doc.createElement( u"ProjectDisplaySettings"_s );
 
   {
-    QDomElement bearingElement =  doc.createElement( u"BearingFormat"_s );
+    QDomElement bearingElement = doc.createElement( u"BearingFormat"_s );
     mBearingFormat->writeXml( bearingElement, doc, context );
     element.appendChild( bearingElement );
   }
 
   {
-    QDomElement geographicElement =  doc.createElement( u"GeographicCoordinateFormat"_s );
+    QDomElement geographicElement = doc.createElement( u"GeographicCoordinateFormat"_s );
     mGeographicCoordinateFormat->writeXml( geographicElement, doc, context );
     element.appendChild( geographicElement );
   }

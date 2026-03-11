@@ -73,14 +73,32 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      *
      * \since QGIS 3.8
      */
-    static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &windowTitle = QString() );
+    static bool run(
+      const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      QWidget *parent = nullptr,
+      QgsMapCanvas *mapCanvas = nullptr,
+      const QString &windowTitle = QString()
+    );
 
     // TODO QGIS 5.0 - remove selectedDatumTransform, forceChoice
 
     /**
      * Constructor for QgsDatumTransformDialog.
      */
-    QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), bool allowCrsChanges = false, bool showMakeDefault = true, bool forceChoice = true, QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ), QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags(), const QString &selectedProj = QString(), QgsMapCanvas *mapCanvas = nullptr, bool allowFallback = true );
+    QgsDatumTransformDialog(
+      const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      bool allowCrsChanges = false,
+      bool showMakeDefault = true,
+      bool forceChoice = true,
+      QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
+      QWidget *parent = nullptr,
+      Qt::WindowFlags f = Qt::WindowFlags(),
+      const QString &selectedProj = QString(),
+      QgsMapCanvas *mapCanvas = nullptr,
+      bool allowFallback = true
+    );
 
     void accept() override;
     void reject() override;

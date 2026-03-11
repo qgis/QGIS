@@ -26,8 +26,7 @@ class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
   public:
     QgsPdalProviderGuiMetadata()
       : QgsProviderGuiMetadata( u"pdal"_s )
-    {
-    }
+    {}
 };
 
 

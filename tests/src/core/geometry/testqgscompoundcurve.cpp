@@ -602,7 +602,13 @@ void TestQgsCompoundCurve::clone()
 
   //clone with Z/M
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   cc.addCurve( cs.clone() );
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 22, 31, 34 ) << QgsPoint( 23, 22, 42, 43 ) );
   cc.addCurve( ls.clone() );
@@ -1353,7 +1359,13 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // valid line
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
+    << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 )
+  );
   cc.addCurve( cs.clone() );
 
   // out of range vertices
@@ -1463,15 +1475,20 @@ void TestQgsCompoundCurve::deleteVertex()
 
 void TestQgsCompoundCurve::filterVertices()
 {
-  auto filter = []( const QgsPoint &point ) -> bool {
-    return point.x() > 5;
-  };
+  auto filter = []( const QgsPoint &point ) -> bool { return point.x() > 5; };
 
   QgsCompoundCurve cc;
   cc.filterVertices( filter ); //no crash
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+  );
   cc.addCurve( cs.clone() );
   cc.filterVertices( filter );
 
@@ -2528,7 +2545,13 @@ void TestQgsCompoundCurve::isClosed()
 
   //test that m values aren't considered when testing for closedness
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 )
+    << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 )
+  );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.isClosed() );
@@ -2566,15 +2589,20 @@ void TestQgsCompoundCurve::close()
 void TestQgsCompoundCurve::transformVertices()
 {
   // transform vertices
-  auto transform = []( const QgsPoint &point ) -> QgsPoint {
-    return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 5 );
-  };
+  auto transform = []( const QgsPoint &point ) -> QgsPoint { return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 5 ); };
 
   QgsCompoundCurve cc;
   cc.transformVertices( transform ); //no crash
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+  );
   cc.addCurve( cs.clone() );
   cc.transformVertices( transform );
 
@@ -2598,7 +2626,14 @@ void TestQgsCompoundCurve::transformWithClass()
   QVERIFY( cc.transform( &transformer ) );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+    << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+    << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+    << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+  );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.transform( &transformer ) );
@@ -3007,7 +3042,13 @@ void TestQgsCompoundCurve::toCurveType()
 void TestQgsCompoundCurve::asQPolygonF()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -3027,7 +3068,13 @@ void TestQgsCompoundCurve::asQPolygonF()
 void TestQgsCompoundCurve::toFromWKB()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -3072,7 +3119,13 @@ void TestQgsCompoundCurve::toFromWKB()
 void TestQgsCompoundCurve::toFromWKT()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+    << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+    << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 )
+  );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -3136,11 +3189,15 @@ void TestQgsCompoundCurve::exportImport()
 
 
   //asGML3
-  QString expectedGML3( u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">51 52 61 62</posList></LineString></curveMember></CompositeCurve>"_s );
+  QString expectedGML3(
+    u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">51 52 61 62</posList></LineString></curveMember></CompositeCurve>"_s
+  );
   result = elemToString( exportCurve.asGml3( doc ) );
   QCOMPARE( result, expectedGML3 );
 
-  QString expectedGML3prec3( u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 2.667 3.333 3.667</posList></LineString></curveMember></CompositeCurve>"_s );
+  QString expectedGML3prec3(
+    u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 2.667 3.333 3.667</posList></LineString></curveMember></CompositeCurve>"_s
+  );
   result = elemToString( exportCurveFloat.asGml3( doc, 3 ) );
   QCOMPARE( result, expectedGML3prec3 );
 
@@ -3212,12 +3269,16 @@ void TestQgsCompoundCurve::compoundCurveCondense_data()
   QTest::newRow( "compound curve empty" ) << u"COMPOUNDCURVE()"_s << u"CompoundCurve EMPTY"_s;
   QTest::newRow( "compound curve one line" ) << u"COMPOUNDCURVE((1 1, 1 2))"_s << u"CompoundCurve ((1 1, 1 2))"_s;
   QTest::newRow( "compound curve one circular string" ) << u"COMPOUNDCURVE(CIRCULARSTRING(1 1, 1 2, 2 2))"_s << u"CompoundCurve (CircularString (1 1, 1 2, 2 2))"_s;
-  QTest::newRow( "compound curve can't condense" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))"_s << u"CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))"_s;
+  QTest::newRow( "compound curve can't condense" )
+    << u"COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))"_s
+    << u"CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))"_s;
   QTest::newRow( "compound curve two lines" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0))"_s;
   QTest::newRow( "compound curve three lines" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),(3 0, 4 0, 5 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0, 4 0, 5 0))"_s;
   QTest::newRow( "compound curve two lines and cs" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0))"_s;
   QTest::newRow( "compound curve two cs" ) << u"COMPOUNDCURVE(CIRCULARSTRING(1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 0, 3 0))"_s << u"CompoundCurve (CircularString (1 5, 1 4, 1 1, 1 0, 3 0))"_s;
-  QTest::newRow( "compound curve complex" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))"_s;
+  QTest::newRow( "compound curve complex" )
+    << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))"_s
+    << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))"_s;
 }
 
 void TestQgsCompoundCurve::compoundCurveCondense()

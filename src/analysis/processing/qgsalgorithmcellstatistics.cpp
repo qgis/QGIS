@@ -213,37 +213,39 @@ QStringList QgsCellStatisticsAlgorithm::tags() const
 
 QString QgsCellStatisticsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell statistics algorithm computes a value for each cell of the "
-                      "output raster. At each cell location, "
-                      "the output value is defined as a function of all overlaid cell values of the "
-                      "input rasters.\n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. The following functions can be applied on the input "
-                      "raster cells per output raster cell location:\n"
-                      "<ul> "
-                      "   <li>Sum</li>"
-                      "   <li>Count</li>"
-                      "   <li>Mean</li>"
-                      "   <li>Median</li>"
-                      "   <li>Standard deviation</li>"
-                      "   <li>Variance</li>"
-                      "   <li>Minimum</li>"
-                      "   <li>Maximum</li>"
-                      "   <li>Minority (least frequent value)</li>"
-                      "   <li>Majority (most frequent value)</li>"
-                      "   <li>Range (max-min)</li>"
-                      "   <li>Variety (count of unique values)</li>"
-                      "</ul> "
-                      "Input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. The output raster data type will be set to "
-                      "the most complex data type present in the input datasets except when using the functions "
-                      "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
-                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
-                      "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
-                      "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
-                      "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
-                      "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
-                      "input cell values are equal." );
+  return QObject::tr(
+    "The Cell statistics algorithm computes a value for each cell of the "
+    "output raster. At each cell location, "
+    "the output value is defined as a function of all overlaid cell values of the "
+    "input rasters.\n\n"
+    "The output raster's extent and resolution is defined by a reference "
+    "raster. The following functions can be applied on the input "
+    "raster cells per output raster cell location:\n"
+    "<ul> "
+    "   <li>Sum</li>"
+    "   <li>Count</li>"
+    "   <li>Mean</li>"
+    "   <li>Median</li>"
+    "   <li>Standard deviation</li>"
+    "   <li>Variance</li>"
+    "   <li>Minimum</li>"
+    "   <li>Maximum</li>"
+    "   <li>Minority (least frequent value)</li>"
+    "   <li>Majority (most frequent value)</li>"
+    "   <li>Range (max-min)</li>"
+    "   <li>Variety (count of unique values)</li>"
+    "</ul> "
+    "Input raster layers that do not match the cell size of the reference raster layer will be "
+    "resampled using nearest neighbor resampling. The output raster data type will be set to "
+    "the most complex data type present in the input datasets except when using the functions "
+    "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
+    "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
+    "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
+    "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
+    "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
+    "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
+    "input cell values are equal."
+  );
 }
 
 QString QgsCellStatisticsAlgorithm::shortDescription() const
@@ -259,18 +261,19 @@ QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
 void QgsCellStatisticsAlgorithm::addSpecificAlgorithmParams()
 {
   QStringList statistics = QStringList();
-  statistics << QObject::tr( "Sum" )
-             << QObject::tr( "Count" )
-             << QObject::tr( "Mean" )
-             << QObject::tr( "Median" )
-             << QObject::tr( "Standard deviation" )
-             << QObject::tr( "Variance" )
-             << QObject::tr( "Minimum" )
-             << QObject::tr( "Maximum" )
-             << QObject::tr( "Minority" )
-             << QObject::tr( "Majority" )
-             << QObject::tr( "Range" )
-             << QObject::tr( "Variety" );
+  statistics
+    << QObject::tr( "Sum" )
+    << QObject::tr( "Count" )
+    << QObject::tr( "Mean" )
+    << QObject::tr( "Median" )
+    << QObject::tr( "Standard deviation" )
+    << QObject::tr( "Variance" )
+    << QObject::tr( "Minimum" )
+    << QObject::tr( "Maximum" )
+    << QObject::tr( "Minority" )
+    << QObject::tr( "Majority" )
+    << QObject::tr( "Range" )
+    << QObject::tr( "Variety" );
 
   addParameter( new QgsProcessingParameterEnum( u"STATISTIC"_s, QObject::tr( "Statistic" ), statistics, false, 0, false ) );
 }
@@ -282,9 +285,10 @@ bool QgsCellStatisticsAlgorithm::prepareSpecificAlgorithmParameters( const QVari
   mMethod = static_cast<QgsRasterAnalysisUtils::CellValueStatisticMethods>( parameterAsEnum( parameters, u"STATISTIC"_s, context ) );
 
   //force data types on specific functions in the cellstatistics alg if input data types don't match
-  if (
-    mMethod == QgsRasterAnalysisUtils::Mean || mMethod == QgsRasterAnalysisUtils::StandardDeviation || mMethod == QgsRasterAnalysisUtils::Variance || ( mMethod == QgsRasterAnalysisUtils::Median && ( mInputs.size() % 2 == 0 ) )
-  )
+  if ( mMethod == QgsRasterAnalysisUtils::Mean
+       || mMethod == QgsRasterAnalysisUtils::StandardDeviation
+       || mMethod == QgsRasterAnalysisUtils::Variance
+       || ( mMethod == QgsRasterAnalysisUtils::Median && ( mInputs.size() % 2 == 0 ) ) )
   {
     if ( static_cast<int>( mDataType ) < 6 )
       mDataType = Qgis::DataType::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
@@ -427,23 +431,25 @@ QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a raster containing the cell-wise percentile value of a stack of input rasters. "
-                      "The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
-                      "At each cell location, the specified percentile is obtained using the respective value from "
-                      "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
-                      "There are three methods for percentile calculation:"
-                      "<ul> "
-                      "   <li>Nearest rank</li>"
-                      "   <li>Inclusive linear interpolation (PERCENTILE.INC)</li>"
-                      "   <li>Exclusive linear interpolation (PERCENTILE.EXC)</li>"
-                      "</ul> "
-                      "While the output value can stay the same for the nearest rank method (obtains the value that is nearest to the "
-                      "specified percentile), the linear interpolation method return unique values for different percentiles. Both interpolation "
-                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
-                      "The output raster data type will be set to the most complex data type present in the input datasets. " );
+  return QObject::tr(
+    "This algorithm generates a raster containing the cell-wise percentile value of a stack of input rasters. "
+    "The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
+    "At each cell location, the specified percentile is obtained using the respective value from "
+    "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
+    "There are three methods for percentile calculation:"
+    "<ul> "
+    "   <li>Nearest rank</li>"
+    "   <li>Inclusive linear interpolation (PERCENTILE.INC)</li>"
+    "   <li>Exclusive linear interpolation (PERCENTILE.EXC)</li>"
+    "</ul> "
+    "While the output value can stay the same for the nearest rank method (obtains the value that is nearest to the "
+    "specified percentile), the linear interpolation method return unique values for different percentiles. Both interpolation "
+    "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
+    "The output raster's extent and resolution is defined by a reference "
+    "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+    "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+    "The output raster data type will be set to the most complex data type present in the input datasets. "
+  );
 }
 
 QString QgsCellStatisticsPercentileAlgorithm::shortDescription() const
@@ -458,7 +464,14 @@ QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::crea
 
 void QgsCellStatisticsPercentileAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Nearest rank" ) << QObject::tr( "Inclusive linear interpolation (PERCENTILE.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTILE.EXC)" ), false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum(
+    u"METHOD"_s,
+    QObject::tr( "Method" ),
+    QStringList() << QObject::tr( "Nearest rank" ) << QObject::tr( "Inclusive linear interpolation (PERCENTILE.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTILE.EXC)" ),
+    false,
+    0,
+    false
+  ) );
   addParameter( new QgsProcessingParameterNumber( u"PERCENTILE"_s, QObject::tr( "Percentile" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 1.0 ) );
 }
 
@@ -572,20 +585,22 @@ QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value.\n\n"
-                      "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
-                      "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
-                      "There are two methods for percentile calculation:"
-                      "<ul> "
-                      "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
-                      "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
-                      "</ul> "
-                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
-                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
-                      "The output raster data type will always be Float32." );
+  return QObject::tr(
+    "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value.\n\n"
+    "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
+    "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+    "There are two methods for percentile calculation:"
+    "<ul> "
+    "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
+    "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
+    "</ul> "
+    "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+    "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
+    "The output raster's extent and resolution is defined by a reference "
+    "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+    "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+    "The output raster data type will always be Float32."
+  );
 }
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortDescription() const
@@ -600,7 +615,9 @@ QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFrom
 
 void QgsCellStatisticsPercentRankFromValueAlgorithm::addSpecificAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false )
+  );
   addParameter( new QgsProcessingParameterNumber( u"VALUE"_s, QObject::tr( "Value" ), Qgis::ProcessingNumberParameterType::Double, 10, false ) );
 }
 
@@ -709,21 +726,23 @@ QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters "
-                      "based on an input value raster.\n\n"
-                      "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
-                      "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
-                      "There are two methods for percentile calculation:"
-                      "<ul> "
-                      "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
-                      "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
-                      "</ul> "
-                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
-                      "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
-                      "The output raster data type will always be Float32." );
+  return QObject::tr(
+    "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters "
+    "based on an input value raster.\n\n"
+    "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
+    "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+    "There are two methods for percentile calculation:"
+    "<ul> "
+    "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
+    "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
+    "</ul> "
+    "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+    "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
+    "The output raster's extent and resolution is defined by a reference "
+    "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+    "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+    "The output raster data type will always be Float32."
+  );
 }
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortDescription() const
@@ -740,7 +759,9 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::addSpecificAlgorithmParams
 {
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_VALUE_RASTER"_s, QObject::tr( "Value raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( u"VALUE_RASTER_BAND"_s, QObject::tr( "Value raster band" ), 1, u"VALUE_LAYER"_s ) );
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Inclusive linear interpolation (PERCENTRANK.INC)" ) << QObject::tr( "Exclusive linear interpolation (PERCENTRANK.EXC)" ), false, 0, false )
+  );
 }
 
 bool QgsCellStatisticsPercentRankFromRasterAlgorithm::prepareSpecificAlgorithmParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

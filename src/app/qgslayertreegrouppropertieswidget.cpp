@@ -52,8 +52,7 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
 QgsLayerTreeGroupPropertiesWidget::~QgsLayerTreeGroupPropertiesWidget() = default;
 
 void QgsLayerTreeGroupPropertiesWidget::syncToLayer( QgsMapLayer * )
-{
-}
+{}
 
 void QgsLayerTreeGroupPropertiesWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )
 {

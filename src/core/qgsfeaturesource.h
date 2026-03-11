@@ -36,7 +36,6 @@ class QgsFeedback;
 class CORE_EXPORT QgsFeatureSource
 {
   public:
-
     virtual ~QgsFeatureSource() = default;
 
     /**
@@ -67,6 +66,7 @@ class CORE_EXPORT QgsFeatureSource
     virtual Qgis::WkbType wkbType() const = 0;
 
 #ifdef SIP_RUN
+    // clang-format off
 
     /**
      * Returns the number of features contained in the source, or -1
@@ -82,13 +82,15 @@ class CORE_EXPORT QgsFeatureSource
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    virtual long long featureCount() const = 0;
+      virtual long long featureCount() const
+      = 0;
 
     /**
      * Determines if there are any features available in the source.
@@ -167,8 +169,7 @@ class CORE_EXPORT QgsFeatureSource
      * for its ownership.
      *
      */
-    QgsVectorLayer *materialize( const QgsFeatureRequest &request,
-                                 QgsFeedback *feedback = nullptr ) SIP_FACTORY;
+    QgsVectorLayer *materialize( const QgsFeatureRequest &request, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
     /**
      * Returns an enum value representing the presence of a valid spatial index on the source,

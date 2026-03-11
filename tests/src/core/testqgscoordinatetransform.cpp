@@ -169,11 +169,15 @@ void TestQgsCoordinateTransform::equality()
 
   // explicit coordinate operation
   t1 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
-  t1.setCoordinateOperation( u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+  t1.setCoordinateOperation(
+    u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+  );
   t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
-  t2.setCoordinateOperation( u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+  t2.setCoordinateOperation(
+    u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+  );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   t2.setCoordinateOperation( t1.coordinateOperation() );
@@ -316,7 +320,8 @@ void TestQgsCoordinateTransform::constructorFlags()
   QVERIFY( !tr4.isShortCircuited() );
   QVERIFY( tr4.mIgnoreImpossible );
 
-  QgsCoordinateTransform tr5( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"ESRI:104903"_s ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
+  QgsCoordinateTransform
+    tr5( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"ESRI:104903"_s ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
   QVERIFY( !tr5.mBallparkTransformsAreAppropriate );
   // crses are from two different celestial bodies, the transform is impossible and should be short-circuited
   QVERIFY( tr5.isShortCircuited() );
@@ -330,21 +335,9 @@ void TestQgsCoordinateTransform::scaleFactor_data()
   QTest::addColumn<QgsRectangle>( "rect" );
   QTest::addColumn<double>( "factor" );
 
-  QTest::newRow( "Different map units" )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
-    << 1.1223316038381985e-5;
-  QTest::newRow( "Same map units" )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 28355 )
-    << QgsRectangle( 2560536.7, 2331787.5, 2653161.1, 2427370.4 )
-    << 0.999632;
-  QTest::newRow( "Same CRS" )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
-    << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
-    << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
-    << 1.0;
+  QTest::newRow( "Different map units" ) << QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) << QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) << QgsRectangle( 2550000, 1200000, 2550100, 1200100 ) << 1.1223316038381985e-5;
+  QTest::newRow( "Same map units" ) << QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) << QgsCoordinateReferenceSystem::fromEpsgId( 28355 ) << QgsRectangle( 2560536.7, 2331787.5, 2653161.1, 2427370.4 ) << 0.999632;
+  QTest::newRow( "Same CRS" ) << QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) << QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) << QgsRectangle( 2550000, 1200000, 2550100, 1200100 ) << 1.0;
 }
 
 void TestQgsCoordinateTransform::transform_data()
@@ -361,71 +354,156 @@ void TestQgsCoordinateTransform::transform_data()
   QTest::newRow( "To geographic" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 2545059.0 << 2393190.0 << static_cast<int>( Qgis::TransformDirection::Forward ) << 145.512750 << -37.961375 << 0.000015;
+    << 2545059.0
+    << 2393190.0
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 145.512750
+    << -37.961375
+    << 0.000015;
   QTest::newRow( "From geographic" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
-    << 145.512750 << -37.961375 << static_cast<int>( Qgis::TransformDirection::Forward ) << 2545059.0 << 2393190.0 << 1.5;
+    << 145.512750
+    << -37.961375
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 2545059.0
+    << 2393190.0
+    << 1.5;
   QTest::newRow( "From geographic to geographic" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4164 )
-    << 145.512750 << -37.961375 << static_cast<int>( Qgis::TransformDirection::Forward ) << 145.510966 << -37.961741 << 0.0001;
+    << 145.512750
+    << -37.961375
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 145.510966
+    << -37.961741
+    << 0.0001;
   QTest::newRow( "To geographic (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 145.512750 << -37.961375 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 2545059.0 << 2393190.0 << 1.5;
+    << 145.512750
+    << -37.961375
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 2545059.0
+    << 2393190.0
+    << 1.5;
   QTest::newRow( "From geographic (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
-    << 2545058.9675128171 << 2393190.0509782173 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 145.512750 << -37.961375 << 0.000015;
+    << 2545058.9675128171
+    << 2393190.0509782173
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 145.512750
+    << -37.961375
+    << 0.000015;
   QTest::newRow( "From geographic to geographic reverse" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4164 )
-    << 145.510966 << -37.961741 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 145.512750 << -37.961375 << 0.0001;
+    << 145.510966
+    << -37.961741
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 145.512750
+    << -37.961375
+    << 0.0001;
   QTest::newRow( "From LKS92/TM to Baltic93/TM" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 25884 )
-    << 725865.850 << 198519.947 << static_cast<int>( Qgis::TransformDirection::Forward ) << 725865.850 << 6198519.947 << 0.001;
+    << 725865.850
+    << 198519.947
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 725865.850
+    << 6198519.947
+    << 0.001;
   QTest::newRow( "From LKS92/TM to Baltic93/TM (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 25884 )
-    << 725865.850 << 6198519.947 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 725865.850 << 198519.947 << 0.001;
+    << 725865.850
+    << 6198519.947
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 725865.850
+    << 198519.947
+    << 0.001;
   QTest::newRow( "From LKS92/TM to WGS84" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 725865.850 << 198519.947 << static_cast<int>( Qgis::TransformDirection::Forward ) << 27.61113711 << 55.87910378 << 0.00000001;
+    << 725865.850
+    << 198519.947
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 27.61113711
+    << 55.87910378
+    << 0.00000001;
   QTest::newRow( "From LKS92/TM to WGS84 (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 27.61113711 << 55.87910378 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 725865.850 << 198519.947 << 0.001;
+    << 27.61113711
+    << 55.87910378
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 725865.850
+    << 198519.947
+    << 0.001;
   QTest::newRow( "From BNG to WGS84" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 7467023.96 << -5527971.74 << static_cast<int>( Qgis::TransformDirection::Forward ) << 51.400222 << 0.000025 << 0.4;
+    << 7467023.96
+    << -5527971.74
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 51.400222
+    << 0.000025
+    << 0.4;
   QTest::newRow( "From BNG to WGS84 2" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 246909.0 << 54108.0 << static_cast<int>( Qgis::TransformDirection::Forward ) << -4.153951 << 50.366908 << 0.4;
+    << 246909.0
+    << 54108.0
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << -4.153951
+    << 50.366908
+    << 0.4;
   QTest::newRow( "From BNG to WGS84 (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-    << 51.400222 << 0.000025 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 7467023.96 << -5527971.74 << 22000.0;
+    << 51.400222
+    << 0.000025
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 7467023.96
+    << -5527971.74
+    << 22000.0;
   QTest::newRow( "From WGS84 to BNG (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
-    << 7467023.96 << -5527971.74 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 51.400222 << 0.000025 << 0.4;
+    << 7467023.96
+    << -5527971.74
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 51.400222
+    << 0.000025
+    << 0.4;
   QTest::newRow( "From WGS84 to BNG" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
-    << 51.400222 << 0.000025 << static_cast<int>( Qgis::TransformDirection::Forward ) << 7467023.96 << -5527971.74 << 22000.0;
+    << 51.400222
+    << 0.000025
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 7467023.96
+    << -5527971.74
+    << 22000.0;
   QTest::newRow( "From BNG to 3857" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
-    << 7467023.96 << -5527971.74 << static_cast<int>( Qgis::TransformDirection::Forward ) << 5721846.47 << 2.78 << 43000.0;
+    << 7467023.96
+    << -5527971.74
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 5721846.47
+    << 2.78
+    << 43000.0;
   QTest::newRow( "From BNG to 3857 (reverse)" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
     << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
-    << 5721846.47 << 2.78 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 7467023.96 << -5527971.74 << 22000.0;
+    << 5721846.47
+    << 2.78
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 7467023.96
+    << -5527971.74
+    << 22000.0;
 }
 
 void TestQgsCoordinateTransform::transform()
@@ -465,56 +543,96 @@ void TestQgsCoordinateTransform::transformEpoch_data()
     << std::numeric_limits<double>::quiet_NaN()
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2020.0
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Forward ) << 150.0 << -30.0 << 0.0000000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 150.0
+    << -30.0
+    << 0.0000000001;
 
   QTest::newRow( "GDA2020 to ITRF at central epoch (reverse) -- no coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2020.0
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 150.0 << -30.0 << 0.0000000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 150.0
+    << -30.0
+    << 0.0000000001;
 
   QTest::newRow( "ITRF at central epoch to GDA2020 -- no coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2020.0
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Forward ) << 150.0 << -30.0 << 0.0000000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 150.0
+    << -30.0
+    << 0.0000000001;
 
   QTest::newRow( "ITRF at central epoch to GDA2020 (reverse) -- no coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2020.0
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 150.0 << -30.0 << 0.0000000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 150.0
+    << -30.0
+    << 0.0000000001;
 
   QTest::newRow( "GDA2020 to ITRF at 2030 -- coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2030.0
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Forward ) << 150.0000022212 << -29.9999950478 << 0.0000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 150.0000022212
+    << -29.9999950478
+    << 0.0000001;
 
   QTest::newRow( "GDA2020 to ITRF at 2030 (reverse) -- coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2030.0
-    << 150.0000022212 << -29.9999950478 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 150.0 << -30.0 << 0.0000001;
+    << 150.0000022212
+    << -29.9999950478
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 150.0
+    << -30.0
+    << 0.0000001;
 
   QTest::newRow( "ITRF at 2030 to GDA2020-- coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2030.0
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
-    << 150.0000022212 << -29.9999950478 << static_cast<int>( Qgis::TransformDirection::Forward ) << 150.0 << -30.0 << 0.0000001;
+    << 150.0000022212
+    << -29.9999950478
+    << static_cast<int>( Qgis::TransformDirection::Forward )
+    << 150.0
+    << -30.0
+    << 0.0000001;
 
   QTest::newRow( "ITRF at 2030 to GDA2020 (reverse) -- coordinate change expected" )
     << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
     << 2030.0
     << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
     << std::numeric_limits<double>::quiet_NaN()
-    << 150.0 << -30.0 << static_cast<int>( Qgis::TransformDirection::Reverse ) << 150.0000022212 << -29.9999950478 << 0.0000001;
+    << 150.0
+    << -30.0
+    << static_cast<int>( Qgis::TransformDirection::Reverse )
+    << 150.0000022212
+    << -29.9999950478
+    << 0.0000001;
 }
 
 void TestQgsCoordinateTransform::transformEpoch()
@@ -555,9 +673,7 @@ void TestQgsCoordinateTransform::dynamicToDynamicErrorHandler()
 {
   // test that warnings are raised when attempting a dynamic crs to dynamic crs transformation (not supported by PROJ)
   int counter = 0;
-  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [&counter]( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & ) {
-    counter++;
-  } );
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [&counter]( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & ) { counter++; } );
 
   // no warnings -- no coordinate epoch set (although we should consider a different warning in this situation!!)
   QgsCoordinateReferenceSystem src( u"EPSG:9000"_s );
@@ -663,7 +779,8 @@ void TestQgsCoordinateTransform::transformLKS()
 void TestQgsCoordinateTransform::transformContextNormalize()
 {
   // coordinate operation for WGS84 to 27700
-  const QString coordOperation = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=airy +step +proj=pop +v_3 +step +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy"_s;
+  const QString coordOperation
+    = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=airy +step +proj=pop +v_3 +step +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy"_s;
   QgsCoordinateTransformContext context;
   context.addCoordinateOperation( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 27700 ), coordOperation );
 
@@ -739,8 +856,7 @@ void TestQgsCoordinateTransform::transformErrorOnePoint()
     QVERIFY( false );
   }
   catch ( QgsCsException & )
-  {
-  }
+  {}
 }
 
 void TestQgsCoordinateTransform::testDeprecated4240to4326()
@@ -783,7 +899,8 @@ void TestQgsCoordinateTransform::testDeprecated4240to4326()
   QGSCOMPARENEAR( p3.y(), 7.502624, 0.000001 );
 
   // now force use of deprecated transform
-  const QString deprecatedProj = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=209 +y=818 +z=290 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"_s;
+  const QString deprecatedProj
+    = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=209 +y=818 +z=290 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"_s;
   context.addCoordinateOperation( src, dest, deprecatedProj );
 
   const QgsCoordinateTransform deprecatedTransform( src, dest, context );
@@ -823,14 +940,19 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
   const QgsCoordinateTransform ct( ss, dd, QgsCoordinateTransformContext() );
   QVERIFY( ct.isValid() );
   QgsDebugMsgLevel( ct.instantiatedCoordinateOperationDetails().proj, 1 );
-  QCOMPARE( ct.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline "
-                                                                              "+step +proj=unitconvert +xy_in=deg +xy_out=rad "
-                                                                              "+step +proj=push +v_3 "
-                                                                              "+step +proj=cart +ellps=GRS80 "
-                                                                              "+step +proj=helmert +x=1 +y=2 +z=3 +rx=4 +ry=5 +rz=6 +s=7 +convention=position_vector "
-                                                                              "+step +inv +proj=cart +ellps=WGS84 "
-                                                                              "+step +proj=pop +v_3 "
-                                                                              "+step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QCOMPARE(
+    ct.instantiatedCoordinateOperationDetails().proj,
+    QStringLiteral(
+      "+proj=pipeline "
+      "+step +proj=unitconvert +xy_in=deg +xy_out=rad "
+      "+step +proj=push +v_3 "
+      "+step +proj=cart +ellps=GRS80 "
+      "+step +proj=helmert +x=1 +y=2 +z=3 +rx=4 +ry=5 +rz=6 +s=7 +convention=position_vector "
+      "+step +inv +proj=cart +ellps=WGS84 "
+      "+step +proj=pop +v_3 "
+      "+step +proj=unitconvert +xy_in=rad +xy_out=deg"
+    )
+  );
 }
 
 void TestQgsCoordinateTransform::testTransformationIsPossible()

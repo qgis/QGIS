@@ -55,7 +55,8 @@ QString QgsConcaveHullAlgorithm::groupId() const
 
 QString QgsConcaveHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes the concave hull covering all features from an input point layer." ) + u"\n\n"_s
+  return QObject::tr( "This algorithm computes the concave hull covering all features from an input point layer." )
+         + u"\n\n"_s
          + QObject::tr( "See the 'Concave hull (by feature)' algorithm for a concave hull calculation which covers individual features from a layer." );
 }
 

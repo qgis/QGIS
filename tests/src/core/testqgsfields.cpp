@@ -64,20 +64,16 @@ class TestQgsFields : public QObject
 };
 
 void TestQgsFields::initTestCase()
-{
-}
+{}
 
 void TestQgsFields::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFields::init()
-{
-}
+{}
 
 void TestQgsFields::cleanup()
-{
-}
+{}
 
 void TestQgsFields::create()
 {
@@ -675,11 +671,7 @@ void TestQgsFields::appendList()
   QCOMPARE( fields.indexFromName( u"field3"_s ), 2 );
 
   // should be rejected, duplicate field name
-  QVERIFY( !fields.append(
-    QList<QgsField> {
-      QgsField( u"field1"_s, QMetaType::Type::QString )
-    }
-  ) );
+  QVERIFY( !fields.append( QList<QgsField> { QgsField( u"field1"_s, QMetaType::Type::QString ) } ) );
 
   QCOMPARE( fields.size(), 3 );
 

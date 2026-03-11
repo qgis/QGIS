@@ -27,8 +27,7 @@ QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
   : mSkyboxType( other.mSkyboxType )
   , mPanoramicTexturePath( other.mPanoramicTexturePath )
   , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
-{
-}
+{}
 
 QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
 {

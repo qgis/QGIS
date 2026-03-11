@@ -32,7 +32,8 @@ class TestQgsLayoutPolyline : public QgsTest
 
   public:
     TestQgsLayoutPolyline()
-      : QgsTest( u"Layout Polyline Tests"_s, u"composer_utils"_s ) {}
+      : QgsTest( u"Layout Polyline Tests"_s, u"composer_utils"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

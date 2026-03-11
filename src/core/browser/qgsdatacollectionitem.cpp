@@ -31,10 +31,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
-    const QString &name,
-    const QString &path,
-    const QString &providerKey )
+QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Collection, parent, name, path, providerKey )
 {
   mCapabilities = Qgis::BrowserItemCapability::Fertile;
@@ -63,16 +60,14 @@ QIcon QgsDataCollectionItem::iconDataCollection()
 
 QIcon QgsDataCollectionItem::openDirIcon( const QColor &fillColor, const QColor &strokeColor )
 {
-  return fillColor.isValid() || strokeColor.isValid()
-         ? QgsApplication::getThemeIcon( u"/mIconFolderOpenParams.svg"_s, fillColor, strokeColor )
-         : QgsApplication::getThemeIcon( u"/mIconFolderOpen.svg"_s );
+  return fillColor.isValid() || strokeColor.isValid() ? QgsApplication::getThemeIcon( u"/mIconFolderOpenParams.svg"_s, fillColor, strokeColor )
+                                                      : QgsApplication::getThemeIcon( u"/mIconFolderOpen.svg"_s );
 }
 
 QIcon QgsDataCollectionItem::homeDirIcon( const QColor &fillColor, const QColor &strokeColor )
 {
-  return fillColor.isValid() || strokeColor.isValid()
-         ? QgsApplication::getThemeIcon( u"/mIconFolderHomeParams.svg"_s, fillColor, strokeColor )
-         : QgsApplication::getThemeIcon( u"/mIconFolderHome.svg"_s );
+  return fillColor.isValid() || strokeColor.isValid() ? QgsApplication::getThemeIcon( u"/mIconFolderHomeParams.svg"_s, fillColor, strokeColor )
+                                                      : QgsApplication::getThemeIcon( u"/mIconFolderHome.svg"_s );
 }
 
 QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection() const
@@ -80,7 +75,7 @@ QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection
   const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
 
-  if ( ! md )
+  if ( !md )
   {
     return nullptr;
   }
@@ -115,10 +110,5 @@ QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection
 
 QIcon QgsDataCollectionItem::iconDir( const QColor &fillColor, const QColor &strokeColor )
 {
-  return fillColor.isValid() || strokeColor.isValid()
-         ? QgsApplication::getThemeIcon( u"/mIconFolderParams.svg"_s, fillColor, strokeColor )
-         : QgsApplication::getThemeIcon( u"/mIconFolder.svg"_s );
+  return fillColor.isValid() || strokeColor.isValid() ? QgsApplication::getThemeIcon( u"/mIconFolderParams.svg"_s, fillColor, strokeColor ) : QgsApplication::getThemeIcon( u"/mIconFolder.svg"_s );
 }
-
-
-

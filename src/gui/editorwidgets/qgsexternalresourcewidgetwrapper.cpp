@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
   , mMessageBar( messageBar )
-{
-}
+{}
 
 QVariant QgsExternalResourceWidgetWrapper::value() const
 {
@@ -180,7 +179,10 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     mQgsWidget->setStorageType( cfg.value( u"StorageType"_s ).toString() );
     mQgsWidget->setStorageAuthConfigId( cfg.value( u"StorageAuthConfigId"_s ).toString() );
 
-    mQgsWidget->fileWidget()->setStorageUrlExpression( mPropertyCollection.isActive( QgsWidgetWrapper::Property::StorageUrl ) ? mPropertyCollection.property( QgsWidgetWrapper::Property::StorageUrl ).asExpression() : QgsExpression::quotedValue( cfg.value( u"StorageUrl"_s ).toString() ) );
+    mQgsWidget->fileWidget()->setStorageUrlExpression(
+      mPropertyCollection.isActive( QgsWidgetWrapper::Property::StorageUrl ) ? mPropertyCollection.property( QgsWidgetWrapper::Property::StorageUrl ).asExpression()
+                                                                             : QgsExpression::quotedValue( cfg.value( u"StorageUrl"_s ).toString() )
+    );
 
     updateFileWidgetExpressionContext();
 

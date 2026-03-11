@@ -30,7 +30,6 @@ new image, depending on which is faster for the particular operation.
 #include "qgsimageoperation.h"
 %End
   public:
-
     enum GrayscaleMode /BaseType=IntEnum/
     {
       GrayscaleLightness,
@@ -72,8 +71,7 @@ Alter the brightness or contrast of a QImage.
                  (since QGIS 3.22)
 %End
 
-    static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
-                                     double colorizeStrength = 1.0, QgsFeedback *feedback = 0 );
+    static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(), double colorizeStrength = 1.0, QgsFeedback *feedback = 0 );
 %Docstring
 Alter the hue or saturation of a QImage.
 
@@ -111,14 +109,13 @@ specified color.
 
     struct DistanceTransformProperties
     {
+        bool shadeExterior;
 
-      bool shadeExterior;
+        bool useMaxDistance;
 
-      bool useMaxDistance;
+        double spread;
 
-      double spread;
-
-      QgsColorRamp *ramp;
+        QgsColorRamp *ramp;
     };
 
     static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties, QgsFeedback *feedback = 0 );
@@ -213,7 +210,6 @@ Crop any transparent border from around an image.
       public:
       public:
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

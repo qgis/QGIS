@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-{
-}
+{}
 
 void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {

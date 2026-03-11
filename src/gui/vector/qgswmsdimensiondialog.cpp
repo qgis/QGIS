@@ -137,7 +137,8 @@ QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() cons
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(), mEndFieldComboBox->currentField(), mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(), mDefaultDisplayComboBox->currentData().toInt(), refValue );
+  return QgsMapLayerServerProperties::
+    WmsDimensionInfo( name, mFieldComboBox->currentField(), mEndFieldComboBox->currentField(), mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(), mDefaultDisplayComboBox->currentData().toInt(), refValue );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )

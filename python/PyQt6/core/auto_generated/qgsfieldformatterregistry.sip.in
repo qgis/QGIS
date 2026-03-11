@@ -23,7 +23,6 @@ from :py:func:`QgsApplication.fieldFormatterRegistry()`.
 #include "qgsfieldformatterregistry.h"
 %End
   public:
-
     explicit QgsFieldFormatterRegistry( QObject *parent /TransferThis/ = 0 );
 %Docstring
 You should not normally need to create your own field formatter

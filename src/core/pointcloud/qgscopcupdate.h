@@ -37,14 +37,13 @@
 class CORE_EXPORT QgsCopcUpdate
 {
   public:
-
     //! Keeps information how points of a single chunk has been modified
     struct UpdatedChunk
     {
-      //! Number of points in the updated chunk
-      int32_t pointCount;
-      //! Data of the chunk (compressed already with LAZ compressor)
-      QByteArray chunkData;
+        //! Number of points in the updated chunk
+        int32_t pointCount;
+        //! Data of the chunk (compressed already with LAZ compressor)
+        QByteArray chunkData;
     };
 
     //! Reads input COPC file and initializes all the members
@@ -63,10 +62,7 @@ class CORE_EXPORT QgsCopcUpdate
      * a null pointer, it will be set to an error message in case
      * of failure (i.e. FALSE is returned).
      */
-    static bool writeUpdatedFile( const QString &inputFilename,
-                                  const QString &outputFilename,
-                                  const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks,
-                                  QString *errorMessage = nullptr );
+    static bool writeUpdatedFile( const QString &inputFilename, const QString &outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks, QString *errorMessage = nullptr );
 
   private:
     bool readHeader();

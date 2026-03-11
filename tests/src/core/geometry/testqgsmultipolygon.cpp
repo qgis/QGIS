@@ -88,7 +88,13 @@ void TestQgsMultiPolygon::assignment()
 
   QgsPolygon part;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
+  );
   part.setExteriorRing( ring.clone() );
 
   QgsMultiPolygon mp3;
@@ -115,7 +121,13 @@ void TestQgsMultiPolygon::clone()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
   mp.addGeometry( part.clone() );
@@ -141,7 +153,13 @@ void TestQgsMultiPolygon::copy()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
   mp1.addGeometry( part.clone() );
@@ -164,7 +182,13 @@ void TestQgsMultiPolygon::clear()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
   mp.addGeometry( part.clone() );
@@ -279,7 +303,13 @@ void TestQgsMultiPolygon::addGeometry()
   QCOMPARE( exteriorRing->pointN( 3 ), QgsPoint( 1, 10 ) );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 32, 41, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 42, 61, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 32, 41, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 42, 61, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -336,7 +366,13 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   QgsLineString ring;
 
   //initial adding of geometry should set z/m type
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 20, 21, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 30, 31, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 20, 21, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 30, 31, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -350,7 +386,13 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   mp.clear();
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 20, 21, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 30, 31, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 20, 21, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 30, 31, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -363,7 +405,13 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   mp.clear();
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 ) << QgsPoint( Qgis::WkbType::PointZM, 20, 21, 3, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 30, 31, 3, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 )
+    << QgsPoint( Qgis::WkbType::PointZM, 20, 21, 3, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 30, 31, 3, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -411,7 +459,13 @@ void TestQgsMultiPolygon::addGeometryZ()
   QCOMPARE( exteriorRing->pointN( 3 ), QgsPoint( 2, 20, 0 ) );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 9, 65, 0, 7 ) << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 )
+    << QgsPoint( Qgis::WkbType::PointM, 9, 65, 0, 7 )
+    << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -436,7 +490,13 @@ void TestQgsMultiPolygon::addGeometryM()
 
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygon );
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 9, 76, 0, 8 ) << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 )
+    << QgsPoint( Qgis::WkbType::PointM, 9, 76, 0, 8 )
+    << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -490,14 +550,22 @@ void TestQgsMultiPolygon::addGeometryZM()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 9 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 9 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonZM );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 13, 27 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 13, 27 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -522,7 +590,13 @@ void TestQgsMultiPolygon::addGeometryZM()
   QCOMPARE( exteriorRing->pointN( 3 ), QgsPoint( Qgis::WkbType::PointZM, 7, 17, 0, 0 ) );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 ) << QgsPoint( Qgis::WkbType::PointZ, 83, 83, 8 ) << QgsPoint( Qgis::WkbType::PointZ, 93, 85, 10 ) << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 )
+    << QgsPoint( Qgis::WkbType::PointZ, 83, 83, 8 )
+    << QgsPoint( Qgis::WkbType::PointZ, 93, 85, 10 )
+    << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -539,7 +613,13 @@ void TestQgsMultiPolygon::addGeometryZM()
   QCOMPARE( exteriorRing->pointN( 3 ), QgsPoint( Qgis::WkbType::PointZM, 77, 87, 7, 0 ) );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 ) << QgsPoint( Qgis::WkbType::PointM, 183, 183, 0, 11 ) << QgsPoint( Qgis::WkbType::PointM, 185, 193, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 )
+    << QgsPoint( Qgis::WkbType::PointM, 183, 183, 0, 11 )
+    << QgsPoint( Qgis::WkbType::PointM, 185, 193, 0, 13 )
+    << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -578,7 +658,9 @@ void TestQgsMultiPolygon::insertGeometry()
 
   QgsPolygon part;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 7, 21 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 7, 21 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+  );
   part.setExteriorRing( ring.clone() );
 
   mp.insertGeometry( part.clone(), 0 );
@@ -860,7 +942,13 @@ void TestQgsMultiPolygon::toCurveType()
 
   QgsPolygon part;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
+    << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
   mp.addGeometry( part.clone() );
@@ -881,12 +969,16 @@ void TestQgsMultiPolygon::toFromWKB()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 9, 27 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 9, 27 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 ) << QgsPoint( Qgis::WkbType::Point, 43, 43 ) << QgsPoint( Qgis::WkbType::Point, 29, 39 ) << QgsPoint( Qgis::WkbType::Point, 27, 37 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 ) << QgsPoint( Qgis::WkbType::Point, 43, 43 ) << QgsPoint( Qgis::WkbType::Point, 29, 39 ) << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
@@ -924,12 +1016,20 @@ void TestQgsMultiPolygon::toFromWkbZM()
   QgsLineString ring;
 
   //parts with Z
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 13, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 27, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 13, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 27, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 43, 43, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 87, 54, 7 ) << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 43, 43, 5 )
+    << QgsPoint( Qgis::WkbType::PointZ, 87, 54, 7 )
+    << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
@@ -948,12 +1048,24 @@ void TestQgsMultiPolygon::toFromWkbZM()
   mp2.clear();
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 3, 13, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 9, 21, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 )
+    << QgsPoint( Qgis::WkbType::PointM, 3, 13, 0, 4 )
+    << QgsPoint( Qgis::WkbType::PointM, 9, 21, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 43, 43, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 37, 31, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 )
+    << QgsPoint( Qgis::WkbType::PointM, 43, 43, 0, 5 )
+    << QgsPoint( Qgis::WkbType::PointM, 37, 31, 0, 3 )
+    << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
@@ -971,12 +1083,24 @@ void TestQgsMultiPolygon::toFromWkbZM()
   mp2.clear();
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 19, 13, 5, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+    << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 19, 13, 5, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 ) << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+    << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
@@ -996,12 +1120,24 @@ void TestQgsMultiPolygon::toFromWKT()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 13, 19, 3, 10 ) << QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+    << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 )
+    << QgsPoint( Qgis::WkbType::PointZM, 13, 19, 3, 10 )
+    << QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 17, 49, 31, 53 ) << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+    << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+    << QgsPoint( Qgis::WkbType::PointZM, 17, 49, 31, 53 )
+    << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 )
+  );
   part.setExteriorRing( ring.clone() );
   mp1.addGeometry( part.clone() );
 
@@ -1029,12 +1165,16 @@ void TestQgsMultiPolygon::exportImport()
   QgsPolygon part;
   QgsLineString ring;
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 7, 21 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 ) << QgsPoint( Qgis::WkbType::Point, 3, 13 ) << QgsPoint( Qgis::WkbType::Point, 7, 21 ) << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 ) << QgsPoint( Qgis::WkbType::Point, 43, 43 ) << QgsPoint( Qgis::WkbType::Point, 41, 39 ) << QgsPoint( Qgis::WkbType::Point, 27, 37 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 ) << QgsPoint( Qgis::WkbType::Point, 43, 43 ) << QgsPoint( Qgis::WkbType::Point, 41, 39 ) << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -1042,7 +1182,9 @@ void TestQgsMultiPolygon::exportImport()
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( u"<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13 7,21 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43 41,39 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>"_s );
+  QString expectedSimpleGML2(
+    u"<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13 7,21 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43 41,39 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>"_s
+  );
   QString res = elemToString( mp.asGml2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
 
@@ -1050,7 +1192,9 @@ void TestQgsMultiPolygon::exportImport()
   QGSCOMPAREGML( elemToString( QgsMultiPolygon().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( u"<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>"_s );
+  QString expectedSimpleGML3(
+    u"<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>"_s
+  );
   res = elemToString( mp.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
 
@@ -1062,23 +1206,36 @@ void TestQgsMultiPolygon::exportImport()
   res = mp.asJson( 1 );
   QCOMPARE( res, expectedSimpleJson );
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 17, 27 ) << QgsPoint( Qgis::WkbType::Point, 18, 28 ) << QgsPoint( Qgis::WkbType::Point, 19, 37 ) << QgsPoint( Qgis::WkbType::Point, 17, 27 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 17, 27 ) << QgsPoint( Qgis::WkbType::Point, 18, 28 ) << QgsPoint( Qgis::WkbType::Point, 19, 37 ) << QgsPoint( Qgis::WkbType::Point, 17, 27 )
+  );
   part.addInteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
-  QString expectedJsonWithRings( "{\"coordinates\":[[[[7.0,17.0],[3.0,13.0],[7.0,21.0],[7.0,17.0]]],[[[27.0,37.0],[43.0,43.0],[41.0,39.0],[27.0,37.0]]],[[[27.0,37.0],[43.0,43.0],[41.0,39.0],[27.0,37.0]],[[17.0,27.0],[18.0,28.0],[19.0,37.0],[17.0,27.0]]]],\"type\":\"MultiPolygon\"}" );
+  QString expectedJsonWithRings(
+    "{\"coordinates\":[[[[7.0,17.0],[3.0,13.0],[7.0,21.0],[7.0,17.0]]],[[[27.0,37.0],[43.0,43.0],[41.0,39.0],[27.0,37.0]]],[[[27.0,37.0],[43.0,43.0],[41.0,39.0],[27.0,37.0]],[[17.0,27.0],[18.0,28.0],"
+    "[19.0,37.0],[17.0,27.0]]]],\"type\":\"MultiPolygon\"}"
+  );
   res = mp.asJson( 1 );
   QCOMPARE( res, expectedJsonWithRings );
 
   mp.clear();
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 3 / 5.0, 13 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 8 / 3.0, 27 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 ) );
+  ring.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 3 / 5.0, 13 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 8 / 3.0, 27 / 3.0 )
+    << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
   part.clear();
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 43 / 41.0, 43 / 42.0 ) << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 ) );
+  ring.setPoints(
+    QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 ) << QgsPoint( Qgis::WkbType::Point, 43 / 41.0, 43 / 42.0 ) << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 )
+  );
   part.setExteriorRing( ring.clone() );
   mp.addGeometry( part.clone() );
 
@@ -1087,17 +1244,30 @@ void TestQgsMultiPolygon::exportImport()
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2prec3( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 0.6,4.333 2.667,9 2.333,5.667</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 1.049,1.024 9,4.111</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" );
+  QString expectedGML2prec3(
+    "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 "
+    "0.6,4.333 2.667,9 2.333,5.667</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs "
+    "xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 1.049,1.024 "
+    "9,4.111</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>"
+  );
   res = elemToString( mp.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3prec3( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333 2.667 9 2.333 5.667</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024 9 4.111</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>" );
+  QString expectedGML3prec3(
+    "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333 "
+    "2.667 9 2.333 5.667</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList "
+    "xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024 9 4.111</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>"
+  );
   res = elemToString( mp.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
   //asKML
-  QString expectedKmlPrec3( "<MultiGeometry><Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>2.333,5.667,0 0.6,4.333,0 2.667,9,0 2.333,5.667,0</coordinates></LinearRing></outerBoundaryIs></Polygon><Polygon><outerBoundaryIs><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>9,4.111,0 1.049,1.024,0 9,4.111,0</coordinates></LineString></outerBoundaryIs></Polygon></MultiGeometry>" );
+  QString expectedKmlPrec3(
+    "<MultiGeometry><Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>2.333,5.667,0 0.6,4.333,0 2.667,9,0 "
+    "2.333,5.667,0</coordinates></LinearRing></outerBoundaryIs></Polygon><Polygon><outerBoundaryIs><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>9,4.111,0 1.049,1.024,0 "
+    "9,4.111,0</coordinates></LineString></outerBoundaryIs></Polygon></MultiGeometry>"
+  );
   QCOMPARE( mp.asKml( 3 ), expectedKmlPrec3 );
 }
 

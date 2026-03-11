@@ -236,7 +236,8 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
       const QUrl picUrl = QUrl::fromUserInput( picture->evaluatedPath() );
       const bool isLocalFile = picUrl.isLocalFile();
 
-      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name, isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
+      res.detailedDescription
+        = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name, isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
       mResults.append( res );
     }
   }

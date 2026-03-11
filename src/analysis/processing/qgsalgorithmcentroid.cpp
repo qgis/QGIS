@@ -65,8 +65,10 @@ QgsFeatureSink::SinkFlags QgsCentroidAlgorithm::sinkFlags() const
 
 QString QgsCentroidAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new point layer with points representing the centroid of the geometries in an input layer.\n\n"
-                      "The attributes associated to each point in the output layer are the same ones associated to the original features." );
+  return QObject::tr(
+    "This algorithm creates a new point layer with points representing the centroid of the geometries in an input layer.\n\n"
+    "The attributes associated to each point in the output layer are the same ones associated to the original features."
+  );
 }
 
 QString QgsCentroidAlgorithm::shortDescription() const
@@ -86,11 +88,7 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 
 void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
-  auto allParts = std::make_unique<QgsProcessingParameterBoolean>(
-    u"ALL_PARTS"_s,
-    QObject::tr( "Create centroid for each part" ),
-    false
-  );
+  auto allParts = std::make_unique<QgsProcessingParameterBoolean>( u"ALL_PARTS"_s, QObject::tr( "Create centroid for each part" ), false );
   allParts->setIsDynamic( true );
   allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( u"All parts"_s, QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( u"INPUT"_s );

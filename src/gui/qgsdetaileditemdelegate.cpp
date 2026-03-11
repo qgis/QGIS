@@ -68,10 +68,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter, const QStyleOptionVi
 }
 
 
-QSize QgsDetailedItemDelegate::sizeHint(
-  const QStyleOptionViewItem &option,
-  const QModelIndex &index
-) const
+QSize QgsDetailedItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   if ( index.data( Qt::UserRole ).userType() == qMetaTypeId<QgsDetailedItemData>() )
   {

@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   , mGapThresholdMapUnits( configuration.value( u"gapThreshold"_s ).toDouble() )
-{
-}
+{}
 
 void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
 {
@@ -58,7 +57,9 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
   }
 }
 
-QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
@@ -453,9 +454,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
 QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
-  QStringList methods = QStringList()
-                        << tr( "Add gap area to neighboring polygon with longest shared edge" )
-                        << tr( "No action" );
+  QStringList methods = QStringList() << tr( "Add gap area to neighboring polygon with longest shared edge" ) << tr( "No action" );
   if ( mAllowedGapsSource )
     methods << tr( "Add gap to allowed exceptions" );
 

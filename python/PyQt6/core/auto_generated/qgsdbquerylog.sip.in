@@ -21,7 +21,6 @@ Encapsulates a logged database query.
 #include "qgsdbquerylog.h"
 %End
   public:
-
     QgsDatabaseQueryLogEntry( const QString &query = QString() );
 %Docstring
 Constructor for QgsDatabaseQueryLogEntry.
@@ -52,7 +51,7 @@ Constructor for QgsDatabaseQueryLogEntry.
 };
 
 
-class QgsDatabaseQueryLog: QObject
+class QgsDatabaseQueryLog : QObject
 {
 %Docstring(signature="appended")
 Handles logging of database queries.
@@ -77,7 +76,6 @@ Example
 #include "qgsdbquerylog.h"
 %End
   public:
-
     QgsDatabaseQueryLog( QObject *parent = 0 );
 %Docstring
 Creates a new query log.

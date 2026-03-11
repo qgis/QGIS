@@ -10,8 +10,7 @@
 
 
 
-template<T>
-class QgsMapToolEditBlankSegments;
+template<T> class QgsMapToolEditBlankSegments;
 
 class QgsSymbolLayerWidget : QWidget, QgsExpressionContextGenerator
 {

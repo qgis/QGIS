@@ -60,8 +60,7 @@ QgsMapToolShapeAbstract *QgsMapToolShapeEllipseFociMetadata::factory( QgsMapTool
 
 QgsMapToolShapeEllipseFoci::QgsMapToolShapeEllipseFoci( QgsMapToolCapture *parentTool )
   : QgsMapToolShapeEllipseAbstract( QgsMapToolShapeEllipseFociMetadata::TOOL_ID, parentTool )
-{
-}
+{}
 
 bool QgsMapToolShapeEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {

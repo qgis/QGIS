@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::iconName( QgsMapLayer *layer )
 {

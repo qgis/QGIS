@@ -22,7 +22,6 @@ An annotation item which renders a fill symbol for a polygon geometry.
 #include "qgsannotationpolygonitem.h"
 %End
   public:
-
     QgsAnnotationPolygonItem( QgsCurvePolygon *polygon /Transfer/ );
 %Docstring
 Constructor for QgsAnnotationPolygonItem, with the specified ``polygon``

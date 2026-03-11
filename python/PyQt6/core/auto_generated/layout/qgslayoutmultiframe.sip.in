@@ -12,7 +12,7 @@
 
 
 
-class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
+class QgsLayoutMultiFrame : QgsLayoutObject, QgsLayoutUndoObjectInterface
 {
 %Docstring(signature="appended")
 Abstract base class for layout items with the ability to distribute the
@@ -397,7 +397,6 @@ must be redrawn.
 %End
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores multiframe state within an XML DOM element.

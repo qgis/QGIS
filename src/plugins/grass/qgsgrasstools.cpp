@@ -232,8 +232,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   int line, column;
   if ( !doc.setContent( &file, &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     file.close();

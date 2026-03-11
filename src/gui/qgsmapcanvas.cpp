@@ -64,6 +64,7 @@ email                : sherman at mrcc.com
 #include "qgsruntimeprofiler.h"
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsstatusbar.h"
 #include "qgssvgcache.h"
@@ -210,13 +211,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsMapCanvas::redrawAllLayers );
 
   //segmentation parameters
-  QgsSettings settings;
-  double segmentationTolerance = settings.value( u"qgis/segmentationTolerance"_s, "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle );
-  mSettings.setSegmentationTolerance( segmentationTolerance );
-  mSettings.setSegmentationToleranceType( toleranceType );
+  mSettings.setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
+  mSettings.setSegmentationToleranceType( QgsSettingsRegistryGui::settingsSegmentationToleranceType->value() );
 
-  mWheelZoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  mWheelZoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
@@ -527,7 +525,8 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   QgsRectangle rect;
   if ( !mSettings.visibleExtent().isEmpty() && crs.isSameCelestialBody( mSettings.destinationCrs() ) )
   {
-    const QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance(), Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
+    const QgsCoordinateTransform
+      transform( mSettings.destinationCrs(), crs, QgsProject::instance(), Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
@@ -721,16 +720,16 @@ QgsExpressionContext QgsMapCanvas::createExpressionContext() const
 {
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-                    << QgsExpressionContextUtils::atlasScope( nullptr )
-                    << QgsExpressionContextUtils::mapSettingsScope( mSettings );
+  expressionContext
+    << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+    << QgsExpressionContextUtils::atlasScope( nullptr )
+    << QgsExpressionContextUtils::mapSettingsScope( mSettings );
   if ( QgsExpressionContextScopeGenerator *generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mController ) )
   {
     expressionContext << generator->createExpressionContextScope();
   }
-  expressionContext << defaultExpressionContextScope()
-                    << new QgsExpressionContextScope( mExpressionContextScope );
+  expressionContext << defaultExpressionContextScope() << new QgsExpressionContextScope( mExpressionContextScope );
   return expressionContext;
 }
 
@@ -782,10 +781,7 @@ QList<QgsMapLayer *> filterLayersForRender( const QList<QgsMapLayer *> &layers )
   }
 
   // remove any invalid layers
-  filteredLayers.erase( std::remove_if( filteredLayers.begin(), filteredLayers.end(), []( QgsMapLayer *layer ) {
-                          return !layer || !layer->isValid();
-                        } ),
-                        filteredLayers.end() );
+  filteredLayers.erase( std::remove_if( filteredLayers.begin(), filteredLayers.end(), []( QgsMapLayer *layer ) { return !layer || !layer->isValid(); } ), filteredLayers.end() );
 
   return filteredLayers;
 }
@@ -1279,8 +1275,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       copyCoordinateMenu->addAction( copyCoordinateAction );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   };
 
   addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), mSettings.destinationCrs() );
@@ -1519,8 +1514,7 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
 
   // build the world file name
   QString outputSuffix = myInfo.suffix();
-  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.completeBaseName() + '.'
-                            + outputSuffix.at( 0 ) + outputSuffix.at( myInfo.suffix().size() - 1 ) + 'w';
+  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.completeBaseName() + '.' + outputSuffix.at( 0 ) + outputSuffix.at( myInfo.suffix().size() - 1 ) + 'w';
   QFile myWorldFile( myWorldFileName );
   if ( !myWorldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
   {
@@ -1651,10 +1645,7 @@ void QgsMapCanvas::setCenter( const QgsPointXY &center )
   const QgsRectangle r = mapSettings().extent();
   const double xMin = center.x() - r.width() / 2.0;
   const double yMin = center.y() - r.height() / 2.0;
-  const QgsRectangle rect(
-    xMin, yMin,
-    xMin + r.width(), yMin + r.height()
-  );
+  const QgsRectangle rect( xMin, yMin, xMin + r.width(), yMin + r.height() );
   if ( !rect.isEmpty() )
   {
     setExtent( rect, true );
@@ -1979,7 +1970,7 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
 {
   // no selected features, only one selected point feature
   //or two point features with the same x- or y-coordinates
-  if ( rect.isEmpty() )
+  if ( rect.isEmpty() || !QgsMapSettingsUtils::isValidExtent( rect ) )
   {
     // zoom in
     QgsPointXY c = rect.center();
@@ -2550,8 +2541,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      if ( mMapTool->flags() & QgsMapTool::AllowZoomRect && e->button() == Qt::LeftButton
-           && e->modifiers() & Qt::ShiftModifier )
+      if ( mMapTool->flags() & QgsMapTool::AllowZoomRect && e->button() == Qt::LeftButton && e->modifiers() & Qt::ShiftModifier )
       {
         beginZoomRect( e->pos() );
         return;
@@ -2699,8 +2689,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
-  QgsSettings settings;
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? e->angleDelta().y() < 0 : e->angleDelta().y() > 0;
   double zoomFactor = zoomIn ? 1. / zoomInFactor() : zoomOutFactor();
 
@@ -3621,8 +3610,7 @@ void QgsMapCanvas::startPreviewJob( int number )
 
     previewLayers << layer;
   }
-  if ( ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer )
-       && QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
+  if ( ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer ) && QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
   {
     previewLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
   }
@@ -3655,9 +3643,7 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimer.setSingleShot( true );
   mPreviewTimer.setInterval( Qgis::PREVIEW_JOB_DELAY_MS );
   disconnect( mPreviewTimerConnection );
-  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [this, number]() {
-    startPreviewJob( number );
-  } );
+  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [this, number]() { startPreviewJob( number ); } );
   mPreviewTimer.start();
 }
 

@@ -48,7 +48,9 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double latMin, double latMax, int lonSliceCount, int latSliceCount, const QgsCoordinateTransform &globeCrsToLatLon, QImage textureQImage, QString textureDebugText )
+static Qt3DCore::QEntity *makeGlobeMesh(
+  double lonMin, double lonMax, double latMin, double latMax, int lonSliceCount, int latSliceCount, const QgsCoordinateTransform &globeCrsToLatLon, QImage textureQImage, QString textureDebugText
+)
 {
   double lonRange = lonMax - lonMin;
   double latRange = latMax - latMin;
@@ -265,8 +267,7 @@ QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureG
   : QgsChunkLoader( node )
   , mTextureGenerator( textureGenerator )
   , mGlobeCrsToLatLon( globeCrsToLatLon )
-{
-}
+{}
 
 void QgsGlobeChunkLoader::start()
 {
@@ -383,10 +384,11 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
     double d2 = mDistanceArea.measureLine( QgsPointXY( lonMin, latMin ), QgsPointXY( lonMin, latMin + ( latMax - latMin ) / 2 ) );
     float error = static_cast<float>( std::max( d1, d2 ) ) / static_cast<float>( mMapSettings->terrainSettings()->mapTileResolution() );
 
-    children << new QgsChunkNode( cid1, globeNodeIdToBox3D( cid1, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid2, globeNodeIdToBox3D( cid2, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid3, globeNodeIdToBox3D( cid3, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid4, globeNodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
+    children
+      << new QgsChunkNode( cid1, globeNodeIdToBox3D( cid1, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid2, globeNodeIdToBox3D( cid2, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid3, globeNodeIdToBox3D( cid3, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid4, globeNodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
   }
 
   return children;
@@ -398,8 +400,7 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
 QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
-{
-}
+{}
 
 void QgsGlobeMapUpdateJob::start()
 {
@@ -438,15 +439,9 @@ void QgsGlobeMapUpdateJob::cancel()
 class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 {
   public:
-    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings )
-    {
-      mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings );
-    }
+    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings ) { mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings ); }
 
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
-    {
-      return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk );
-    }
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk ); }
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
@@ -459,9 +454,7 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
-  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] {
-    setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() );
-  } );
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] { setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() ); } );
   connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsGlobeEntity::onLayersChanged );

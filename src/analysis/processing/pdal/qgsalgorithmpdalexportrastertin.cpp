@@ -80,10 +80,12 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
 
   createCommonParameters();
 
-  auto paramOriginX = std::make_unique<QgsProcessingParameterNumber>( u"ORIGIN_X"_s, QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto paramOriginX
+    = std::make_unique<QgsProcessingParameterNumber>( u"ORIGIN_X"_s, QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginX.release() );
-  auto paramOriginY = std::make_unique<QgsProcessingParameterNumber>( u"ORIGIN_Y"_s, QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
+  auto paramOriginY
+    = std::make_unique<QgsProcessingParameterNumber>( u"ORIGIN_Y"_s, QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
   paramOriginY->setFlags( paramOriginY->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginY.release() );
 

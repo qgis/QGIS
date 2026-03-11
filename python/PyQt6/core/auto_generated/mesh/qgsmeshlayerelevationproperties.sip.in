@@ -24,7 +24,6 @@ Mesh layer specific subclass of
 #include "qgsmeshlayerelevationproperties.h"
 %End
   public:
-
     QgsMeshLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsMeshLayerElevationProperties, with the specified

@@ -177,9 +177,7 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
 
   const QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( longitude, latitude ) );
 
-  QgsGeocoderResult res( json.value( u"display_name"_s ).toString(),
-                         geom,
-                         QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  QgsGeocoderResult res( json.value( u"display_name"_s ).toString(), geom, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   QVariantMap attributes;
 
@@ -222,10 +220,7 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
   {
     const QVariantList boundingBox = json.value( u"boundingbox"_s ).toList();
     if ( boundingBox.size() == 4 )
-      res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(),
-                                     boundingBox.at( 0 ).toDouble(),
-                                     boundingBox.at( 3 ).toDouble(),
-                                     boundingBox.at( 1 ).toDouble() ) );
+      res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(), boundingBox.at( 0 ).toDouble(), boundingBox.at( 3 ).toDouble(), boundingBox.at( 1 ).toDouble() ) );
   }
 
   res.setAdditionalAttributes( attributes );

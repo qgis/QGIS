@@ -57,7 +57,13 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
-  auto boundsHandling = std::make_unique<QgsProcessingParameterEnum>( u"RANGE_BOUNDARIES"_s, QObject::tr( "Range boundaries" ), QStringList() << QObject::tr( "min < value <= max" ) << QObject::tr( "min <= value < max" ) << QObject::tr( "min <= value <= max" ) << QObject::tr( "min < value < max" ), false, 0 );
+  auto boundsHandling = std::make_unique<QgsProcessingParameterEnum>(
+    u"RANGE_BOUNDARIES"_s,
+    QObject::tr( "Range boundaries" ),
+    QStringList() << QObject::tr( "min < value <= max" ) << QObject::tr( "min <= value < max" ) << QObject::tr( "min <= value <= max" ) << QObject::tr( "min < value < max" ),
+    false,
+    0
+  );
   boundsHandling->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( boundsHandling.release() );
 
@@ -323,7 +329,9 @@ QgsReclassifyByTableAlgorithm *QgsReclassifyByTableAlgorithm::createInstance() c
 
 void QgsReclassifyByTableAlgorithm::addAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterMatrix( u"TABLE"_s, QObject::tr( "Reclassification table" ), 1, false, QStringList() << QObject::tr( "Minimum" ) << QObject::tr( "Maximum" ) << QObject::tr( "Value" ) ) );
+  addParameter(
+    new QgsProcessingParameterMatrix( u"TABLE"_s, QObject::tr( "Reclassification table" ), 1, false, QStringList() << QObject::tr( "Minimum" ) << QObject::tr( "Maximum" ) << QObject::tr( "Value" ) )
+  );
 }
 
 bool QgsReclassifyByTableAlgorithm::_prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
@@ -331,7 +339,9 @@ bool QgsReclassifyByTableAlgorithm::_prepareAlgorithm( const QVariantMap &, QgsP
   return true;
 }
 
-QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createClasses(
+  QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *
+)
 {
   const QVariantList table = parameterAsMatrix( parameters, u"TABLE"_s, context );
   if ( table.count() % 3 != 0 )

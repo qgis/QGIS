@@ -43,7 +43,8 @@ class TestQgsPointCloud3DRendering : public QgsTest
     Q_OBJECT
   public:
     TestQgsPointCloud3DRendering()
-      : QgsTest( u"Point Cloud 3D Rendering Tests"_s, u"3d"_s ) {}
+      : QgsTest( u"Point Cloud 3D Rendering Tests"_s, u"3d"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -322,9 +323,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
   QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img_no_clipping, QString(), 80, QSize( 0, 0 ), 15 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 1.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 0.5 );
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 1.0 ) << QVector4D( 0.5, 0.866025, 0, 0.5 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );

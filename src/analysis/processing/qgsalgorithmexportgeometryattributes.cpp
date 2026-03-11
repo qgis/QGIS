@@ -54,11 +54,13 @@ QString QgsExportGeometryAttributesAlgorithm::groupId() const
 
 QString QgsExportGeometryAttributesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes geometric properties of the features in a vector layer. The algorithm generates a new "
-                      "vector layer with the same content as the input one, but with additional attributes in its "
-                      "attributes table, containing geometric measurements.\n\n"
-                      "Depending on the geometry type of the vector layer, the attributes added to the table will "
-                      "be different." );
+  return QObject::tr(
+    "This algorithm computes geometric properties of the features in a vector layer. The algorithm generates a new "
+    "vector layer with the same content as the input one, but with additional attributes in its "
+    "attributes table, containing geometric measurements.\n\n"
+    "Depending on the geometry type of the vector layer, the attributes added to the table will "
+    "be different."
+  );
 }
 
 QString QgsExportGeometryAttributesAlgorithm::shortDescription() const
@@ -80,10 +82,7 @@ void QgsExportGeometryAttributesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  const QStringList options = QStringList()
-                              << QObject::tr( "Cartesian Calculations in Layer's CRS" )
-                              << QObject::tr( "Cartesian Calculations in Project's CRS" )
-                              << QObject::tr( "Ellipsoidal Calculations" );
+  const QStringList options = QStringList() << QObject::tr( "Cartesian Calculations in Layer's CRS" ) << QObject::tr( "Cartesian Calculations in Project's CRS" ) << QObject::tr( "Ellipsoidal Calculations" );
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Calculate using" ), options, false, 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Added geometry info" ) ) );
 }

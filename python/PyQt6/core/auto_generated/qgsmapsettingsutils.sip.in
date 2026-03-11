@@ -21,7 +21,6 @@ Utilities for map settings.
 #include "qgsmapsettingsutils.h"
 %End
   public:
-
     enum class EffectsCheckFlag /BaseType=IntFlag/
     {
       IgnoreGeoPdfSupportedEffects,
@@ -65,6 +64,20 @@ Creates the content of a world file.
    Uses 17 places of precision for all numbers output
 %End
 
+    static bool isValidExtent( const QgsRectangle &extent );
+%Docstring
+Returns ``True`` if an ``extent`` is a valid extent which can be used by
+:py:class:`QgsMapSettings`.
+
+An extent will be considered invalid if it:
+
+- is empty
+- is non-finite
+- is so small it can't be accurately represented using double precision
+  values
+
+.. versionadded:: 4.0
+%End
 };
 
 QFlags<QgsMapSettingsUtils::EffectsCheckFlag> operator|(QgsMapSettingsUtils::EffectsCheckFlag f1, QFlags<QgsMapSettingsUtils::EffectsCheckFlag> f2);

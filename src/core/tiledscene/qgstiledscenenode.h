@@ -35,7 +35,6 @@ class QgsTiledSceneTile;
 class QgsTiledSceneNode
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneNode, for the specified \a tile.
      *
@@ -72,7 +71,6 @@ class QgsTiledSceneNode
     QList< QgsTiledSceneNode * > children() const { return mChildren; }
 
   private:
-
 #ifdef SIP_RUN
     QgsTiledSceneNode( const QgsTiledSceneNode &other );
 #endif
@@ -81,7 +79,6 @@ class QgsTiledSceneNode
 
     QgsTiledSceneNode *mParent = nullptr;
     QList< QgsTiledSceneNode * > mChildren;
-
 };
 
 #endif // QGSTILEDSCENENODE_H

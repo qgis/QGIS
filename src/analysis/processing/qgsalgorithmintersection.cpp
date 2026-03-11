@@ -48,9 +48,11 @@ QString QgsIntersectionAlgorithm::groupId() const
 
 QString QgsIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. "
-                      "Features in the output Intersection layer are assigned the attributes of the overlapping features "
-                      "from both the Input and Overlay layers." );
+  return QObject::tr(
+    "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. "
+    "Features in the output Intersection layer are assigned the attributes of the overlapping features "
+    "from both the Input and Overlay layers."
+  );
 }
 
 QString QgsIntersectionAlgorithm::shortDescription() const
@@ -73,16 +75,12 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"OVERLAY"_s, QObject::tr( "Overlay layer" ) ) );
 
-  addParameter( new QgsProcessingParameterField(
-    u"INPUT_FIELDS"_s,
-    QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(),
-    u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"OVERLAY_FIELDS"_s,
-    QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(),
-    u"OVERLAY"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true
-  ) );
+  addParameter(
+    new QgsProcessingParameterField( u"INPUT_FIELDS"_s, QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  );
+  addParameter(
+    new QgsProcessingParameterField( u"OVERLAY_FIELDS"_s, QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(), u"OVERLAY"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  );
 
   auto prefix = std::make_unique<QgsProcessingParameterString>( u"OVERLAY_FIELDS_PREFIX"_s, QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -115,11 +113,8 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   const QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
 
   const QString overlayFieldsPrefix = parameterAsString( parameters, u"OVERLAY_FIELDS_PREFIX"_s, context );
-  const QgsFields outputFields = QgsProcessingUtils::combineFields(
-    QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
-    QgsProcessingUtils::indicesToFields( fieldIndicesB, sourceB->fields() ),
-    overlayFieldsPrefix
-  );
+  const QgsFields outputFields
+    = QgsProcessingUtils::combineFields( QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ), QgsProcessingUtils::indicesToFields( fieldIndicesB, sourceB->fields() ), overlayFieldsPrefix );
 
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );

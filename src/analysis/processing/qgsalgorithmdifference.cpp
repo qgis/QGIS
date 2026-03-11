@@ -52,13 +52,17 @@ QString QgsDifferenceAlgorithm::groupId() const
 
 QString QgsDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Overlay layer. "
-                      "Input layer features that partially overlap feature(s) in the Overlay layer are split along those features' boundary "
-                      "and only the portions outside the Overlay layer features are retained." )
+  return QObject::tr(
+           "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Overlay layer. "
+           "Input layer features that partially overlap feature(s) in the Overlay layer are split along those features' boundary "
+           "and only the portions outside the Overlay layer features are retained."
+         )
          + u"\n\n"_s
-         + QObject::tr( "Attributes are not modified, although properties such as area or length of the features will "
-                        "be modified by the difference operation. If such properties are stored as attributes, those attributes will have to "
-                        "be manually updated." );
+         + QObject::tr(
+           "Attributes are not modified, although properties such as area or length of the features will "
+           "be modified by the difference operation. If such properties are stored as attributes, those attributes will have to "
+           "be manually updated."
+         );
 }
 
 QString QgsDifferenceAlgorithm::shortDescription() const

@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloudDataProvider: QgsDataProvider
+class QgsPointCloudDataProvider : QgsDataProvider
 {
 %Docstring(signature="appended")
 Base class for providing data for :py:class:`QgsPointCloudLayer`.
@@ -29,7 +29,6 @@ indexed data.
 #include "qgspointclouddataprovider.h"
 %End
   public:
-
     enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
@@ -50,9 +49,7 @@ indexed data.
       Indexed
     };
 
-    QgsPointCloudDataProvider( const QString &uri,
-                               const QgsDataProvider::ProviderOptions &providerOptions,
-                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsPointCloudDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Ctor
 %End
@@ -104,14 +101,14 @@ empty collection until
 :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
-    virtual void loadIndex( ) = 0;
+    virtual void loadIndex() = 0;
 %Docstring
 Triggers loading of the point cloud index
 
 .. seealso:: :py:func:`index`
 %End
 
-    virtual void generateIndex( ) = 0;
+    virtual void generateIndex() = 0;
 %Docstring
 Triggers generation of the point cloud index
 
@@ -121,7 +118,7 @@ emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 %End
 
 
-    virtual PointCloudIndexGenerationState indexingState( ) = 0;
+    virtual PointCloudIndexGenerationState indexingState() = 0;
 %Docstring
 Gets the current index generation state
 %End

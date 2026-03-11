@@ -27,14 +27,15 @@ class QgsSurface;
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
  */
-class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty multisurface geometry.
      */
     QgsMultiSurface() SIP_HOLDGIL;
+    // clang-format on
 
 #ifndef SIP_RUN
 
@@ -45,6 +46,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
      */
     QgsSurface *surfaceN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the surface with the specified \a index.
@@ -65,6 +67,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
       return sipConvertFromType( sipCpp->surfaceN( a0 ), sipType_QgsSurface, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

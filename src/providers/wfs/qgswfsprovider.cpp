@@ -203,13 +203,13 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
 
     if ( requestMadeFromMainThread )
     {
-      auto processEvents = []() {
-        QApplication::processEvents();
-      };
+      auto processEvents = []() { QApplication::processEvents(); };
       connect( downloader.get(), &QgsFeatureDownloader::resumeMainThread, this, processEvents );
     }
-    downloader->run( false, /* serialize features */
-                     1 /* maxfeatures */ );
+    downloader->run(
+      false, /* serialize features */
+      1      /* maxfeatures */
+    );
 
     mShared->setCurrentRect( QgsRectangle() );
   };
@@ -265,7 +265,8 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
   // missed by clients...).
   // Another reason to issue it if we do not known the exact geometry type
   // from describeFeatureType()
-  else if ( !mShared->mWFSVersion.startsWith( "1.0"_L1 ) && ( mShared->mWKBType == Qgis::WkbType::Unknown || mShared->mFields.indexOf( "gmlId"_L1 ) < 0 || mShared->mFields.indexOf( "gmlName"_L1 ) < 0 || mShared->mFields.indexOf( "gmlDescription"_L1 ) < 0 ) )
+  else if ( !mShared->mWFSVersion.startsWith( "1.0"_L1 )
+            && ( mShared->mWKBType == Qgis::WkbType::Unknown || mShared->mFields.indexOf( "gmlId"_L1 ) < 0 || mShared->mFields.indexOf( "gmlName"_L1 ) < 0 || mShared->mFields.indexOf( "gmlDescription"_L1 ) < 0 ) )
   {
     // Try to see if gml:description, gml:identifier, gml:name attributes are
     // present. So insert them temporarily in mShared->mFields so that the
@@ -301,10 +302,7 @@ QgsWFSProvider::~QgsWFSProvider()
 class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisitor
 {
   public:
-    QgsWFSProviderSQLFunctionValidator(
-      const QList<QgsWfsCapabilities::Function> &spatialPredicatesList,
-      const QList<QgsWfsCapabilities::Function> &functionList
-    );
+    QgsWFSProviderSQLFunctionValidator( const QList<QgsWfsCapabilities::Function> &spatialPredicatesList, const QList<QgsWfsCapabilities::Function> &functionList );
 
     bool hasError() const { return mError; }
 
@@ -321,14 +319,10 @@ class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisi
     QString mErrorMessage;
 };
 
-QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator(
-  const QList<QgsWfsCapabilities::Function> &spatialPredicatesList,
-  const QList<QgsWfsCapabilities::Function> &functionList
-)
+QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator( const QList<QgsWfsCapabilities::Function> &spatialPredicatesList, const QList<QgsWfsCapabilities::Function> &functionList )
   : mSpatialPredicatesList( spatialPredicatesList )
   , mFunctionList( functionList )
-{
-}
+{}
 
 void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunction &n )
 {
@@ -401,8 +395,7 @@ QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
   , mMapTableAliasToName( mapTypenameAliasToTypename )
   , mMapTypenameToFields( mapTypenameToFields )
   , mMapTypenameToGeometryAttribute( mapTypenameToGeometryAttribute )
-{
-}
+{}
 
 void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColumnRef &n )
 {
@@ -613,8 +606,21 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QgsFields fields;
     Qgis::WkbType geomType;
     bool geometryMaybeMissing;
-    if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema( QObject::tr( "WFS" ), mShared.get(), mCapabilities, describeFeatureDocument, response,
-                                                          /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg, mMetadataRetrievalCanceled ) )
+    if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
+           QObject::tr( "WFS" ),
+           mShared.get(),
+           mCapabilities,
+           describeFeatureDocument,
+           response,
+           /* singleLayerContext = */ typenameList.size() == 1,
+           typeName,
+           geometryAttribute,
+           fields,
+           geomType,
+           geometryMaybeMissing,
+           errorMsg,
+           mMetadataRetrievalCanceled
+         ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).arg( dataSourceUri(), typeName, errorMsg );
       return false;
@@ -635,13 +641,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, response, typenameList, errorMsg );
 
   const QString &defaultTypeName = mShared->mURI.typeName();
-  QgsWFSProviderSQLColumnRefValidator oColumnValidator(
-    mShared->mCaps,
-    defaultTypeName,
-    mapTypenameAliasToTypename,
-    mapTypenameToFields,
-    mapTypenameToGeometryAttribute
-  );
+  QgsWFSProviderSQLColumnRefValidator oColumnValidator( mShared->mCaps, defaultTypeName, mapTypenameAliasToTypename, mapTypenameToFields, mapTypenameToGeometryAttribute );
   sql.acceptVisitor( oColumnValidator );
   if ( oColumnValidator.hasError() )
   {
@@ -803,8 +803,21 @@ bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &de
     QgsFields fields;
     Qgis::WkbType geomType;
     bool geometryMaybeMissing;
-    if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema( QObject::tr( "WFS" ), mShared.get(), mCapabilities, describeFeatureDocument, response,
-                                                          /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg, mMetadataRetrievalCanceled ) )
+    if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
+           QObject::tr( "WFS" ),
+           mShared.get(),
+           mCapabilities,
+           describeFeatureDocument,
+           response,
+           /* singleLayerContext = */ typenameList.size() == 1,
+           typeName,
+           geometryAttribute,
+           fields,
+           geomType,
+           geometryMaybeMissing,
+           errorMsg,
+           mMetadataRetrievalCanceled
+         ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).arg( dataSourceUri(), typeName, errorMsg );
       return false;
@@ -943,7 +956,10 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   mShared->mLayerPropertiesList.clear();
   mShared->mMapFieldNameToSrcLayerNameFieldName.clear();
   mShared->mDistinctSelect = false;
-  if ( theSQL.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\t"_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\r"_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\n"_L1, Qt::CaseInsensitive ) )
+  if ( theSQL.startsWith( "SELECT "_L1, Qt::CaseInsensitive )
+       || theSQL.startsWith( "SELECT\t"_L1, Qt::CaseInsensitive )
+       || theSQL.startsWith( "SELECT\r"_L1, Qt::CaseInsensitive )
+       || theSQL.startsWith( "SELECT\n"_L1, Qt::CaseInsensitive ) )
   {
     QString errorMsg, warningMsg;
     if ( !processSQL( theSQL, errorMsg, warningMsg ) )
@@ -1018,8 +1034,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
     // For servers like Geomedia and QGIS Server that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
     // capabilities useEPSGColumnFormat is set.
     // We follow GeoServer convention here which is to treat EPSG:4326 as lon/lat
-    applyAxisInversion = ( crs().hasAxisInverted() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mCaps.useEPSGColumnFormat )
-                         || mShared->mURI.invertAxisOrientation();
+    applyAxisInversion = ( crs().hasAxisInverted() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mCaps.useEPSGColumnFormat ) || mShared->mURI.invertAxisOrientation();
   }
   else // 1.0
   {
@@ -1027,14 +1042,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
     applyAxisInversion = mShared->mURI.invertAxisOrientation();
   }
 
-  gmlElem = QgsOgcUtils::geometryToGML(
-    geometry,
-    transactionDoc,
-    gmlVersion,
-    mShared->srsName(),
-    applyAxisInversion,
-    QString()
-  );
+  gmlElem = QgsOgcUtils::geometryToGML( geometry, transactionDoc, gmlVersion, mShared->srsName(), applyAxisInversion, QString() );
 
   return gmlElem;
 }
@@ -1529,8 +1537,21 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
     return false;
   }
 
-  if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema( QObject::tr( "WFS" ), mShared.get(), mCapabilities, describeFeatureDocument, response,
-                                                        /* singleLayerContext = */ true, mShared->mURI.typeName(), geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg, mMetadataRetrievalCanceled ) )
+  if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
+         QObject::tr( "WFS" ),
+         mShared.get(),
+         mCapabilities,
+         describeFeatureDocument,
+         response,
+         /* singleLayerContext = */ true,
+         mShared->mURI.typeName(),
+         geometryAttribute,
+         fields,
+         geomType,
+         geometryMaybeMissing,
+         errorMsg,
+         mMetadataRetrievalCanceled
+       ) )
   {
     QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
@@ -1916,8 +1937,7 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
     // the "exceptionCode" attribute, but http://docs.opengeospatial.org/is/04-094r1/04-094r1.html#36
     // mentions "code". Accept both...
     pushError( tr( "WFS exception report (code=%1 text=%2)" )
-                 .arg( exception.attribute( u"exceptionCode"_s, exception.attribute( u"code"_s, tr( "missing" ) ) ), exception.firstChildElement( u"ExceptionText"_s ).text() )
-    );
+                 .arg( exception.attribute( u"exceptionCode"_s, exception.attribute( u"code"_s, tr( "missing" ) ) ), exception.firstChildElement( u"ExceptionText"_s ).text() ) );
     return;
   }
 

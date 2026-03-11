@@ -52,8 +52,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString &cacheDirPath, i
   , mCoverage( coverage )
   , mVersion( version )
   , mForce( force )
-{
-}
+{}
 
 TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
 {
@@ -429,11 +428,16 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_width:" + QString::number( myLayer->dataProvider()->xSize() );
             myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
             QgsRectangle extent = myLayer->dataProvider()->extent();
-            myLog << provider + "_extent:"
-                       + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
-                       + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
-                       + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
-                       + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
+            myLog << provider
+                       + "_extent:"
+                       + QgsRasterBlock::printValue( extent.xMinimum() )
+                       + ','
+                       + QgsRasterBlock::printValue( extent.yMinimum() )
+                       + ','
+                       + QgsRasterBlock::printValue( extent.xMaximum() )
+                       + ','
+                       + QgsRasterBlock::printValue( extent.yMaximum() )
+                       + ',';
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -732,7 +736,12 @@ void TestQgsWcsPublicServers::report()
         } // coverages
         myVersionReport += "</table>\n"_L1;
         // prepend counts
-        myVersionReport.prepend( u"<b>Total coverages: %1</b><br>\n"_s.arg( myVersionLog.value( u"totalCoverages"_s ) ) + u"<b>Tested coverages: %1</b><br>\n"_s.arg( myVersionCoverageCount ) + u"<b>Errors: %1</b><br>\n"_s.arg( myVersionErrCount ) + u"<b>Warnings: %1</b><br><br>"_s.arg( myVersionWarnCount ) );
+        myVersionReport.prepend(
+          u"<b>Total coverages: %1</b><br>\n"_s.arg( myVersionLog.value( u"totalCoverages"_s ) )
+          + u"<b>Tested coverages: %1</b><br>\n"_s.arg( myVersionCoverageCount )
+          + u"<b>Errors: %1</b><br>\n"_s.arg( myVersionErrCount )
+          + u"<b>Warnings: %1</b><br><br>"_s.arg( myVersionWarnCount )
+        );
         myServerReport += myVersionReport;
       }
       if ( myVersionErrCount > 0 )
@@ -842,18 +851,25 @@ QString TestQgsWcsPublicServers::row( const QStringList &values, const QString &
 /* print usage text */
 void usage( std::string const &appName )
 {
-  std::cerr << "QGIS public WCS servers test - " << VERSION << " '" << RELEASE_NAME << "'\n"
-            << "Console application for QGIS WCS provider (WCS client) testing.\n"
-            << "Usage: " << appName << " [options] CACHE_DIR\n"
-            << "  options: \n"
-            << "\t[--server URL]\tWCS server URL to be tested.\n"
-            << "\t[--coverage coverage]\tCoverage name to be tested.\n"
-            << "\t[--num count]\tMaximum number of coverages to test per server. Default 2.\n"
-            << "\t[--version version]\tWCS version to be tested.\n"
-            << "\t[--force]\tForce retrieve, overwrite cache.\n"
-            << "  FILES:\n"
-            << "    Path to directory where cached results are stored.\n"
-            << "    Coverage once retrieved (success or fail) is not requested again until the cache is deleted.\n";
+  std::cerr
+    << "QGIS public WCS servers test - "
+    << VERSION
+    << " '"
+    << RELEASE_NAME
+    << "'\n"
+    << "Console application for QGIS WCS provider (WCS client) testing.\n"
+    << "Usage: "
+    << appName
+    << " [options] CACHE_DIR\n"
+    << "  options: \n"
+    << "\t[--server URL]\tWCS server URL to be tested.\n"
+    << "\t[--coverage coverage]\tCoverage name to be tested.\n"
+    << "\t[--num count]\tMaximum number of coverages to test per server. Default 2.\n"
+    << "\t[--version version]\tWCS version to be tested.\n"
+    << "\t[--force]\tForce retrieve, overwrite cache.\n"
+    << "  FILES:\n"
+    << "    Path to directory where cached results are stored.\n"
+    << "    Coverage once retrieved (success or fail) is not requested again until the cache is deleted.\n";
 }
 
 int main( int argc, char *argv[] )

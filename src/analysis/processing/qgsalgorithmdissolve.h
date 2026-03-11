@@ -37,7 +37,15 @@ using namespace Qt::StringLiterals;
 class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
 {
   protected:
-    QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const std::function<QgsGeometry( const QVector<QgsGeometry> & )> &collector, int maxQueueLength = 0, Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(), bool separateDisjoint = false );
+    QVariantMap processCollection(
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      QgsProcessingFeedback *feedback,
+      const std::function<QgsGeometry( const QVector<QgsGeometry> & )> &collector,
+      int maxQueueLength = 0,
+      Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(),
+      bool separateDisjoint = false
+    );
 };
 
 /**

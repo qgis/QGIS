@@ -62,7 +62,8 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( u"SORTBY_EXPRESSION"_s, QObject::tr( "Sort expression" ), QString(), u"COVERAGE_LAYER"_s, true ) );
   addParameter( new QgsProcessingParameterBoolean( u"SORTBY_REVERSE"_s, QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false ) );
 
-  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  auto layersParam
+    = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
@@ -104,10 +105,7 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   textFormat->setFlags( textFormat->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textFormat.release() );
 
-  const QStringList imageCompressionOptions {
-    QObject::tr( "Lossy (JPEG)" ),
-    QObject::tr( "Lossless" )
-  };
+  const QStringList imageCompressionOptions { QObject::tr( "Lossy (JPEG)" ), QObject::tr( "Lossless" ) };
 
   auto imageCompression = std::make_unique<QgsProcessingParameterEnum>( u"IMAGE_COMPRESSION"_s, QObject::tr( "Image compression" ), imageCompressionOptions, false, 0 );
   imageCompression->setFlags( imageCompression->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -238,10 +236,12 @@ QString QgsLayoutAtlasToPdfAlgorithm::shortDescription() const
 
 QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout as a single PDF file.\n\n"
-                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
-                      "settings off." );
+  return QObject::tr(
+    "This algorithm outputs an atlas layout as a single PDF file.\n\n"
+    "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+    "will be overwritten. In this case, an empty filter or sort by expression will turn those "
+    "settings off."
+  );
 }
 
 void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
@@ -255,7 +255,9 @@ QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() con
   return new QgsLayoutAtlasToPdfAlgorithm();
 }
 
-QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas(
+  QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+)
 {
   Q_UNUSED( exporter )
 
@@ -280,9 +282,14 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, co
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Could not create print device." ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
-                                                                              "resulted in a memory overflow.\n\n"
-                                                                              "Please try a lower resolution or a smaller paper size." ) );
+        throw QgsProcessingException(
+          !error.isEmpty() ? error
+                           : QObject::tr(
+                               "Trying to create the image "
+                               "resulted in a memory overflow.\n\n"
+                               "Please try a lower resolution or a smaller paper size."
+                             )
+        );
 
       case QgsLayoutExporter::IteratorError:
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );
@@ -326,10 +333,11 @@ QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortDescription() const
 
 QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout to multiple PDF files.\n\n"
-                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
-                      "settings off.\n"
+  return QObject::tr(
+    "This algorithm outputs an atlas layout to multiple PDF files.\n\n"
+    "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+    "will be overwritten. In this case, an empty filter or sort by expression will turn those "
+    "settings off.\n"
   );
 }
 
@@ -345,7 +353,9 @@ QgsLayoutAtlasToMultiplePdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::crea
   return new QgsLayoutAtlasToMultiplePdfAlgorithm();
 }
 
-QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas(
+  QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+)
 {
   Q_UNUSED( exporter )
 
@@ -391,9 +401,14 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *a
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Could not create print device." ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
-                                                                              "resulted in a memory overflow.\n\n"
-                                                                              "Please try a lower resolution or a smaller paper size." ) );
+        throw QgsProcessingException(
+          !error.isEmpty() ? error
+                           : QObject::tr(
+                               "Trying to create the image "
+                               "resulted in a memory overflow.\n\n"
+                               "Please try a lower resolution or a smaller paper size."
+                             )
+        );
 
       case QgsLayoutExporter::IteratorError:
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );

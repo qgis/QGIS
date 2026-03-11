@@ -25,9 +25,7 @@ across the center of the map, however this may be changed by calling
 #include "qgsscalecalculator.h"
 %End
   public:
-
-    QgsScaleCalculator( double dpi = 0,
-                        Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
+    QgsScaleCalculator( double dpi = 0, Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
 %Docstring
 Constructor
 

@@ -24,8 +24,7 @@
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
-{
-}
+{}
 
 QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

@@ -113,31 +113,36 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   long long i = 0;
   const double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
 
-  const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
-    i++;
-    if ( feedback->isCanceled() )
-      return false;
+  const QgsSpatialIndex index(
+    it,
+    [&]( const QgsFeature &f ) -> bool {
+      i++;
+      if ( feedback->isCanceled() )
+        return false;
 
-    feedback->setProgress( i * step );
+      feedback->setProgress( i * step );
 
-    if ( !f.hasGeometry() )
-      return true;
+      if ( !f.hasGeometry() )
+        return true;
 
-    const QgsAbstractGeometry *geom = f.geometry().constGet();
-    if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
-    {
-      const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
-      for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
+      const QgsAbstractGeometry *geom = f.geometry().constGet();
+      if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
       {
-        allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
+        const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+        for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
+        {
+          allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
+        }
       }
-    }
-    else
-    {
-      allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
-    }
+      else
+      {
+        allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
+      }
 
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   const QgsGeometry triangulation = allPoints.delaunayTriangulation( tolerance );
 
