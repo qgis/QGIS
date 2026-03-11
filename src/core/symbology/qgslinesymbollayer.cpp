@@ -386,10 +386,17 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
  * trim \a points according to start and end trim distance based on data defined properties and
  * render context
  */
-void trimPoints( QPolygonF &points, double startTrim, double endTrim,
-                 Qgis::RenderUnit trimDistanceStartUnit, Qgis::RenderUnit trimDistanceEndUnit,
-                 const QgsMapUnitScale &trimDistanceStartMapUnitScale, const QgsMapUnitScale &trimDistanceEndMapUnitScale,
-                 const QgsPropertyCollection &mDataDefinedProperties, QgsSymbolRenderContext &context )
+void trimPoints(
+  QPolygonF &points,
+  double startTrim,
+  double endTrim,
+  Qgis::RenderUnit trimDistanceStartUnit,
+  Qgis::RenderUnit trimDistanceEndUnit,
+  const QgsMapUnitScale &trimDistanceStartMapUnitScale,
+  const QgsMapUnitScale &trimDistanceEndMapUnitScale,
+  const QgsPropertyCollection &mDataDefinedProperties,
+  QgsSymbolRenderContext &context
+)
 {
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::TrimStart ) )
   {
@@ -439,8 +446,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   }
 
   QPolygonF points = pts;
-  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit,
-              mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
+  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit, mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
 
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.opacity() );
@@ -1320,8 +1326,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
   }
 
   QPolygonF points = pts;
-  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit,
-              mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
+  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit, mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
 
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
