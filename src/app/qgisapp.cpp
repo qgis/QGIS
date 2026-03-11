@@ -997,7 +997,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  QColor splashTextColor = Qgis::releaseName() == "Master"_L1 ? QColor( 93, 153, 51 ) : Qt::black;
+  QRgb rgb = mSplash->pixmap().toImage().pixel( mSplash->pixmap().width() / 2, mSplash->pixmap().height() - 8 );
+  QColor splashTextColor( 0xff - qRed( rgb ), 0xff - qGreen( rgb ), 0xff - qBlue( rgb ) );
 
   QQuickStyle::setStyle( u"Material"_s );
 
