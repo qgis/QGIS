@@ -90,3 +90,8 @@ try:
     QgsAbstract3DSymbol.__group__ = ['3d']
 except (NameError, AttributeError):
     pass
+try:
+    QgsMaterialSettingsInterface.__abstract_methods__ = ['setMaterialSettings']
+    QgsMaterialSettingsInterface.__group__ = ['3d']
+except (NameError, AttributeError):
+    pass

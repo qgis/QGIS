@@ -25,12 +25,41 @@ class QString;
 
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
+class QgsAbstractMaterialSettings;
 
 namespace Qt3DCore SIP_SKIP
 {
   class QEntity;
 }
 
+/**
+ * \ingroup qgis_3d
+ * \brief Interface for 3D material settings of a symbol.
+ *
+ * Provides access to and allows modification of the 3D material
+ * settings associated with a symbol.
+ *
+ * Classes that manage 3D material settings must implement this interface.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsMaterialSettingsInterface
+{
+  public:
+    virtual ~QgsMaterialSettingsInterface() = default;
+
+    /**
+     * Returns the 3D material settings associated with this symbol.
+   */
+    virtual QgsAbstractMaterialSettings *materialSettings() const SIP_SKIP { return nullptr; }
+
+    /**
+   * Sets the \a material settings used for shading of the symbol.
+   *
+   * Ownership of \a material is transferred to the symbol.
+   */
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER ) = 0;
+};
 
 /**
  * \ingroup qgis_3d
