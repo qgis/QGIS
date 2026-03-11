@@ -2633,7 +2633,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         mWidgets.append( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = fields.at( fldIdx ).comment();
+        //custom comment overrides the comment - even when it's empty (not when it's null)
+        const QString customComment = fields.at( fldIdx ).customComment();
+        newWidgetInfo.hint = customComment.isNull() ? fields.at( fldIdx ).comment() : customComment;
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );

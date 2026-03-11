@@ -489,9 +489,11 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
 
   toolTip += u"<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>"_s.arg( field.displayType( true ) );
 
-  const QString comment = field.comment();
+  //custom comment overrides the comment - even when it's empty (not when it's null)
+  const QString customComment = field.customComment();
+  const QString comment = customComment.isNull() ? field.comment() : customComment;
 
-  if ( ! comment.isEmpty() )
+  if ( !comment.isEmpty() )
   {
     toolTip += u"<br><em>%1</em>"_s.arg( comment );
   }
