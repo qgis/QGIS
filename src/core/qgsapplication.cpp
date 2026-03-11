@@ -563,6 +563,7 @@ void QgsApplication::init( QString profileFolder )
   ABISYM( mInitialized ) = true;
 }
 
+
 void QgsApplication::installTranslators()
 {
   // Remove translators if any are already installed
@@ -589,13 +590,13 @@ void QgsApplication::installTranslators()
   {
     const QLocale loc( *sTranslation() );
     QString qgisLocale = *sTranslation();
-    // Normalizes Chinese locale (zh-CN/TW/HK) tags to 
+    // Normalizes Chinese locale (zh-CN/TW/HK) tags to
     // BCP-47 style (zh-Hans/Hant) to ensure QGIS translations load correctly.
     if ( loc.language() == QLocale::Chinese )
     {
       qgisLocale = ( loc.script() == QLocale::TraditionalChineseScript ) ? u"zh-Hant"_s : u"zh-Hans"_s;
       QgsDebugMsgLevel( u"qgis locale tag: %1 (original: %2)"_s
-                    .arg( qgisLocale, *sTranslation() ), 2 );
+                        .arg( qgisLocale, *sTranslation() ), 2 );
     }
 
     mQgisTranslator = std::make_unique<QTranslator>( this );
@@ -619,7 +620,7 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
-    // Leverages QLocale in QTranslator::load() for Qt translations to improve matching reliability 
+    // Leverages QLocale in QTranslator::load() for Qt translations to improve matching reliability
     // and support standard Qt translation fallback mechanisms.
     mQtTranslator = std::make_unique<QTranslator>( this );
     if ( mQtTranslator->load( loc, u"qt"_s, u"_"_s, qtTranslationsPath ) )
