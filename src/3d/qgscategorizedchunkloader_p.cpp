@@ -24,6 +24,7 @@
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgsfields.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
@@ -132,6 +133,107 @@ void QgsCategorizedChunkLoader::processFeature( const QgsFeature &feature ) cons
   handler->processFeature( feature, mContext );
 }
 
+QString QgsCategorizedChunkLoader::filter() const
+{
+  const QgsVectorLayer *layer = mFactory->mLayer;
+  const QgsFields fields = layer->fields();
+  const int attributeNumber = fields.lookupField( mFactory->mAttributeName );
+  const bool isExpression = ( attributeNumber == -1 );
+
+  bool hasDefault = false;
+  bool defaultActive = false;
+  bool allActive = true;
+  bool noneActive = true;
+
+  //we need to build lists of both inactive and active values, as either list may be required
+  //depending on whether the default category is active or not
+  QString activeValues;
+  QString inactiveValues;
+
+  for ( const Qgs3DRendererCategory &category : *mFactory->mCategories )
+  {
+    if ( category.value() == "" || QgsVariantUtils::isNull( category.value() ) )
+    {
+      hasDefault = true;
+      defaultActive = category.renderState();
+    }
+
+    noneActive = noneActive && !category.renderState();
+    allActive = allActive && category.renderState();
+
+    const bool isList = category.value().userType() == QMetaType::Type::QVariantList;
+    QString value = QgsExpression::quotedValue( category.value(), static_cast<QMetaType::Type>( category.value().userType() ) );
+
+    if ( !category.renderState() )
+    {
+      if ( value != "" )
+      {
+        if ( isList )
+        {
+          const QVariantList list = category.value().toList();
+          for ( const QVariant &variant : list )
+          {
+            if ( !inactiveValues.isEmpty() )
+              inactiveValues.append( ',' );
+
+            inactiveValues.append( QgsExpression::quotedValue( variant, isExpression ? static_cast<QMetaType::Type>( variant.userType() ) : fields.at( attributeNumber ).type() ) );
+          }
+        }
+        else
+        {
+          if ( !inactiveValues.isEmpty() )
+            inactiveValues.append( ',' );
+
+          inactiveValues.append( value );
+        }
+      }
+    }
+    else
+    {
+      if ( value != "" )
+      {
+        if ( isList )
+        {
+          const QVariantList list = category.value().toList();
+          for ( const QVariant &variant : list )
+          {
+            if ( !activeValues.isEmpty() )
+              activeValues.append( ',' );
+
+            activeValues.append( QgsExpression::quotedValue( variant, isExpression ? static_cast<QMetaType::Type>( variant.userType() ) : fields.at( attributeNumber ).type() ) );
+          }
+        }
+        else
+        {
+          if ( !activeValues.isEmpty() )
+            activeValues.append( ',' );
+
+          activeValues.append( value );
+        }
+      }
+    }
+  }
+
+  QString attr = isExpression ? mFactory->mAttributeName : u"\"%1\""_s.arg( mFactory->mAttributeName );
+
+  if ( allActive && hasDefault )
+  {
+    return QString();
+  }
+  else if ( noneActive )
+  {
+    return u"FALSE"_s;
+  }
+  else if ( defaultActive )
+  {
+    return u"(%1) NOT IN (%2) OR (%1) IS NULL"_s.arg( attr, inactiveValues );
+  }
+  else
+  {
+    return u"(%1) IN (%2)"_s.arg( attr, activeValues );
+  }
+}
+
 void QgsCategorizedChunkLoader::start()
 {
   QgsChunkNode *node = chunk();
@@ -153,6 +255,12 @@ void QgsCategorizedChunkLoader::start()
   request.setDestinationCrs( mContext.crs(), mContext.transformContext() );
   request.setSubsetOfAttributes( attributesNames, layer->fields() );
   request.setFilterRect( rect );
+
+  const QString rendererFilter = filter();
+  if ( !rendererFilter.isEmpty() )
+  {
+    request.setFilterExpression( rendererFilter );
+  }
 
   //
   // this will be run in a background thread
