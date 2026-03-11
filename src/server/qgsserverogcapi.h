@@ -86,7 +86,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     /**
      * QgsServerOgcApi constructor
      * \param serverIface pointer to the server interface
-     * \param rootPath root path for this API (usually starts with a "/", e.g. "/wfs3")
+     * \param rootPath root path for this API (usually starts with a "/", e.g. "/ogcapi" or "/wfs3")
      * \param name API name
      * \param description API description
      * \param version API version

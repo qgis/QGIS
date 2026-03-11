@@ -519,7 +519,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
                 u"Service configuration error"_s,
                 QStringLiteral(
                   "Service unknown or unsupported. Current supported services "
-                  "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 "
+                  "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a OAPIF "
                   "(OGC API Features) endpoint"
                 )
               );
@@ -554,7 +554,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
                 u"Service configuration error"_s,
                 QStringLiteral(
                   "Service unknown or unsupported. Current supported services "
-                  "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 "
+                  "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a OAPIF "
                   "(OGC API Features) endpoint"
                 )
               );
