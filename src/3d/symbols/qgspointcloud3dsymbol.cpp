@@ -127,6 +127,13 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   pcDestination->mVerticalTriangleFilter = mVerticalTriangleFilter;
 }
 
+void QgsPointCloud3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
+{
+  Q_UNUSED( materialSettings );
+  throw QgsNotSupportedException( u"QgsPointCloud3DSymbol does not support material settings"_s );
+}
+
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()

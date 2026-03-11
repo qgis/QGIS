@@ -26,7 +26,7 @@ QgsMesh3DSymbol.ZValueType.__doc__ = """How to render the Z value of the mesh
 """
 # --
 try:
-    QgsMesh3DSymbol.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml']
+    QgsMesh3DSymbol.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml', 'materialSettings', 'setMaterialSettings']
     QgsMesh3DSymbol.__group__ = ['symbols']
 except (NameError, AttributeError):
     pass
