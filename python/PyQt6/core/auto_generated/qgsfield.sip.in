@@ -385,6 +385,27 @@ Sets the alias for the field (the friendly displayed name of the field
 .. seealso:: :py:func:`alias`
 %End
 
+    QString customComment() const /HoldGIL/;
+%Docstring
+Returns the custom comment for the field. an empty string when there is
+an empty string as a custom comment and NULL if no custom comment has
+been defined.
+
+.. seealso:: :py:func:`setCustomComment`
+%End
+
+    void setCustomComment( const QString &customComment ) /HoldGIL/;
+%Docstring
+Sets the custom comment for the field.
+
+:param customComment: custom comment (can be empty as well) or NULL to
+                      remove the custom comment.
+
+.. versionadded:: 4.2
+
+.. seealso:: :py:func:`customComment`
+%End
+
     Qgis::FieldConfigurationFlags configurationFlags() const /HoldGIL/;
 %Docstring
 Returns the Flags for the field (searchable, …).

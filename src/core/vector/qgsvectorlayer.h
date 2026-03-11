@@ -2933,6 +2933,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute
     QgsStringMap mAttributeAliasMap;
 
+    //! Map that stores the custom comments for attributes. Key is the attribute name and value the custom comment for that attribute
+    QgsStringMap mAttributeCustomCommentMap;
+
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
 

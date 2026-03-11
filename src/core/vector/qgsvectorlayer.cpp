@@ -2661,6 +2661,39 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
 
+    // custom comments
+    // mAttributeCustomCommentMap is cleared, because when a custom comment is null the provider comment should be considered
+    mAttributeCustomCommentMap.clear();
+    QDomNode customCommentsNode = layerNode.namedItem( u"customcomments"_s );
+    if ( !customCommentsNode.isNull() )
+    {
+      QDomElement customCommentEntryElem;
+
+      QDomNodeList customCommentNodeList = customCommentsNode.toElement().elementsByTagName( u"customcomment"_s );
+      for ( int i = 0; i < customCommentNodeList.size(); ++i )
+      {
+        customCommentEntryElem = customCommentNodeList.at( i ).toElement();
+
+        QString field;
+        if ( customCommentEntryElem.hasAttribute( u"field"_s ) )
+        {
+          field = customCommentEntryElem.attribute( u"field"_s );
+        }
+        else
+        {
+          int index = customCommentEntryElem.attribute( u"index"_s ).toInt();
+
+          if ( index >= 0 && index < fields().count() )
+            field = fields().at( index ).name();
+        }
+
+        //empty values are important as well (to override provider comments with nothing)
+        QString customComment = customCommentEntryElem.attribute( u"value"_s );
+
+        mAttributeCustomCommentMap.insert( field, customComment );
+      }
+    }
+
     // IMPORTANT - we don't clear mAttributeSplitPolicy here, as it may contain policies which are coming direct
     // from the data provider. Instead we leave any existing policies and only overwrite them if the style
     // has a specific value for that field's policy
@@ -3231,6 +3264,23 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       aliasElem.appendChild( aliasEntryElem );
     }
     node.appendChild( aliasElem );
+
+    //custom comments
+    QDomElement customCommentElem = doc.createElement( u"customcomments"_s );
+    for ( const QgsField &field : std::as_const( mFields ) )
+    {
+      //if empty ("") we store it, if null we don't store it
+      const QString customComment = field.customComment();
+      if ( customComment.isNull() )
+        continue;
+
+      QDomElement customCommentEntryElem = doc.createElement( u"customcomment"_s );
+      customCommentEntryElem.setAttribute( u"field"_s, field.name() );
+      customCommentEntryElem.setAttribute( u"index"_s, mFields.indexFromName( field.name() ) );
+      customCommentEntryElem.setAttribute( u"value"_s, customComment );
+      customCommentElem.appendChild( customCommentEntryElem );
+    }
+    node.appendChild( customCommentElem );
 
     //split policies
     {
@@ -4691,6 +4741,16 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setAlias( aliasIt.value() );
+  }
+
+  // set custom comments
+  for ( auto customCommentIt = mAttributeCustomCommentMap.constBegin(); customCommentIt != mAttributeCustomCommentMap.constEnd(); ++customCommentIt )
+  {
+    int index = mFields.lookupField( customCommentIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[ index ].setCustomComment( customCommentIt.value() );
   }
 
   for ( auto splitPolicyIt = mAttributeSplitPolicy.constBegin(); splitPolicyIt != mAttributeSplitPolicy.constEnd(); ++splitPolicyIt )

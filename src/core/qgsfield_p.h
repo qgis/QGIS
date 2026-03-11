@@ -135,6 +135,9 @@ class QgsFieldPrivate : public QSharedData
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
+    //! Custom comment for the field
+    QString customComment;
+
     //! Flags for the field (searchable, …)
     Qgis::FieldConfigurationFlags flags = Qgis::FieldConfigurationFlag::NoFlag;
 
