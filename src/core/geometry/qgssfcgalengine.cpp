@@ -991,6 +991,40 @@ sfcgal::shared_geom QgsSfcgalEngine::toSolid( const sfcgal::geometry *geom, QStr
   return sfcgal::make_shared_geom( solid );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::toPolyhedralSurface( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  if ( sfcgal_geometry_type_id( geom ) != SFCGAL_TYPE_SOLID )
+  {
+    sfcgal::errorHandler()->addText( u"toPolyhedralSurface() only applies to solids"_s );
+    return nullptr;
+  }
+
+  sfcgal_geometry_t *polySurface = sfcgal_polyhedral_surface_create();
+  for ( unsigned int shellIdx = 0; shellIdx < sfcgal_solid_num_shells( geom ); ++shellIdx )
+  {
+    const sfcgal_geometry_t *shell = sfcgal_solid_shell_n( geom, shellIdx );
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
+    for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_patches( shell ); ++polyIdx )
+    {
+      const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_patch_n( shell, polyIdx );
+      sfcgal_polyhedral_surface_add_patch( polySurface, sfcgal_geometry_clone( patch ) );
+    }
+#else
+    for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_polygons( shell ); ++polyIdx )
+    {
+      const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_polygon_n( shell, polyIdx );
+      sfcgal_polyhedral_surface_add_polygon( polySurface, sfcgal_geometry_clone( patch ) );
+    }
+#endif
+  }
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( polySurface );
+}
+
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg )
 {

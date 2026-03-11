@@ -893,6 +893,20 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toSolid() const
   return solidGeom;
 }
 
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toPolyhedralSurface() const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom phs = QgsSfcgalEngine::toPolyhedralSurface( geom.get(), &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> phsGeom = QgsSfcgalEngine::toSfcgalGeometry( phs, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return phsGeom;
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
 {
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
