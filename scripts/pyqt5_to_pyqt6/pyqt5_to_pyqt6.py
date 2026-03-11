@@ -243,7 +243,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX -> qgis.PyQt
-    fix_pyqt6_import = [] # PyQt5 -> PyQt6
+    fix_pyqt6_import = []  # PyQt5 -> PyQt6
     fix_qt_enums = {}  # Unscoping of enums
     member_renames = {}
     token_renames = {}
@@ -586,7 +586,12 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 if submodule in QGIS_PYQT_MODULES:
                     fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
                 else:
-                    fix_pyqt6_import.append(Offset(node.lineno, node.col_offset))
+                    if qgis3_compat:
+                        fix_pyqt6_import.append(Offset(node.lineno, node.col_offset))
+                    else:
+                        logging.warning(
+                            f"Import of {submodule} couldn't be adjusted automatically without breaking compatibility with QGIS 3*."
+                        )
 
     for module, classes in extra_imports.items():
         if module not in imported_modules:
@@ -638,7 +643,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         for elem in fix_pyqt6_import:
             logging.warning(
                 f"{filename}:{elem.line}:{elem.utf8_byte_offset} - Fix PyQT5 import, you must import from PyQt6"
-
             )
 
         for elem in rename_qt_enums:
