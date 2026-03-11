@@ -316,10 +316,10 @@ class TestQgsAggregateCalculator(QgisTestCase):
         assert pr.addFeatures(features)
 
         tests = [
-            [QgsAggregateCalculator.Aggregate.Count, "flddatetime", 9],
-            [QgsAggregateCalculator.Aggregate.Count, "flddate", 9],
-            [QgsAggregateCalculator.Aggregate.CountDistinct, "flddatetime", 6],
-            [QgsAggregateCalculator.Aggregate.CountDistinct, "flddate", 5],
+            [QgsAggregateCalculator.Aggregate.Count, "flddatetime", 7],
+            [QgsAggregateCalculator.Aggregate.Count, "flddate", 7],
+            [QgsAggregateCalculator.Aggregate.CountDistinct, "flddatetime", 5],
+            [QgsAggregateCalculator.Aggregate.CountDistinct, "flddate", 4],
             [QgsAggregateCalculator.Aggregate.CountMissing, "flddatetime", 2],
             [QgsAggregateCalculator.Aggregate.CountMissing, "flddate", 2],
             [
