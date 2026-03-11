@@ -980,6 +980,16 @@ sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geomet
   return sfcgal::make_shared_geom( result );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::toSolid( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *solid = sfcgal_geometry_make_solid( geom );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( solid );
+}
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg )
