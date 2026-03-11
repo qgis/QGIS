@@ -377,7 +377,10 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   newProfileDir.remove( u"symbology-style.db"_s );
 
   QgsError errors;
-  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath, QgsFileUtils::CopyFlag::NoSymLinks );
+
+  // don't copy:
+  // - compiled pycache or pyc files!
+  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath, QgsFileUtils::CopyFlag::NoSymLinks, { u".*\\b__pycache__$"_s, u".*\\.[pP][yY][cC]$"_s } );
 
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
   newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
