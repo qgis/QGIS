@@ -924,30 +924,12 @@ sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, cons
   // sfcgal_geometry_extrude returns a SOLID
   // This is not handled by QGIS
   // convert it to a PolyhedralSurface
-  sfcgal_geometry_t *polySurface = sfcgal_polyhedral_surface_create();
-  for ( unsigned int shellIdx = 0; shellIdx < sfcgal_solid_num_shells( solid ); ++shellIdx )
-  {
-    const sfcgal_geometry_t *shell = sfcgal_solid_shell_n( solid, shellIdx );
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
-    for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_patches( shell ); ++polyIdx )
-    {
-      const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_patch_n( shell, polyIdx );
-      sfcgal_polyhedral_surface_add_patch( polySurface, sfcgal_geometry_clone( patch ) );
-    }
-#else
-    for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_polygons( shell ); ++polyIdx )
-    {
-      const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_polygon_n( shell, polyIdx );
-      sfcgal_polyhedral_surface_add_polygon( polySurface, sfcgal_geometry_clone( patch ) );
-    }
-#endif
-  }
-
+  sfcgal::shared_geom polySurface = QgsSfcgalEngine::toPolyhedralSurface( solid, errorMsg );
   sfcgal_geometry_delete( solid );
 
   CHECK_SUCCESS( errorMsg, nullptr );
 
-  return sfcgal::make_shared_geom( polySurface );
+  return polySurface;
 }
 
 sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg )
