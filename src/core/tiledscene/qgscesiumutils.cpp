@@ -25,9 +25,11 @@
 #include "qgsmatrix4x4.h"
 #include "qgsorientedbox3d.h"
 #include "qgssphere.h"
+#include "qgstiledsceneboundingvolume.h"
 
 #include <QIODevice>
 #include <QString>
+#include <QUrlQuery>
 #include <QtCore/QBuffer>
 
 using namespace Qt::StringLiterals;
@@ -303,4 +305,65 @@ QVector<QgsCesiumUtils::TileContents> QgsCesiumUtils::extractTileContent( const 
     QgsDebugError( u"extractGltfFromTileContent: unknown tile format, size=%1, magic=%2"_s.arg( tileContent.size() ).arg( QString::fromLatin1( tileContent.left( 4 ) ) ) );
   }
   return result;
+}
+
+QgsTiledSceneBoundingVolume QgsCesiumUtils::boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext )
+{
+  if ( region.width() > 20 || region.height() > 20 )
+  {
+    // treat very large regions as global -- these will not transform correctly to EPSG:4978
+    return QgsTiledSceneBoundingVolume();
+  }
+
+  // Transform the 8 corners of the region from EPSG:4979 to EPSG:4978
+  QVector< QgsVector3D > corners = region.corners();
+  QVector< double > x;
+  x.reserve( 8 );
+  QVector< double > y;
+  y.reserve( 8 );
+  QVector< double > z;
+  z.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
+  }
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ), QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), transformContext );
+  ct.setBallparkTransformsAreAppropriate( true );
+  try
+  {
+    ct.transformInPlace( x, y, z );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( u"Cannot transform region bounding volume"_s );
+  }
+
+  const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+  const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+  const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+  // note that matrix transforms are NOT applied to region bounding volumes!
+  return QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+}
+
+QString QgsCesiumUtils::appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl )
+{
+  // This is to support a case seen with Google's tiles. Root URL is something like this:
+  // https://tile.googleapis.com/.../root.json?key=123
+  // The returned JSON contains relative links with "session" (e.g. "/.../abc.json?session=456")
+  // When fetching such abc.json, we have to include also "key" from the original URL!
+  // Then the content of abc.json contains relative links (e.g. "/.../xyz.glb") and we
+  // need to add both "key" and "session" (otherwise requests fail).
+
+  QUrlQuery contentQuery( QUrl( contentUri ).query() );
+  const QList<QPair<QString, QString>> baseUrlQueryItems = QUrlQuery( baseUrl.query() ).queryItems();
+  for ( const QPair<QString, QString> &kv : baseUrlQueryItems )
+  {
+    contentQuery.addQueryItem( kv.first, kv.second );
+  }
+  QUrl newContentUrl( contentUri );
+  newContentUrl.setQuery( contentQuery );
+  return newContentUrl.toString();
 }
