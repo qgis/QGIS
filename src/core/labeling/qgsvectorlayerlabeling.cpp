@@ -15,6 +15,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgis.h"
+#include "qgsexpression.h"
+#include "qgsexpressionnode.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgspallabeling.h"
@@ -220,6 +223,87 @@ void appendSimpleFunction( QDomDocument &doc, QDomElement &parent, const QString
   function.appendChild( property );
 }
 
+/**
+ * Recursively flattens a QgsExpression concatenation tree into a single list of SLD operands.
+ */
+static void flattenConcatenation( QDomDocument &doc, QDomElement &parent, const QgsExpressionNode *node )
+{
+  const QgsExpressionNodeBinaryOperator *binNode = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( node );
+  if ( binNode && binNode->op() == QgsExpressionNodeBinaryOperator::boConcat )
+  {
+    // Recursive step: drill down into left and right branches without creating new tags
+    flattenConcatenation( doc, parent, binNode->opLeft() );
+    flattenConcatenation( doc, parent, binNode->opRight() );
+  }
+  else
+  {
+    // Base case: handle leaf nodes (columns or literal strings) and append them as children
+    if ( const QgsExpressionNodeColumnRef *column = dynamic_cast<const QgsExpressionNodeColumnRef *>( node ) )
+    {
+      QDomElement propElement = doc.createElement( QStringLiteral( "ogc:PropertyName" ) );
+      propElement.appendChild( doc.createTextNode( column->name() ) );
+      parent.appendChild( propElement );
+    }
+    else if ( const QgsExpressionNodeLiteral *literal = dynamic_cast<const QgsExpressionNodeLiteral *>( node ) )
+    {
+      QDomElement litElement = doc.createElement( QStringLiteral( "ogc:Literal" ) );
+      litElement.appendChild( doc.createTextNode( literal->value().toString() ) );
+      parent.appendChild( litElement );
+    }
+  }
+}
+
+/**
+ * Appends a QgsExpression node to an SLD document.
+ * Specifically handles string concatenation (||) by creating a single <ogc:Function name="Concatenate">
+ * element containing all recursively discovered operands.
+ */
+static bool appendExpressionAsSld( QDomDocument &doc, QDomElement &parent, const QgsExpressionNode *node )
+{
+  switch ( node->nodeType() )
+  {
+    case QgsExpressionNode::ntBinaryOperator:
+    {
+      const QgsExpressionNodeBinaryOperator *binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+      if ( binNode->op() == QgsExpressionNodeBinaryOperator::boConcat )
+      {
+        // Create the main Concatenate function tag once
+        QDomElement funcElement = doc.createElement( QStringLiteral( "ogc:Function" ) );
+        funcElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "Concatenate" ) );
+
+        // Populate it with all flattened parts of the expression
+        flattenConcatenation( doc, funcElement, binNode );
+
+        parent.appendChild( funcElement );
+        return true;
+      }
+      return false;
+    }
+
+    case QgsExpressionNode::ntColumnRef:
+    {
+      const QgsExpressionNodeColumnRef *column = static_cast<const QgsExpressionNodeColumnRef *>( node );
+      QDomElement propElement = doc.createElement( QStringLiteral( "ogc:PropertyName" ) );
+      propElement.appendChild( doc.createTextNode( column->name() ) );
+      parent.appendChild( propElement );
+      return true;
+    }
+
+    case QgsExpressionNode::ntLiteral:
+    {
+      const QgsExpressionNodeLiteral *literal = static_cast<const QgsExpressionNodeLiteral *>( node );
+      QDomElement litElement = doc.createElement( QStringLiteral( "ogc:Literal" ) );
+      litElement.appendChild( doc.createTextNode( literal->value().toString() ) );
+      parent.appendChild( litElement );
+      return true;
+    }
+
+    default:
+      // Return false for complex expressions not yet supported by the SLD exporter
+      return false;
+  }
+}
+
 std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBackgroundSettings &settings )
 {
   std::unique_ptr<QgsMarkerSymbolLayer> layer;
@@ -320,11 +404,24 @@ bool QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   const QFont font = format.font();
   QDomElement labelElement = doc.createElement( u"se:Label"_s );
   textSymbolizerElement.appendChild( labelElement );
+
   if ( settings.isExpression )
   {
-    context.pushError( QObject::tr( "Labels containing expressions cannot be exported to SLD. Skipping label '%1'" ).arg( settings.getLabelExpression()->dump() ) );
-    labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
+    bool success = false;
+    if ( settings.getLabelExpression() && settings.getLabelExpression()->rootNode() )
+    {
+      // Attempt to export the expression as an SLD Concatenate function
+      success = appendExpressionAsSld( doc, labelElement, settings.getLabelExpression()->rootNode() );
+    }
+
+    if ( !success )
+    {
+      // Fallback: If the expression is too complex, push an error and use a placeholder
+      context.pushError( QObject::tr( "Complex expressions in labels cannot be exported to SLD. Skipping label '%1'" ).arg( settings.getLabelExpression()->dump() ) );
+      labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
+    }
   }
+
   else
   {
     Qgis::Capitalization capitalization = format.capitalization();
