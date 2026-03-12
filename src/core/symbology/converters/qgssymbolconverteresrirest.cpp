@@ -255,8 +255,6 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriPictureMar
   const double xOffset = symbolData.value( u"xoffset"_s ).toDouble();
   const double yOffset = symbolData.value( u"yoffset"_s ).toDouble();
 
-  //const QString contentType = symbolData.value( u"contentType"_s ).toString();
-
   QString symbolPath( symbolData.value( u"imageData"_s ).toString() );
   symbolPath.prepend( "base64:"_L1 );
 
