@@ -92,13 +92,14 @@ std::unique_ptr< QgsSymbol > QgsSymbolConverterSld::createSymbol( const QVariant
   int errorLine, errorColumn;
   if ( !doc.setContent( xmlString, true, &errorMsg, &errorLine, &errorColumn ) )
   {
-    return nullptr; // XML parsing failed
+    context.pushError( QObject::tr( "Error parsing SLD content: %1" ).arg( errorMsg ) );
+    return nullptr;
   }
 
   const QDomElement ruleElem = doc.documentElement().firstChildElement( u"Rule"_s );
   if ( ruleElem.isNull() )
   {
-    QgsDebugError( u"no Rule elements found!"_s );
+    context.pushError( QObject::tr( "Error parsing SLD content: no Rule elements found" ) );
     return nullptr;
   }
 
@@ -151,7 +152,7 @@ std::unique_ptr< QgsSymbol > QgsSymbolConverterSld::createSymbol( const QVariant
       break;
 
     default:
-      QgsDebugError( u"invalid geometry type: found %1"_s.arg( qgsEnumValueToKey( geomType ) ) );
+      context.pushError( QObject::tr( "Invalid geometry type: found %1" ).arg( qgsEnumValueToKey( geomType ) ) );
       return nullptr;
   }
 
