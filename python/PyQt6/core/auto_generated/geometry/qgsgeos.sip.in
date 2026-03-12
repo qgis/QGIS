@@ -306,7 +306,11 @@ This method requires a QGIS build based on GEOS 3.7 or later.
 
     virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const;
 
+
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = 0 ) const;
+
 
     virtual bool isEmpty( QString *errorMsg = 0 ) const;
 
