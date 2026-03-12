@@ -1519,7 +1519,10 @@ void TestQgsGeospatialPdfExport::testUseLayerTree()
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerLines->id() );
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
-  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerLines->name() ) );
+  QCOMPARE(
+    contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ),
+    u"%1.pdf"_s.arg( layerLines->name() )
+  );
 
   QCOMPARE( contentList.at( 3 ).toElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( 3 ).toElement().attribute( u"layerId"_s ), group1Id );
@@ -1631,7 +1634,10 @@ void TestQgsGeospatialPdfExport::testUseLayerTreeInvisibleNodes()
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerLines->id() );
   QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
-  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerLines->name() ) );
+  QCOMPARE(
+    contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ),
+    u"%1.pdf"_s.arg( layerLines->name() )
+  );
 
   QCOMPARE( contentList.at( 3 ).toElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( 3 ).toElement().attribute( u"layerId"_s ), group1Id );

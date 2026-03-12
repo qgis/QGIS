@@ -230,7 +230,9 @@ void QgsLayoutPdfExportOptionsDialog::disableUseLayerTreeConfig()
 {
   setUseLayerTreeConfig( false );
   mGeospatialPDFLayerTreeConfigRadioButton->setEnabled( false );
-  mGeospatialPDFLayerTreeConfigRadioButton->setToolTip( u"Unavailable: All map items in the layout are currently following either map themes or locked layers, which is not compatible with the QGIS layer tree configuration."_s );
+  mGeospatialPDFLayerTreeConfigRadioButton->setToolTip(
+    u"Unavailable: All map items in the layout are currently following either map themes or locked layers, which is not compatible with the QGIS layer tree configuration."_s
+  );
 }
 
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
