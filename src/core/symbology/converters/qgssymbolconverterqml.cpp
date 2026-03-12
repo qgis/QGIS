@@ -71,12 +71,16 @@ std::unique_ptr< QgsSymbol > QgsSymbolConverterQml::createSymbol( const QVariant
   int errorLine, errorColumn;
   if ( !doc.setContent( xmlString, &errorMsg, &errorLine, &errorColumn ) )
   {
+    context.pushError( QObject::tr( "Error parsing QML content: %1" ).arg( errorMsg ) );
     return nullptr;
   }
 
   QDomElement root = doc.documentElement();
   if ( root.isNull() )
+  {
+    context.pushError( QObject::tr( "QML document is empty" ) );
     return nullptr;
+  }
 
   return QgsSymbolLayerUtils::loadSymbol( root, context.readWriteContext() );
 }
