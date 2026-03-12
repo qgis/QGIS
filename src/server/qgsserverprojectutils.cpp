@@ -166,23 +166,20 @@ bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
   const QString sia2045 = project.readEntry( u"WMSInfoFormatSIA2045"_s, u"/"_s, "" );
 
-  return sia2045.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0
-         || sia2045.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return sia2045.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0 || sia2045.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &project )
 {
   const QString wktGeom = project.readEntry( u"WMSAddWktGeometry"_s, u"/"_s, "" );
 
-  return wktGeom.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0
-         || wktGeom.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return wktGeom.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0 || wktGeom.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project )
 {
   const QString useFormSettings = project.readEntry( u"WMSFeatureInfoUseAttributeFormSettings"_s, u"/"_s, "" );
-  return useFormSettings.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0
-         || useFormSettings.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return useFormSettings.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0 || useFormSettings.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project )
@@ -195,15 +192,13 @@ bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProjec
 {
   const QString segmGeom = project.readEntry( u"WMSSegmentizeFeatureInfoGeometry"_s, u"/"_s, "" );
 
-  return segmGeom.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0
-         || segmGeom.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return segmGeom.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0 || segmGeom.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( const QgsProject &project )
 {
   const QString legendGroups = project.readEntry( u"WMSAddLayerGroupsLegendGraphic"_s, u"/"_s, "" );
-  return legendGroups.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0
-         || legendGroups.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+  return legendGroups.compare( "enabled"_L1, Qt::CaseInsensitive ) == 0 || legendGroups.compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsSkipNameForGroup( const QgsProject &project )

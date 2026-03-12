@@ -58,7 +58,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
       default:
         sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

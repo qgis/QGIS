@@ -121,6 +121,13 @@ Returns a new pie chart.
 Returns a new data gatherer for a given pie chart ``plot``.
 %End
 
+    virtual void initFromPlot( const QgsPlot *plot );
+
+%Docstring
+Initializes properties of this plot from an existing ``plot``,
+transferring all applicable settings.
+%End
+
 };
 
 /************************************************************************

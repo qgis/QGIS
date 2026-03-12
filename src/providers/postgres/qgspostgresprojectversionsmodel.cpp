@@ -140,10 +140,14 @@ void QgsPostgresProjectVersionsModel::populateVersions( const QString &schema, c
 
   if ( versioningEnabled )
   {
-    const QString sqlVersions = QStringLiteral( "SELECT '', CONCAT((metadata->>'last_modified_time')::TIMESTAMP(0)::TEXT, ' (latest version)'), (metadata->>'last_modified_user'), comment FROM  %1.qgis_projects WHERE name = %2 "
-                                                "UNION ALL "
-                                                "SELECT * FROM ( SELECT date_saved, (metadata->>'last_modified_time')::TIMESTAMP(0)::TEXT, (metadata->>'last_modified_user'), comment  FROM  %1.qgis_projects_versions WHERE name = %2 ORDER BY (metadata->>'last_modified_time')::TIMESTAMP DESC)" )
-                                  .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedValue( project ) );
+    const QString sqlVersions
+      = QStringLiteral(
+          "SELECT '', CONCAT((metadata->>'last_modified_time')::TIMESTAMP(0)::TEXT, ' (latest version)'), (metadata->>'last_modified_user'), comment FROM  %1.qgis_projects WHERE name = %2 "
+          "UNION ALL "
+          "SELECT * FROM ( SELECT date_saved, (metadata->>'last_modified_time')::TIMESTAMP(0)::TEXT, (metadata->>'last_modified_user'), comment  FROM  %1.qgis_projects_versions WHERE name = %2 ORDER "
+          "BY (metadata->>'last_modified_time')::TIMESTAMP DESC)"
+      )
+          .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedValue( project ) );
 
     QgsPostgresResult resultVersions( mConn->PQexec( sqlVersions ) );
 

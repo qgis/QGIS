@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pluginManager )
   : mPluginManager( pluginManager )
-{
-}
+{}
 
 void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
 {

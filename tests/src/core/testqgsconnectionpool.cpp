@@ -45,7 +45,8 @@ class TestQgsConnectionPool : public QObject
     struct ReadJob
     {
         explicit ReadJob( QgsVectorLayer *_layer )
-          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) ) {}
+          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) )
+        {}
         std::shared_ptr<QgsVectorLayerFeatureSource> source;
         QList<QgsFeature> features;
     };

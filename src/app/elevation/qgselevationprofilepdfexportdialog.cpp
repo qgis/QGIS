@@ -39,9 +39,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   scrollAreaLayout->addWidget( mProfileSettingsWidget );
   scrollAreaLayout->addStretch( 1 );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"map_views/elevation_profile.html#export-elevation-profile"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"map_views/elevation_profile.html#export-elevation-profile"_s ); } );
 
   QgsGui::enableAutoGeometryRestore( this );
 

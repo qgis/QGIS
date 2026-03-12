@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {

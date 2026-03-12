@@ -52,10 +52,7 @@ class TestQgsLabelPropertyDialog : public QObject
       mTestDataDir = myDataDir + '/';
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void test()
     {

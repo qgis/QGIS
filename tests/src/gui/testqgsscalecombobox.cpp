@@ -67,8 +67,7 @@ void TestQgsScaleComboBox::cleanupTestCase()
 }
 
 void TestQgsScaleComboBox::init()
-{
-}
+{}
 
 void TestQgsScaleComboBox::basic()
 {
@@ -372,8 +371,7 @@ void TestQgsScaleComboBox::enterScale( double scale, QgsScaleComboBox *widget )
 }
 
 void TestQgsScaleComboBox::cleanup()
-{
-}
+{}
 
 void TestQgsScaleComboBox::testLocale()
 {

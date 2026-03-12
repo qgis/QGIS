@@ -29,8 +29,7 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
   , mShadowBias( other.mShadowBias )
   , mShadowMapResolution( other.mShadowMapResolution )
-{
-}
+{}
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
 {

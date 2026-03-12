@@ -89,9 +89,7 @@ int main( int argc, char *argv[] )
   for ( int i = 1; i < argc; ++i )
   {
     const QString arg( argv[i] );
-    if ( arg == "--json"_L1
-         || arg == "--verbose"_L1
-         || arg == "--no-python"_L1 )
+    if ( arg == "--json"_L1 || arg == "--verbose"_L1 || arg == "--no-python"_L1 )
     {
       // ignore these arguments
       continue;

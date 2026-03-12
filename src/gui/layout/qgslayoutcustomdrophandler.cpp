@@ -21,8 +21,7 @@
 
 QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, const QString & )
 {

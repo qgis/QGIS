@@ -52,25 +52,29 @@ QString QgsOrthogonalizeAlgorithm::groupId() const
 
 QString QgsOrthogonalizeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Takes a line or polygon layer and attempts to orthogonalize "
-                      "all the geometries in the layer. This process shifts the nodes "
-                      "in the geometries to try to make every angle in the geometry "
-                      "either a right angle or a straight line.\n\n"
-                      "The angle tolerance parameter is used to specify the maximum "
-                      "deviation from a right angle or straight line a node can have "
-                      "for it to be adjusted. Smaller tolerances mean that only nodes "
-                      "which are already closer to right angles will be adjusted, and "
-                      "larger tolerances mean that nodes which deviate further from "
-                      "right angles will also be adjusted.\n\n"
-                      "The algorithm is iterative. Setting a larger number for the maximum "
-                      "iterations will result in a more orthogonal geometry at the cost of "
-                      "extra processing time." );
+  return QObject::tr(
+    "Takes a line or polygon layer and attempts to orthogonalize "
+    "all the geometries in the layer. This process shifts the nodes "
+    "in the geometries to try to make every angle in the geometry "
+    "either a right angle or a straight line.\n\n"
+    "The angle tolerance parameter is used to specify the maximum "
+    "deviation from a right angle or straight line a node can have "
+    "for it to be adjusted. Smaller tolerances mean that only nodes "
+    "which are already closer to right angles will be adjusted, and "
+    "larger tolerances mean that nodes which deviate further from "
+    "right angles will also be adjusted.\n\n"
+    "The algorithm is iterative. Setting a larger number for the maximum "
+    "iterations will result in a more orthogonal geometry at the cost of "
+    "extra processing time."
+  );
 }
 
 QString QgsOrthogonalizeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Takes a line or polygon layer and attempts to orthogonalize "
-                      "all the geometries in the layer." );
+  return QObject::tr(
+    "Takes a line or polygon layer and attempts to orthogonalize "
+    "all the geometries in the layer."
+  );
 }
 
 QString QgsOrthogonalizeAlgorithm::outputName() const
@@ -90,18 +94,15 @@ QgsOrthogonalizeAlgorithm *QgsOrthogonalizeAlgorithm::createInstance() const
 
 void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 {
-  auto angleToleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE_TOLERANCE"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 45.0 );
+  auto angleToleranceParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE_TOLERANCE"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 45.0 );
   angleToleranceParam->setIsDynamic( true );
   angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Angle tolerance"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
   angleToleranceParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( angleToleranceParam.release() );
 
-  auto maxIterations = std::make_unique<QgsProcessingParameterNumber>(
-    u"MAX_ITERATIONS"_s,
-    QObject::tr( "Maximum algorithm iterations" ),
-    Qgis::ProcessingNumberParameterType::Integer,
-    1000, false, 1, 10000
-  );
+  auto maxIterations
+    = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ITERATIONS"_s, QObject::tr( "Maximum algorithm iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1000, false, 1, 10000 );
   maxIterations->setFlags( maxIterations->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maxIterations.release() );
 }

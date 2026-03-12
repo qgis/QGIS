@@ -181,24 +181,31 @@ void QgsProjectElevationSettingsWidget::updateVerticalCrsOptions()
   {
     case Qgis::CrsType::Compound:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a compound CRS (%1), so the project's vertical CRS is the vertical component of this CRS (%2)." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProject::instance()->verticalCrs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a compound CRS (%1), so the project's vertical CRS is the vertical component of this CRS (%2)." )
+                                    .arg( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProject::instance()->verticalCrs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geographic3d:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Project coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Geocentric:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Project coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Projected:
       if ( QgsProject::instance()->crs().hasVerticalAxis() )
       {
         mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-        mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
+        mCrsDisabledLabel->setText(
+          tr( "Project coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() )
+        );
         break;
       }
       [[fallthrough]];

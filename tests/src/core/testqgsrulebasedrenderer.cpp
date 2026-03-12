@@ -45,7 +45,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
   public:
     TestQgsRuleBasedRenderer()
-      : QgsTest( u"Rule based renderer tests"_s ) {}
+      : QgsTest( u"Rule based renderer tests"_s )
+    {}
 
   private slots:
 
@@ -56,10 +57,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsApplication::initQgis();
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void test_load_xml()
     {
@@ -188,10 +186,15 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QCOMPARE( makeFilter( 2 ), QString( "(0) OR (1)" ) );
       QCOMPARE( makeFilter( 3 ), QString( "(0) OR (1) OR (2)" ) );
       QCOMPARE( makeFilter( 10 ), QString( "(0) OR (1) OR (2) OR (3) OR (4) OR (5) OR (6) OR (7) OR (8) OR (9)" ) );
-      QCOMPARE( makeFilter( 51 ), QString( "(((((0) OR ((1) OR (2))) OR ((3) OR ((4) OR (5)))) OR (((6) OR ((7) OR (8))) OR ((9) OR ((10) OR (11))))) OR "
-                                           "((((12) OR ((13) OR (14))) OR ((15) OR ((16) OR (17)))) OR (((18) OR ((19) OR (20))) OR (((21) OR (22)) OR ((23) OR (24)))))) OR "
-                                           "(((((25) OR ((26) OR (27))) OR ((28) OR ((29) OR (30)))) OR (((31) OR ((32) OR (33))) OR (((34) OR (35)) OR ((36) OR (37))))) OR "
-                                           "((((38) OR ((39) OR (40))) OR ((41) OR ((42) OR (43)))) OR (((44) OR ((45) OR (46))) OR (((47) OR (48)) OR ((49) OR (50))))))" ) );
+      QCOMPARE(
+        makeFilter( 51 ),
+        QString(
+          "(((((0) OR ((1) OR (2))) OR ((3) OR ((4) OR (5)))) OR (((6) OR ((7) OR (8))) OR ((9) OR ((10) OR (11))))) OR "
+          "((((12) OR ((13) OR (14))) OR ((15) OR ((16) OR (17)))) OR (((18) OR ((19) OR (20))) OR (((21) OR (22)) OR ((23) OR (24)))))) OR "
+          "(((((25) OR ((26) OR (27))) OR ((28) OR ((29) OR (30)))) OR (((31) OR ((32) OR (33))) OR (((34) OR (35)) OR ((36) OR (37))))) OR "
+          "((((38) OR ((39) OR (40))) OR ((41) OR ((42) OR (43)))) OR (((44) OR ((45) OR (46))) OR (((47) OR (48)) OR ((49) OR (50))))))"
+        )
+      );
     }
 
     void testElse()
@@ -1104,20 +1107,18 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       QgsFeature f;
       f.setGeometry( QgsGeometry::fromWkt( "Point(-100 30)" ) );
-      f.setEmbeddedSymbol(
-        QgsMarkerSymbol::createSimple( { { "name", "triangle" }, { "size", 10 }, { "color", "#ff0000" }, { "outline_style", "no" } } ).release()
-      );
+      f.setEmbeddedSymbol( QgsMarkerSymbol::createSimple( { { "name", "triangle" }, { "size", 10 }, { "color", "#ff0000" }, { "outline_style", "no" } } ).release() );
       QVERIFY( layer->dataProvider()->addFeature( f ) );
       f.setGeometry( QgsGeometry::fromWkt( "Point(-110 40)" ) );
-      f.setEmbeddedSymbol(
-        QgsMarkerSymbol::createSimple( { { "name", "square" }, { "size", 7 }, { "color", "#00ff00" }, { "outline_style", "no" } } ).release()
-      );
+      f.setEmbeddedSymbol( QgsMarkerSymbol::createSimple( { { "name", "square" }, { "size", 7 }, { "color", "#00ff00" }, { "outline_style", "no" } } ).release() );
       QVERIFY( layer->dataProvider()->addFeature( f ) );
       f.setGeometry( QgsGeometry::fromWkt( "Point(-90 50)" ) );
       f.setEmbeddedSymbol( nullptr );
       QVERIFY( layer->dataProvider()->addFeature( f ) );
 
-      QgsEmbeddedSymbolRenderer *renderer = new QgsEmbeddedSymbolRenderer( QgsMarkerSymbol::createSimple( { { "name", "star" }, { "size", 10 }, { "color", "#ff00ff" }, { "outline_style", "no" } } ).release() );
+      QgsEmbeddedSymbolRenderer *renderer = new QgsEmbeddedSymbolRenderer(
+        QgsMarkerSymbol::createSimple( { { "name", "star" }, { "size", 10 }, { "color", "#ff00ff" }, { "outline_style", "no" } } ).release()
+      );
       layer->setRenderer( renderer );
 
       std::unique_ptr<QgsRuleBasedRenderer> rule_based( QgsRuleBasedRenderer::convertFromRenderer( renderer, layer.get() ) );
@@ -1185,12 +1186,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       rootRule->appendChild( rule4 );
       rootRule->appendChild( rule5 );
 
-      QSet<QString> expected = QSet<QString> {
-        rule2->ruleKey(),
-        rule3->ruleKey(),
-        rule4->ruleKey(),
-        rule5->ruleKey()
-      };
+      QSet<QString> expected = QSet<QString> { rule2->ruleKey(), rule3->ruleKey(), rule4->ruleKey(), rule5->ruleKey() };
       QCOMPARE( renderer->legendKeys(), expected );
     }
 

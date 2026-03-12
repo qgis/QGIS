@@ -205,8 +205,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 
   private:
 #ifdef SIP_RUN
-    QgsFeaturePool( const QgsFeaturePool &other )
-    {}
+    QgsFeaturePool( const QgsFeaturePool &other ) {}
 #endif
 
     static const int CACHE_SIZE = 1000;

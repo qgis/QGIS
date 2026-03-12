@@ -56,8 +56,7 @@ namespace
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
   , mMetadata( mResultSet->getMetaDataUnicode() )
-{
-}
+{}
 
 QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString &sql )
 {

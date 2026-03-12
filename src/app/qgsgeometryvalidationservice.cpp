@@ -90,22 +90,16 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {
-      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::checkConfigurationChanged, this, [this, vectorLayer]() {
-        enableLayerChecks( vectorLayer );
-      } );
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::checkConfigurationChanged, this, [this, vectorLayer]() { enableLayerChecks( vectorLayer ); } );
 
-      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]() {
-        enableLayerChecks( vectorLayer );
-      } );
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]() { enableLayerChecks( vectorLayer ); } );
 
       connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]() {
         cleanupLayerChecks( vectorLayer );
         mLayerChecks.remove( vectorLayer );
       } );
 
-      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]() {
-        enableLayerChecks( vectorLayer );
-      } );
+      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]() { enableLayerChecks( vectorLayer ); } );
     }
   }
 }
@@ -306,26 +300,13 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     // Also connect to the beforeCommitChanges signal, so we can trigger topology checks
     // We keep all connections around in a list, so if in the future all checks get disabled
     // we can kill those connections to be sure the layer does not even get a tiny bit of overhead.
-    checkInformation.connections
-      << connect( layer, &QgsVectorLayer::featureAdded, this, [this, layer]( QgsFeatureId fid ) {
-           onFeatureAdded( layer, fid );
-         } );
-    checkInformation.connections
-      << connect( layer, &QgsVectorLayer::geometryChanged, this, [this, layer]( QgsFeatureId fid, const QgsGeometry &geometry ) {
-           onGeometryChanged( layer, fid, geometry );
-         } );
-    checkInformation.connections
-      << connect( layer, &QgsVectorLayer::featureDeleted, this, [this, layer]( QgsFeatureId fid ) {
-           onFeatureDeleted( layer, fid );
-         } );
-    checkInformation.connections
-      << connect( layer, &QgsVectorLayer::beforeCommitChanges, this, [this, layer]( bool stopEditing ) {
-           onBeforeCommitChanges( layer, stopEditing );
-         } );
-    checkInformation.connections
-      << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]() {
-           onEditingStopped( layer );
-         } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::featureAdded, this, [this, layer]( QgsFeatureId fid ) { onFeatureAdded( layer, fid ); } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::geometryChanged, this, [this, layer]( QgsFeatureId fid, const QgsGeometry &geometry ) {
+      onGeometryChanged( layer, fid, geometry );
+    } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::featureDeleted, this, [this, layer]( QgsFeatureId fid ) { onFeatureDeleted( layer, fid ); } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::beforeCommitChanges, this, [this, layer]( bool stopEditing ) { onBeforeCommitChanges( layer, stopEditing ); } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]() { onEditingStopped( layer ); } );
   }
 }
 

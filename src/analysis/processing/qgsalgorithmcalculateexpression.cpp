@@ -76,8 +76,7 @@ void QgsCalculateExpressionAlgorithm::initAlgorithm( const QVariantMap & )
   // we limit the available sources for this parameter to just precalculated expressions -- otherwise it's confusing if we allow users
   // to enter a literal value for this parameter, as they could enter an expression in there and expect it to be evaluated.
   inputParameter->setMetadata(
-    { QVariantMap( { { u"model_widget"_s, QVariantMap( { { u"accepted_sources"_s, QVariantList { static_cast<int>( Qgis::ProcessingModelChildParameterSource::Expression ) } } } ) } } )
-    }
+    { QVariantMap( { { u"model_widget"_s, QVariantMap( { { u"accepted_sources"_s, QVariantList { static_cast<int>( Qgis::ProcessingModelChildParameterSource::Expression ) } } } ) } } ) }
   );
   addParameter( inputParameter.release() );
 

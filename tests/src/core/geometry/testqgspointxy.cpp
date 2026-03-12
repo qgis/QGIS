@@ -35,7 +35,8 @@ class TestQgsPointXY : public QgsTest
     Q_OBJECT
   public:
     TestQgsPointXY()
-      : QgsTest( u"QgsPointXY Tests"_s ) {}
+      : QgsTest( u"QgsPointXY Tests"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

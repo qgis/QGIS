@@ -77,8 +77,10 @@ QString QgsRasterLayerPropertiesAlgorithm::shortDescription() const
 
 QString QgsRasterLayerPropertiesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm returns basic properties of the given raster layer, including the extent, size in pixels and dimensions of pixels (in map units).\n\n"
-                      "If an optional band number is specified then the NoData value for the selected band will also be returned." );
+  return QObject::tr(
+    "This algorithm returns basic properties of the given raster layer, including the extent, size in pixels and dimensions of pixels (in map units).\n\n"
+    "If an optional band number is specified then the NoData value for the selected band will also be returned."
+  );
 }
 
 QgsRasterLayerPropertiesAlgorithm *QgsRasterLayerPropertiesAlgorithm::createInstance() const

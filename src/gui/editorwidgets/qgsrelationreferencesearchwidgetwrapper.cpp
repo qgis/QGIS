@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
   , mCanvas( canvas )
-{
-}
+{}
 
 bool QgsRelationReferenceSearchWidgetWrapper::applyDirectly()
 {
@@ -189,8 +188,7 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expr
   }
   else
   {
-    str = u"%1 = '%3'"_s
-            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+    str = u"%1 = '%3'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   }
   mExpression = str;
 }

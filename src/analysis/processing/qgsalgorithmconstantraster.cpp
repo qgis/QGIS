@@ -55,11 +55,13 @@ QString QgsConstantRasterAlgorithm::groupId() const
 
 QString QgsConstantRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell "
-                      "size filled with a single constant value.\n"
-                      "Additionally an output data type can be specified. "
-                      "The algorithm will abort if a value has been entered that "
-                      "cannot be represented by the selected output raster data type." );
+  return QObject::tr(
+    "This algorithm generates a raster layer for a given extent and cell "
+    "size filled with a single constant value.\n"
+    "Additionally an output data type can be specified. "
+    "The algorithm will abort if a value has been entered that "
+    "cannot be represented by the selected output raster data type."
+  );
 }
 
 QString QgsConstantRasterAlgorithm::shortDescription() const
@@ -80,16 +82,11 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Constant value" ), Qgis::ProcessingNumberParameterType::Double, 1, false ) );
 
   QStringList rasterDataTypes; //currently supported raster data types that can be handled QgsRasterBlock::writeValue()
-  rasterDataTypes << u"Byte"_s
-                  << u"Integer16"_s
-                  << u"Unsigned Integer16"_s
-                  << u"Integer32"_s
-                  << u"Unsigned Integer32"_s
-                  << u"Float32"_s
-                  << u"Float64"_s;
+  rasterDataTypes << u"Byte"_s << u"Integer16"_s << u"Unsigned Integer16"_s << u"Integer32"_s << u"Unsigned Integer32"_s << u"Float32"_s << u"Float64"_s;
 
   //QGIS3: parameter set to Float32 by default so that existing models/scripts don't break
-  std::unique_ptr<QgsProcessingParameterDefinition> rasterTypeParameter = std::make_unique<QgsProcessingParameterEnum>( u"OUTPUT_TYPE"_s, QObject::tr( "Output raster data type" ), rasterDataTypes, false, 5, false );
+  std::unique_ptr<QgsProcessingParameterDefinition> rasterTypeParameter
+    = std::make_unique<QgsProcessingParameterEnum>( u"OUTPUT_TYPE"_s, QObject::tr( "Output raster data type" ), rasterDataTypes, false, 5, false );
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
@@ -132,37 +129,57 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
     case 0:
       rasterDataType = Qgis::DataType::Byte;
       if ( value < std::numeric_limits<quint8>::min() || value > std::numeric_limits<quint8>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint8>::min() ).arg( std::numeric_limits<quint8>::max() ).arg( "Byte"_L1 ) );
+        throw QgsProcessingException(
+          QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint8>::min() ).arg( std::numeric_limits<quint8>::max() ).arg( "Byte"_L1 )
+        );
       if ( fractpart > 0 )
-        feedback->reportError( QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Byte"_L1 ) );
+        feedback->reportError(
+          QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Byte"_L1 )
+        );
       break;
     case 1:
       rasterDataType = Qgis::DataType::Int16;
       if ( value < std::numeric_limits<qint16>::min() || value > std::numeric_limits<qint16>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2" ).arg( std::numeric_limits<qint16>::min() ).arg( std::numeric_limits<qint16>::max() ).arg( "Integer16"_L1 ) );
+        throw QgsProcessingException(
+          QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2" ).arg( std::numeric_limits<qint16>::min() ).arg( std::numeric_limits<qint16>::max() ).arg( "Integer16"_L1 )
+        );
       if ( fractpart > 0 )
-        feedback->reportError( QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Integer16"_L1 ) );
+        feedback->reportError(
+          QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Integer16"_L1 )
+        );
       break;
     case 2:
       rasterDataType = Qgis::DataType::UInt16;
       if ( value < std::numeric_limits<quint16>::min() || value > std::numeric_limits<quint16>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint16>::min() ).arg( std::numeric_limits<quint16>::max() ).arg( "Unsigned Integer16" ) );
+        throw QgsProcessingException(
+          QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint16>::min() ).arg( std::numeric_limits<quint16>::max() ).arg( "Unsigned Integer16" )
+        );
       if ( fractpart > 0 )
-        feedback->reportError( QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Unsigned Integer16"_L1 ) );
+        feedback->reportError(
+          QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Unsigned Integer16"_L1 )
+        );
       break;
     case 3:
       rasterDataType = Qgis::DataType::Int32;
       if ( value < std::numeric_limits<qint32>::min() || value > std::numeric_limits<qint32>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2" ).arg( std::numeric_limits<qint32>::min() ).arg( std::numeric_limits<qint32>::max() ).arg( "Integer32"_L1 ) );
+        throw QgsProcessingException(
+          QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2" ).arg( std::numeric_limits<qint32>::min() ).arg( std::numeric_limits<qint32>::max() ).arg( "Integer32"_L1 )
+        );
       if ( fractpart > 0 )
-        feedback->reportError( QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Integer32"_L1 ) );
+        feedback->reportError(
+          QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Integer32"_L1 )
+        );
       break;
     case 4:
       rasterDataType = Qgis::DataType::UInt32;
       if ( value < std::numeric_limits<quint32>::min() || value > std::numeric_limits<quint32>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint32>::min() ).arg( std::numeric_limits<quint32>::max() ).arg( "Unsigned Integer32"_L1 ) );
+        throw QgsProcessingException(
+          QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2" ).arg( std::numeric_limits<quint32>::min() ).arg( std::numeric_limits<quint32>::max() ).arg( "Unsigned Integer32"_L1 )
+        );
       if ( fractpart > 0 )
-        feedback->reportError( QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Unsigned Integer32"_L1 ) );
+        feedback->reportError(
+          QObject::tr( "The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted." ).arg( "Unsigned Integer32"_L1 )
+        );
       break;
     case 5:
       rasterDataType = Qgis::DataType::Float32;

@@ -314,8 +314,7 @@ QueryCostDelegate::QueryCostDelegate( int sortRole, int totalCostRole, QObject *
   : QStyledItemDelegate( parent )
   , mSortRole( sortRole )
   , mTotalCostRole( totalCostRole )
-{
-}
+{}
 
 QueryCostDelegate::~QueryCostDelegate() = default;
 

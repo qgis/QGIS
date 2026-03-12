@@ -67,12 +67,10 @@ void TestQgsBezierData::cleanupTestCase()
 }
 
 void TestQgsBezierData::init()
-{
-}
+{}
 
 void TestQgsBezierData::cleanup()
-{
-}
+{}
 
 void TestQgsBezierData::testConstructor()
 {
@@ -244,10 +242,7 @@ void TestQgsBezierData::testAsNurbsCurve()
 void TestQgsBezierData::testFromPolyBezierControlPoints()
 {
   QVector<QgsPoint> controlPoints;
-  controlPoints << QgsPoint( 0, 0 )
-                << QgsPoint( 3, 3 )
-                << QgsPoint( 7, 7 )
-                << QgsPoint( 10, 10 );
+  controlPoints << QgsPoint( 0, 0 ) << QgsPoint( 3, 3 ) << QgsPoint( 7, 7 ) << QgsPoint( 10, 10 );
 
   QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
 
@@ -284,13 +279,14 @@ void TestQgsBezierData::testFromPolyBezierControlPoints()
 void TestQgsBezierData::testFromPolyBezierControlPointsWithZM()
 {
   QVector<QgsPoint> controlPoints;
-  controlPoints << QgsPoint( 0, 0, 1.0, 10.0 )
-                << QgsPoint( 3, 3, 2.0, 20.0 )
-                << QgsPoint( 7, 7, 3.0, 30.0 )
-                << QgsPoint( 10, 10, 4.0, 40.0 )
-                << QgsPoint( 13, 7, 5.0, 50.0 )
-                << QgsPoint( 17, 3, 6.0, 60.0 )
-                << QgsPoint( 20, 0, 7.0, 70.0 );
+  controlPoints
+    << QgsPoint( 0, 0, 1.0, 10.0 )
+    << QgsPoint( 3, 3, 2.0, 20.0 )
+    << QgsPoint( 7, 7, 3.0, 30.0 )
+    << QgsPoint( 10, 10, 4.0, 40.0 )
+    << QgsPoint( 13, 7, 5.0, 50.0 )
+    << QgsPoint( 17, 3, 6.0, 60.0 )
+    << QgsPoint( 20, 0, 7.0, 70.0 );
 
   QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
 
@@ -316,10 +312,7 @@ void TestQgsBezierData::testFromPolyBezierControlPointsWithZM()
 void TestQgsBezierData::testFromPolyBezierControlPointsQgsPointXY()
 {
   QVector<QgsPointXY> controlPoints;
-  controlPoints << QgsPointXY( 0, 0 )
-                << QgsPointXY( 3, 3 )
-                << QgsPointXY( 7, 7 )
-                << QgsPointXY( 10, 10 );
+  controlPoints << QgsPointXY( 0, 0 ) << QgsPointXY( 3, 3 ) << QgsPointXY( 7, 7 ) << QgsPointXY( 10, 10 );
 
   QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
 
@@ -357,8 +350,12 @@ void TestQgsBezierData::testCalculateSymmetricHandles()
 
   // 2. Test static method with QVector
   QVector<QgsPoint> controlPoints;
-  controlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 )                      // Anchor 0, handle right
-                << QgsPoint( 4, 4 ) << QgsPoint( 5, 5 ) << QgsPoint( 6, 6 ); // Handle Left, Anchor 1, Handle Right
+  controlPoints
+    << QgsPoint( 0, 0 )
+    << QgsPoint( 1, 1 ) // Anchor 0, handle right
+    << QgsPoint( 4, 4 )
+    << QgsPoint( 5, 5 )
+    << QgsPoint( 6, 6 ); // Handle Left, Anchor 1, Handle Right
   // Index 3 is anchor. Index 4 should follow, Index 2 should be opposite.
   QgsBezierData::calculateSymmetricHandles( controlPoints, 3, QgsPoint( 7, 7 ) );
   QCOMPARE( controlPoints[3], QgsPoint( 5, 5 ) );

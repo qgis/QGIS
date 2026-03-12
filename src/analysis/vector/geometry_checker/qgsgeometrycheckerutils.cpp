@@ -108,16 +108,14 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryChe
   , mFeatureIt( rh.mFeatureIt )
   , mParent( rh.mParent )
   , mCurrentFeature( std::make_unique<LayerFeature>( *rh.mCurrentFeature.get() ) )
-{
-}
+{}
 
 bool QgsGeometryCheckerUtils::LayerFeature::useMapCrs() const
 {
   return mMapCrs;
 }
 QgsGeometryCheckerUtils::LayerFeatures::iterator::~iterator()
-{
-}
+{}
 
 QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::iterator::operator++( int )
 {
@@ -213,7 +211,14 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
 
 /////////////////////////////////////////////////////////////////////////////
 
-QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QgsFeatureIds> &featureIds, const QList<Qgis::GeometryType> &geometryTypes, QgsFeedback *feedback, const QgsGeometryCheckContext *context, bool useMapCrs )
+QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures(
+  const QMap<QString, QgsFeaturePool *> &featurePools,
+  const QMap<QString, QgsFeatureIds> &featureIds,
+  const QList<Qgis::GeometryType> &geometryTypes,
+  QgsFeedback *feedback,
+  const QgsGeometryCheckContext *context,
+  bool useMapCrs
+)
   : mFeaturePools( featurePools )
   , mFeatureIds( featureIds )
   , mLayerIds( featurePools.keys() )
@@ -223,7 +228,9 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
   , mUseMapCrs( useMapCrs )
 {}
 
-QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools, const QList<QString> &layerIds, const QgsRectangle &extent, const QList<Qgis::GeometryType> &geometryTypes, const QgsGeometryCheckContext *context )
+QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures(
+  const QMap<QString, QgsFeaturePool *> &featurePools, const QList<QString> &layerIds, const QgsRectangle &extent, const QList<Qgis::GeometryType> &geometryTypes, const QgsGeometryCheckContext *context
+)
   : mFeaturePools( featurePools )
   , mLayerIds( layerIds )
   , mExtent( extent )

@@ -442,7 +442,11 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
       mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
-      mIntersectAtlasCheckBox->setEnabled( mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1 && mTable->layout()->reportContext().layer() && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null );
+      mIntersectAtlasCheckBox->setEnabled(
+        mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1
+        && mTable->layout()->reportContext().layer()
+        && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null
+      );
     }
   }
 
@@ -828,7 +832,11 @@ void QgsLayoutAttributeTableWidget::changeLayer( QgsMapLayer *layer )
     mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
     mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
-    mIntersectAtlasCheckBox->setEnabled( mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1 && mTable->layout()->reportContext().layer() && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null );
+    mIntersectAtlasCheckBox->setEnabled(
+      mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1
+      && mTable->layout()->reportContext().layer()
+      && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null
+    );
   }
 }
 
@@ -986,7 +994,13 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mShowOnlyVisibleFeaturesCheckBox->setChecked( mTable->vectorLayer() && mTable->vectorLayer()->geometryType() != Qgis::GeometryType::Null && mTable->displayOnlyVisibleFeatures() );
       mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
-      mIntersectAtlasCheckBox->setEnabled( mTable->vectorLayer() && mTable->vectorLayer()->geometryType() != Qgis::GeometryType::Null && mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1 && mTable->layout()->reportContext().layer() && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null );
+      mIntersectAtlasCheckBox->setEnabled(
+        mTable->vectorLayer()
+        && mTable->vectorLayer()->geometryType() != Qgis::GeometryType::Null
+        && mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1
+        && mTable->layout()->reportContext().layer()
+        && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null
+      );
       break;
     case QgsLayoutItemAttributeTable::AtlasFeature:
       mLayerComboBox->setEnabled( false );
@@ -1018,7 +1032,11 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
       mComposerMapComboBox->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
       mComposerMapLabel->setEnabled( mShowOnlyVisibleFeaturesCheckBox->isChecked() );
-      mIntersectAtlasCheckBox->setEnabled( mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1 && mTable->layout()->reportContext().layer() && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null );
+      mIntersectAtlasCheckBox->setEnabled(
+        mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) != -1
+        && mTable->layout()->reportContext().layer()
+        && mTable->layout()->reportContext().layer()->geometryType() != Qgis::GeometryType::Null
+      );
       break;
   }
 }

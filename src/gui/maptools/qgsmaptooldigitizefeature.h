@@ -108,8 +108,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     /**
      * individual layer per digitizing session
     */
-    QgsMapLayer *mLayer
-      = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 
     /**
      * layer used before digitizing session

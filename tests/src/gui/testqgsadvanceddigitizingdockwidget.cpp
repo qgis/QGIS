@@ -56,12 +56,10 @@ void TestQgsAdvancedDigitizingDockWidget::cleanupTestCase()
 }
 
 void TestQgsAdvancedDigitizingDockWidget::init()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingDockWidget::cleanup()
-{
-}
+{}
 
 void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
 {

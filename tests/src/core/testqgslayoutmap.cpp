@@ -50,7 +50,8 @@ class TestQgsLayoutMap : public QgsTest
 
   public:
     TestQgsLayoutMap()
-      : QgsTest( u"Layout Map Tests"_s, u"composer_map"_s ) {}
+      : QgsTest( u"Layout Map Tests"_s, u"composer_map"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -492,7 +493,8 @@ void TestQgsLayoutMap::dataDefinedCrs()
   QCOMPARE( map->crs().authid(), u"EPSG:2192"_s );
 
   //test proj string variable
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapCrs, QgsProperty::fromValue( u"PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"_s ) );
+  map->dataDefinedProperties()
+    .setProperty( QgsLayoutObject::DataDefinedProperty::MapCrs, QgsProperty::fromValue( u"PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"_s ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::MapCrs );
   QCOMPARE( map->crs().toProj(), u"+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs"_s );
 }
@@ -2010,9 +2012,7 @@ void TestQgsLayoutMap::testLabelResults()
   QVERIFY( results );
   QList<QgsLabelPosition> labels = results->allLabels();
   QCOMPARE( labels.count(), 3 );
-  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition &a, const QgsLabelPosition &b ) {
-    return a.labelText.compare( b.labelText ) < 0;
-  } );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition &a, const QgsLabelPosition &b ) { return a.labelText.compare( b.labelText ) < 0; } );
   QCOMPARE( labels.at( 0 ).labelText, u"1"_s );
   QVERIFY( !labels.at( 0 ).isUnplaced );
   QCOMPARE( labels.at( 1 ).labelText, u"33333"_s );

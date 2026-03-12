@@ -128,7 +128,12 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   entity->addComponent( transform );
 
-  mNode->setExactBox3D( QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(), extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() ) );
+  // clang-format off
+  mNode->setExactBox3D(
+    QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(),
+             extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() )
+  );
+  // clang-format on
   mNode->updateParentBoundingBoxesRecursively();
 
   entity->setParent( parent );
@@ -164,8 +169,7 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mResolution( resolution )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
   , mTransformContext( transformContext )
-{
-}
+{}
 
 QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
 {

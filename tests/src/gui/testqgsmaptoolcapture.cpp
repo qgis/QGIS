@@ -52,6 +52,8 @@ class TestQgsMapToolCapture : public QObject
     void testTransientGeometrySignalTracing();
     void testTransientGeometrySignalTracingPolygon();
     void testMeasures();
+    void testUndo();
+    void testUndoDifferentCrs();
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -67,12 +69,10 @@ void TestQgsMapToolCapture::cleanupTestCase()
 }
 
 void TestQgsMapToolCapture::init()
-{
-}
+{}
 
 void TestQgsMapToolCapture::cleanup()
-{
-}
+{}
 
 void TestQgsMapToolCapture::addVertexNoLayer()
 {
@@ -499,34 +499,128 @@ void TestQgsMapToolCapture::testMeasures()
   QString area;
   QString distance;
 
-  QgsReferencedGeometry geometry( QgsGeometry::fromWkt( u"Polygon ((16565310 -3070136, 16565217 -3070603, 16565694 -3070576, 16565840 -3070228, 16565310 -3070136))"_s ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  QgsReferencedGeometry
+    geometry( QgsGeometry::fromWkt( u"Polygon ((16565310 -3070136, 16565217 -3070603, 16565694 -3070576, 16565840 -3070228, 16565310 -3070136))"_s ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
 
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QgsMapToolAdvancedDigitizing::
+    calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
   QCOMPARE( area, QString() );
   QCOMPARE( distance, QString() );
 
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Cartesian, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QgsMapToolAdvancedDigitizing::
+    calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Cartesian, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
   QCOMPARE( area.left( 5 ), u"166,5"_s );
   QCOMPARE( area.right( 2 ), u"m\u00B2"_s );
   QCOMPARE( distance, QString() );
 
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Cartesian, area, distance );
+  QgsMapToolAdvancedDigitizing::
+    calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Cartesian, area, distance );
   QCOMPARE( area, QString() );
   QCOMPARE( distance.left( 4 ), u"1,66"_s );
   QCOMPARE( distance.right( 1 ), u"m"_s );
 
   QgsProject::instance()->setEllipsoid( u"EPSG:7030"_s );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::Hectares );
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Ellipsoidal, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QgsMapToolAdvancedDigitizing::
+    calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Ellipsoidal, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
   QCOMPARE( area.left( 5 ), u"16.65"_s );
   QCOMPARE( area.right( 2 ), u"ha"_s );
   QCOMPARE( distance, QString() );
 
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Kilometers );
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Ellipsoidal, area, distance );
+  QgsMapToolAdvancedDigitizing::
+    calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Ellipsoidal, area, distance );
   QCOMPARE( area, QString() );
   QCOMPARE( distance.left( 5 ), u"1.669"_s );
   QCOMPARE( distance.right( 2 ), u"km"_s );
+}
+
+void TestQgsMapToolCapture::testUndo()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 2 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+
+  tool.clean();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+  tool.undo();
+}
+
+void TestQgsMapToolCapture::testUndoDifferentCrs()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  // Create a layer with different CRS
+  QgsVectorLayer *layer = new QgsVectorLayer( u"LineString?crs=EPSG:3857"_s, u"test_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 2 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+
+  tool.clean();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+  tool.undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )

@@ -61,7 +61,8 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mGeometryTypeComboBox->addItem( QString(), QVariant() );
   mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Point ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Point ), static_cast<int>( Qgis::GeometryType::Point ) );
   mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Line ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Line ), static_cast<int>( Qgis::GeometryType::Line ) );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast<int>( Qgis::GeometryType::Polygon ) );
+  mGeometryTypeComboBox
+    ->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast<int>( Qgis::GeometryType::Polygon ) );
   // Note: unknown geometry is mapped to null and missing from the combo
   mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Null ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Null ), static_cast<int>( Qgis::GeometryType::Null ) );
   mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( u"mIconRaster.svg"_s ), tr( "Raster" ), QVariant() );
@@ -143,13 +144,9 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     }
   } );
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [this]( const QList<QgsMapLayer *> & ) {
-    updateExtentFilter( mExtentFilterComboBox->currentIndex() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [this]( const QList<QgsMapLayer *> & ) { updateExtentFilter( mExtentFilterComboBox->currentIndex() ); } );
 
-  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [this]( const QStringList & ) {
-    updateExtentFilter( mExtentFilterComboBox->currentIndex() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [this]( const QStringList & ) { updateExtentFilter( mExtentFilterComboBox->currentIndex() ); } );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayerMetadataSearchWidget::showHelp );
 }
@@ -158,9 +155,7 @@ void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
 {
   if ( newMapCanvas && mapCanvas() != newMapCanvas )
   {
-    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [this] {
-      updateExtentFilter( mExtentFilterComboBox->currentIndex() );
-    } );
+    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [this] { updateExtentFilter( mExtentFilterComboBox->currentIndex() ); } );
   }
   QgsAbstractDataSourceWidget::setMapCanvas( newMapCanvas );
 }
@@ -200,7 +195,9 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
   {
     for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
     {
-      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast<int>( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>() };
+      const QgsLayerMetadataProviderResult metadataResult {
+        mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast<int>( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>()
+      };
 
       QString layerName = metadataResult.title();
       if ( layerName.isEmpty() )

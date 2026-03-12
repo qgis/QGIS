@@ -38,7 +38,8 @@ class TestQgsRasterContourRenderer : public QgsTest
 
   public:
     TestQgsRasterContourRenderer()
-      : QgsTest( u"Raster Contour Renderer Tests"_s ) {}
+      : QgsTest( u"Raster Contour Renderer Tests"_s )
+    {}
 
   private:
     QString mDataDir;

@@ -40,7 +40,9 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return u"WMS/WMTS"_s; } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddWmsLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsWMSSourceSelect( parent, fl, widgetMode );
     }
@@ -53,7 +55,9 @@ class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return u"XYZ"_s; } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddXyzLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsXyzSourceSelect( parent, fl, widgetMode );
     }
@@ -63,11 +67,9 @@ class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
   public:
     QgsXyzSourceWidgetProvider()
-      : QgsProviderSourceWidgetProvider() {}
-    QString providerKey() const override
-    {
-      return u"xyz"_s;
-    }
+      : QgsProviderSourceWidgetProvider()
+    {}
+    QString providerKey() const override { return u"xyz"_s; }
     bool canHandleLayer( QgsMapLayer *layer ) const override
     {
       if ( layer->providerType() != "wms"_L1 )
@@ -108,9 +110,7 @@ QList<QgsSourceSelectProvider *> QgsWmsProviderGuiMetadata::sourceSelectProvider
 
 QList<QgsDataItemGuiProvider *> QgsWmsProviderGuiMetadata::dataItemGuiProviders()
 {
-  return QList<QgsDataItemGuiProvider *>()
-         << new QgsWmsDataItemGuiProvider
-         << new QgsXyzDataItemGuiProvider;
+  return QList<QgsDataItemGuiProvider *>() << new QgsWmsDataItemGuiProvider << new QgsXyzDataItemGuiProvider;
 }
 
 QList<QgsProviderSourceWidgetProvider *> QgsWmsProviderGuiMetadata::sourceWidgetProviders()

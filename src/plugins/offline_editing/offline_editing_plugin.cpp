@@ -43,8 +43,7 @@ static const QString sPluginIcon = u":/offline_editing/offline_editing_copy.png"
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-{
-}
+{}
 
 QgsOfflineEditingPlugin::~QgsOfflineEditingPlugin()
 {

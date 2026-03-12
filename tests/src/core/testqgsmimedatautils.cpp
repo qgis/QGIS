@@ -24,8 +24,10 @@
 
 using namespace Qt::StringLiterals;
 
-const QString TEST_ENCODED_DATA( "raster:wms:A Fancy WMS From Ciriè City:crs=EPSG\\:2036&dpiMode=7&format=image/png&layers=lidar&styles=default"
-                                 "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ:/home/me/my data.jpg" );
+const QString TEST_ENCODED_DATA(
+  "raster:wms:A Fancy WMS From Ciriè City:crs=EPSG\\:2036&dpiMode=7&format=image/png&layers=lidar&styles=default"
+  "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ:/home/me/my data.jpg"
+);
 
 class TestQgsMimeDataUtils : public QObject
 {
@@ -56,13 +58,11 @@ void TestQgsMimeDataUtils::cleanupTestCase()
 }
 
 void TestQgsMimeDataUtils::init()
-{
-}
+{}
 
 
 void TestQgsMimeDataUtils::cleanup()
-{
-}
+{}
 
 void TestQgsMimeDataUtils::testEncodeDecode()
 {

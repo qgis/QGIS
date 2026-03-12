@@ -103,7 +103,9 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
 
 void QgsNewOgrConnection::testConnection()
 {
-  QString uri = QgsGdalGuiUtils::createDatabaseURI( cmbDatabaseTypes->currentText(), txtHost->text(), txtDatabase->text(), txtPort->text(), mAuthSettingsDatabase->configId(), mAuthSettingsDatabase->username(), mAuthSettingsDatabase->password(), true );
+  QString uri = QgsGdalGuiUtils::createDatabaseURI(
+    cmbDatabaseTypes->currentText(), txtHost->text(), txtDatabase->text(), txtPort->text(), mAuthSettingsDatabase->configId(), mAuthSettingsDatabase->username(), mAuthSettingsDatabase->password(), true
+  );
   QgsDebugMsgLevel( "Connecting using uri = " + uri, 2 );
   OGRRegisterAll();
   OGRDataSourceH poDS;
@@ -141,7 +143,10 @@ void QgsNewOgrConnection::accept()
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) && settings.contains( baseKey + txtName->text() + "/host" ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() )
+       && settings.contains( baseKey + txtName->text() + "/host" )
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel )
+            == QMessageBox::Cancel )
   {
     return;
   }

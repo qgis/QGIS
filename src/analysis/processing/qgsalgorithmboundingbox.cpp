@@ -55,7 +55,9 @@ QString QgsBoundingBoxAlgorithm::outputName() const
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) + u"\n\n"_s + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." )
+         + u"\n\n"_s
+         + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QString QgsBoundingBoxAlgorithm::shortDescription() const
@@ -87,19 +89,13 @@ QgsFeatureList QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &featur
     const QgsGeometry outputGeometry = QgsGeometry::fromRect( bounds );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
-    attrs << bounds.width()
-          << bounds.height()
-          << bounds.area()
-          << bounds.perimeter();
+    attrs << bounds.width() << bounds.height() << bounds.area() << bounds.perimeter();
     f.setAttributes( attrs );
   }
   else
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant() << QVariant();
     f.setAttributes( attrs );
   }
   return QgsFeatureList() << f;

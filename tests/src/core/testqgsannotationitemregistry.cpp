@@ -36,32 +36,20 @@ class TestItem : public QgsAnnotationItem
   public:
     TestItem()
       : QgsAnnotationItem()
-    {
-    }
+    {}
 
     static QgsAnnotationItem *create() { return new TestItem(); }
 
     //implement pure virtual methods
     QString type() const override { return u"test_item"_s; }
 
-    void render( QgsRenderContext &, QgsFeedback * ) override
-    {
-    }
+    void render( QgsRenderContext &, QgsFeedback * ) override {}
 
-    TestItem *clone() const override
-    {
-      return new TestItem();
-    }
+    TestItem *clone() const override { return new TestItem(); }
 
-    bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override
-    {
-      return true;
-    }
+    bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override { return true; }
 
-    bool readXml( const QDomElement &, const QgsReadWriteContext & ) override
-    {
-      return true;
-    }
+    bool readXml( const QDomElement &, const QgsReadWriteContext & ) override { return true; }
 
     using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override { return QgsRectangle(); }
@@ -96,12 +84,10 @@ void TestQgsAnnotationItemRegistry::cleanupTestCase()
 }
 
 void TestQgsAnnotationItemRegistry::init()
-{
-}
+{}
 
 void TestQgsAnnotationItemRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsAnnotationItemRegistry::metadata()
 {

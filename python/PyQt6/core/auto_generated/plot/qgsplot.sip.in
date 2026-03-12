@@ -136,6 +136,15 @@ Writes the plot's properties into an XML ``element``.
 Reads the plot's properties from an XML ``element``.
 %End
 
+    virtual void initFromPlot( const QgsPlot *plot );
+%Docstring
+Initializes properties of this plot from an existing ``plot``,
+transferring all applicable settings. Subclasses should override this
+method and call the base class implementation first.
+
+.. versionadded:: 4.0
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the plot property definitions.
@@ -413,6 +422,7 @@ Returns the line symbol used to render the major lines in the axis grid.
 .. seealso:: :py:func:`setGridMajorSymbol`
 %End
 
+
     void setGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
 Sets the ``symbol`` used to render the major lines in the axis grid.
@@ -428,6 +438,7 @@ Returns the line symbol used to render the minor lines in the axis grid.
 
 .. seealso:: :py:func:`setGridMinorSymbol`
 %End
+
 
     void setGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
@@ -512,6 +523,13 @@ Sets the ``placement`` for the axis label suffixes.
 .. seealso:: :py:func:`setLabelSuffix`
 
 .. versionadded:: 3.32
+%End
+
+    static void copyProperties( const QgsPlotAxis &source, QgsPlotAxis &destination );
+%Docstring
+Copies all properties from ``source`` axis to ``destination`` axis.
+
+.. versionadded:: 4.0
 %End
 
   private:
@@ -607,6 +625,14 @@ Returns the margins of the plot area (in millimeters)
 Sets the ``margins`` of the plot area (in millimeters)
 
 .. seealso:: :py:func:`setMargins`
+%End
+
+    void copyCommonProperties( const Qgs2DPlot *other );
+%Docstring
+Copies all Qgs2DPlot-level properties (size, margins, data-defined
+properties) from ``other`` to this plot.
+
+.. versionadded:: 4.0
 %End
 
   protected:
@@ -754,6 +780,7 @@ Returns the fill symbol used to render the background of the chart.
 .. seealso:: :py:func:`setChartBackgroundSymbol`
 %End
 
+
     void setChartBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
 Sets the fill ``symbol`` used to render the background of the chart.
@@ -769,6 +796,7 @@ Returns the symbol used to render the border of the chart.
 
 .. seealso:: :py:func:`setChartBorderSymbol`
 %End
+
 
     void setChartBorderSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
@@ -787,6 +815,14 @@ Returns whether the X and Y axes are flipped.
     void setFlipAxes( bool flipAxes );
 %Docstring
 Sets whether the X and Y axes are flipped.
+%End
+
+    void copyCommonProperties( const Qgs2DXyPlot *other );
+%Docstring
+Copies all Qgs2DXyPlot-level properties (axis ranges, axes, flip state,
+background and border symbols) from ``other`` to this plot.
+
+.. versionadded:: 4.0
 %End
 
   protected:

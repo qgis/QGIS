@@ -37,8 +37,7 @@ class TestQgsGdalGuiUtils : public QObject
 
 TestQgsGdalGuiUtils::TestQgsGdalGuiUtils()
   : QObject()
-{
-}
+{}
 
 void TestQgsGdalGuiUtils::initTestCase()
 {

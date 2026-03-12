@@ -65,7 +65,28 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    static const QList<Qgis::WkbType> types { Qgis::WkbType::Point, Qgis::WkbType::LineString, Qgis::WkbType::LineStringZ, Qgis::WkbType::LineStringM, Qgis::WkbType::LineStringZM, Qgis::WkbType::Polygon, Qgis::WkbType::PolygonZ, Qgis::WkbType::PolygonM, Qgis::WkbType::PolygonZM, Qgis::WkbType::MultiPoint, Qgis::WkbType::MultiPointZ, Qgis::WkbType::MultiPointM, Qgis::WkbType::MultiPointZM, Qgis::WkbType::MultiLineString, Qgis::WkbType::MultiLineStringZ, Qgis::WkbType::MultiLineStringM, Qgis::WkbType::MultiLineStringZM, Qgis::WkbType::MultiPolygon, Qgis::WkbType::MultiPolygonZ, Qgis::WkbType::MultiPolygonM, Qgis::WkbType::MultiPolygonZM, Qgis::WkbType::NoGeometry };
+    static const QList<Qgis::WkbType> types { Qgis::WkbType::Point,
+                                              Qgis::WkbType::LineString,
+                                              Qgis::WkbType::LineStringZ,
+                                              Qgis::WkbType::LineStringM,
+                                              Qgis::WkbType::LineStringZM,
+                                              Qgis::WkbType::Polygon,
+                                              Qgis::WkbType::PolygonZ,
+                                              Qgis::WkbType::PolygonM,
+                                              Qgis::WkbType::PolygonZM,
+                                              Qgis::WkbType::MultiPoint,
+                                              Qgis::WkbType::MultiPointZ,
+                                              Qgis::WkbType::MultiPointM,
+                                              Qgis::WkbType::MultiPointZM,
+                                              Qgis::WkbType::MultiLineString,
+                                              Qgis::WkbType::MultiLineStringZ,
+                                              Qgis::WkbType::MultiLineStringM,
+                                              Qgis::WkbType::MultiLineStringZM,
+                                              Qgis::WkbType::MultiPolygon,
+                                              Qgis::WkbType::MultiPolygonZ,
+                                              Qgis::WkbType::MultiPolygonM,
+                                              Qgis::WkbType::MultiPolygonZM,
+                                              Qgis::WkbType::NoGeometry };
     for ( Qgis::WkbType type : types )
     {
       cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), static_cast<quint32>( type ) );
@@ -261,8 +282,7 @@ void QgsPgSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsPgSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                  .arg( cmbConnections->currentText() );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -453,9 +473,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
 
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType, this, &QgsPgSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished, this, &QgsPgSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [this]( int i, int n ) {
-    mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
-  } );
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [this]( int i, int n ) { mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n ); } );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage, this, &QgsPgSourceSelect::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );

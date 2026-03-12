@@ -19,6 +19,7 @@
 #include "qgsfocuswatcher.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsunittypes.h"
 
 #include <QEnterEvent>
@@ -40,7 +41,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   setAttribute( Qt::WA_TransparentForMouseEvents );
   adjustSize();
 
-  setActive( QgsSettings().value( u"/Cad/Floater"_s, false ).toBool() );
+  setActive( QgsSettingsRegistryGui::settingsCadFloaterActive->value() );
 
   hideIfDisabled();
 
@@ -129,8 +130,12 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
   connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
   connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+  } );
+  connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+  } );
 
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
   connect( xWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
@@ -210,7 +215,7 @@ Qgis::CadMeasurementDisplayType QgsAdvancedDigitizingFloater::itemMeasurementDis
 
 void QgsAdvancedDigitizingFloater::setActive( bool active )
 {
-  QgsSettings().setValue( u"/Cad/Floater"_s, active );
+  QgsSettingsRegistryGui::settingsCadFloaterActive->setValue( active );
 
   mActive = active;
 

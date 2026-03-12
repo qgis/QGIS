@@ -1,5 +1,130 @@
 Change history for the QGIS Project
 
+# What's new in Version 4.0 'Norrköping'?
+
+This release has following new features:
+
+- Temporal: Add new accumulate pixels setting to the represent temporal values mode
+- Map Tools: Add map tool to edit blank segments
+- Map Tools: Copy features in an array along a line
+- User Interface: New Design for the Welcome Page
+- User Interface: Unlock shipping themes through plugins
+- User Interface: Create user defined ToolBar and Menu
+- User Interface: Attribute table double click zoom
+- Symbology: Allow copying/pasting all styles from a layer to another
+- Symbology: Introduce additional grouped style categories in copy/pasting UI
+- Annotations: Brand new annotations selection tool
+- Annotations: Show text annotations in 3D map views
+- Annotations: Support rendering annotation layer markers as 3D billboards
+- Labelling: Add option to ignore whitespace when detecting label collisions
+- Labelling: Rework multipart geometry labeling
+- Labelling: Placement modes for curved label placement
+- Rendering: Introduce selective masking presets
+- 3D Features: Add an option to disable terrain export on 3D scene exports
+- 3D Features: Highlight identified features in 3d views
+- 3D Features: Cross sections: use fixed tolerance (width) and nudge left/right
+- 3D Features: Dynamic vector chunking
+- 3D Features: Render floors of extruded polygons
+- 3D Features: Add support for a 2d map overlay
+- 3D Features: Esri Scene Layers
+- 3D Features: Make orthographic camera work
+- Point Clouds: Build virtual point cloud (VPC) algorithm enhancements
+- Point Clouds: New processing algorithm: Compare point clouds (M3C2)
+- Point Clouds: Choose at what zoom level VPC will show actual points
+- Point Clouds: Add virtual point cloud remote dataset support
+- Point Clouds: Editing of virtual point clouds
+- Point Clouds: New processing algorithm: Height above ground
+- Point Clouds: New processing algorithm: Classify ground points
+- Point Clouds: New processing algorithm: Filter noise
+- Point Clouds: New processing algorithm: Transform point cloud
+- Print Layouts: Add horizontal alignment control for layout map grid annotations
+- Print Layouts: Rework handling of initial layer set and synchronization on Layout Legends
+- Print Layouts: Add data-defined control over layout map grid annotation visibility, and additional expression variables for grids
+- Print Layouts: Allow for atlas geometries to reshape the frame of map items
+- Print Layouts: Brand new pie chart plot type
+- Print Layouts: Print Layout Charts Implementation
+- Print Layouts: Add an atlas option to limit coverage layer rendering to the current feature only
+- Print Layouts: Add set extent to layer item in the map item's toolbar menu
+- Print Layouts: Brand new layout item rotation handles
+- Expressions: Add "equals" geometry function
+- Expressions: Add expression functions for working with magnetic models
+- Expressions: Add extract_degrees, extract_minutes, extract_seconds functions
+- Expressions: Add unaccent function based on PostgreSQL unaccent
+- Expressions: Add substr_count expression
+- Expressions: Add some timezone related expression functions
+- Digitising: Bézier maptool
+- Digitising: Add area and total length/perimeter CAD dock floater values
+- Digitising: Add Maptool to handle chamfer and fillet of polygons
+- Data Management: Enhanced COG support for raster exports
+- Data Management: Copy raw attribute values
+- Data Management: Allow storing Comments in QGIS Projects stored in PostgreSQL
+- Data Management: Allow named layers as temporary output
+- Data Management: Possibility to change the layer name in the layer panel when saving a scratch layer
+- Data Management: Suggest a file name when exporting layer or group as layer definition file
+- Forms and Widgets: Add the ability to preview the attributes form within the vector layer properties dialog
+- Forms and Widgets: Refine reuse of last value and introduce remembrance toggle
+- Layer Legend: Add control over whether layers are included in automatic print layout legends
+- Layer Legend: Custom Elevation Profile Sources
+- Processing: Native polygon orientation algorithms
+- Processing: Configure model components using an inline panel instead of modal dialogs
+- Processing: Add network analysis validation algorithms
+- Processing: Add feature preserving raster smoothing algorithm
+- Processing: Add native raster gaussian blur algorithm
+- Processing: Add native total curvature algorithm from the terrain analysis library
+- Processing: Expose NODATA and raster creation options for outputs in the terrain analysis tools
+- Processing: Add Dataset Identification GDAL Processing Algorithm
+- Processing: Add a way to specify the raster format in processing algorithm outputs
+- Processing: Show the feature count flowing through a model inside the model designer
+- Processing: support max-triangle-edge-length in PDAL Export to raster (TIN) algorithm
+- Processing: Model designer update
+- Processing: Allow Reproject Layer algorithm to transform Z coordinates
+- Processing: Add algorithm to create Cloud Optimized GeoTiffs from directory source
+- Processing: Add SFCGAL approximate medial axis processing algorithm
+- Processing: Scale and Resolution settings for WMS extraction
+- Processing: Add duplicate features output layer parameter to Delete duplicate geometries Algorithm
+- Processing: Add algorithms to filter parts by length/area
+- Processing: Add optional destination CRS for Package Layers algorithm
+- Processing: Package Layers algorithm - only export features intersecting a given extent
+- Processing: Unlimited model canvas size in the model designer
+- Application and Project Options: OAuth2 auto refresh
+- Application and Project Options: Project trust for embedded code enhancement
+- Application and Project Options: Elevation Profile Manager
+- Application and Project Options: Project/layer metadata localization support
+- Application and Project Options: Add project setting to enable HTML GetFeatureInfo maptip-only mode
+- Profile Plots: Add option to sync elevation profile layers with project layers
+- Profile Plots: Render point cloud as a continuous elevation line
+- Profile Plots: Show distance:elevation scale ratio in profile settings menu
+- Browser: Move multiple tables in Database to another Schema
+- Browser: Browser DB Table Comment
+- Browser: Add create or delete Spatial Index to the Manage menu in Browser
+- Data Providers: Add support for GML as a feature format for OAPIF
+- Data Providers: Allow OAPIF users to select an alternate format than GeoJSON with which to download features
+- Data Providers: Allow update and delete for Field Domains in GPKG
+- Data Providers: Save QGIS projects to PostgreSQL
+- Data Providers: Add Layer Properties info to PostgreSQL provider
+- Data Providers: Add auth method for Planetary computer
+- Data Providers: QGIS Project Versioning in PostgreSQL
+- QGIS Server: Try to reload invalid project layers
+- QGIS Server: Implement GetFeatureInfo for mesh layers
+- Programmability: Add support for area3D to QgsGeometry
+- Programmability: Add support for 3d points in pointsAreCollinear method of QgsGeometryutils
+- Programmability: Implement QgsVectorLayer.as_geopandas()
+- Programmability: Expose 3D map tools to PyQgis API
+- Programmability: Expose 3D map canvas cross section mode to PyQgis API
+- Programmability: Refactor ray casting and expose to PyQgis API
+- Programmability: TemplatedLineSymbolLayer to enable blank areas implementation
+- Programmability: Port Hub distance algorithm to C++
+- Programmability: Add support for SFCGAL library
+- Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)
+- Notable Fixes: Bug fixes by Even Rouault (Spatialys)
+- Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)
+- Notable Fixes: Bug Fixes by Denis Rouzaud (OPENGIS)
+- Notable Fixes: Bug Fixes by Germán Carrillo (OPENGIS)
+- Notable Fixes: Bug Fixes by Till Frankenbach (OPENGIS)
+- Notable Fixes: Bug fixes by Stefanos Natsis (LutraConsulting)
+-
+
+
 # What's new in Version 3.44 'Solothurn'?
 
 This release has following new features:

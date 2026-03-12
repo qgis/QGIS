@@ -42,9 +42,15 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   }
   catch ( QgsProviderConnectionException &ex )
   {
-    QMessageBox::critical( nullptr, tr( "Cannot Create New Tables" ), tr( "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
-                                                                          "Error message: %1" )
-                                                                        .arg( ex.what() ) );
+    QMessageBox::critical(
+      nullptr,
+      tr( "Cannot Create New Tables" ),
+      tr(
+        "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
+        "Error message: %1"
+      )
+        .arg( ex.what() )
+    );
     QTimer::singleShot( 0, this, [this] { reject(); } );
     return;
   }
@@ -73,9 +79,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   };
 
   // Validate on data changed
-  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [this]() {
-    validate();
-  } );
+  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [this]() { validate(); } );
 
   mTableName->setText( u"new_table_name"_s );
   mFieldsTableView->setModel( mFieldModel );
@@ -93,9 +97,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
   {
     mSchemaCbo->addItems( mConnection->schemas() );
-    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [updateTableNames]( const QString &schema ) {
-      updateTableNames( schema );
-    } );
+    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [updateTableNames]( const QString &schema ) { updateTableNames( schema ); } );
   }
   else
   {
@@ -116,13 +118,9 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   updateTableNames( mSchemaCbo->currentText() );
 
   // Validators
-  connect( mTableName, &QLineEdit::textChanged, this, [this]( const QString & ) {
-    validate();
-  } );
+  connect( mTableName, &QLineEdit::textChanged, this, [this]( const QString & ) { validate(); } );
 
-  connect( mGeomColumn, &QLineEdit::textChanged, this, [this]( const QString & ) {
-    validate();
-  } );
+  connect( mGeomColumn, &QLineEdit::textChanged, this, [this]( const QString & ) { validate(); } );
 
   // Enable/disable geometry options and call validate
   connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
@@ -146,9 +144,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
   Q_NOWARN_DEPRECATED_POP
 
-  const auto addGeomItem = [this]( Qgis::WkbType type ) {
-    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
-  };
+  const auto addGeomItem = [this]( Qgis::WkbType type ) { mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) ); };
 
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( u"mIconTableLayer.svg"_s ), tr( "No Geometry" ), static_cast<quint32>( Qgis::WkbType::NoGeometry ) );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePoint ) )
@@ -440,8 +436,7 @@ void QgsNewVectorTableDialog::showEvent( QShowEvent *event )
 QgsNewVectorTableDialogFieldsDelegate::QgsNewVectorTableDialogFieldsDelegate( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QStyledItemDelegate( parent )
   , mTypeList( typeList )
-{
-}
+{}
 
 QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -554,8 +549,7 @@ void QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged( int index )
 QgsNewVectorTableFieldModel::QgsNewVectorTableFieldModel( const QList<QgsVectorDataProvider::NativeType> &typeList, QObject *parent )
   : QgsFieldModel( parent )
   , mNativeTypes( typeList )
-{
-}
+{}
 
 int QgsNewVectorTableFieldModel::columnCount( const QModelIndex & ) const
 {

@@ -103,11 +103,26 @@ void TestQgsGeoreferencer::testGcpPoint()
   QVERIFY( p.isEnabled() );
 
   // equality operator
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) == QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), true ) );
+  QVERIFY(
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+    == QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+  );
+  QVERIFY(
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+    != QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+  );
+  QVERIFY(
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+    != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+  );
+  QVERIFY(
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+    != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), false )
+  );
+  QVERIFY(
+    QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false )
+    != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), true )
+  );
 
 
   // transform destination point
@@ -161,11 +176,24 @@ void TestQgsGeoreferencer::testGcpList()
 
   list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) );
   QCOMPARE( list.countEnabledPoints(), 1 );
-  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) } ) );
+  QCOMPARE(
+    list.asPoints(),
+    QList<QgsGcpPoint>(
+      { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ),
+        QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) }
+    )
+  );
 
   list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) );
   QCOMPARE( list.countEnabledPoints(), 2 );
-  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ), QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) } ) );
+  QCOMPARE(
+    list.asPoints(),
+    QList<QgsGcpPoint>(
+      { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ),
+        QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ),
+        QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) }
+    )
+  );
 
 
   qDeleteAll( list );
@@ -304,7 +332,10 @@ void TestQgsGeoreferencer::testTransformClone()
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 );
   transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/rgb256x256.png"_s );
 
-  QVERIFY( transform.updateParametersFromGcps( { QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 ) }, { QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 ) }, true ) );
+  QVERIFY(
+    transform
+      .updateParametersFromGcps( { QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 ) }, { QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 ) }, true )
+  );
 
   std::unique_ptr<QgsGeorefTransform> cloned( dynamic_cast<QgsGeorefTransform *>( transform.clone() ) );
   QCOMPARE( cloned->method(), QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 );
@@ -329,7 +360,11 @@ void TestQgsGeoreferencer::testTransformClone()
   QgsGeorefTransform transform2( QgsGcpTransformerInterface::TransformMethod::Linear );
   transform2.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
 
-  QVERIFY( transform2.updateParametersFromGcps( { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, true ) );
+  QVERIFY( transform2.updateParametersFromGcps(
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) },
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) },
+    true
+  ) );
 
   cloned.reset( dynamic_cast<QgsGeorefTransform *>( transform2.clone() ) );
   QCOMPARE( cloned->method(), QgsGcpTransformerInterface::TransformMethod::Linear );
@@ -385,7 +420,10 @@ void TestQgsGeoreferencer::testTransformImageNoGeoference()
   QCOMPARE( rect.xMaximum(), 100.0 );
   QCOMPARE( rect.yMaximum(), 200.0 );
 
-  QVERIFY( transform.updateParametersFromGcps( { QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 ) }, { QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 ) }, true ) );
+  QVERIFY(
+    transform
+      .updateParametersFromGcps( { QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 ) }, { QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 ) }, true )
+  );
 
   QVERIFY( transform.transform( QgsPointXY( 0, 5 ), res, true ) );
   QCOMPARE( res.x(), 10 );
@@ -448,11 +486,7 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   QGSCOMPARENEAR( rect.yMaximum(), 3362323.125, 0.1 );
 
   QVector<QgsPointXY> pixelCoords = transform.mRasterChangeCoords.getPixelCoords(
-    { QgsPointXY( 783414, 3350122 ),
-      QgsPointXY( 791344, 3349795 ),
-      QgsPointXY( 783077, 3340937 ),
-      QgsPointXY( 791134, 3341401 )
-    }
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 3340937 ), QgsPointXY( 791134, 3341401 ) }
   );
 
   QCOMPARE( pixelCoords.size(), 4 );
@@ -468,7 +502,11 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   QVERIFY( transform.hasExistingGeoreference() );
 
   // when calling updateParametersFromGcps the source list MUST be in source layer CRS, not pixels!
-  QVERIFY( transform.updateParametersFromGcps( { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, true ) );
+  QVERIFY( transform.updateParametersFromGcps(
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) },
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) },
+    true
+  ) );
 
   QVERIFY( transform.transform( QgsPointXY( 30.7302631579, -14.0548245614 ), res, true ) );
   QGSCOMPARENEAR( res.x(), 783414, 1 );
@@ -485,7 +523,11 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
   QGSCOMPARENEAR( res.y(), -167.0548245614, 0.1 );
 
   // with shift of 100, 200
-  QVERIFY( transform.updateParametersFromGcps( { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, { QgsPointXY( 783514, 3350322 ), QgsPointXY( 791444, 3349995 ), QgsPointXY( 783177, 334293 ), QgsPointXY( 791234, 3341601 ) }, true ) );
+  QVERIFY( transform.updateParametersFromGcps(
+    { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) },
+    { QgsPointXY( 783514, 3350322 ), QgsPointXY( 791444, 3349995 ), QgsPointXY( 783177, 334293 ), QgsPointXY( 791234, 3341601 ) },
+    true
+  ) );
 
   QVERIFY( transform.transform( QgsPointXY( 30.7302631579, -14.0548245614 ), res, true ) );
   QGSCOMPARENEAR( res.x(), 783514, 1 );
@@ -820,19 +862,36 @@ void TestQgsGeoreferencer::testGdalCommands()
 
   QString command = window.generateGDALtranslateCommand();
   // gdal_translate command must use source pixels, not geographic coordinates
-  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.001 3350122.002 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.001 3350122.002 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s
+      .arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s )
+  );
 
   command = window.generateGDALogr2ogrCommand();
-  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.001 3350122.002 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:32633 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"ogr2ogr -gcp 783414 3350122 783414.001 3350122.002 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:32633 \"\" \"%1\""_s.arg(
+      QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s
+    )
+  );
 
   window.mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   command = window.generateGDALtranslateCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s
+      .arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s )
+  );
 
   command = window.generateGDALogr2ogrCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s
+      .arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s )
+  );
 
   const QLocale defaultLocale = QLocale();
 
@@ -841,11 +900,19 @@ void TestQgsGeoreferencer::testGdalCommands()
 
   command = window.generateGDALtranslateCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s
+      .arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s )
+  );
 
   command = window.generateGDALogr2ogrCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
+  QCOMPARE(
+    command,
+    u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s
+      .arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s )
+  );
 
 
   // Revert locale to english

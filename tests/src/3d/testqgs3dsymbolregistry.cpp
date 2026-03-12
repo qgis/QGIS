@@ -75,12 +75,10 @@ void TestQgs3DSymbolRegistry::cleanupTestCase()
 }
 
 void TestQgs3DSymbolRegistry::init()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::cleanup()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::metadata()
 {

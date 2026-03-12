@@ -57,7 +57,9 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      * \param defaultDirection default direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsVectorLayerDirector( QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, Direction defaultDirection );
+    QgsVectorLayerDirector(
+      QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, Direction defaultDirection
+    );
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION

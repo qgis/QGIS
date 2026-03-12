@@ -34,22 +34,39 @@ QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settin
   , mSettingsPath( settingsRoot )
 {
   // Register common actions
-  auto registerCommonAction = [this]( CommonAction commonAction, const QIcon &icon, const QString &text, const QString &toolTip, const QString &sequence, const QString &objectName, const QString &section ) {
-    QAction *action = new QAction( icon, text, this );
-    action->setToolTip( toolTip );
-    setObjectName( objectName );
-    // We do not want these actions to be enabled, they are just there to be able to change
-    // the shortcuts in the Shortcuts Manager.
-    action->setEnabled( false );
-    action->setProperty( "commonAction", static_cast< int >( commonAction ) );
-    registerAction( action, sequence, section );
-    mCommonActions.insert( static_cast< int >( commonAction ), action );
-  };
+  auto registerCommonAction =
+    [this]( CommonAction commonAction, const QIcon &icon, const QString &text, const QString &toolTip, const QString &sequence, const QString &objectName, const QString &section ) {
+      QAction *action = new QAction( icon, text, this );
+      action->setToolTip( toolTip );
+      setObjectName( objectName );
+      // We do not want these actions to be enabled, they are just there to be able to change
+      // the shortcuts in the Shortcuts Manager.
+      action->setEnabled( false );
+      action->setProperty( "commonAction", static_cast< int >( commonAction ) );
+      registerAction( action, sequence, section );
+      mCommonActions.insert( static_cast< int >( commonAction ), action );
+    };
 
 #ifdef Q_OS_WIN
-  registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), u"Ctrl+:"_s, u"mEditorToggleComment"_s, u"Editor"_s );
+  registerCommonAction(
+    CommonAction::CodeToggleComment,
+    QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ),
+    tr( "Toggle Comment" ),
+    tr( "Toggle comment" ),
+    u"Ctrl+:"_s,
+    u"mEditorToggleComment"_s,
+    u"Editor"_s
+  );
 #else
-  registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), u"Ctrl+/"_s, u"mEditorToggleComment"_s, u"Editor"_s );
+  registerCommonAction(
+    CommonAction::CodeToggleComment,
+    QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ),
+    tr( "Toggle Comment" ),
+    tr( "Toggle comment" ),
+    u"Ctrl+/"_s,
+    u"mEditorToggleComment"_s,
+    u"Editor"_s
+  );
 #endif
   registerCommonAction( CommonAction::CodeReformat, QgsApplication::getThemeIcon( u"console/iconFormatCode.svg"_s ), tr( "Reformat Code" ), tr( "Reformat code" ), u"Ctrl+Alt+F"_s, u"mEditorReformatCode"_s, u"Editor"_s );
   registerCommonAction( CommonAction::CodeRunScript, QgsApplication::getThemeIcon( u"mActionStart.svg"_s ), tr( "Run Script" ), tr( "Run entire script" ), u"Ctrl+Shift+E"_s, u"mEditorRunScript"_s, u"Editor"_s );

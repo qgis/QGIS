@@ -59,15 +59,9 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
 
   onElementTypeChanged();
 
-  connect( mActionSelect, &QAction::triggered, this, [this] {
-    emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::SetSelection, currentElementType() );
-  } );
-  connect( mActionAddToSelection, &QAction::triggered, this, [this] {
-    emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::AddToSelection, currentElementType() );
-  } );
-  connect( mActionRemoveFromSelection, &QAction::triggered, this, [this] {
-    emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::RemoveFromSelection, currentElementType() );
-  } );
+  connect( mActionSelect, &QAction::triggered, this, [this] { emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::SetSelection, currentElementType() ); } );
+  connect( mActionAddToSelection, &QAction::triggered, this, [this] { emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::AddToSelection, currentElementType() ); } );
+  connect( mActionRemoveFromSelection, &QAction::triggered, this, [this] { emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::RemoveFromSelection, currentElementType() ); } );
 
   connect( mActionSelect, &QAction::triggered, this, &QgsMeshSelectByExpressionDialog::saveRecent );
   connect( mActionAddToSelection, &QAction::triggered, this, &QgsMeshSelectByExpressionDialog::saveRecent );

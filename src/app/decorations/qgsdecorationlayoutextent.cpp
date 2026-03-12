@@ -158,8 +158,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
           labelPoint = ct.transform( labelPoint.x(), labelPoint.y() ).toQPointF();
         }
         catch ( QgsCsException & )
-        {
-        }
+        {}
       }
 
       g.transform( transform );
@@ -169,7 +168,14 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
 
       if ( mLabelExtents )
       {
-        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, Qgis::TextHorizontalAlignment::Right, QStringList() << tr( "%1: %2" ).arg( designer->masterLayout()->name(), map->displayName() ), context, mTextFormat );
+        QgsTextRenderer::drawText(
+          labelPoint,
+          ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0,
+          Qgis::TextHorizontalAlignment::Right,
+          QStringList() << tr( "%1: %2" ).arg( designer->masterLayout()->name(), map->displayName() ),
+          context,
+          mTextFormat
+        );
       }
     }
   }

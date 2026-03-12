@@ -59,9 +59,11 @@ QString QgsFlattenRelationshipsAlgorithm::shortDescription() const
 
 QString QgsFlattenRelationshipsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm flattens a relationship for a vector layer, exporting a single layer "
-                      "containing one master feature per related feature. This master feature contains all "
-                      "the attributes for the related features." );
+  return QObject::tr(
+    "This algorithm flattens a relationship for a vector layer, exporting a single layer "
+    "containing one master feature per related feature. This master feature contains all "
+    "the attributes for the related features."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsFlattenRelationshipsAlgorithm::documentationFlags() const

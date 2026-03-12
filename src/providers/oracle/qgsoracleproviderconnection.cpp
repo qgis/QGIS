@@ -33,24 +33,11 @@
 using namespace Qt::StringLiterals;
 
 // read from QSettings and used in the provider connection
-const QStringList CONFIGURATION_PARAMETERS {
-  u"userTablesOnly"_s,
-  u"geometryColumnsOnly"_s,
-  u"allowGeometrylessTables"_s,
-  u"disableInvalidGeometryHandling"_s,
-  u"onlyExistingTypes"_s,
-  u"includeGeoAttributes"_s,
-  u"projectsInDatabase"_s,
-  u"saveUsername"_s,
-  u"savePassword"_s,
-  u"schema"_s
-};
+const QStringList
+  CONFIGURATION_PARAMETERS { u"userTablesOnly"_s, u"geometryColumnsOnly"_s, u"allowGeometrylessTables"_s, u"disableInvalidGeometryHandling"_s, u"onlyExistingTypes"_s, u"includeGeoAttributes"_s, u"projectsInDatabase"_s, u"saveUsername"_s, u"savePassword"_s, u"schema"_s };
 
 // read from uri and used in the provider connection
-const QStringList EXTRA_CONNECTION_PARAMETERS {
-  u"dboptions"_s,
-  u"dbworkspace"_s
-};
+const QStringList EXTRA_CONNECTION_PARAMETERS { u"dboptions"_s, u"dbworkspace"_s };
 
 /**
  * A light wrapper around QSqlQuery that keep a shared reference on the connection
@@ -137,11 +124,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField,
   };
-  mGeometryColumnCapabilities = {
-    GeometryColumnCapability::Z,
-    GeometryColumnCapability::SinglePart,
-    GeometryColumnCapability::Curves
-  };
+  mGeometryColumnCapabilities = { GeometryColumnCapability::Z, GeometryColumnCapability::SinglePart, GeometryColumnCapability::Curves };
   mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
@@ -198,7 +181,9 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     {
       sqlId++;
     }
-    tUri.setTable( u"(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)"_s.arg( QString::number( pkId ), optionsSql, QString::number( sqlId ) ) );
+    tUri.setTable(
+      u"(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)"_s.arg( QString::number( pkId ), optionsSql, QString::number( sqlId ) )
+    );
   }
 
   if ( !options.geometryColumn.isEmpty() )
@@ -924,8 +909,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         u"NATURAL"_s,
         u"RECORD"_s,
         u"SUBTYPE"_s
-      }
-    },
+      } },
     { Qgis::SqlKeywordCategory::Function,
       { // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
         u"CAST"_s,
@@ -942,71 +926,21 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         u"UID"_s,
         u"USER"_s,
         u"USERENV"_s
-      }
-    },
-    { Qgis::SqlKeywordCategory::Math,
-      { u"ABS"_s,
-        u"ACOS"_s,
-        u"ASIN"_s,
-        u"ATAN"_s,
-        u"ATAN2"_s,
-        u"BITAND"_s,
-        u"CEIL"_s,
-        u"COS"_s,
+      } },
+    { Qgis::SqlKeywordCategory::Math, { u"ABS"_s,       u"ACOS"_s,  u"ASIN"_s,        u"ATAN"_s, u"ATAN2"_s, u"BITAND"_s, u"CEIL"_s,  u"COS"_s,
 
-        u"COSH"_s,
-        u"EXP"_s,
-        u"FLOOR"_s,
-        u"LN"_s,
-        u"LOG"_s,
-        u"MOD"_s,
-        u"NANVL"_s,
-        u"POWER"_s,
+                                        u"COSH"_s,      u"EXP"_s,   u"FLOOR"_s,       u"LN"_s,   u"LOG"_s,   u"MOD"_s,    u"NANVL"_s, u"POWER"_s,
 
-        u"REMAINDER"_s,
-        u"ROUND"_s,
-        u"SIGN"_s,
-        u"SIN"_s,
-        u"SINH"_s,
-        u"SQRT"_s,
-        u"TAN"_s,
+                                        u"REMAINDER"_s, u"ROUND"_s, u"SIGN"_s,        u"SIN"_s,  u"SINH"_s,  u"SQRT"_s,   u"TAN"_s,
 
-        u"TANH"_s,
-        u"TRUNC"_s,
-        u"WIDTH_BUCKET"_s
-      }
-    },
-    { Qgis::SqlKeywordCategory::String,
-      { u"CHR"_s,
-        u"CONCAT"_s,
-        u"INITCAP"_s,
-        u"LOWER"_s,
-        u"LPAD"_s,
-        u"LTRIM"_s,
-        u"NLS_INITCAP"_s,
+                                        u"TANH"_s,      u"TRUNC"_s, u"WIDTH_BUCKET"_s } },
+    { Qgis::SqlKeywordCategory::String, { u"CHR"_s,       u"CONCAT"_s,  u"INITCAP"_s,   u"LOWER"_s,          u"LPAD"_s,          u"LTRIM"_s,       u"NLS_INITCAP"_s,
 
-        u"NLS_LOWER"_s,
-        u"NLSSORT"_s,
-        u"NLS_UPPER"_s,
-        u"REGEXP_REPLACE"_s,
-        u"REGEXP_SUBSTR"_s,
+                                          u"NLS_LOWER"_s, u"NLSSORT"_s, u"NLS_UPPER"_s, u"REGEXP_REPLACE"_s, u"REGEXP_SUBSTR"_s,
 
-        u"REPLACE"_s,
-        u"RPAD"_s,
-        u"RTRIM"_s,
-        u"SOUNDEX"_s,
-        u"SUBSTR"_s,
-        u"TRANSLATE"_s,
-        u"TREAT"_s,
+                                          u"REPLACE"_s,   u"RPAD"_s,    u"RTRIM"_s,     u"SOUNDEX"_s,        u"SUBSTR"_s,        u"TRANSLATE"_s,   u"TREAT"_s,
 
-        u"TRIM"_s,
-        u"UPPER"_s,
-        u"ASCII"_s,
-        u"INSTR"_s,
-        u"LENGTH"_s,
-        u"REGEXP_INSTR"_s
-      }
-    },
+                                          u"TRIM"_s,      u"UPPER"_s,   u"ASCII"_s,     u"INSTR"_s,          u"LENGTH"_s,        u"REGEXP_INSTR"_s } },
     { Qgis::SqlKeywordCategory::Aggregate,
       { u"AVG"_s,
         u"COLLECT"_s,
@@ -1052,9 +986,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
 
         u"VAR_SAMP"_s,
         u"VARIANCE"_s,
-        u"XMLAGG"_s
-      }
-    },
+        u"XMLAGG"_s } },
     { Qgis::SqlKeywordCategory::Geospatial,
       { // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
         // Spatial operators
@@ -1325,8 +1257,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         u"SDO_UTIL.VALIDATE_WKBGEOMETRY"_s,
 
         u"SDO_UTIL.VALIDATE_WKTGEOMETRY"_s
-      }
-    },
+      } },
     { Qgis::SqlKeywordCategory::Operator,
       { u"AND"_s,
         u"OR"_s,
@@ -1361,15 +1292,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         u"ALL"_s,
         u"NOT"_s,
 
-        u"CASE {column} WHEN {value} THEN {value}"_s
-      }
-    },
-    { Qgis::SqlKeywordCategory::Constant,
-      { u"NULL"_s,
-        u"FALSE"_s,
-        u"TRUE"_s
-      }
-    }
+        u"CASE {column} WHEN {value} THEN {value}"_s } },
+    { Qgis::SqlKeywordCategory::Constant, { u"NULL"_s, u"FALSE"_s, u"TRUE"_s } }
   };
 }
 
@@ -1396,8 +1320,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( !qry->exec( sql ) )
   {
     logWrapper.setError( qry->lastError().text() );
-    throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
-                                            .arg( qry->lastQuery(), qry->lastError().text() ) );
+    throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" ).arg( qry->lastQuery(), qry->lastError().text() ) );
   }
 
   if ( feedback && feedback->isCanceled() )
@@ -1428,8 +1351,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
 QgsOracleProviderResultIterator::QgsOracleProviderResultIterator( int columnCount, std::unique_ptr<QgsOracleQuery> query )
   : mColumnCount( columnCount )
   , mQuery( std::move( query ) )
-{
-}
+{}
 
 QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
 {
@@ -1465,7 +1387,9 @@ long long QgsOracleProviderResultIterator::rowCountPrivate() const
   return mQuery->size();
 }
 
-void QgsOracleProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
+void QgsOracleProviderConnection::createVectorTable(
+  const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+) const
 {
   checkCapability( Capability::CreateVectorTable );
 
@@ -1480,17 +1404,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema, cons
   QMap<int, int> map;
   QString errCause;
   QString createdLayerUri;
-  const Qgis::VectorExportResult res = QgsOracleProvider::createEmptyLayer(
-    newUri.uri(),
-    fields,
-    wkbType,
-    srs,
-    overwrite,
-    map,
-    createdLayerUri,
-    errCause,
-    options
-  );
+  const Qgis::VectorExportResult res = QgsOracleProvider::createEmptyLayer( newUri.uri(), fields, wkbType, srs, overwrite, map, createdLayerUri, errCause, options );
   if ( res != Qgis::VectorExportResult::Success )
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
 }
@@ -1597,12 +1511,9 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
 void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
-  executeSqlPrivate( u"DROP TABLE %1.%2"_s
-                       .arg( QgsOracleConn::quotedIdentifier( schema ) )
-                       .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+  executeSqlPrivate( u"DROP TABLE %1.%2"_s.arg( QgsOracleConn::quotedIdentifier( schema ) ).arg( QgsOracleConn::quotedIdentifier( name ) ) );
 
-  executeSqlPrivate( u"DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'"_s
-                       .arg( name ) );
+  executeSqlPrivate( u"DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'"_s.arg( name ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -1614,11 +1525,9 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
 void QgsOracleProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameVectorTable );
-  executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s
-                       .arg( QgsOracleConn::quotedIdentifier( schema ), QgsOracleConn::quotedIdentifier( name ), QgsOracleConn::quotedIdentifier( newName ) ) );
+  executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsOracleConn::quotedIdentifier( schema ), QgsOracleConn::quotedIdentifier( name ), QgsOracleConn::quotedIdentifier( newName ) ) );
 
-  executeSqlPrivate( u"UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'"_s
-                       .arg( newName, name ) );
+  executeSqlPrivate( u"UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'"_s.arg( newName, name ) );
 }
 
 void QgsOracleProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsOracleProviderConnection::SpatialIndexOptions &options ) const

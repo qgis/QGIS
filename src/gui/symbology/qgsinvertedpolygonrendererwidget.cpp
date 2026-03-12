@@ -48,10 +48,14 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     //setup blank dialog
     mRenderer.reset( nullptr );
     QGridLayout *layout = new QGridLayout( this );
-    QLabel *label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
-                                    "'%1' is not a polygon layer and then cannot be displayed" )
-                                  .arg( layer->name() ),
-                                this );
+    QLabel *label = new QLabel(
+      tr(
+        "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
+        "'%1' is not a polygon layer and then cannot be displayed"
+      )
+        .arg( layer->name() ),
+      this
+    );
     this->setLayout( layout );
     layout->addWidget( label );
     return;

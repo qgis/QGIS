@@ -34,9 +34,7 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString 
   const thread_local QRegularExpression reClean( QRegularExpression( "[^a-zA-Z0-9_]" ) );
   mPyLayerVarName.replace( reClean, u"_"_s ); // clean identifier
 
-  const QString initLayer = u"%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )"_s
-                              .arg( mPyLayerVarName )
-                              .arg( ( quint64 ) form->layer() );
+  const QString initLayer = u"%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )"_s.arg( mPyLayerVarName ).arg( ( quint64 ) form->layer() );
 
   QgsPythonRunner::run( initLayer );
 }
@@ -62,14 +60,11 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   // return a ID that is an invalid python variable when we have new unsaved features.
   const QDateTime dt = QDateTime::currentDateTime();
   const QString pyFeatureVarName = u"_qgis_feature_%1"_s.arg( dt.toString( u"yyyyMMddhhmmsszzz"_s ) );
-  const QString initFeature = u"%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )"_s
-                                .arg( pyFeatureVarName )
-                                .arg( ( quint64 ) &form()->feature() );
+  const QString initFeature = u"%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )"_s.arg( pyFeatureVarName ).arg( ( quint64 ) &form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 
-  const QString expr = u"%1( %2, %3, %4)"_s
-                         .arg( mPyFunctionName, mPyFormVarName, mPyLayerVarName, pyFeatureVarName );
+  const QString expr = u"%1( %2, %3, %4)"_s.arg( mPyFunctionName, mPyFormVarName, mPyLayerVarName, pyFeatureVarName );
 
   QgsPythonRunner::run( expr );
 

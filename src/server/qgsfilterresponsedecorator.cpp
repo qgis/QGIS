@@ -23,8 +23,7 @@
 QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response )
   : mFilters( filters )
   , mResponse( response )
-{
-}
+{}
 
 void QgsFilterResponseDecorator::start()
 {

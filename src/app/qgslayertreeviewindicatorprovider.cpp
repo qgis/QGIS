@@ -99,7 +99,11 @@ void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
   if ( !layerNode )
     return;
 
-  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) || qobject_cast<QgsRasterLayer *>( layerNode->layer() ) || qobject_cast<QgsMeshLayer *>( layerNode->layer() ) || qobject_cast<QgsPointCloudLayer *>( layerNode->layer() ) || qobject_cast<QgsVectorTileLayer *>( layerNode->layer() ) ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() )
+          || qobject_cast<QgsRasterLayer *>( layerNode->layer() )
+          || qobject_cast<QgsMeshLayer *>( layerNode->layer() )
+          || qobject_cast<QgsPointCloudLayer *>( layerNode->layer() )
+          || qobject_cast<QgsVectorTileLayer *>( layerNode->layer() ) ) )
     return;
 
   if ( QgsMapLayer *mapLayer = layerNode->layer() )

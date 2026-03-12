@@ -56,7 +56,9 @@ void QgsZonalHistogramAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT_RASTER"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
+  );
 
   addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), u"HISTO_"_s, false, true ) );
 
@@ -105,8 +107,12 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     case Qgis::DataType::UInt32:
       break;
     default:
-      feedback->pushWarning( QObject::tr( "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
-                                          "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
+      feedback->pushWarning(
+        QObject::tr(
+          "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
+          "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins."
+        )
+      );
       break;
   }
 
@@ -162,13 +168,26 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     QgsRasterAnalysisUtils::cellInfoForBBox( mRasterExtent, featureRect, mCellSizeX, mCellSizeY, nCellsX, nCellsY, mNbCellsXProvider, mNbCellsYProvider, rasterBlockExtent );
 
     QHash<double, qgssize> fUniqueValues;
-    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY, rasterBlockExtent, [&fUniqueValues]( double value, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
+    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest(
+      mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY, rasterBlockExtent, [&fUniqueValues]( double value, const QgsPointXY & ) { fUniqueValues[value]++; }, false
+    );
 
     if ( fUniqueValues.count() < 1 )
     {
       // The cell resolution is probably larger than the polygon area. We switch to slower precise pixel - polygon intersection in this case
       // TODO: eventually deal with weight if needed
-      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY, rasterBlockExtent, [&fUniqueValues]( double value, double, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
+      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection(
+        mRasterInterface.get(),
+        mRasterBand,
+        featureGeometry,
+        nCellsX,
+        nCellsY,
+        mCellSizeX,
+        mCellSizeY,
+        rasterBlockExtent,
+        [&fUniqueValues]( double value, double, const QgsPointXY & ) { fUniqueValues[value]++; },
+        false
+      );
     }
 
     for ( auto it = fUniqueValues.constBegin(); it != fUniqueValues.constEnd(); ++it )

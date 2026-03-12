@@ -84,8 +84,7 @@ QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
   , mUserName( other.mUserName )
   , mPassword( other.mPassword )
   , mCacheLoadControl( other.mCacheLoadControl )
-{
-}
+{}
 
 
 void QgsWcsCapabilities::parseUri()
@@ -521,8 +520,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   {
     mErrorTitle = tr( "Version not supported" );
     mErrorFormat = u"text/plain"_s;
-    mError = tr( "WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)" )
-               .arg( mVersion );
+    mError = tr( "WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)" ).arg( mVersion );
 
     QgsLogger::debug( "WCS version: " + mError );
 

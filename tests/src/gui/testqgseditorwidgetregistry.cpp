@@ -53,35 +53,20 @@ class TestQgsEditorWidgetRegistry : public QObject
       QgsGui::editorWidgetRegistry()->registerAutoConfPlugin( new DummyPlugin() );
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
-    void stringType()
-    {
-      checkSimple( u"string"_s, u"TextEdit"_s );
-    }
+    void stringType() { checkSimple( u"string"_s, u"TextEdit"_s ); }
 
-    void datetimeType()
-    {
-      checkSimple( u"datetime"_s, u"DateTime"_s );
-    }
+    void datetimeType() { checkSimple( u"datetime"_s, u"DateTime"_s ); }
 
-    void integerType()
-    {
-      checkSimple( u"integer"_s, u"Range"_s );
-    }
+    void integerType() { checkSimple( u"integer"_s, u"Range"_s ); }
 
     void longLongType()
     {
       checkSimple( u"int8"_s, u"TextEdit"_s ); // no current widget supports 64 bit integers => default to TextEdit
     }
 
-    void doubleType()
-    {
-      checkSimple( u"double"_s, u"TextEdit"_s );
-    }
+    void doubleType() { checkSimple( u"double"_s, u"TextEdit"_s ); }
 
     void arrayType()
     {
@@ -90,10 +75,7 @@ class TestQgsEditorWidgetRegistry : public QObject
       checkSimple( u"string[]"_s, u"List"_s );
     }
 
-    void binaryType()
-    {
-      checkSimple( u"binary"_s, u"Binary"_s );
-    }
+    void binaryType() { checkSimple( u"binary"_s, u"Binary"_s ); }
 
     void configuredType()
     {

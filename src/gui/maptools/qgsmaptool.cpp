@@ -34,8 +34,7 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-{
-}
+{}
 
 
 QgsMapTool::~QgsMapTool()
@@ -130,8 +129,7 @@ void QgsMapTool::reactivate()
 }
 
 void QgsMapTool::clean()
-{
-}
+{}
 
 void QgsMapTool::setAction( QAction *action )
 {
@@ -264,8 +262,7 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
 
 
 void QgsMapTool::populateContextMenu( QMenu * )
-{
-}
+{}
 
 
 bool QgsMapTool::populateContextMenuWithEvent( QMenu *, QgsMapMouseEvent * )

@@ -226,7 +226,21 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       }
     }
 
-    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc, gmlVersion, filterVersion, mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(), mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(), geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation(), nullptr, fieldNameToXPathMap, mShared->mNamespacePrefixToURIMap );
+    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter(
+      bboxExp,
+      bboxDoc,
+      gmlVersion,
+      filterVersion,
+      mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(),
+      mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(),
+      geometryAttribute,
+      mShared->srsName(),
+      honourAxisOrientation,
+      mShared->mURI.invertAxisOrientation(),
+      nullptr,
+      fieldNameToXPathMap,
+      mShared->mNamespacePrefixToURIMap
+    );
     bboxDoc.appendChild( bboxElem );
 
     filters.push_back( bboxDoc.toString() );
@@ -318,13 +332,7 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
   const QStringList typeNames = typenames.split( ',' );
 
   QDomDocument postDocument = createPostDocument();
-  QDomElement getFeatureElement = createRootPostElement(
-    mShared->mCaps,
-    mShared->mWFSVersion,
-    postDocument,
-    u"wfs:GetFeature"_s,
-    typeNames
-  );
+  QDomElement getFeatureElement = createRootPostElement( mShared->mCaps, mShared->mWFSVersion, postDocument, u"wfs:GetFeature"_s, typeNames );
 
   if ( forHits )
   {
@@ -638,11 +646,13 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           url.setQuery( query );
         }
 
-        sendGET( url,
-                 QString(), // content-type
-                 false,     /* synchronous */
-                 true,      /* forceRefresh */
-                 false /* cache */ );
+        sendGET(
+          url,
+          QString(), // content-type
+          false,     /* synchronous */
+          true,      /* forceRefresh */
+          false      /* cache */
+        );
         break;
       }
 
@@ -802,7 +812,13 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       {
         // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
         // EPSG:XXXX srsName and not EPSG urns
-        if ( pagingIter == 1 && featureCountForThisResponse == 0 && mShared->mWFSVersion.startsWith( "1.1"_L1 ) && parser->srsName().startsWith( "EPSG:"_L1 ) && !parser->layerExtent().isNull() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mURI.invertAxisOrientation() )
+        if ( pagingIter == 1
+             && featureCountForThisResponse == 0
+             && mShared->mWFSVersion.startsWith( "1.1"_L1 )
+             && parser->srsName().startsWith( "EPSG:"_L1 )
+             && !parser->layerExtent().isNull()
+             && !mShared->mURI.ignoreAxisOrientation()
+             && !mShared->mURI.invertAxisOrientation() )
         {
           QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( parser->srsName() );
           if ( crs.isValid() && crs.hasAxisInverted() && !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )

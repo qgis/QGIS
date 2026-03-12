@@ -55,8 +55,14 @@ QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s << u"postgres"_s );
+  setDataProviders(
+    QStringList()
+    << u"ows"_s
+    << u"wfs"_s // convert to lowercase
+    << u"wcs"_s
+    << u"wms"_s
+    << u"postgres"_s
+  );
 }
 
 QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
@@ -154,20 +160,14 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   const QString pkiTempFileBase = u"tmppki_%1.pem"_s;
 
   // save client cert to temp file
-  const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    pkibundle->clientCert().toPem()
-  );
+  const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), pkibundle->clientCert().toPem() );
   if ( certFilePath.isEmpty() )
   {
     return false;
   }
 
   // save client cert key to temp file
-  const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    pkibundle->clientCertKey().toPem()
-  );
+  const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), pkibundle->clientCertKey().toPem() );
   if ( keyFilePath.isEmpty() )
   {
     return false;
@@ -192,10 +192,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   }
 
   // save CAs to temp file
-  const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-    QgsAuthCertUtils::certsToPemText( cas )
-  );
+  const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile( pkiTempFileBase.arg( QUuid::createUuid().toString() ), QgsAuthCertUtils::certsToPemText( cas ) );
   if ( caFilePath.isEmpty() )
   {
     return false;

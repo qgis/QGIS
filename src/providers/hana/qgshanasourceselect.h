@@ -43,16 +43,8 @@ class QgsHanaSourceSelectDelegate : public QItemDelegate
       : QItemDelegate( parent )
     {}
 
-    QWidget *createEditor(
-      QWidget *parent,
-      const QStyleOptionViewItem &option,
-      const QModelIndex &index
-    ) const override;
-    void setModelData(
-      QWidget *editor,
-      QAbstractItemModel *model,
-      const QModelIndex &index
-    ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 };
 
@@ -73,11 +65,7 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     static void deleteConnection( const QString &key );
 
     //! Constructor
-    QgsHanaSourceSelect(
-      QWidget *parent = nullptr,
-      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
-    );
+    QgsHanaSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     ~QgsHanaSourceSelect() override;
     //! Populate the connection list combo box
@@ -128,12 +116,7 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     void setConnectionListPosition();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription(
-      const QString &schema,
-      const QString &table,
-      const QString &column,
-      const QString &type
-    );
+    QString fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type );
     void finishList();
     void showHelp();
 

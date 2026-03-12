@@ -123,7 +123,14 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \note Not available in Python bindings.
      * \since QGIS 4.0
      */
-    SIP_SKIP static void calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString );
+    SIP_SKIP static void calculateGeometryMeasures(
+      const QgsReferencedGeometry &geometry,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      Qgis::CadMeasurementDisplayType areaType,
+      Qgis::CadMeasurementDisplayType totalLengthType,
+      QString &areaString,
+      QString &totalLengthString
+    );
 
   protected:
     /**

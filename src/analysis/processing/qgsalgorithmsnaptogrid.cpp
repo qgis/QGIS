@@ -55,19 +55,23 @@ QString QgsSnapToGridAlgorithm::outputName() const
 
 QString QgsSnapToGridAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm modifies the coordinates of geometries in a vector layer, so that all points "
-                      "or vertices are snapped to the closest point of the grid.\n\n"
-                      "If the snapped geometry cannot be calculated (or is totally collapsed) the feature's "
-                      "geometry will be cleared.\n\n"
-                      "Note that snapping to grid may generate an invalid geometry in some corner cases.\n\n"
-                      "Snapping can be performed on the X, Y, Z or M axis. A grid spacing of 0 for any axis will "
-                      "disable snapping for that axis." );
+  return QObject::tr(
+    "This algorithm modifies the coordinates of geometries in a vector layer, so that all points "
+    "or vertices are snapped to the closest point of the grid.\n\n"
+    "If the snapped geometry cannot be calculated (or is totally collapsed) the feature's "
+    "geometry will be cleared.\n\n"
+    "Note that snapping to grid may generate an invalid geometry in some corner cases.\n\n"
+    "Snapping can be performed on the X, Y, Z or M axis. A grid spacing of 0 for any axis will "
+    "disable snapping for that axis."
+  );
 }
 
 QString QgsSnapToGridAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Modifies the coordinates of geometries in a vector layer, so that all points "
-                      "or vertices are snapped to the closest point of a grid." );
+  return QObject::tr(
+    "Modifies the coordinates of geometries in a vector layer, so that all points "
+    "or vertices are snapped to the closest point of a grid."
+  );
 }
 
 QgsSnapToGridAlgorithm *QgsSnapToGridAlgorithm::createInstance() const

@@ -254,7 +254,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
       // Was not connected, nothing to do
-      if ( ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId().isEmpty() ) || ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter && source.parameterName().isEmpty() ) )
+      if ( ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId().isEmpty() )
+           || ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter && source.parameterName().isEmpty() ) )
         continue;
 
       switch ( source.source() )
@@ -266,7 +267,12 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           // reset to default value.
           QList<QgsProcessingModelChildParameterSource> newSources;
-          if ( param->type() == QgsProcessingParameterFeatureSource::typeName() || param->type() == QgsProcessingParameterMapLayer::typeName() || param->type() == QgsProcessingParameterMeshLayer::typeName() || param->type() == QgsProcessingParameterPointCloudLayer::typeName() || param->type() == QgsProcessingParameterRasterLayer::typeName() || param->type() == QgsProcessingParameterVectorLayer::typeName() )
+          if ( param->type() == QgsProcessingParameterFeatureSource::typeName()
+               || param->type() == QgsProcessingParameterMapLayer::typeName()
+               || param->type() == QgsProcessingParameterMeshLayer::typeName()
+               || param->type() == QgsProcessingParameterPointCloudLayer::typeName()
+               || param->type() == QgsProcessingParameterRasterLayer::typeName()
+               || param->type() == QgsProcessingParameterVectorLayer::typeName() )
           {
             // Layers/feature sources default to an empty model input parameter
             // This is the same default that a newly added algorithm uses. It's not the best, since when opening the algorithm's

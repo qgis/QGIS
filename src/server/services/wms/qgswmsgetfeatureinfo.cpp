@@ -34,9 +34,7 @@ namespace QgsWms
     QgsWmsParameters parameters = request.wmsParameters();
 
     // WIDTH and HEIGHT are not mandatory, but we need to set a default size
-    if ( ( parameters.widthAsInt() <= 0
-           || parameters.heightAsInt() <= 0 )
-         && !parameters.infoFormatIsImage() )
+    if ( ( parameters.widthAsInt() <= 0 || parameters.heightAsInt() <= 0 ) && !parameters.infoFormatIsImage() )
     {
       QSize size( 10, 10 );
 

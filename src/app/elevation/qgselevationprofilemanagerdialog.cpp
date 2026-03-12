@@ -58,9 +58,7 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsElevationProfileManagerProxyModel::setFilterString );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"map_views/elevation_profile.html"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"map_views/elevation_profile.html"_s ); } );
   connect( mProfileListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsElevationProfileManagerDialog::toggleButtons );
   connect( mProfileListView, &QListView::doubleClicked, this, &QgsElevationProfileManagerDialog::itemDoubleClicked );
 

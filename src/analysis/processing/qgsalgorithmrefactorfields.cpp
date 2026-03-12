@@ -37,13 +37,15 @@ QString QgsRefactorFieldsAlgorithm::displayName() const
 
 QString QgsRefactorFieldsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified "
-                      "in their type and name, using a fields mapping.\n\n"
-                      "The original layer is not modified. A new layer is generated, which contains a modified attribute table, according "
-                      "to the provided fields mapping.\n\n"
-                      "Rows in orange have constraints in the template layer from which these fields were loaded. Treat this information "
-                      "as a hint during configuration. No constraints will be added on an output layer nor will they be checked or "
-                      "enforced by the algorithm." );
+  return QObject::tr(
+    "This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified "
+    "in their type and name, using a fields mapping.\n\n"
+    "The original layer is not modified. A new layer is generated, which contains a modified attribute table, according "
+    "to the provided fields mapping.\n\n"
+    "Rows in orange have constraints in the template layer from which these fields were loaded. Treat this information "
+    "as a hint during configuration. No constraints will be added on an output layer nor will they be checked or "
+    "enforced by the algorithm."
+  );
 }
 
 QString QgsRefactorFieldsAlgorithm::shortDescription() const
@@ -145,12 +147,7 @@ bool QgsRefactorFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
       expression.setAreaUnits( context.areaUnit() );
       if ( expression.hasParserError() )
       {
-        throw QgsProcessingException( QObject::tr( "Parser error for field \"%1\" with expression \"%2\": %3" )
-                                        .arg(
-                                          name,
-                                          expressionString,
-                                          expression.parserErrorString()
-                                        ) );
+        throw QgsProcessingException( QObject::tr( "Parser error for field \"%1\" with expression \"%2\": %3" ).arg( name, expressionString, expression.parserErrorString() ) );
       }
       mExpressions.append( expression );
     }

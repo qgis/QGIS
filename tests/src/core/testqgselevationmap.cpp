@@ -29,7 +29,8 @@ class TestQgsElevationMap : public QgsTest
 
   public:
     TestQgsElevationMap()
-      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s ) {}
+      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s )
+    {}
 
   private slots:
     void initTestCase();

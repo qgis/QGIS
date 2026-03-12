@@ -39,13 +39,11 @@ using namespace Qt::StringLiterals;
 QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Type type, const QVariant defaultValue )
   : mType( type )
   , mDefaultValue( defaultValue )
-{
-}
+{}
 
 QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type, const QVariant defaultValue )
   : QgsServerParameterDefinition( QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
-{
-}
+{}
 
 QString QgsServerParameterDefinition::typeName() const
 {
@@ -171,9 +169,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   QStringList filters;
   const QString filter = toString();
 
-  auto isOgcFilter = [filter]() {
-    return filter.contains( u"<Filter>"_s ) || filter.contains( u"()"_s );
-  };
+  auto isOgcFilter = [filter]() { return filter.contains( u"<Filter>"_s ) || filter.contains( u"()"_s ); };
 
   while ( pos < filter.size() )
   {
@@ -345,10 +341,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
   if ( errorCode != QgsBlockingNetworkRequest::NoError )
   {
     ok = false;
-    QgsMessageLog::logMessage(
-      QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( newReq.errorMessage(), url.toString() ),
-      u"Server"_s
-    );
+    QgsMessageLog::logMessage( QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( newReq.errorMessage(), url.toString() ), u"Server"_s );
     return QString();
   }
 
@@ -426,13 +419,11 @@ void QgsServerParameterDefinition::raiseError( const QString &msg )
 QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name, const QMetaType::Type type, const QVariant defaultValue )
   : QgsServerParameterDefinition( type, defaultValue )
   , mName( name )
-{
-}
+{}
 
 QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name, const QVariant::Type type, const QVariant defaultValue )
   : QgsServerParameter( name, QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
-{
-}
+{}
 
 QString QgsServerParameter::name( const QgsServerParameter::Name name )
 {
@@ -559,8 +550,7 @@ QString QgsServerParameters::service() const
   if ( serviceValue.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    if ( request() == "GetMap"_L1
-         || request() == "GetFeatureInfo"_L1 )
+    if ( request() == "GetMap"_L1 || request() == "GetFeatureInfo"_L1 )
     {
       serviceValue = "WMS";
     }

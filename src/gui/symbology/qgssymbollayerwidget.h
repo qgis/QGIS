@@ -30,8 +30,7 @@ class QgsVectorLayer;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 
-template<class T>
-class GUI_EXPORT QgsMapToolEditBlankSegments;
+template<class T> class GUI_EXPORT QgsMapToolEditBlankSegments;
 
 /**
  * \ingroup gui

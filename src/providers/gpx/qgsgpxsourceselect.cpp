@@ -57,8 +57,14 @@ void QgsGpxSourceSelect::addButtonClicked()
   const QFileInfo fileInfo( mGpxPath );
   if ( !fileInfo.isReadable() )
   {
-    QMessageBox::warning( nullptr, tr( "Add GPX Layer" ), tr( "Unable to read the selected file.\n"
-                                                              "Please select a valid file." ) );
+    QMessageBox::warning(
+      nullptr,
+      tr( "Add GPX Layer" ),
+      tr(
+        "Unable to read the selected file.\n"
+        "Please select a valid file."
+      )
+    );
     return;
   }
 

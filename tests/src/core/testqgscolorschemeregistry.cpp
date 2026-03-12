@@ -53,10 +53,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    QgsColorScheme *clone() const override
-    {
-      return new DummyColorScheme();
-    }
+    QgsColorScheme *clone() const override { return new DummyColorScheme(); }
 };
 
 class DummyColorScheme2 : public QgsColorScheme
@@ -73,10 +70,7 @@ class DummyColorScheme2 : public QgsColorScheme
       return colors;
     }
 
-    QgsColorScheme *clone() const override
-    {
-      return new DummyColorScheme2();
-    }
+    QgsColorScheme *clone() const override { return new DummyColorScheme2(); }
 };
 
 class TestQgsColorSchemeRegistry : public QObject
@@ -113,12 +107,10 @@ void TestQgsColorSchemeRegistry::cleanupTestCase()
 }
 
 void TestQgsColorSchemeRegistry::init()
-{
-}
+{}
 
 void TestQgsColorSchemeRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsColorSchemeRegistry::createInstance()
 {

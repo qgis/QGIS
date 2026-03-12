@@ -50,7 +50,8 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
   public:
     QgsPolygon3DSymbolHandler( const QgsPolygon3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsPolygon3DSymbol *>( symbol->clone() ) )
-      , mSelectedIds( selectedIds ) {}
+      , mSelectedIds( selectedIds )
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &f, const Qgs3DRenderContext &context ) override;
@@ -368,7 +369,8 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  QgsTessellatedPolygonGeometry *geometry
+    = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
 
   geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );
@@ -421,7 +423,8 @@ QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symb
   materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
-  QgsMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  QgsMaterial *material
+    = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
   applyCullingMode( symbol->cullingMode(), material );
   return material;
 }

@@ -62,8 +62,10 @@ QString QgsGeometryCheckOverlapAlgorithm::groupId() const
 
 QString QgsGeometryCheckOverlapAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the overlapping areas.\n"
-                      "Overlapping areas smaller than the minimum overlapping area are errors." );
+  return QObject::tr(
+    "This algorithm checks the overlapping areas.\n"
+    "Overlapping areas smaller than the minimum overlapping area are errors."
+  );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckOverlapAlgorithm::flags() const
@@ -80,29 +82,21 @@ void QgsGeometryCheckOverlapAlgorithm::initAlgorithm( const QVariantMap &configu
 {
   Q_UNUSED( configuration )
 
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"ERRORS"_s, QObject::tr( "Overlap errors" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Overlap features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"ERRORS"_s, QObject::tr( "Overlap errors" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Overlap features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false ) );
 
-  addParameter( new QgsProcessingParameterNumber(
-    u"MIN_OVERLAP_AREA"_s, QObject::tr( "Minimum overlap area" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
-  ) );
+  addParameter( new QgsProcessingParameterNumber( u"MIN_OVERLAP_AREA"_s, QObject::tr( "Minimum overlap area" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0 ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
-  );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -145,13 +139,9 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
   fields.append( uniqueIdField );
   fields.append( overlapFeatureUniqueIdField );
 
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
 
-  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink( parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
@@ -215,13 +205,14 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
     QgsFeature f;
     QgsAttributes attrs = f.attributes();
 
-    attrs << error->layerId()
-          << inputLayer->name()
-          << error->location().x()
-          << error->location().y()
-          << error->value().toDouble()
-          << inputLayer->getFeature( error->featureId() ).attribute( uniqueIdField.name() )
-          << inputLayer->getFeature( overlapError->overlappedFeature().featureId() ).attribute( uniqueIdField.name() );
+    attrs
+      << error->layerId()
+      << inputLayer->name()
+      << error->location().x()
+      << error->location().y()
+      << error->value().toDouble()
+      << inputLayer->getFeature( error->featureId() ).attribute( uniqueIdField.name() )
+      << inputLayer->getFeature( overlapError->overlappedFeature().featureId() ).attribute( uniqueIdField.name() );
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );

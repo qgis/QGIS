@@ -310,11 +310,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     case QMetaType::Type::QColor:
     {
       const QColor color = qvariant_cast<QColor>( value );
-      return u"(%1,%2,%3,%4)"_s
-        .arg( color.red() )
-        .arg( color.green() )
-        .arg( color.blue() )
-        .arg( color.alpha() );
+      return u"(%1,%2,%3,%4)"_s.arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
     }
     case QMetaType::Type::QDate:
       return value.toDate().toString( Qt::ISODate );
@@ -330,11 +326,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     case QMetaType::Type::QRect:
     {
       const QRect rect = value.toRect();
-      return u"(%1,%2,%3,%4)"_s
-        .arg( rect.x() )
-        .arg( rect.y() )
-        .arg( rect.width() )
-        .arg( rect.height() );
+      return u"(%1,%2,%3,%4)"_s.arg( rect.x() ).arg( rect.y() ).arg( rect.width() ).arg( rect.height() );
     }
     case QMetaType::Type::QSize:
     {

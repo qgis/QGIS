@@ -98,7 +98,17 @@ const QgsPropertiesDefinition &QgsPlot::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+void QgsPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+    return;
+  setDataDefinedProperties( plot->dataDefinedProperties() );
+}
+
+
+//
 // QgsPlotAxis
+//
 
 QgsPlotAxis::QgsPlotAxis()
 {
@@ -207,12 +217,22 @@ QgsLineSymbol *QgsPlotAxis::gridMajorSymbol()
   return mGridMajorSymbol.get();
 }
 
+const QgsLineSymbol *QgsPlotAxis::gridMajorSymbol() const
+{
+  return mGridMajorSymbol.get();
+}
+
 void QgsPlotAxis::setGridMajorSymbol( QgsLineSymbol *symbol )
 {
   mGridMajorSymbol.reset( symbol );
 }
 
 QgsLineSymbol *QgsPlotAxis::gridMinorSymbol()
+{
+  return mGridMinorSymbol.get();
+}
+
+const QgsLineSymbol *QgsPlotAxis::gridMinorSymbol() const
 {
   return mGridMinorSymbol.get();
 }
@@ -230,6 +250,23 @@ QgsTextFormat QgsPlotAxis::textFormat() const
 void QgsPlotAxis::setTextFormat( const QgsTextFormat &format )
 {
   mLabelTextFormat = format;
+}
+
+void QgsPlotAxis::copyProperties( const QgsPlotAxis &source, QgsPlotAxis &dest )
+{
+  dest.setType( source.type() );
+  dest.setGridIntervalMinor( source.gridIntervalMinor() );
+  dest.setGridIntervalMajor( source.gridIntervalMajor() );
+  dest.setLabelInterval( source.labelInterval() );
+  dest.setLabelSuffix( source.labelSuffix() );
+  dest.setLabelSuffixPlacement( source.labelSuffixPlacement() );
+  dest.setTextFormat( source.textFormat() );
+  if ( source.numericFormat() )
+    dest.setNumericFormat( source.numericFormat()->clone() );
+  if ( source.gridMajorSymbol() )
+    dest.setGridMajorSymbol( source.gridMajorSymbol()->clone() );
+  if ( source.gridMinorSymbol() )
+    dest.setGridMinorSymbol( source.gridMinorSymbol()->clone() );
 }
 
 
@@ -357,9 +394,21 @@ void Qgs2DPlot::applyDataDefinedProperties( QgsRenderContext &context, QgsMargin
   }
 }
 
+void Qgs2DPlot::copyCommonProperties( const Qgs2DPlot *other )
+{
+  if ( !other )
+  {
+    return;
+  }
+
+  setDataDefinedProperties( other->dataDefinedProperties() );
+  setSize( other->size() );
+  setMargins( other->margins() );
+}
+
 
 //
-// Qgs2DPlot
+// Qgs2DXyPlot
 //
 
 Qgs2DXyPlot::Qgs2DXyPlot()
@@ -1147,12 +1196,22 @@ QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol()
   return mChartBackgroundSymbol.get();
 }
 
+const QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol() const
+{
+  return mChartBackgroundSymbol.get();
+}
+
 void Qgs2DXyPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
 {
   mChartBackgroundSymbol.reset( symbol );
 }
 
 QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol()
+{
+  return mChartBorderSymbol.get();
+}
+
+const QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol() const
 {
   return mChartBorderSymbol.get();
 }
@@ -1287,6 +1346,34 @@ void Qgs2DXyPlot::applyDataDefinedProperties(
     }
   }
 }
+
+void Qgs2DXyPlot::copyCommonProperties( const Qgs2DXyPlot *other )
+{
+  if ( !other )
+  {
+    return;
+  }
+
+  Qgs2DPlot::copyCommonProperties( other );
+  setXMinimum( other->xMinimum() );
+  setXMaximum( other->xMaximum() );
+  setYMinimum( other->yMinimum() );
+  setYMaximum( other->yMaximum() );
+  setFlipAxes( other->flipAxes() );
+
+  QgsPlotAxis::copyProperties( other->xAxis(), mXAxis );
+  QgsPlotAxis::copyProperties( other->yAxis(), mYAxis );
+
+  if ( other->chartBackgroundSymbol() )
+  {
+    setChartBackgroundSymbol( other->chartBackgroundSymbol()->clone() );
+  }
+  if ( other->chartBorderSymbol() )
+  {
+    setChartBorderSymbol( other->chartBorderSymbol()->clone() );
+  }
+}
+
 
 //
 // QgsPlotDefaultSettings
