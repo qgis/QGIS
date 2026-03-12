@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
+     gml:id="aFeatureCollection"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation=""
+     xsi:schemaLocation="http://ogr.maptools.org/ stats_by_cat_two_fields.xsd"
      xmlns:ogr="http://ogr.maptools.org/"
-     xmlns:gml="http://www.opengis.net/gml">
-  <gml:boundedBy><gml:null>missing</gml:null></gml:boundedBy>
-                                                                                                                                                                                                                                                                                                
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.0">
+     xmlns:gml="http://www.opengis.net/gml/3.2">
+  <gml:boundedBy><gml:Null /></gml:boundedBy>
+                                                                                                                                                                                                                                                                                                                
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.0">
       <ogr:intval>1</ogr:intval>
       <ogr:name>aa</ogr:name>
       <ogr:count>2</ogr:count>
@@ -25,9 +26,10 @@
       <ogr:q3>44.123456</ogr:q3>
       <ogr:iqr>40.793456</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.1">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.1">
+      <ogr:intval xsi:nil="true"/>
       <ogr:name>dd</ogr:name>
       <ogr:count>1</ogr:count>
       <ogr:unique>1</ogr:unique>
@@ -44,9 +46,9 @@
       <ogr:q3>0</ogr:q3>
       <ogr:iqr>0</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.2">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.2">
       <ogr:intval>1</ogr:intval>
       <ogr:name>bb</ogr:name>
       <ogr:count>3</ogr:count>
@@ -64,10 +66,11 @@
       <ogr:q3>0.123</ogr:q3>
       <ogr:iqr>0</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.3">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.3">
       <ogr:intval>120</ogr:intval>
+      <ogr:name xsi:nil="true"/>
       <ogr:count>1</ogr:count>
       <ogr:unique>1</ogr:unique>
       <ogr:min>-100291.43213</ogr:min>
@@ -83,9 +86,10 @@
       <ogr:q3>-100291.43213</ogr:q3>
       <ogr:iqr>0</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.4">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.4">
+      <ogr:intval xsi:nil="true"/>
       <ogr:name>cc</ogr:name>
       <ogr:count>1</ogr:count>
       <ogr:unique>1</ogr:unique>
@@ -102,9 +106,9 @@
       <ogr:q3>0.123</ogr:q3>
       <ogr:iqr>0</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_cat_two_fields fid="stats_by_cat_two_fields.5">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_cat_two_fields gml:id="stats_by_cat_two_fields.5">
       <ogr:intval>2</ogr:intval>
       <ogr:name>bb</ogr:name>
       <ogr:count>1</ogr:count>
@@ -122,5 +126,5 @@
       <ogr:q3>0.123</ogr:q3>
       <ogr:iqr>0</ogr:iqr>
     </ogr:stats_by_cat_two_fields>
-  </gml:featureMember>
+  </ogr:featureMember>
 </ogr:FeatureCollection>

@@ -2273,14 +2273,14 @@ tests:
               cast: str
 
   - algorithm: qgis:joinbylocationsummary
-    name: Join by summary polys to points, reprojected
+    name: Join by location (summary), polys to points, reprojected
     params:
       DISCARD_NONMATCHING: false
       INPUT:
-        name: polys.gml|layername=polys2
+        name: polys.gml
         type: vector
       JOIN:
-        name: custom/points_3857.gml|layername=points_3857
+        name: custom/points_3857.gml
         type: vector
       PREDICATE:
       - 0
@@ -2296,14 +2296,14 @@ tests:
             fid: skip
 
   - algorithm: qgis:joinbylocationsummary
-    name: Join by location, lines to reprojected polygons
+    name: Join by location (summary), lines to reprojected polygons
     params:
       DISCARD_NONMATCHING: false
       INPUT:
-        name: custom/line_3857.gml|layername=line_3857
+        name: custom/line_3857.gml
         type: vector
       JOIN:
-        name: polys.gml|layername=polys2
+        name: polys.gml
         type: vector
       PREDICATE:
       - 0
