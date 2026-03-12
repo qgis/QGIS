@@ -713,6 +713,19 @@ PolyhedralSurface
 .. versionadded:: 4.2
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const;
+%Docstring
+Converts the geometry to a PolyhedralSurface geometry. The geometry must
+be of type Solid
+
+:return: geometry as a PolyhedralSurface
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
 
 
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
