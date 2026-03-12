@@ -365,7 +365,9 @@ void QgsAbstractGeospatialPdfExporter::createMetadataXmlSection( QDomElement &co
   compositionElem.appendChild( metadata );
 }
 
-void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection( QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const
+void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection(
+  QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits
+) const
 {
   int i = 0;
   for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
@@ -402,8 +404,7 @@ void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection( QDomEleme
       QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
 
       // transform to PDF coordinate space
-      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
-                     -pageHeightPdfUnits / details.pageSizeMm.height() );
+      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(), -pageHeightPdfUnits / details.pageSizeMm.height() );
 
       QgsPolygon p = section.pageBoundsPolygon;
       p.transform( t );
@@ -455,7 +456,9 @@ void QgsAbstractGeospatialPdfExporter::createPageDimensionXmlSection( QDomElemen
   pageElem.appendChild( height );
 }
 
-void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSections( QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSections(
+  QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc, const QList<ComponentLayerDetail> &components, const ExportDetails &details
+) const
 {
   QSet< QString > createdLayerIds;
   std::vector< std::unique_ptr< TreeNode > > rootGroups;
@@ -655,7 +658,9 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSections( QDo
   compositionElem.appendChild( layerTree );
 }
 
-void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromLayerTree( const QgsLayerTree *layerTree, QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromLayerTree(
+  const QgsLayerTree *layerTree, QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc, const QList<ComponentLayerDetail> &components, const ExportDetails &details
+) const
 {
   QMap< QString, TreeNode * > groupNameToTreeNode;
   QMap< QString, TreeNode * > layerIdToTreeNode;
@@ -674,7 +679,7 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromL
       pdfTreeGroup->id = id;
       pdfTreeGroup->name = component.group;
       pdfTreeGroup->initiallyVisible = true;
-      groupNameToTreeNode[ pdfTreeGroup->name ] = pdfTreeGroup.get();
+      groupNameToTreeNode[pdfTreeGroup->name] = pdfTreeGroup.get();
       rootPdfNode->addChild( std::move( pdfTreeGroup ) );
     }
   }
@@ -690,10 +695,16 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromL
   compositionElem.appendChild( layerTreeElem );
 }
 
-void QgsAbstractGeospatialPdfExporter::createContentXmlSection( QDomElement &contentElem, QDomDocument &doc, const QMap< QString, TreeNode * > &groupNameToTreeNode, const QMap< QString, TreeNode * > &layerIdToTreeNode, const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+void QgsAbstractGeospatialPdfExporter::createContentXmlSection(
+  QDomElement &contentElem,
+  QDomDocument &doc,
+  const QMap< QString, TreeNode * > &groupNameToTreeNode,
+  const QMap< QString, TreeNode * > &layerIdToTreeNode,
+  const QList<ComponentLayerDetail> &components,
+  const ExportDetails &details
+) const
 {
-  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
-  {
+  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail &component ) -> QDomElement {
     QDomElement pdfDataset = doc.createElement( u"PDF"_s );
     pdfDataset.setAttribute( u"dataset"_s, component.sourcePdfPath );
     if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
@@ -716,7 +727,9 @@ void QgsAbstractGeospatialPdfExporter::createContentXmlSection( QDomElement &con
     }
     else if ( !component.mapLayerId.isEmpty() )
     {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+      const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( id ) )
       {
         QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, contentElem );
         ifLayerOnElement.appendChild( createPdfDatasetElement( component ) );
@@ -734,7 +747,9 @@ void QgsAbstractGeospatialPdfExporter::createContentXmlSection( QDomElement &con
   {
     for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+      const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( id ) )
       {
         QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, contentElem );
 
@@ -753,7 +768,9 @@ void QgsAbstractGeospatialPdfExporter::createContentXmlSection( QDomElement &con
   }
 }
 
-std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes( QMap< QString, TreeNode * > &groupNameToTreeNode, QMap< QString, TreeNode * > &layerIdToTreeNode, const QgsLayerTreeGroup *layerTreeGroup ) const
+std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes(
+  QMap< QString, TreeNode * > &groupNameToTreeNode, QMap< QString, TreeNode * > &layerIdToTreeNode, const QgsLayerTreeGroup *layerTreeGroup
+) const
 {
   auto pdfTreeNodes = std::make_unique< TreeNode >();
   const QString id = QUuid::createUuid().toString();
@@ -833,7 +850,7 @@ std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes
   // Now we know if our group is not empty. Add it to the groupNameToTreeNode then.
   if ( !pdfTreeNodes->children.empty() )
   {
-    groupNameToTreeNode[ pdfTreeNodes->name ] = pdfTreeNodes.get();
+    groupNameToTreeNode[pdfTreeNodes->name] = pdfTreeNodes.get();
   }
 
   return pdfTreeNodes;
