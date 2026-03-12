@@ -101,6 +101,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataNormalTessellator->setAddTextureUVs( requiresTextureCoordinates );
   lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataNormalTessellator->setTextureRotation( textureRotation );
+  lineDataNormalTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   mLineDataNormal.tessellator = std::move( lineDataNormalTessellator );
 
@@ -110,6 +111,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataSelectedTessellator->setAddTextureUVs( requiresTextureCoordinates );
   lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataSelectedTessellator->setTextureRotation( textureRotation );
+  lineDataSelectedTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 
