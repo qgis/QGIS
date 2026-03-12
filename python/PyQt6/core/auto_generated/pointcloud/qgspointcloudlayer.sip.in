@@ -318,6 +318,14 @@ if the layer has a virtual point cloud data provider).
 .. versionadded:: 4.0
 %End
 
+    QVector<QgsPointCloudIndex> overviews() const;
+%Docstring
+Returns a list of all overview point cloud indexes associated with the
+layer (only if the layer has a virtual point cloud data provider).
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void subsetStringChanged();

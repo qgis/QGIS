@@ -67,6 +67,12 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     QgsPointCloudIndex overview() const { return mOverview; }
 
     /**
+     * Returns a list of all overview indexes.
+     * \since QGIS 4.2
+     */
+    QVector<QgsPointCloudIndex> overviews() const { return mOverviews; }
+
+    /**
      * Returns the calculated average width of point clouds.
      * \note We use this value to calculate when to switch between overview and point clouds
      * \since QGIS 3.42
@@ -98,6 +104,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
+    QVector<QgsPointCloudIndex> mOverviews;
 
     double mRedMax = std::numeric_limits<double>::lowest();
     double mGreenMax = std::numeric_limits<double>::lowest();

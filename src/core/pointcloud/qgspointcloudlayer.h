@@ -368,6 +368,13 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     QgsPointCloudIndex overview() const;
 
+    /**
+     * Returns a list of all overview point cloud indexes associated with the layer (only if the layer has a virtual point cloud data provider).
+     *
+     * \since QGIS 4.2
+     */
+    QVector<QgsPointCloudIndex> overviews() const;
+
   signals:
 
     /**
