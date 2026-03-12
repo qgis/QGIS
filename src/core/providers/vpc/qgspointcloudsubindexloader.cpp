@@ -21,6 +21,8 @@
 #include <QString>
 #include <QtConcurrentRun>
 
+#include "moc_qgspointcloudsubindexloader.cpp"
+
 using namespace Qt::StringLiterals;
 
 QgsPointCloudSubIndexLoader::QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged )
