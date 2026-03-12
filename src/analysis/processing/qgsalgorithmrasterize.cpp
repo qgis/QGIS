@@ -254,6 +254,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   geoTransform[5] = -mapUnitsPerPixel;
   GDALSetGeoTransform( hOutputDataset.get(), geoTransform );
 
+  mMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
   mMapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
   mMapSettings.setDestinationCrs( mCrs );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
