@@ -76,6 +76,7 @@ class TestQgsAttributeTable : public QObject
     void testFetchAllAttributes();
     void testSortByDisplayExpression();
     void testOrderColumn();
+    void testEmptyModelCrash();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -927,6 +928,20 @@ void TestQgsAttributeTable::testFetchAllAttributes()
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 0 ), Qt::DisplayRole ).toString(), "Jet" );
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 1 ), Qt::DisplayRole ).toString(), "90" );
   QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 2 ), Qt::DisplayRole ).toString(), "3.000" );
+}
+
+void TestQgsAttributeTable::testEmptyModelCrash()
+{
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326"_s, u"vl"_s, u"memory"_s );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0, 0 ) ) );
+  QVERIFY( tempLayer->dataProvider()->addFeature( f1 ) );
+  QVERIFY( tempLayer->startEditing() );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get() );
+  const QgsField field { u"int"_s, QMetaType::Int };
+  dlg->addAttribute( field );
+  dlg->removeAttributes( QList<int>() << 0 );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
