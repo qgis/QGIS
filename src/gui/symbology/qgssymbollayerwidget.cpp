@@ -45,6 +45,7 @@
 #include "qgssvgselectorwidget.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QAbstractButton>
 #include <QAction>
@@ -55,6 +56,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMovie>
@@ -2126,6 +2128,8 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::changed, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+  connect( vectorLayer(), &QgsMapLayer::editingStarted, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+  connect( vectorLayer(), &QgsMapLayer::editingStopped, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
 
   updateBlankSegmentsWidget();
 }
@@ -2354,7 +2358,6 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
 
 void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 {
-  mEditBlankSegmentsBtn->setEnabled( blankSegmentsFieldIndex() > -1 );
   QString tooltip;
   switch ( mSymbolType )
   {
@@ -2367,9 +2370,25 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
       break;
   }
 
-  if ( !mEditBlankSegmentsBtn->isEnabled() )
+  if ( !qobject_cast<QMainWindow *>( QApplication::activeWindow() ) )
   {
+    // It's not possible to edit blank segments from Layer properties dialog
+    mEditBlankSegmentsBtn->setEnabled( false );
+    tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because map canvas interaction is only possible from Layer Styling panel, Layer properties dialog doesn't allow blank segments creation." );
+  }
+  else if ( blankSegmentsFieldIndex() < 0 )
+  {
+    mEditBlankSegmentsBtn->setEnabled( false );
     tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because no valid field property has been set" );
+  }
+  else if ( QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), blankSegmentsFieldIndex() ) )
+  {
+    mEditBlankSegmentsBtn->setEnabled( false );
+    tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because field property is not editable" );
+  }
+  else
+  {
+    mEditBlankSegmentsBtn->setEnabled( true );
   }
 
   mEditBlankSegmentsBtn->setToolTip( tooltip );
