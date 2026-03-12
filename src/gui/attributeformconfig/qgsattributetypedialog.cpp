@@ -80,6 +80,33 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   connect( mReuseLastValuePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateReuseLastValuePolicyLabel );
   updateReuseLastValuePolicyLabel();
 
+  // Behavior to have the provider comment as the null value and consider an empty string as a valid custom comment
+  const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
+  mClearAction = new QAction( clearIcon, tr( "clear" ), this );
+  mClearAction->setCheckable( false );
+  connect( mClearAction, &QAction::triggered, this, [this]() {
+    // Reset custom comment to provider comment
+    setComment( mComment );
+  } );
+  connect( mCustomComment, &QLineEdit::textChanged, this, [this]( const QString &text ) {
+    // The clear button should only be visible when there is a (possibly empty) custom comment
+    bool isActionAdded = mCustomComment->actions().contains( mClearAction );
+    if ( mComment != text )
+    {
+      if ( !isActionAdded )
+      {
+        mCustomComment->addAction( mClearAction, QLineEdit::TrailingPosition );
+      }
+    }
+    else
+    {
+      if ( isActionAdded )
+      {
+        mCustomComment->removeAction( mClearAction );
+      }
+    }
+  } );
+
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
@@ -489,6 +516,19 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
+void QgsAttributeTypeDialog::setCustomComment( const QString &customComment )
+{
+  if ( customComment.isNull() )
+    mCustomComment->setText( mComment );
+  else
+    mCustomComment->setText( customComment );
+}
+
+QString QgsAttributeTypeDialog::customComment() const
+{
+  return mCustomComment->text();
+}
+
 void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
 {
   mDataDefinedProperties = properties;
@@ -504,9 +544,8 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
-  laCommentContent->setText( comment );
-  laComment->setVisible( !comment.isEmpty() );
-  laCommentContent->setVisible( !comment.isEmpty() );
+  mComment = comment;
+  mCustomComment->setText( mComment );
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )

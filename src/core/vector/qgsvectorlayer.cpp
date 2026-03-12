@@ -3818,6 +3818,56 @@ QString QgsVectorLayer::attributeAlias( int index ) const
   return fields().at( index ).alias();
 }
 
+void QgsVectorLayer::setFieldCustomComment( int attIndex, const QString &customCommentString )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+
+  mAttributeCustomCommentMap.insert( name, customCommentString );
+  mFields[ attIndex ].setCustomComment( customCommentString );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified(); // TODO[MD]: should have a different signal?
+}
+
+void QgsVectorLayer::removeFieldCustomComment( int attIndex )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+  mFields[ attIndex ].setCustomComment( QString() );
+  if ( mAttributeCustomCommentMap.contains( name ) )
+  {
+    mAttributeCustomCommentMap.remove( name );
+    updateFields();
+    mEditFormConfig.setFields( mFields );
+    emit layerModified();
+  }
+}
+
+QString QgsVectorLayer::attributeCustomComment( int index ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return QString();
+
+  return fields().at( index ).customComment();
+}
+
+QgsStringMap QgsVectorLayer::attributeCustomComments() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mAttributeCustomCommentMap;
+}
+
 QString QgsVectorLayer::attributeDisplayName( int index ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

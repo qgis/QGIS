@@ -43,6 +43,7 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mAlias = layer->fields().at( idx ).alias();
   mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
+  mCustomComment = layer->fields().at( idx ).customComment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
   mReuseLastValuePolicy = layer->editFormConfig().reuseLastValuePolicy( idx );

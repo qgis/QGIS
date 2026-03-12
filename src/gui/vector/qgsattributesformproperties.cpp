@@ -299,6 +299,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( cons
   mAttributeTypeDialog->setAlias( config.mAlias );
   mAttributeTypeDialog->setDataDefinedProperties( config.mDataDefinedProperties );
   mAttributeTypeDialog->setComment( config.mComment );
+  mAttributeTypeDialog->setCustomComment( config.mCustomComment );
   mAttributeTypeDialog->setFieldEditable( config.mEditable );
   mAttributeTypeDialog->setLabelOnTop( config.mLabelOnTop );
   mAttributeTypeDialog->setReuseLastValuePolicy( config.mReuseLastValuePolicy );
@@ -342,6 +343,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   QgsAttributesFormData::FieldConfig cfg;
 
   cfg.mComment = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).comment();
+  cfg.mCustomComment = mAttributeTypeDialog->customComment();
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mReuseLastValuePolicy = mAttributeTypeDialog->reuseLastValuePolicy();
@@ -877,6 +879,7 @@ void QgsAttributesFormProperties::applyToLayer( QgsVectorLayer *layer )
     }
 
     layer->setFieldAlias( idx, cfg.mAlias );
+    layer->setFieldCustomComment( idx, cfg.mCustomComment );
     layer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
     layer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
     layer->setFieldMergePolicy( idx, cfg.mMergePolicy );
