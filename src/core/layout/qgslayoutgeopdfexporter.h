@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      * \return whether at least one map was found not following map themes nor locked layers.
      *
      * \see restoreMapItemLayersAfterRendering()
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     bool setMapItemLayersBeforeRendering();
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \see setMapItemLayersBeforeRendering()
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     void restoreMapItemLayersAfterRendering();
 

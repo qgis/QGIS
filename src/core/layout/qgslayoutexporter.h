@@ -416,7 +416,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * If PdfExportSettings::writeGeoPdf is FALSE then this option has no effect.
        *
-       * \since QGIS 4.0
+       * \since QGIS 4.2
        */
         bool useLayerTreeConfig = false;
     };
