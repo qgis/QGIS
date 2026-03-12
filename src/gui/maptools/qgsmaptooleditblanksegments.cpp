@@ -869,6 +869,7 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
   }
   else
   {
+    QgsDebugError( "Fail to edit blank segments attribute" );
     mLayer->destroyEditCommand();
   }
 }
