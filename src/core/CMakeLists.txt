@@ -145,6 +145,14 @@ set(QGIS_CORE_SRCS
   symbology/qgssymbol.cpp
   symbology/qgssymbolrendercontext.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
+  symbology/converters/qgssymbolconverter.cpp
+  symbology/converters/qgssymbolconverteresrirest.cpp
+  symbology/converters/qgssymbolconvertermapboxgl.cpp
+  symbology/converters/qgssymbolconverterogrstyle.cpp
+  symbology/converters/qgssymbolconverterqml.cpp
+  symbology/converters/qgssymbolconverterregistry.cpp
+  symbology/converters/qgssymbolconvertersld.cpp
+
   simplify/effectivearea.cpp
 
   diagram/qgsdiagram.cpp
@@ -250,6 +258,7 @@ set(QGIS_CORE_SRCS
 
   network/qgsblockingnetworkrequest.cpp
   network/qgsfiledownloader.cpp
+  network/qgsfileuploader.cpp
   network/qgsnetworkaccessmanager.cpp
   network/qgsnetworkdiskcache.cpp
   network/qgsnetworkcontentfetcher.cpp
@@ -1820,6 +1829,7 @@ set(QGIS_CORE_HDRS
 
   network/qgsblockingnetworkrequest.h
   network/qgsfiledownloader.h
+  network/qgsfileuploader.h
   network/qgsnetworkaccessmanager.h
   network/qgsnetworkcontentfetcher.h
   network/qgsnetworkcontentfetcherregistry.h
@@ -2077,6 +2087,13 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
+  symbology/converters/qgssymbolconverter.h
+  symbology/converters/qgssymbolconverteresrirest.h
+  symbology/converters/qgssymbolconvertermapboxgl.h
+  symbology/converters/qgssymbolconverterogrstyle.h
+  symbology/converters/qgssymbolconverterqml.h
+  symbology/converters/qgssymbolconverterregistry.h
+  symbology/converters/qgssymbolconvertersld.h
 
   textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
@@ -2660,6 +2677,7 @@ target_include_directories(qgis_core PUBLIC
   sensor
   stac
   symbology
+  symbology/converters
   textrenderer
   tiledscene
   validity

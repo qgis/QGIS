@@ -30,6 +30,7 @@
 #include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
+#include "qgssymbolconverteresrirest.h"
 #include "qgssymbollayer.h"
 #include "qgstest.h"
 
@@ -336,7 +337,7 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( fontMarkerLayer->character(), QString( "text" ) );
 
   // invalid json
-  symbol = QgsArcGisRestUtils::parseEsriMarkerSymbolJson( QVariantMap() );
+  symbol = QgsSymbolConverterEsriRest::parseEsriMarkerSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
 }
 
@@ -370,7 +371,7 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
 
   // invalid json
-  symbol = QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( QVariantMap() );
+  symbol = QgsSymbolConverterEsriRest::parseEsriPictureMarkerSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
 }
 
@@ -401,7 +402,7 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
   QCOMPARE( lineLayer->penStyle(), Qt::DotLine );
 
   // invalid json
-  symbol = QgsArcGisRestUtils::parseEsriLineSymbolJson( QVariantMap() );
+  symbol = QgsSymbolConverterEsriRest::parseEsriLineSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
 }
 

@@ -241,7 +241,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary() const
   sfcgal::shared_geom boundary = QgsSfcgalEngine::boundary( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( boundary, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( boundary, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -558,7 +558,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x
   sfcgal::shared_geom result = QgsSfcgalEngine::transform( geom.get(), mat );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else
@@ -684,7 +684,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbs
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( geom.get(), otherShared.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -698,7 +698,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfc
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -721,7 +721,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<Qgs
   sfcgal::shared_geom result = QgsSfcgalEngine::combine( sfcgalGeomList, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -737,7 +737,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstr
   sfcgal::shared_geom result = QgsSfcgalEngine::difference( geom.get(), otherSharedr.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -751,7 +751,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsSfcga
   sfcgal::shared_geom result = QgsSfcgalEngine::difference( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -765,7 +765,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::triangulate() const
   sfcgal::shared_geom result = QgsSfcgalEngine::triangulate( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -779,7 +779,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::convexHull() const
   sfcgal::shared_geom result = QgsSfcgalEngine::convexHull( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -793,7 +793,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::envelope() const
   sfcgal::shared_geom result = QgsSfcgalEngine::envelope( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -818,7 +818,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer3D( double radius, i
   sfcgal::shared_geom result = QgsSfcgalEngine::buffer3D( geom.get(), radius, segments, joinStyle3D, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -832,7 +832,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer2D( double radius, i
   sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( geom.get(), radius, segments, joinStyle, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -846,7 +846,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::simplify( double tolerance
   sfcgal::shared_geom result = QgsSfcgalEngine::simplify( geom.get(), tolerance, preserveTopology, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -860,7 +860,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::extrude( const QgsVector3D
   sfcgal::shared_geom result = QgsSfcgalEngine::extrude( geom.get(), extrusion, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -874,9 +874,37 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() co
   sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
+}
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toSolid() const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom solid = QgsSfcgalEngine::toSolid( geom.get(), &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> solidGeom = QgsSfcgalEngine::toSfcgalGeometry( solid, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return solidGeom;
+}
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toPolyhedralSurface() const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom phs = QgsSfcgalEngine::toPolyhedralSurface( geom.get(), &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> phsGeom = QgsSfcgalEngine::toSfcgalGeometry( phs, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return phsGeom;
 }
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
@@ -887,7 +915,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
   sfcgal::shared_prim result = QgsSfcgalEngine::createCube( size, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, sfcgal::primitiveType::SFCGAL_TYPE_CUBE, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, sfcgal::primitiveType::SFCGAL_TYPE_CUBE, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else
@@ -907,7 +935,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurfa
   sfcgal::shared_prim result = QgsSfcgalEngine::primitiveAsPolyhedral( mSfcgalPrim.get(), mPrimTransform, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else

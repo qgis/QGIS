@@ -382,7 +382,10 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
     bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
+
     bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr ) const override;
+
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 

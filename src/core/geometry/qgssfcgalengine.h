@@ -673,6 +673,32 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
+    /**
+     * Converts a PolyhedralSurface geometry to a Solid geometry.
+     *
+     * The input geometry must be of type PolyhedralSurface. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toSolid( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Converts a Solid geometry to a PolyhedralSurface geometry.
+     *
+     * The input geometry must be of type Solid. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toPolyhedralSurface( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 
     /**
