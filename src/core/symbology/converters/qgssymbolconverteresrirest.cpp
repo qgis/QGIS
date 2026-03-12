@@ -99,17 +99,17 @@ std::unique_ptr< QgsSymbol > QgsSymbolConverterEsriRest::createSymbol( const QVa
 
 std::unique_ptr<QgsLineSymbol> QgsSymbolConverterEsriRest::parseEsriLineSymbolJson( const QVariantMap &symbolData )
 {
-  QColor lineColor = convertColor( symbolData.value( u"color"_s ) );
+  const QColor lineColor = convertColor( symbolData.value( u"color"_s ) );
   if ( !lineColor.isValid() )
     return nullptr;
 
   bool ok = false;
-  double widthInPoints = symbolData.value( u"width"_s ).toDouble( &ok );
+  const double widthInPoints = symbolData.value( u"width"_s ).toDouble( &ok );
   if ( !ok )
     return nullptr;
 
   QgsSymbolLayerList layers;
-  Qt::PenStyle penStyle = convertLineStyle( symbolData.value( u"style"_s ).toString() );
+  const Qt::PenStyle penStyle = convertLineStyle( symbolData.value( u"style"_s ).toString() );
   auto lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
   lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
   layers.append( lineLayer.release() );
@@ -120,14 +120,14 @@ std::unique_ptr<QgsLineSymbol> QgsSymbolConverterEsriRest::parseEsriLineSymbolJs
 
 std::unique_ptr<QgsFillSymbol> QgsSymbolConverterEsriRest::parseEsriFillSymbolJson( const QVariantMap &symbolData )
 {
-  QColor fillColor = convertColor( symbolData.value( u"color"_s ) );
-  Qt::BrushStyle brushStyle = convertFillStyle( symbolData.value( u"style"_s ).toString() );
+  const QColor fillColor = convertColor( symbolData.value( u"color"_s ) );
+  const Qt::BrushStyle brushStyle = convertFillStyle( symbolData.value( u"style"_s ).toString() );
 
   const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
+  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
   bool ok = false;
-  double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  const double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
   auto fillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
@@ -171,9 +171,9 @@ std::unique_ptr<QgsFillSymbol> QgsSymbolConverterEsriRest::parseEsriPictureFillS
   layers.append( fillLayer.release() );
 
   const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
-  double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
+  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+  const double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
 
   auto lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
   lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
@@ -213,14 +213,14 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriMarkerSymb
   if ( ok )
     angleCW = -angleCCW;
 
-  Qgis::MarkerShape shape = parseEsriMarkerShape( symbolData.value( u"style"_s ).toString() );
+  const Qgis::MarkerShape shape = parseEsriMarkerShape( symbolData.value( u"style"_s ).toString() );
 
   const double xOffset = symbolData.value( u"xoffset"_s ).toDouble();
   const double yOffset = symbolData.value( u"yoffset"_s ).toDouble();
 
   const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
+  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
   double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
@@ -279,15 +279,10 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriTextMarker
   QgsSymbolLayerList layers;
 
   const QString fontFamily = symbolData.value( u"font"_s ).toMap().value( u"family"_s ).toString();
-
   const QString chr = symbolData.value( u"text"_s ).toString();
-
   const double pointSize = symbolData.value( u"font"_s ).toMap().value( u"size"_s ).toDouble();
-
   const QColor color = convertColor( symbolData.value( u"color"_s ) );
-
   const double esriAngle = symbolData.value( u"angle"_s ).toDouble();
-
   const double angle = 90.0 - esriAngle;
 
   auto markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
@@ -357,10 +352,10 @@ QColor QgsSymbolConverterEsriRest::convertColor( const QVariant &colorData )
   if ( colorParts.count() < 4 )
     return QColor();
 
-  int red = colorParts.at( 0 ).toInt();
-  int green = colorParts.at( 1 ).toInt();
-  int blue = colorParts.at( 2 ).toInt();
-  int alpha = colorParts.at( 3 ).toInt();
+  const int red = colorParts.at( 0 ).toInt();
+  const int green = colorParts.at( 1 ).toInt();
+  const int blue = colorParts.at( 2 ).toInt();
+  const int alpha = colorParts.at( 3 ).toInt();
   return QColor( red, green, blue, alpha );
 }
 
