@@ -105,7 +105,7 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     QgsPointCloudLayer *mLayer = nullptr;
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
-    QgsPointCloudLayerChunkedEntity *mOverviewEntity = nullptr;
+    QList<QgsPointCloudLayerChunkedEntity *> mOverviewEntities;
     QList<QgsBox3D> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;

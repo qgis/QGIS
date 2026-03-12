@@ -362,13 +362,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     bool isVpc() const { return mIsVpc; }
 
     /**
-     * Returns the overview point cloud index associated with the layer (only if the layer has a virtual point cloud data provider).
-     *
-     * \since QGIS 4.0
-     */
-    QgsPointCloudIndex overview() const;
-
-    /**
      * Returns a list of all overview point cloud indexes associated with the layer (only if the layer has a virtual point cloud data provider).
      *
      * \since QGIS 4.2

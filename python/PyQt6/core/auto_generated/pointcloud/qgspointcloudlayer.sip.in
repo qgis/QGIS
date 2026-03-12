@@ -310,14 +310,6 @@ not.
 .. versionadded:: 4.0
 %End
 
-    QgsPointCloudIndex overview() const;
-%Docstring
-Returns the overview point cloud index associated with the layer (only
-if the layer has a virtual point cloud data provider).
-
-.. versionadded:: 4.0
-%End
-
     QVector<QgsPointCloudIndex> overviews() const;
 %Docstring
 Returns a list of all overview point cloud indexes associated with the
