@@ -239,7 +239,7 @@ const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiConte
   return path;
 }
 
-bool QgsWfs3AbstractItemsHandler::isEditingAllowed( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+bool QgsWfs3AbstractItemsHandler::canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
   const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
   if ( wfstInsertLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::AddFeatures ) )
@@ -253,35 +253,35 @@ bool QgsWfs3AbstractItemsHandler::isEditingAllowed( const QgsVectorLayer *mapLay
 #endif
     return true;
   }
-  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
-  if ( wfstUpdateLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) )
-  {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
-    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
-    {
-      return false;
-    }
-#endif
-    return true;
-  }
-  if ( wfstUpdateLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) )
-  {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
-    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
-    {
-      return false;
-    }
-#endif
-    return true;
-  }
+  return false;
+}
+
+bool QgsWfs3AbstractItemsHandler::canDeleteFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
   const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
   if ( wfstDeleteLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::DeleteFeatures ) )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  return false;
+}
+
+bool QgsWfs3AbstractItemsHandler::canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+  if ( wfstUpdateLayerIds.contains( mapLayer->id() )
+       && ( mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
     {
       return false;
     }
@@ -1477,7 +1477,12 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         context.response()->setStatusCode( 201 );
         context.response()->setHeader( u"Content-Type"_s, u"application/geo+json"_s );
 
-        QString url { context.request()->url().toString( QUrl::EncodeSpaces ) };
+        QUrl collectionUrl { context.request()->url() };
+        // Remove query and fragment
+        collectionUrl.setQuery( QString() );
+        collectionUrl.setFragment( QString() );
+
+        QString url { collectionUrl.toString( QUrl::EncodeSpaces ) };
         if ( !url.endsWith( '/' ) )
         {
           url.append( '/' );
@@ -1495,14 +1500,21 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     case QgsServerRequest::Method::OptionsMethod:
     {
       context.response()->setStatusCode( 200 );
-      if ( isEditingAllowed( mapLayer, context ) )
+      QStringList methods;
+      methods << u"GET"_s << u"OPTIONS"_s;
+      if ( canInsertFeatures( mapLayer, context ) )
       {
-        context.response()->setHeader( u"Allow"_s, u"GET, POST, PUT, PATCH, DELETE, OPTIONS"_s );
+        methods << u"POST"_s;
       }
-      else
+      if ( canDeleteFeatures( mapLayer, context ) )
       {
-        context.response()->setHeader( u"Allow"_s, u"GET, POST, OPTIONS"_s );
+        methods << u"DELETE"_s;
       }
+      if ( canUpdateFeatures( mapLayer, context ) )
+      {
+        methods << u"PUT"_s << u"PATCH"_s;
+      }
+      context.response()->setHeader( u"Allow"_s, methods.join( ", " ) );
       break;
     }
     // Error
@@ -1919,14 +1931,21 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       // otherwise clients won't be able to know that they can update or delete features in this collection.
       // So we check permissions at collection level, not at feature level.
       context.response()->setStatusCode( 200 );
-      if ( isEditingAllowed( mapLayer, context ) )
+      QStringList methods;
+      methods << u"GET"_s << u"OPTIONS"_s;
+      if ( canInsertFeatures( mapLayer, context ) )
       {
-        context.response()->setHeader( u"Allow"_s, u"GET, POST, PUT, PATCH, DELETE, OPTIONS"_s );
+        methods << u"POST"_s;
       }
-      else
+      if ( canDeleteFeatures( mapLayer, context ) )
       {
-        context.response()->setHeader( u"Allow"_s, u"GET, OPTIONS"_s );
+        methods << u"DELETE"_s;
       }
+      if ( canUpdateFeatures( mapLayer, context ) )
+      {
+        methods << u"PUT"_s << u"PATCH"_s;
+      }
+      context.response()->setHeader( u"Allow"_s, methods.join( ", " ) );
       break;
     }
     default:
@@ -2022,23 +2041,18 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
               { "default", defaultResponse() } } } } }
     };
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 
-    // get access controls
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     // If the layer has no delete capabilities, remove the delete operation
-    if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    if ( !canDeleteFeatures( mapLayer, context ) )
     {
       data[path].erase( "delete" );
     }
     // If the layer has no update capabilities, remove the put and patch operation
-    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    if ( !canUpdateFeatures( mapLayer, context ) )
     {
       data[path].erase( "put" );
       data[path].erase( "patch" );
     }
-
-#endif
 
   } // end for loop
   return data;
