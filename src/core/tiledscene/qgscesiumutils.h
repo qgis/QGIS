@@ -30,9 +30,11 @@
 using namespace nlohmann;
 #endif
 
+class QgsCoordinateTransformContext;
 class QgsSphere;
 class QgsOrientedBox3D;
 class QgsMatrix4x4;
+class QgsTiledSceneBoundingVolume;
 
 /**
  * \brief Contains utilities for working with Cesium data.
@@ -131,6 +133,20 @@ class CORE_EXPORT QgsCesiumUtils
      * \note cmpt, pnts, i3dm tile types are currently not supported
      */
     static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+
+    /**
+     * Calculates oriented bounding box in EPSG:4978 from "region" defined with min/max lat/lon coordinates in EPSG:4978.
+     * \note added in QGIS 4.2
+     */
+    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext );
+
+    /**
+     * Copies any query items from the base URL to the content URI - to replicate undocumented
+     * Cesium JS behavior that is used at least by Google Tiles.
+     *
+     * \note added in QGIS 4.2
+     */
+    static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl );
 };
 
 #endif // QGSCESIUMUTILS_H
