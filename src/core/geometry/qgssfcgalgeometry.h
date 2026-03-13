@@ -433,7 +433,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom
      *
-     * \param mat 4x4 transformation matrix (translation is defined of the 4th column)
+     * \param mat 4x4 transformation matrix (translation is defined in the 4th column)
      * \param errorMsg Error message returned by SFGCAL
      * \return new geometry
      *
