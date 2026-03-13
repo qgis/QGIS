@@ -1008,7 +1008,7 @@ sfcgal::shared_geom QgsSfcgalEngine::toPolyhedralSurface( const sfcgal::geometry
 }
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QgsMatrix4x4 &mat, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
@@ -1039,7 +1039,7 @@ sfcgal::shared_prim QgsSfcgalEngine::createCube( double size, QString *errorMsg 
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QMatrix4x4 &mat, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, nullptr );
