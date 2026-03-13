@@ -61,12 +61,6 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
 
     /**
-     * Returns pointer to the overview index. May be NULLPTR if it doesn't exist.
-     * \since QGIS 3.42
-     */
-    QgsPointCloudIndex overview() const { return mOverview; }
-
-    /**
      * Returns a list of all overview indexes.
      * \since QGIS 4.2
      */

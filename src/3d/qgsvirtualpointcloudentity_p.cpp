@@ -62,7 +62,8 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   const QVector<QgsPointCloudIndex> overviews( provider()->overviews() );
   for ( int i = 0; i < overviews.size(); ++i )
   {
-    const int ovId = -i - 2; // todo
+    // Overview indexes start at -2 and decrease, see QgsPointCloudLayerChunkedEntity::resolveIndex()
+    const int ovId = -i - 2;
     QgsPointCloudLayerChunkedEntity *ovEnt(
       new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, ovId, mCoordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, false, mZValueScale, mZValueOffset, mPointBudget )
     );
