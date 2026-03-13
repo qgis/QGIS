@@ -37,7 +37,24 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   , mCadDockWidget( cadDockWidget )
 {
   setupUi( this );
+  //Disable editing and focus for read-only measurement fields
+  mTotalAreaLineEdit->setReadOnly( true );
+  mTotalAreaLineEdit->setFocusPolicy( Qt::NoFocus );
+  mTotalLengthLineEdit->setReadOnly( true );
+  mTotalLengthLineEdit->setFocusPolicy( Qt::NoFocus );
+  mBearingLineEdit->setReadOnly( true );
+  mBearingLineEdit->setFocusPolicy( Qt::NoFocus );
+  mCommonAngleSnappingLineEdit->setReadOnly( true );
+  mCommonAngleSnappingLineEdit->setFocusPolicy( Qt::NoFocus );
 
+  //Tab order: Only editable fields should be tabbable
+  setTabOrder( mDistanceLineEdit, mAngleLineEdit );
+  setTabOrder( mAngleLineEdit, mXLineEdit );
+  setTabOrder( mXLineEdit, mYLineEdit );
+  setTabOrder( mYLineEdit, mZLineEdit );
+  setTabOrder( mZLineEdit, mMLineEdit );
+  setTabOrder( mMLineEdit, mWeightLineEdit );
+  
   setAttribute( Qt::WA_TransparentForMouseEvents );
   adjustSize();
 
