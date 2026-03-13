@@ -25,6 +25,8 @@ set(QGIS_3D_SRCS
   qgs3dwiredmesh_p.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
+  qgscategorized3drenderer.cpp
+  qgscategorizedchunkloader_p.cpp
   qgsfeature3dhandler_p.cpp
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
@@ -107,6 +109,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsframegraph.cpp
   framegraph/qgsframegraphutils.cpp
 
+  symbols/qgs3dsymbolutils.cpp
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
@@ -172,6 +175,8 @@ set(QGIS_3D_HDRS
   qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgscategorized3drenderer.h
+  qgscategorizedchunkloader_p.h
   qgsfonttextureatlasgenerator.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
@@ -235,6 +240,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsrenderpassquad.h
   framegraph/qgsshadowrenderview.h
 
+  symbols/qgs3dsymbolutils.h
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h

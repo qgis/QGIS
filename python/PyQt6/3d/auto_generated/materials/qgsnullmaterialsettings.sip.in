@@ -52,6 +52,13 @@ Returns a new instance of QgsNullMaterialSettings.
 
     virtual QMap<QString, QString> toExportParameters() const;
 
+
+    virtual QColor averageColor() const;
+
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+
 };
 
 

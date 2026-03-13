@@ -25,6 +25,7 @@ class QString;
 
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
+class QgsAbstractMaterialSettings;
 
 namespace Qt3DCore SIP_SKIP
 {
@@ -100,6 +101,13 @@ class CORE_EXPORT QgsAbstract3DSymbol
      * \since QGIS 3.26
      */
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
+
+    /**
+     * Returns the 3D material settings associated with this symbol.
+     *
+     * \since QGIS 4.2
+     */
+    virtual QgsAbstractMaterialSettings *materialSettings() const SIP_SKIP;
 
   protected:
     /**
