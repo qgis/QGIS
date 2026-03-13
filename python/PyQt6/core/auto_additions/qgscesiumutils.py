@@ -20,6 +20,7 @@ try:
     QgsCesiumUtils.transformSphere = staticmethod(QgsCesiumUtils.transformSphere)
     QgsCesiumUtils.extractGltfFromB3dm = staticmethod(QgsCesiumUtils.extractGltfFromB3dm)
     QgsCesiumUtils.extractGltfFromTileContent = staticmethod(QgsCesiumUtils.extractGltfFromTileContent)
+    QgsCesiumUtils.extractTileContent = staticmethod(QgsCesiumUtils.extractTileContent)
     QgsCesiumUtils.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass
