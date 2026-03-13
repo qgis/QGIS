@@ -73,6 +73,12 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
      */
     const QString templatePath( const QgsServerApiContext &context ) const override;
+
+    /**
+     * Returns TRUE if any editing operation is allowed for the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the layer is editable (any of create, update or delete operation will count) and published for WFS, but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool isEditingAllowed( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 };
 
 /**
