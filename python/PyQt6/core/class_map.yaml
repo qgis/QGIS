@@ -4914,7 +4914,7 @@ QgsFileUploader.uploadExited: src/core/network/qgsfileuploader.h#L60
 QgsFileUploader.uploadProgress: src/core/network/qgsfileuploader.h#L71
 QgsFileUploader: src/core/network/qgsfileuploader.h#L41
 QgsFileUtils.addExtensionFromFilter: src/core/qgsfileutils.h#L94
-QgsFileUtils.copyDirectory: src/core/qgsfileutils.h#L274
+QgsFileUtils.copyDirectory: src/core/qgsfileutils.h#L277
 QgsFileUtils.driveType: src/core/qgsfileutils.h#L131
 QgsFileUtils.ensureFileNameHasExtension: src/core/qgsfileutils.h#L81
 QgsFileUtils.extensionsFromFilter: src/core/qgsfileutils.h#L50
@@ -4923,7 +4923,7 @@ QgsFileUtils.findClosestExistingPath: src/core/qgsfileutils.h#L110
 QgsFileUtils.findFile: src/core/qgsfileutils.h#L122
 QgsFileUtils.pathIsSlowDevice: src/core/qgsfileutils.h#L139
 QgsFileUtils.renameDataset: src/core/qgsfileutils.h#L182
-QgsFileUtils.replaceTextInFile: src/core/qgsfileutils.h#L285
+QgsFileUtils.replaceTextInFile: src/core/qgsfileutils.h#L288
 QgsFileUtils.representFileSize: src/core/qgsfileutils.h#L40
 QgsFileUtils.splitPathToComponents: src/core/qgsfileutils.h#L229
 QgsFileUtils.stringToSafeFilename: src/core/qgsfileutils.h#L102
