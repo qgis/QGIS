@@ -1047,8 +1047,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
       {
         operationType->dcpType << dcp;
         operationType->allowedEncodings.clear();
-        for ( QDomElement childNodeElement = get.firstChildElement( u"ows:Constraint"_s ).firstChildElement( u"ows:AllowedValues"_s ).firstChildElement( u"ows:Value"_s );
-              !childNodeElement.isNull();
+        for ( QDomElement childNodeElement = get.firstChildElement( u"ows:Constraint"_s ).firstChildElement( u"ows:AllowedValues"_s ).firstChildElement( u"ows:Value"_s ); !childNodeElement.isNull();
               childNodeElement = childNodeElement.nextSiblingElement( u"ows:Value"_s ) )
         {
           operationType->allowedEncodings << childNodeElement.text();
