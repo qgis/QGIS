@@ -67,7 +67,13 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
      * If no \a registry is specified then the singleton QgsHistoryProviderRegistry from QgsGui::historyProviderRegistry()
      * will be used.
      */
-    QgsHistoryWidget( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = nullptr );
+    QgsHistoryWidget(
+      const QString &providerId = QString(),
+      Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
+      QgsHistoryProviderRegistry *registry = nullptr,
+      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
+      QWidget *parent = nullptr
+    );
 
   private slots:
 

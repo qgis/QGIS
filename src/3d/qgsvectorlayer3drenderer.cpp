@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"vector"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsVectorLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -44,8 +43,7 @@ QgsAbstract3DRenderer *QgsVectorLayer3DRendererMetadata::createRenderer( QDomEle
 
 QgsVectorLayer3DRenderer::QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s )
   : mSymbol( s )
-{
-}
+{}
 
 QgsVectorLayer3DRenderer *QgsVectorLayer3DRenderer::clone() const
 {

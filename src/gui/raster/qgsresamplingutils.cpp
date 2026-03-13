@@ -38,7 +38,9 @@ using namespace Qt::StringLiterals;
 
 QgsResamplingUtils::QgsResamplingUtils() = default;
 
-void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer, QComboBox *zoomedInResamplingComboBox, QComboBox *zoomedOutResamplingComboBox, QDoubleSpinBox *maximumOversamplingSpinBox, QCheckBox *cbEarlyResampling )
+void QgsResamplingUtils::initWidgets(
+  QgsRasterLayer *rasterLayer, QComboBox *zoomedInResamplingComboBox, QComboBox *zoomedOutResamplingComboBox, QDoubleSpinBox *maximumOversamplingSpinBox, QCheckBox *cbEarlyResampling
+)
 {
   mRasterLayer = rasterLayer;
   mZoomedInResamplingComboBox = zoomedInResamplingComboBox;
@@ -69,9 +71,7 @@ void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer, QComboBox *zo
 void QgsResamplingUtils::refreshWidgetsFromLayer()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-  mCbEarlyResampling->setVisible(
-    provider && ( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling )
-  );
+  mCbEarlyResampling->setVisible( provider && ( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) );
   mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider );
 
   switch ( mRasterLayer->resamplingStage() )
@@ -138,12 +138,8 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
 
 void QgsResamplingUtils::refreshLayerFromWidgets()
 {
-  const Qgis::RasterResamplingMethod zoomedInMethod = static_cast<Qgis::RasterResamplingMethod>(
-    mZoomedInResamplingComboBox->itemData( mZoomedInResamplingComboBox->currentIndex() ).toInt()
-  );
-  const Qgis::RasterResamplingMethod zoomedOutMethod = static_cast<Qgis::RasterResamplingMethod>(
-    mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt()
-  );
+  const Qgis::RasterResamplingMethod zoomedInMethod = static_cast<Qgis::RasterResamplingMethod>( mZoomedInResamplingComboBox->itemData( mZoomedInResamplingComboBox->currentIndex() ).toInt() );
+  const Qgis::RasterResamplingMethod zoomedOutMethod = static_cast<Qgis::RasterResamplingMethod>( mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt() );
 
   mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? Qgis::RasterResamplingStage::Provider : Qgis::RasterResamplingStage::ResampleFilter );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
@@ -244,13 +240,7 @@ void QgsResamplingUtils::removeExtraEarlyResamplingMethodsFromCombos()
   for ( QComboBox *combo : { mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
     for ( const Qgis::RasterResamplingMethod method :
-          {
-            Qgis::RasterResamplingMethod::CubicSpline,
-            Qgis::RasterResamplingMethod::Lanczos,
-            Qgis::RasterResamplingMethod::Average,
-            Qgis::RasterResamplingMethod::Mode,
-            Qgis::RasterResamplingMethod::Gauss
-          } )
+          { Qgis::RasterResamplingMethod::CubicSpline, Qgis::RasterResamplingMethod::Lanczos, Qgis::RasterResamplingMethod::Average, Qgis::RasterResamplingMethod::Mode, Qgis::RasterResamplingMethod::Gauss } )
     {
       combo->removeItem( combo->findData( static_cast<int>( method ) ) );
     }

@@ -34,7 +34,8 @@ using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( u"last-log-folder"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used folder for GPS log files"_s );
 
-const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( u"last-gpkg-log"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used Geopackage/Spatialite file for logging GPS locations"_s );
+const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog
+  = new QgsSettingsEntryString( u"last-gpkg-log"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used Geopackage/Spatialite file for logging GPS locations"_s );
 
 const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> QgsAppGpsLogging::sPointFields {
   { Qgis::GpsInformationComponent::Timestamp, { QMetaType::Type::QDateTime, u"timestamp"_s } },
@@ -344,7 +345,17 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       }
 
       QString createdLayerUri;
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, pointFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options, createdLayerUri );
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer(
+        mGpkgLogFile,
+        pointFields,
+        QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ,
+        QgsCoordinateReferenceSystem( "EPSG:4326" ),
+        false,
+        unusedMap,
+        error,
+        &options,
+        createdLayerUri
+      );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );
@@ -381,7 +392,17 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       }
 
       QString createdLayerUri;
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, tracksFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options, createdLayerUri );
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer(
+        mGpkgLogFile,
+        tracksFields,
+        QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ,
+        QgsCoordinateReferenceSystem( "EPSG:4326" ),
+        false,
+        unusedMap,
+        error,
+        &options,
+        createdLayerUri
+      );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );

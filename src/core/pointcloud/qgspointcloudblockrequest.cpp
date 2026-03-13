@@ -25,9 +25,16 @@
 
 ///@cond PRIVATE
 
-QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &uri,
-    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
+QgsPointCloudBlockRequest::QgsPointCloudBlockRequest(
+  const QgsPointCloudNodeId &node,
+  const QString &uri,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  const QgsPointCloudExpression &filterExpression,
+  const QgsRectangle &filterRect
+)
   : mNode( node )
   , mUri( uri )
   , mAttributes( attributes )
@@ -36,8 +43,7 @@ QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const QgsPointCloudNodeId 
   , mOffset( offset )
   , mFilterExpression( filterExpression )
   , mFilterRect( filterRect )
-{
-}
+{}
 
 QgsPointCloudBlockRequest::~QgsPointCloudBlockRequest() = default;
 

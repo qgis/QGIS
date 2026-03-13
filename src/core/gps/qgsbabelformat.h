@@ -34,7 +34,6 @@ class QString;
 class CORE_EXPORT QgsAbstractBabelFormat
 {
   public:
-
     virtual ~QgsAbstractBabelFormat() = default;
 
     /**
@@ -58,11 +57,7 @@ class CORE_EXPORT QgsAbstractBabelFormat
      *
      * Returns an empty list if the format does not support imports (see capabilities()).
      */
-    virtual QStringList importCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    virtual QStringList importCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
     /**
      * Generates a command for exporting GPS data into a different format using babel.
@@ -75,14 +70,9 @@ class CORE_EXPORT QgsAbstractBabelFormat
      *
      * Returns an empty list if the format does not support exports (see capabilities()).
      */
-    virtual QStringList exportCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    virtual QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
   protected:
-
     /**
      * Constructor for QgsAbstractBabelFormat, with the specified \a name.
      */
@@ -110,7 +100,6 @@ class CORE_EXPORT QgsAbstractBabelFormat
 class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
 {
   public:
-
     /**
      * Constructor for QgsBabelSimpleImportFormat.
      *
@@ -124,8 +113,7 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
      * The optional \a extensions argument can be used to populate a list of known file
      * extensions for the format (e.g. "csv", "txt").
      */
-    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities,
-                                const QStringList extensions = QStringList() );
+    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities, const QStringList extensions = QStringList() );
 
     /**
      * Returns the friendly description for the format.
@@ -137,11 +125,8 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
      */
     QStringList extensions() const { return mExtensions; }
 
-    QStringList importCommand( const QString &babel,
-                               Qgis::GpsFeatureType featureType,
-                               const QString &input,
-                               const QString &output,
-                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+    QStringList importCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+
   private:
     QString mDescription;
     QStringList mExtensions;

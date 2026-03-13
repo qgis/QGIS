@@ -42,7 +42,18 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog(
+  const QString &layerId,
+  const QString &providerId,
+  QgsFeatureId featureId,
+  const QFont &labelFont,
+  const QString &labelText,
+  bool isPinned,
+  const QgsPalLayerSettings &layerSettings,
+  QgsMapCanvas *canvas,
+  QWidget *parent,
+  Qt::WindowFlags f
+)
   : QDialog( parent, f )
   , mCanvas( canvas )
   , mLabelFont( labelFont )

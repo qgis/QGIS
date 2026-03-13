@@ -203,11 +203,10 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
         // but with different version
         //
         QString maxVer;
-        const std::function<void( const ApiTable::mapped_type & )>
-          findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type &api ) {
-            if ( api->name() == name && ( maxVer.isEmpty() || isVersionGreater( api->version(), maxVer ) ) )
-              maxVer = api->version();
-          };
+        const std::function<void( const ApiTable::mapped_type & )> findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type &api ) {
+          if ( api->name() == name && ( maxVer.isEmpty() || isVersionGreater( api->version(), maxVer ) ) )
+            maxVer = api->version();
+        };
 
         mApiVersions.remove( name );
 
@@ -309,11 +308,10 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
         // but with different version
         //
         QString maxVer;
-        const std::function<void( const ServiceTable::mapped_type & )>
-          findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type &service ) {
-            if ( service->name() == name && ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
-              maxVer = service->version();
-          };
+        const std::function<void( const ServiceTable::mapped_type & )> findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type &service ) {
+          if ( service->name() == name && ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
+            maxVer = service->version();
+        };
 
         mServiceVersions.remove( name );
 

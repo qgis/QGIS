@@ -78,18 +78,19 @@ void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
   QStringList resamplingMethods;
-  resamplingMethods << QObject::tr( "Nearest Neighbour" )
-                    << QObject::tr( "Bilinear (2x2 Kernel)" )
-                    << QObject::tr( "Cubic (4x4 Kernel)" )
-                    << QObject::tr( "Cubic B-Spline (4x4 Kernel)" )
-                    << QObject::tr( "Lanczos (6x6 Kernel)" )
-                    << QObject::tr( "Average" )
-                    << QObject::tr( "Mode" )
-                    << QObject::tr( "Maximum" )
-                    << QObject::tr( "Minimum" )
-                    << QObject::tr( "Median" )
-                    << QObject::tr( "First Quartile (Q1)" )
-                    << QObject::tr( "Third Quartile (Q3)" );
+  resamplingMethods
+    << QObject::tr( "Nearest Neighbour" )
+    << QObject::tr( "Bilinear (2x2 Kernel)" )
+    << QObject::tr( "Cubic (4x4 Kernel)" )
+    << QObject::tr( "Cubic B-Spline (4x4 Kernel)" )
+    << QObject::tr( "Lanczos (6x6 Kernel)" )
+    << QObject::tr( "Average" )
+    << QObject::tr( "Mode" )
+    << QObject::tr( "Maximum" )
+    << QObject::tr( "Minimum" )
+    << QObject::tr( "Median" )
+    << QObject::tr( "First Quartile (Q1)" )
+    << QObject::tr( "Third Quartile (Q3)" );
   addParameter( new QgsProcessingParameterEnum( u"RESAMPLING_METHOD"_s, QObject::tr( "Resampling method" ), resamplingMethods, false, 0, false ) );
   addParameter( new QgsProcessingParameterBoolean( u"RESCALE"_s, QObject::tr( "Rescale values according to the cell size" ), false ) );
   addParameter( new QgsProcessingParameterRasterLayer( u"REFERENCE_LAYER"_s, QObject::tr( "Reference layer" ) ) );
@@ -215,7 +216,8 @@ QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &
   struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
   {
       explicit QgsAlignRasterProgress( QgsFeedback *feedback )
-        : mFeedback( feedback ) {}
+        : mFeedback( feedback )
+      {}
       bool progress( double complete ) override
       {
         mFeedback->setProgress( complete * 100 );

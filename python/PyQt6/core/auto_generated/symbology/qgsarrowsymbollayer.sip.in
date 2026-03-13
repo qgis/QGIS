@@ -227,8 +227,6 @@ Sets the arrow type
     QgsArrowSymbolLayer( const QgsArrowSymbolLayer & );
 };
 
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

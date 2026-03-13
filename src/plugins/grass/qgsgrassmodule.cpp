@@ -130,8 +130,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   int line, column;
   if ( !qDoc.setContent( &qFile, &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read module file (%1)" ).arg( mpath )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read module file (%1)" ).arg( mpath ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     mErrors.append( errmsg );
     qFile.close();
@@ -182,8 +181,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   }
 
   // Hide display if there is no output
-  if ( !mOptions->hasOutput( QgsGrassModuleOption::Vector )
-       && !mOptions->hasOutput( QgsGrassModuleOption::Raster ) )
+  if ( !mOptions->hasOutput( QgsGrassModuleOption::Vector ) && !mOptions->hasOutput( QgsGrassModuleOption::Raster ) )
   {
     mViewButton->hide();
   }
@@ -238,8 +236,7 @@ QgsGrassModule::Description QgsGrassModule::description( QString path )
   int line, column;
   if ( !qDoc.setContent( &qFile, &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read module file (%1)" ).arg( path )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read module file (%1)" ).arg( path ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     qFile.close();
@@ -850,11 +847,7 @@ void QgsGrassModule::viewOutput()
       QStringList layers;
       try
       {
-        layers = QgsGrass::vectorLayers(
-          QgsGrass::getDefaultGisdbase(),
-          QgsGrass::getDefaultLocation(),
-          QgsGrass::getDefaultMapset(), map
-        );
+        layers = QgsGrass::vectorLayers( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset(), map );
       }
       catch ( QgsGrass::Exception &e )
       {
@@ -877,18 +870,13 @@ void QgsGrassModule::viewOutput()
       // TODO common method for add all layers
       for ( int j = 0; j < layers.count(); j++ )
       {
-        QString uri = QgsGrass::getDefaultGisdbase() + "/"
-                      + QgsGrass::getDefaultLocation() + "/"
-                      + QgsGrass::getDefaultMapset() + "/"
-                      + map + "/" + layers[j];
+        QString uri = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/" + map + "/" + layers[j];
 
         // skip 0_* layers
         if ( onlyLayer1 && layers[j].at( 0 ) != '1' )
           continue;
 
-        QString name = QgsGrassUtils::vectorLayerName(
-          map, layers[j], 1
-        );
+        QString name = QgsGrassUtils::vectorLayerName( map, layers[j], 1 );
 
         mIface->addVectorLayer( uri, name, u"grass"_s );
       }
@@ -906,10 +894,7 @@ void QgsGrassModule::viewOutput()
     }
     else
     {
-      QString uri = QgsGrass::getDefaultGisdbase() + "/"
-                    + QgsGrass::getDefaultLocation() + "/"
-                    + QgsGrass::getDefaultMapset()
-                    + "/cellhd/" + map;
+      QString uri = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/cellhd/" + map;
 
       mIface->addRasterLayer( uri, map, u"grassraster"_s );
     }

@@ -20,7 +20,6 @@ a QGIS layer style.
 #include "qgssldexportcontext.h"
 %End
   public:
-
     QgsSldExportContext();
 %Docstring
 Constructs a default SLD export context

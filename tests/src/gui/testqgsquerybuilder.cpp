@@ -43,20 +43,16 @@ class TestQgsQueryBuilder : public QObject
 };
 
 void TestQgsQueryBuilder::initTestCase() // will be called before the first testfunction is executed.
-{
-}
+{}
 
 void TestQgsQueryBuilder::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsQueryBuilder::init()
-{
-}
+{}
 
 void TestQgsQueryBuilder::cleanup()
-{
-}
+{}
 
 QStringList TestQgsQueryBuilder::getModelItemDisplayStrings( QStandardItemModel *model )
 {

@@ -33,8 +33,7 @@ QgsTextFragment::QgsTextFragment( const QTextFragment &fragment )
   : mText( fragment.text() != u"\ufffc"_s ? fragment.text() : QString() )
   , mIsImage( fragment.text() == u"\ufffc"_s )
   , mCharFormat( fragment.charFormat() )
-{
-}
+{}
 
 QString QgsTextFragment::text() const
 {
@@ -76,4 +75,3 @@ void QgsTextFragment::applyCapitalization( Qgis::Capitalization capitalization )
 {
   mText = QgsStringUtils::capitalize( mText, capitalization );
 }
-

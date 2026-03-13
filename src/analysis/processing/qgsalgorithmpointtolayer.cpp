@@ -36,9 +36,11 @@ void QgsPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsPointToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector layer that contains a single feature with geometry matching a point parameter.\n\n"
-                      "It can be used in models to convert a point into a layer which can be used for other algorithms which require "
-                      "a layer based input." );
+  return QObject::tr(
+    "This algorithm creates a new vector layer that contains a single feature with geometry matching a point parameter.\n\n"
+    "It can be used in models to convert a point into a layer which can be used for other algorithms which require "
+    "a layer based input."
+  );
 }
 
 QString QgsPointToLayerAlgorithm::shortDescription() const

@@ -67,9 +67,7 @@ QList<QgsTextFormat::Tab> QgsTabPositionWidget::positions() const
     }
   }
 
-  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab &a, const QgsTextFormat::Tab &b ) {
-    return a.position() < b.position();
-  } );
+  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab &a, const QgsTextFormat::Tab &b ) { return a.position() < b.position(); } );
 
   return result;
 }

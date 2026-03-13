@@ -51,20 +51,26 @@ QStringList QgsUnionAlgorithm::tags() const
 
 QString QgsUnionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "
-                      "and non-overlapping parts. The area of overlap will create as many identical overlapping features as there are "
-                      "features that participate in that overlap." )
+  return QObject::tr(
+           "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "
+           "and non-overlapping parts. The area of overlap will create as many identical overlapping features as there are "
+           "features that participate in that overlap."
+         )
          + u"\n\n"_s
-         + QObject::tr( "An Overlay layer can also be used, in which case features from each layer are split at their overlap with features from "
-                        "the other one, creating a layer containing all the portions from both Input and Overlay layers. "
-                        "The attribute table of the Union layer is filled with attribute values from the respective original layer "
-                        "for non-overlapping features, and attribute values from both layers for overlapping features." );
+         + QObject::tr(
+           "An Overlay layer can also be used, in which case features from each layer are split at their overlap with features from "
+           "the other one, creating a layer containing all the portions from both Input and Overlay layers. "
+           "The attribute table of the Union layer is filled with attribute values from the respective original layer "
+           "for non-overlapping features, and attribute values from both layers for overlapping features."
+         );
 }
 
 QString QgsUnionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Checks overlaps between features on the same layer or on two different layers "
-                      "and creates separate features for overlapping and non-overlapping parts." );
+  return QObject::tr(
+    "Checks overlaps between features on the same layer or on two different layers "
+    "and creates separate features for overlapping and non-overlapping parts."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsUnionAlgorithm::documentationFlags() const

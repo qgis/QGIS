@@ -66,7 +66,8 @@ class TestStyle : public QgsTest
 
   public:
     TestStyle()
-      : QgsTest( u"Style Tests"_s ) {}
+      : QgsTest( u"Style Tests"_s )
+    {}
 
   private:
     QgsStyle *mStyle = nullptr;
@@ -231,8 +232,7 @@ bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor &
 {
   const QColor result = ramp->color( value );
   //use int color components when testing (builds some fuzziness into test)
-  if ( result.red() != expected.red() || result.green() != expected.green() || result.blue() != expected.blue()
-       || result.alpha() != expected.alpha() )
+  if ( result.red() != expected.red() || result.green() != expected.green() || result.blue() != expected.blue() || result.alpha() != expected.alpha() )
   {
     QWARN( QString( "value = %1 result = %2 expected = %3" ).arg( value ).arg( result.name(), expected.name() ).toLocal8Bit().data() );
     return false;
@@ -515,8 +515,7 @@ void TestStyle::testCreate3dSymbol()
 void TestStyle::testLoadColorRamps()
 {
   const QStringList colorRamps = mStyle->colorRampNames();
-  QStringList colorRampsTest = QStringList() << u"test_gradient"_s << u"test_random"_s
-                                             << u"test_cb1"_s << u"test_cb2"_s;
+  QStringList colorRampsTest = QStringList() << u"test_gradient"_s << u"test_random"_s << u"test_cb1"_s << u"test_cb2"_s;
 
   // values for color tests
   QMultiMap<QString, QPair<double, QColor>> colorTests;
@@ -1508,7 +1507,21 @@ void TestStyle::testVisitor()
 
   found.clear();
   QVERIFY( p.accept( &visitor ) );
-  QCOMPARE( found, QStringList() << u"enter: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 "_s.arg( rule2->ruleKey() ) << u"symbol:   #00ff00"_s << u"enter: %1 "_s.arg( rule3->ruleKey() ) << u"symbol:   #00ffff"_s << u"exit: %1 "_s.arg( rule3->ruleKey() ) << u"exit: %1 "_s.arg( rule2->ruleKey() ) << u"exit: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 vl"_s.arg( vl->id() ) << u"symbol:   #ff0000"_s << u"exit: %1 vl"_s.arg( vl->id() ) );
+  QCOMPARE(
+    found,
+    QStringList()
+      << u"enter: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 "_s.arg( rule2->ruleKey() )
+      << u"symbol:   #00ff00"_s
+      << u"enter: %1 "_s.arg( rule3->ruleKey() )
+      << u"symbol:   #00ffff"_s
+      << u"exit: %1 "_s.arg( rule3->ruleKey() )
+      << u"exit: %1 "_s.arg( rule2->ruleKey() )
+      << u"exit: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 vl"_s.arg( vl->id() )
+      << u"symbol:   #ff0000"_s
+      << u"exit: %1 vl"_s.arg( vl->id() )
+  );
 
   // labeling
   QgsPalLayerSettings settings;
@@ -1518,7 +1531,22 @@ void TestStyle::testVisitor()
   found.clear();
   QVERIFY( p.accept( &visitor ) );
 
-  QCOMPARE( found, QStringList() << u"enter: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 "_s.arg( rule2->ruleKey() ) << u"symbol:   #00ff00"_s << u"enter: %1 "_s.arg( rule3->ruleKey() ) << u"symbol:   #00ffff"_s << u"exit: %1 "_s.arg( rule3->ruleKey() ) << u"exit: %1 "_s.arg( rule2->ruleKey() ) << u"exit: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 vl"_s.arg( vl->id() ) << u"symbol:   #ff0000"_s << u"labels:   Class"_s << u"exit: %1 vl"_s.arg( vl->id() ) );
+  QCOMPARE(
+    found,
+    QStringList()
+      << u"enter: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 "_s.arg( rule2->ruleKey() )
+      << u"symbol:   #00ff00"_s
+      << u"enter: %1 "_s.arg( rule3->ruleKey() )
+      << u"symbol:   #00ffff"_s
+      << u"exit: %1 "_s.arg( rule3->ruleKey() )
+      << u"exit: %1 "_s.arg( rule2->ruleKey() )
+      << u"exit: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 vl"_s.arg( vl->id() )
+      << u"symbol:   #ff0000"_s
+      << u"labels:   Class"_s
+      << u"exit: %1 vl"_s.arg( vl->id() )
+  );
 
   // raster layer
   QgsRasterLayer *rl = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", u"rl"_s );
@@ -1536,7 +1564,25 @@ void TestStyle::testVisitor()
   found.clear();
   QVERIFY( p.accept( &visitor ) );
 
-  QCOMPARE( found, QStringList() << u"enter: %1 rl"_s.arg( rl->id() ) << u"ramp:   #ffff00"_s << u"exit: %1 rl"_s.arg( rl->id() ) << u"enter: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 "_s.arg( rule2->ruleKey() ) << u"symbol:   #00ff00"_s << u"enter: %1 "_s.arg( rule3->ruleKey() ) << u"symbol:   #00ffff"_s << u"exit: %1 "_s.arg( rule3->ruleKey() ) << u"exit: %1 "_s.arg( rule2->ruleKey() ) << u"exit: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 vl"_s.arg( vl->id() ) << u"symbol:   #ff0000"_s << u"labels:   Class"_s << u"exit: %1 vl"_s.arg( vl->id() ) );
+  QCOMPARE(
+    found,
+    QStringList()
+      << u"enter: %1 rl"_s.arg( rl->id() )
+      << u"ramp:   #ffff00"_s
+      << u"exit: %1 rl"_s.arg( rl->id() )
+      << u"enter: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 "_s.arg( rule2->ruleKey() )
+      << u"symbol:   #00ff00"_s
+      << u"enter: %1 "_s.arg( rule3->ruleKey() )
+      << u"symbol:   #00ffff"_s
+      << u"exit: %1 "_s.arg( rule3->ruleKey() )
+      << u"exit: %1 "_s.arg( rule2->ruleKey() )
+      << u"exit: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 vl"_s.arg( vl->id() )
+      << u"symbol:   #ff0000"_s
+      << u"labels:   Class"_s
+      << u"exit: %1 vl"_s.arg( vl->id() )
+  );
 
   // with layout
   QgsPrintLayout *l = new QgsPrintLayout( &p );
@@ -1561,7 +1607,33 @@ void TestStyle::testVisitor()
   found.clear();
   QVERIFY( p.accept( &visitor ) );
 
-  QCOMPARE( found, QStringList() << u"enter: %1 rl"_s.arg( rl->id() ) << u"ramp:   #ffff00"_s << u"exit: %1 rl"_s.arg( rl->id() ) << u"enter: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 "_s.arg( rule2->ruleKey() ) << u"symbol:   #00ff00"_s << u"enter: %1 "_s.arg( rule3->ruleKey() ) << u"symbol:   #00ffff"_s << u"exit: %1 "_s.arg( rule3->ruleKey() ) << u"exit: %1 "_s.arg( rule2->ruleKey() ) << u"exit: %1 vl2"_s.arg( vl2->id() ) << u"enter: %1 vl"_s.arg( vl->id() ) << u"symbol:   #ff0000"_s << u"labels:   Class"_s << u"exit: %1 vl"_s.arg( vl->id() ) << u"enter: layouts Layouts"_s << u"enter: layout test layout"_s << u"patch: <Legend> %1 Point (3 4)"_s.arg( legend->uuid() ) << u"patch: <Legend> %1 Point (13 14)"_s.arg( legend->uuid() ) << u"text format: <Scalebar> %1 QGIS Vera Sans"_s.arg( scalebar->uuid() ) << u"symbol: Page page #ffffff"_s << u"exit: layout test layout"_s << u"exit: layouts Layouts"_s );
+  QCOMPARE(
+    found,
+    QStringList()
+      << u"enter: %1 rl"_s.arg( rl->id() )
+      << u"ramp:   #ffff00"_s
+      << u"exit: %1 rl"_s.arg( rl->id() )
+      << u"enter: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 "_s.arg( rule2->ruleKey() )
+      << u"symbol:   #00ff00"_s
+      << u"enter: %1 "_s.arg( rule3->ruleKey() )
+      << u"symbol:   #00ffff"_s
+      << u"exit: %1 "_s.arg( rule3->ruleKey() )
+      << u"exit: %1 "_s.arg( rule2->ruleKey() )
+      << u"exit: %1 vl2"_s.arg( vl2->id() )
+      << u"enter: %1 vl"_s.arg( vl->id() )
+      << u"symbol:   #ff0000"_s
+      << u"labels:   Class"_s
+      << u"exit: %1 vl"_s.arg( vl->id() )
+      << u"enter: layouts Layouts"_s
+      << u"enter: layout test layout"_s
+      << u"patch: <Legend> %1 Point (3 4)"_s.arg( legend->uuid() )
+      << u"patch: <Legend> %1 Point (13 14)"_s.arg( legend->uuid() )
+      << u"text format: <Scalebar> %1 QGIS Vera Sans"_s.arg( scalebar->uuid() )
+      << u"symbol: Page page #ffffff"_s
+      << u"exit: layout test layout"_s
+      << u"exit: layouts Layouts"_s
+  );
 
   p.removeMapLayer( vl2 );
 
@@ -1578,14 +1650,38 @@ void TestStyle::testVisitor()
   found.clear();
   QVERIFY( p.accept( &visitor ) );
 
-  QCOMPARE( found, QStringList() << u"enter: %1 rl"_s.arg( rl->id() ) << u"ramp:   #ffff00"_s << u"exit: %1 rl"_s.arg( rl->id() ) << u"enter: %1 vl"_s.arg( vl->id() ) << u"symbol:   #ff0000"_s << u"labels:   Class"_s << u"exit: %1 vl"_s.arg( vl->id() ) << u"enter: layouts Layouts"_s << u"enter: layout test layout"_s << u"patch: <Legend> %1 Point (3 4)"_s.arg( legend->uuid() ) << u"text format: <Scalebar> %1 QGIS Vera Sans"_s.arg( scalebar->uuid() ) << u"symbol: Page page #ffffff"_s << u"exit: layout test layout"_s << u"exit: layouts Layouts"_s << u"enter: annotations Annotations"_s << u"enter: annotation Annotation"_s << u"symbol: Marker marker #00c800"_s << u"symbol: Fill fill #c8c800"_s << u"exit: annotation Annotation"_s << u"exit: annotations Annotations"_s );
+  QCOMPARE(
+    found,
+    QStringList()
+      << u"enter: %1 rl"_s.arg( rl->id() )
+      << u"ramp:   #ffff00"_s
+      << u"exit: %1 rl"_s.arg( rl->id() )
+      << u"enter: %1 vl"_s.arg( vl->id() )
+      << u"symbol:   #ff0000"_s
+      << u"labels:   Class"_s
+      << u"exit: %1 vl"_s.arg( vl->id() )
+      << u"enter: layouts Layouts"_s
+      << u"enter: layout test layout"_s
+      << u"patch: <Legend> %1 Point (3 4)"_s.arg( legend->uuid() )
+      << u"text format: <Scalebar> %1 QGIS Vera Sans"_s.arg( scalebar->uuid() )
+      << u"symbol: Page page #ffffff"_s
+      << u"exit: layout test layout"_s
+      << u"exit: layouts Layouts"_s
+      << u"enter: annotations Annotations"_s
+      << u"enter: annotation Annotation"_s
+      << u"symbol: Marker marker #00c800"_s
+      << u"symbol: Fill fill #c8c800"_s
+      << u"exit: annotation Annotation"_s
+      << u"exit: annotations Annotations"_s
+  );
 }
 
 void TestStyle::testColorRampShaderClassificationEqualInterval()
 {
   // Test Type::Interpolated and ClassificationMode::EqualInterval
   {
-    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::EqualInterval );
+    auto shader
+      = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1617,7 +1713,8 @@ void TestStyle::testColorRampShaderClassificationEqualInterval()
 
   // Test Type::Discrete and ClassificationMode::EqualInterval
   {
-    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::EqualInterval );
+    auto shader
+      = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();

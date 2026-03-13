@@ -34,7 +34,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsBlankSegmentUtils
 {
   public:
-
     typedef QList<QPair<double, double>> BlankSegments;
 
     /**
@@ -53,7 +52,6 @@ class CORE_EXPORT QgsBlankSegmentUtils
     static QList<QList<BlankSegments>> parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error );
 
   private:
-
 };
 
 #endif

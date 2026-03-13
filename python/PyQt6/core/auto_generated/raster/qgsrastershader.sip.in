@@ -46,11 +46,7 @@ Returns the minimum value for the raster shader.
     QgsRasterShaderFunction *rasterShaderFunction();
 
 
-    bool shade( double value,
-                int *returnRedValue /Out/,
-                int *returnGreenValue /Out/,
-                int *returnBlueValue /Out/,
-                int *returnAlpha /Out/ ) const;
+    bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlpha /Out/ ) const;
 %Docstring
 Generates a new RGBA value based on one input ``value``.
 
@@ -63,14 +59,9 @@ Generates a new RGBA value based on one input ``value``.
          - returnAlpha: The alpha component of the new RGBA value
 %End
 
-    bool shade( double redValue,
-                double greenValue,
-                double blueValue,
-                double alphaValue,
-                int *returnRedValue /Out/,
-                int *returnGreenValue /Out/,
-                int *returnBlueValue /Out/,
-                int *returnAlpha /Out/ ) const;
+    bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlpha /Out/
+    ) const;
 %Docstring
 Generates a new RGBA value based on an original RGBA value.
 

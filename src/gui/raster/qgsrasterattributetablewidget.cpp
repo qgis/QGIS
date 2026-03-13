@@ -49,9 +49,7 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
-  connect( mActionToggleEditing, &QAction::triggered, this, [this]( bool editable ) {
-    setEditable( editable );
-  } );
+  connect( mActionToggleEditing, &QAction::triggered, this, [this]( bool editable ) { setEditable( editable ); } );
 
   editToolBar->addAction( mActionToggleEditing );
 
@@ -144,17 +142,11 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
     mModel = std::make_unique<QgsRasterAttributeTableModel>( mAttributeTableBuffer.get() );
     mModel->setEditable( mEditable );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
-      updateButtons();
-    } );
+    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) { updateButtons(); } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [this]( const QModelIndex &, int, int ) {
-      setDelegates();
-    } );
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [this]( const QModelIndex &, int, int ) { setDelegates(); } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [this]( const QModelIndex &, int, int ) {
-      setDelegates();
-    } );
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [this]( const QModelIndex &, int, int ) { setDelegates(); } );
 
     static_cast<QSortFilterProxyModel *>( mRATView->model() )->setSourceModel( mModel.get() );
     setDelegates();
@@ -263,7 +255,12 @@ void QgsRasterAttributeTableWidget::saveChanges()
 
       if ( newPath.isEmpty() && !nativeRatSupported )
       {
-        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), u"VAT DBF Files (*.vat.dbf)"_s );
+        newPath = QFileDialog::getOpenFileName(
+          nullptr,
+          tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ),
+          QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(),
+          u"VAT DBF Files (*.vat.dbf)"_s
+        );
         if ( newPath.isEmpty() )
         {
           // Aborted by user
@@ -330,7 +327,8 @@ void QgsRasterAttributeTableWidget::classify()
     confirmMessage = tr( "The attribute table does not seem to be valid and it may produce an unusable symbology, validation errors:<br>%1<br>" ).arg( errorMessage );
   }
 
-  if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), confirmMessage.append( tr( "The existing symbology for the raster will be replaced by a new symbology from the attribute table and any unsaved changes to the current symbology will be lost, do you want to proceed?" ) ) ) == QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), confirmMessage.append( tr( "The existing symbology for the raster will be replaced by a new symbology from the attribute table and any unsaved changes to the current symbology will be lost, do you want to proceed?" ) ) )
+       == QMessageBox::Yes )
   {
     if ( QgsRasterRenderer *renderer = mAttributeTableBuffer->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
     {

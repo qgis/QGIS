@@ -53,8 +53,7 @@ class TestQgsMapToolSelect : public QObject
     QgsFeatureList testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
-    unsigned char *
-      hex2bytes( const char *hex, int *size )
+    unsigned char *hex2bytes( const char *hex, int *size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
       unsigned char *out = new unsigned char[ba.size()];
@@ -107,8 +106,7 @@ void TestQgsMapToolSelect::cleanup()
 }
 
 // private
-QgsFeatureList
-  TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
+QgsFeatureList TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   auto tool = std::make_unique<QgsMapToolSelect>( canvas );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -116,11 +114,7 @@ QgsFeatureList
   // make given vector layer current
   canvas->setCurrentLayer( layer );
 
-  const std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-    canvas,
-    QEvent::MouseButtonRelease,
-    QPoint( mapPoint.x(), mapPoint.y() )
-  ) );
+  const std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent( canvas, QEvent::MouseButtonRelease, QPoint( mapPoint.x(), mapPoint.y() ) ) );
 
   // trigger mouseRelease handler
   tool->canvasReleaseEvent( event.get() );
@@ -138,9 +132,7 @@ void TestQgsMapToolSelect::selectInvalidPolygons()
   f1.setAttribute( u"pk"_s, 1 );
   // This geometry is an invalid polygon (3 distinct vertices).
   // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
-  f1.setGeometry( geomFromHexWKB(
-    "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000"
-  ) );
+  f1.setGeometry( geomFromHexWKB( "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000" ) );
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   canvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );

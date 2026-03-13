@@ -54,9 +54,11 @@ QString QgsMultiIntersectionAlgorithm::groupId() const
 
 QString QgsMultiIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and all Overlay layers. "
-                      "Features in the output layer are assigned the attributes of the overlapping features "
-                      "from both the Input and Overlay layers." );
+  return QObject::tr(
+    "This algorithm extracts the overlapping portions of features in the Input and all Overlay layers. "
+    "Features in the output layer are assigned the attributes of the overlapping features "
+    "from both the Input and Overlay layers."
+  );
 }
 
 QString QgsMultiIntersectionAlgorithm::shortDescription() const
@@ -128,11 +130,8 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
     fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
     fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), overlayLayer->fields() );
 
-    outputFields = QgsProcessingUtils::combineFields(
-      QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
-      QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
-      overlayFieldsPrefix
-    );
+    outputFields = QgsProcessingUtils::
+      combineFields( QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ), QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ), overlayFieldsPrefix );
 
     QString dest;
     sink.reset( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, geometryType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -172,11 +171,8 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
         fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
         fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), overlayLayer->fields() );
 
-        outputFields = QgsProcessingUtils::combineFields(
-          QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
-          QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
-          overlayFieldsPrefix
-        );
+        outputFields = QgsProcessingUtils::
+          combineFields( QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ), QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ), overlayFieldsPrefix );
 
         QString id = u"memory:"_s;
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, outputFields, geometryType, crs ) );
@@ -189,11 +185,8 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
         fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), intersectionLayer->fields() );
         fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), overlayLayer->fields() );
 
-        outputFields = QgsProcessingUtils::combineFields(
-          QgsProcessingUtils::indicesToFields( fieldIndicesA, intersectionLayer->fields() ),
-          QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
-          overlayFieldsPrefix
-        );
+        outputFields = QgsProcessingUtils::
+          combineFields( QgsProcessingUtils::indicesToFields( fieldIndicesA, intersectionLayer->fields() ), QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ), overlayFieldsPrefix );
 
         QString dest;
         std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, geometryType, crs ) );
@@ -209,11 +202,8 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
         fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), intersectionLayer->fields() );
         fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), overlayLayer->fields() );
 
-        outputFields = QgsProcessingUtils::combineFields(
-          QgsProcessingUtils::indicesToFields( fieldIndicesA, intersectionLayer->fields() ),
-          QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ),
-          overlayFieldsPrefix
-        );
+        outputFields = QgsProcessingUtils::
+          combineFields( QgsProcessingUtils::indicesToFields( fieldIndicesA, intersectionLayer->fields() ), QgsProcessingUtils::indicesToFields( fieldIndicesB, overlayLayer->fields() ), overlayFieldsPrefix );
 
         QString id = u"memory:"_s;
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, outputFields, geometryType, crs ) );

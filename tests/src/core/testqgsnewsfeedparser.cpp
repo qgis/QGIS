@@ -61,13 +61,11 @@ void TestQgsNewsFeedParser::cleanupTestCase()
 }
 
 void TestQgsNewsFeedParser::init()
-{
-}
+{}
 
 
 void TestQgsNewsFeedParser::cleanup()
-{
-}
+{}
 
 void TestQgsNewsFeedParser::testFetch()
 {
@@ -287,9 +285,7 @@ void TestQgsNewsFeedParser::testModel()
   QCOMPARE( model.rowCount(), 0 );
 
   QEventLoop loop;
-  connect( &parser, &QgsNewsFeedParser::fetched, this, [=, &loop]( const QList<QgsNewsFeedParser::Entry> & ) {
-    loop.quit();
-  } );
+  connect( &parser, &QgsNewsFeedParser::fetched, this, [=, &loop]( const QList<QgsNewsFeedParser::Entry> & ) { loop.quit(); } );
   parser.fetch();
   loop.exec();
 
@@ -299,7 +295,9 @@ void TestQgsNewsFeedParser::testModel()
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"<p>Ciao from Italy!</p>"_s );
   QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( "<p>QGIS is finally part of the ESRI ecosystem, i"_L1 ) );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"<p>Let's dive in the ocean together!</p>"_s );
-  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>Rumors from a whistleblower revealed the next Windows release code nam"_L1 ) );
+  QVERIFY(
+    model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>Rumors from a whistleblower revealed the next Windows release code nam"_L1 )
+  );
   QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>Tired with C++ intricacies, the core developers h"_L1 ) );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString(), u"<p>Ciao from Italy!</p>"_s );
   QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>QGIS is finally part of the ESRI ecosystem, i"_L1 ) );
@@ -365,9 +363,7 @@ void TestQgsNewsFeedParser::testProxyModel()
   QCOMPARE( model.rowCount(), 0 );
 
   QEventLoop loop;
-  connect( &parser, &QgsNewsFeedParser::fetched, this, [=, &loop]( const QList<QgsNewsFeedParser::Entry> & ) {
-    loop.quit();
-  } );
+  connect( &parser, &QgsNewsFeedParser::fetched, this, [=, &loop]( const QList<QgsNewsFeedParser::Entry> & ) { loop.quit(); } );
   parser.fetch();
   loop.exec();
 

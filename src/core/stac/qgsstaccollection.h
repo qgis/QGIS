@@ -44,12 +44,7 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
      * \param license Collection's license(s), either a SPDX License identifier, various if multiple licenses apply or proprietary for all other cases.
      * \param extent Spatial and temporal extents of the collection.
      */
-    QgsStacCollection( const QString &id,
-                       const QString &version,
-                       const QString &description,
-                       const QVector< QgsStacLink > &links,
-                       const QString &license,
-                       const QgsStacExtent &extent );
+    QgsStacCollection( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links, const QString &license, const QgsStacExtent &extent );
 
     Qgis::StacObjectType type() const override;
     QString toHtml() const override;

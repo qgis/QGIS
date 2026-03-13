@@ -19,7 +19,6 @@ Encapsulates the context of a layer selection operation.
 #include "qgsselectioncontext.h"
 %End
   public:
-
     double scale() const;
 %Docstring
 Returns the map scale at which the selection should occur.
@@ -41,9 +40,6 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

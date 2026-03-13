@@ -48,7 +48,8 @@ class TestQgsVectorLayer : public QgsTest
     Q_OBJECT
   public:
     TestQgsVectorLayer()
-      : QgsTest( u"Vector Renderer Tests"_s ) {}
+      : QgsTest( u"Vector Renderer Tests"_s )
+    {}
 
   private:
     bool mTestHasError = false;
@@ -101,9 +102,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(), myDbfFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpNonSpatialLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpNonSpatialLayer );
   //
   //create a point layer that will be used in all tests...
   //
@@ -111,9 +110,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -122,9 +119,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
 
   //
@@ -134,9 +129,7 @@ void TestQgsVectorLayer::initTestCase()
   const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 }
 
 void TestQgsVectorLayer::cleanupTestCase()
@@ -519,11 +512,12 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
     QCOMPARE( layerLine->extent3D(), QgsBox3D( 1, 1, std::numeric_limits<double>::quiet_NaN(), 7, 12, std::numeric_limits<double>::quiet_NaN() ) );
   } );
 
-  connect( layerLine, &QgsVectorLayer::featureDeleted, this, [&layerLine, &lineF1]( const QgsFeatureId &fid ) {
-    QCOMPARE( fid, lineF1.id() );
-    QCOMPARE( layerLine->extent(), QgsRectangle() );
-    QCOMPARE( layerLine->extent3D(), QgsBox3D() );
-  }
+  connect(
+    layerLine, &QgsVectorLayer::featureDeleted, this, [&layerLine, &lineF1]( const QgsFeatureId &fid ) {
+      QCOMPARE( fid, lineF1.id() );
+      QCOMPARE( layerLine->extent(), QgsRectangle() );
+      QCOMPARE( layerLine->extent3D(), QgsBox3D() );
+    }
 
   );
 

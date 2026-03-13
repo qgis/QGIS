@@ -54,7 +54,9 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
      * to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
      * when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
      */
-    explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsDataDefinedSizeLegendWidget(
+      const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
     ~QgsDataDefinedSizeLegendWidget() override;
 
     //! Returns configuration as set up in the dialog (may be NULLPTR). Ownership is passed to the caller.
@@ -92,8 +94,7 @@ class SizeClassDelegate : public QStyledItemDelegate
   public:
     SizeClassDelegate( QObject *parent )
       : QStyledItemDelegate( parent )
-    {
-    }
+    {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {

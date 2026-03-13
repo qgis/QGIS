@@ -82,18 +82,20 @@ QString QgsPointsInPolygonAlgorithm::groupId() const
 
 QString QgsPointsInPolygonAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a points layer and a polygon layer and counts the number of points from "
-                      "the first one in each polygons of the second one.\n\n"
-                      "A new polygons layer is generated, with the exact same content as the input polygons layer, but "
-                      "containing an additional field with the points count corresponding to each polygon.\n\n"
-                      "An optional weight field can be used to assign weights to each point. If set, the count generated "
-                      "will be the sum of the weight field for each point contained by the polygon.\n\n"
-                      "Alternatively, a unique class field can be specified. If set, points are classified based on "
-                      "the selected attribute, and if several points with the same attribute value are within the polygon, "
-                      "only one of them is counted. The final count of the point in a polygon is, therefore, the count of "
-                      "different classes that are found in it.\n\n"
-                      "Both the weight field and unique class field cannot be specified. If they are, the weight field will "
-                      "take precedence and the unique class field will be ignored." );
+  return QObject::tr(
+    "This algorithm takes a points layer and a polygon layer and counts the number of points from "
+    "the first one in each polygons of the second one.\n\n"
+    "A new polygons layer is generated, with the exact same content as the input polygons layer, but "
+    "containing an additional field with the points count corresponding to each polygon.\n\n"
+    "An optional weight field can be used to assign weights to each point. If set, the count generated "
+    "will be the sum of the weight field for each point contained by the polygon.\n\n"
+    "Alternatively, a unique class field can be specified. If set, points are classified based on "
+    "the selected attribute, and if several points with the same attribute value are within the polygon, "
+    "only one of them is counted. The final count of the point in a polygon is, therefore, the count of "
+    "different classes that are found in it.\n\n"
+    "Both the weight field and unique class field cannot be specified. If they are, the weight field will "
+    "take precedence and the unique class field will be ignored."
+  );
 }
 
 QString QgsPointsInPolygonAlgorithm::shortDescription() const

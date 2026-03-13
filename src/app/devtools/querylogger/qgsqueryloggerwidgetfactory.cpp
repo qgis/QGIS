@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 QgsDatabaseQueryLoggerWidgetFactory::QgsDatabaseQueryLoggerWidgetFactory( QgsAppQueryLogger *logger )
   : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( u"propertyicons/database.svg"_s ) )
   , mLogger( logger )
-{
-}
+{}
 
 QgsDevToolWidget *QgsDatabaseQueryLoggerWidgetFactory::createWidget( QWidget *parent ) const
 {

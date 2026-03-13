@@ -40,9 +40,7 @@ QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &contex
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
   , mFeedback( feedback )
-{
-
-}
+{}
 
 long QgsPointCloudRenderContext::pointsRendered() const
 {
@@ -141,9 +139,7 @@ bool QgsPointCloudRenderer::legendItemChecked( const QString & )
 }
 
 void QgsPointCloudRenderer::checkLegendItem( const QString &, bool )
-{
-
-}
+{}
 
 double QgsPointCloudRenderer::maximumScreenError() const
 {
@@ -195,17 +191,13 @@ void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double 
   switch ( mPointSymbol )
   {
     case Qgis::PointCloudSymbol::Square:
-      elevationPainter->fillRect( QRectF( x - width * 0.5,
-                                          y - width * 0.5,
-                                          width, width ), brush );
+      elevationPainter->fillRect( QRectF( x - width * 0.5, y - width * 0.5, width, width ), brush );
       break;
 
     case Qgis::PointCloudSymbol::Circle:
       elevationPainter->setBrush( brush );
       elevationPainter->setPen( Qt::NoPen );
-      elevationPainter->drawEllipse( QRectF( x - width * 0.5,
-                                             y - width * 0.5,
-                                             width, width ) );
+      elevationPainter->drawEllipse( QRectF( x - width * 0.5, y - width * 0.5, width, width ) );
       break;
   };
 }
@@ -314,7 +306,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 {
   QVector<QVariantMap> selectedPoints;
 
-  const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
+  const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() ); // in pixels
 
   const QgsRectangle layerExtentLayerCoords = layer->dataProvider()->extent();
   QgsRectangle layerExtentMapCoords = layerExtentLayerCoords;

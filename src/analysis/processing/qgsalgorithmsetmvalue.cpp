@@ -52,11 +52,13 @@ QString QgsSetMValueAlgorithm::groupId() const
 
 QString QgsSetMValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the M value for geometries in a layer.\n\n"
-                      "If M values already exist in the layer, they will be overwritten "
-                      "with the new value. If no M values exist, the geometry will be "
-                      "upgraded to include M values and the specified value used as "
-                      "the initial M value for all geometries." );
+  return QObject::tr(
+    "This algorithm sets the M value for geometries in a layer.\n\n"
+    "If M values already exist in the layer, they will be overwritten "
+    "with the new value. If no M values exist, the geometry will be "
+    "upgraded to include M values and the specified value used as "
+    "the initial M value for all geometries."
+  );
 }
 
 QString QgsSetMValueAlgorithm::shortDescription() const

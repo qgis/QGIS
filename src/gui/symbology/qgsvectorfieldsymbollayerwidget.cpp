@@ -39,7 +39,9 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
   connect( mCounterclockwiseFromEastRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mCounterclockwiseFromEastRadioButton_toggled );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsVectorFieldSymbolLayerWidget::mDistanceUnitWidget_changed );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   if ( auto *lVectorLayer = vectorLayer() )
   {

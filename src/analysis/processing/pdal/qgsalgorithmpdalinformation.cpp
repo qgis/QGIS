@@ -74,6 +74,7 @@ void QgsPdalInformationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+#if QT_CONFIG( process )
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();
 
@@ -82,9 +83,7 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   QStringList commandOutput;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
-    feedback->reportError( ba.trimmed() );
-  } );
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) { feedback->reportError( ba.trimmed() ); } );
   wrenchProcess.setStdOutHandler( [feedback, &commandOutput]( const QByteArray &ba ) {
     feedback->pushConsoleInfo( ba.trimmed() );
     commandOutput << ba;
@@ -129,6 +128,12 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   outputs.insert( u"OUTPUT"_s, outputFile );
 
   return outputs;
+#else
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with Qt process feature enabled" ) );
+#endif
 }
 
 QStringList QgsPdalInformationAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

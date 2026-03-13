@@ -48,7 +48,6 @@ QString QgsUnitTypes::encodeUnitType( Qgis::UnitType type )
 
     case Qgis::UnitType::Unknown:
       return u"<unknown>"_s;
-
   }
   return QString();
 }
@@ -336,8 +335,7 @@ Qgis::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &string, bool
   if ( ok )
     *ok = true;
 
-  for ( const Qgis::DistanceUnit unit :
-        {
+  for ( const Qgis::DistanceUnit unit : {
           Qgis::DistanceUnit::Meters,
           Qgis::DistanceUnit::Feet,
           Qgis::DistanceUnit::Degrees,
@@ -584,7 +582,6 @@ QString QgsUnitTypes::toAbbreviatedString( Qgis::RenderUnit unit )
 
     case Qgis::RenderUnit::MetersInMapUnits:
       return QObject::tr( "m", "render" );
-
   }
 
   return QString();
@@ -673,7 +670,6 @@ QString QgsUnitTypes::toAbbreviatedString( Qgis::DistanceUnit unit )
 
     case Qgis::DistanceUnit::MetersGermanLegal:
       return QObject::tr( "glm", "distance" );
-
   }
   return QString();
 }
@@ -691,8 +687,7 @@ Qgis::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &string, bo
   if ( ok )
     *ok = true;
 
-  for ( const Qgis::DistanceUnit unit :
-        {
+  for ( const Qgis::DistanceUnit unit : {
           Qgis::DistanceUnit::Meters,
           Qgis::DistanceUnit::Feet,
           Qgis::DistanceUnit::Degrees,
@@ -2256,7 +2251,6 @@ QString QgsUnitTypes::toAbbreviatedString( Qgis::VolumeUnit unit )
       return QObject::tr( "<unknown>", "volume" );
   }
   return QString();
-
 }
 
 Qgis::VolumeUnit QgsUnitTypes::stringToVolumeUnit( const QString &string, bool *ok )
@@ -2311,7 +2305,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( Qgis::VolumeUnit fromUnit, Qgis::Volu
         case Qgis::VolumeUnit::CubicFeet:
           return 35.314666572222;
         case Qgis::VolumeUnit::CubicYards:
-          return  1.307950613786;
+          return 1.307950613786;
         case Qgis::VolumeUnit::Barrel:
           return 6.2898107438466;
         case Qgis::VolumeUnit::CubicDecimeter:
@@ -2519,7 +2513,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( Qgis::VolumeUnit fromUnit, Qgis::Volu
         case Qgis::VolumeUnit::Liters:
           return 0.001;
         case Qgis::VolumeUnit::GallonUS:
-          return 0.000264172 ;
+          return 0.000264172;
         case Qgis::VolumeUnit::CubicInch:
           return 0.061023759;
         case Qgis::VolumeUnit::CubicCentimeter:
@@ -3056,7 +3050,7 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, Qgis::AngleUnit u
   return u"%L1%2"_s.arg( angle, 0, 'f', decimalPlaces ).arg( unitLabel );
 }
 
-QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance,  Qgis::DistanceUnit unit, int decimals, bool keepBaseUnit )
+QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, Qgis::DistanceUnit unit, int decimals, bool keepBaseUnit )
 {
   DistanceValue result;
 
@@ -3082,7 +3076,6 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance,  Qgis
       }
       else if ( std::fabs( distance ) < 0.1 )
       {
-
         result.value = qgsRound( distance * 100, decimals );
         result.unit = Qgis::DistanceUnit::Centimeters;
       }
@@ -3366,7 +3359,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, Qgis::AreaUnit un
 }
 
 
-QString QgsUnitTypes::formatDistance( double distance, int decimals,  Qgis::DistanceUnit unit, bool keepBaseUnit )
+QString QgsUnitTypes::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit )
 {
   const DistanceValue dist = scaledDistance( distance, unit, decimals, keepBaseUnit );
 
@@ -3494,11 +3487,9 @@ QString QgsUnitTypes::toString( Qgis::RenderUnit unit )
 
     case Qgis::RenderUnit::Unknown:
       return QObject::tr( "<unknown>", "render" );
-
   }
   return QString();
 }
-
 
 
 QString QgsUnitTypes::encodeUnit( Qgis::LayoutUnit unit )
@@ -3519,7 +3510,7 @@ QString QgsUnitTypes::encodeUnit( Qgis::LayoutUnit unit )
       return u"pi"_s;
     case Qgis::LayoutUnit::Pixels:
       return u"px"_s;
-    case  Qgis::LayoutUnit::Millimeters:
+    case Qgis::LayoutUnit::Millimeters:
       return u"mm"_s;
   }
   return QString();
@@ -3562,7 +3553,7 @@ Qgis::LayoutUnitType QgsUnitTypes::unitType( const Qgis::LayoutUnit units )
   {
     case Qgis::LayoutUnit::Pixels:
       return Qgis::LayoutUnitType::ScreenUnits;
-    case  Qgis::LayoutUnit::Millimeters:
+    case Qgis::LayoutUnit::Millimeters:
     case Qgis::LayoutUnit::Centimeters:
     case Qgis::LayoutUnit::Meters:
     case Qgis::LayoutUnit::Inches:
@@ -3582,7 +3573,7 @@ QString QgsUnitTypes::toAbbreviatedString( Qgis::LayoutUnit unit )
   {
     case Qgis::LayoutUnit::Pixels:
       return QObject::tr( "px" );
-    case  Qgis::LayoutUnit::Millimeters:
+    case Qgis::LayoutUnit::Millimeters:
       return QObject::tr( "mm" );
     case Qgis::LayoutUnit::Centimeters:
       return QObject::tr( "cm" );
@@ -3606,7 +3597,7 @@ QString QgsUnitTypes::toString( Qgis::LayoutUnit unit )
   {
     case Qgis::LayoutUnit::Pixels:
       return QObject::tr( "pixels" );
-    case  Qgis::LayoutUnit::Millimeters:
+    case Qgis::LayoutUnit::Millimeters:
       return QObject::tr( "millimeters" );
     case Qgis::LayoutUnit::Centimeters:
       return QObject::tr( "centimeters" );

@@ -42,7 +42,6 @@ class QgsSymbolLayerReference;
 class CORE_EXPORT QgsTextMaskSettings
 {
   public:
-
     /**
      * Mask shape types.
      */
@@ -213,7 +212,6 @@ class CORE_EXPORT QgsTextMaskSettings
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
-
     QSharedDataPointer<QgsTextMaskSettingsPrivate> d;
 };
 

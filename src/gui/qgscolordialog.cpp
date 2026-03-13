@@ -19,6 +19,8 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -87,7 +89,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
 
   const QgsSettings settings;
   //using native color dialogs?
-  const bool useNative = settings.value( u"qgis/native_color_dialogs"_s, false ).toBool();
+  const bool useNative = QgsSettingsRegistryGui::settingsNativeColorDialogs->value();
   if ( useNative )
   {
     return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption ) 0 );

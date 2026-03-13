@@ -22,8 +22,7 @@
 
 QgsTextEditSearchWidgetWrapper::QgsTextEditSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent )
-{
-}
+{}
 
 bool QgsTextEditSearchWidgetWrapper::applyDirectly()
 {

@@ -45,10 +45,7 @@ class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
   private:
 #ifdef HAVE_OPENCL
 
-    const QString openClProgramBaseName() const override
-    {
-      return u"hillshade"_s;
-    }
+    const QString openClProgramBaseName() const override { return u"hillshade"_s; }
 #endif
 
     float mLightAzimuth;

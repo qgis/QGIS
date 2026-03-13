@@ -405,7 +405,13 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
      * If \a parent is specified, the item will be added as child of the parent item.
      * If it is not specified then it will be set when manually added to another item.
      */
-    explicit QgsAttributesFormItem( QgsAttributesFormData::AttributesFormItemType itemType, const QgsAttributesFormData::AttributeFormItemData &data, const QString &name, const QString &displayName = QString(), QgsAttributesFormItem *parent = nullptr );
+    explicit QgsAttributesFormItem(
+      QgsAttributesFormData::AttributesFormItemType itemType,
+      const QgsAttributesFormData::AttributeFormItemData &data,
+      const QString &name,
+      const QString &displayName = QString(),
+      QgsAttributesFormItem *parent = nullptr
+    );
 
     /**
      * \brief Access the child item located at \a row position.

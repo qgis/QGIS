@@ -210,9 +210,7 @@ QgsGradientStop::QgsGradientStop( double offset, const QColor &color )
   : offset( offset )
   , color( color )
   , mFunc( _interpolateRgb )
-{
-
-}
+{}
 
 void QgsGradientStop::setColorSpec( QColor::Spec spec )
 {
@@ -237,15 +235,13 @@ void QgsGradientStop::setColorSpec( QColor::Spec spec )
   }
 }
 
-QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &color2,
-    bool discrete, const QgsGradientStopsList &stops )
+QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &color2, bool discrete, const QgsGradientStopsList &stops )
   : mColor1( color1 )
   , mColor2( color2 )
   , mDiscrete( discrete )
   , mStops( stops )
   , mFunc( _interpolateRgb )
-{
-}
+{}
 
 QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 {
@@ -299,11 +295,10 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 
   // search for information keys starting with "info_"
   QgsStringMap info;
-  for ( QVariantMap::const_iterator it = props.constBegin();
-        it != props.constEnd(); ++it )
+  for ( QVariantMap::const_iterator it = props.constBegin(); it != props.constEnd(); ++it )
   {
     if ( it.key().startsWith( "info_"_L1 ) )
-      info[ it.key().mid( 5 )] = it.value().toString();
+      info[it.key().mid( 5 )] = it.value().toString();
   }
 
   QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
@@ -449,8 +444,7 @@ void QgsGradientColorRamp::invert()
 
 QgsGradientColorRamp *QgsGradientColorRamp::clone() const
 {
-  QgsGradientColorRamp *r = new QgsGradientColorRamp( mColor1, mColor2,
-      mDiscrete, mStops );
+  QgsGradientColorRamp *r = new QgsGradientColorRamp( mColor1, mColor2, mDiscrete, mStops );
   r->setInfo( mInfo );
   r->setColorSpec( mColorSpec );
   r->setDirection( mDirection );
@@ -468,19 +462,22 @@ QVariantMap QgsGradientColorRamp::properties() const
     lst.reserve( mStops.size() );
     for ( const QgsGradientStop &stop : mStops )
     {
-      lst.append( u"%1;%2;%3;%4"_s.arg( stop.offset ).arg( QgsColorUtils::colorToString( stop.color ),
-                  stop.colorSpec() == QColor::Rgb ? u"rgb"_s
-                  : stop.colorSpec() == QColor::Hsv ? u"hsv"_s
-                  : stop.colorSpec() == QColor::Hsl ? u"hsl"_s : QString(),
-                  stop.direction() == Qgis::AngularDirection::CounterClockwise ? u"ccw"_s : u"cw"_s ) );
+      lst.append( u"%1;%2;%3;%4"_s.arg( stop.offset )
+                    .arg(
+                      QgsColorUtils::colorToString( stop.color ),
+                      stop.colorSpec() == QColor::Rgb   ? u"rgb"_s
+                      : stop.colorSpec() == QColor::Hsv ? u"hsv"_s
+                      : stop.colorSpec() == QColor::Hsl ? u"hsl"_s
+                                                        : QString(),
+                      stop.direction() == Qgis::AngularDirection::CounterClockwise ? u"ccw"_s : u"cw"_s
+                    ) );
     }
     map[u"stops"_s] = lst.join( ':'_L1 );
   }
 
   map[u"discrete"_s] = mDiscrete ? "1" : "0";
 
-  for ( QgsStringMap::const_iterator it = mInfo.constBegin();
-        it != mInfo.constEnd(); ++it )
+  for ( QgsStringMap::const_iterator it = mInfo.constBegin(); it != mInfo.constEnd(); ++it )
   {
     map["info_" + it.key()] = it.value();
   }
@@ -488,13 +485,13 @@ QVariantMap QgsGradientColorRamp::properties() const
   switch ( mColorSpec )
   {
     case QColor::Rgb:
-      map[u"spec"_s ] = u"rgb"_s;
+      map[u"spec"_s] = u"rgb"_s;
       break;
     case QColor::Hsv:
-      map[u"spec"_s ] = u"hsv"_s;
+      map[u"spec"_s] = u"hsv"_s;
       break;
     case QColor::Hsl:
-      map[u"spec"_s ] = u"hsl"_s;
+      map[u"spec"_s] = u"hsl"_s;
       break;
     case QColor::Cmyk:
     case QColor::Invalid:
@@ -505,10 +502,10 @@ QVariantMap QgsGradientColorRamp::properties() const
   switch ( mDirection )
   {
     case Qgis::AngularDirection::Clockwise:
-      map[u"direction"_s ] = u"cw"_s;
+      map[u"direction"_s] = u"cw"_s;
       break;
     case Qgis::AngularDirection::CounterClockwise:
-      map[u"direction"_s ] = u"ccw"_s;
+      map[u"direction"_s] = u"ccw"_s;
       break;
     case Qgis::AngularDirection::NoOrientation:
       break;
@@ -530,8 +527,7 @@ void QgsGradientColorRamp::convertToDiscrete( bool discrete )
     // re-arrange stops offset
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
-          it != mStops.constEnd(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin(); it != mStops.constEnd(); ++it )
     {
       newStops.append( QgsGradientStop( static_cast< double >( i ) / numStops, it->color ) );
       if ( i == numStops - 1 )
@@ -546,8 +542,7 @@ void QgsGradientColorRamp::convertToDiscrete( bool discrete )
     // re-arrange stops offset, remove duplicate last color
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
-          it != mStops.constEnd(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin(); it != mStops.constEnd(); ++it )
     {
       newStops.append( QgsGradientStop( static_cast< double >( i ) / ( numStops - 2 ), it->color ) );
       if ( i == numStops - 3 )
@@ -588,7 +583,6 @@ void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opaci
   double lastOffset = 0;
   for ( const QgsGradientStop &stop : mStops )
   {
-
     QColor rampColor = stop.color;
     if ( opacity < 1 )
     {
@@ -653,12 +647,14 @@ void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
 //////////////
 
 
-QgsLimitedRandomColorRamp::QgsLimitedRandomColorRamp( int count, int hueMin, int hueMax,
-    int satMin, int satMax, int valMin, int valMax )
+QgsLimitedRandomColorRamp::QgsLimitedRandomColorRamp( int count, int hueMin, int hueMax, int satMin, int satMax, int valMin, int valMax )
   : mCount( count )
-  , mHueMin( hueMin ), mHueMax( hueMax )
-  , mSatMin( satMin ), mSatMax( satMax )
-  , mValMin( valMin ), mValMax( valMax )
+  , mHueMin( hueMin )
+  , mHueMax( hueMax )
+  , mSatMin( satMin )
+  , mSatMax( satMax )
+  , mValMin( valMin )
+  , mValMax( valMax )
 {
   updateColors();
 }
@@ -670,13 +666,20 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
   int satMin = DEFAULT_RANDOM_SAT_MIN, satMax = DEFAULT_RANDOM_SAT_MAX;
   int valMin = DEFAULT_RANDOM_VAL_MIN, valMax = DEFAULT_RANDOM_VAL_MAX;
 
-  if ( props.contains( u"count"_s ) ) count = props[u"count"_s].toInt();
-  if ( props.contains( u"hueMin"_s ) ) hueMin = props[u"hueMin"_s].toInt();
-  if ( props.contains( u"hueMax"_s ) ) hueMax = props[u"hueMax"_s].toInt();
-  if ( props.contains( u"satMin"_s ) ) satMin = props[u"satMin"_s].toInt();
-  if ( props.contains( u"satMax"_s ) ) satMax = props[u"satMax"_s].toInt();
-  if ( props.contains( u"valMin"_s ) ) valMin = props[u"valMin"_s].toInt();
-  if ( props.contains( u"valMax"_s ) ) valMax = props[u"valMax"_s].toInt();
+  if ( props.contains( u"count"_s ) )
+    count = props[u"count"_s].toInt();
+  if ( props.contains( u"hueMin"_s ) )
+    hueMin = props[u"hueMin"_s].toInt();
+  if ( props.contains( u"hueMax"_s ) )
+    hueMax = props[u"hueMax"_s].toInt();
+  if ( props.contains( u"satMin"_s ) )
+    satMin = props[u"satMin"_s].toInt();
+  if ( props.contains( u"satMax"_s ) )
+    satMax = props[u"satMax"_s].toInt();
+  if ( props.contains( u"valMin"_s ) )
+    valMin = props[u"valMin"_s].toInt();
+  if ( props.contains( u"valMax"_s ) )
+    valMax = props[u"valMax"_s].toInt();
 
   return new QgsLimitedRandomColorRamp( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }
@@ -726,8 +729,7 @@ QVariantMap QgsLimitedRandomColorRamp::properties() const
   return map;
 }
 
-QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
-    int hueMax, int hueMin, int satMax, int satMin, int valMax, int valMin )
+QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count, int hueMax, int hueMin, int satMax, int satMin, int valMax, int valMin )
 {
   int h, s, v;
   QList<QColor> colors;
@@ -822,7 +824,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   double currentHue = hueOffset;
 
   //build up a list of colors
-  for ( int idx = 0; idx < colorCount; ++ idx )
+  for ( int idx = 0; idx < colorCount; ++idx )
   {
     int h = static_cast< int >( std::round( currentHue ) ) % 360;
     int s = ( std::rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
@@ -947,8 +949,7 @@ QVariantMap QgsColorBrewerColorRamp::properties() const
 ////////////
 
 
-QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QString &variantName,
-    bool inverted, bool doLoadFile )
+QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QString &variantName, bool inverted, bool doLoadFile )
   : QgsGradientColorRamp()
   , mSchemeName( schemeName )
   , mVariantName( variantName )
@@ -960,8 +961,7 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
     loadFile();
 }
 
-QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList,
-    const QString &variantName, bool inverted, bool doLoadFile )
+QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList, const QString &variantName, bool inverted, bool doLoadFile )
   : QgsGradientColorRamp()
   , mSchemeName( schemeName )
   , mVariantName( variantName )
@@ -1012,7 +1012,7 @@ QgsCptCityColorRamp *QgsCptCityColorRamp::clone() const
 
 void QgsCptCityColorRamp::copy( const QgsCptCityColorRamp *other )
 {
-  if ( ! other )
+  if ( !other )
     return;
   mColor1 = other->color1();
   mColor2 = other->color2();
@@ -1027,8 +1027,7 @@ void QgsCptCityColorRamp::copy( const QgsCptCityColorRamp *other )
 
 QgsGradientColorRamp *QgsCptCityColorRamp::cloneGradientRamp() const
 {
-  QgsGradientColorRamp *ramp =
-    new QgsGradientColorRamp( mColor1, mColor2, mDiscrete, mStops );
+  QgsGradientColorRamp *ramp = new QgsGradientColorRamp( mColor1, mColor2, mDiscrete, mStops );
   // add author and copyright information
   // TODO also add COPYING.xml file/link?
   QgsStringMap info = copyingInfo();
@@ -1068,14 +1067,12 @@ QString QgsCptCityColorRamp::fileName() const
 
 QString QgsCptCityColorRamp::copyingFileName() const
 {
-  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, QFileInfo( fileName() ).dir().path(),
-                                          QgsCptCityArchive::defaultBaseDir() );
+  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() );
 }
 
 QString QgsCptCityColorRamp::descFileName() const
 {
-  return QgsCptCityArchive::findFileName( u"DESC.xml"_s, QFileInfo( fileName() ).dir().path(),
-                                          QgsCptCityArchive::defaultBaseDir() );
+  return QgsCptCityArchive::findFileName( u"DESC.xml"_s, QFileInfo( fileName() ).dir().path(), QgsCptCityArchive::defaultBaseDir() );
 }
 
 QgsStringMap QgsCptCityColorRamp::copyingInfo() const
@@ -1101,8 +1098,7 @@ bool QgsCptCityColorRamp::loadFile()
   QgsDebugMsgLevel( u"filename= %1 loaded=%2"_s.arg( filename ).arg( mFileLoaded ), 2 );
 
   // get color ramp from svg file
-  QMap< double, QPair<QColor, QColor> > colorMap =
-    QgsCptCityArchive::gradientColorMap( filename );
+  QMap< double, QPair<QColor, QColor> > colorMap = QgsCptCityArchive::gradientColorMap( filename );
 
   // add colors to palette
   mFileLoaded = false;
@@ -1147,8 +1143,7 @@ bool QgsCptCityColorRamp::loadFile()
     {
       // mPalette << qMakePair( it.key(), it.value().first );
       mStops.append( QgsGradientStop( it.key(), it.value().first ) );
-      if ( ( mMultiStops ) &&
-           ( it.key() != 0.0 && it.key() != 1.0 ) )
+      if ( ( mMultiStops ) && ( it.key() != 0.0 && it.key() != 1.0 ) )
       {
         mStops.append( QgsGradientStop( it.key(), it.value().second ) );
       }
@@ -1158,9 +1153,9 @@ bool QgsCptCityColorRamp::loadFile()
   }
 
   // remove first and last items (mColor1 and mColor2)
-  if ( ! mStops.isEmpty() && mStops.at( 0 ).offset == 0.0 )
+  if ( !mStops.isEmpty() && mStops.at( 0 ).offset == 0.0 )
     mColor1 = mStops.takeFirst().color;
-  if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
+  if ( !mStops.isEmpty() && mStops.last().offset == 1.0 )
     mColor2 = mStops.takeLast().color;
 
   if ( mInverted )

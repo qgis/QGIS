@@ -46,7 +46,6 @@ class QgsCoordinateTransform;
 class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for a QgsGroupLayerRenderer, for the specified \a layer.
      */
@@ -65,7 +64,6 @@ class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
     std::vector< QgsCoordinateTransform > mTransforms;
     double mLayerOpacity = 1.0;
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
 };
 
 #endif // QGSGROUPLAYERRENDERER_H

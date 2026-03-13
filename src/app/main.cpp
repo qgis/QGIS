@@ -135,7 +135,9 @@ void usage( const QString &appName )
 
   msg
     << u"QGIS is a user friendly Open Source Geographic Information System.\n"_s
-    << u"Usage: "_s << appName << u" [OPTION] [FILE]\n"_s
+    << u"Usage: "_s
+    << appName
+    << u" [OPTION] [FILE]\n"_s
     << u"  OPTION:\n"_s
     << u"\t[-v, --version]\tdisplay version information and exit\n"_s
     << u"\t[-s, --snapshot filename]\temit snapshot of loaded datasets to given file\n"_s
@@ -454,16 +456,28 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
       // TODO QGIS 5 reevaluate whether all these are still required on qt 6
-      if ( msg.contains( "QXcbClipboard"_L1, Qt::CaseInsensitive ) || msg.contains( "QGestureManager::deliverEvent"_L1, Qt::CaseInsensitive ) || msg.startsWith( "libpng warning: iCCP: known incorrect sRGB profile"_L1, Qt::CaseInsensitive ) || msg.contains( "Could not add child element to parent element because the types are incorrect"_L1, Qt::CaseInsensitive ) || msg.contains( "OpenType support missing for"_L1, Qt::CaseInsensitive ) ||
+      if ( msg.contains( "QXcbClipboard"_L1, Qt::CaseInsensitive )
+           || msg.contains( "QGestureManager::deliverEvent"_L1, Qt::CaseInsensitive )
+           || msg.startsWith( "libpng warning: iCCP: known incorrect sRGB profile"_L1, Qt::CaseInsensitive )
+           || msg.contains( "Could not add child element to parent element because the types are incorrect"_L1, Qt::CaseInsensitive )
+           || msg.contains( "OpenType support missing for"_L1, Qt::CaseInsensitive )
+           ||
 
            // warnings triggered by Wayland limitations, not our responsibility or anything we can fix
-           msg.contains( "Wayland does not support"_L1, Qt::CaseInsensitive ) ||
+           msg.contains( "Wayland does not support"_L1, Qt::CaseInsensitive )
+           ||
 
            // warnings triggered from KDE libraries, not related to QGIS
-           msg.contains( "This plugin supports grabbing the mouse only for popup windows"_L1, Qt::CaseInsensitive ) || msg.contains( "KLocalizedString"_L1, Qt::CaseInsensitive ) || msg.contains( "KServiceTypeTrader"_L1, Qt::CaseInsensitive ) || msg.contains( "No node found for item that was just removed"_L1, Qt::CaseInsensitive ) || msg.contains( "Audio notification requested"_L1, Qt::CaseInsensitive ) ||
+           msg.contains( "This plugin supports grabbing the mouse only for popup windows"_L1, Qt::CaseInsensitive )
+           || msg.contains( "KLocalizedString"_L1, Qt::CaseInsensitive )
+           || msg.contains( "KServiceTypeTrader"_L1, Qt::CaseInsensitive )
+           || msg.contains( "No node found for item that was just removed"_L1, Qt::CaseInsensitive )
+           || msg.contains( "Audio notification requested"_L1, Qt::CaseInsensitive )
+           ||
 
            // something from deep within Qt6 (looks like a malformed SVG in a platform theme), not related to us
-           msg.contains( "The requested buffer size is too big, ignoring"_L1 ) ||
+           msg.contains( "The requested buffer size is too big, ignoring"_L1 )
+           ||
 
            // coming from WebEngine:
            msg.contains( "An OpenGL Core Profile was requested, but it is not supported on the current platform"_L1, Qt::CaseInsensitive ) )
@@ -1401,9 +1415,10 @@ int main( int argc, char *argv[] )
   if ( !getenv( "GDAL_DATA" ) )
   {
     QStringList gdalShares;
-    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
-               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
+    gdalShares
+      << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
     const auto constGdalShares = gdalShares;
     for ( const QString &gdalShare : constGdalShares )
     {
@@ -1464,7 +1479,7 @@ int main( int argc, char *argv[] )
         if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset"_L1 )
         {
 #ifdef Q_OS_WIN
-          putenv( QString( "%1=" ).arg( envVarName ).toUtf8().constData() );
+          _wputenv_s( envVarName.toStdWString().c_str(), L"" );
 #else
           unsetenv( envVarName.toUtf8().constData() );
 #endif
@@ -1473,7 +1488,7 @@ int main( int argc, char *argv[] )
         {
 #ifdef Q_OS_WIN
           if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
-            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+            _wputenv_s( envVarName.toStdWString().c_str(), envVarValue.toStdWString().c_str() );
 #else
           setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined"_L1 ? 0 : 1 );
 #endif
@@ -1498,8 +1513,7 @@ int main( int argc, char *argv[] )
     }
   }
   const QString activeStyleName = QApplication::style()->metaObject()->className();
-  if ( desiredStyle.contains( "adwaita"_L1, Qt::CaseInsensitive )
-       || ( desiredStyle.isEmpty() && activeStyleName.contains( "adwaita"_L1, Qt::CaseInsensitive ) ) )
+  if ( desiredStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) || ( desiredStyle.isEmpty() && activeStyleName.contains( "adwaita"_L1, Qt::CaseInsensitive ) ) )
   {
     //never allow Adwaita themes - the Qt variants of these are VERY broken
     //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing

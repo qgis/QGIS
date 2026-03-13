@@ -26,9 +26,7 @@
 
 QgsProjectStoredObjectManagerModelBase::QgsProjectStoredObjectManagerModelBase( QObject *parent )
   : QAbstractListModel( parent )
-{
-
-}
+{}
 
 int QgsProjectStoredObjectManagerModelBase::rowCount( const QModelIndex &parent ) const
 {
@@ -75,8 +73,7 @@ void QgsProjectStoredObjectManagerModelBase::objectRemoved( const QString &name 
 //
 // QgsProjectStoredObjectManagerModel
 //
-template<class T>
-QgsProjectStoredObjectManagerModel<T>::QgsProjectStoredObjectManagerModel( QgsAbstractProjectStoredObjectManager<T> *manager, QObject *parent )
+template<class T> QgsProjectStoredObjectManagerModel<T>::QgsProjectStoredObjectManagerModel( QgsAbstractProjectStoredObjectManager<T> *manager, QObject *parent )
   : QgsProjectStoredObjectManagerModelBase( parent )
   , mObjectManager( manager )
 {
@@ -87,15 +84,13 @@ QgsProjectStoredObjectManagerModel<T>::QgsProjectStoredObjectManagerModel( QgsAb
 }
 
 ///@cond PRIVATE
-template<class T>
-int QgsProjectStoredObjectManagerModel<T>::rowCountInternal( const QModelIndex &parent ) const
+template<class T> int QgsProjectStoredObjectManagerModel<T>::rowCountInternal( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return ( mObjectManager ? mObjectManager->objects().count() : 0 ) + ( mAllowEmpty ? 1 : 0 );
 }
 
-template<class T>
-QVariant QgsProjectStoredObjectManagerModel<T>::dataInternal( const QModelIndex &index, int role ) const
+template<class T> QVariant QgsProjectStoredObjectManagerModel<T>::dataInternal( const QModelIndex &index, int role ) const
 {
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
@@ -128,7 +123,7 @@ QVariant QgsProjectStoredObjectManagerModel<T>::dataInternal( const QModelIndex 
         return QIcon();
 
       T *object = mObjectManager->objects().at( objectRow );
-      if constexpr( requires { object->icon(); } )
+      if constexpr ( requires { object->icon(); } )
       {
         return object->icon();
       }
@@ -143,8 +138,7 @@ QVariant QgsProjectStoredObjectManagerModel<T>::dataInternal( const QModelIndex 
   }
 }
 
-template<class T>
-bool QgsProjectStoredObjectManagerModel<T>::setDataInternal( const QModelIndex &index, const QVariant &value, int role )
+template<class T> bool QgsProjectStoredObjectManagerModel<T>::setDataInternal( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
   {
@@ -188,8 +182,7 @@ bool QgsProjectStoredObjectManagerModel<T>::setDataInternal( const QModelIndex &
   return true;
 }
 
-template<class T>
-Qt::ItemFlags QgsProjectStoredObjectManagerModel<T>::flagsInternal( const QModelIndex &index ) const
+template<class T> Qt::ItemFlags QgsProjectStoredObjectManagerModel<T>::flagsInternal( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
 #if 0 // double-click is now used for opening the object
@@ -205,15 +198,13 @@ Qt::ItemFlags QgsProjectStoredObjectManagerModel<T>::flagsInternal( const QModel
   return flags;
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeAddedInternal( const QString & )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeAddedInternal( const QString & )
 {
   int row = mObjectManager->objects().count() + ( mAllowEmpty ? 1 : 0 );
   beginInsertRows( QModelIndex(), row, row );
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeRemovedInternal( const QString &name )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeRemovedInternal( const QString &name )
 {
   T *l = mObjectManager->objectByName( name );
   int row = mObjectManager->objects().indexOf( l ) + ( mAllowEmpty ? 1 : 0 );
@@ -221,28 +212,24 @@ void QgsProjectStoredObjectManagerModel<T>::objectAboutToBeRemovedInternal( cons
     beginRemoveRows( QModelIndex(), row, row );
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::objectAddedInternal( const QString & )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectAddedInternal( const QString & )
 {
   endInsertRows();
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::objectRemovedInternal( const QString & )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectRemovedInternal( const QString & )
 {
   endRemoveRows();
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::objectRenamedInternal( T *object, const QString & )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::objectRenamedInternal( T *object, const QString & )
 {
   int row = mObjectManager->objects().indexOf( object ) + ( mAllowEmpty ? 1 : 0 );
   QModelIndex index = createIndex( row, 0 );
   emit dataChanged( index, index, QVector<int>() << Qt::DisplayRole );
 }
 
-template<class T>
-QVariant QgsProjectStoredObjectManagerModel<T>::objectToVariant( T *object ) const
+template<class T> QVariant QgsProjectStoredObjectManagerModel<T>::objectToVariant( T *object ) const
 {
   if ( T *l = dynamic_cast< T * >( object ) )
     return QVariant::fromValue( l );
@@ -252,8 +239,7 @@ QVariant QgsProjectStoredObjectManagerModel<T>::objectToVariant( T *object ) con
 
 ///@endcond
 
-template<class T>
-T *QgsProjectStoredObjectManagerModel<T>::objectFromIndex( const QModelIndex &index ) const
+template<class T> T *QgsProjectStoredObjectManagerModel<T>::objectFromIndex( const QModelIndex &index ) const
 {
   if ( index.row() == 0 && mAllowEmpty )
     return nullptr;
@@ -264,8 +250,7 @@ T *QgsProjectStoredObjectManagerModel<T>::objectFromIndex( const QModelIndex &in
     return nullptr;
 }
 
-template<class T>
-QModelIndex QgsProjectStoredObjectManagerModel<T>::indexFromObject( T *object ) const
+template<class T> QModelIndex QgsProjectStoredObjectManagerModel<T>::indexFromObject( T *object ) const
 {
   if ( !mObjectManager )
   {
@@ -285,8 +270,7 @@ QModelIndex QgsProjectStoredObjectManagerModel<T>::indexFromObject( T *object ) 
   return QModelIndex();
 }
 
-template<class T>
-void QgsProjectStoredObjectManagerModel<T>::setAllowEmptyObject( bool allowEmpty )
+template<class T> void QgsProjectStoredObjectManagerModel<T>::setAllowEmptyObject( bool allowEmpty )
 {
   if ( allowEmpty == mAllowEmpty )
     return;
@@ -311,8 +295,7 @@ void QgsProjectStoredObjectManagerModel<T>::setAllowEmptyObject( bool allowEmpty
 #include "qgsreport.h"
 
 ///@cond PRIVATE
-template<>
-QVariant QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectToVariant( QgsMasterLayoutInterface *object ) const
+template<> QVariant QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectToVariant( QgsMasterLayoutInterface *object ) const
 {
   if ( QgsLayout *l = dynamic_cast< QgsLayout * >( object ) )
     return QVariant::fromValue( l );
@@ -321,8 +304,7 @@ QVariant QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectToV
   return QVariant();
 }
 
-template<>
-QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectFromIndex( const QModelIndex &index ) const
+template<> QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectFromIndex( const QModelIndex &index ) const
 {
   if ( index.row() == 0 && mAllowEmpty )
     return nullptr;
@@ -343,16 +325,14 @@ template class QgsProjectStoredObjectManagerModel<QgsElevationProfile>; // clazy
 
 #include "qgsselectivemaskingsourceset.h"
 
-template<>
-QVariant QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectToVariant( QgsSelectiveMaskingSourceSet *object ) const
+template<> QVariant QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectToVariant( QgsSelectiveMaskingSourceSet *object ) const
 {
   if ( object )
     return QVariant::fromValue( object );
   return QVariant();
 }
 
-template<>
-QgsSelectiveMaskingSourceSet *QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectFromIndex( const QModelIndex &index ) const
+template<> QgsSelectiveMaskingSourceSet *QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectFromIndex( const QModelIndex &index ) const
 {
   if ( index.row() == 0 && mAllowEmpty )
     return nullptr;
@@ -361,8 +341,7 @@ QgsSelectiveMaskingSourceSet *QgsProjectStoredObjectManagerModel<QgsSelectiveMas
   return qvariant_cast< QgsSelectiveMaskingSourceSet *>( variant );
 }
 
-template<>
-QModelIndex QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::indexFromObject( QgsSelectiveMaskingSourceSet *object ) const
+template<> QModelIndex QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::indexFromObject( QgsSelectiveMaskingSourceSet *object ) const
 {
   if ( !mObjectManager )
   {
@@ -452,15 +431,11 @@ bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRowInternal( int,
 // QgsProjectStoredObjectManagerProxyModel
 //
 
-template<class T>
-QgsProjectStoredObjectManagerProxyModel<T>::QgsProjectStoredObjectManagerProxyModel( QObject *parent )
+template<class T> QgsProjectStoredObjectManagerProxyModel<T>::QgsProjectStoredObjectManagerProxyModel( QObject *parent )
   : QgsProjectStoredObjectManagerProxyModelBase( parent )
-{
+{}
 
-}
-
-template<class T>
-bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const
+template<class T> bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QgsProjectStoredObjectManagerModel<T> *model = dynamic_cast< QgsProjectStoredObjectManagerModel<T> * >( sourceModel() );
   if ( !model )
@@ -480,7 +455,7 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
 }
 
 ///@cond PRIVATE
-template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro
-template class QgsProjectStoredObjectManagerProxyModel<QgsElevationProfile>;  // clazy:exclude=missing-qobject-macro
-template class QgsProjectStoredObjectManagerProxyModel<QgsSelectiveMaskingSourceSet>;  // clazy:exclude=missing-qobject-macro
+template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;     // clazy:exclude=missing-qobject-macro
+template class QgsProjectStoredObjectManagerProxyModel<QgsElevationProfile>;          // clazy:exclude=missing-qobject-macro
+template class QgsProjectStoredObjectManagerProxyModel<QgsSelectiveMaskingSourceSet>; // clazy:exclude=missing-qobject-macro
 ///@endcond

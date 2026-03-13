@@ -86,12 +86,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  wgtUnitSelection->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::Percentage, Qgis::RenderUnit::Pixels } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // font settings

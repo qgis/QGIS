@@ -82,20 +82,12 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
   mBlockUpdates = true;
   QgsElevationShadingRenderer shadingRenderer = QgsProject::instance()->elevationShadingRenderer();
   mShadingGroupBox->setChecked( shadingRenderer.isActive() );
-  mCombineMethodCombo->setCurrentIndex(
-    mCombineMethodCombo->findData( QVariant::fromValue( shadingRenderer.combinedElevationMethod() ) )
-  );
+  mCombineMethodCombo->setCurrentIndex( mCombineMethodCombo->findData( QVariant::fromValue( shadingRenderer.combinedElevationMethod() ) ) );
   mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
   mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
   mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
   mEdlDistanceUnit->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
   );
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
   mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );

@@ -84,8 +84,10 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mCrsSelector->setCrs( mSelectedCrs );
   mCrsSelector->setLayerCrs( mSelectedCrs );
-  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
-                                "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr(
+    "Select the coordinate reference system for the vector file. "
+    "The data points will be transformed from the layer coordinate reference system."
+  ) );
 
 
   // attributes
@@ -179,8 +181,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
 
   mCrsSelector->setShowAccuracyWarnings( true );
 

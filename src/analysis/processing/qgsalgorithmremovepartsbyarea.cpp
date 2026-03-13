@@ -73,13 +73,15 @@ QString QgsRemovePartsByAreaAlgorithm::shortDescription() const
 
 QString QgsRemovePartsByAreaAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon layer and removes polygons which are smaller than a specified area.\n\n"
-                      "If the input geometry is a multipart geometry, then the parts will be filtered by their individual areas. If no parts match the "
-                      "required minimum area, then the feature will be skipped and omitted from the output layer.\n\n"
-                      "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
-                      "area is below the required size and omitted from the output layer.\n\n"
-                      "The area will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
-                      "Attributes are not modified." );
+  return QObject::tr(
+    "This algorithm takes a polygon layer and removes polygons which are smaller than a specified area.\n\n"
+    "If the input geometry is a multipart geometry, then the parts will be filtered by their individual areas. If no parts match the "
+    "required minimum area, then the feature will be skipped and omitted from the output layer.\n\n"
+    "If the input geometry is a singlepart geometry, then the feature will be skipped if the geometry's "
+    "area is below the required size and omitted from the output layer.\n\n"
+    "The area will be calculated using Cartesian calculations in the source layer's coordinate reference system.\n\n"
+    "Attributes are not modified."
+  );
 }
 
 QgsRemovePartsByAreaAlgorithm *QgsRemovePartsByAreaAlgorithm::createInstance() const

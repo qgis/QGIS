@@ -31,7 +31,6 @@ created, but rather accessed through
 #include "qgslabelingengineruleregistry.h"
 %End
   public:
-
     QgsLabelingEngineRuleRegistry();
 %Docstring
 Constructor for QgsLabelingEngineRuleRegistry, containing a set of

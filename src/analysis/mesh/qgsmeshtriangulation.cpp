@@ -274,7 +274,10 @@ QgsMeshDatasetMetadata QgsMeshZValueDatasetGroup::datasetMetadata( int datasetIn
   return mDataset->metadata();
 }
 
-int QgsMeshZValueDatasetGroup::datasetCount() const { return 1; }
+int QgsMeshZValueDatasetGroup::datasetCount() const
+{
+  return 1;
+}
 
 QgsMeshDataset *QgsMeshZValueDatasetGroup::dataset( int index ) const
 {

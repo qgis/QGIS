@@ -130,8 +130,14 @@ void TestQgsTriangularMesh::test_centroids()
   QgsTriangularMesh triangularMesh;
 
   QgsMesh nativeMesh;
-  nativeMesh.vertices << QgsMeshVertex( 0, 10, 0 ) << QgsMeshVertex( 10, 10, 0 ) << QgsMeshVertex( 10, 0, 0 ) << QgsMeshVertex( 0, 0, 0 )
-                      << QgsMeshVertex( 20, 0, 0 ) << QgsMeshVertex( 30, 10, 0 ) << QgsMeshVertex( 20, 10, 0 );
+  nativeMesh.vertices
+    << QgsMeshVertex( 0, 10, 0 )
+    << QgsMeshVertex( 10, 10, 0 )
+    << QgsMeshVertex( 10, 0, 0 )
+    << QgsMeshVertex( 0, 0, 0 )
+    << QgsMeshVertex( 20, 0, 0 )
+    << QgsMeshVertex( 30, 10, 0 )
+    << QgsMeshVertex( 20, 10, 0 );
 
   nativeMesh.faces << QgsMeshFace( { 0, 1, 2, 3 } ) << QgsMeshFace( { 1, 2, 4, 5 } );
 
@@ -150,8 +156,14 @@ void TestQgsTriangularMesh::test_centroids()
   nativeMesh.clear();
   triangularMesh = QgsTriangularMesh();
 
-  nativeMesh.vertices << QgsMeshVertex( 900000000, 300000010, 0 ) << QgsMeshVertex( 900000010, 300000010, 0 ) << QgsMeshVertex( 900000010, 300000000, 0 ) << QgsMeshVertex( 900000000, 300000000, 0 )
-                      << QgsMeshVertex( 900000020, 300000000, 0 ) << QgsMeshVertex( 900000030, 300000010, 0 ) << QgsMeshVertex( 900000020, 300000010, 0 );
+  nativeMesh.vertices
+    << QgsMeshVertex( 900000000, 300000010, 0 )
+    << QgsMeshVertex( 900000010, 300000010, 0 )
+    << QgsMeshVertex( 900000010, 300000000, 0 )
+    << QgsMeshVertex( 900000000, 300000000, 0 )
+    << QgsMeshVertex( 900000020, 300000000, 0 )
+    << QgsMeshVertex( 900000030, 300000010, 0 )
+    << QgsMeshVertex( 900000020, 300000010, 0 );
 
   nativeMesh.faces << QgsMeshFace( { 0, 1, 2, 3 } ) << QgsMeshFace( { 1, 2, 4, 5 } );
   triangularMesh.update( &nativeMesh, QgsCoordinateTransform() );

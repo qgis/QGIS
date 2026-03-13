@@ -421,7 +421,6 @@ such enums are :
 #include "qgspropertycollection.h"
 %End
   public:
-
     QgsPropertyCollection( const QString &name = QString() );
 %Docstring
 Constructor for QgsPropertyCollection
@@ -520,7 +519,6 @@ collections.
 #include "qgspropertycollection.h"
 %End
   public:
-
     QgsPropertyCollectionStack();
 
     ~QgsPropertyCollectionStack();

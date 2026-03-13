@@ -634,7 +634,10 @@ void TestQgsTriangle::toFromWkb()
 
   // invalid multi ring
   // ba is equivalent to "Triangle((0 0, 0 5, 5 5, 0 0), (2 2, 2 4, 3 3, 2 2))"
-  QByteArray ba = QByteArray::fromHex( "01110000000200000004000000000000000000000000000000000000000000000000000000000000000000144000000000000014400000000000001440000000000000000000000000000000000400000000000000000000400000000000000040000000000000004000000000000010400000000000000840000000000000084000000000000000400000000000000040" );
+  QByteArray ba = QByteArray::fromHex(
+    "01110000000200000004000000000000000000000000000000000000000000000000000000000000000000144000000000000014400000000000001440000000000000000000000000000000000400000000000000000000400000000000000040"
+    "000000000000004000000000000010400000000000000840000000000000084000000000000000400000000000000040"
+  );
   QgsTriangle tInvalidWkb;
   QgsConstWkbPtr wkbMultiRing( ba );
   QVERIFY( !tInvalidWkb.fromWkb( wkbMultiRing ) );
@@ -648,21 +651,31 @@ void TestQgsTriangle::exportImport()
   QgsTriangle exportTriangleZ( QgsPoint( 1, 2, 3 ), QgsPoint( 11, 12, 13 ), QgsPoint( 1, 12, 23 ) );
   QgsTriangle exportTriangleFloat( QgsPoint( 1 + 1 / 3.0, 2 + 2 / 3.0 ), QgsPoint( 3 + 1 / 3.0, 4 + 2 / 3.0 ), QgsPoint( 6 + 1 / 3.0, 5 + 2 / 3.0 ) );
   QDomDocument doc( u"gml"_s );
-  QString expectedGML2( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s );
+  QString expectedGML2(
+    u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s
+  );
   QGSCOMPAREGML( elemToString( exportTriangle.asGml2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s );
+  QString expectedGML2prec3(
+    u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s
+  );
   QGSCOMPAREGML( elemToString( exportTriangleFloat.asGml2( doc, 3 ) ), expectedGML2prec3 );
   QString expectedGML2empty( u"<Polygon xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsTriangle().asGml2( doc ) ), expectedGML2empty );
 
   //asGML3
-  QString expectedGML3( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>"_s );
+  QString expectedGML3(
+    u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>"_s
+  );
   QCOMPARE( elemToString( exportTriangle.asGml3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>"_s );
+  QString expectedGML3prec3(
+    u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>"_s
+  );
   QCOMPARE( elemToString( exportTriangleFloat.asGml3( doc, 3 ) ), expectedGML3prec3 );
   QString expectedGML3empty( u"<Triangle xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsTriangle().asGml3( doc ) ), expectedGML3empty );
-  QString expectedGML3Z( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>"_s );
+  QString expectedGML3Z(
+    u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>"_s
+  );
   QCOMPARE( elemToString( exportTriangleZ.asGml3( doc ) ), expectedGML3Z );
 }
 

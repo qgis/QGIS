@@ -257,21 +257,15 @@ void QgsLayoutItemsListView::showContextMenu( QPoint point )
   QMenu *menu = new QMenu( this );
 
   QAction *copyAction = new QAction( tr( "Copy Item" ), menu );
-  connect( copyAction, &QAction::triggered, this, [this, item]() {
-    mDesigner->view()->copyItems( QList<QgsLayoutItem *>() << item, QgsLayoutView::ClipboardCopy );
-  } );
+  connect( copyAction, &QAction::triggered, this, [this, item]() { mDesigner->view()->copyItems( QList<QgsLayoutItem *>() << item, QgsLayoutView::ClipboardCopy ); } );
   menu->addAction( copyAction );
   QAction *deleteAction = new QAction( tr( "Delete Item" ), menu );
-  connect( deleteAction, &QAction::triggered, this, [this, item]() {
-    mDesigner->view()->deleteItems( QList<QgsLayoutItem *>() << item );
-  } );
+  connect( deleteAction, &QAction::triggered, this, [this, item]() { mDesigner->view()->deleteItems( QList<QgsLayoutItem *>() << item ); } );
   menu->addAction( deleteAction );
   menu->addSeparator();
 
   QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
-  connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() {
-    mDesigner->showItemOptions( item, true );
-  } );
+  connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() { mDesigner->showItemOptions( item, true ); } );
   menu->addAction( itemPropertiesAction );
 
   menu->popup( mapToGlobal( point ) );

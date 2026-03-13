@@ -31,7 +31,6 @@
 #define PAL_UTIL_H
 
 
-
 #include <memory>
 #include <vector>
 
@@ -57,7 +56,6 @@ namespace pal
   class Feats
   {
     public:
-
       Feats() = default;
 
       FeaturePart *feature = nullptr;
@@ -69,14 +67,14 @@ namespace pal
 
   struct ElemTrans
   {
-    int feat;
-    int  old_label;
-    int  new_label;
+      int feat;
+      int old_label;
+      int new_label;
   };
 
   struct Point
   {
-    double x, y;
+      double x, y;
   };
 
 #define EPSILON 1e-9
@@ -94,7 +92,7 @@ namespace pal
   };
 
 
-} // namespace
+} //namespace pal
 
 Q_DECLARE_TYPEINFO( pal::Point, Q_PRIMITIVE_TYPE );
 

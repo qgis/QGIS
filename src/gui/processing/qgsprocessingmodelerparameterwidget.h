@@ -77,7 +77,9 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * to resolve parameter values which are context dependent. The context must
      * last for the lifetime of the widget.
      */
-    QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingModelerParameterWidget(
+      QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     ~QgsProcessingModelerParameterWidget() override;
 

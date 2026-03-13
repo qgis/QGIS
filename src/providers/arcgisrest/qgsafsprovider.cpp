@@ -395,9 +395,7 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
   for ( int i = 0; i < flist.size(); ++i )
   {
     QgsFeature &f = flist[i];
-    if ( mSharedData->mObjectIdFieldIdx >= 0
-         && f.attributes().size() > mSharedData->mObjectIdFieldIdx
-         && f.attribute( mSharedData->mObjectIdFieldIdx ) == "Autogenerate"_L1 )
+    if ( mSharedData->mObjectIdFieldIdx >= 0 && f.attributes().size() > mSharedData->mObjectIdFieldIdx && f.attribute( mSharedData->mObjectIdFieldIdx ) == "Autogenerate"_L1 )
     {
       f.setAttribute( mSharedData->mObjectIdFieldIdx, QgsUnsetAttributeValue() );
     }
@@ -615,9 +613,7 @@ bool QgsAfsProvider::createAttributeIndex( int field )
 
 Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
 {
-  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
-                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
-                                       | Qgis::VectorProviderCapability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
   if ( !mRendererDataMap.empty() )
   {
     c = c | Qgis::VectorProviderCapability::CreateRenderer;
@@ -786,8 +782,7 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
 
 QgsAfsProviderMetadata::QgsAfsProviderMetadata()
   : QgsProviderMetadata( QgsAfsProvider::AFS_PROVIDER_KEY, QgsAfsProvider::AFS_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsAfsProviderMetadata::icon() const
 {
@@ -798,8 +793,7 @@ QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
 
-  providers
-    << new QgsArcGisRestDataItemProvider;
+  providers << new QgsArcGisRestDataItemProvider;
 
   return providers;
 }

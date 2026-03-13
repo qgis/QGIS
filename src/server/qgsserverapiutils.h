@@ -176,8 +176,7 @@ class SERVER_EXPORT QgsServerApiUtils
      *
      * \note not available in Python bindings
      */
-    template<typename T>
-    static const QVector<T> publishedWfsLayers( const QgsServerApiContext &context )
+    template<typename T> static const QVector<T> publishedWfsLayers( const QgsServerApiContext &context )
     {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = context.serverInterface()->accessControls();

@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 #include "qgsunittypes.h"
 
@@ -41,7 +42,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( u"show-in-toolbar"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, u"GPS information components to show in GPS toolbar"_s );
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<
+  Qgis::GpsInformationComponents>( u"show-in-toolbar"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, u"GPS information components to show in GPS toolbar"_s );
 
 
 QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent )
@@ -87,8 +89,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
       mCanvas->refresh();
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   } );
   addAction( mRecenterAction );
 
@@ -243,8 +244,7 @@ void QgsGpsToolBar::updateLocationLabel()
     const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar->value();
 
     QStringList parts;
-    for ( Qgis::GpsInformationComponent component :
-          {
+    for ( Qgis::GpsInformationComponent component : {
             Qgis::GpsInformationComponent::Location,
             Qgis::GpsInformationComponent::Altitude,
             Qgis::GpsInformationComponent::EllipsoidAltitude,
@@ -278,13 +278,11 @@ void QgsGpsToolBar::updateLocationLabel()
           {
             if ( mDigitizing )
             {
-              const double measurement = component == Qgis::GpsInformationComponent::TotalTrackLength
-                                           ? mDigitizing->totalTrackLength()
-                                           : mDigitizing->trackDistanceFromStart();
+              const double measurement = component == Qgis::GpsInformationComponent::TotalTrackLength ? mDigitizing->totalTrackLength() : mDigitizing->trackDistanceFromStart();
 
               const QgsSettings settings;
-              const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
-              const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+              const bool keepBaseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
+              const int decimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
 
               if ( measurement > 0 )
                 parts << mDigitizing->distanceArea().formatDistance( measurement, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit );

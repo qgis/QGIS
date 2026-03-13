@@ -50,20 +50,16 @@ class TestQgsGraduatedSymbolRenderer : public QObject
 };
 
 void TestQgsGraduatedSymbolRenderer::initTestCase()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::init()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::cleanup()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 {

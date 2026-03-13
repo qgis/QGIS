@@ -38,8 +38,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
     QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, Qgis::WkbType flatType )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation )
       , mFlatType( flatType )
-    {
-    }
+    {}
 
     bool isEqual( const QgsSingleGeometryCheckError *other ) const override;
 

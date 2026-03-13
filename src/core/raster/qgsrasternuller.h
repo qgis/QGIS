@@ -36,8 +36,8 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     struct NoData
     {
-      double min;
-      double max;
+        double min;
+        double max;
     };
 
     QgsRasterNuller *clone() const override SIP_FACTORY;

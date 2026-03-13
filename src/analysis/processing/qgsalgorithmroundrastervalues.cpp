@@ -54,9 +54,12 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, u"Input raster"_s ) );
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterEnum( u"ROUNDING_DIRECTION"_s, QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"ROUNDING_DIRECTION"_s, QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 )
+  );
   addParameter( new QgsProcessingParameterNumber( u"DECIMAL_PLACES"_s, QObject::tr( "Number of decimals places" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
-  std::unique_ptr<QgsProcessingParameterDefinition> baseParameter = std::make_unique<QgsProcessingParameterNumber>( u"BASE_N"_s, QObject::tr( "Base n for rounding to multiples of n" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 1 );
+  std::unique_ptr<QgsProcessingParameterDefinition> baseParameter
+    = std::make_unique<QgsProcessingParameterNumber>( u"BASE_N"_s, QObject::tr( "Base n for rounding to multiples of n" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 1 );
   baseParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( baseParameter.release() );
 
@@ -77,14 +80,16 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRoundRasterValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rounds the cell values of a raster dataset to the specified number of decimals.\n "
-                      "Alternatively, a negative number of decimal places may be used to round values to powers of a base n "
-                      "(specified in the advanced parameter Base n). For example, with a Base value n of 10 and Decimal places of -1 "
-                      "the algorithm rounds cell values to multiples of 10, -2 rounds to multiples of 100, and so on. Arbitrary base values "
-                      "may be chosen, the algorithm applies the same multiplicative principle. Rounding cell values to multiples of "
-                      "a base n may be used to generalize raster layers.\n"
-                      "The algorithm preserves the data type of the input raster. Therefore byte/integer rasters can only be rounded "
-                      "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster." );
+  return QObject::tr(
+    "This algorithm rounds the cell values of a raster dataset to the specified number of decimals.\n "
+    "Alternatively, a negative number of decimal places may be used to round values to powers of a base n "
+    "(specified in the advanced parameter Base n). For example, with a Base value n of 10 and Decimal places of -1 "
+    "the algorithm rounds cell values to multiples of 10, -2 rounds to multiples of 100, and so on. Arbitrary base values "
+    "may be chosen, the algorithm applies the same multiplicative principle. Rounding cell values to multiples of "
+    "a base n may be used to generalize raster layers.\n"
+    "The algorithm preserves the data type of the input raster. Therefore byte/integer rasters can only be rounded "
+    "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster."
+  );
 }
 
 QString QgsRoundRasterValuesAlgorithm::shortDescription() const

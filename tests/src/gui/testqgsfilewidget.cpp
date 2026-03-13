@@ -44,20 +44,16 @@ class TestQgsFileWidget : public QObject
 };
 
 void TestQgsFileWidget::initTestCase()
-{
-}
+{}
 
 void TestQgsFileWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFileWidget::init()
-{
-}
+{}
 
 void TestQgsFileWidget::cleanup()
-{
-}
+{}
 
 void TestQgsFileWidget::relativePath()
 {

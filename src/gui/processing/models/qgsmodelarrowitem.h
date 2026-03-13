@@ -50,7 +50,18 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
+    QgsModelArrowItem(
+      QgsModelComponentGraphicItem *startItem,
+      Qt::Edge startEdge,
+      int startIndex,
+      bool startIsOutgoing,
+      Marker startMarker,
+      QgsModelComponentGraphicItem *endItem,
+      Qt::Edge endEdge,
+      int endIndex,
+      bool endIsIncoming,
+      Marker endMarker
+    );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.

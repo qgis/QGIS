@@ -223,15 +223,54 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
     {
       if ( j == 0 )
       {
-        resultOk = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j + 1], &mInputNodataValue, &scanLine2[j], &scanLine2[j + 1], &mInputNodataValue, &scanLine3[j], &scanLine3[j + 1], &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
+        resultOk = processNineCellWindow(
+          &mInputNodataValue,
+          &scanLine1[j],
+          &scanLine1[j + 1],
+          &mInputNodataValue,
+          &scanLine2[j],
+          &scanLine2[j + 1],
+          &mInputNodataValue,
+          &scanLine3[j],
+          &scanLine3[j + 1],
+          &resultRedLine[j],
+          &resultGreenLine[j],
+          &resultBlueLine[j]
+        );
       }
       else if ( j == xSize - 1 )
       {
-        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &mInputNodataValue, &scanLine2[j - 1], &scanLine2[j], &mInputNodataValue, &scanLine3[j - 1], &scanLine3[j], &mInputNodataValue, &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
+        resultOk = processNineCellWindow(
+          &scanLine1[j - 1],
+          &scanLine1[j],
+          &mInputNodataValue,
+          &scanLine2[j - 1],
+          &scanLine2[j],
+          &mInputNodataValue,
+          &scanLine3[j - 1],
+          &scanLine3[j],
+          &mInputNodataValue,
+          &resultRedLine[j],
+          &resultGreenLine[j],
+          &resultBlueLine[j]
+        );
       }
       else
       {
-        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &scanLine1[j + 1], &scanLine2[j - 1], &scanLine2[j], &scanLine2[j + 1], &scanLine3[j - 1], &scanLine3[j], &scanLine3[j + 1], &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
+        resultOk = processNineCellWindow(
+          &scanLine1[j - 1],
+          &scanLine1[j],
+          &scanLine1[j + 1],
+          &scanLine2[j - 1],
+          &scanLine2[j],
+          &scanLine2[j + 1],
+          &scanLine3[j - 1],
+          &scanLine3[j],
+          &scanLine3[j + 1],
+          &resultRedLine[j],
+          &resultGreenLine[j],
+          &resultBlueLine[j]
+        );
       }
 
       if ( !resultOk )
@@ -279,10 +318,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-    if ( GDALDatasetRunCloseWithoutDestroyingEx(
-           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-         )
-         != CE_None )
+    if ( GDALDatasetRunCloseWithoutDestroyingEx( outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
     {
       return feedback->isCanceled() ? RET_CANCELED : RET_OUTPUT_CREATION_FAILED;
     }

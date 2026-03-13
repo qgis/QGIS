@@ -45,15 +45,15 @@ class CORE_EXPORT QgsPointCloudAttribute
     //! Systems of unit measurement
     enum DataType
     {
-      Char, //!< Char 1 byte
-      UChar, //!< Unsigned char 1 byte
-      Short, //!< Short int 2 bytes
+      Char,   //!< Char 1 byte
+      UChar,  //!< Unsigned char 1 byte
+      Short,  //!< Short int 2 bytes
       UShort, //!< Unsigned short int 2 bytes
-      Int32, //!< Int32 4 bytes
+      Int32,  //!< Int32 4 bytes
       UInt32, //!< Unsigned int32 4 bytes
-      Int64, //!< Int64 8 bytes
+      Int64,  //!< Int64 8 bytes
       UInt64, //!< Unsigned int64 8 bytes
-      Float, //!< Float 4 bytes
+      Float,  //!< Float 4 bytes
       Double, //!< Double 8 bytes
     };
 
@@ -104,20 +104,34 @@ class CORE_EXPORT QgsPointCloudAttribute
     static bool isNumeric( DataType type );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsPointCloudAttribute: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->displayType() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
     * Retrieves the x, y, z values for the point at index \a i.
     */
-    static void getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
-                             int yOffset, QgsPointCloudAttribute::DataType yType,
-                             int zOffset, QgsPointCloudAttribute::DataType zType,
-                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z ) SIP_SKIP;
+      static void getPointXYZ(
+        const char *ptr,
+        int i,
+        std::size_t pointRecordSize,
+        int xOffset,
+        QgsPointCloudAttribute::DataType xType,
+        int yOffset,
+        QgsPointCloudAttribute::DataType yType,
+        int zOffset,
+        QgsPointCloudAttribute::DataType zType,
+        const QgsVector3D &indexScale,
+        const QgsVector3D &indexOffset,
+        double &x,
+        double &y,
+        double &z
+      ) SIP_SKIP;
 
     /**
     * Retrieves all the attributes of a point
@@ -142,7 +156,6 @@ class CORE_EXPORT QgsPointCloudAttribute
 class CORE_EXPORT QgsPointCloudAttributeCollection
 {
   public:
-
     QgsPointCloudAttributeCollection();
     //! Ctor with given attributes
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
@@ -198,12 +211,12 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
 
     struct CachedAttributeData
     {
-      int index;
-      int offset;
-      CachedAttributeData( int index, int offset )
-        : index( index )
-        , offset( offset )
-      {}
+        int index;
+        int offset;
+        CachedAttributeData( int index, int offset )
+          : index( index )
+          , offset( offset )
+        {}
     };
 
     QMap< QString, CachedAttributeData > mCachedAttributes;

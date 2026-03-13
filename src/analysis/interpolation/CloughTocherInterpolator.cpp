@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )
-{
-}
+{}
 
 void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )
 {
@@ -72,9 +71,24 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      const double zu = point1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zv = cp1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zw = cp3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp1.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp3.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp4.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp2.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + point2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp4.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp5.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp4.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp5.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp7.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp8.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point1, &point2, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point1, &point2, &cp10, &endpointVXY );
@@ -91,9 +105,24 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      const double zu = point2.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zv = cp9.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zw = cp5.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point2.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp9.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp16.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp5.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp13.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp9.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp16.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + point3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp13.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp15.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp5.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp13.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp15.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp8.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp12.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point2, &point3, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point2, &point3, &cp10, &endpointVXY );
@@ -110,9 +139,24 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      const double zu = point3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zv = cp14.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point1.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      const double zw = cp15.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp14.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp6.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp15.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp11.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp14.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp6.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + point1.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp11.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp3.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp15.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp11.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp12.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp7.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                        + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point3, &point1, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point3, &point1, &cp10, &endpointVXY );
@@ -173,7 +217,16 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    const double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );
@@ -183,7 +236,16 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    const double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );
@@ -193,7 +255,16 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    const double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() )
+                     + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );

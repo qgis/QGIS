@@ -21,6 +21,7 @@
 #include "qgslayoutview.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QString>
 
@@ -107,9 +108,8 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
   if ( !item || !item->isSelected() )
     return;
 
-  const QgsSettings settings;
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2.0 ).toDouble();
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

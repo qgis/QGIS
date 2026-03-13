@@ -200,12 +200,10 @@ void TestVectorLayerJoinBuffer::initTestCase()
 }
 
 void TestVectorLayerJoinBuffer::init()
-{
-}
+{}
 
 void TestVectorLayerJoinBuffer::cleanup()
-{
-}
+{}
 
 void TestVectorLayerJoinBuffer::cleanupTestCase()
 {

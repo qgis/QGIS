@@ -50,23 +50,9 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
 
   mPointStyleComboBox->addItem( tr( "Square" ), static_cast<int>( Qgis::PointCloudSymbol::Square ) );
   mPointStyleComboBox->addItem( tr( "Circle" ), static_cast<int>( Qgis::PointCloudSymbol::Circle ) );
-  mPointSizeUnitWidget->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
-  );
+  mPointSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
-  mMaxErrorUnitWidget->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
-  );
+  mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
   mPointSizeSpinBox->setClearValue( 1.0 );
@@ -182,8 +168,7 @@ void QgsPointCloudElevationPropertiesWidget::apply()
 
   QgsPointCloudLayerElevationProperties *properties = qgis::down_cast<QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() );
 
-  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
-                                          || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
+  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() ) || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
 
   properties->setZOffset( mOffsetZSpinBox->value() );
   properties->setZScale( mScaleZSpinBox->value() );
@@ -233,24 +218,31 @@ void QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions()
   {
     case Qgis::CrsType::Compound:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg( mLayer->crs().userFriendlyIdentifier(), mLayer->verticalCrs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." )
+                                    .arg( mLayer->crs().userFriendlyIdentifier(), mLayer->verticalCrs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geographic3d:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Geocentric:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Projected:
       if ( mLayer->crs().hasVerticalAxis() )
       {
         mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+        mCrsDisabledLabel->setText(
+          tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+        );
         break;
       }
       [[fallthrough]];

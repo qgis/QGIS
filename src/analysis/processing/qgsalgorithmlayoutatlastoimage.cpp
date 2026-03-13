@@ -64,10 +64,12 @@ QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
 
 QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images).\n\n"
-                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
-                      "settings off." );
+  return QObject::tr(
+    "This algorithm outputs an atlas layout to a set of image files (e.g. PNG or JPEG images).\n\n"
+    "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+    "will be overwritten. In this case, an empty filter or sort by expression will turn those "
+    "settings off."
+  );
 }
 
 void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
@@ -83,7 +85,8 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFile( u"FOLDER"_s, QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
 
 
-  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  auto layersParam
+    = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
@@ -239,9 +242,14 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( directory ) ) );
 
       case QgsLayoutExporter::MemoryError:
-        throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Trying to create the image "
-                                                                              "resulted in a memory overflow.\n\n"
-                                                                              "Please try a lower resolution or a smaller paper size." ) );
+        throw QgsProcessingException(
+          !error.isEmpty() ? error
+                           : QObject::tr(
+                               "Trying to create the image "
+                               "resulted in a memory overflow.\n\n"
+                               "Please try a lower resolution or a smaller paper size."
+                             )
+        );
 
       case QgsLayoutExporter::IteratorError:
         throw QgsProcessingException( !error.isEmpty() ? error : QObject::tr( "Error encountered while exporting atlas." ) );

@@ -39,8 +39,7 @@ using namespace Qt::StringLiterals;
 QgsWelcomeScreenController::QgsWelcomeScreenController( QgsWelcomeScreen *welcomeScreen )
   : QObject( welcomeScreen )
   , mWelcomeScreen( welcomeScreen )
-{
-}
+{}
 
 void QgsWelcomeScreenController::openProject( const QString &path )
 {
@@ -148,8 +147,7 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
 
   QgsSettings settings;
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool()
-       && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
@@ -232,7 +230,8 @@ QgsTemplateProjectsModel *QgsWelcomeScreen::templateProjectsModel()
 
 void QgsWelcomeScreen::clearRecentProjects()
 {
-  QMessageBox messageBox( QMessageBox::Question, tr( "Recent Projects" ), tr( "Are you sure you want to clear the list of recent projects?" ), QMessageBox::No | QMessageBox::Yes | QMessageBox::YesToAll, this );
+  QMessageBox
+    messageBox( QMessageBox::Question, tr( "Recent Projects" ), tr( "Are you sure you want to clear the list of recent projects?" ), QMessageBox::No | QMessageBox::Yes | QMessageBox::YesToAll, this );
   messageBox.button( QMessageBox::YesToAll )->setText( tr( "Yes, including pinned projects" ) );
   int answer = messageBox.exec();
   if ( answer != QMessageBox::No )
@@ -256,7 +255,9 @@ void QgsWelcomeScreen::removeTemplateProject( int row )
   {
     QMessageBox msgBox;
     msgBox.setWindowTitle( tr( "Delete Template" ) );
-    msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( templateItem->data( static_cast<int>( QgsTemplateProjectsModel::CustomRole::TitleRole ) ).toString() ) );
+    msgBox.setText(
+      tr( "Do you want to delete the template %1? This action can not be undone." ).arg( templateItem->data( static_cast<int>( QgsTemplateProjectsModel::CustomRole::TitleRole ) ).toString() )
+    );
     auto deleteButton = msgBox.addButton( tr( "Delete" ), QMessageBox::YesRole );
     msgBox.addButton( QMessageBox::Cancel );
     msgBox.setIcon( QMessageBox::Question );

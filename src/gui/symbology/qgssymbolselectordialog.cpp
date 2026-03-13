@@ -162,7 +162,8 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
+        icon = QgsSymbolLayerUtils::
+          symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
       else
       {
         QgsExpressionContext expContext;
@@ -179,15 +180,9 @@ class SymbolLayerItem : public QStandardItem
     bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
-    QgsSymbol *symbol()
-    {
-      return mSymbol;
-    }
+    QgsSymbol *symbol() { return mSymbol; }
 
-    QgsSymbolLayer *layer()
-    {
-      return mLayer;
-    }
+    QgsSymbolLayer *layer() { return mLayer; }
 
     QVariant data( int role ) const override
     {

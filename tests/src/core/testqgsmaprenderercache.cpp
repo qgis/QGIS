@@ -50,12 +50,10 @@ void TestQgsMapRendererCache::cleanupTestCase()
 }
 
 void TestQgsMapRendererCache::init()
-{
-}
+{}
 
 void TestQgsMapRendererCache::cleanup()
-{
-}
+{}
 
 void TestQgsMapRendererCache::testCache()
 {

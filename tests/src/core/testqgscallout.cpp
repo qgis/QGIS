@@ -95,13 +95,8 @@ class TestSimpleCalloutUnder : public QgsSimpleLineCallout
       QVariantMap props;
       return props;
     }
-    void readProperties( const QVariantMap &, const QgsReadWriteContext & ) override
-    {
-    }
-    QgsCallout::DrawOrder drawOrder() const override
-    {
-      return QgsCallout::OrderBelowIndividualLabels;
-    }
+    void readProperties( const QVariantMap &, const QgsReadWriteContext & ) override {}
+    QgsCallout::DrawOrder drawOrder() const override { return QgsCallout::OrderBelowIndividualLabels; }
 };
 
 
@@ -111,7 +106,8 @@ class TestQgsCallout : public QgsTest
 
   public:
     TestQgsCallout()
-      : QgsTest( u"Callout Tests"_s, u"callouts"_s ) {}
+      : QgsTest( u"Callout Tests"_s, u"callouts"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -227,9 +223,7 @@ void TestQgsCallout::saveRestore()
   DummyCallout *callout = new DummyCallout( u"a"_s, u"b"_s );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -4181,9 +4175,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
   props[u"size"_s] = 5;
   props[u"color"_s] = u"200,255,200"_s;
   props[u"outline_style"_s] = u"no"_s;
-  callout->setMarkerSymbol(
-    QgsMarkerSymbol::createSimple( props ).release()
-  );
+  callout->setMarkerSymbol( QgsMarkerSymbol::createSimple( props ).release() );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );

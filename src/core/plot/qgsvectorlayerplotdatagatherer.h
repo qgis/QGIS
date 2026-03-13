@@ -53,7 +53,7 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
     {
       sipType = NULL;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -71,10 +71,8 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
   protected:
-
     QgsFeatureIterator mIterator;
     QgsExpressionContext mExpressionContext;
-
 };
 
 
@@ -91,23 +89,22 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
     Q_OBJECT
 
   public:
-
     /**
      * XY series details
      */
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &name, const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() )
-        : name( name )
-        , xExpression( xExpression )
-        , yExpression( yExpression )
-        , filterExpression( filterExpression )
-      {}
+        explicit XySeriesDetails( const QString &name, const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() )
+          : name( name )
+          , xExpression( xExpression )
+          , yExpression( yExpression )
+          , filterExpression( filterExpression )
+        {}
 
-      QString name;
-      QString xExpression;
-      QString yExpression;
-      QString filterExpression;
+        QString name;
+        QString xExpression;
+        QString yExpression;
+        QString filterExpression;
     };
 
     /**
@@ -131,11 +128,9 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
     QgsPlotData data() const override;
 
   protected:
-
     QgsPlotData mData;
 
   private:
-
     Qgis::PlotAxisType mXAxisType = Qgis::PlotAxisType::Interval;
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> mSeriesDetails;
     QStringList mPredefinedCategories;

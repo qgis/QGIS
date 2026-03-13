@@ -205,5 +205,3 @@ bool QgsFavoriteItem::rename( const QString &name )
   mFavorites->renameFavorite( dirPath(), name );
   return true;
 }
-
-

@@ -20,8 +20,7 @@
 QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled, double topologyTolerance, const QString &ellipsoidID )
   : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
   , mGraph( std::make_unique<QgsGraph>() )
-{
-}
+{}
 
 QgsGraphBuilder::~QgsGraphBuilder() = default;
 

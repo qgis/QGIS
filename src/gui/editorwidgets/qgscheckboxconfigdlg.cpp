@@ -66,6 +66,8 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
     leCheckedState->setText( config.value( u"CheckedState"_s ).toString() );
     leUncheckedState->setText( config.value( u"UncheckedState"_s ).toString() );
   }
-  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( u"TextDisplayMethod"_s, QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
+  mDisplayAsTextComboBox->setCurrentIndex(
+    mDisplayAsTextComboBox->findData( config.value( u"TextDisplayMethod"_s, QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() )
+  );
   mAllowNullState->setChecked( config.value( u"AllowNullState"_s ).toBool() );
 }

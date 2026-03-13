@@ -238,9 +238,13 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
   connect( mLayer->map(), &QgsGrassVectorMap::dataChanged, this, &QgsGrassProvider::onDataChanged );
 
   // TODO: types according to database
-  setNativeTypes( QList<NativeType>() << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), u"integer"_s, QMetaType::Type::Int, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Text" ), u"text"_s, QMetaType::Type::QString )
-                  // TODO:
-                  // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
+  setNativeTypes(
+    QList<NativeType>()
+    << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), u"integer"_s, QMetaType::Type::Int, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text" ), u"text"_s, QMetaType::Type::QString )
+    // TODO:
+    // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
   );
 
   // Assign default encoding
@@ -281,7 +285,12 @@ Qgis::VectorProviderCapabilities QgsGrassProvider::capabilities() const
   // for now, only one map may be edited at time
   if ( mEditBuffer || ( mLayer && mLayer->map() && !mLayer->map()->isEdited() ) )
   {
-    return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::ChangeAttributeValues;
+    return Qgis::VectorProviderCapability::AddFeatures
+           | Qgis::VectorProviderCapability::DeleteFeatures
+           | Qgis::VectorProviderCapability::ChangeGeometries
+           | Qgis::VectorProviderCapability::AddAttributes
+           | Qgis::VectorProviderCapability::DeleteAttributes
+           | Qgis::VectorProviderCapability::ChangeAttributeValues;
   }
   return Qgis::VectorProviderCapabilities();
 }
@@ -1797,8 +1806,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
       }
       if ( !recordExists )
       {
-        mLayer->map()->undoCommands()[undoIndex]
-          << new QgsGrassUndoCommandChangeAttribute( this, fid, realLine, mLayerField, realCat, false, true );
+        mLayer->map()->undoCommands()[undoIndex] << new QgsGrassUndoCommandChangeAttribute( this, fid, realLine, mLayerField, realCat, false, true );
       }
     }
     else
@@ -1832,8 +1840,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
           QgsGrass::warning( error );
         }
 
-        mLayer->map()->undoCommands()[undoIndex]
-          << new QgsGrassUndoCommandChangeAttribute( this, fid, newLid, mLayerField, newCat, true, !recordExists );
+        mLayer->map()->undoCommands()[undoIndex] << new QgsGrassUndoCommandChangeAttribute( this, fid, newLid, mLayerField, newCat, true, !recordExists );
 
         mLayer->map()->unlockReadWrite();
       }
@@ -1987,8 +1994,7 @@ void QgsGrassProvider::onBeforeCommitChanges()
 }
 
 void QgsGrassProvider::onBeforeRollBack()
-{
-}
+{}
 
 void QgsGrassProvider::onEditingStopped()
 {

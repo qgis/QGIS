@@ -37,16 +37,11 @@ class QgsFeatureDownloader;
  * already cached. It will actually start by consuming cache features for
  * initial feedback, and then process the live downloaded features.
 */
-class QgsBackgroundCachedFeatureIterator final : public QObject,
-                                                 public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
+class QgsBackgroundCachedFeatureIterator final : public QObject, public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
 {
     Q_OBJECT
   public:
-    explicit QgsBackgroundCachedFeatureIterator(
-      QgsBackgroundCachedFeatureSource *source, bool ownSource,
-      std::shared_ptr<QgsBackgroundCachedSharedData> shared,
-      const QgsFeatureRequest &request
-    );
+    explicit QgsBackgroundCachedFeatureIterator( QgsBackgroundCachedFeatureSource *source, bool ownSource, std::shared_ptr<QgsBackgroundCachedSharedData> shared, const QgsFeatureRequest &request );
     ~QgsBackgroundCachedFeatureIterator() override;
 
     bool rewind() override;

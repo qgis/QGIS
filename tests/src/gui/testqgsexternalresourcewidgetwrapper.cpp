@@ -74,8 +74,7 @@ class TestQgsExternalResourceWidgetWrapper : public QObject
     std::unique_ptr<QgsVectorLayer> vl;
 };
 
-class QgsTestExternalStorageFetchedContent
-  : public QgsExternalStorageFetchedContent
+class QgsTestExternalStorageFetchedContent : public QgsExternalStorageFetchedContent
 {
     Q_OBJECT
 
@@ -84,8 +83,7 @@ class QgsTestExternalStorageFetchedContent
       : QgsExternalStorageFetchedContent()
       , mCached( url.endsWith( "cached.txt"_L1 ) )
       , mUrl( mCached ? SAMPLE_IMAGE : url )
-    {
-    }
+    {}
 
     void fetch() override
     {
@@ -99,10 +97,7 @@ class QgsTestExternalStorageFetchedContent
     }
 
 
-    QString filePath() const override
-    {
-      return mUrl;
-    }
+    QString filePath() const override { return mUrl; }
 
     void emitFetched()
     {
@@ -128,21 +123,17 @@ class QgsTestExternalStorageFetchedContent
     QString mUrl;
 };
 
-class QgsTestExternalStorageStoredContent
-  : public QgsExternalStorageStoredContent
+class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredContent
 {
     Q_OBJECT
 
   public:
     QgsTestExternalStorageStoredContent( const QString &url )
-      : QgsExternalStorageStoredContent(), mUrl( url )
-    {
-    }
+      : QgsExternalStorageStoredContent()
+      , mUrl( url )
+    {}
 
-    void store() override
-    {
-      setStatus( Qgis::ContentStatus::Running );
-    }
+    void store() override { setStatus( Qgis::ContentStatus::Running ); }
 
     void emitStored()
     {
@@ -163,11 +154,7 @@ class QgsTestExternalStorageStoredContent
       emit canceled();
     };
 
-    QString url() const override
-    {
-      return mUrl.endsWith( "/" ) ? QString( "http://www.test.com/here/myfile.txt" )
-                                  : mUrl;
-    }
+    QString url() const override { return mUrl.endsWith( "/" ) ? QString( "http://www.test.com/here/myfile.txt" ) : mUrl; }
 
   private:
     QString mUrl;
@@ -238,8 +225,7 @@ void TestQgsExternalResourceWidgetWrapper::init()
 }
 
 void TestQgsExternalResourceWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsExternalResourceWidgetWrapper::testSetNullValues()
 {
@@ -287,10 +273,15 @@ void TestQgsExternalResourceWidgetWrapper::testUrlStorageExpression()
   QVariantMap config;
   config.insert( u"StorageType"_s, u"test"_s );
   QgsPropertyCollection propertyCollection;
-  propertyCollection.setProperty( QgsWidgetWrapper::Property::StorageUrl, QgsProperty::fromExpression( "@myurl || @layer_name || '/' || \"type\" || '/' "
-                                                                                                       "|| attribute( @current_feature, 'type' ) "
-                                                                                                       "|| '/' || $id || '/test'",
-                                                                                                       true ) );
+  propertyCollection.setProperty(
+    QgsWidgetWrapper::Property::StorageUrl,
+    QgsProperty::fromExpression(
+      "@myurl || @layer_name || '/' || \"type\" || '/' "
+      "|| attribute( @current_feature, 'type' ) "
+      "|| '/' || $id || '/test'",
+      true
+    )
+  );
   config.insert( u"PropertyCollection"_s, propertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
   ww.setConfig( config );
 
@@ -562,9 +553,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
   config.insert( u"DocumentViewer"_s, documentType );
 
   QgsPropertyCollection propertyCollection;
-  propertyCollection.setProperty( QgsWidgetWrapper::Property::StorageUrl, QgsProperty::fromExpression( "'http://mytest.com/' || $id || '/' "
-                                                                                                       " || file_name(@selected_file_path)",
-                                                                                                       true ) );
+  propertyCollection.setProperty(
+    QgsWidgetWrapper::Property::StorageUrl,
+    QgsProperty::fromExpression(
+      "'http://mytest.com/' || $id || '/' "
+      " || file_name(@selected_file_path)",
+      true
+    )
+  );
   config.insert( u"PropertyCollection"_s, propertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
   ww.setConfig( config );
 
@@ -651,9 +647,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
   config.insert( u"StorageType"_s, u"test"_s );
   config.insert( u"DocumentViewer"_s, documentType );
   QgsPropertyCollection propertyCollection;
-  propertyCollection.setProperty( QgsWidgetWrapper::Property::StorageUrl, QgsProperty::fromExpression( "'http://mytest.com/' || $id || '/' "
-                                                                                                       " || file_name(@selected_file_path)",
-                                                                                                       true ) );
+  propertyCollection.setProperty(
+    QgsWidgetWrapper::Property::StorageUrl,
+    QgsProperty::fromExpression(
+      "'http://mytest.com/' || $id || '/' "
+      " || file_name(@selected_file_path)",
+      true
+    )
+  );
   config.insert( u"PropertyCollection"_s, propertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
   ww.setConfig( config );
 
@@ -747,9 +748,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
   config.insert( u"StorageType"_s, u"test"_s );
   config.insert( u"DocumentViewer"_s, documentType );
   QgsPropertyCollection propertyCollection;
-  propertyCollection.setProperty( QgsWidgetWrapper::Property::StorageUrl, QgsProperty::fromExpression( "'http://mytest.com/' || $id || '/' "
-                                                                                                       " || file_name(@selected_file_path)",
-                                                                                                       true ) );
+  propertyCollection.setProperty(
+    QgsWidgetWrapper::Property::StorageUrl,
+    QgsProperty::fromExpression(
+      "'http://mytest.com/' || $id || '/' "
+      " || file_name(@selected_file_path)",
+      true
+    )
+  );
   config.insert( u"PropertyCollection"_s, propertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
   ww.setConfig( config );
 

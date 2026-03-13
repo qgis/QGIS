@@ -37,7 +37,9 @@
 using namespace Qt::StringLiterals;
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
-  : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ) ), QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared )
+  : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ) )
+  , QgsFeatureDownloaderImpl( shared, downloader )
+  , mShared( shared )
 {
   QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
 }
@@ -169,17 +171,14 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     if ( !rect.isNull() )
     {
       url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
-      url += u"bbox=%1,%2,%3,%4"_s
-               .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
+      url += u"bbox=%1,%2,%3,%4"_s.arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 
-      if ( mShared->mSourceCrs
-           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+      if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
         url += u"&bbox-crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
     }
   }
 
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
     url += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
 
   url = mShared->appendExtraQueryParameters( url );
@@ -216,9 +215,13 @@ void QgsOapifFeatureDownloaderImpl::runGmlDownload( QEventLoop &loop, QString ur
   while ( !url.isEmpty() )
   {
     success = true;
-    sendGET( url, mShared->mFeatureFormat, false, /* synchronous */
-             true,                                /* forceRefresh */
-             false /* cache */ );
+    sendGET(
+      url,
+      mShared->mFeatureFormat,
+      false, /* synchronous */
+      true,  /* forceRefresh */
+      false  /* cache */
+    );
 
     QgsGmlStreamingParser gmlParser( mShared->mURI.typeName(), mShared->mGeometryAttribute, mShared->mFields, axisOrientationLogic, mShared->mURI.invertAxisOrientation() );
     if ( !mShared->mFieldNameToXPathAndIsNestedContentMap.isEmpty() )

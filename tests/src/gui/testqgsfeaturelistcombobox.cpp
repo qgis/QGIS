@@ -122,8 +122,7 @@ void TestQgsFeatureListComboBox::init()
 }
 
 void TestQgsFeatureListComboBox::cleanup()
-{
-}
+{}
 
 void TestQgsFeatureListComboBox::testSetGetLayer()
 {

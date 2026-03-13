@@ -29,8 +29,7 @@ class TestQgsMapToolAdvancedDigitizingUtils
   public:
     TestQgsMapToolAdvancedDigitizingUtils( QgsMapToolAdvancedDigitizing *mapTool )
       : mMapTool( mapTool )
-    {
-    }
+    {}
 
     QSet<QgsFeatureId> existingFeatureIds()
     {
@@ -130,8 +129,7 @@ class TestQgsMapToolUtils
   public:
     TestQgsMapToolUtils( QgsMapTool *mapTool )
       : mMapTool( mapTool )
-    {
-    }
+    {}
 
     QSet<QgsFeatureId> existingFeatureIds()
     {

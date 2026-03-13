@@ -76,14 +76,10 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mCalculateFixedRangePerGroupButton->setPopupMode( QToolButton::InstantPopup );
   QAction *calculateLowerAction = new QAction( "Calculate Lower by Expression…", calculateFixedRangePerGroupMenu );
   calculateFixedRangePerGroupMenu->addAction( calculateLowerAction );
-  connect( calculateLowerAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( false );
-  } );
+  connect( calculateLowerAction, &QAction::triggered, this, [this] { calculateRangeByExpression( false ); } );
   QAction *calculateUpperAction = new QAction( "Calculate Upper by Expression…", calculateFixedRangePerGroupMenu );
   calculateFixedRangePerGroupMenu->addAction( calculateUpperAction );
-  connect( calculateUpperAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( true );
-  } );
+  connect( calculateUpperAction, &QAction::triggered, this, [this] { calculateRangeByExpression( true ); } );
 
   syncToLayer( layer );
 
@@ -253,9 +249,7 @@ void QgsMeshElevationPropertiesWidget::calculateRangeByExpression( bool isUpper 
     const QgsMeshDatasetGroupMetadata meta = mLayer->datasetGroupMetadata( groupIndex );
     groupChoices << qMakePair( meta.name(), group );
   }
-  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Group" ), groupChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
-    return createExpressionContextForGroup( value.toInt() );
-  } );
+  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Group" ), groupChoices, [this]( const QVariant &value ) -> QgsExpressionContext { return createExpressionContextForGroup( value.toInt() ); } );
 
   if ( dlg.exec() )
   {
@@ -337,8 +331,7 @@ QString QgsMeshElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint
 
 QgsMeshGroupFixedElevationRangeModel::QgsMeshGroupFixedElevationRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsMeshGroupFixedElevationRangeModel::columnCount( const QModelIndex & ) const
 {
@@ -537,8 +530,7 @@ void QgsMeshGroupFixedElevationRangeModel::setLayerData( QgsMeshLayer *layer, co
 
 QgsMeshFixedElevationRangeDelegate::QgsMeshFixedElevationRangeDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsMeshFixedElevationRangeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {

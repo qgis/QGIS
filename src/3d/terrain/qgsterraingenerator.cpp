@@ -50,14 +50,6 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
   hMax = 8848;
 }
 
-float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
-{
-  Q_UNUSED( x )
-  Q_UNUSED( y )
-  Q_UNUSED( context )
-  return 0.f;
-}
-
 QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
 {
   switch ( type )
@@ -77,8 +69,7 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
 }
 
 void QgsTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &, const QgsCoordinateTransformContext & )
-{
-}
+{}
 
 bool QgsTerrainGenerator::isValid() const
 {

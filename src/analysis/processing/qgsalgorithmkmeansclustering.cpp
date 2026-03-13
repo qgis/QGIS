@@ -59,8 +59,7 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( u"CLUSTERS"_s, QObject::tr( "Number of clusters" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
 
   QStringList initializationMethods;
-  initializationMethods << QObject::tr( "Farthest points" )
-                        << QObject::tr( "K-means++" );
+  initializationMethods << QObject::tr( "Farthest points" ) << QObject::tr( "K-means++" );
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), initializationMethods, false, 0, false ) );
 
   auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( u"FIELD_NAME"_s, QObject::tr( "Cluster field name" ), u"CLUSTER_ID"_s );
@@ -75,11 +74,13 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
-                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
-                      "References:\n"
-                      "Arthur, David & Vassilvitskii, Sergei. (2007). K-Means++: The Advantages of Careful Seeding. Proc. of the Annu. ACM-SIAM Symp. on Discrete Algorithms. 8.\n\n"
-                      "Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, Greedy and Not So Greedy k-means++" );
+  return QObject::tr(
+    "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
+    "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
+    "References:\n"
+    "Arthur, David & Vassilvitskii, Sergei. (2007). K-Means++: The Advantages of Careful Seeding. Proc. of the Annu. ACM-SIAM Symp. on Discrete Algorithms. 8.\n\n"
+    "Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, Greedy and Not So Greedy k-means++"
+  );
 }
 
 QString QgsKMeansClusteringAlgorithm::shortDescription() const

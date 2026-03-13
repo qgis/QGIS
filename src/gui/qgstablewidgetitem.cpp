@@ -19,8 +19,7 @@
 
 QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )
   : QTableWidgetItem( text )
-{
-}
+{}
 
 void QgsTableWidgetItem::setSortRole( int role )
 {

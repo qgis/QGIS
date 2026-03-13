@@ -27,7 +27,6 @@ using namespace Qt::StringLiterals;
 
 QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
   : QgsProviderGuiMetadata( u"ept"_s )
-{
-}
+{}
 
 ///@endcond

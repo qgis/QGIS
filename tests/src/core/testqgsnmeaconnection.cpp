@@ -71,7 +71,8 @@ class TestQgsNmeaConnection : public QgsTest
 
   public:
     TestQgsNmeaConnection()
-      : QgsTest( u"NMEA Connection Tests"_s ) {}
+      : QgsTest( u"NMEA Connection Tests"_s )
+    {}
 
   private slots:
     void initTestCase();

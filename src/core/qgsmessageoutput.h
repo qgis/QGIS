@@ -44,7 +44,6 @@ typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
 class CORE_EXPORT QgsMessageOutput
 {
   public:
-
     virtual ~QgsMessageOutput() = default;
 
     //! Sets message, it won't be displayed until
@@ -79,7 +78,6 @@ class CORE_EXPORT QgsMessageOutput
     static QgsMessageOutput *createMessageOutput();
 
   private:
-
     //! Pointer to the function which creates the class for output
     static MESSAGE_OUTPUT_CREATOR mMessageOutputCreator;
 };
@@ -97,7 +95,6 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     Q_OBJECT
 
   public:
-
     QgsMessageOutputConsole() = default;
 
     void setMessage( const QString &message, Qgis::StringFormat format ) override;
@@ -115,7 +112,6 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     void destroyed();
 
   private:
-
     //! stores current message
     QString mMessage;
 

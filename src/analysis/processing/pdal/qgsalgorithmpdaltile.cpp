@@ -104,10 +104,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 
   const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
 
-  args << u"tile"_s
-       << u"--length=%1"_s.arg( length )
-       << u"--output=%1"_s.arg( outputDir )
-       << u"--temp_dir=%1"_s.arg( tempDir );
+  args << u"tile"_s << u"--length=%1"_s.arg( length ) << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir );
 
   if ( parameters.value( u"CRS"_s ).isValid() )
   {

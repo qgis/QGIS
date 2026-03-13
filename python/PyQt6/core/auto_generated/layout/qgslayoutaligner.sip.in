@@ -23,7 +23,6 @@ top or left sides.
 #include "qgslayoutaligner.h"
 %End
   public:
-
     enum Alignment /BaseType=IntEnum/
     {
       AlignLeft,

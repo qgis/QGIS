@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsAnnotationLayer3DRendererMetadata::QgsAnnotationLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"annotation"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsAnnotationLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {

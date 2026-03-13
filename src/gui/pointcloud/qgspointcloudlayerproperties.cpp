@@ -263,8 +263,7 @@ QgsPointCloudAttributeStatisticsModel::QgsPointCloudAttributeStatisticsModel( Qg
   : QAbstractTableModel( parent )
   , mLayer( layer )
   , mAttributes( layer->attributes() )
-{
-}
+{}
 
 int QgsPointCloudAttributeStatisticsModel::columnCount( const QModelIndex & ) const
 {

@@ -71,11 +71,13 @@ QString QgsCoverageValidateAlgorithm::shortDescription() const
 
 QString QgsCoverageValidateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm analyzes a coverage (represented as a set of polygon features "
-                      "with exactly matching edge geometry) to find places where the "
-                      "assumption of exactly matching edges is not met.\n\n"
-                      "Invalidity includes polygons that overlap "
-                      "or that have gaps smaller than the specified gap width." );
+  return QObject::tr(
+    "This algorithm analyzes a coverage (represented as a set of polygon features "
+    "with exactly matching edge geometry) to find places where the "
+    "assumption of exactly matching edges is not met.\n\n"
+    "Invalidity includes polygons that overlap "
+    "or that have gaps smaller than the specified gap width."
+  );
 }
 
 QgsCoverageValidateAlgorithm *QgsCoverageValidateAlgorithm::createInstance() const

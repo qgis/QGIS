@@ -32,12 +32,11 @@ class QgsLineSymbol;
  * \brief A layout item subclass for elevation profile plots.
  * \since QGIS 3.30
  */
-class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemElevationProfile, with the specified parent \a layout.
      */
@@ -208,10 +207,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      * \see setSubsectionsSymbol()
      * \since QGIS 3.44
      */
-    QgsLineSymbol *subsectionsSymbol()
-    {
-      return mSubsectionsSymbol.get();
-    }
+    QgsLineSymbol *subsectionsSymbol() { return mSubsectionsSymbol.get(); }
 
     /**
      * Sets the \a symbol used to draw the subsections. If \a symbol is NULLPTR, the subsections are not drawn.
@@ -248,7 +244,6 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     void setSourcesPrivate();
 
   private:
-
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
@@ -276,8 +271,6 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     double mPreviewScaleFactor = 0;
     std::unique_ptr< QPainter > mPainter;
     std::unique_ptr< QgsProfilePlotRenderer > mRenderJob;
-
-
 };
 
 #endif //QGSLAYOUTITEMELEVATIONPROFILE_H

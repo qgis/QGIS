@@ -31,8 +31,7 @@ QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeature
   , mRequestedGeomType( source->mRequestedGeomType )
   , mRequestedSrid( source->mRequestedSrid )
   , mDetectedSrid( source->mDetectedSrid )
-{
-}
+{}
 
 QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString &identifier )
 {

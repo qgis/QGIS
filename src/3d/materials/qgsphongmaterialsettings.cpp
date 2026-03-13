@@ -142,9 +142,12 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
   const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
   const QColor diffuse = materialContext.isSelected() ? materialContext.selectionColor() : mDiffuse;
 
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( ambient.redF() * mAmbientCoefficient, ambient.greenF() * mAmbientCoefficient, ambient.blueF() * mAmbientCoefficient ) );
-  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( u"diffuseColor"_s, QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient, diffuse.greenF() * mDiffuseCoefficient, diffuse.blueF() * mDiffuseCoefficient ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient, mSpecular.greenF() * mSpecularCoefficient, mSpecular.blueF() * mSpecularCoefficient ) );
+  Qt3DRender::QParameter *ambientParameter
+    = new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( ambient.redF() * mAmbientCoefficient, ambient.greenF() * mAmbientCoefficient, ambient.blueF() * mAmbientCoefficient ) );
+  Qt3DRender::QParameter *diffuseParameter
+    = new Qt3DRender::QParameter( u"diffuseColor"_s, QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient, diffuse.greenF() * mDiffuseCoefficient, diffuse.blueF() * mDiffuseCoefficient ) );
+  Qt3DRender::QParameter *specularParameter
+    = new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient, mSpecular.greenF() * mSpecularCoefficient, mSpecular.blueF() * mSpecularCoefficient ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( mShininess ) );
   Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( u"opacity"_s, static_cast<float>( mOpacity ) );
 
@@ -202,7 +205,10 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
   return array;
 }
 
-int QgsPhongMaterialSettings::dataDefinedByteStride() const { return 9 * sizeof( unsigned char ); }
+int QgsPhongMaterialSettings::dataDefinedByteStride() const
+{
+  return 9 * sizeof( unsigned char );
+}
 
 void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
@@ -290,9 +296,15 @@ QgsMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &
     const QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
     const QColor diffuse = context.isSelected() ? context.selectionColor() : mDiffuse;
 
-    effect->addParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( ambient.redF() * mAmbientCoefficient, ambient.greenF() * mAmbientCoefficient, ambient.blueF() * mAmbientCoefficient ) ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"diffuseColor"_s, QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient, diffuse.greenF() * mDiffuseCoefficient, diffuse.blueF() * mDiffuseCoefficient ) ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient, mSpecular.greenF() * mSpecularCoefficient, mSpecular.blueF() * mSpecularCoefficient ) ) );
+    effect->addParameter(
+      new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( ambient.redF() * mAmbientCoefficient, ambient.greenF() * mAmbientCoefficient, ambient.blueF() * mAmbientCoefficient ) )
+    );
+    effect->addParameter(
+      new Qt3DRender::QParameter( u"diffuseColor"_s, QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient, diffuse.greenF() * mDiffuseCoefficient, diffuse.blueF() * mDiffuseCoefficient ) )
+    );
+    effect->addParameter(
+      new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient, mSpecular.greenF() * mSpecularCoefficient, mSpecular.blueF() * mSpecularCoefficient ) )
+    );
   }
 
   effect->addParameter( new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( mShininess ) ) );

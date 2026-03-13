@@ -16,6 +16,7 @@
 #include "qgsversionmigration.h"
 
 #include "qgsapplication.h"
+#include "qgsattributetabledialog.h"
 #include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -376,7 +377,11 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   newProfileDir.remove( u"symbology-style.db"_s );
 
   QgsError errors;
-  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath );
+
+  // don't copy:
+  // - compiled pycache or pyc files!
+  // - any plugin folders -- require users to reinstall those, so that we don't copy broken, non-updated 3.x plugins
+  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath, QgsFileUtils::CopyFlag::NoSymLinks, { u".*\\b__pycache__$"_s, u".*\\.[pP][yY][cC]$"_s, u".*[\\/]python[\\/]plugins$"_s } );
 
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
   newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
@@ -386,6 +391,12 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
 
   QgsSettings newSettings;
   newSettings.setValue( u"migration/migrated_from_3"_s, true );
+
+  if ( newSettings.value( u"qgis/dockAttributeTable"_s, false ).toBool() )
+  {
+    QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( true );
+    newSettings.remove( u"qgis/dockAttributeTable"_s );
+  }
 
   return errors;
 }

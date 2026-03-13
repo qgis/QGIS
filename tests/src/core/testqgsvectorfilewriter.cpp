@@ -127,12 +127,14 @@ TestQgsVectorFileWriter::TestQgsVectorFileWriter() = default;
 
 void TestQgsVectorFileWriter::initTestCase()
 {
-  qDebug( "\n\n **************\n"
-          "Note: if you get a message like \n"
-          "ERROR 1: /tmp/testpt.shp is not a directory.\n"
-          "It is caused by the /tmp/testshp.* files already existing\n"
-          "(the ERROR comes from OGR and is not very intuitive)\n"
-          "******************\n" );
+  qDebug(
+    "\n\n **************\n"
+    "Note: if you get a message like \n"
+    "ERROR 1: /tmp/testpt.shp is not a directory.\n"
+    "It is caused by the /tmp/testshp.* files already existing\n"
+    "(the ERROR comes from OGR and is not very intuitive)\n"
+    "******************\n"
+  );
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
@@ -142,7 +144,9 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = u"UTF-8"_s;
   const QgsField myField1( u"Field1"_s, QMetaType::Type::QString, u"String"_s, 10, 0, u"Field 1 comment"_s );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
+  mCRS = QgsCoordinateReferenceSystem(
+    R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+  );
   mPoint1 = QgsPointXY( 10.0, 10.0 );
   mPoint2 = QgsPointXY( 15.0, 10.0 );
   mPoint3 = QgsPointXY( 15.0, 12.0 );
@@ -427,7 +431,9 @@ void TestQgsVectorFileWriter::regression1141()
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
-  crs = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
+  crs = QgsCoordinateReferenceSystem(
+    R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+  );
   const QString tmpDir = QDir::tempPath() + '/';
   const QString fileName = tmpDir + "ąęćń.shp";
 
@@ -489,13 +495,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &ml,
-    fileName,
-    ml.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &ml, fileName, ml.transformContext(), options, nullptr, &newFilename ) );
 
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
@@ -522,13 +522,7 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, nullptr, &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
   const QgsVectorLayer vl2( u"%1|layername=test"_s.arg( fileName ), "src_test", "ogr" );
@@ -558,13 +552,7 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, nullptr, &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
   const QgsVectorLayer vl2( u"%1|layername=test"_s.arg( fileName ), "src_test", "ogr" );
@@ -613,14 +601,17 @@ void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName, con
   options.layerName = inputLayerName;
   options.layerOptions = layerOptions;
   QString outLayerName;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    nullptr, // newFilename
-    &outLayerName
-  ) );
+  const QgsVectorFileWriter::WriterError error(
+    QgsVectorFileWriter::writeAsVectorFormatV3(
+      &vl,
+      fileName,
+      vl.transformContext(),
+      options,
+      nullptr,
+      nullptr, // newFilename
+      &outLayerName
+    )
+  );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( outLayerName, expectedLayerName );
   const QgsVectorLayer vl2( u"%1|layername=%2"_s.arg( fileName ).arg( outLayerName ), "src_test", "ogr" );

@@ -548,9 +548,7 @@ void TestQgsMapLayer::readCustomProperties()
 
 void TestQgsMapLayer::publicSourceOnGdalWithCredentials()
 {
-  QgsRasterLayer rl(
-    u"test.tif|option:AN=OPTION|credential:SOMEKEY=AAAAA|credential:ANOTHER=BBB"_s, QString(), u"gdal"_s
-  );
+  QgsRasterLayer rl( u"test.tif|option:AN=OPTION|credential:SOMEKEY=AAAAA|credential:ANOTHER=BBB"_s, QString(), u"gdal"_s );
   QCOMPARE( rl.publicSource( true ), u"test.tif|option:AN=OPTION|credential:ANOTHER=XXXXXXXX|credential:SOMEKEY=XXXXXXXX"_s );
   QCOMPARE( rl.publicSource( false ), u"test.tif|option:AN=OPTION"_s );
   QCOMPARE( rl.publicSource(), u"test.tif|option:AN=OPTION"_s );

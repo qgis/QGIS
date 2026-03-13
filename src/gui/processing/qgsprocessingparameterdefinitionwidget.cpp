@@ -40,11 +40,12 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &context, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *, QWidget *parent )
+QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &context, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *, QWidget *parent
+)
   : QWidget( parent )
   , mWidgetContext( context )
-{
-}
+{}
 
 void QgsProcessingAbstractParameterDefinitionWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {
@@ -70,7 +71,14 @@ QgsExpressionContext QgsProcessingAbstractParameterDefinitionWidget::createExpre
 // QgsProcessingParameterDefinitionWidget
 //
 
-QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingParameterDefinition *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
   : QWidget( parent )
   , mType( type )
 {
@@ -160,7 +168,14 @@ void QgsProcessingParameterDefinitionWidget::registerProcessingContextGenerator(
 // QgsProcessingParameterDefinitionPanelWidget
 //
 
-QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPanelWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPanelWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingParameterDefinition *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
   : QgsProcessingModelConfigWidget( parent )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
@@ -202,8 +217,11 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   mTabWidget->addTab( w2, tr( "Comments" ) );
 
   setLayout( vLayout );
-  setPanelTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() ) : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
-                                                                                                                                                             : tr( "Parameter Definition" ) );
+  setPanelTitle(
+    definition                                                    ? tr( "%1 Parameter Definition" ).arg( definition->description() )
+    : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
+                                                                  : tr( "Parameter Definition" )
+  );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionPanelWidget::createParameter( const QString &name ) const
@@ -265,7 +283,14 @@ void QgsProcessingParameterDefinitionPanelWidget::accept()
 // QgsProcessingParameterDefinitionDialog
 //
 
-QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingParameterDefinition *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
   : QDialog( parent )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
@@ -280,8 +305,11 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
 
   vLayout->addWidget( bbox );
   setLayout( vLayout );
-  setWindowTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() ) : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
-                                                                                                                                                              : tr( "Parameter Definition" ) );
+  setWindowTitle(
+    definition                                                    ? tr( "%1 Parameter Definition" ).arg( definition->description() )
+    : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
+                                                                  : tr( "Parameter Definition" )
+  );
   setObjectName( u"QgsProcessingParameterDefinitionDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }

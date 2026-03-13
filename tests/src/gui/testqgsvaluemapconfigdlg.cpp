@@ -55,12 +55,10 @@ void TestQgsValueMapConfigDlg::cleanupTestCase()
 }
 
 void TestQgsValueMapConfigDlg::init()
-{
-}
+{}
 
 void TestQgsValueMapConfigDlg::cleanup()
-{
-}
+{}
 
 void TestQgsValueMapConfigDlg::testLoadFromCSV()
 {

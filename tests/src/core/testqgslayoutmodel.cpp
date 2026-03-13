@@ -39,7 +39,8 @@ class TestQgsLayoutModel : public QgsTest
 
   public:
     TestQgsLayoutModel()
-      : QgsTest( u"Layout model test"_s ) {}
+      : QgsTest( u"Layout model test"_s )
+    {}
 
   private slots:
     void initTestCase();               // will be called before the first testfunction is executed.
@@ -84,12 +85,10 @@ void TestQgsLayoutModel::cleanupTestCase()
 }
 
 void TestQgsLayoutModel::init()
-{
-}
+{}
 
 void TestQgsLayoutModel::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutModel::creation()
 {

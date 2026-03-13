@@ -136,8 +136,7 @@ QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidge
   : QObject( parent )
   , mType( type )
   , mParameterDefinition( parameter )
-{
-}
+{}
 
 Qgis::ProcessingMode QgsAbstractProcessingParameterWidgetWrapper::type() const
 {
@@ -310,7 +309,8 @@ int QgsAbstractProcessingParameterWidgetWrapper::stretch() const
 
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
-  QgsExpressionContext context = QgsProcessingWidgetWrapperUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
+  QgsExpressionContext context
+    = QgsProcessingWidgetWrapperUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
   if ( mParameterDefinition && !mParameterDefinition->additionalExpressionContextVariables().isEmpty() )
   {
     auto paramScope = std::make_unique<QgsExpressionContextScope>();
@@ -330,8 +330,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )
-{
-}
+{}
 
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
@@ -389,7 +388,9 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
   }
 }
 
-QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
+QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper(
+  QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context
+)
 {
   auto widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
   widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
@@ -403,7 +404,9 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
   return widget.release();
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFactoryInterface::createParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm * )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFactoryInterface::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
 {
   return nullptr;
 }
@@ -447,7 +450,9 @@ Qgis::ProcessingModelChildParameterSource QgsProcessingParameterWidgetFactoryInt
 //
 
 ///@cond PRIVATE
-QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingAlgorithm *algorithm, const QgsVectorLayer *linkedLayer )
+QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext(
+  QgsProcessingContextGenerator *processingContextGenerator, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingAlgorithm *algorithm, const QgsVectorLayer *linkedLayer
+)
 {
   // Get a processing context to start with
   QgsProcessingContext *context = nullptr;
@@ -499,8 +504,7 @@ QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext( Q
 
 QgsProcessingHiddenWidgetWrapper::QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
-{
-}
+{}
 
 void QgsProcessingHiddenWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
 {

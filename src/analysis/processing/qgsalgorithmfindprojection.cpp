@@ -52,13 +52,15 @@ QString QgsFindProjectionAlgorithm::groupId() const
 
 QString QgsFindProjectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates a list of possible candidate coordinate reference systems for a layer "
-                      "with an unknown projection.\n\n"
-                      "The expected area which the layer should reside in must be specified via the "
-                      "target area parameter.\n\n"
-                      "The algorithm operates by testing the layer's extent in every known reference "
-                      "system and listing any in which the bounds would fall within the target area if "
-                      "the layer was in this projection." );
+  return QObject::tr(
+    "Creates a list of possible candidate coordinate reference systems for a layer "
+    "with an unknown projection.\n\n"
+    "The expected area which the layer should reside in must be specified via the "
+    "target area parameter.\n\n"
+    "The algorithm operates by testing the layer's extent in every known reference "
+    "system and listing any in which the bounds would fall within the target area if "
+    "the layer was in this projection."
+  );
 }
 
 QString QgsFindProjectionAlgorithm::shortDescription() const
