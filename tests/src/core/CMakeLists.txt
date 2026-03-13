@@ -211,6 +211,7 @@ set(TESTS
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
+ testqgsprocessingtaskqueue.cpp
  testqgstemporalnavigationobject.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
