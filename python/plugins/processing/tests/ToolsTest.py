@@ -71,18 +71,19 @@ class VectorTest(QgisTestCase):
         self.assertEqual(res["id"], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
-    def testConvertNulls(self):
-        self.assertEqual(vector.convert_nulls([]), [])
-        self.assertEqual(vector.convert_nulls([], "_"), [])
-        self.assertEqual(vector.convert_nulls([NULL]), [None])
-        self.assertEqual(vector.convert_nulls([NULL], "_"), ["_"])
-        self.assertEqual(vector.convert_nulls([NULL], -1), [-1])
-        self.assertEqual(vector.convert_nulls([1, 2, 3]), [1, 2, 3])
-        self.assertEqual(vector.convert_nulls([1, None, 3]), [1, None, 3])
-        self.assertEqual(vector.convert_nulls([1, NULL, 3, NULL]), [1, None, 3, None])
-        self.assertEqual(
-            vector.convert_nulls([1, NULL, 3, NULL], "_"), [1, "_", 3, "_"]
-        )
+    def testLoadField(self):
+        test_data = points()
+        test_layer = QgsVectorLayer(test_data, "test", "ogr")
+
+        # basic load
+        res = vector.load_field(test_layer, "id")
+        self.assertEqual(res, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        # test replacement
+        res = vector.load_field(test_layer, "id2", replacements={0: "X"})
+        self.assertEqual(res, [2, 1, "X", 2, 1, "X", "X", "X", "X"])
+        res = vector.load_field(test_layer, "id2", replacements={0: None})
+        self.assertEqual(res, [2, 1, None, 2, 1, None, None, None, None])
 
 
 if __name__ == "__main__":

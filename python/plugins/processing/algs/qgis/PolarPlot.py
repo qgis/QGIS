@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    BarPlot.py
+    PolarPlot.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -22,10 +22,12 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
+    NULL,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
+    QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -36,7 +38,9 @@ from processing.tools import vector
 class PolarPlot(QgisAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
+    NAME_FIELD = "NAME_FIELD"
     VALUE_FIELD = "VALUE_FIELD"
+    TITLE = "TITLE"
 
     def group(self):
         return self.tr("Plots")
@@ -53,33 +57,43 @@ class PolarPlot(QgisAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterField(
+                self.NAME_FIELD,
+                self.tr("Category name field"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Any,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
                 self.VALUE_FIELD,
                 self.tr("Value field"),
                 parentLayerParameterName=self.INPUT,
                 type=QgsProcessingParameterField.DataType.Numeric,
             )
         )
-
         self.addParameter(
             QgsProcessingParameterFileDestination(
-                self.OUTPUT, self.tr("Polar plot"), self.tr("HTML files (*.html)")
+                self.OUTPUT, self.tr("Polar bar plot"), self.tr("HTML files (*.html)")
             )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(self.TITLE, self.tr("Title"), optional=True)
         )
 
     def name(self):
         return "polarplot"
 
     def displayName(self):
-        return self.tr("Polar plot")
+        return self.tr("Polar bar plot")
 
     def shortDescription(self):
         return self.tr(
-            "Generates a polar plot based on the value of an input vector layer."
+            "Creates a polar bar plot based on values grouped by a category field."
         )
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm generates a polar plot based on the value of an input vector layer."
+            "This algorithm creates a polar bar plot based on values grouped by a category field."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -98,37 +112,43 @@ class PolarPlot(QgisAlgorithm):
                 )
             )
 
-        try:
-            import numpy as np
-        except ImportError:
-            raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "PolarPlot",
-                    "This algorithm requires the Python “numpy” library. Please install this library and try again.",
-                )
-            )
-
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(
                 self.invalidSourceError(parameters, self.INPUT)
             )
 
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
+        title = self.parameterAsString(parameters, self.TITLE, context)
+
+        if title.strip() == "":
+            title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, valuefieldname)
+        values = vector.values(source, valuefieldname)[valuefieldname]
+        names = vector.load_field(
+            source, namefieldname, replacements={NULL: "<NULL>", None: "<NULL>"}
+        )
+
+        # Sum up values by category
+        category_sums = {category: 0 for category in set(names)}
+        for idx, _ in enumerate(names):
+            category_sums[names[idx]] += values[idx]
 
         data = [
             go.Barpolar(
-                r=values[valuefieldname],
-                theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))
-                ),
+                r=list(category_sums.values()),
+                theta=list(category_sums.keys()),
             )
         ]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(
+            data=data,
+            layout_title_text=title,
+        )
+
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
