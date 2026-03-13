@@ -79,7 +79,7 @@ class CORE_EXPORT QgsDistanceArea
      * \see setSourceCrs()
      * \see ellipsoidCrs()
      */
-    QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
+    QgsCoordinateReferenceSystem sourceCrs() const { return sourceToEllipsoid().sourceCrs(); }
 
     /**
      * Returns the ellipsoid (destination) spatial reference system.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDistanceArea
      * \see ellipsoid()
      * \since QGIS 3.6
      */
-    QgsCoordinateReferenceSystem ellipsoidCrs() const { return mCoordTransform.destinationCrs(); }
+    QgsCoordinateReferenceSystem ellipsoidCrs() const { return sourceToEllipsoid().destinationCrs(); }
 
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
@@ -381,8 +381,8 @@ class CORE_EXPORT QgsDistanceArea
       Length
     };
 
-    //! used for transforming coordinates from source CRS to ellipsoid's coordinates
-    QgsCoordinateTransform mCoordTransform;
+    //! cached transform from source CRS to ellipsoid CRS
+    mutable QgsCoordinateTransform mCachedSourceToEllipsoid;
 
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
@@ -392,11 +392,21 @@ class CORE_EXPORT QgsDistanceArea
 
     mutable std::unique_ptr< geod_geodesic > mGeod;
 
+    QgsCoordinateReferenceSystem mDestinationCrs; // the ellipsoid CRS, which is the destination CRS for mCachedSourceToEllipsoid
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateTransformContext mCoordTransformContext;
+
+    mutable bool mCoordTransformDirty = false;
+
     // utility functions for polygon area measurement
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurve *curve ) const;
     double measurePolygon( const QgsCurve *curve ) const;
+
+    QgsCoordinateTransform sourceToEllipsoid() const;
+
+    friend class TestQgsDistanceArea;
 };
 
 #endif
