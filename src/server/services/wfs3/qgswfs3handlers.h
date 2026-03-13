@@ -75,10 +75,25 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
     const QString templatePath( const QgsServerApiContext &context ) const override;
 
     /**
-     * Returns TRUE if any editing operation is allowed for the \a mapLayer in the given \a context, FALSE otherwise.
-     * Note: this method only checks if the layer is editable (any of create, update or delete operation will count) and published for WFS, but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     * Returns TRUE if features can be added to the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for adding features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
-    bool isEditingAllowed( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+    bool canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns TRUE if features can be deleted in the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for deleting features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool canDeleteFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns TRUE if features can be updated (attributes or geometry changed) from the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for changing features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 };
 
 /**
