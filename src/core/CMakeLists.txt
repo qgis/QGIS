@@ -1763,7 +1763,7 @@ set(QGIS_CORE_HDRS
   plot/qgspiechartplot.h
   plot/qgsplotregistry.h
   plot/qgsplot.h
-  plot/qgsvectorlayerplotdatagatherer.cpp
+  plot/qgsvectorlayerplotdatagatherer.h
 
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h
