@@ -139,6 +139,59 @@ class TestQgsMatrix4x4(QgisTestCase):
             ],
         )
 
+    def test_scale(self):
+        """
+        Test scaling a matrix
+        """
+        mat = QgsMatrix4x4()
+        mat.scale(QgsVector3D(2, 3, 5))
+        self.assertEqual(
+            mat.data(),
+            [
+                2.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                3.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ],
+        )
+
+        mat = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 0, 0, 1)
+
+        mat.scale(QgsVector3D(0.5, 2, 1))
+        self.assertEqual(
+            mat.data(),
+            [
+                0.5,
+                2.5,
+                4.5,
+                0.0,
+                4.0,
+                12.0,
+                20.0,
+                0.0,
+                3.0,
+                7.0,
+                11.0,
+                0.0,
+                4.0,
+                8.0,
+                12.0,
+                1.0,
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

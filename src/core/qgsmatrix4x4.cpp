@@ -138,3 +138,21 @@ QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 )
   m.m[3][3] = m1.m[0][3] * m2.m[3][0] + m1.m[1][3] * m2.m[3][1] + m1.m[2][3] * m2.m[3][2] + m1.m[3][3] * m2.m[3][3];
   return m;
 }
+
+void QgsMatrix4x4::scale( const QgsVector3D &vector )
+{
+  m[0][0] *= vector.x();
+  m[0][1] *= vector.x();
+  m[0][2] *= vector.x();
+  m[0][3] *= vector.x();
+
+  m[1][0] *= vector.y();
+  m[1][1] *= vector.y();
+  m[1][2] *= vector.y();
+  m[1][3] *= vector.y();
+
+  m[2][0] *= vector.z();
+  m[2][1] *= vector.z();
+  m[2][2] *= vector.z();
+  m[2][3] *= vector.z();
+}
