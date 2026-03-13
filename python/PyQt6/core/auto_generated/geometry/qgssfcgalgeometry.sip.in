@@ -476,7 +476,7 @@ Scale this geometry by vector ``scaleFactor``.
 %Docstring
 Apply 3D matrix transform ``mat`` to geometry ``geom``
 
-:param mat: 4x4 transformation matrix (translation is defined of the 4th
+:param mat: 4x4 transformation matrix (translation is defined in the 4th
             column)
 :param errorMsg: Error message returned by SFGCAL
 
