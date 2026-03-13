@@ -2633,15 +2633,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         mWidgets.append( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        //custom comment overrides the comment - even when it's empty (not when it's null)
-        const QString customComment = fields.at( fldIdx ).customComment();
-        newWidgetInfo.hint = customComment.isNull() ? fields.at( fldIdx ).comment() : customComment;
+        newWidgetInfo.hint = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
       newWidgetInfo.labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
-      newWidgetInfo.toolTip = u"<b>%1</b><p>%2</p>"_s.arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
+
+      newWidgetInfo.toolTip = ( newWidgetInfo.hint.isEmpty() ? u"<b>%1</b>"_s.arg( mLayer->attributeDisplayName( fldIdx ) ) : newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
