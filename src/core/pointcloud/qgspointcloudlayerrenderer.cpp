@@ -256,7 +256,7 @@ bool QgsPointCloudLayerRenderer::render()
 
       QgsPointCloudIndex pc = si.index();
       // if the index of point cloud is invalid, or we are zoomed out and want extents, we render the point cloud extent
-      if ( !pc || !pc.isValid() || ( zoomedOut && shouldRenderExtents ) )
+      if ( ( zoomedOut && shouldRenderExtents ) || ( !zoomedOut && ( !pc || !pc.isValid() ) ) )
       {
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
         if ( mSubIndexExtentRenderer->showLabels() )
