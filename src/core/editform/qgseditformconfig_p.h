@@ -71,6 +71,12 @@ class QgsEditFormConfigPrivate : public QSharedData
                                  QObject::tr( "Editable" ),
                                  QgsPropertyDefinition::Boolean )
         },
+        {
+          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::CustomComment ),
+          QgsPropertyDefinition( "dataDefinedCustomComment",
+                                 QObject::tr( "CustomComment" ),
+                                 QgsPropertyDefinition::String )
+        },
       };
       return sPropertyDefinitions;
     };
