@@ -3753,6 +3753,7 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
       return *d->geometry == *g.d->geometry;
     }
   }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
@@ -3790,6 +3791,7 @@ bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBack
     case Qgis::GeometryBackend::QGIS:
       throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
   }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::GeometryBackend backend ) const
@@ -3822,6 +3824,7 @@ bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::Geom
       return d->geometry->fuzzyEqual( *g.d->geometry, epsilon );
     }
   }
+  BUILTIN_UNREACHABLE
 }
 
 QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )
