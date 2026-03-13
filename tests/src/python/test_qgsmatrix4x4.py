@@ -12,6 +12,7 @@ __author__ = "(C) 2023 by Martin Dobias"
 __date__ = "18/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
+import math
 import unittest
 
 from qgis.core import (
@@ -191,6 +192,84 @@ class TestQgsMatrix4x4(QgisTestCase):
                 1.0,
             ],
         )
+
+    def test_rotate(self):
+        """
+        Test rotating a matrix
+        """
+        mat = QgsMatrix4x4()
+        mat2 = QgsMatrix4x4()
+        self.assertAlmostEqual(mat, mat2)
+        mat.rotate(90.0, QgsVector3D(0, 1, 0))
+        result = mat.data()
+        expected_result = [
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+        ]
+        for value, expected in zip(result, expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat2.rotate(90.0, 0, 1, 0)
+        self.assertAlmostEqual(mat, mat2)
+
+        mat = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 0, 0, 1)
+        mat2 = mat
+        self.assertAlmostEqual(mat, mat2)
+
+        mat.rotate(45, QgsVector3D(1, 0, 0))
+        result = mat.data()
+        expected_result = [
+            1.0,
+            5.0,
+            9.0,
+            0.0,
+            5.0 * math.sqrt(2) / 2.0,
+            13.0 * math.sqrt(2) / 2.0,
+            21.0 * math.sqrt(2) / 2.0,
+            0.0,
+            math.sqrt(2) / 2.0,
+            math.sqrt(2) / 2.0,
+            math.sqrt(2) / 2.0,
+            0.0,
+            4.0,
+            8.0,
+            12.0,
+            1.0,
+        ]
+        for value, expected in zip(result, expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat2.rotate(45, 1, 0, 0)
+        self.assertAlmostEqual(mat, mat2)
+
+        # combine rotation and translation
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(5, 1, -2))
+        self.assertEqual(mat.data(), [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 1, -2, 1])
+
+        mat.rotate(90.0, 0, 0, 1)
+        expected_result = [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 5, 1, -2, 1]
+        for value, expected in zip(mat.data(), expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat.translate(QgsVector3D(-1, 5, 2))
+        expected_result = [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        for value, expected in zip(mat.data(), expected_result):
+            self.assertAlmostEqual(value, expected)
 
 
 if __name__ == "__main__":
