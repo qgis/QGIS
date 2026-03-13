@@ -84,6 +84,21 @@ class TestQgsProject(QgisTestCase):
         prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs("EPSG:3111"))
         self.assertEqual(prj.crs().authid(), "EPSG:3111")
 
+    def test_non_earth_crs(self):
+        """Check that if non Earth CRS is set the signals are still fired just once."""
+
+        project = QgsProject.instance()
+        project.clear()
+
+        spy_crs = QSignalSpy(project.crsChanged)
+        spy_ellipsoid = QSignalSpy(project.ellipsoidChanged)
+
+        project.setCrs(QgsCoordinateReferenceSystem("IAU_2015:30100"), True)
+        self.assertEqual(project.crs().authid(), "IAU_2015:30100")
+
+        self.assertEqual(len(spy_crs), 1)
+        self.assertEqual(len(spy_ellipsoid), 1)
+
     def test_vertical_crs(self):
         project = QgsProject()
         self.assertFalse(project.verticalCrs().isValid())
