@@ -231,10 +231,9 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
 
 const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
 {
-  // resources/server/api + /ogc/templates/ + operationId + .html
+  // resources/server/api + /ogc/templates/wfs3 + operationId + .html
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3"_L1;
-  path += '/';
+  path += "/ogc/templates/wfs3/"_L1;
   path += QString::fromStdString( operationId() );
   path += ".html"_L1;
   return path;
@@ -286,6 +285,16 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
             { "default", defaultResponse() } } } } }
   };
   return data;
+}
+
+const QString QgsWfs3LandingPageHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += "/ogc/templates/wfs3/"_L1;
+  path += QString::fromStdString( operationId() );
+  path += ".html"_L1;
+  return path;
 }
 
 
@@ -1948,4 +1957,14 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
 
   } // end for loop
   return data;
+}
+
+const QString QgsWfs3ConformanceHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += "/ogc/templates/wfs3/"_L1;
+  path += QString::fromStdString( operationId() );
+  path += ".html"_L1;
+  return path;
 }
