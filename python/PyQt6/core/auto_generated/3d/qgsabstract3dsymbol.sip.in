@@ -67,6 +67,15 @@ with this symbol.
     {
       Height,
       ExtrusionHeight,
+      ScaleX,
+      ScaleY,
+      ScaleZ,
+      TranslationX,
+      TranslationY,
+      TranslationZ,
+      RotationX,
+      RotationY,
+      RotationZ,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
