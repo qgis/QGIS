@@ -228,6 +228,10 @@ class TcpServerWorker : public QObject
               {
                 method = QgsServerRequest::Method::DeleteMethod;
               }
+              else if ( methodString == "OPTIONS" )
+              {
+                method = QgsServerRequest::Method::OptionsMethod;
+              }
               else
               {
                 throw HttpException( u"HTTP error unsupported method: %1"_s.arg( methodString ) );

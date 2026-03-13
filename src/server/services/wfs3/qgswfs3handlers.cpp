@@ -239,6 +239,58 @@ const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiConte
   return path;
 }
 
+bool QgsWfs3AbstractItemsHandler::isEditingAllowed( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
+  if ( wfstInsertLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::AddFeatures ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+  if ( wfstUpdateLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  if ( wfstUpdateLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
+  if ( wfstDeleteLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::DeleteFeatures ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  return false;
+}
+
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {}
 
@@ -1440,6 +1492,19 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
       break;
     }
+    case QgsServerRequest::Method::OptionsMethod:
+    {
+      context.response()->setStatusCode( 200 );
+      if ( isEditingAllowed( mapLayer, context ) )
+      {
+        context.response()->setHeader( u"Allow"_s, u"GET, POST, PUT, PATCH, DELETE, OPTIONS"_s );
+      }
+      else
+      {
+        context.response()->setHeader( u"Allow"_s, u"GET, POST, OPTIONS"_s );
+      }
+      break;
+    }
     // Error
     default:
     {
@@ -1842,6 +1907,26 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       json data = nullptr;
       write( data, context );
 
+      break;
+    }
+    // //////////////////////////////////////////////////////////////
+    // Options feature
+    case QgsServerRequest::Method::OptionsMethod:
+    {
+      // In theory we could check permissions for the requested feature here but
+      // this method is used by QGIS server to determine the allowed operations on a feature,
+      // so we need to return the allowed operations even if the requested feature is not accessible
+      // otherwise clients won't be able to know that they can update or delete features in this collection.
+      // So we check permissions at collection level, not at feature level.
+      context.response()->setStatusCode( 200 );
+      if ( isEditingAllowed( mapLayer, context ) )
+      {
+        context.response()->setHeader( u"Allow"_s, u"GET, POST, PUT, PATCH, DELETE, OPTIONS"_s );
+      }
+      else
+      {
+        context.response()->setHeader( u"Allow"_s, u"GET, OPTIONS"_s );
+      }
       break;
     }
     default:
