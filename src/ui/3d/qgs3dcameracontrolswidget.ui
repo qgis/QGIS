@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Qgs3DCameraControlsWidget</class>
+ <widget class="QWidget" name="Qgs3DCameraControlsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>426</width>
+    <height>305</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelZ">
+     <property name="text">
+      <string>Looking at Z:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraPitch"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraY"/>
+   </item>
+   <item row="5" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraHeading"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelPitch">
+     <property name="text">
+      <string>Pitch:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelX">
+     <property name="text">
+      <string>Looking at X:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelY">
+     <property name="text">
+      <string>Looking at Y:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraZ"/>
+   </item>
+   <item row="6" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraDistanceFromCenterPoint"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDoubleSpinBox" name="mCameraX"/>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="labelCRS">
+     <property name="text">
+      <string>Coordinates in 3D Map CRS (EPSG: #CODE)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelHeading">
+     <property name="text">
+      <string>Heading:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelDistanceFromCenterPoint">
+     <property name="text">
+      <string>Distance from center point:</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

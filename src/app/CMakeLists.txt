@@ -395,6 +395,7 @@ if (WITH_3D)
     3d/qgs3dviewsmanagerdialog.cpp
     3d/qgs3ddebugwidget.cpp
     3d/qgsmaptoolclippingplanes.cpp
+    3d/qgs3dcameracontrolswidget.cpp
   )
 endif()
 
