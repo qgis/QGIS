@@ -14,6 +14,10 @@ class QgsEditorWidgetSetup
 %Docstring(signature="appended")
 Holder for the widget type and its configuration for a field.
 %End
+When a FilterExpression is defined programmatically through
+:py:class:`QgsEditorWidgetSetup` (for example when configuring a
+RelationReference widget), the interactive filter UI may appear disabled
+because filtering is considered externally controlled.
 
 %TypeHeaderCode
 #include "qgseditorwidgetsetup.h"

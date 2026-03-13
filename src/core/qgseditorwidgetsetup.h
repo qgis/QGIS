@@ -24,6 +24,10 @@
  * \ingroup core
  * \brief Holder for the widget type and its configuration for a field.
  *
+ * When a FilterExpression is defined programmatically through
+ * QgsEditorWidgetSetup (for example when configuring a RelationReference widget),
+ * the interactive filter UI may appear disabled because filtering is
+ * considered externally controlled.
  */
 class CORE_EXPORT QgsEditorWidgetSetup
 {
