@@ -121,9 +121,14 @@ def handleAlgorithmResults(
     context: QgsProcessingContext,
     feedback: Optional[QgsProcessingFeedback] = None,
     parameters: Optional[dict] = None,
+    iface=None,
 ):
     if not parameters:
         parameters = {}
+    import qgis.utils
+
+    if iface is None:
+        iface = qgis.utils.iface
     if feedback is None:
         feedback = QgsProcessingFeedback()
     wrong_layers = []

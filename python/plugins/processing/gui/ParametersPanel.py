@@ -23,6 +23,9 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
+from typing import Optional
+
+import qgis.utils
 from qgis.core import (
     Qgis,
     QgsProcessingModelAlgorithm,
@@ -32,6 +35,7 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import (
+    QgisInterface,
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsGui,
     QgsProcessingContextGenerator,
@@ -41,7 +45,6 @@ from qgis.gui import (
     QgsProcessingParametersWidget,
     QgsProcessingParameterWidgetContext,
 )
-from qgis.utils import iface
 
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
@@ -49,7 +52,9 @@ from processing.tools.dataobjects import createContext
 
 
 class ParametersPanel(QgsProcessingParametersWidget):
-    def __init__(self, parent, alg, in_place=False, active_layer=None):
+    def __init__(
+        self, parent, alg, in_place=False, active_layer=None, context=None, iface=None
+    ):
         super().__init__(alg, parent)
         self.in_place = in_place
         self.active_layer = active_layer
@@ -58,7 +63,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         self.extra_parameters = {}
 
-        self.processing_context = createContext()
+        self.processing_context = createContext(parent_context=context)
 
         class ContextGenerator(QgsProcessingContextGenerator):
             def __init__(self, context):
@@ -87,10 +92,11 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setBrowserModel(iface.browserModel())
-            widget_context.setActiveLayer(iface.activeLayer())
+        _iface = iface if iface is not None else qgis.utils.iface
+        if _iface is not None:
+            widget_context.setMapCanvas(_iface.mapCanvas())
+            widget_context.setBrowserModel(_iface.browserModel())
+            widget_context.setActiveLayer(_iface.activeLayer())
 
         widget_context.setMessageBar(self.parent().messageBar())
         if isinstance(self.algorithm(), QgsProcessingModelAlgorithm):

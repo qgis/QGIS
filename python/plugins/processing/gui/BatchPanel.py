@@ -520,11 +520,14 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     FORMAT = "format"
     CURRENT_FORMAT = "batch_3.40"
 
-    def __init__(self, parent, alg):
+    def __init__(self, parent, alg, context=None, iface=None):
         super().__init__(None)
         self.setupUi(self)
 
         self.wrappers = []
+        import qgis.utils
+
+        self._iface = iface if iface is not None else qgis.utils.iface
 
         self.btnAdvanced.hide()
 
@@ -552,7 +555,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
 
-        self.processing_context = createContext()
+        self.processing_context = createContext(parent_context=context)
 
         class ContextGenerator(QgsProcessingContextGenerator):
             def __init__(self, context):
@@ -836,9 +839,9 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setActiveLayer(iface.activeLayer())
-            widget_context.setMapCanvas(iface.mapCanvas())
+        if self._iface is not None:
+            widget_context.setActiveLayer(self._iface.activeLayer())
+            widget_context.setMapCanvas(self._iface.mapCanvas())
 
         widget_context.setMessageBar(self.parent.messageBar())
 

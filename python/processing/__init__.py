@@ -149,15 +149,15 @@ def execAlgorithmDialog(
 
 def createContext(
     feedback: Optional[_QgsProcessingFeedback] = None,
+    parent_context: Optional[_QgsProcessingContext] = None,
 ) -> _QgsProcessingContext:
     """
     Creates a default processing context
-
     :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
     :type feedback: Optional[QgsProcessingFeedback]
-
+    :param parent_context: Optional existing QgsProcessingContext to copy settings from
+    :type parent_context: Optional[QgsProcessingContext]
     :returns: New QgsProcessingContext object
-
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException

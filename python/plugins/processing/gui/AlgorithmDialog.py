@@ -21,17 +21,21 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import datetime
 import time
+from typing import Optional
 
+import qgis.utils
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsProcessingAlgorithm,
     QgsProcessingAlgRunnerTask,
+    QgsProcessingContext,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputHtml,
     QgsProxyProgressTask,
 )
 from qgis.gui import (
+    QgisInterface,
     QgsGui,
     QgsProcessingAlgorithmDialogBase,
     QgsProcessingContextGenerator,
@@ -53,14 +57,14 @@ from processing.tools import dataobjects
 
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
-    def __init__(self, alg, in_place=False, parent=None):
+    def __init__(self, alg, in_place=False, parent=None, context=None, iface=None):
         super().__init__(parent)
-
         self.feedback_dialog = None
         self.in_place = in_place
-        self.active_layer = iface.activeLayer() if self.in_place else None
-
-        self.context = None
+        _iface = iface if iface is not None else qgis.utils.iface
+        self._iface = _iface
+        self.active_layer = _iface.activeLayer() if self.in_place else None
+        self.context = context
         self.feedback = None
         self.history_log_id = None
         self.history_details = {}
@@ -106,12 +110,21 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         )
 
     def getParametersPanel(self, alg, parent):
-        panel = ParametersPanel(parent, alg, self.in_place, self.active_layer)
+        panel = ParametersPanel(
+            parent,
+            alg,
+            self.in_place,
+            self.active_layer,
+            context=self.context,
+            iface=self._iface,
+        )
         return panel
 
     def runAsBatch(self):
         self.close()
-        dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+        dlg = BatchAlgorithmDialog(
+            self.algorithm().create(), parent=iface.mainWindow(), context=self.context
+        )
         dlg.show()
         dlg.exec()
 

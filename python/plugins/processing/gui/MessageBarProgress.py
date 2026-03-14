@@ -28,11 +28,15 @@ from processing.gui.MessageDialog import MessageDialog
 
 
 class MessageBarProgress(QgsProcessingFeedback):
-    def __init__(self, algname=None):
+    def __init__(self, algname=None, messagebar=None):
         QgsProcessingFeedback.__init__(self)
+        import qgis.utils
 
         self.msg = []
-        self.progressMessageBar = iface.messageBar().createMessage(
+        _messagebar = (
+            messagebar if messagebar is not None else qgis.utils.iface.messageBar()
+        )
+        self.progressMessageBar = _messagebar.createMessage(
             self.tr("Executing algorithm <i>{}</i>").format(algname if algname else "")
         )
         self.progress = QProgressBar()
@@ -42,7 +46,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
         self.progressMessageBar.layout().addWidget(self.progress)
-        self.message_bar_item = iface.messageBar().pushWidget(
+        self.message_bar_item = _messagebar.pushWidget(
             self.progressMessageBar, Qgis.MessageLevel.Info
         )
 

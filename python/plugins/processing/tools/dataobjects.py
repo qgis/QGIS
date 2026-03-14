@@ -56,10 +56,14 @@ TYPE_TABLE = 5
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
-def createContext(feedback=None):
+def createContext(feedback=None, parent_context=None):
     context = QgsProcessingContext()
-    context.setProject(QgsProject.instance())
-    context.setFeedback(feedback)
+    if parent_context is not None:
+        context.copyThreadSafeSettings(parent_context)
+    else:
+        context.setProject(QgsProject.instance())
+    if feedback is not None:
+        context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(
         ProcessingConfig.FILTER_INVALID_GEOMETRIES

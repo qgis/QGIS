@@ -22,6 +22,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import shutil
 from functools import partial
+from typing import Optional
 
 from qgis.core import (
     QgsApplication,
@@ -31,11 +32,13 @@ from qgis.core import (
     QgsMapLayerType,
     QgsMimeDataUtils,
     QgsProcessingAlgorithm,
+    QgsProcessingContext,
     QgsProcessingModelAlgorithm,
     QgsProcessingUtils,
     QgsSettings,
 )
 from qgis.gui import (
+    QgisInterface,
     QgsCustomDropHandler,
     QgsGui,
     QgsOptionsWidgetFactory,
@@ -419,7 +422,15 @@ class ProcessingPlugin(QObject):
                 )
 
     @pyqtSlot(str, QWidget, bool, bool)
-    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False):
+    def executeAlgorithm(
+        self,
+        alg_id,
+        parent,
+        in_place=False,
+        as_batch=False,
+        context=None,
+        iface=None,
+    ):
         """Executes a project model with GUI interaction if needed.
 
         :param alg_id: algorithm id
@@ -430,7 +441,14 @@ class ProcessingPlugin(QObject):
         :type in_place: bool, optional
         :param as_batch: execute as batch flag, defaults to False
         :type as_batch: bool, optional
+        :param context: optional QgsProcessingContext, defaults to standard
+        context using QgsProject.instance()
+        :type context: QgsProcessingContext, optional
+        :param iface: optional QgisInterface, defaults to main QGIS iface
+        :type iface: QgisInterface, optional
         """
+        if iface is None:
+            iface = self.iface
 
         config = {}
         if in_place:
@@ -471,8 +489,12 @@ class ProcessingPlugin(QObject):
             if d.name() not in (in_place_input_parameter_name, "OUTPUT")
         ]:
             parameters = {}
-            feedback = MessageBarProgress(algname=alg.displayName())
-            ok, results = execute_in_place(alg, parameters, feedback=feedback)
+            feedback = MessageBarProgress(
+                algname=alg.displayName(), messagebar=iface.messageBar()
+            )
+            ok, results = execute_in_place(
+                alg, parameters, context=context, feedback=feedback
+            )
             if ok:
                 iface.messageBar().pushSuccess(
                     "",
@@ -489,7 +511,9 @@ class ProcessingPlugin(QObject):
             dlg = alg.createCustomParametersWidget(parent)
 
             if not dlg:
-                dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
+                dlg = AlgorithmDialog(
+                    alg, in_place, iface.mainWindow(), context=context
+                )
             canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
@@ -504,11 +528,13 @@ class ProcessingPlugin(QObject):
                 except RuntimeError:
                     pass
         else:
-            feedback = MessageBarProgress(algname=alg.displayName())
-            context = dataobjects.createContext(feedback)
+            feedback = MessageBarProgress(
+                algname=alg.displayName(), messagebar=iface.messageBar()
+            )
+            context = dataobjects.createContext(feedback, parent_context=context)
             parameters = {}
             ret, results = execute(alg, parameters, context, feedback)
-            handleAlgorithmResults(alg, context, feedback)
+            handleAlgorithmResults(alg, context, feedback, iface=iface)
             feedback.close()
 
     def sync_in_place_button_state(self, layer=None):

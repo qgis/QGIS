@@ -20,8 +20,10 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import time
+from typing import Optional
 
 from qgis.core import (
+    QgsProcessingContext,
     QgsProcessingOutputBoolean,
     QgsProcessingOutputHtml,
     QgsProcessingOutputNumber,
@@ -39,17 +41,19 @@ from processing.tools.system import getTempFilename
 
 
 class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
-    def __init__(self, alg, parent=None):
+    def __init__(self, alg, parent=None, context=None, iface=None):
         super().__init__(parent)
+        import qgis.utils
 
+        self._iface = iface if iface is not None else qgis.utils.iface
+        self.context = context
         self.setAlgorithm(alg)
-
         self.setWindowTitle(
             self.tr("Batch Processing - {0}").format(self.algorithm().displayName())
         )
-        self.setMainWidget(BatchPanel(self, self.algorithm()))
-
-        self.context = None
+        self.setMainWidget(
+            BatchPanel(self, self.algorithm(), context=self.context, iface=self._iface)
+        )
         self.hideShortHelp()
 
     def runAsSingle(self):
@@ -68,12 +72,14 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback)
+            self.context = dataobjects.createContext(
+                self.feedback, parent_context=self.context
+            )
             self.context.setLogLevel(self.logLevel())
         return self.context
 
     def createContext(self, feedback):
-        return dataobjects.createContext(feedback)
+        return dataobjects.createContext(feedback, parent_context=self.context)
 
     def runAlgorithm(self):
         alg_parameters = []
