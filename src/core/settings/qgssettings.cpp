@@ -201,6 +201,10 @@ void QgsSettings::sync()
 void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
   const QString pKey = prefixedKey( key, section );
+  if ( pKey.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "QSettings::remove called with empty key -- this probably wasn't intentional, but will result in ALL SETTINGS GETTING DELETED!" ) );
+  }
   mUserSettings->remove( pKey );
 }
 
@@ -314,7 +318,12 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
   // might be a nullptr (for example in case of standalone scripts or apps).
   else if ( mGlobalSettings && mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
   {
-    mUserSettings->remove( prefixedKey( key, section ) );
+    const QString resolvedKey = prefixedKey( key, section );
+    if ( resolvedKey.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "QSettings::remove called with empty key -- this probably wasn't intentional, but will result in ALL SETTINGS GETTING DELETED!" ) );
+    }
+    mUserSettings->remove( resolvedKey );
   }
 }
 
