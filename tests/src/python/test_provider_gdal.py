@@ -163,7 +163,7 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
         self.assertEqual(encodedUri, 'OpenFileGDB:"/my/raster.gdb":mylayer')
 
-        uri = 'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall'
+        uri = r'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall'
         parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
         self.assertEqual(
             parts,
@@ -175,7 +175,7 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
         self.assertEqual(
             encodedUri,
-            'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall',
+            r'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall',
         )
 
     def testDecodeEncodeUriOptions(self):
