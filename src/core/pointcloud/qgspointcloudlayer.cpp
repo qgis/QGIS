@@ -1283,11 +1283,11 @@ QVector<QgsPointCloudSubIndex> QgsPointCloudLayer::subIndexes() const
   return indexes;
 }
 
-QgsPointCloudIndex QgsPointCloudLayer::overview() const
+QVector<QgsPointCloudIndex> QgsPointCloudLayer::overviews() const
 {
   if ( !mDataProvider || !mIsVpc )
-    return QgsPointCloudIndex();
+    return {};
 
   const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
-  return vpcProvider->overview();
+  return vpcProvider->overviews();
 }
