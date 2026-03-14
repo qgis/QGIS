@@ -100,9 +100,12 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     QUrl url = QUrl::fromUserInput( mPath );
     QString fileName = url.fileName();
 
-    if ( fileName.compare( "ept.json"_L1, Qt::CaseInsensitive ) != 0 && !fileName.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) && !fileName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
+    if ( fileName.compare( "ept.json"_L1, Qt::CaseInsensitive ) != 0
+         && !fileName.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive )
+         && !fileName.endsWith( ".vpc"_L1, Qt::CaseInsensitive )
+         && !fileName.endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz or .vpc" ).arg( mPath ) );
+      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json, .copc.laz, .vpc or .vpz" ).arg( mPath ) );
       return;
     }
 
