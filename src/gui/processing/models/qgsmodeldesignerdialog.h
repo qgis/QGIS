@@ -228,6 +228,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
 
+    QPointer<QgsProcessingAlgorithmDialogBase> mAlgorithmDialog;
+
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsModelViewToolPan *mPanTool = nullptr;
