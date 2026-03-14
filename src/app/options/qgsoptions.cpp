@@ -547,7 +547,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1 - removed
   cmbScanZipInBrowser->addItem( tr( "Basic Scan" ), QVariant( "basic" ) );
   cmbScanZipInBrowser->addItem( tr( "Full Scan" ), QVariant( "full" ) );
-  index = cmbScanZipInBrowser->findData( mSettings->value( u"/qgis/scanZipInBrowser2"_s, QString() ) );
+  index = cmbScanZipInBrowser->findData( QgsSettingsRegistryCore::settingsScanZipInBrowser->value() );
   if ( index == -1 )
     index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
@@ -628,7 +628,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDistanceUnitsComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
 
   bool ok = false;
-  Qgis::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( u"/qgis/measure/displayunits"_s ).toString(), &ok );
+  Qgis::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value(), &ok );
   if ( !ok )
     distanceUnits = Qgis::DistanceUnit::Meters;
   mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( static_cast<int>( distanceUnits ) ) );
@@ -665,16 +665,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( static_cast<int>( unit ) ) );
 
   // set decimal places of the measure tool
-  int decimalPlaces = mSettings->value( u"/qgis/measure/decimalplaces"_s, 3 ).toInt();
+  int decimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mDecimalPlacesSpinBox->setClearValue( 3 );
   mDecimalPlacesSpinBox->setRange( 0, 12 );
   mDecimalPlacesSpinBox->setValue( decimalPlaces );
 
   // set if base unit of measure tool should be changed
-  bool baseUnit = mSettings->value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
   mKeepBaseUnitCheckBox->setChecked( baseUnit );
 
-  mPlanimetricMeasurementsComboBox->setChecked( mSettings->value( u"measure/planimetric"_s, false, QgsSettings::Core ).toBool() );
+  mPlanimetricMeasurementsComboBox->setChecked( QgsSettingsRegistryCore::settingsMeasurePlanimetric->value() );
 
   // set the measure tool copy settings
   connect( mSeparatorOther, &QRadioButton::toggled, mSeparatorCustom, &QLineEdit::setEnabled );
@@ -740,7 +740,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mFontFamilyRadioCustom->blockSignals( false );
   mFontFamilyComboBox->blockSignals( false );
 
-  mMessageTimeoutSpnBx->setValue( mSettings->value( u"/qgis/messageTimeout"_s, 5 ).toInt() );
+  mMessageTimeoutSpnBx->setValue( QgsSettingsRegistryGui::settingsMessageTimeout->value() );
   mMessageTimeoutSpnBx->setClearValue( 5 );
 
   QString name = mSettings->value( u"/qgis/style"_s ).toString();
@@ -753,7 +753,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   whileBlocking( cmbUITheme )->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
-  mNativeColorDialogsChkBx->setChecked( mSettings->value( u"/qgis/native_color_dialogs"_s, false ).toBool() );
+  mNativeColorDialogsChkBx->setChecked( QgsSettingsRegistryGui::settingsNativeColorDialogs->value() );
 
   cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
@@ -796,30 +796,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() );
 
   //set the color for selections
-  int red = mSettings->value( u"/qgis/default_selection_color_red"_s, 255 ).toInt();
-  int green = mSettings->value( u"/qgis/default_selection_color_green"_s, 255 ).toInt();
-  int blue = mSettings->value( u"/qgis/default_selection_color_blue"_s, 0 ).toInt();
-  int alpha = mSettings->value( u"/qgis/default_selection_color_alpha"_s, 255 ).toInt();
-  pbnSelectionColor->setColor( QColor( red, green, blue, alpha ) );
+  pbnSelectionColor->setColor( QgsSettingsRegistryCore::settingsDefaultSelectionColor->value() );
   pbnSelectionColor->setColorDialogTitle( tr( "Set Selection Color" ) );
   pbnSelectionColor->setAllowOpacity( true );
   pbnSelectionColor->setContext( u"gui"_s );
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
   //set the default color for canvas background
-  red = mSettings->value( u"/qgis/default_canvas_color_red"_s, 255 ).toInt();
-  green = mSettings->value( u"/qgis/default_canvas_color_green"_s, 255 ).toInt();
-  blue = mSettings->value( u"/qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  pbnCanvasColor->setColor( QColor( red, green, blue ) );
+  pbnCanvasColor->setColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
   pbnCanvasColor->setColorDialogTitle( tr( "Set Canvas Color" ) );
   pbnCanvasColor->setContext( u"gui"_s );
   pbnCanvasColor->setDefaultColor( Qt::white );
 
   // set the default color for the measure tool
-  red = mSettings->value( u"/qgis/default_measure_color_red"_s, 222 ).toInt();
-  green = mSettings->value( u"/qgis/default_measure_color_green"_s, 155 ).toInt();
-  blue = mSettings->value( u"/qgis/default_measure_color_blue"_s, 67 ).toInt();
-  pbnMeasureColor->setColor( QColor( red, green, blue ) );
+  pbnMeasureColor->setColor( QgsSettingsRegistryGui::settingsDefaultMeasureColor->value() );
   pbnMeasureColor->setColorDialogTitle( tr( "Set Measuring Tool Color" ) );
   pbnMeasureColor->setContext( u"gui"_s );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
@@ -887,7 +877,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   setZoomFactorValue();
   spinZoomFactor->setClearValue( 200 );
-  reverseWheelZoom->setChecked( mSettings->value( u"/qgis/reverse_wheel_zoom"_s, false ).toBool() );
+  reverseWheelZoom->setChecked( QgsSettingsRegistryGui::settingsReverseWheelZoom->value() );
 
   // predefined scales for scale combobox
   const QStringList scalePaths = QgsSettingsRegistryCore::settingsMapScales->value();
@@ -1652,7 +1642,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
   mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
-  mSettings->setValue( u"/qgis/scanZipInBrowser2"_s, cmbScanZipInBrowser->currentData().toString() );
+  QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( u"/qgis/monitorDirectoriesInBrowser"_s, mCheckMonitorDirectories->isChecked() );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
@@ -1670,7 +1660,7 @@ void QgsOptions::saveOptions()
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( u"/qgis/legendDoubleClickAction"_s, cmbLegendDoubleClickAction->currentIndex() );
-  mSettings->setEnumValue( u"/qgis/layerTreeInsertionMethod"_s, mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
+  QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
   mSettings->setValue( u"/qgis/projOpenAtLaunch"_s, mProjectOnLaunchCmbBx->currentIndex() );
@@ -1717,9 +1707,9 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/style"_s, cmbStyle->currentText() );
   mSettings->setValue( u"/qgis/toolbarIconSize"_s, cmbIconSize->currentText() );
 
-  mSettings->setValue( u"/qgis/messageTimeout"_s, mMessageTimeoutSpnBx->value() );
+  QgsSettingsRegistryGui::settingsMessageTimeout->setValue( mMessageTimeoutSpnBx->value() );
 
-  mSettings->setValue( u"/qgis/native_color_dialogs"_s, mNativeColorDialogsChkBx->isChecked() );
+  QgsSettingsRegistryGui::settingsNativeColorDialogs->setValue( mNativeColorDialogsChkBx->isChecked() );
 
   //check behavior so default projection when new layer is added with no
   //projection defined...
@@ -1748,10 +1738,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/projections/crsAccuracyIndicator"_s, mCrsAccuracyIndicatorCheck->isChecked(), QgsSettings::App );
 
   //measurement settings
-  mSettings->setValue( u"measure/planimetric"_s, mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
+  QgsSettingsRegistryCore::settingsMeasurePlanimetric->setValue( mPlanimetricMeasurementsComboBox->isChecked() );
 
   Qgis::DistanceUnit distanceUnit = static_cast<Qgis::DistanceUnit>( mDistanceUnitsComboBox->currentData().toInt() );
-  mSettings->setValue( u"/qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( distanceUnit ) );
+  QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   Qgis::AreaUnit areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
   mSettings->setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( areaUnit ) );
@@ -1760,10 +1750,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( angleUnit ) );
 
   int decimalPlaces = mDecimalPlacesSpinBox->value();
-  mSettings->setValue( u"/qgis/measure/decimalplaces"_s, decimalPlaces );
+  QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->setValue( decimalPlaces );
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
-  mSettings->setValue( u"/qgis/measure/keepbaseunit"_s, baseUnit );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( baseUnit );
 
   QgsMeasureDialog::settingClipboardHeader->setValue( mIncludeHeader->isChecked() );
   QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint->setValue( mAlwaysUseDecimalPoint->isChecked() );
@@ -1785,25 +1775,18 @@ void QgsOptions::saveOptions()
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
-  mSettings->setValue( u"/qgis/default_selection_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_selection_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_selection_color_blue"_s, myColor.blue() );
-  mSettings->setValue( u"/qgis/default_selection_color_alpha"_s, myColor.alpha() );
+  QgsSettingsRegistryCore::settingsDefaultSelectionColor->setValue( myColor );
 
   //set the default color for canvas background
   myColor = pbnCanvasColor->color();
-  mSettings->setValue( u"/qgis/default_canvas_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_canvas_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_canvas_color_blue"_s, myColor.blue() );
+  QgsSettingsRegistryCore::settingsDefaultCanvasColor->setValue( myColor );
 
   //set the default color for the measure tool
   myColor = pbnMeasureColor->color();
-  mSettings->setValue( u"/qgis/default_measure_color_red"_s, myColor.red() );
-  mSettings->setValue( u"/qgis/default_measure_color_green"_s, myColor.green() );
-  mSettings->setValue( u"/qgis/default_measure_color_blue"_s, myColor.blue() );
+  QgsSettingsRegistryGui::settingsDefaultMeasureColor->setValue( myColor );
 
-  mSettings->setValue( u"/qgis/zoom_factor"_s, zoomFactorValue() );
-  mSettings->setValue( u"/qgis/reverse_wheel_zoom"_s, reverseWheelZoom->isChecked() );
+  QgsSettingsRegistryGui::settingsZoomFactor->setValue( zoomFactorValue() );
+  QgsSettingsRegistryGui::settingsReverseWheelZoom->setValue( reverseWheelZoom->isChecked() );
 
   //digitizing
   QgsSettingsRegistryCore::settingsDigitizingLineWidth->setValue( mLineWidthSpinBox->value() );
@@ -2842,13 +2825,13 @@ double QgsOptions::zoomFactorValue()
 void QgsOptions::setZoomFactorValue()
 {
   // Set the percent value for zoom factor spin box. This function is for converting the decimal zoom factor value in the qgis setting to the percent zoom factor value.
-  if ( mSettings->value( u"/qgis/zoom_factor"_s, 2 ).toDouble() <= 1.01 )
+  if ( QgsSettingsRegistryGui::settingsZoomFactor->value() <= 1.01 )
   {
     spinZoomFactor->setValue( spinZoomFactor->minimum() );
   }
   else
   {
-    int percentValue = mSettings->value( u"/qgis/zoom_factor"_s, 2 ).toDouble() * 100;
+    int percentValue = QgsSettingsRegistryGui::settingsZoomFactor->value() * 100;
     spinZoomFactor->setValue( percentValue );
   }
 }

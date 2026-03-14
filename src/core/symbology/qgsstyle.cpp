@@ -36,6 +36,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssqliteutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerregistry.h"
@@ -1421,8 +1422,7 @@ int QgsStyle::addTag( const QString &tagname )
   if ( nErr == SQLITE_OK )
     ( void ) sqlite3_step( statement.get() );
 
-  QgsSettings settings;
-  settings.setValue( u"qgis/symbolsListGroupsIndex"_s, 0 );
+  QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( 0 );
 
   emit groupsModified();
 
@@ -1517,8 +1517,7 @@ bool QgsStyle::remove( StyleEntity type, int id )
 
     if ( groupRemoved )
     {
-      QgsSettings settings;
-      settings.setValue( u"qgis/symbolsListGroupsIndex"_s, 0 );
+      QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( 0 );
 
       emit groupsModified();
     }
@@ -2341,8 +2340,7 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QStri
 
   if ( runEmptyQuery( query ) )
   {
-    QgsSettings settings;
-    settings.setValue( u"qgis/symbolsListGroupsIndex"_s, 0 );
+    QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( 0 );
 
     emit groupsModified();
     return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB.get() ) );

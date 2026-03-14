@@ -22,6 +22,7 @@
 #include "qgsprovidersublayertask.h"
 #include "qgsproviderutils.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgstaskmanager.h"
 
 #include <QDesktopServices>
@@ -163,7 +164,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog(
   mLayersTree->expandAll();
 
   const QgsSettings settings;
-  const bool addToGroup = settings.value( u"/qgis/openSublayersInGroup"_s, false ).toBool();
+  const bool addToGroup = QgsSettingsRegistryGui::settingsOpenSublayersInGroup->value();
   mCbxAddToGroup->setChecked( addToGroup );
   mCbxAddToGroup->setVisible( !fileName.isEmpty() );
 
@@ -238,7 +239,7 @@ QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
 {
   QgsSettings settings;
   settings.setValue( "/Windows/SubLayers/headerState", mLayersTree->header()->saveState() );
-  settings.setValue( u"/qgis/openSublayersInGroup"_s, mCbxAddToGroup->isChecked() );
+  QgsSettingsRegistryGui::settingsOpenSublayersInGroup->setValue( mCbxAddToGroup->isChecked() );
 
   if ( mTask )
     mTask->cancel();
@@ -278,7 +279,7 @@ void QgsProviderSublayersDialog::setGroupName( const QString &groupNameIn )
 {
   mGroupName = groupNameIn;
   const QgsSettings settings;
-  if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
+  if ( QgsSettingsRegistryGui::settingsFormatLayerName->value() )
   {
     mGroupName = QgsMapLayer::formatLayerName( mGroupName );
   }
