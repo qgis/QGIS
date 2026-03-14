@@ -1,0 +1,19 @@
+
+<svg width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+  <linearGradient id="easingGradient">
+      <stop offset="0.0%" stop-color="#fde725" />
+<stop offset="0.304%" stop-color="#fde725" />
+<stop offset="2.514%" stop-color="#efe51c" />
+<stop offset="18.525%" stop-color="#84d44b" />
+<stop offset="81.466%" stop-color="#423f85" />
+<stop offset="97.485%" stop-color="#460a5d" />
+<stop offset="99.696%" stop-color="#440154" />
+<stop offset="100.0%" stop-color="#440154" />
+  </linearGradient>
+
+  <path
+    d="M 0 32 C 26.88 35.84, 5.12 0.0, 32 0"
+    style="fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke:url(#easingGradient)" 
+    transform="translate(2, 2)"
+    />
+</svg>
