@@ -1065,6 +1065,35 @@
         <file>themes/default/mIconRenderOnTerrain.svg</file>
         <file>themes/default/mIconFloaterCartesian.svg</file>
         <file>themes/default/mIconFloaterEllipsoid.svg</file>
+        <file>themes/default/interpolation/OutSine.svg</file>
+        <file>themes/default/interpolation/OutQuint.svg</file>
+        <file>themes/default/interpolation/OutQuart.svg</file>
+        <file>themes/default/interpolation/OutQuad.svg</file>
+        <file>themes/default/interpolation/OutInSine.svg</file>
+        <file>themes/default/interpolation/OutInQuint.svg</file>
+        <file>themes/default/interpolation/OutInQuart.svg</file>
+        <file>themes/default/interpolation/OutInQuad.svg</file>
+        <file>themes/default/interpolation/OutInExpo.svg</file>
+        <file>themes/default/interpolation/OutInCubic.svg</file>
+        <file>themes/default/interpolation/OutInCirc.svg</file>
+        <file>themes/default/interpolation/OutExpo.svg</file>
+        <file>themes/default/interpolation/OutCubic.svg</file>
+        <file>themes/default/interpolation/OutCirc.svg</file>
+        <file>themes/default/interpolation/Linear.svg</file>
+        <file>themes/default/interpolation/InSine.svg</file>
+        <file>themes/default/interpolation/InQuint.svg</file    >
+        <file>themes/default/interpolation/InQuart.svg</file>
+        <file>themes/default/interpolation/InQuad.svg</file>
+        <file>themes/default/interpolation/InOutSine.svg</file>
+        <file>themes/default/interpolation/InOutQuint.svg</file>
+        <file>themes/default/interpolation/InOutQuart.svg</file>
+        <file>themes/default/interpolation/InOutQuad.svg</file>
+        <file>themes/default/interpolation/InOutExpo.svg</file>
+        <file>themes/default/interpolation/InOutCubic.svg</file>
+        <file>themes/default/interpolation/InOutCirc.svg</file>
+        <file>themes/default/interpolation/InExpo.svg</file>
+        <file>themes/default/interpolation/InCubic.svg</file>
+        <file>themes/default/interpolation/InCirc.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
