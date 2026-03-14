@@ -23,6 +23,9 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
+#include <QSet>
+#include <QTimer>
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -55,7 +58,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     PointCloudIndexGenerationState indexingState() override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
     QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
-    void loadSubIndex( int i ) override;
+    void loadSubIndex( int i, bool emitDataChanged = false ) override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
@@ -94,10 +97,13 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
   private:
     void parseFile();
     void populateAttributeCollection( QSet<QString> names );
+    void onFinishedLoadingSubIndex( int i );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
+    std::unique_ptr<QTimer> mSubIndexLoadedRefreshTimer;
+    QSet<int> mSubLayersBeingLoaded;
 
     double mRedMax = std::numeric_limits<double>::lowest();
     double mGreenMax = std::numeric_limits<double>::lowest();

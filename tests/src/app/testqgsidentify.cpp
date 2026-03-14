@@ -43,6 +43,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
+#include <QSignalSpy>
 #include <QString>
 #include <QTimer>
 
@@ -1356,8 +1357,12 @@ void TestQgsIdentify::identifyVirtualPointCloud()
   pointCloud->setCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
   QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), u"EPSG:28356"_s );
 
+  QSignalSpy spy( pointCloud.get(), &QgsMapLayer::dataChanged );
+
   for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
     pointCloud->dataProvider()->loadSubIndex( i );
+
+  spy.wait( 100 );
 
   // set project CRS and ellipsoid
   // Note that using a different CRS here (a world-wide WGS84-based one) caused

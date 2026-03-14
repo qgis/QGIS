@@ -33,6 +33,7 @@
 #include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudsubindex.h"
+#include "qgspointcloudsubindexloader.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
@@ -59,6 +60,9 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider( const QString &uri, 
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );
 
   mPolygonBounds = std::make_unique<QgsGeometry>( new QgsMultiPolygon() );
+  mSubIndexLoadedRefreshTimer = std::make_unique<QTimer>();
+  mSubIndexLoadedRefreshTimer->setSingleShot( true );
+  connect( mSubIndexLoadedRefreshTimer.get(), &QTimer::timeout, this, &QgsDataProvider::dataChanged );
 
   parseFile();
 }
@@ -472,7 +476,7 @@ QgsGeometry QgsVirtualPointCloudProvider::polygonBounds() const
   return *mPolygonBounds;
 }
 
-void QgsVirtualPointCloudProvider::loadSubIndex( int i )
+void QgsVirtualPointCloudProvider::loadSubIndex( int i, bool emitDataChanged )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -481,25 +485,14 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
 
   QgsPointCloudSubIndex &sl = mSubLayers[i];
   // Index already loaded -> no need to load
-  if ( sl.index() )
+  if ( sl.index() || mSubLayersBeingLoaded.contains( i ) )
     return;
 
-  if ( sl.uri().endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
-    sl.setIndex( QgsPointCloudIndex( new QgsCopcPointCloudIndex() ) );
-  else if ( sl.uri().endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) )
-    sl.setIndex( QgsPointCloudIndex( new QgsEptPointCloudIndex() ) );
-  else
-    return;
-
-  sl.index().load( sl.uri() );
-  if ( !sl.index().isValid() )
-    return;
-
-  // if expression is broken or index is missing a required field, set to "false" so it returns no points
-  if ( !mSubsetString.isEmpty() && !sl.index().setSubsetString( mSubsetString ) )
-    sl.index().setSubsetString( u"false"_s );
-
-  emit subIndexLoaded( i );
+  // loader is deleted when it finishes
+  QgsPointCloudSubIndexLoader *loader = new QgsPointCloudSubIndexLoader( sl.uri(), i, emitDataChanged );
+  connect( loader, &QgsPointCloudSubIndexLoader::finished, this, &QgsVirtualPointCloudProvider::onFinishedLoadingSubIndex );
+  mSubLayersBeingLoaded.insert( i );
+  loader->start();
 }
 
 void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> names )
@@ -640,6 +633,36 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
   }
 
   return new QgsPointCloudExtentRenderer();
+}
+
+void QgsVirtualPointCloudProvider::onFinishedLoadingSubIndex( int i )
+{
+  bool emitDataChanged = false;
+  QgsPointCloudSubIndex &sl = mSubLayers[i];
+  mSubLayersBeingLoaded.remove( i );
+
+  if ( QgsPointCloudSubIndexLoader *loader = qobject_cast<QgsPointCloudSubIndexLoader *>( sender() ) )
+  {
+    sl.setIndex( loader->index() );
+    emitDataChanged = loader->emitDataChangedWhenLoaded();
+    loader->deleteLater();
+  }
+
+  if ( !sl.index().isValid() )
+    return;
+
+  // if expression is broken or index is missing a required field, set to "false" so it returns no points
+  if ( !mSubsetString.isEmpty() && !sl.index().setSubsetString( mSubsetString ) )
+    sl.index().setSubsetString( u"false"_s );
+
+  emit subIndexLoaded( i );
+
+  if ( emitDataChanged )
+  {
+    // We only emit once per second, but don't wait if it was the last sub index being loaded
+    const int waitInterval = mSubLayersBeingLoaded.isEmpty() ? 10 : 1000;
+    mSubIndexLoadedRefreshTimer->start( waitInterval );
+  }
 }
 
 QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata()
