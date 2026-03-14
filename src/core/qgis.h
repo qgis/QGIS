@@ -4347,6 +4347,30 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( VerticalAxisInversion )
 
     /**
+     * Tile edge flags.
+     *
+     * \since QGIS 4.2
+     */
+    enum class TileEdge : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Left = 1 << 0,                    //!< Left edge
+      Right = 1 << 1,                   //!< Right edge
+      Top = 1 << 2,                     //!< Top edge
+      Bottom = 1 << 3,                  //!< Bottom edge
+      All = Left | Right | Top | Bottom //!< Skirts on all edges
+    };
+    Q_ENUM( TileEdge )
+
+    /**
+     * Tile edge flags.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( TileEdges, TileEdge )
+    Q_FLAG( TileEdges )
+
+
+    /**
      * Surface symbology type for elevation profile plots.
      *
      * \since QGIS 3.26
@@ -6858,6 +6882,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TileEdges )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
