@@ -37,8 +37,7 @@ using namespace Qt::StringLiterals;
 
 QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
-{
-}
+{}
 
 QVariant QgsEmbeddedLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
@@ -221,10 +220,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   int errorLine;
   if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
-    QgsDebugError( u"Error reading the project file %1 at line %2: %3"_s
-                     .arg( projectFile.fileName() )
-                     .arg( errorLine )
-                     .arg( errorMessage ) );
+    QgsDebugError( u"Error reading the project file %1 at line %2: %3"_s.arg( projectFile.fileName() ).arg( errorLine ).arg( errorMessage ) );
     return;
   }
 

@@ -47,20 +47,16 @@ class TestQgsPageSizeRegistry : public QObject
 };
 
 void TestQgsPageSizeRegistry::initTestCase()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::init()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::pageSizeEquality()
 {

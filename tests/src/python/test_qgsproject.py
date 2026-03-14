@@ -40,7 +40,7 @@ from qgis.core import (
     QgsProjectDirtyBlocker,
     QgsRasterLayer,
     QgsSelectiveMaskingSourceSet,
-    QgsSettings,
+    QgsSettingsTree,
     QgsUnitTypes,
     QgsVectorLayer,
 )
@@ -1789,13 +1789,14 @@ class TestQgsProject(QgisTestCase):
 
     def testBackgroundColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_canvas_color_red", 255))
-        green = int(s.value("qgis/default_canvas_color_green", 255))
-        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-canvas-color")
+            .valueAsVariant()
+        )
         # test default canvas background color
-        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        self.assertEqual(p.backgroundColor(), defaultColor)
         spy = QSignalSpy(p.backgroundColorChanged)
         p.setBackgroundColor(QColor(0, 0, 0))
         self.assertEqual(len(spy), 1)
@@ -1807,14 +1808,14 @@ class TestQgsProject(QgisTestCase):
 
     def testSelectionColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_selection_color_red", 255))
-        green = int(s.value("qgis/default_selection_color_green", 255))
-        blue = int(s.value("qgis/default_selection_color_blue", 0))
-        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-selection-color")
+            .valueAsVariant()
+        )
         # test default feature selection color
-        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        self.assertEqual(p.selectionColor(), defaultColor)
         spy = QSignalSpy(p.selectionColorChanged)
         p.setSelectionColor(QColor(0, 0, 0, 50))
         self.assertEqual(len(spy), 1)

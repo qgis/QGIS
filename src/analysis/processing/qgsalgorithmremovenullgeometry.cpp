@@ -61,12 +61,14 @@ void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRemoveNullGeometryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm removes any features which do not have a geometry from a vector layer. "
-                      "All other features will be copied unchanged.\n\n"
-                      "Optionally, the features with null geometries can be saved to a separate output.\n\n"
-                      "If 'Also remove empty geometries' is checked, the algorithm removes features whose geometries "
-                      "have no coordinates, i.e., geometries that are empty. In that case, also the null "
-                      "output will reflect this option, containing both null and empty geometries." );
+  return QObject::tr(
+    "This algorithm removes any features which do not have a geometry from a vector layer. "
+    "All other features will be copied unchanged.\n\n"
+    "Optionally, the features with null geometries can be saved to a separate output.\n\n"
+    "If 'Also remove empty geometries' is checked, the algorithm removes features whose geometries "
+    "have no coordinates, i.e., geometries that are empty. In that case, also the null "
+    "output will reflect this option, containing both null and empty geometries."
+  );
 }
 
 QString QgsRemoveNullGeometryAlgorithm::shortDescription() const

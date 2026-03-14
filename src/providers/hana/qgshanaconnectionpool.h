@@ -50,9 +50,7 @@ inline bool qgsConnectionPool_ConnectionIsValid( QgsHanaConnection *c )
   return true;
 }
 
-class QgsHanaConnectionPoolGroup
-  : public QObject,
-    public QgsConnectionPoolGroup<QgsHanaConnection *>
+class QgsHanaConnectionPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsHanaConnection *>
 {
     Q_OBJECT
 
@@ -68,8 +66,7 @@ class QgsHanaConnectionPoolGroup
     Q_DISABLE_COPY( QgsHanaConnectionPoolGroup )
 };
 
-class QgsHanaConnectionPool
-  : public QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>
+class QgsHanaConnectionPool : public QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>
 {
   public:
     static QgsHanaConnection *getConnection( const QString &connInfo );

@@ -144,7 +144,8 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
   if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
   {
     QString currentString = ( ( QKeyEvent * ) event )->text();
-    if ( !currentString.isEmpty() && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) || ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) || ( currentString[0] >= '0' && currentString[0] <= '9' ) || currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' || currentString[0] == '(' || currentString[0] == ')' ) )
+    if ( !currentString.isEmpty()
+         && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) || ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) || ( currentString[0] >= '0' && currentString[0] <= '9' ) || currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' || currentString[0] == '(' || currentString[0] == ')' ) )
     {
       // First attempt is concatenation of existing search text
       // Second attempt is just the new character
@@ -778,9 +779,11 @@ void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mai
   QString mainTypenameFormatted;
   if ( !mainTypename.isEmpty() )
     mainTypenameFormatted = "(" + mainTypename + ")";
-  mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
-                              "but it must compulsory include the main typename %1 in the selected tables, \n"
-                              "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." )
+  mQueryEdit->setToolTip( tr(
+                            "This is the SQL query editor. The SQL statement can select data from several tables, \n"
+                            "but it must compulsory include the main typename %1 in the selected tables, \n"
+                            "and only the geometry column of the main typename can be used as the geometry column of the resulting layer."
+  )
                             .arg( mainTypenameFormatted ) );
 }
 

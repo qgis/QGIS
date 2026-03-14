@@ -24,7 +24,6 @@ Represents a named set of selective masking sources
 #include "qgsselectivemaskingsourceset.h"
 %End
   public:
-
     QgsSelectiveMaskingSourceSet();
 %Docstring
 Constructor for an empty (invalid) QgsSelectiveMaskingSourceSet.
@@ -113,7 +112,7 @@ Sets the set's state from a DOM ``element``.
       sipRes = new QgsSelectiveMaskSource( sipCpp->operator[]( idx ) );
 %End
 
-    int size() const;
+      int size() const;
 %Docstring
 Returns the number of sources in the set.
 %End

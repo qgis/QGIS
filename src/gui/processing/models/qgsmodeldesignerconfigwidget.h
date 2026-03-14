@@ -77,7 +77,8 @@ class GUI_EXPORT QgsProcessingModelConfigWidgetFactory : public QObject
      * \param context processing context
      * \param widgetContext processing widget context
      */
-    virtual QgsProcessingModelConfigWidget *createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const = 0 SIP_FACTORY;
+    virtual QgsProcessingModelConfigWidget *createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const = 0
+      SIP_FACTORY;
 };
 
 

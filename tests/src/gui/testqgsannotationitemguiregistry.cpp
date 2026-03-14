@@ -39,27 +39,24 @@ class TestQgsAnnotationItemGuiRegistry : public QObject
 };
 
 void TestQgsAnnotationItemGuiRegistry::initTestCase()
-{
-}
+{}
 
 void TestQgsAnnotationItemGuiRegistry::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsAnnotationItemGuiRegistry::init()
-{
-}
+{}
 
 void TestQgsAnnotationItemGuiRegistry::cleanup()
-{
-}
+{}
 
 //simple item for testing, since some methods in QgsAnnotationItem are pure virtual
 class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
 {
   public:
     TestItem()
-      : QgsAnnotationItem() {}
+      : QgsAnnotationItem()
+    {}
 
     int mFlag = 0;
 
@@ -102,9 +99,7 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   const QSignalSpy spyTypeAdded( &registry, &QgsAnnotationItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsAnnotationItem * ) -> QgsAnnotationItemBaseWidget * {
-    return new TestItemWidget( nullptr );
-  };
+  auto createWidget = []( QgsAnnotationItem * ) -> QgsAnnotationItemBaseWidget * { return new TestItemWidget( nullptr ); };
 
   QgsAnnotationItemGuiMetadata *metadata = new QgsAnnotationItemGuiMetadata( u"mytype"_s, u"My Type"_s, QIcon(), createWidget );
   QVERIFY( registry.addAnnotationItemGuiMetadata( metadata ) );
@@ -138,9 +133,7 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   //creating item
   QgsAnnotationItem *item = registry.createItem( uuid );
   QVERIFY( !item );
-  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( u"mytype"_s, u"My Type"_s, u"My Types"_s, []() -> QgsAnnotationItem * {
-    return new TestItem();
-  } ) );
+  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( u"mytype"_s, u"My Type"_s, u"My Types"_s, []() -> QgsAnnotationItem * { return new TestItem(); } ) );
 
   item = registry.createItem( uuid );
   QVERIFY( item );

@@ -94,12 +94,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
-        scene = ModelerScene(self)
-        self.setModelScene(scene)
-
-        self.view().ensureVisible(0, 0, 10, 10)
-        self.view().scale(self.logicalDpiX() / 96, self.logicalDpiY() / 96)
-
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
 
@@ -107,8 +101,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             _model = model.create()
             _model.setSourceFilePath(model.sourceFilePath())
             self.setModel(_model)
-
-        self.view().centerOn(0, 0)
 
         self.processing_context = createContext()
 
@@ -377,22 +369,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             id = self.model().addChildAlgorithm(alg)
             self.repaintModel()
             self.endUndoCommand()
-
-            res, errors = self.model().validateChildAlgorithm(id)
-            if not res:
-                self.view().scene().showWarning(
-                    QCoreApplication.translate(
-                        "ModelerDialog", "Algorithm “{}” is invalid"
-                    ).format(alg.description()),
-                    self.tr("Algorithm is Invalid"),
-                    QCoreApplication.translate(
-                        "ModelerDialog",
-                        '<div style="color:palette(window-text);"><p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul></div>',
-                    ).format(alg.description(), "</li><li>".join(errors)),
-                    level=Qgis.MessageLevel.Warning,
-                )
-            else:
-                self.view().scene().messageBar().clearWidgets()
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20

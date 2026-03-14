@@ -132,8 +132,7 @@ void QgsSensorThingsSourceSelect::btnEdit_clicked()
 
 void QgsSensorThingsSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -169,18 +168,12 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   const QString providerUri = mConnectionWidget->sourceUri();
   QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
 
-  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    layerUri
-  );
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, layerUri );
 
   if ( !txtSubsetSQL->text().isEmpty() )
     uriParts.insert( u"sql"_s, txtSubsetSQL->text() );
 
-  layerUri = QgsProviderRegistry::instance()->encodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    uriParts
-  );
+  layerUri = QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uriParts );
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( u"entity"_s ).toString() );
 

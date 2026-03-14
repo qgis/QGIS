@@ -40,7 +40,6 @@ sync with map canvas (e.g. current view, active layer).
 #include "qgssnappingutils.h"
 %End
   public:
-
     QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
 %Docstring
 Constructor for QgsSnappingUtils
@@ -126,8 +125,7 @@ indexing is used
 
     struct LayerConfig
     {
-
-      LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u );
+        LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u );
 %Docstring
 Create a new configuration for a snapping layer.
 
@@ -146,13 +144,13 @@ Create a new configuration for a snapping layer.
 :param u: The unit in which the tolerance is specified
 %End
 
-      bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
-      bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
+        bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
+        bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
 
-      QgsVectorLayer *layer;
-      QgsPointLocator::Types type;
-      double tolerance;
-      Qgis::MapToolUnit unit;
+        QgsVectorLayer *layer;
+        QgsPointLocator::Types type;
+        double tolerance;
+        Qgis::MapToolUnit unit;
     };
 
     QList<QgsSnappingUtils::LayerConfig> layers() const;
@@ -234,7 +232,6 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
-
     virtual void prepareIndexStarting( int count );
 %Docstring
 Called when starting to index with snapToMap - can be overridden and

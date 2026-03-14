@@ -107,7 +107,7 @@ void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings
   r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
   r[3] = std::sin( alpha );
   r[4] = std::cos( alpha );
-  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
+  r[5] = -xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   a = r[0] * s[0] + r[1] * s[3];
@@ -140,4 +140,40 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   content += qgsDoubleToString( f ) + "\r\n";
 
   return content;
+}
+
+bool QgsMapSettingsUtils::isValidExtent( const QgsRectangle &extent )
+{
+  if ( extent.isEmpty() || !extent.isFinite() )
+  {
+    return false;
+  }
+
+  // Don't allow extents that are so small that they
+  // can't be accurately represented using a double. Excluding 0 avoids
+  // a divide by zero and an infinite loop when rendering to a new canvas.
+  // Excluding extents greater than 1 avoids doing unnecessary calculations.
+
+  // The scheme is to compare the width against the mean x coordinate
+  // (and height against mean y coordinate) and only allow zooms where
+  // the ratio indicates that there is more than about 12 significant
+  // figures (there are about 16 significant figures in a double).
+
+  if ( extent.width() > 0 && extent.height() > 0 && extent.width() < 1 && extent.height() < 1 )
+  {
+    // Use abs() on the extent to avoid the case where the extent is
+    // symmetrical about 0.
+    const double xMean = ( std::fabs( extent.xMinimum() ) + std::fabs( extent.xMaximum() ) ) * 0.5;
+    const double yMean = ( std::fabs( extent.yMinimum() ) + std::fabs( extent.yMaximum() ) ) * 0.5;
+
+    const double xRange = extent.width() / xMean;
+    const double yRange = extent.height() / yMean;
+
+    static const double MIN_PROPORTION = 1e-12;
+    if ( xRange < MIN_PROPORTION || yRange < MIN_PROPORTION )
+    {
+      return false;
+    }
+  }
+  return true;
 }

@@ -43,7 +43,8 @@ class TestQgsLayoutAtlas : public QgsTest
 
   public:
     TestQgsLayoutAtlas()
-      : QgsTest( u"Layout Atlas Tests"_s, u"atlas"_s ) {}
+      : QgsTest( u"Layout Atlas Tests"_s, u"atlas"_s )
+    {}
 
   private slots:
     void initTestCase();

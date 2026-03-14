@@ -34,8 +34,7 @@ const QString QgsMaterial::CLIP_PLANE_DEFINE = u"CLIPPING"_s;
 
 QgsMaterial::QgsMaterial( QNode *parent )
   : QMaterial( parent )
-{
-}
+{}
 
 QgsMaterial::~QgsMaterial() = default;
 

@@ -28,8 +28,7 @@
 
 QgsWidgetStateHelper::QgsWidgetStateHelper( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 {

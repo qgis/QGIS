@@ -39,7 +39,6 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 
 class CORE_EXPORT QgsAbstractPropertyCollection
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
@@ -48,7 +47,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
       sipType = sipType_QgsPropertyCollectionStack;
     else
       sipType = sipType_QgsAbstractPropertyCollection;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -318,7 +317,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     ///@endcond PRIVATE
 
   private:
-
     QString mName;
 };
 
@@ -343,7 +341,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 {
   public:
-
     /**
      * Constructor for QgsPropertyCollection
      * \param name collection name
@@ -400,7 +397,10 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * Returns the value of the property with the specified \a key.
      * \since QGIS 3.36
      */
-    template< class T> QVariant value( T key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const SIP_SKIP { return value( static_cast< int >( key ), context, defaultValue ); }
+    template< class T> QVariant value( T key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const SIP_SKIP
+    {
+      return value( static_cast< int >( key ), context, defaultValue );
+    }
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
@@ -459,10 +459,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      *
      * \since QGIS 3.36
      */
-    template< class T> void setProperty( T key,  const QVariant &value ) SIP_SKIP { setProperty( static_cast< int >( key ), value ); }
+    template< class T> void setProperty( T key, const QVariant &value ) SIP_SKIP { setProperty( static_cast< int >( key ), value ); }
 
   private:
-
     QHash<int, QgsProperty> mProperties;
 
     mutable bool mDirty = false;
@@ -485,7 +484,6 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollection
 {
   public:
-
     QgsPropertyCollectionStack() = default;
 
     ~QgsPropertyCollectionStack() override;
@@ -594,9 +592,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
-
     QList< QgsPropertyCollection * > mStack;
-
 };
 
 #endif // QGSPROPERTYCOLLECTION_H

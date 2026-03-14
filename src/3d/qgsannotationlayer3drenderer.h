@@ -64,7 +64,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
       sipType = sipType_QgsAnnotationLayer3DRenderer;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:

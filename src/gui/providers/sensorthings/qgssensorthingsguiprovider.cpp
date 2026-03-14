@@ -74,8 +74,7 @@ QgsAbstractDataSourceWidget *QgsSensorThingsSourceSelectProvider::createDataSour
 //
 
 QgsSensorThingsSourceWidgetProvider::QgsSensorThingsSourceWidgetProvider()
-{
-}
+{}
 
 QString QgsSensorThingsSourceWidgetProvider::providerKey() const
 {
@@ -101,8 +100,7 @@ QgsProviderSourceWidget *QgsSensorThingsSourceWidgetProvider::createWidget( QgsM
 //
 QgsSensorThingsProviderGuiMetadata::QgsSensorThingsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsSensorThingsProviderGuiMetadata::sourceSelectProviders()
 {
@@ -144,8 +142,7 @@ class QgsSensorThingsSubsetStringEditorProvider : public QgsSubsetStringEditorPr
 
 QList<QgsSubsetStringEditorProvider *> QgsSensorThingsProviderGuiMetadata::subsetStringEditorProviders()
 {
-  return QList<QgsSubsetStringEditorProvider *>()
-         << new QgsSensorThingsSubsetStringEditorProvider;
+  return QList<QgsSubsetStringEditorProvider *>() << new QgsSensorThingsSubsetStringEditorProvider;
 }
 
 ///@endcond

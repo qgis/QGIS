@@ -239,7 +239,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const AppOptions DEFAULT_OPTIONS;
 
     //! Constructor
-    QgisApp( QSplashScreen *splash, AppOptions options = DEFAULT_OPTIONS, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp(
+      QSplashScreen *splash,
+      AppOptions options = DEFAULT_OPTIONS,
+      const QString &rootProfileLocation = QString(),
+      const QString &activeProfile = QString(),
+      QWidget *parent = nullptr,
+      Qt::WindowFlags fl = Qt::Window
+    );
     //! Constructor for unit tests
     QgisApp();
 
@@ -2368,7 +2375,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
 
-    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &newFilename, bool addToCanvas, const QString &layerName, const QString &encoding, const QString &vectorFileName )> &onSuccess, const std::function<void( int error, const QString &errorMessage, const QString &filePath )> &onFailure, QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::Option::AllOptions, const QString &dialogTitle = QString() );
+    QString saveAsVectorFileGeneral(
+      QgsVectorLayer *vlayer,
+      bool symbologyOption,
+      bool onlySelected,
+      bool defaultToAddToMap,
+      const std::function<void( const QString &newFilename, bool addToCanvas, const QString &layerName, const QString &encoding, const QString &vectorFileName )> &onSuccess,
+      const std::function<void( int error, const QString &errorMessage, const QString &filePath )> &onFailure,
+      QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::Option::AllOptions,
+      const QString &dialogTitle = QString()
+    );
 
     QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
 

@@ -323,9 +323,9 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   toggleStyleSpecificControls( style );
 
   //label vertical/horizontal placement
-  mDistanceLabelPlacementComboBox->setCurrentIndex( mDistanceLabelPlacementComboBox->findData( static_cast<int>(
-    distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() )
-  ) ) );
+  mDistanceLabelPlacementComboBox->setCurrentIndex(
+    mDistanceLabelPlacementComboBox->findData( static_cast<int>( distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() ) ) )
+  );
 
   //alignment
 
@@ -504,7 +504,9 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   return;
 }
 
-QgsLayoutScaleBarWidget::DistanceLabelPlacement QgsLayoutScaleBarWidget::distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement )
+QgsLayoutScaleBarWidget::DistanceLabelPlacement QgsLayoutScaleBarWidget::distanceLabelPlacement(
+  Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement
+)
 {
   switch ( horizontalPlacement )
   {
@@ -613,7 +615,9 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
   mLabelBarSpaceLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
   mDistanceLabelPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
-  mLabelVerticalPlacementLabel->setEnabled( renderer ? ( renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement || renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement ) : true );
+  mLabelVerticalPlacementLabel->setEnabled(
+    renderer ? ( renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement || renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement ) : true
+  );
   mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mAlignmentLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );

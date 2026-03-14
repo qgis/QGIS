@@ -41,10 +41,7 @@ class ANALYSIS_EXPORT QgsAspectFilter : public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-    const QString openClProgramBaseName() const override
-    {
-      return u"aspect"_s;
-    }
+    const QString openClProgramBaseName() const override { return u"aspect"_s; }
 #endif
 };
 

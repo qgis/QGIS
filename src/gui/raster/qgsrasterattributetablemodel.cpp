@@ -23,8 +23,7 @@
 QgsRasterAttributeTableModel::QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent )
   : QAbstractTableModel( parent )
   , mRat( rat )
-{
-}
+{}
 
 bool QgsRasterAttributeTableModel::editable() const
 {

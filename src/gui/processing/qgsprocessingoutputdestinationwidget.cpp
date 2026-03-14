@@ -51,11 +51,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setupUi( this );
 
-  mActionTemporaryOutputIcon = new QAction(
-    QgsApplication::getThemeIcon( u"/mActionCreateMemory.svg"_s ),
-    tr( "Temporary Output" ),
-    this
-  );
+  mActionTemporaryOutputIcon = new QAction( QgsApplication::getThemeIcon( u"/mActionCreateMemory.svg"_s ), tr( "Temporary Output" ), this );
 
   leText->setClearButtonEnabled( false );
 
@@ -175,7 +171,8 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
 
   QString provider;
   QString uri;
-  if ( !key.isEmpty() && key != QgsProcessing::TEMPORARY_OUTPUT
+  if ( !key.isEmpty()
+       && key != QgsProcessing::TEMPORARY_OUTPUT
        && !key.startsWith( "memory:"_L1 )
        && !key.startsWith( "ogr:"_L1 )
        && !key.startsWith( "postgres:"_L1 )
@@ -468,7 +465,8 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
 
   const bool dontConfirmOverwrite = mParameter->metadata().value( u"widget_wrapper"_s ).toMap().value( u"dontconfirmoverwrite"_s, false ).toBool();
 
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save file" ), path, fileFilter, &lastFilter, dontConfirmOverwrite ? QFileDialog::Options( QFileDialog::DontConfirmOverwrite ) : QFileDialog::Options() );
+  QString filename
+    = QFileDialog::getSaveFileName( this, tr( "Save file" ), path, fileFilter, &lastFilter, dontConfirmOverwrite ? QFileDialog::Options( QFileDialog::DontConfirmOverwrite ) : QFileDialog::Options() );
   if ( !filename.isEmpty() )
   {
     mUseTemporary = false;
@@ -608,9 +606,7 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [widget]( const QgsMimeDataUtils::Uri & ) {
-      widget->acceptPanel();
-    } );
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [widget]( const QgsMimeDataUtils::Uri & ) { widget->acceptPanel(); } );
     connect( widget, &QgsPanelWidget::panelAccepted, this, [this, widget]() {
       if ( widget->uri().uri.isEmpty() )
         setValue( QVariant() );
@@ -717,19 +713,20 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
            || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-         && u.layerType == "vector"_L1 && u.providerKey == "ogr"_L1 )
+         && u.layerType == "vector"_L1
+         && u.providerKey == "ogr"_L1 )
     {
       return u.uri;
     }
-    else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
-                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-              && u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1 )
+    else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == "raster"_L1
+              && u.providerKey == "gdal"_L1 )
     {
       return u.uri;
     }
-    else if ( ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName()
-                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-              && u.layerType == "pointcloud"_L1 && ( u.providerKey == "ept"_L1 || u.providerKey == "pdal"_L1 ) )
+    else if ( ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == "pointcloud"_L1
+              && ( u.providerKey == "ept"_L1 || u.providerKey == "pdal"_L1 ) )
     {
       return u.uri;
     }
@@ -740,8 +737,7 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
       return u.uri;
 
 #endif
-    else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName()
-              && u.layerType == "directory"_L1 )
+    else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() && u.layerType == "directory"_L1 )
     {
       return u.uri;
     }

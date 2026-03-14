@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutObject: QObject, QgsExpressionContextGenerator
+class QgsLayoutObject : QObject, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 A base class for objects which belong to a layout.
@@ -104,7 +104,7 @@ A base class for objects which belong to a layout.
           *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
           break;
 
-        // did you read that comment above? NO? Go read it now. You're about to break stuff.
+          // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
         default:
           sipType = sipType_QgsLayoutItem;
@@ -117,7 +117,7 @@ A base class for objects which belong to a layout.
 
 
     enum class DataDefinedProperty /BaseType=IntEnum/
-      {
+    {
       NoProperty,
       AllProperties,
       TestProperty,
@@ -364,7 +364,6 @@ Emitted when the object's properties change.
 %End
 
   protected:
-
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores object properties within an XML DOM element.

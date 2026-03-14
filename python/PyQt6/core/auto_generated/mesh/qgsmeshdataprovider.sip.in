@@ -21,61 +21,60 @@ struct QgsMesh
 %TypeHeaderCode
 #include "qgsmeshdataprovider.h"
 %End
+    enum ElementType /BaseType=IntEnum/
+    {
+      Vertex,
+      Edge,
+      Face
+    };
 
-  enum ElementType /BaseType=IntEnum/
-  {
-    Vertex,
-    Edge,
-    Face
-  };
-
-  bool contains( const ElementType &type ) const;
+    bool contains( const ElementType &type ) const;
 %Docstring
 Returns whether the mesh contains at mesh elements of given type
 
 .. versionadded:: 3.14
 %End
 
-  int vertexCount() const;
+    int vertexCount() const;
 %Docstring
 Returns number of vertices
 %End
-  int faceCount() const;
+    int faceCount() const;
 %Docstring
 Returns number of faces
 %End
 
-  int edgeCount() const;
+    int edgeCount() const;
 %Docstring
 Returns number of edge
 
 .. versionadded:: 3.14
 %End
 
-  QgsMeshVertex vertex( int index ) const;
+    QgsMeshVertex vertex( int index ) const;
 %Docstring
 Returns a vertex at the index
 %End
-  QgsMeshFace face( int index ) const;
+    QgsMeshFace face( int index ) const;
 %Docstring
 Returns a face at the index
 %End
 
-  QgsMeshEdge edge( int index ) const;
+    QgsMeshEdge edge( int index ) const;
 %Docstring
 Returns an edge at the index
 
 .. versionadded:: 3.14
 %End
 
-  void clear();
+    void clear();
 %Docstring
 Remove all vertices, edges and faces
 
 .. versionadded:: 3.14
 %End
 
-  static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
+    static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
 %Docstring
 Compare two faces, return ``True`` if they are equivalent : same indexes
 and same clock wise
@@ -114,7 +113,6 @@ in memory or read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
-
     virtual ~QgsMeshDataSourceInterface();
 
     bool contains( const QgsMesh::ElementType &type ) const;
@@ -215,7 +213,7 @@ Returns list of additional dataset file URIs added using
 :py:func:`~QgsMeshDatasetSourceInterface.addDataset` calls.
 %End
 
-    virtual int datasetGroupCount( ) const = 0;
+    virtual int datasetGroupCount() const = 0;
 %Docstring
 Returns number of datasets groups loaded
 %End
@@ -307,12 +305,9 @@ Returns whether the faces are active for particular dataset
 .. versionadded:: 3.6
 %End
 
- virtual bool persistDatasetGroup( const QString &path,
-        const QgsMeshDatasetGroupMetadata &meta,
-        const QVector<QgsMeshDataBlock> &datasetValues,
-        const QVector<QgsMeshDataBlock> &datasetActive,
-        const QVector<double> &times
-                                                      ) /Deprecated="Since 3.12.3. "/;
+ virtual bool persistDatasetGroup(
+      const QString &path, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times
+    ) /Deprecated="Since 3.12.3. "/;
 %Docstring
 Creates a new dataset group from a data and persists it into a
 destination path
@@ -340,13 +335,14 @@ On success, the mesh's dataset group count is changed
 .. deprecated:: 3.12.3
 %End
 
-    virtual bool persistDatasetGroup( const QString &outputFilePath,
-                                      const QString &outputDriver,
-                                      const QgsMeshDatasetGroupMetadata &meta,
-                                      const QVector<QgsMeshDataBlock> &datasetValues,
-                                      const QVector<QgsMeshDataBlock> &datasetActive,
-                                      const QVector<double> &times
-                                    ) = 0;
+    virtual bool persistDatasetGroup(
+      const QString &outputFilePath,
+      const QString &outputDriver,
+      const QgsMeshDatasetGroupMetadata &meta,
+      const QVector<QgsMeshDataBlock> &datasetValues,
+      const QVector<QgsMeshDataBlock> &datasetActive,
+      const QVector<double> &times
+    ) = 0;
 %Docstring
 Creates a new dataset group from a data and persists it into a
 destination path
@@ -369,11 +365,7 @@ On success, the mesh's dataset group count is changed
 %End
 
 
-    virtual bool persistDatasetGroup( const QString &outputFilePath,
-                                      const QString &outputDriver,
-                                      QgsMeshDatasetSourceInterface *source,
-                                      int datasetGroupIndex
-                                    ) = 0;
+    virtual bool persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, QgsMeshDatasetSourceInterface *source, int datasetGroupIndex ) = 0;
 %Docstring
 Saves a an existing dataset group provided by ``source`` to a file with
 a specified driver
@@ -390,10 +382,7 @@ On success, the mesh's dataset group count is changed
 .. versionadded:: 3.16
 %End
 
-    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
-                                            int groupIndex,
-                                            qint64 time,
-                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime, int groupIndex, qint64 time, QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 %Docstring
 Returns the dataset index of the dataset in a specific dataset group at
 ``time`` from the ``reference`` time
@@ -406,10 +395,7 @@ Returns the dataset index of the dataset in a specific dataset group at
 :return: the dataset index
 %End
 
-    QList<QgsMeshDatasetIndex> datasetIndexInTimeInterval( const QDateTime &referenceTime,
-        int groupIndex,
-        qint64 time1,
-        qint64 time2 ) const;
+    QList<QgsMeshDatasetIndex> datasetIndexInTimeInterval( const QDateTime &referenceTime, int groupIndex, qint64 time1, qint64 time2 ) const;
 %Docstring
 Returns a list of dataset indexes of the dataset in a specific dataset
 group that are between ``time1`` and ``time2`` from the ``reference``
@@ -431,7 +417,7 @@ time
 };
 
 
-class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
+class QgsMeshDataProvider : QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
 %Docstring(signature="appended")
 Base class for providing data for :py:class:`QgsMeshLayer`.
@@ -449,9 +435,7 @@ Responsible for reading native mesh data
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    QgsMeshDataProvider( const QString &uri,
-                         const QgsDataProvider::ProviderOptions &providerOptions,
-                         Qgis::DataProviderReadFlags = Qgis::DataProviderReadFlags() );
+    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags = Qgis::DataProviderReadFlags() );
 %Docstring
 Ctor
 %End
@@ -469,7 +453,7 @@ Sets the temporal unit of the provider and reload data if it changes.
 %End
 
 
-    virtual QgsMeshDriverMetadata driverMetadata()  const;
+    virtual QgsMeshDriverMetadata driverMetadata() const;
 %Docstring
 Returns the mesh driver metadata of the provider
 
@@ -502,7 +486,6 @@ emits dataChanged when successful
 %Docstring
 Emitted when some new dataset groups have been added
 %End
-
 };
 
 /************************************************************************

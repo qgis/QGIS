@@ -28,11 +28,9 @@
 */
 class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemTextTable, for the specified \a layout.
      *

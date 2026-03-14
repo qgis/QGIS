@@ -27,7 +27,9 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling );
+    QgsMssqlGeomColumnTypeThread(
+      const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling
+    );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.

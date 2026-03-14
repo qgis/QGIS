@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"rulebased"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsRuleBased3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -292,7 +291,9 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   }
 }
 
-QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, const QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature(
+  const QgsFeature &feature, Qgs3DRenderContext &context, const QgsRuleBased3DRenderer::RuleToHandlerMap &handlers
+) const
 {
   if ( !isFilterOK( feature, context ) )
     return Filtered;
@@ -357,8 +358,7 @@ bool QgsRuleBased3DRenderer::Rule::isFilterOK( const QgsFeature &f, Qgs3DRenderC
 
 QgsRuleBased3DRenderer::QgsRuleBased3DRenderer( QgsRuleBased3DRenderer::Rule *root )
   : mRootRule( root )
-{
-}
+{}
 
 QgsRuleBased3DRenderer::~QgsRuleBased3DRenderer()
 {

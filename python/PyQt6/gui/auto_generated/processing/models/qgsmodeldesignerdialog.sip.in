@@ -131,7 +131,7 @@ retrieve a Processing context for the dialog when required.
     QAction *actionSaveInProject();
     QAction *actionRun();
     QgsMessageBar *messageBar();
-    QGraphicsView *view();
+    QgsModelGraphicsView *view();
 
     void setDirty( bool dirty );
 

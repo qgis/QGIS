@@ -58,8 +58,10 @@ void QgsExportLayersInformationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExportLayersInformationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a polygon layer with features corresponding to the extent of selected layer(s).\n\n"
-                      "Additional layer details - CRS, provider name, file path, layer name, subset filter, abstract and attribution - are attached as attributes to each feature." );
+  return QObject::tr(
+    "This algorithm creates a polygon layer with features corresponding to the extent of selected layer(s).\n\n"
+    "Additional layer details - CRS, provider name, file path, layer name, subset filter, abstract and attribution - are attached as attributes to each feature."
+  );
 }
 
 QString QgsExportLayersInformationAlgorithm::shortDescription() const
@@ -134,23 +136,17 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     QgsFeature feature;
 
     QgsAttributes attributes;
-    attributes << layer->name()
-               << layer->source()
-               << layer->crs().authid();
+    attributes << layer->name() << layer->source() << layer->crs().authid();
     if ( layer->dataProvider() )
     {
       const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->dataProvider()->name(), layer->source() );
-      attributes << layer->dataProvider()->name()
-                 << parts[u"path"_s]
-                 << parts[u"layerName"_s]
-                 << parts[u"subset"_s];
+      attributes << layer->dataProvider()->name() << parts[u"path"_s] << parts[u"layerName"_s] << parts[u"subset"_s];
     }
     else
     {
       attributes << QVariant() << QVariant() << QVariant() << QVariant();
     }
-    attributes << layer->metadata().rights().join( ';' )
-               << layer->serverProperties()->abstract();
+    attributes << layer->metadata().rights().join( ';' ) << layer->serverProperties()->abstract();
     feature.setAttributes( attributes );
 
     QgsRectangle rect = layer->extent();

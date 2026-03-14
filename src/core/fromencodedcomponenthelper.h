@@ -46,4 +46,3 @@ inline ushort encodeNibble( ushort c )
     This method is named qt_urlRecodeByteArray in Qt's internals
 */
 QString CORE_EXPORT fromEncodedComponent_helper( const QByteArray &ba );
-

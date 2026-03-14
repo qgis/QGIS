@@ -36,7 +36,9 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "WFS / OGC API - Features" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddWfsLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsWFSSourceSelect( parent, fl, widgetMode );
     }
@@ -64,7 +66,10 @@ class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
       // If we have an existing full SQL request, open the SQL editor
       // Otherwise use the standard expression builder.
       const QString subsetString = wfsProvider->subsetString();
-      if ( subsetString.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) || subsetString.startsWith( "SELECT\t"_L1, Qt::CaseInsensitive ) || subsetString.startsWith( "SELECT\r"_L1, Qt::CaseInsensitive ) || subsetString.startsWith( "SELECT\n"_L1, Qt::CaseInsensitive ) )
+      if ( subsetString.startsWith( "SELECT "_L1, Qt::CaseInsensitive )
+           || subsetString.startsWith( "SELECT\t"_L1, Qt::CaseInsensitive )
+           || subsetString.startsWith( "SELECT\r"_L1, Qt::CaseInsensitive )
+           || subsetString.startsWith( "SELECT\n"_L1, Qt::CaseInsensitive ) )
       {
         return QgsWfsSubsetStringEditor::create( layer, wfsProvider, parent, fl );
       }
@@ -76,8 +81,7 @@ class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
 
 QgsWfsProviderGuiMetadata::QgsWfsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWFSProvider::WFS_PROVIDER_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProviders()
 {
@@ -88,14 +92,12 @@ QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProvider
 
 QList<QgsDataItemGuiProvider *> QgsWfsProviderGuiMetadata::dataItemGuiProviders()
 {
-  return QList<QgsDataItemGuiProvider *>()
-         << new QgsWfsDataItemGuiProvider;
+  return QList<QgsDataItemGuiProvider *>() << new QgsWfsDataItemGuiProvider;
 }
 
 QList<QgsSubsetStringEditorProvider *> QgsWfsProviderGuiMetadata::subsetStringEditorProviders()
 {
-  return QList<QgsSubsetStringEditorProvider *>()
-         << new QgsWfsSubsetStringEditorProvider;
+  return QList<QgsSubsetStringEditorProvider *>() << new QgsWfsSubsetStringEditorProvider;
 }
 
 

@@ -60,8 +60,10 @@ QString QgsFixGeometryGapAlgorithm::groupId() const
 
 QString QgsFixGeometryGapAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm fills the gaps based on a gap and neighbors layer from the \"Small gaps\" algorithm in the \"Check geometry\" section.\n\n"
-                      "3 different fixing methods are available, which will give different results." );
+  return QObject::tr(
+    "This algorithm fills the gaps based on a gap and neighbors layer from the \"Small gaps\" algorithm in the \"Check geometry\" section.\n\n"
+    "3 different fixing methods are available, which will give different results."
+  );
 }
 
 QgsFixGeometryGapAlgorithm *QgsFixGeometryGapAlgorithm::createInstance() const
@@ -73,49 +75,31 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
 {
   Q_UNUSED( configuration )
 
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"NEIGHBORS"_s, QObject::tr( "Neighbors layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector )
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"GAPS"_s, QObject::tr( "Gaps layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"NEIGHBORS"_s, QObject::tr( "Neighbors layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"GAPS"_s, QObject::tr( "Gaps layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometryGapCheck( nullptr, QVariantMap() ).availableResolutionMethods();
-    std::transform(
-      checkMethods.cbegin(), checkMethods.cend() - 1, std::inserter( methods, methods.begin() ),
-      []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); }
-    );
+    std::transform( checkMethods.cbegin(), checkMethods.cend() - 1, std::inserter( methods, methods.begin() ), []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); } );
   }
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), methods ) );
 
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
-    QString(), u"INPUT"_s
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"ERROR_ID_IDX"_s, QObject::tr( "Field of error id" ),
-    u"gc_errorid"_s, u"GAPS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterField( u"ERROR_ID_IDX"_s, QObject::tr( "Field of error id" ), u"gc_errorid"_s, u"GAPS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"REPORT"_s, QObject::tr( "Report layer from fixing gaps" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"REPORT"_s, QObject::tr( "Report layer from fixing gaps" ), Qgis::ProcessingSourceType::VectorPoint ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
-  );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -170,9 +154,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the neighbors layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
@@ -180,9 +162,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFields reportFields = gaps->fields();
   reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
   reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
-    parameters, u"REPORT"_s, context, dest_report, reportFields, Qgis::WkbType::Point, gaps->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, u"REPORT"_s, context, dest_report, reportFields, Qgis::WkbType::Point, gaps->sourceCrs() ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
@@ -242,15 +222,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
 
     QMap<QString, QgsFeatureIds> neighborsMap;
     neighborsMap.insert( fixedLayer->id(), neighborIds );
-    QgsGeometryGapCheckError gapError = QgsGeometryGapCheckError(
-      &check,
-      fixedLayer->id(),
-      gapFeature.geometry(),
-      neighborsMap,
-      0,
-      QgsRectangle(),
-      QgsRectangle()
-    );
+    QgsGeometryGapCheckError gapError = QgsGeometryGapCheckError( &check, fixedLayer->id(), gapFeature.geometry(), neighborsMap, 0, QgsRectangle(), QgsRectangle() );
 
     QgsGeometryCheck::Changes changes;
     check.fixError( featurePools, &gapError, method, QMap<QString, int>(), changes );

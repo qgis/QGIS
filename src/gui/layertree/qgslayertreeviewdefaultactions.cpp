@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view )
   : QObject( view )
   , mView( view )
-{
-}
+{}
 
 QAction *QgsLayerTreeViewDefaultActions::actionAddGroup( QObject *parent )
 {
@@ -512,9 +511,7 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
   QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
   std::reverse( selectedNodes.begin(), selectedNodes.end() );
   // sort the nodes by depth first to avoid moving a group before its contents
-  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) {
-    return a->depth() > b->depth();
-  } );
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) { return a->depth() > b->depth(); } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
@@ -529,9 +526,7 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
 {
   QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
   // sort the nodes by depth first to avoid moving a group before its contents
-  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) {
-    return a->depth() > b->depth();
-  } );
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) { return a->depth() > b->depth(); } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );

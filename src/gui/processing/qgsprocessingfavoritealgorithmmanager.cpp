@@ -26,7 +26,8 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( u"favorite-algorithms"_s, QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
+const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms
+  = new QgsSettingsEntryStringList( u"favorite-algorithms"_s, QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
 
 QgsProcessingFavoriteAlgorithmManager::QgsProcessingFavoriteAlgorithmManager( QObject *parent )
   : QObject( parent )

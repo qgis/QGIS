@@ -50,11 +50,9 @@
 class QgsTextBufferSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextBufferSettingsPrivate()
       : color( Qt::white )
-    {
-    }
+    {}
 
     QgsTextBufferSettingsPrivate( const QgsTextBufferSettingsPrivate &other )
       : QSharedData( other )
@@ -68,8 +66,7 @@ class QgsTextBufferSettingsPrivate : public QSharedData
       , joinStyle( other.joinStyle )
       , blendMode( other.blendMode )
       , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
-    {
-    }
+    {}
 
     bool enabled = false;
     double size = 1;
@@ -90,15 +87,13 @@ class QgsTextBufferSettingsPrivate : public QSharedData
 class QgsTextBackgroundSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextBackgroundSettingsPrivate()
       : size( QSizeF( 0.0, 0.0 ) )
       , offset( QPointF( 0.0, 0.0 ) )
       , radii( QSizeF( 0.0, 0.0 ) )
       , fillColor( Qt::white )
       , strokeColor( Qt::darkGray )
-    {
-    }
+    {}
 
     QgsTextBackgroundSettingsPrivate( const QgsTextBackgroundSettingsPrivate &other )
       : QSharedData( other )
@@ -128,12 +123,11 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
       , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
       , markerSymbol( other.markerSymbol ? other.markerSymbol->clone() : nullptr )
       , fillSymbol( other.fillSymbol ? other.fillSymbol->clone() : nullptr )
-    {
-    }
+    {}
 
     bool enabled = false;
     QgsTextBackgroundSettings::ShapeType type = QgsTextBackgroundSettings::ShapeRectangle;
-    QString svgFile;   //!< Absolute path to SVG file
+    QString svgFile; //!< Absolute path to SVG file
     QgsTextBackgroundSettings::SizeType sizeType = QgsTextBackgroundSettings::SizeBuffer;
     QSizeF size;
     Qgis::RenderUnit sizeUnits = Qgis::RenderUnit::Millimeters;
@@ -163,16 +157,12 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
 };
 
 
-
 class QgsTextShadowSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextShadowSettingsPrivate()
       : color( QColor( 0, 0, 0 ) )
-    {
-
-    }
+    {}
 
     QgsTextShadowSettingsPrivate( const QgsTextShadowSettingsPrivate &other )
       : QSharedData( other )
@@ -191,8 +181,7 @@ class QgsTextShadowSettingsPrivate : public QSharedData
       , color( other.color )
       , opacity( other.opacity )
       , blendMode( other.blendMode )
-    {
-    }
+    {}
 
     bool enabled = false;
     QgsTextShadowSettings::ShadowPlacement shadowUnder = QgsTextShadowSettings::ShadowLowest;
@@ -218,11 +207,7 @@ class QgsTextShadowSettingsPrivate : public QSharedData
 class QgsTextMaskSettingsPrivate : public QSharedData
 {
   public:
-
-    QgsTextMaskSettingsPrivate()
-    {
-
-    }
+    QgsTextMaskSettingsPrivate() {}
 
     QgsTextMaskSettingsPrivate( const QgsTextMaskSettingsPrivate &other )
       : QSharedData( other )
@@ -235,8 +220,7 @@ class QgsTextMaskSettingsPrivate : public QSharedData
       , opacity( other.opacity )
       , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
       , maskedSymbolLayers( other.maskedSymbolLayers )
-    {
-    }
+    {}
 
     bool enabled = false;
     QgsTextMaskSettings::MaskType type = QgsTextMaskSettings::MaskBuffer;
@@ -256,11 +240,9 @@ class QgsTextMaskSettingsPrivate : public QSharedData
 class QgsTextSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextSettingsPrivate()
       : textColor( Qt::black )
-    {
-    }
+    {}
 
     QgsTextSettingsPrivate( const QgsTextSettingsPrivate &other )
       : QSharedData( other )
@@ -288,8 +270,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , tabStopDistanceUnits( other.tabStopDistanceUnits )
       , tabStopDistanceMapUnitScale( other.tabStopDistanceMapUnitScale )
       , mDataDefinedProperties( other.mDataDefinedProperties )
-    {
-    }
+    {}
 
     bool isValid = false;
 
@@ -301,7 +282,7 @@ class QgsTextSettingsPrivate : public QSharedData
     bool forcedItalic = false;
     Qgis::RenderUnit fontSizeUnits = Qgis::RenderUnit::Points;
     QgsMapUnitScale fontSizeMapUnitScale;
-    double fontSize = 10 ; //may differ from size in textFont due to units (e.g., size in map units)
+    double fontSize = 10; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;

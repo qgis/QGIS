@@ -29,8 +29,7 @@
 
 QgsAnnotationMapTool::QgsAnnotationMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
-{
-}
+{}
 
 const QgsRenderedAnnotationItemDetails *QgsAnnotationMapTool::findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds )
 {

@@ -268,7 +268,8 @@ void QgsQueryBuilder::test()
   }
   else if ( mLayer->dataProvider()->hasErrors() )
   {
-    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+    QMessageBox::
+      warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
     mLayer->dataProvider()->clearErrors();
   }
   else
@@ -286,7 +287,8 @@ void QgsQueryBuilder::accept()
       //error in query - show the problem
       if ( mLayer->dataProvider()->hasErrors() )
       {
-        QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+        QMessageBox::
+          warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
         mLayer->dataProvider()->clearErrors();
       }
       else

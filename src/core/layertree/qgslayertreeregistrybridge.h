@@ -46,7 +46,6 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * A structure to define the insertion point to the layer tree.
      * This represents the current layer tree group and index where newly added map layers should be inserted into.
@@ -54,12 +53,14 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
      */
     struct InsertionPoint
     {
-      //! Constructs an insertion point as layer tree group with its corresponding position.
-      InsertionPoint( QgsLayerTreeGroup *group, int position )
-        : group( group ), position( position ) {}
+        //! Constructs an insertion point as layer tree group with its corresponding position.
+        InsertionPoint( QgsLayerTreeGroup *group, int position )
+          : group( group )
+          , position( position )
+        {}
 
-      QgsLayerTreeGroup *group;
-      int position = 0;
+        QgsLayerTreeGroup *group;
+        int position = 0;
     };
 
     //! Create the instance that synchronizes given project with a layer tree root

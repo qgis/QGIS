@@ -17,8 +17,7 @@
 
 Qgs3DRendererAbstractMetadata::Qgs3DRendererAbstractMetadata( const QString &type )
   : mType( type )
-{
-}
+{}
 
 QString Qgs3DRendererAbstractMetadata::type() const
 {

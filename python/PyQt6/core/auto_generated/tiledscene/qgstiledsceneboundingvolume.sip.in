@@ -22,7 +22,6 @@ Represents a bounding volume for a tiled scene.
 #include "qgstiledsceneboundingvolume.h"
 %End
   public:
-
     QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box = QgsOrientedBox3D() );
 %Docstring
 Constructor for QgsTiledSceneBoundingVolume, with the specified oriented

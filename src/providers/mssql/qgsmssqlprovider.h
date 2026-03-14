@@ -112,7 +112,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
+    bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -282,13 +282,16 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsMssqlProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    bool saveStyle(
+      const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
+    ) override;
 
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
@@ -316,7 +319,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
-
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
   private:
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin = QString() ) const;

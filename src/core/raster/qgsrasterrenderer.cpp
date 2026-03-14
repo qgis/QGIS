@@ -39,19 +39,18 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
   : QgsRasterInterface( input )
   , mType( type )
-{
-}
+{}
 
 QgsRasterRenderer::~QgsRasterRenderer()
-{
-
-}
+{}
 
 int QgsRasterRenderer::bandCount() const
 {
-  if ( mOn ) return 1;
+  if ( mOn )
+    return 1;
 
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
@@ -60,9 +59,11 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
 
-  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
+  if ( mOn )
+    return Qgis::DataType::ARGB32_Premultiplied;
 
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
@@ -80,7 +81,8 @@ bool QgsRasterRenderer::canCreateRasterAttributeTable() const
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !input ) return false;
+  if ( !input )
+    return false;
 
   if ( !mOn )
   {
@@ -125,7 +127,6 @@ bool QgsRasterRenderer::usesTransparency() const
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
   mRasterTransparency.reset( t );
-
 }
 
 QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
@@ -207,7 +208,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( u"rasterTransparency"_s );
   if ( !rasterTransparencyElem.isNull() )
   {
-    mRasterTransparency = std::make_unique<QgsRasterTransparency>( );
+    mRasterTransparency = std::make_unique<QgsRasterTransparency>();
 
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
@@ -261,9 +262,7 @@ bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 
 bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
 {
-  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
-       mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet &&
-       mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent && mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet && mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
   {
     return true;
   }

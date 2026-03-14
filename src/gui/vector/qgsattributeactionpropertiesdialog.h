@@ -41,7 +41,19 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog : public QDialog, private Ui
     /**
      * Constructor for QgsAttributeActionPropertiesDialog.
      */
-    QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsAttributeActionPropertiesDialog(
+      Qgis::AttributeActionType type,
+      const QString &description,
+      const QString &shortTitle,
+      const QString &iconPath,
+      const QString &actionText,
+      bool capture,
+      const QSet<QString> &actionScopes,
+      const QString &notificationMessage,
+      bool isEnabledOnlyWhenEditable,
+      QgsVectorLayer *layer,
+      QWidget *parent = nullptr
+    );
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 

@@ -49,8 +49,13 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
-                      QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )
+Qgs3DAxis::Qgs3DAxis(
+  Qgs3DMapCanvas *canvas,
+  Qt3DCore::QEntity *parent3DScene,
+  Qgs3DMapScene *mapScene, //
+  QgsCameraController *cameraCtrl,
+  Qgs3DMapSettings *map
+)
   : QObject( canvas )
   , mMapSettings( map )
   , mCanvas( canvas )
@@ -770,9 +775,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::XAxis:
       mTextX = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextX->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextX, text );
-      } );
+      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextX, text ); } );
       mTextTransformX = new Qt3DCore::QTransform();
       mTextCoordX = QVector3D( mCylinderLength + coneLength / 2.0f, 0.0f, 0.0f );
 
@@ -786,9 +789,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::YAxis:
       mTextY = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextY->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextY, text );
-      } );
+      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextY, text ); } );
       mTextTransformY = new Qt3DCore::QTransform();
       mTextCoordY = QVector3D( 0.0f, mCylinderLength + coneLength / 2.0f, 0.0f );
 
@@ -803,9 +804,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::ZAxis:
       mTextZ = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextZ->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextZ, text );
-      } );
+      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextZ, text ); } );
       mTextTransformZ = new Qt3DCore::QTransform();
       mTextCoordZ = QVector3D( 0.0f, 0.0f, mCylinderLength + coneLength / 2.0f );
 
@@ -920,10 +919,7 @@ void Qgs3DAxis::onCameraUpdate()
 {
   Qt3DRender::QCamera *parentCamera = mCameraController->camera();
 
-  if ( parentCamera->viewVector() != mPreviousVector
-       && !std::isnan( parentCamera->viewVector().x() )
-       && !std::isnan( parentCamera->viewVector().y() )
-       && !std::isnan( parentCamera->viewVector().z() ) )
+  if ( parentCamera->viewVector() != mPreviousVector && !std::isnan( parentCamera->viewVector().x() ) && !std::isnan( parentCamera->viewVector().y() ) && !std::isnan( parentCamera->viewVector().z() ) )
   {
     mPreviousVector = parentCamera->viewVector();
 

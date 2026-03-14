@@ -137,9 +137,7 @@ QgsFindFilesByPatternDialog::QgsFindFilesByPatternDialog( QWidget *parent )
   setLayout( vLayout );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mWidget, &QgsFindFilesByPatternWidget::findComplete, this, [this]( const QStringList &files ) {
-    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !files.empty() );
-  } );
+  connect( mWidget, &QgsFindFilesByPatternWidget::findComplete, this, [this]( const QStringList &files ) { mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !files.empty() ); } );
 }
 
 QStringList QgsFindFilesByPatternDialog::files() const

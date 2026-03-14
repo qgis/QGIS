@@ -80,12 +80,10 @@ void TestQgsMaterialRegistry::cleanupTestCase()
 }
 
 void TestQgsMaterialRegistry::init()
-{
-}
+{}
 
 void TestQgsMaterialRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsMaterialRegistry::metadata()
 {

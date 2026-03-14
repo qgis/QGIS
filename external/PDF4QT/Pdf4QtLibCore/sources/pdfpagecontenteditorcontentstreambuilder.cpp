@@ -26,6 +26,7 @@
 #include "pdfstreamfilters.h"
 #include "pdfpainterutils.h"
 
+#include <exception>
 #include <QBuffer>
 #include <QStringBuilder>
 #include <QXmlStreamReader>
@@ -487,7 +488,43 @@ void PDFPageContentEditorContentStreamBuilder::writeEditedElement(const PDFEdite
 
         if (!text.isEmpty())
         {
+            auto previousOverrides = m_fontOverrides;
+            m_fontOverrides.clear();
+
+            auto addFontOverride = [this](const PDFFontPointer& font)
+            {
+                if (font && !font->getFontId().isEmpty())
+                {
+                    m_fontOverrides.insert(font->getFontId(), font);
+                }
+            };
+
+            PDFPageContentProcessorState textState = element->getState();
+            textState.setStateFlags(PDFPageContentProcessorState::StateFlags());
+            addFontOverride(textState.getTextFont());
+
+            for (const PDFEditedPageContentElementText::Item& item : textElement->getItems())
+            {
+                if (!item.isUpdateGraphicState)
+                {
+                    continue;
+                }
+
+                PDFPageContentProcessorState updatedState = textState;
+                updatedState.setState(item.state);
+                PDFPageContentProcessorState::StateFlags flags = updatedState.getStateFlags();
+                textState = updatedState;
+                textState.setStateFlags(PDFPageContentProcessorState::StateFlags());
+
+                if ((flags.testFlag(PDFPageContentProcessorState::StateTextFont) ||
+                     flags.testFlag(PDFPageContentProcessorState::StateTextFontSize)))
+                {
+                    addFontOverride(textState.getTextFont());
+                }
+            }
+
             writeText(stream, text);
+            m_fontOverrides = std::move(previousOverrides);
         }
     }
 
@@ -913,16 +950,27 @@ QByteArray PDFPageContentEditorContentStreamBuilder::selectFont(const QByteArray
 {
     m_textFont = nullptr;
 
+    if (auto overrideIt = m_fontOverrides.constFind(font); overrideIt != m_fontOverrides.cend() && !overrideIt.value().isNull())
+    {
+        m_textFont = overrideIt.value();
+    }
+
     PDFObject fontObject = m_fontDictionary.get(font);
-    if (!fontObject.isNull())
+    if (!m_textFont && !fontObject.isNull())
     {
         try
         {
             m_textFont = PDFFont::createFont(fontObject, font, m_document);
         }
-        catch (const PDFException&)
+        catch (const PDFException& exception)
         {
-            addError(PDFTranslationContext::tr("Font '%1' is invalid.").arg(QString::fromLatin1(font)));
+            addError(exception.getMessage());
+        }
+        catch (const std::exception& exception)
+        {
+            addError(QString::fromLatin1("Font '%1' is invalid: %2")
+                     .arg(QString::fromLatin1(font))
+                     .arg(QString::fromUtf8(exception.what())));
         }
     }
 
@@ -952,8 +1000,34 @@ QByteArray PDFPageContentEditorContentStreamBuilder::selectFont(const QByteArray
         }
 
         fontObject = m_fontDictionary.get(defaultFontKey);
-        m_textFont = PDFFont::createFont(fontObject, font, m_document);
-        return defaultFontKey;
+        try
+        {
+            if (auto overrideDefault = m_fontOverrides.constFind(defaultFontKey); overrideDefault != m_fontOverrides.cend() && !overrideDefault.value().isNull())
+            {
+                m_textFont = overrideDefault.value();
+            }
+            else
+            {
+                m_textFont = PDFFont::createFont(fontObject, defaultFontKey, m_document);
+            }
+        }
+        catch (const PDFException& exception)
+        {
+            addError(exception.getMessage());
+        }
+        catch (const std::exception& exception)
+        {
+            addError(QString::fromLatin1("Failed to create fallback font '%1': %2")
+                     .arg(QString::fromLatin1(defaultFontKey))
+                     .arg(QString::fromUtf8(exception.what())));
+        }
+
+        if (m_textFont)
+        {
+            return defaultFontKey;
+        }
+
+        return font;
     }
 
     return font;

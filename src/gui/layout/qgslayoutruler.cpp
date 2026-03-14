@@ -245,8 +245,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           const int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
-          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
-               || ( nextPageStartPixel == 0 ) )
+          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel ) || ( nextPageStartPixel == 0 ) )
           {
             drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
           }

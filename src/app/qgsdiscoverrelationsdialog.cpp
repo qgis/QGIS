@@ -33,9 +33,7 @@ QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation>
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   mButtonBox->addButton( QDialogButtonBox::Help );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_vector/attribute_table.html#defining-1-n-relation"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/attribute_table.html#defining-1-n-relation"_s ); } );
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );

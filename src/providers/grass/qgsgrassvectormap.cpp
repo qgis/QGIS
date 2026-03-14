@@ -149,7 +149,8 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, u"Warning"_s, QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
+    QMessageBox::StandardButton ret
+      = QMessageBox::question( nullptr, u"Warning"_s, QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel )
     {

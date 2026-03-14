@@ -48,5 +48,4 @@ void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCol
       }
     }
   }
-
 }

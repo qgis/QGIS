@@ -31,7 +31,8 @@ class TestQgsLayoutObject : public QgsTest
 
   public:
     TestQgsLayoutObject()
-      : QgsTest( u"Layout Object Tests"_s ) {}
+      : QgsTest( u"Layout Object Tests"_s )
+    {}
 
   private slots:
     void cleanupTestCase();
@@ -130,9 +131,7 @@ void TestQgsLayoutObject::writeReadXml()
 
   QgsLayoutObject *object = new QgsLayoutObject( &l );
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   //test writing with no parent node
@@ -177,9 +176,7 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
 
   //test writing object with dd settings
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( u"qgis"_s );
   QVERIFY( object->writeObjectPropertiesToElement( rootNode, doc, QgsReadWriteContext() ) );
@@ -218,9 +215,7 @@ void TestQgsLayoutObject::writeRetrieveCustomProperties()
 
   //test writing object with custom properties
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( u"qgis"_s );
   QVERIFY( object->writeObjectPropertiesToElement( rootNode, doc, QgsReadWriteContext() ) );

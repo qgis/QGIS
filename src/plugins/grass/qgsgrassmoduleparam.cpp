@@ -591,10 +591,7 @@ QString QgsGrassModuleOption::outputExists()
   if ( value.length() == 0 )
     return QString();
 
-  QString path = QgsGrass::getDefaultGisdbase() + "/"
-                 + QgsGrass::getDefaultLocation() + "/"
-                 + QgsGrass::getDefaultMapset() + "/"
-                 + mOutputElement + "/" + value;
+  QString path = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/" + mOutputElement + "/" + value;
 
   QFileInfo fi( path );
 
@@ -741,7 +738,8 @@ QString QgsGrassModuleOption::ready()
 
 /***************** QgsGrassModuleFlag *********************/
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
-  : QgsGrassModuleCheckBox( QString(), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+  : QgsGrassModuleCheckBox( QString(), parent )
+  , QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
   if ( mHidden )
     hide();
@@ -767,10 +765,7 @@ QStringList QgsGrassModuleFlag::options()
 
 /***************** QgsGrassModuleGdalInput *********************/
 
-QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
-  QgsGrassModule *module, Type type, QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
-)
+QgsGrassModuleGdalInput::QgsGrassModuleGdalInput( QgsGrassModule *module, Type type, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( type )
 {
@@ -1020,9 +1015,7 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key, Q
 /***************** QgsGrassModuleVectorField *********************/
 
 QgsGrassModuleVectorField::QgsGrassModuleVectorField(
-  QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
-  QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
+  QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
 )
   : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
   , mModuleStandardOptions( options )
@@ -1137,9 +1130,7 @@ QStringList QgsGrassModuleVectorField::options()
 /***************** QgsGrassModuleSelection *********************/
 
 QgsGrassModuleSelection::QgsGrassModuleSelection(
-  QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
-  QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
+  QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
 )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mModuleStandardOptions( options )
@@ -1372,11 +1363,7 @@ QStringList QgsGrassModuleSelection::options()
 
 /***************** QgsGrassModuleFile *********************/
 
-QgsGrassModuleFile::QgsGrassModuleFile(
-  QgsGrassModule *module,
-  QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
-)
+QgsGrassModuleFile::QgsGrassModuleFile( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
 {
   if ( mTitle.isEmpty() )

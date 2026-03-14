@@ -52,9 +52,7 @@ QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   {
     setupUi( this );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"auth_system/auth_overview.html#authentication-methods"_s );
-    } );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"auth_system/auth_overview.html#authentication-methods"_s ); } );
 
     setupTable();
     populateTable();
@@ -210,9 +208,7 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
     messageBar()->clearWidgets();
     messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );
   } );
-  connect( mActionAutoClearAccessCache, &QAction::triggered, this, []( bool checked ) {
-    QgsSettings().setValue( u"clear_auth_cache_on_errors"_s, checked, QgsSettings::Section::Auth );
-  } );
+  connect( mActionAutoClearAccessCache, &QAction::triggered, this, []( bool checked ) { QgsSettings().setValue( u"clear_auth_cache_on_errors"_s, checked, QgsSettings::Section::Auth ); } );
 
   mAuthUtilitiesMenu = new QMenu( this );
   mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );

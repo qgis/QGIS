@@ -53,7 +53,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( u"auto-popup-vertex-editor-dock"_s, QgsSettingsTree::sTreeDigitizing, true, u"Whether the auto-popup behavior of the vertex editor dock should be enabled"_s );
+const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock
+  = new QgsSettingsEntryBool( u"auto-popup-vertex-editor-dock"_s, QgsSettingsTree::sTreeDigitizing, true, u"Whether the auto-popup behavior of the vertex editor dock should be enabled"_s );
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
@@ -421,7 +422,9 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
 
   QVBoxLayout *pageHintLayout = new QVBoxLayout();
   mHintLabel = new QLabel();
-  mHintLabel->setText( u"%1\n\n%2"_s.arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
+  mHintLabel->setText(
+    u"%1\n\n%2"_s.arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) )
+  );
   mHintLabel->setWordWrap( true );
 
   pageHintLayout->addStretch();
@@ -453,9 +456,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
   autoPopupAction->setCheckable( true );
   autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() );
-  connect( autoPopupAction, &QAction::toggled, this, []( bool checked ) {
-    QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked );
-  } );
+  connect( autoPopupAction, &QAction::toggled, this, []( bool checked ) { QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked ); } );
   mWidgetMenu->addAction( autoPopupAction );
 }
 
@@ -632,9 +633,9 @@ void QgsVertexEditor::closeEvent( QCloseEvent *event )
 //
 
 CoordinateItemDelegate::CoordinateItemDelegate( const QgsCoordinateReferenceSystem &crs, QObject *parent )
-  : QStyledItemDelegate( parent ), mCrs( crs )
-{
-}
+  : QStyledItemDelegate( parent )
+  , mCrs( crs )
+{}
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale & ) const
 {

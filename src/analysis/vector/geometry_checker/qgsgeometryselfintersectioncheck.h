@@ -29,7 +29,9 @@
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGeometryCheckError
 {
   public:
-    QgsGeometrySelfIntersectionCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsVertexId vertexId, const QgsGeometryUtils::SelfIntersection &intersection )
+    QgsGeometrySelfIntersectionCheckError(
+      const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsVertexId vertexId, const QgsGeometryUtils::SelfIntersection &intersection
+    )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation, vertexId )
       , mIntersection( intersection )
     {}
@@ -59,7 +61,8 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometr
     };
 
     explicit QgsGeometrySelfIntersectionCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration = QVariantMap() )
-      : QgsSingleGeometryCheck( context, configuration ) {}
+      : QgsSingleGeometryCheck( context, configuration )
+    {}
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;

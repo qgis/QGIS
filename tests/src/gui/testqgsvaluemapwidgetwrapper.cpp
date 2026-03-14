@@ -54,12 +54,10 @@ void TestQgsValueMapWidgetWrapper::cleanupTestCase()
 }
 
 void TestQgsValueMapWidgetWrapper::init()
-{
-}
+{}
 
 void TestQgsValueMapWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
 {

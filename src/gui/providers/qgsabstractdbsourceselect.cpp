@@ -60,12 +60,8 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, [this]( const QModelIndex &index ) {
-    treeviewClicked( mProxyModel->mapToSource( index ) );
-  } );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) {
-    treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
-  } );
+  connect( mTablesTreeView, &QTreeView::clicked, this, [this]( const QModelIndex &index ) { treeviewClicked( mProxyModel->mapToSource( index ) ); } );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) { treeviewDoubleClicked( mProxyModel->mapToSource( index ) ); } );
 
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, [this]() { setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) ); } );
 }

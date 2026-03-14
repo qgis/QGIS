@@ -43,18 +43,22 @@ QStringList QgsServiceAreaFromLayerAlgorithm::tags() const
 
 QString QgsServiceAreaFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector layer with all the edges or parts of "
-                      "edges of a network line layer that can be reached within a distance "
-                      "or a time, starting from features of a point layer. The distance and "
-                      "the time (both referred to as \"travel cost\") must be specified "
-                      "respectively in the network layer units or in hours." );
+  return QObject::tr(
+    "This algorithm creates a new vector layer with all the edges or parts of "
+    "edges of a network line layer that can be reached within a distance "
+    "or a time, starting from features of a point layer. The distance and "
+    "the time (both referred to as \"travel cost\") must be specified "
+    "respectively in the network layer units or in hours."
+  );
 }
 
 QString QgsServiceAreaFromLayerAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a vector layer with all the edges or parts of "
-                      "edges of a network line layer that can be reached within a distance "
-                      "or a time, starting from features of a point layer." );
+  return QObject::tr(
+    "Creates a vector layer with all the edges or parts of "
+    "edges of a network line layer that can be reached within a distance "
+    "or a time, starting from features of a point layer."
+  );
 }
 
 QgsServiceAreaFromLayerAlgorithm *QgsServiceAreaFromLayerAlgorithm::createInstance() const
@@ -67,11 +71,13 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addCommonParams();
   addParameter( new QgsProcessingParameterFeatureSource( u"START_POINTS"_s, QObject::tr( "Vector layer with start points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
-  auto travelCost = std::make_unique<QgsProcessingParameterNumber>( u"TRAVEL_COST"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  auto travelCost
+    = std::make_unique<QgsProcessingParameterNumber>( u"TRAVEL_COST"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( std::move( travelCost ) );
 
-  auto travelCost2 = std::make_unique<QgsProcessingParameterNumber>( u"TRAVEL_COST2"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
+  auto travelCost2 = std::make_unique<
+    QgsProcessingParameterNumber>( u"TRAVEL_COST2"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
   travelCost2->setIsDynamic( true );
   travelCost2->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Travel Cost"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsPropertyDefinition::DoublePositive ) );
   travelCost2->setDynamicLayerParameterName( u"START_POINTS"_s );
@@ -81,9 +87,12 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( includeBounds.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> maxPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxPointDistanceFromNetwork
+    = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
   maxPointDistanceFromNetwork->setFlags( maxPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  maxPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the points to the network layer. If a point is further from the network than this distance it will be treated as non-routable." ) );
+  maxPointDistanceFromNetwork->setHelp(
+    QObject::tr( "Specifies an optional limit on the distance from the points to the network layer. If a point is further from the network than this distance it will be treated as non-routable." )
+  );
   addParameter( maxPointDistanceFromNetwork.release() );
 
   auto outputLines = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT_LINES"_s, QObject::tr( "Service area (lines)" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true );

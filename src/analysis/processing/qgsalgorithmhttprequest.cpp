@@ -66,10 +66,12 @@ QString QgsHttpRequestAlgorithm::groupId() const
 
 QString QgsHttpRequestAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm performs a HTTP(S) POST/GET request and returns the HTTP status code and the reply data.\n"
-             "If an error occurs then the error code and the message will be returned.\n\n"
-             "Optionally, the result can be written to a file on disk.\n\n"
-             "By default the algorithm will warn on errors. Optionally, the algorithm can be set to treat HTTP errors as failures." );
+  return tr(
+    "This algorithm performs a HTTP(S) POST/GET request and returns the HTTP status code and the reply data.\n"
+    "If an error occurs then the error code and the message will be returned.\n\n"
+    "Optionally, the result can be written to a file on disk.\n\n"
+    "By default the algorithm will warn on errors. Optionally, the algorithm can be set to treat HTTP errors as failures."
+  );
 }
 
 QgsHttpRequestAlgorithm *QgsHttpRequestAlgorithm::createInstance() const
@@ -81,39 +83,23 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "URL" ), QVariant(), false, false ) );
 
-  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
-    u"METHOD"_s,
-    QObject::tr( "Method" ),
-    QStringList()
-      << u"GET"_s
-      << u"POST"_s,
-    false,
-    0
-  );
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << u"GET"_s << u"POST"_s, false, 0 );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   addParameter( methodParam.release() );
 
-  auto dataParam = std::make_unique<QgsProcessingParameterString>(
-    u"DATA"_s, tr( "POST data" ), QVariant(), false, true
-  );
+  auto dataParam = std::make_unique<QgsProcessingParameterString>( u"DATA"_s, tr( "POST data" ), QVariant(), false, true );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   addParameter( dataParam.release() );
 
-  auto outputFileParam = std::make_unique<QgsProcessingParameterFileDestination>(
-    u"OUTPUT"_s, tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false
-  );
+  auto outputFileParam = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT"_s, tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false );
   outputFileParam->setHelp( tr( "The result can be written to a file instead of being returned as a string" ) );
   addParameter( outputFileParam.release() );
 
-  auto authConfigParam = std::make_unique<QgsProcessingParameterAuthConfig>(
-    u"AUTH_CONFIG"_s, tr( "Authentication" ), QVariant(), true
-  );
+  auto authConfigParam = std::make_unique<QgsProcessingParameterAuthConfig>( u"AUTH_CONFIG"_s, tr( "Authentication" ), QVariant(), true );
   authConfigParam->setHelp( tr( "An authentication configuration to pass" ) );
   addParameter( authConfigParam.release() );
 
-  auto failureParam = std::make_unique<QgsProcessingParameterBoolean>(
-    u"FAIL_ON_ERROR"_s, tr( "Consider HTTP errors as failures" ), false
-  );
+  auto failureParam = std::make_unique<QgsProcessingParameterBoolean>( u"FAIL_ON_ERROR"_s, tr( "Consider HTTP errors as failures" ), false );
   failureParam->setHelp( tr( "If set, the algorithm will fail on encountering a HTTP error" ) );
   addParameter( failureParam.release() );
 

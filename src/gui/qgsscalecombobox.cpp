@@ -285,10 +285,7 @@ QString QgsScaleComboBox::toString( double scale, RatioMode mode )
       qlonglong numerator = 0;
       qlonglong denominator = 0;
       QgsMathUtils::doubleToRational( 1.0 / scale, numerator, denominator, 0.01 );
-      return u"%1:%2"_s.arg(
-        QLocale().toString( numerator ),
-        QLocale().toString( denominator )
-      );
+      return u"%1:%2"_s.arg( QLocale().toString( numerator ), QLocale().toString( denominator ) );
     }
   }
   return QString();

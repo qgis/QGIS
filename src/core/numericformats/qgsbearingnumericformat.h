@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
 {
   public:
-
     /**
      * Directional formatting option, which controls how bearing direction is
      * described in the returned strings.
@@ -36,8 +35,8 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
     enum FormatDirectionOption
     {
       UseRange0To180WithEWDirectionalSuffix = 0, //!< Return values between 0 and 180, with a E or W directional suffix
-      UseRangeNegative180ToPositive180, //!< Return values between -180 and 180
-      UseRange0To360, //!< Return values between 0 to 360
+      UseRangeNegative180ToPositive180,          //!< Return values between -180 and 180
+      UseRange0To360,                            //!< Return values between 0 to 360
     };
 
     /**
@@ -73,9 +72,7 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
     void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context ) override;
 
   private:
-
     FormatDirectionOption mDirectionFormat = UseRange0To180WithEWDirectionalSuffix;
-
 };
 
 #endif // QGSBEARINGNUMERICFORMAT_H

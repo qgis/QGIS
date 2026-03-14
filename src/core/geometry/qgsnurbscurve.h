@@ -70,6 +70,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     [[nodiscard]] QgsPoint evaluate( double t ) const;
 #else
+    // clang-format off
 
     /**
      * Evaluates the NURBS curve at parameter t ∈ [0,1].
@@ -90,13 +91,16 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->evaluate( a0 ) ), sipType_QgsPoint, Py_None );
     }
     % End
+// clang-format on
 #endif
 
+    // clang-format off
     /**
      * Returns TRUE if this curve represents a Bézier curve.
      * A Bézier curve is a special case of NURBS with uniform weights and specific knot vector.
      */
     bool isBezier() const SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns TRUE if this curve represents a B-spline (non-rational NURBS).
@@ -283,6 +287,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     bool setWeight( int index, double weight );
 #else
+// clang-format off
 
     /**
      * Returns the weight at the specified control point \a index.
@@ -330,6 +335,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
       sipCpp->setWeight( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**

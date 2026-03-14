@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsZipUtils
 {
   public:
-
     /**
      * Returns TRUE if the file name is a zipped file ( i.e with a '.qgz'
      *  extension, FALSE otherwise.
@@ -96,7 +95,6 @@ class CORE_EXPORT QgsZipUtils
      * \since QGIS 4.0
      */
     static bool extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut SIP_OUT );
-
 };
 
 #endif //QGSZIPUTILS_H

@@ -440,8 +440,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
     const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( layer, mFeatureList.first() );
 
     const QString title = tr( "Create child feature for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString );
-    const QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
-                          .arg( layer->name() );
+    const QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." ).arg( layer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     lMainMessageBar->pushItem( mMessageBarItem );
   }
@@ -459,8 +458,7 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
 
   // Select all items pointing to the same feature
   // but only if we are not deselecting.
-  if ( selectedItems.size() == 1
-       && mMultiEditPreviousSelectedItems.size() <= 1 )
+  if ( selectedItems.size() == 1 && mMultiEditPreviousSelectedItems.size() <= 1 )
   {
     if ( selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() == static_cast<int>( MultiEditFeatureType::Child ) )
     {
@@ -842,7 +840,12 @@ void QgsRelationEditorWidget::mapToolDeactivated()
 
 QVariantMap QgsRelationEditorWidget::config() const
 {
-  return QVariantMap( { { "buttons", qgsFlagValueToKeys( visibleButtons() ) }, { "show_first_feature", mShowFirstFeature }, { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry }, { "filter_expression", mFilterExpression } } );
+  return QVariantMap(
+    { { "buttons", qgsFlagValueToKeys( visibleButtons() ) },
+      { "show_first_feature", mShowFirstFeature },
+      { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry },
+      { "filter_expression", mFilterExpression } }
+  );
 }
 
 void QgsRelationEditorWidget::setConfig( const QVariantMap &config )
@@ -868,8 +871,7 @@ void QgsRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRe
 
 void QgsRelationEditorWidget::afterSetRelationFeature()
 {
-  if ( !mRelation.isValid()
-       || mFeatureList.isEmpty() )
+  if ( !mRelation.isValid() || mFeatureList.isEmpty() )
   {
     updateButtons();
     return;
@@ -952,10 +954,7 @@ void QgsRelationEditorWidget::zoomToSelectedFeatures()
   if ( !c )
     return;
 
-  c->zoomToFeatureIds(
-    mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(),
-    mFeatureSelectionMgr->selectedFeatureIds()
-  );
+  c->zoomToFeatureIds( mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(), mFeatureSelectionMgr->selectedFeatureIds() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1019,8 +1018,7 @@ QVariantMap QgsRelationEditorConfigWidget::config()
     { { "buttons", qgsFlagValueToKeys( buttons ) },
       { "show_first_feature", mShowFirstFeature->isChecked() },
       { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked() },
-      { "filter_expression", mFilterExpression->toPlainText() }
-    }
+      { "filter_expression", mFilterExpression->toPlainText() } }
   );
 }
 
@@ -1046,8 +1044,7 @@ void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
 
 #ifndef SIP_RUN
 QgsRelationEditorWidgetFactory::QgsRelationEditorWidgetFactory()
-{
-}
+{}
 
 QString QgsRelationEditorWidgetFactory::type() const
 {

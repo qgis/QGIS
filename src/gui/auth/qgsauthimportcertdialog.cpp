@@ -55,9 +55,7 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImport
 
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-authorities"_s );
-    } );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-authorities"_s ); } );
     connect( teCertText, &QPlainTextEdit::textChanged, this, &QgsAuthImportCertDialog::validateCertificates );
 
     connect( radioImportFile, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );
@@ -207,14 +205,13 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   if ( certssize > 0 )
   {
-    teValidation->setStyleSheet(
-      valid ? QgsAuthGuiUtils::greenTextStyleSheet( u"QTextEdit"_s )
-            : QgsAuthGuiUtils::redTextStyleSheet( u"QTextEdit"_s )
-    );
+    teValidation->setStyleSheet( valid ? QgsAuthGuiUtils::greenTextStyleSheet( u"QTextEdit"_s ) : QgsAuthGuiUtils::redTextStyleSheet( u"QTextEdit"_s ) );
   }
 
-  QString msg = tr( "Certificates found: %1\n"
-                    "Certificates valid: %2" )
+  QString msg = tr(
+                  "Certificates found: %1\n"
+                  "Certificates valid: %2"
+  )
                   .arg( certssize )
                   .arg( validcerts );
 

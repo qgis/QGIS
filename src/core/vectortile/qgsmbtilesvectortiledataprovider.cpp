@@ -87,8 +87,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   QgsDebugMsgLevel( u"zoom range: %1 - %2"_s.arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
 
   QgsRectangle r = reader.extent();
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ),
-                             QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext() );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   try
   {
@@ -240,16 +239,12 @@ QByteArray QgsMbTilesVectorTileDataProvider::loadFromMBTiles( QgsMbTiles &mbTile
 //
 
 QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetadata()
-  : QgsProviderMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-                         QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION )
-{
-}
+  : QgsProviderMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY, QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION )
+{}
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -316,7 +311,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
       details.setType( Qgis::LayerType::VectorTile );
       details.setSkippedContainerScan( true );
       details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-      return {details};
+      return { details };
     }
     else
     {
@@ -331,7 +326,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
           details.setProviderKey( key() );
           details.setType( Qgis::LayerType::VectorTile );
           details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-          return {details};
+          return { details };
         }
       }
     }
@@ -409,5 +404,3 @@ QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerT
 
 
 ///@endcond
-
-

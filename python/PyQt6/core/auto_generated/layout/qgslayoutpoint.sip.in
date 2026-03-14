@@ -35,7 +35,6 @@ Measurement units are stored alongside the position.
 #include "qgslayoutpoint.h"
 %End
   public:
-
     QgsLayoutPoint( double x, double y, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutPoint.

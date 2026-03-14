@@ -23,8 +23,7 @@
 QgsOpacityWidgetPlugin::QgsOpacityWidgetPlugin( QObject *parent )
   : QObject( parent )
   , mInitialized( false )
-{
-}
+{}
 
 
 QString QgsOpacityWidgetPlugin::name() const
@@ -83,17 +82,19 @@ QString QgsOpacityWidgetPlugin::whatsThis() const
 
 QString QgsOpacityWidgetPlugin::domXml() const
 {
-  return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mOpacityWidget\">\n"
-                  "  <property name=\"geometry\">\n"
-                  "   <rect>\n"
-                  "    <x>0</x>\n"
-                  "    <y>0</y>\n"
-                  "    <width>160</width>\n"
-                  "    <height>27</height>\n"
-                  "   </rect>\n"
-                  "  </property>\n"
-                  " </widget>\n"
-                  "</ui>\n" )
+  return QString(
+           "<ui language=\"c++\">\n"
+           " <widget class=\"%1\" name=\"mOpacityWidget\">\n"
+           "  <property name=\"geometry\">\n"
+           "   <rect>\n"
+           "    <x>0</x>\n"
+           "    <y>0</y>\n"
+           "    <width>160</width>\n"
+           "    <height>27</height>\n"
+           "   </rect>\n"
+           "  </property>\n"
+           " </widget>\n"
+           "</ui>\n"
+  )
     .arg( name() );
 }

@@ -242,9 +242,7 @@ void TestQgsProcessingAlgsPt1::initTestCase()
   mPointsLayer = new QgsVectorLayer( mPointLayerPath, u"points"_s, u"ogr"_s );
   QVERIFY( mPointsLayer->isValid() );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -253,9 +251,7 @@ void TestQgsProcessingAlgsPt1::initTestCase()
   const QFileInfo polyFileInfo( polysFileName );
   mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), u"polygons"_s, u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPolygonLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
 
   //add a mesh layer
@@ -821,11 +817,14 @@ void TestQgsProcessingAlgsPt1::parseGeoTags()
   QCOMPARE( QgsImportPhotosAlgorithm::parseMetadataValue( "(123)" ).toDouble(), 123.0 );
 
   // parseMetadataList
-  QVariantMap md = QgsImportPhotosAlgorithm::parseMetadataList( QStringList() << "EXIF_Contrast=(1)"
-                                                                              << "EXIF_ExposureTime=(0.008339)"
-                                                                              << "EXIF_Model=Pixel"
-                                                                              << "EXIF_GPSLatitude=(36) (13) (15.21)"
-                                                                              << "EXIF_GPSLongitude=(149) (7) (54.76)" );
+  QVariantMap md = QgsImportPhotosAlgorithm::parseMetadataList(
+    QStringList()
+    << "EXIF_Contrast=(1)"
+    << "EXIF_ExposureTime=(0.008339)"
+    << "EXIF_Model=Pixel"
+    << "EXIF_GPSLatitude=(36) (13) (15.21)"
+    << "EXIF_GPSLongitude=(149) (7) (54.76)"
+  );
   QCOMPARE( md.count(), 5 );
   QCOMPARE( md.value( "EXIF_Contrast" ).toInt(), 1 );
   QCOMPARE( md.value( "EXIF_ExposureTime" ).toDouble(), 0.008339 );
@@ -1413,15 +1412,11 @@ void TestQgsProcessingAlgsPt1::polygonsToLines_data()
   QTest::addColumn<QgsGeometry>( "sourceGeometry" );
   QTest::addColumn<QgsGeometry>( "expectedGeometry" );
 
-  QTest::newRow( "Simple Polygon" )
-    << QgsGeometry::fromWkt( "Polygon((1 1, 2 2, 1 3, 1 1))" )
-    << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1))" );
+  QTest::newRow( "Simple Polygon" ) << QgsGeometry::fromWkt( "Polygon((1 1, 2 2, 1 3, 1 1))" ) << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1))" );
 
   const QgsGeometry geomNoRing( std::make_unique<QgsMultiPolygon>() );
 
-  QTest::newRow( "Polygon without exterior ring" )
-    << geomNoRing
-    << QgsGeometry::fromWkt( "MultiLineString ()" );
+  QTest::newRow( "Polygon without exterior ring" ) << geomNoRing << QgsGeometry::fromWkt( "MultiLineString ()" );
 
   QTest::newRow( "MultiPolygon" )
     << QgsGeometry::fromWkt( "MultiPolygon(((1 1, 2 2, 1 3, 1 1)), ((0 0, 0 10, 10 10, 10 0, 0 0), (3 3, 3 6, 6 6, 6 3, 3 3)))" )
@@ -1453,21 +1448,13 @@ void TestQgsProcessingAlgsPt1::roundness_data()
   QTest::addColumn<QgsGeometry>( "sourceGeometry" );
   QTest::addColumn<double>( "expectedAttribute" );
 
-  QTest::newRow( "Polygon" )
-    << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" )
-    << 0.785;
+  QTest::newRow( "Polygon" ) << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) << 0.785;
 
-  QTest::newRow( "Thin polygon" )
-    << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0 ))" )
-    << 0.0;
+  QTest::newRow( "Thin polygon" ) << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0 ))" ) << 0.0;
 
-  QTest::newRow( "Circle polygon" )
-    << QgsGeometry::fromWkt( "CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))" )
-    << 1.0;
+  QTest::newRow( "Circle polygon" ) << QgsGeometry::fromWkt( "CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))" ) << 1.0;
 
-  QTest::newRow( "Polygon with hole" )
-    << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))" )
-    << 0.393;
+  QTest::newRow( "Polygon with hole" ) << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))" ) << 0.393;
 }
 
 void TestQgsProcessingAlgsPt1::roundness()
@@ -1507,14 +1494,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Byte Raster Layer
    *
    */
-  QTest::newRow( "testcase 1" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase1.tif"_s
-    << Qgis::DataType::Byte
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 0;
+  QTest::newRow( "testcase 1" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase1.tif"_s << Qgis::DataType::Byte << "EPSG:4326" << 1.0 << 12.0 << 0;
 
   /*
    * Testcase 2
@@ -1565,14 +1545,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 4" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase4.tif"_s
-    << Qgis::DataType::Int16
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 1;
+  QTest::newRow( "testcase 4" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase4.tif"_s << Qgis::DataType::Int16 << "EPSG:4326" << 1.0 << 12.0 << 1;
 
   /*
    * Testcase 5
@@ -1584,14 +1557,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 5" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::Int16
-    << "EPSG:4326"
-    << 1.0
-    << -32769.0
-    << 1;
+  QTest::newRow( "testcase 5" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::Int16 << "EPSG:4326" << 1.0 << -32769.0 << 1;
 
   /*
    * Testcase 6
@@ -1603,14 +1569,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 6" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::Int16
-    << "EPSG:4326"
-    << 1.0
-    << 32769.0
-    << 1;
+  QTest::newRow( "testcase 6" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::Int16 << "EPSG:4326" << 1.0 << 32769.0 << 1;
 
   /*
    * Testcase 7
@@ -1622,14 +1581,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 7" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase7.tif"_s
-    << Qgis::DataType::UInt16
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 2;
+  QTest::newRow( "testcase 7" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase7.tif"_s << Qgis::DataType::UInt16 << "EPSG:4326" << 1.0 << 12.0 << 2;
 
   /*
    * Testcase 8
@@ -1641,14 +1593,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 8" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::UInt16
-    << "EPSG:4326"
-    << 1.0
-    << -1.0
-    << 2;
+  QTest::newRow( "testcase 8" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::UInt16 << "EPSG:4326" << 1.0 << -1.0 << 2;
 
   /*
    * Testcase 9
@@ -1660,14 +1605,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 9" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::UInt16
-    << "EPSG:4326"
-    << 1.0
-    << 65536.0
-    << 2;
+  QTest::newRow( "testcase 9" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::UInt16 << "EPSG:4326" << 1.0 << 65536.0 << 2;
 
   /*
    * Testcase 10
@@ -1679,14 +1617,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt16 Raster Layer
    *
    */
-  QTest::newRow( "testcase 10" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase10.tif"_s
-    << Qgis::DataType::Int32
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 3;
+  QTest::newRow( "testcase 10" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase10.tif"_s << Qgis::DataType::Int32 << "EPSG:4326" << 1.0 << 12.0 << 3;
 
   /*
    * Testcase 10
@@ -1698,14 +1629,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 10" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase10.tif"_s
-    << Qgis::DataType::Int32
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 3;
+  QTest::newRow( "testcase 10" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase10.tif"_s << Qgis::DataType::Int32 << "EPSG:4326" << 1.0 << 12.0 << 3;
 
   /*
    * Testcase 11
@@ -1717,14 +1641,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 11" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::Int32
-    << "EPSG:4326"
-    << 1.0
-    << -2147483649.0
-    << 3;
+  QTest::newRow( "testcase 11" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::Int32 << "EPSG:4326" << 1.0 << -2147483649.0 << 3;
 
   /*
    * Testcase 12
@@ -1736,14 +1653,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Int32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 12" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::Int32
-    << "EPSG:4326"
-    << 1.0
-    << 2147483649.0
-    << 3;
+  QTest::newRow( "testcase 12" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::Int32 << "EPSG:4326" << 1.0 << 2147483649.0 << 3;
 
   /*
    * Testcase 13
@@ -1755,14 +1665,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 13" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase13.tif"_s
-    << Qgis::DataType::UInt32
-    << "EPSG:4326"
-    << 1.0
-    << 12.0
-    << 4;
+  QTest::newRow( "testcase 13" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase13.tif"_s << Qgis::DataType::UInt32 << "EPSG:4326" << 1.0 << 12.0 << 4;
 
   /*
    * Testcase 14
@@ -1774,14 +1677,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 14" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::UInt32
-    << "EPSG:4326"
-    << 1.0
-    << 4294967296.0
-    << 4;
+  QTest::newRow( "testcase 14" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::UInt32 << "EPSG:4326" << 1.0 << 4294967296.0 << 4;
 
   /*
    * Testcase 15
@@ -1793,14 +1689,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * UInt32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 14" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << QString()
-    << Qgis::DataType::UInt32
-    << "EPSG:4326"
-    << 1.0
-    << -1.0
-    << 4;
+  QTest::newRow( "testcase 14" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << QString() << Qgis::DataType::UInt32 << "EPSG:4326" << 1.0 << -1.0 << 4;
 
   /*
    * Testcase 16
@@ -1812,14 +1701,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    * Float32 Raster Layer
    *
    */
-  QTest::newRow( "testcase 16" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << u"/createConstantRaster_testcase16.tif"_s
-    << Qgis::DataType::Float32
-    << "EPSG:4326"
-    << 1.0
-    << 12.12
-    << 5;
+  QTest::newRow( "testcase 16" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << u"/createConstantRaster_testcase16.tif"_s << Qgis::DataType::Float32 << "EPSG:4326" << 1.0 << 12.12 << 5;
 
   /*
    * Testcase 17
@@ -1917,7 +1799,8 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
     std::unique_ptr<QgsRasterBlock> outputRasterBlock;
     std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-    while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+    while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+            && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
     {
       for ( int row = 0; row < expectedIterRows; row++ )
       {
@@ -1941,34 +1824,22 @@ void TestQgsProcessingAlgsPt1::rasterRank_data()
   /*
    * Testcase 1
    */
-  QTest::newRow( "testcase 1" )
-    << u"/rasterRank_testcase1.tif"_s
-    << QString::number( 2 )
-    << 0;
+  QTest::newRow( "testcase 1" ) << u"/rasterRank_testcase1.tif"_s << QString::number( 2 ) << 0;
 
   /*
    * Testcase 2
    */
-  QTest::newRow( "testcase 2" )
-    << u"/rasterRank_testcase2.tif"_s
-    << QString::number( -2 )
-    << 0;
+  QTest::newRow( "testcase 2" ) << u"/rasterRank_testcase2.tif"_s << QString::number( -2 ) << 0;
 
   /*
    * Testcase 3
    */
-  QTest::newRow( "testcase 3" )
-    << u"/rasterRank_testcase3.tif"_s
-    << QString::number( 2 )
-    << 1;
+  QTest::newRow( "testcase 3" ) << u"/rasterRank_testcase3.tif"_s << QString::number( 2 ) << 1;
 
   /*
    * Testcase 4
    */
-  QTest::newRow( "testcase 4" )
-    << u"/rasterRank_testcase4.tif"_s
-    << u"2,-2"_s
-    << 0;
+  QTest::newRow( "testcase 4" ) << u"/rasterRank_testcase4.tif"_s << u"2,-2"_s << 0;
 }
 
 void TestQgsProcessingAlgsPt1::rasterRank()
@@ -2025,7 +1896,8 @@ void TestQgsProcessingAlgsPt1::rasterRank()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -2047,17 +1919,9 @@ void TestQgsProcessingAlgsPt1::densifyGeometries_data()
   QTest::addColumn<double>( "interval" );
   QTest::addColumn<QString>( "geometryType" );
 
-  QTest::newRow( "Null geometry" )
-    << QgsGeometry()
-    << QgsGeometry()
-    << 0.1
-    << "Point";
+  QTest::newRow( "Null geometry" ) << QgsGeometry() << QgsGeometry() << 0.1 << "Point";
 
-  QTest::newRow( "PointZ" )
-    << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" )
-    << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" )
-    << 0.1
-    << "Point";
+  QTest::newRow( "PointZ" ) << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" ) << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" ) << 0.1 << "Point";
 
   QTest::newRow( "MultiPoint" )
     << QgsGeometry::fromWkt( "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))" )
@@ -2065,11 +1929,7 @@ void TestQgsProcessingAlgsPt1::densifyGeometries_data()
     << 0.1
     << "Point";
 
-  QTest::newRow( "LineString big distance" )
-    << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
-    << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
-    << 100.
-    << "LineString";
+  QTest::newRow( "LineString big distance" ) << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" ) << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" ) << 100. << "LineString";
 
   QTest::newRow( "LineString small distance" )
     << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
@@ -2077,11 +1937,7 @@ void TestQgsProcessingAlgsPt1::densifyGeometries_data()
     << 3.
     << "LineString";
 
-  QTest::newRow( "LineStringZ" )
-    << QgsGeometry::fromWkt( "LineStringZ( 0 0 1, 10 0 2, 10 10 0)" )
-    << QgsGeometry::fromWkt( "LineStringZ (0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0)" )
-    << 6.
-    << "LineString";
+  QTest::newRow( "LineStringZ" ) << QgsGeometry::fromWkt( "LineStringZ( 0 0 1, 10 0 2, 10 10 0)" ) << QgsGeometry::fromWkt( "LineStringZ (0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0)" ) << 6. << "LineString";
 
   QTest::newRow( "LineStringM" )
     << QgsGeometry::fromWkt( "LineStringM( 0 0 0, 10 0 2, 10 10 0)" )
@@ -2139,11 +1995,7 @@ void TestQgsProcessingAlgsPt1::fillNoData_data()
    * band = 1
    * fillValue = 2.0
    */
-  QTest::newRow( "testcase 1" )
-    << "/raster/band1_int16_noct_epsg4326.tif"
-    << u"/fillnodata_testcase1.tif"_s
-    << 1
-    << 2.0;
+  QTest::newRow( "testcase 1" ) << "/raster/band1_int16_noct_epsg4326.tif" << u"/fillnodata_testcase1.tif"_s << 1 << 2.0;
 
   /*
    * Testcase 2
@@ -2152,11 +2004,7 @@ void TestQgsProcessingAlgsPt1::fillNoData_data()
    * searchRadius = 3
    * pixelSize = 1.8
    */
-  QTest::newRow( "testcase 2" )
-    << "/raster/band1_int16_noct_epsg4326.tif"
-    << u"/fillnodata_testcase2.tif"_s
-    << 1
-    << 1.8;
+  QTest::newRow( "testcase 2" ) << "/raster/band1_int16_noct_epsg4326.tif" << u"/fillnodata_testcase2.tif"_s << 1 << 1.8;
 
   /*
    * Testcase 3
@@ -2165,11 +2013,7 @@ void TestQgsProcessingAlgsPt1::fillNoData_data()
    * searchRadius = 3
    * pixelSize = 1.8
    */
-  QTest::newRow( "testcase 3" )
-    << "/raster/band1_float32_noct_epsg4326.tif"
-    << u"/fillnodata_testcase3.tif"_s
-    << 1
-    << 1.8;
+  QTest::newRow( "testcase 3" ) << "/raster/band1_float32_noct_epsg4326.tif" << u"/fillnodata_testcase3.tif"_s << 1 << 1.8;
 }
 
 void TestQgsProcessingAlgsPt1::fillNoData()
@@ -2237,7 +2081,8 @@ void TestQgsProcessingAlgsPt1::fillNoData()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -2315,12 +2160,7 @@ void TestQgsProcessingAlgsPt1::lineDensity_data()
    * searchRadius = 3
    * pixelSize = 2
    */
-  QTest::newRow( "testcase 1" )
-    << "/linedensity.gml"
-    << u"/linedensity_testcase1.tif"_s
-    << 3.0
-    << 2.0
-    << u"weight"_s;
+  QTest::newRow( "testcase 1" ) << "/linedensity.gml" << u"/linedensity_testcase1.tif"_s << 3.0 << 2.0 << u"weight"_s;
 
   /*
    * Testcase 2
@@ -2329,12 +2169,7 @@ void TestQgsProcessingAlgsPt1::lineDensity_data()
    * searchRadius = 3
    * pixelSize = 2
    */
-  QTest::newRow( "testcase_2" )
-    << "/linedensity.gml"
-    << u"/linedensity_testcase2.tif"_s
-    << 3.0
-    << 2.0
-    << QString();
+  QTest::newRow( "testcase_2" ) << "/linedensity.gml" << u"/linedensity_testcase2.tif"_s << 3.0 << 2.0 << QString();
 }
 
 void TestQgsProcessingAlgsPt1::lineDensity()
@@ -2406,7 +2241,8 @@ void TestQgsProcessingAlgsPt1::lineDensity()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -2439,96 +2275,159 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp_data()
   QTest::addColumn<double>( "destNoDataValue" );
   QTest::addColumn<int>( "dataType" );
 
-  QTest::newRow( "no nodata" ) << QVector<double> { 1, 2, 0, 0, 0, 0 }
-                               << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                               << QVector<double> { 1, 2, 0, 0, 0, -1 }
-                               << false
-                               << 0ULL << 5ULL << 1ULL
-                               << QVector<double> { 1, 1, 1, 1, 0, 1 }
-                               << 0ULL << 1ULL << 5ULL
-                               << QVector<double> { 1, 0, 0, 0, 0, 0 }
-                               << 3 << 2
-                               << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "nodata" ) << QVector<double> { 1, -9999, 0, 0, 0, 0 }
-                            << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                            << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                            << false
-                            << 2ULL << 3ULL << 1ULL
-                            << QVector<double> { 1, -9999, 1, -9999, 0, 1 }
-                            << 2ULL << 1ULL << 3ULL
-                            << QVector<double> { 1, -9999, 0, -9999, 0, 0 }
-                            << 3 << 2
-                            << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "nodata as false" ) << QVector<double> { 1, -9999, 0, 0, 0, 0 }
-                                     << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                     << true
-                                     << 0ULL << 5ULL << 1ULL
-                                     << QVector<double> { 1, 1, 1, 1, 0, 1 }
-                                     << 0ULL << 1ULL << 5ULL
-                                     << QVector<double> { 1, 0, 0, 0, 0, 0 }
-                                     << 3 << 2
-                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 1" ) << QVector<double> {}
-                                     << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                     << false
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 3 << 2
-                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 1 nodata as false" ) << QVector<double> {}
-                                                     << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                                     << true
-                                                     << 0ULL << 5ULL << 1ULL
-                                                     << QVector<double> { 1, 1, 1, 1, 0, 1 }
-                                                     << 0ULL << 0ULL << 6ULL
-                                                     << QVector<double> { 0, 0, 0, 0, 0, 0 }
-                                                     << 3 << 2
-                                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 2" ) << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                     << QVector<double> {}
-                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                     << false
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 3 << 2
-                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 2 nodata as false" ) << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                                     << QVector<double> {}
-                                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                                     << true
-                                                     << 0ULL << 5ULL << 1ULL
-                                                     << QVector<double> { 1, 1, 1, 1, 0, 1 }
-                                                     << 0ULL << 0ULL << 6ULL
-                                                     << QVector<double> { 0, 0, 0, 0, 0, 0 }
-                                                     << 3 << 2
-                                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 3" ) << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                     << QVector<double> {}
-                                     << false
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 6ULL << 0ULL << 0ULL
-                                     << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
-                                     << 3 << 2
-                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
-  QTest::newRow( "missing block 3 nodata as false" ) << QVector<double> { 1, 0, 1, 1, 0, 1 }
-                                                     << QVector<double> { 1, 2, 0, -9999, 0, -1 }
-                                                     << QVector<double> {}
-                                                     << true
-                                                     << 0ULL << 5ULL << 1ULL
-                                                     << QVector<double> { 1, 1, 1, 1, 0, 1 }
-                                                     << 0ULL << 0ULL << 6ULL
-                                                     << QVector<double> { 0, 0, 0, 0, 0, 0 }
-                                                     << 3 << 2
-                                                     << -9999.0 << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "no nodata" )
+    << QVector<double> { 1, 2, 0, 0, 0, 0 }
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, 0, 0, -1 }
+    << false
+    << 0ULL
+    << 5ULL
+    << 1ULL
+    << QVector<double> { 1, 1, 1, 1, 0, 1 }
+    << 0ULL
+    << 1ULL
+    << 5ULL
+    << QVector<double> { 1, 0, 0, 0, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "nodata" )
+    << QVector<double> { 1, -9999, 0, 0, 0, 0 }
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << false
+    << 2ULL
+    << 3ULL
+    << 1ULL
+    << QVector<double> { 1, -9999, 1, -9999, 0, 1 }
+    << 2ULL
+    << 1ULL
+    << 3ULL
+    << QVector<double> { 1, -9999, 0, -9999, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "nodata as false" )
+    << QVector<double> { 1, -9999, 0, 0, 0, 0 }
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << true
+    << 0ULL
+    << 5ULL
+    << 1ULL
+    << QVector<double> { 1, 1, 1, 1, 0, 1 }
+    << 0ULL
+    << 1ULL
+    << 5ULL
+    << QVector<double> { 1, 0, 0, 0, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 1" )
+    << QVector<double> {}
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << false
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 1 nodata as false" )
+    << QVector<double> {}
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << true
+    << 0ULL
+    << 5ULL
+    << 1ULL
+    << QVector<double> { 1, 1, 1, 1, 0, 1 }
+    << 0ULL
+    << 0ULL
+    << 6ULL
+    << QVector<double> { 0, 0, 0, 0, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 2" )
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> {}
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << false
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 2 nodata as false" )
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> {}
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << true
+    << 0ULL
+    << 5ULL
+    << 1ULL
+    << QVector<double> { 1, 1, 1, 1, 0, 1 }
+    << 0ULL
+    << 0ULL
+    << 6ULL
+    << QVector<double> { 0, 0, 0, 0, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 3" )
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << QVector<double> {}
+    << false
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 6ULL
+    << 0ULL
+    << 0ULL
+    << QVector<double> { -9999, -9999, -9999, -9999, -9999, -9999 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
+  QTest::newRow( "missing block 3 nodata as false" )
+    << QVector<double> { 1, 0, 1, 1, 0, 1 }
+    << QVector<double> { 1, 2, 0, -9999, 0, -1 }
+    << QVector<double> {}
+    << true
+    << 0ULL
+    << 5ULL
+    << 1ULL
+    << QVector<double> { 1, 1, 1, 1, 0, 1 }
+    << 0ULL
+    << 0ULL
+    << 6ULL
+    << QVector<double> { 0, 0, 0, 0, 0, 0 }
+    << 3
+    << 2
+    << -9999.0
+    << static_cast<int>( Qgis::DataType::Float32 );
 }
 
 void TestQgsProcessingAlgsPt1::rasterLogicOp()
@@ -2558,10 +2457,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   const QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
   const QgsRectangle badExtent = QgsRectangle( -100, -100, 90, 90 );
   const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
-  double tform[] = {
-    extent.xMinimum(), extent.width() / nCols, 0.0,
-    extent.yMaximum(), 0.0, -extent.height() / nRows
-  };
+  double tform[] = { extent.xMinimum(), extent.width() / nCols, 0.0, extent.yMaximum(), 0.0, -extent.height() / nRows };
 
   std::vector<QgsRasterAnalysisUtils::RasterLogicInput> inputs;
   for ( int ii = 0; ii < 3; ++ii )
@@ -2987,7 +2883,8 @@ void TestQgsProcessingAlgsPt1::cellStatistics()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -3082,7 +2979,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 1: nearest, ignoreNoData = true, dataType = Float64
    */
   QTest::newRow( "testcase_1" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 0
     << 0.789
@@ -3094,7 +2999,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 2: inc, ignoreNoData = true, dataType = Float64
    */
   QTest::newRow( "testcase_2" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 1
     << 0.789
@@ -3106,7 +3019,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 3: exc, ignoreNoData = true, dataType = Float64
    */
   QTest::newRow( "testcase_3" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 2
     << 0.789
@@ -3118,7 +3039,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 4: nearest, ignoreNoData = false, dataType = Float64
    */
   QTest::newRow( "testcase_4" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 0
     << 0.789
@@ -3130,7 +3059,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 5: inc, ignoreNoData = false, dataType = Float64
    */
   QTest::newRow( "testcase_5" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 1
     << 0.789
@@ -3142,7 +3079,15 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 6: exc, ignoreNoData = false, dataType = Float64
    */
   QTest::newRow( "testcase_6" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 2
     << 0.789
@@ -3154,7 +3099,13 @@ void TestQgsProcessingAlgsPt1::percentileRaster_data()
    * Testcase 7: exc, ignoreNoData = false, dataType = Byte
    */
   QTest::newRow( "testcase_7" )
-    << QStringList( { "/raster/rnd_percentile_raster1_byte.tif", "/raster/rnd_percentile_raster2_byte.tif", "/raster/rnd_percentile_raster3_byte.tif", "/raster/rnd_percentile_raster4_byte.tif", "/raster/rnd_percentile_raster5_byte.tif" } )
+    << QStringList(
+         { "/raster/rnd_percentile_raster1_byte.tif",
+           "/raster/rnd_percentile_raster2_byte.tif",
+           "/raster/rnd_percentile_raster3_byte.tif",
+           "/raster/rnd_percentile_raster4_byte.tif",
+           "/raster/rnd_percentile_raster5_byte.tif" }
+       )
     << u"/raster/rnd_percentile_raster1_byte.tif"_s
     << 0
     << 0.789
@@ -3241,7 +3192,8 @@ void TestQgsProcessingAlgsPt1::percentileRaster()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -3273,7 +3225,9 @@ void TestQgsProcessingAlgsPt1::percentrankFunctions_data()
     << QgsRasterAnalysisUtils::InterpolatedPercentRankExc
     << std::vector<double>( { 100, 24, 49, 36, 2, 18, 98, 64, 20, 20 } )
     << std::vector<double>( { -8, 2, 18, 20, 33, 47, 29, 39.5, 57, 39, 12, 100, 150 } )
-    << std::vector<double>( { -9999, 0.0909090909091, 0.1818181818181, 0.272727272727, 0.522727272727, 0.622377622378, 0.492424242424, 0.56993006993, 0.684848484848, 0.566433566434, 0.1477272727272, 0.909090909091, -9999 } );
+    << std::vector<double>(
+         { -9999, 0.0909090909091, 0.1818181818181, 0.272727272727, 0.522727272727, 0.622377622378, 0.492424242424, 0.56993006993, 0.684848484848, 0.566433566434, 0.1477272727272, 0.909090909091, -9999 }
+       );
 }
 
 void TestQgsProcessingAlgsPt1::percentrankFunctions()
@@ -3334,7 +3288,15 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster_data()
   QTest::newRow( "testcase_1" )
     << u"/raster/rnd_percentrank_valueraster_float64.tif"_s
     << 1
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 0
     << true
@@ -3348,7 +3310,15 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster_data()
   QTest::newRow( "testcase_2" )
     << u"/raster/rnd_percentrank_valueraster_float64.tif"_s
     << 1
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 1
     << true
@@ -3362,7 +3332,15 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster_data()
   QTest::newRow( "testcase_3" )
     << u"/raster/rnd_percentrank_valueraster_float64.tif"_s
     << 1
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 0
     << false
@@ -3376,7 +3354,15 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster_data()
   QTest::newRow( "testcase_4" )
     << u"/raster/rnd_percentrank_valueraster_float64.tif"_s
     << 1
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 1
     << false
@@ -3391,7 +3377,13 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster_data()
   QTest::newRow( "testcase_5" )
     << u"/raster/rnd_percentile_raster1_byte.tif"_s
     << 1
-    << QStringList( { "/raster/rnd_percentile_raster1_byte.tif", "/raster/rnd_percentile_raster2_byte.tif", "/raster/rnd_percentile_raster3_byte.tif", "/raster/rnd_percentile_raster4_byte.tif", "/raster/rnd_percentile_raster5_byte.tif" } )
+    << QStringList(
+         { "/raster/rnd_percentile_raster1_byte.tif",
+           "/raster/rnd_percentile_raster2_byte.tif",
+           "/raster/rnd_percentile_raster3_byte.tif",
+           "/raster/rnd_percentile_raster4_byte.tif",
+           "/raster/rnd_percentile_raster5_byte.tif" }
+       )
     << u"/raster/rnd_percentile_raster1_byte.tif"_s
     << 0
     << false
@@ -3482,7 +3474,8 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -3511,7 +3504,15 @@ void TestQgsProcessingAlgsPt1::percentrankByValue_data()
    * Testcase 1: nearest, ignoreNoData = true, dataType = Float64
    */
   QTest::newRow( "testcase_1" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 83.327
     << 0
@@ -3524,7 +3525,15 @@ void TestQgsProcessingAlgsPt1::percentrankByValue_data()
    * Testcase 2: inc, ignoreNoData = true, dataType = Float64
    */
   QTest::newRow( "testcase_2" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 7.99
     << 1
@@ -3537,7 +3546,15 @@ void TestQgsProcessingAlgsPt1::percentrankByValue_data()
    * Testcase 3: nearest, ignoreNoData = false, dataType = Float64
    */
   QTest::newRow( "testcase_3" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 200.78
     << 0
@@ -3550,7 +3567,15 @@ void TestQgsProcessingAlgsPt1::percentrankByValue_data()
    * Testcase 4: inc, ignoreNoData = false, dataType = Float64
    */
   QTest::newRow( "testcase_4" )
-    << QStringList( { "/raster/statisticsRas1_float64.asc", "/raster/statisticsRas4_float64.asc", "/raster/rnd_percentile_raster1_float64.tif", "/raster/rnd_percentile_raster2_float64.tif", "/raster/rnd_percentile_raster3_float64.tif", "/raster/rnd_percentile_raster4_float64.tif", "/raster/rnd_percentile_raster5_float64.tif" } )
+    << QStringList(
+         { "/raster/statisticsRas1_float64.asc",
+           "/raster/statisticsRas4_float64.asc",
+           "/raster/rnd_percentile_raster1_float64.tif",
+           "/raster/rnd_percentile_raster2_float64.tif",
+           "/raster/rnd_percentile_raster3_float64.tif",
+           "/raster/rnd_percentile_raster4_float64.tif",
+           "/raster/rnd_percentile_raster5_float64.tif" }
+       )
     << u"/raster/statisticsRas1_float64.asc"_s
     << 56.78
     << 1
@@ -3564,7 +3589,13 @@ void TestQgsProcessingAlgsPt1::percentrankByValue_data()
    * Testcase 5: inc, ignoreNoData = false, dataType = Byte
    */
   QTest::newRow( "testcase_5" )
-    << QStringList( { "/raster/rnd_percentile_raster1_byte.tif", "/raster/rnd_percentile_raster2_byte.tif", "/raster/rnd_percentile_raster3_byte.tif", "/raster/rnd_percentile_raster4_byte.tif", "/raster/rnd_percentile_raster5_byte.tif" } )
+    << QStringList(
+         { "/raster/rnd_percentile_raster1_byte.tif",
+           "/raster/rnd_percentile_raster2_byte.tif",
+           "/raster/rnd_percentile_raster3_byte.tif",
+           "/raster/rnd_percentile_raster4_byte.tif",
+           "/raster/rnd_percentile_raster5_byte.tif" }
+       )
     << u"/raster/rnd_percentile_raster1_byte.tif"_s
     << 19.0
     << 0
@@ -3654,7 +3685,8 @@ void TestQgsProcessingAlgsPt1::percentrankByValue()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -3897,7 +3929,8 @@ void TestQgsProcessingAlgsPt1::rasterFrequencyByComparisonOperator()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -4038,7 +4071,8 @@ void TestQgsProcessingAlgsPt1::rasterLocalPosition()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -4088,13 +4122,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = up
    * decimals = 2
    */
-  QTest::newRow( "testcase 2" )
-    << "/raster/dem.tif"
-    << u"/roundRasterValues_testcase2.tif"_s
-    << 1
-    << 0
-    << 2
-    << 10;
+  QTest::newRow( "testcase 2" ) << "/raster/dem.tif" << u"/roundRasterValues_testcase2.tif"_s << 1 << 0 << 2 << 10;
 
   /*
    * Testcase 3
@@ -4104,13 +4132,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = down
    * decimals = 1
    */
-  QTest::newRow( "testcase 3" )
-    << "/raster/dem.tif"
-    << u"/roundRasterValues_testcase3.tif"_s
-    << 1
-    << 2
-    << 1
-    << 10;
+  QTest::newRow( "testcase 3" ) << "/raster/dem.tif" << u"/roundRasterValues_testcase3.tif"_s << 1 << 2 << 1 << 10;
 
   /*
    * Testcase 4
@@ -4120,13 +4142,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = nearest
    * decimals = -1
    */
-  QTest::newRow( "testcase 4" )
-    << "/raster/dem.tif"
-    << u"/roundRasterValues_testcase4.tif"_s
-    << 1
-    << 1
-    << -1
-    << 10;
+  QTest::newRow( "testcase 4" ) << "/raster/dem.tif" << u"/roundRasterValues_testcase4.tif"_s << 1 << 1 << -1 << 10;
 
   /*
    * Testcase 5
@@ -4136,13 +4152,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = up
    * decimals = -1
    */
-  QTest::newRow( "testcase 5" )
-    << "/raster/dem.tif"
-    << u"/roundRasterValues_testcase5.tif"_s
-    << 1
-    << 0
-    << -1
-    << 10;
+  QTest::newRow( "testcase 5" ) << "/raster/dem.tif" << u"/roundRasterValues_testcase5.tif"_s << 1 << 0 << -1 << 10;
 
   /*
    * Testcase 6
@@ -4152,13 +4162,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = down
    * decimals = -1
    */
-  QTest::newRow( "testcase 6" )
-    << "/raster/dem.tif"
-    << u"/roundRasterValues_testcase6.tif"_s
-    << 1
-    << 2
-    << -1
-    << 10;
+  QTest::newRow( "testcase 6" ) << "/raster/dem.tif" << u"/roundRasterValues_testcase6.tif"_s << 1 << 2 << -1 << 10;
 
   /*
    * Testcase 7
@@ -4168,13 +4172,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = nearest
    * decimals = 2
    */
-  QTest::newRow( "testcase 7" )
-    << "/raster/band1_int16_noct_epsg4326.tif"
-    << u"/roundRasterValues_testcase7.tif"_s
-    << 1
-    << 1
-    << -1
-    << 10;
+  QTest::newRow( "testcase 7" ) << "/raster/band1_int16_noct_epsg4326.tif" << u"/roundRasterValues_testcase7.tif"_s << 1 << 1 << -1 << 10;
 
   /*
    * Testcase 8
@@ -4184,13 +4182,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues_data()
    * roundingDirection = nearest
    * decimals = -1
    */
-  QTest::newRow( "testcase 8" )
-    << "/raster/band1_int16_noct_epsg4326.tif"
-    << u"/roundRasterValues_testcase8.tif"_s
-    << 1
-    << 1
-    << -1
-    << 10;
+  QTest::newRow( "testcase 8" ) << "/raster/band1_int16_noct_epsg4326.tif" << u"/roundRasterValues_testcase8.tif"_s << 1 << 1 << -1 << 10;
 }
 
 void TestQgsProcessingAlgsPt1::roundRasterValues()
@@ -4261,7 +4253,8 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   std::unique_ptr<QgsRasterBlock> outputRasterBlock;
   std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
 
-  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop )
+          && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -4654,7 +4647,10 @@ void TestQgsProcessingAlgsPt1::bookmarksToLayer()
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.attribute( 0 ).toString(), u"test name 2"_s );
   QCOMPARE( f.attribute( 1 ).toString(), QString() );
-  QCOMPARE( f.geometry().asWkt( 0 ), u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s );
+  QCOMPARE(
+    f.geometry().asWkt( 0 ),
+    u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s
+  );
   QVERIFY( !it.nextFeature( f ) );
 
   // both
@@ -4676,7 +4672,10 @@ void TestQgsProcessingAlgsPt1::bookmarksToLayer()
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.attribute( 0 ).toString(), u"test name 2"_s );
   QCOMPARE( f.attribute( 1 ).toString(), QString() );
-  QCOMPARE( f.geometry().asWkt( 0 ), u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s );
+  QCOMPARE(
+    f.geometry().asWkt( 0 ),
+    u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s
+  );
   QVERIFY( !it.nextFeature( f ) );
 }
 
@@ -4690,7 +4689,11 @@ void TestQgsProcessingAlgsPt1::layerToBookmarks()
   f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((11 21, 31 21, 31 41, 11 41, 11 21))"_s ) );
   inputLayer->dataProvider()->addFeature( f );
   f.setAttributes( QgsAttributes() << u"b2"_s << QString() );
-  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s ) );
+  f.setGeometry(
+    QgsGeometry::fromWkt(
+      u"Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))"_s
+    )
+  );
   inputLayer->dataProvider()->addFeature( f );
 
   QgsApplication::bookmarkManager()->clear();
@@ -5054,9 +5057,7 @@ void TestQgsProcessingAlgsPt1::setLayerEncoding()
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( TEST_DATA_DIR ) + "/shapefile/system_encoding.shp", u"test"_s, u"ogr"_s );
   QVERIFY( vl->isValid() );
   QgsProject p;
-  p.addMapLayers(
-    QList<QgsMapLayer *>() << vl
-  );
+  p.addMapLayers( QList<QgsMapLayer *>() << vl );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:setlayerencoding"_s ) );
   QVERIFY( alg != nullptr );
@@ -5084,18 +5085,9 @@ class TestProcessingFeedback : public QgsProcessingFeedback
 {
     Q_OBJECT
   public:
-    void reportError( const QString &error, bool ) override
-    {
-      errors << error;
-    }
-    void pushWarning( const QString &warning ) override
-    {
-      warnings << warning;
-    }
-    void pushInfo( const QString &message ) override
-    {
-      messages << message;
-    }
+    void reportError( const QString &error, bool ) override { errors << error; }
+    void pushWarning( const QString &warning ) override { warnings << warning; }
+    void pushInfo( const QString &message ) override { messages << message; }
 
     QStringList errors;
     QStringList warnings;
@@ -5213,22 +5205,10 @@ void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster_data()
   QTest::addColumn<double>( "pixelSize" );
   QTest::addColumn<int>( "typeId" );
 
-  QTest::newRow( "testcase 1" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 0;
+  QTest::newRow( "testcase 1" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float32 << true << "EPSG:4326" << 1.0 << 0;
 
 
-  QTest::newRow( "testcase 2" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float64
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 1;
+  QTest::newRow( "testcase 2" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float64 << true << "EPSG:4326" << 1.0 << 1;
 }
 
 void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster()
@@ -5248,9 +5228,7 @@ void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster()
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 
   QStringList alglist = QStringList();
-  alglist << u"native:createrandomnormalrasterlayer"_s
-          << u"native:createrandomexponentialrasterlayer"_s
-          << u"native:createrandomgammarasterlayer"_s;
+  alglist << u"native:createrandomnormalrasterlayer"_s << u"native:createrandomexponentialrasterlayer"_s << u"native:createrandomgammarasterlayer"_s;
 
   for ( int i = 0; i < alglist.length(); i++ )
   {
@@ -5304,54 +5282,18 @@ void TestQgsProcessingAlgsPt1::randomIntegerDistributionRaster_data()
   QTest::addColumn<double>( "pixelSize" );
   QTest::addColumn<int>( "typeId" );
 
-  QTest::newRow( "testcase 1" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int16
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 0;
+  QTest::newRow( "testcase 1" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int16 << true << "EPSG:4326" << 1.0 << 0;
 
-  QTest::newRow( "testcase 2" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt16
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 1;
+  QTest::newRow( "testcase 2" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt16 << true << "EPSG:4326" << 1.0 << 1;
 
 
-  QTest::newRow( "testcase 3" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 2;
+  QTest::newRow( "testcase 3" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int32 << true << "EPSG:4326" << 1.0 << 2;
 
-  QTest::newRow( "testcase 4" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 3;
+  QTest::newRow( "testcase 4" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt32 << true << "EPSG:4326" << 1.0 << 3;
 
-  QTest::newRow( "testcase 5" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 4;
+  QTest::newRow( "testcase 5" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float32 << true << "EPSG:4326" << 1.0 << 4;
 
-  QTest::newRow( "testcase 6" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float64
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 5;
+  QTest::newRow( "testcase 6" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float64 << true << "EPSG:4326" << 1.0 << 5;
 }
 
 
@@ -5372,10 +5314,7 @@ void TestQgsProcessingAlgsPt1::randomIntegerDistributionRaster()
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 
   QStringList alglist = QStringList();
-  alglist << u"native:createrandombinomialrasterlayer"_s
-          << u"native:createrandomgeometricrasterlayer"_s
-          << u"native:createrandomnegativebinomialrasterlayer"_s
-          << u"native:createrandompoissonrasterlayer"_s;
+  alglist << u"native:createrandombinomialrasterlayer"_s << u"native:createrandomgeometricrasterlayer"_s << u"native:createrandomnegativebinomialrasterlayer"_s << u"native:createrandompoissonrasterlayer"_s;
 
   for ( int i = 0; i < alglist.length(); i++ )
   {
@@ -5461,155 +5400,35 @@ void TestQgsProcessingAlgsPt1::randomRaster_data()
     << 256.0 //fails --> value too big for byte
     << 0;
 
-  QTest::newRow( "testcase 4" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int16
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 10.0
-    << 1;
+  QTest::newRow( "testcase 4" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int16 << true << "EPSG:4326" << 1.0 << 1.0 << 10.0 << 1;
 
-  QTest::newRow( "testcase 5" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int16
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << -32769.0
-    << -10.0
-    << 1;
+  QTest::newRow( "testcase 5" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int16 << false << "EPSG:4326" << 1.0 << -32769.0 << -10.0 << 1;
 
-  QTest::newRow( "testcase 6" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int16
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 32769.0
-    << 1;
+  QTest::newRow( "testcase 6" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int16 << false << "EPSG:4326" << 1.0 << 1.0 << 32769.0 << 1;
 
-  QTest::newRow( "testcase 7" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt16
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << -1.0
-    << 12.0
-    << 2;
+  QTest::newRow( "testcase 7" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt16 << false << "EPSG:4326" << 1.0 << -1.0 << 12.0 << 2;
 
-  QTest::newRow( "testcase 8" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt16
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 100.0
-    << -1.0
-    << 2;
+  QTest::newRow( "testcase 8" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt16 << false << "EPSG:4326" << 1.0 << 100.0 << -1.0 << 2;
 
-  QTest::newRow( "testcase 9" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt16
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 0.0
-    << 65536.0
-    << 2;
+  QTest::newRow( "testcase 9" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt16 << false << "EPSG:4326" << 1.0 << 0.0 << 65536.0 << 2;
 
-  QTest::newRow( "testcase 10" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 12.0
-    << 3;
+  QTest::newRow( "testcase 10" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int32 << true << "EPSG:4326" << 1.0 << 1.0 << 12.0 << 3;
 
-  QTest::newRow( "testcase 10" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int32
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 15.0
-    << 12.0
-    << 3;
+  QTest::newRow( "testcase 10" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int32 << false << "EPSG:4326" << 1.0 << 15.0 << 12.0 << 3;
 
-  QTest::newRow( "testcase 11" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int32
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << -2147483649.0
-    << 1.0
-    << 3;
+  QTest::newRow( "testcase 11" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int32 << false << "EPSG:4326" << 1.0 << -2147483649.0 << 1.0 << 3;
 
-  QTest::newRow( "testcase 12" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Int32
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 2147483649.0
-    << 3;
+  QTest::newRow( "testcase 12" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Int32 << false << "EPSG:4326" << 1.0 << 1.0 << 2147483649.0 << 3;
 
-  QTest::newRow( "testcase 13" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 12.0
-    << 4;
+  QTest::newRow( "testcase 13" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt32 << true << "EPSG:4326" << 1.0 << 1.0 << 12.0 << 4;
 
-  QTest::newRow( "testcase 14" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt32
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << 1.0
-    << 4294967296.0
-    << 4;
+  QTest::newRow( "testcase 14" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt32 << false << "EPSG:4326" << 1.0 << 1.0 << 4294967296.0 << 4;
 
-  QTest::newRow( "testcase 14" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::UInt32
-    << false
-    << "EPSG:4326"
-    << 1.0
-    << -10.0
-    << -1.0
-    << 4;
+  QTest::newRow( "testcase 14" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::UInt32 << false << "EPSG:4326" << 1.0 << -10.0 << -1.0 << 4;
 
-  QTest::newRow( "testcase 16" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float32
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << 0.0
-    << 12.12
-    << 5;
+  QTest::newRow( "testcase 16" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float32 << true << "EPSG:4326" << 1.0 << 0.0 << 12.12 << 5;
 
-  QTest::newRow( "testcase 17" )
-    << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-    << Qgis::DataType::Float64
-    << true
-    << "EPSG:4326"
-    << 1.0
-    << -15.0
-    << 12.125789212532487
-    << 6;
+  QTest::newRow( "testcase 17" ) << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]" << Qgis::DataType::Float64 << true << "EPSG:4326" << 1.0 << -15.0 << 12.125789212532487 << 6;
 }
 
 void TestQgsProcessingAlgsPt1::randomRaster()

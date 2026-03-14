@@ -74,8 +74,7 @@ bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *othe
   if ( !equalsCommon( other ) )
     return false;
 
-  return mResolution == otherTerrain->mResolution
-         && qgsDoubleNear( mSkirtHeight, otherTerrain->mSkirtHeight );
+  return mResolution == otherTerrain->mResolution && qgsDoubleNear( mSkirtHeight, otherTerrain->mSkirtHeight );
 }
 
 std::unique_ptr<QgsTerrainGenerator> QgsOnlineDemTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const

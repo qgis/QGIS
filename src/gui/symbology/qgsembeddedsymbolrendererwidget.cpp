@@ -44,11 +44,15 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
     //setup blank dialog
     mRenderer.reset( nullptr );
     QGridLayout *layout = new QGridLayout( this );
-    QLabel *label = new QLabel( tr( "The embedded symbols renderer can only be used with layers\n"
-                                    "containing embedded styling information.\n\n"
-                                    "'%1' does not contain embedded styling and cannot be displayed." )
-                                  .arg( layer->name() ),
-                                this );
+    QLabel *label = new QLabel(
+      tr(
+        "The embedded symbols renderer can only be used with layers\n"
+        "containing embedded styling information.\n\n"
+        "'%1' does not contain embedded styling and cannot be displayed."
+      )
+        .arg( layer->name() ),
+      this
+    );
     this->setLayout( layout );
     layout->addWidget( label );
     mDefaultSymbolToolButton = nullptr;

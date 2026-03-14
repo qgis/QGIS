@@ -76,10 +76,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
     bool renameAttributes( const QgsFieldNameMap &fieldMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-    bool changeFeatures(
-      const QgsChangedAttributesMap &attrMap,
-      const QgsGeometryMap &geometryMap
-    ) override;
+    bool changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
 
     Qgis::VectorProviderCapabilities capabilities() const override;
@@ -181,6 +178,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsHanaProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QIcon icon() const override;
 
     void cleanupProvider() override;
@@ -212,6 +210,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 };
 
 #endif // QGSHANAPROVIDER_H

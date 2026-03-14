@@ -42,8 +42,7 @@ using namespace Qt::StringLiterals;
 QgsPointCloudClassifiedRendererModel::QgsPointCloudClassifiedRendererModel( QObject *parent )
   : QAbstractItemModel( parent )
   , mMimeFormat( u"application/x-qgspointcloudclassifiedrenderermodel"_s )
-{
-}
+{}
 
 void QgsPointCloudClassifiedRendererModel::setRendererCategories( const QgsPointCloudCategoryList &categories )
 {
@@ -532,6 +531,16 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
   const QgsPointCloudCategoryList defaultLayerCategories = isClassificationAttribute ? QgsPointCloudRendererRegistry::classificationAttributeCategories( mLayer ) : QgsPointCloudCategoryList();
 
   mBlockChangedSignal = true;
+
+  // If it is classification and we lack stats, lets use the full set of default categories
+  if ( isClassificationAttribute && providerCategories.isEmpty() )
+  {
+    for ( const QgsPointCloudCategory &c : defaultLayerCategories )
+    {
+      providerCategories.append( c.value() );
+    }
+  }
+
   for ( const int &providerCategory : std::as_const( providerCategories ) )
   {
     // does this category already exist?

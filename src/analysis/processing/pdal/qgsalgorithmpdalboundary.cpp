@@ -70,7 +70,9 @@ void QgsPdalBoundaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( u"RESOLUTION"_s, QObject::tr( "Resolution of cells used to calculate boundary" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-6 ) );
-  addParameter( new QgsProcessingParameterNumber( u"THRESHOLD"_s, QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 ) );
+  addParameter(
+    new QgsProcessingParameterNumber( u"THRESHOLD"_s, QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 )
+  );
   createCommonParameters();
   addParameter( new QgsProcessingParameterVectorDestination( u"OUTPUT"_s, QObject::tr( "Boundary" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }

@@ -19,7 +19,6 @@ project files.
 #include "qgsprojectbadlayerhandler.h"
 %End
   public:
-
     virtual void handleBadLayers( const QList<QDomNode> &layers );
 %Docstring
 This method will be called whenever the project tries to load layers
@@ -34,7 +33,6 @@ information to the log.
 
 
   protected:
-
     enum DataType /BaseType=IntEnum/
     {
       IS_VECTOR,

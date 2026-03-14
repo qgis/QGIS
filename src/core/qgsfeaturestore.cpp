@@ -18,8 +18,7 @@
 QgsFeatureStore::QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs )
   : mFields( fields )
   , mCrs( crs )
-{
-}
+{}
 
 void QgsFeatureStore::setFields( const QgsFields &fields )
 {

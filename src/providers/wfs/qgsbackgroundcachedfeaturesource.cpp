@@ -18,12 +18,9 @@
 #include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgsbackgroundcachedshareddata.h"
 
-QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource(
-  std::shared_ptr<QgsBackgroundCachedSharedData> shared
-)
+QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource( std::shared_ptr<QgsBackgroundCachedSharedData> shared )
   : mShared( std::move( shared ) )
-{
-}
+{}
 
 QgsFeatureIterator QgsBackgroundCachedFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

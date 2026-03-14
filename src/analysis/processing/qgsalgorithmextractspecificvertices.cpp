@@ -53,17 +53,25 @@ QString QgsExtractSpecificVerticesAlgorithm::groupId() const
 
 QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points "
-                      "representing specific vertices in the input geometries. For instance, this algorithm "
-                      "can be used to extract the first or last vertices in the geometry. The attributes associated "
-                      "to each point are the same ones associated to the feature that the point belongs to." )
-         + u"\n\n"_s + QObject::tr( "The vertex indices parameter accepts a comma separated string specifying the indices of the "
-                                    "vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an "
-                                    "index of 1, etc. Negative indices can be used to find vertices at the end of the geometry, "
-                                    "e.g., an index of -1 corresponds to the last vertex, -2 corresponds to the second last vertex, etc." )
-         + u"\n\n"_s + QObject::tr( "Additional fields are added to the points indicating the specific vertex position (e.g., 0, -1, etc), "
-                                    "the original vertex index, the vertex’s part and its index within the part (as well as its ring for "
-                                    "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
+  return QObject::tr(
+           "This algorithm takes a vector layer and generates a point layer with points "
+           "representing specific vertices in the input geometries. For instance, this algorithm "
+           "can be used to extract the first or last vertices in the geometry. The attributes associated "
+           "to each point are the same ones associated to the feature that the point belongs to."
+         )
+         + u"\n\n"_s
+         + QObject::tr(
+           "The vertex indices parameter accepts a comma separated string specifying the indices of the "
+           "vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an "
+           "index of 1, etc. Negative indices can be used to find vertices at the end of the geometry, "
+           "e.g., an index of -1 corresponds to the last vertex, -2 corresponds to the second last vertex, etc."
+         )
+         + u"\n\n"_s
+         + QObject::tr(
+           "Additional fields are added to the points indicating the specific vertex position (e.g., 0, -1, etc), "
+           "the original vertex index, the vertex’s part and its index within the part (as well as its ring for "
+           "polygons), distance along the original geometry and bisector angle of vertex for the original geometry."
+         );
 }
 
 QString QgsExtractSpecificVerticesAlgorithm::shortDescription() const
@@ -174,16 +182,12 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
   if ( inputGeom.isEmpty() )
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant();
     if ( mGeometryType == Qgis::GeometryType::Polygon )
     {
       attrs << QVariant();
     }
-    attrs << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant();
 
     f.clearGeometry();
     f.setAttributes( attrs );
@@ -215,16 +219,12 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
 
       QgsFeature outFeature = QgsFeature();
       QgsAttributes attrs = f.attributes();
-      attrs << vertex
-            << vertexIndex
-            << vertexId.part;
+      attrs << vertex << vertexIndex << vertexId.part;
       if ( mGeometryType == Qgis::GeometryType::Polygon )
       {
         attrs << vertexId.ring;
       }
-      attrs << vertexId.vertex
-            << distance
-            << angle;
+      attrs << vertexId.vertex << distance << angle;
 
       outFeature.setAttributes( attrs );
       const QgsPoint point = inputGeom.vertexAt( vertexIndex );

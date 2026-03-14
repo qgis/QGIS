@@ -311,10 +311,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see setSubsectionsSymbol()
      * \since QGIS 3.44
      */
-    QgsLineSymbol *subsectionsSymbol()
-    {
-      return mSubsectionsSymbol.get();
-    }
+    QgsLineSymbol *subsectionsSymbol() { return mSubsectionsSymbol.get(); }
 
     /**
      * Sets the \a symbol used to draw the subsections. If \a symbol is NULLPTR, the subsections are not drawn.
@@ -395,7 +392,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
-    QList< QgsAbstractProfileSource * > mSources;
+    QList< std::variant< QgsWeakMapLayerPointer, QgsAbstractProfileSource * > > mSources;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;

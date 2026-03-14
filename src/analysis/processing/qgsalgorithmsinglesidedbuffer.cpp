@@ -52,14 +52,16 @@ QString QgsSingleSidedBufferAlgorithm::groupId() const
 
 QString QgsSingleSidedBufferAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm buffers lines by a specified distance on one "
-                      "side of the line only.\n\nThe segments parameter controls "
-                      "the number of line segments to use to approximate a quarter "
-                      "circle when creating rounded buffers. The join style parameter "
-                      "specifies whether round, miter or beveled joins should be used "
-                      "when buffering corners in a line. The miter limit parameter is "
-                      "only applicable for miter join styles, and controls the maximum "
-                      "distance from the buffer to use when creating a mitered join." );
+  return QObject::tr(
+    "This algorithm buffers lines by a specified distance on one "
+    "side of the line only.\n\nThe segments parameter controls "
+    "the number of line segments to use to approximate a quarter "
+    "circle when creating rounded buffers. The join style parameter "
+    "specifies whether round, miter or beveled joins should be used "
+    "when buffering corners in a line. The miter limit parameter is "
+    "only applicable for miter join styles, and controls the maximum "
+    "distance from the buffer to use when creating a mitered join."
+  );
 }
 
 QString QgsSingleSidedBufferAlgorithm::shortDescription() const

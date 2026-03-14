@@ -30,7 +30,9 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig )
+QString QgsGdalGuiUtils::createDatabaseURI(
+  const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig
+)
 {
   QString uri;
 
@@ -241,13 +243,7 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
       uri.prepend( prefix );
     }
   }
-  else if ( type == "vsis3"_L1
-            || type == "vsigs"_L1
-            || type == "vsiaz"_L1
-            || type == "vsiadls"_L1
-            || type == "vsioss"_L1
-            || type == "vsiswift"_L1
-            || type == "vsihdfs"_L1 )
+  else if ( type == "vsis3"_L1 || type == "vsigs"_L1 || type == "vsiaz"_L1 || type == "vsiadls"_L1 || type == "vsioss"_L1 || type == "vsiswift"_L1 || type == "vsihdfs"_L1 )
   {
     prefix = u"/%1/"_s.arg( type );
     if ( !uri.startsWith( prefix ) )

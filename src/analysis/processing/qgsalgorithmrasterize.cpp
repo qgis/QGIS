@@ -74,57 +74,16 @@ QString QgsRasterizeAlgorithm::groupId() const
 
 void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExtent(
-    u"EXTENT"_s,
-    QObject::tr( "Minimum extent to render" )
-  ) );
-  addParameter( new QgsProcessingParameterNumber(
-    u"EXTENT_BUFFER"_s,
-    QObject::tr( "Buffer around tiles in map units" ),
-    Qgis::ProcessingNumberParameterType::Double,
-    0,
-    true,
-    0
-  ) );
-  addParameter( new QgsProcessingParameterNumber(
-    u"TILE_SIZE"_s,
-    QObject::tr( "Tile size" ),
-    Qgis::ProcessingNumberParameterType::Integer,
-    1024,
-    false,
-    64
-  ) );
-  addParameter( new QgsProcessingParameterNumber(
-    u"MAP_UNITS_PER_PIXEL"_s,
-    QObject::tr( "Map units per pixel" ),
-    Qgis::ProcessingNumberParameterType::Double,
-    100,
-    true,
-    0
-  ) );
-  addParameter( new QgsProcessingParameterBoolean(
-    u"MAKE_BACKGROUND_TRANSPARENT"_s,
-    QObject::tr( "Make background transparent" ),
-    false
-  ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Minimum extent to render" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"EXTENT_BUFFER"_s, QObject::tr( "Buffer around tiles in map units" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TILE_SIZE"_s, QObject::tr( "Tile size" ), Qgis::ProcessingNumberParameterType::Integer, 1024, false, 64 ) );
+  addParameter( new QgsProcessingParameterNumber( u"MAP_UNITS_PER_PIXEL"_s, QObject::tr( "Map units per pixel" ), Qgis::ProcessingNumberParameterType::Double, 100, true, 0 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"MAKE_BACKGROUND_TRANSPARENT"_s, QObject::tr( "Make background transparent" ), false ) );
 
-  addParameter( new QgsProcessingParameterMapTheme(
-    u"MAP_THEME"_s,
-    QObject::tr( "Map theme to render" ),
-    QVariant(), true
-  ) );
+  addParameter( new QgsProcessingParameterMapTheme( u"MAP_THEME"_s, QObject::tr( "Map theme to render" ), QVariant(), true ) );
 
-  addParameter( new QgsProcessingParameterMultipleLayers(
-    u"LAYERS"_s,
-    QObject::tr( "Layers to render" ),
-    Qgis::ProcessingSourceType::MapLayer,
-    QVariant(),
-    true
-  ) );
-  addParameter( new QgsProcessingParameterRasterDestination(
-    u"OUTPUT"_s,
-    QObject::tr( "Output layer" )
-  ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Layers to render" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 }
 
 QString QgsRasterizeAlgorithm::shortDescription() const
@@ -134,11 +93,13 @@ QString QgsRasterizeAlgorithm::shortDescription() const
 
 QString QgsRasterizeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rasterizes map canvas content.\n\n"
-                      "A map theme can be selected to render a predetermined set of layers with a defined style for each layer. "
-                      "Alternatively, a set of layers can be selected if no map theme is set. "
-                      "If neither map theme nor layer is set, all the visible layers in the set extent will be rendered.\n\n"
-                      "The minimum extent entered will internally be extended to a multiple of the tile size." );
+  return QObject::tr(
+    "This algorithm rasterizes map canvas content.\n\n"
+    "A map theme can be selected to render a predetermined set of layers with a defined style for each layer. "
+    "Alternatively, a set of layers can be selected if no map theme is set. "
+    "If neither map theme nor layer is set, all the visible layers in the set extent will be rendered.\n\n"
+    "The minimum extent entered will internally be extended to a multiple of the tile size."
+  );
 }
 
 QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
@@ -218,7 +179,12 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
         if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
         {
           // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ), QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
+          feedback->pushFormattedMessage(
+            QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
+              .arg( rasterLayer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
+            QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
+              .arg( rasterLayer->name(), QString(), QString() )
+          );
 
           layer->deleteLater();
           std::vector<std::unique_ptr<QgsMapLayer>>::iterator position = std::find( mMapLayers.begin(), mMapLayers.end(), layer );
@@ -291,10 +257,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   // Custom deleter for CPL allocation
   struct CPLDelete
   {
-      void operator()( uint8_t *ptr ) const
-      {
-        CPLFree( ptr );
-      }
+      void operator()( uint8_t *ptr ) const { CPLFree( ptr ); }
   };
 
   QAtomicInt rendered = 0;
@@ -310,12 +273,9 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       return;
     }
     image.fill( transparent ? mapSettings.backgroundColor().rgba() : mapSettings.backgroundColor().rgb() );
-    mapSettings.setExtent( QgsRectangle(
-      extent.xMinimum() + x * extentRatio,
-      extent.yMaximum() - ( y + 1 ) * extentRatio,
-      extent.xMinimum() + ( x + 1 ) * extentRatio,
-      extent.yMaximum() - y * extentRatio
-    ) );
+    mapSettings.setExtent(
+      QgsRectangle( extent.xMinimum() + x * extentRatio, extent.yMaximum() - ( y + 1 ) * extentRatio, extent.xMinimum() + ( x + 1 ) * extentRatio, extent.yMaximum() - y * extentRatio )
+    );
     QgsMapRendererCustomPainterJob job( mapSettings, &painter );
     job.start();
     job.waitForFinished();
@@ -373,10 +333,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   if ( hasReportsDuringClose )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-    if ( GDALDatasetRunCloseWithoutDestroyingEx(
-           hOutputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-         )
-         != CE_None )
+    if ( GDALDatasetRunCloseWithoutDestroyingEx( hOutputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
     {
       if ( feedback->isCanceled() )
         return {};

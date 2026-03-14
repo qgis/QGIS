@@ -132,13 +132,15 @@ Qgis::ProcessingAlgorithmFlags QgsAngleToNearestAlgorithm::flags() const
 
 QString QgsAngleToNearestAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the rotation required to align point features with their nearest "
-                      "feature from another reference layer. A new field is added to the output layer which is filled with the angle "
-                      "(in degrees, clockwise) to the nearest reference feature.\n\n"
-                      "Optionally, the output layer's symbology can be set to automatically use the calculated rotation "
-                      "field to rotate marker symbols.\n\n"
-                      "If desired, a maximum distance to use when aligning points can be set, to avoid aligning isolated points "
-                      "to distant features." );
+  return QObject::tr(
+    "This algorithm calculates the rotation required to align point features with their nearest "
+    "feature from another reference layer. A new field is added to the output layer which is filled with the angle "
+    "(in degrees, clockwise) to the nearest reference feature.\n\n"
+    "Optionally, the output layer's symbology can be set to automatically use the calculated rotation "
+    "field to rotate marker symbols.\n\n"
+    "If desired, a maximum distance to use when aligning points can be set, to avoid aligning isolated points "
+    "to distant features."
+  );
 }
 
 QString QgsAngleToNearestAlgorithm::shortDescription() const
@@ -210,14 +212,19 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   const QgsFeatureIterator f2 = referenceSource->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setNoAttributes() );
   double step = referenceSource->featureCount() > 0 ? 50.0 / referenceSource->featureCount() : 1;
   int i = 0;
-  const QgsSpatialIndex index( f2, [&]( const QgsFeature & ) -> bool {
-    i++;
-    if ( feedback->isCanceled() )
-      return false;
+  const QgsSpatialIndex index(
+    f2,
+    [&]( const QgsFeature & ) -> bool {
+      i++;
+      if ( feedback->isCanceled() )
+        return false;
 
-    feedback->setProgress( i * step );
+      feedback->setProgress( i * step );
 
-    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries
+  );
 
   QgsFeature f;
 

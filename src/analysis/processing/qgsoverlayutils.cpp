@@ -53,8 +53,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::Geome
     return false;
   }
 
-  if ( geometryType != Qgis::GeometryType::Point
-       || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  if ( geometryType != Qgis::GeometryType::Point || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
     // when we promised multi-part geometries, so ensure we have the right type
@@ -86,8 +85,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, Qgis::GeometryType geom
   if ( geom.isEmpty() )
     return false;
 
-  if ( geometryType != Qgis::GeometryType::Point
-       || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  if ( geometryType != Qgis::GeometryType::Point || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
     // when we promised multi-part geometries, so ensure we have the right type
@@ -103,7 +101,18 @@ static QString writeFeatureError()
   return QObject::tr( "Could not write feature" );
 }
 
-void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs, const QgsGeometryParameters &parameters, SanitizeFlags flags )
+void QgsOverlayUtils::difference(
+  const QgsFeatureSource &sourceA,
+  const QgsFeatureSource &sourceB,
+  QgsFeatureSink &sink,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  long &count,
+  long totalCount,
+  QgsOverlayUtils::DifferenceOutput outputAttrs,
+  const QgsGeometryParameters &parameters,
+  SanitizeFlags flags
+)
 {
   const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   QgsFeatureRequest requestB;
@@ -234,7 +243,18 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 }
 
 
-void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, const QgsGeometryParameters &parameters )
+void QgsOverlayUtils::intersection(
+  const QgsFeatureSource &sourceA,
+  const QgsFeatureSource &sourceB,
+  QgsFeatureSink &sink,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  long &count,
+  long totalCount,
+  const QList<int> &fieldIndicesA,
+  const QList<int> &fieldIndicesB,
+  const QgsGeometryParameters &parameters
+)
 {
   const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   const int attrCount = fieldIndicesA.count() + fieldIndicesB.count();

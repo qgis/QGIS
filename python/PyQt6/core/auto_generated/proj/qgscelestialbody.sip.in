@@ -26,7 +26,6 @@ Contains information about a celestial body.
 #include "qgscelestialbody.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the body is a valid object, or ``False`` if it is a

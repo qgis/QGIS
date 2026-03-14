@@ -27,11 +27,10 @@ using namespace Qt::StringLiterals;
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
   : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )
-{
-}
+{}
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mUseContinuousLegend( other.mUseContinuousLegend )
   , mMinimumLabel( other.mMinimumLabel )
   , mMaximumLabel( other.mMaximumLabel )
@@ -41,10 +40,8 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
   , mNumericFormat( other.numericFormat()->clone() )
   , mTextFormat( other.textFormat() )
   , mOrientation( other.mOrientation )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
-{
-
-}
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{}
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( QgsColorRampLegendNodeSettings &&other )
   : mUseContinuousLegend( other.mUseContinuousLegend )
@@ -56,9 +53,7 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( QgsColorRampLege
   , mNumericFormat( std::move( other.mNumericFormat ) )
   , mTextFormat( std::move( other.mTextFormat ) )
   , mOrientation( other.mOrientation )
-{
-
-}
+{}
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const QgsColorRampLegendNodeSettings &other )
 {
@@ -142,7 +137,7 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
 {
   QDomElement settingsElement = doc.createElement( u"rampLegendSettings"_s );
 
-  settingsElement.setAttribute( u"useContinuousLegend"_s,  mUseContinuousLegend );
+  settingsElement.setAttribute( u"useContinuousLegend"_s, mUseContinuousLegend );
   settingsElement.setAttribute( u"minimumLabel"_s, mMinimumLabel );
   settingsElement.setAttribute( u"maximumLabel"_s, mMaximumLabel );
   settingsElement.setAttribute( u"prefix"_s, mPrefix );
@@ -167,13 +162,13 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
   const QDomElement settingsElement = element.firstChildElement( u"rampLegendSettings"_s );
   if ( !settingsElement.isNull() )
   {
-    mUseContinuousLegend = settingsElement.attribute( u"useContinuousLegend"_s, u"1"_s ).toInt( );
+    mUseContinuousLegend = settingsElement.attribute( u"useContinuousLegend"_s, u"1"_s ).toInt();
     mMinimumLabel = settingsElement.attribute( u"minimumLabel"_s );
     mMaximumLabel = settingsElement.attribute( u"maximumLabel"_s );
     mPrefix = settingsElement.attribute( u"prefix"_s );
     mSuffix = settingsElement.attribute( u"suffix"_s );
-    mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( u"direction"_s ).toInt() );
-    mOrientation = static_cast<  Qt::Orientation >( settingsElement.attribute( u"orientation"_s, QString::number( Qt::Vertical ) ).toInt() );
+    mDirection = static_cast< QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( u"direction"_s ).toInt() );
+    mOrientation = static_cast< Qt::Orientation >( settingsElement.attribute( u"orientation"_s, QString::number( Qt::Vertical ) ).toInt() );
 
     const QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( u"numericFormat"_s );
     if ( !numericFormatNodeList.isEmpty() )

@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsVariantUtils
 {
   public:
-
     /**
      * Returns a user-friendly translated string representing a QVariant \a type.
      *

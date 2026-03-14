@@ -43,7 +43,9 @@ class TestQgsColorWidget(QgisTestCase):
         # hsv
         QgsColorWidget.alterColor(color, QgsColorWidget.ColorComponent.Hue, 100)
         self.assertEqual(color.spec(), QColor.Spec.Hsv)
-        self.assertEqual(color, QColor.fromHsv(100, 72, 156, 210))
+        self.assertEqual(
+            color, QColor.fromHsvF(100 / 360, 71.92217588 / 255, 156 / 255, 210 / 255)
+        )
         QgsColorWidget.alterColor(color, QgsColorWidget.ColorComponent.Saturation, 150)
         self.assertEqual(color.spec(), QColor.Spec.Hsv)
         self.assertEqual(color, QColor.fromHsv(100, 150, 156, 210))
@@ -104,7 +106,10 @@ class TestQgsColorWidget(QgisTestCase):
         w.setComponent(QgsColorWidget.ColorComponent.Hue)
         w.setComponentValue(100)
         self.assertEqual(w.color().spec(), QColor.Spec.Hsv)
-        self.assertEqual(w.color(), QColor.fromHsv(100, 72, 156, 210))
+        self.assertEqual(
+            w.color(),
+            QColor.fromHsvF(100 / 360, 71.92217588 / 255, 156 / 255, 210 / 255),
+        )
         w.setComponent(QgsColorWidget.ColorComponent.Saturation)
         w.setComponentValue(150)
         self.assertEqual(w.color().spec(), QColor.Spec.Hsv)

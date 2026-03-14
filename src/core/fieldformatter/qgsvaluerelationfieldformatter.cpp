@@ -114,13 +114,9 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
   return QVariant::fromValue<ValueRelationCache>( createCache( config ) );
-
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache(
-  const QVariantMap &config,
-  const QgsFeature &formFeature,
-  const QgsFeature &parentFormFeature )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature, const QgsFeature &parentFormFeature )
 {
   ValueRelationCache cache;
 
@@ -166,11 +162,10 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   // Note: parent form scope is not checked for usability because it's supposed to
   //       be used into a coalesce that retrieve the current value of the parent
   //       from the parent layer when used outside of an embedded form
-  if ( ! filterExpression.isEmpty() && ( !( expressionRequiresFormScope( filterExpression ) )
-                                         || expressionIsUsable( filterExpression, formFeature ) ) )
+  if ( !filterExpression.isEmpty() && ( !( expressionRequiresFormScope( filterExpression ) ) || expressionIsUsable( filterExpression, formFeature ) ) )
   {
     QgsExpressionContext filterContext = context;
-    if ( formFeature.isValid( ) && QgsValueRelationFieldFormatter::expressionRequiresFormScope( filterExpression ) )
+    if ( formFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( filterExpression ) )
       filterContext.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
     if ( parentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( filterExpression ) )
       filterContext.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ) );
@@ -202,8 +197,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
   if ( config.value( u"OrderByValue"_s ).toBool() )
   {
-    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
-    {
+    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 ) -> bool {
       if ( reverseSort )
         return p1.group == p2.group ? qgsVariantGreaterThan( p1.value, p2.value ) : qgsVariantGreaterThan( p1.group, p2.group );
       else
@@ -213,20 +207,17 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   // Order by field
   else if ( fieldIdx != -1 )
   {
-    std::sort( cache.begin(), cache.end(), [&reverseSort, &orderByFieldValues]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
-    {
+    std::sort( cache.begin(), cache.end(), [&reverseSort, &orderByFieldValues]( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 ) -> bool {
       if ( reverseSort )
         return p1.group == p2.group ? qgsVariantGreaterThan( orderByFieldValues.value( p1.key ), orderByFieldValues.value( p2.key ) ) : qgsVariantGreaterThan( p1.group, p2.group );
       else
         return p1.group == p2.group ? qgsVariantLessThan( orderByFieldValues.value( p1.key ), orderByFieldValues.value( p2.key ) ) : qgsVariantLessThan( p1.group, p2.group );
-
     } );
   }
   // OrderByKey is the default
   else
   {
-    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
-    {
+    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 ) -> bool {
       if ( reverseSort )
         return p1.group == p2.group ? qgsVariantGreaterThan( p1.key, p2.key ) : qgsVariantGreaterThan( p1.group, p2.group );
       else
@@ -245,7 +236,7 @@ QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( cons
   const QString layerName { config.value( u"LayerName"_s ).toString() };
   const QString providerName { config.value( u"LayerProviderName"_s ).toString() };
   const QString layerSource { config.value( u"LayerSource"_s ).toString() };
-  if ( ! layerId.isEmpty() && ! layerName.isEmpty() && ! providerName.isEmpty() && ! layerSource.isEmpty() )
+  if ( !layerId.isEmpty() && !layerName.isEmpty() && !providerName.isEmpty() && !layerSource.isEmpty() )
   {
     result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
   }
@@ -316,14 +307,14 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     }
     else if ( value.userType() == QMetaType::Type::QVariantList )
     {
-      valuesList = value.toList( );
+      valuesList = value.toList();
     }
 
     checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : std::as_const( valuesList ) )
     {
-      QString v( listItem.toString( ) );
-      if ( ! v.isEmpty() )
+      QString v( listItem.toString() );
+      if ( !v.isEmpty() )
         checkList.append( v );
     }
   }
@@ -365,16 +356,15 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
   QgsExpression exp( expression );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::parentFormScope() );
   // List of form function names used in the expression
-  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() )
-                                     .intersect( exp.referencedFunctions( ) ) );
+  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
   for ( const auto &f : expFunctions )
   {
     QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
-    if ( formFunctions.contains( fd->name( ) ) )
+    if ( formFunctions.contains( fd->name() ) )
     {
-      const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
+      const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
       for ( const auto &param : std::as_const( cExpressionNodes ) )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
@@ -390,16 +380,15 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   QgsExpression exp( expression );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
   // List of form function names used in the expression
-  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() )
-                                     .intersect( exp.referencedFunctions( ) ) );
+  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
   for ( const auto &f : expFunctions )
   {
     QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
-    if ( formFunctions.contains( fd->name( ) ) )
+    if ( formFunctions.contains( fd->name() ) )
     {
-      const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
+      const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
       for ( const auto &param : std::as_const( cExpressionNodes ) )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
@@ -409,29 +398,27 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   return attributes;
 }
 
-bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression,
-    const QgsFeature &feature,
-    const QgsFeature &parentFeature )
+bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression, const QgsFeature &feature, const QgsFeature &parentFeature )
 {
   const QSet<QString> attrs = expressionFormAttributes( expression );
-  for ( auto it = attrs.constBegin() ; it != attrs.constEnd(); it++ )
+  for ( auto it = attrs.constBegin(); it != attrs.constEnd(); it++ )
   {
     if ( feature.fieldNameIndex( *it ) < 0 )
       return false;
   }
 
-  if ( ! expressionFormVariables( expression ).isEmpty() && feature.geometry().isEmpty( ) )
+  if ( !expressionFormVariables( expression ).isEmpty() && feature.geometry().isEmpty() )
     return false;
 
   if ( parentFeature.isValid() )
   {
     const QSet<QString> parentAttrs = expressionParentFormAttributes( expression );
-    for ( auto it = parentAttrs.constBegin() ; it != parentAttrs.constEnd(); it++ )
+    for ( auto it = parentAttrs.constBegin(); it != parentAttrs.constEnd(); it++ )
     {
-      if ( ! parentFeature.attribute( *it ).isValid() )
+      if ( !parentFeature.attribute( *it ).isValid() )
         return false;
     }
-    if ( ! expressionParentFormVariables( expression ).isEmpty() && parentFeature.geometry().isEmpty( ) )
+    if ( !expressionParentFormVariables( expression ).isEmpty() && parentFeature.geometry().isEmpty() )
       return false;
   }
   return true;
@@ -439,9 +426,6 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
 
 QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config, const QgsProject *project )
 {
-  QgsVectorLayerRef ref { config.value( u"Layer"_s ).toString(),
-                          config.value( u"LayerName"_s ).toString(),
-                          config.value( u"LayerSource"_s ).toString(),
-                          config.value( u"LayerProviderName"_s ).toString() };
+  QgsVectorLayerRef ref { config.value( u"Layer"_s ).toString(), config.value( u"LayerName"_s ).toString(), config.value( u"LayerSource"_s ).toString(), config.value( u"LayerProviderName"_s ).toString() };
   return ref.resolveByIdOrNameOnly( project );
 }

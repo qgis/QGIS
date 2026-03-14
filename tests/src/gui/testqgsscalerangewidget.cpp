@@ -63,8 +63,7 @@ void TestQgsScaleRangeWidget::init()
 }
 
 void TestQgsScaleRangeWidget::cleanup()
-{
-}
+{}
 
 void TestQgsScaleRangeWidget::test_setScaleRange()
 {

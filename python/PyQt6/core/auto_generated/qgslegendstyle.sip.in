@@ -22,7 +22,6 @@ should be rendered.
 %End
   public:
 
-
     enum Side /BaseType=IntEnum/
     {
       Top,

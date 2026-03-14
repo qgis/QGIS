@@ -34,7 +34,8 @@ class APP_EXPORT QgsMapToolShapeCircleAbstract : public QgsMapToolShapeAbstract
 
   public:
     QgsMapToolShapeCircleAbstract( const QString &id, QgsMapToolCapture *parentTool )
-      : QgsMapToolShapeAbstract( id, parentTool ) {}
+      : QgsMapToolShapeAbstract( id, parentTool )
+    {}
 
     ~QgsMapToolShapeCircleAbstract() override = default;
 

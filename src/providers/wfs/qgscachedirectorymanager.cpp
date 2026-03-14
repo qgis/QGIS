@@ -307,8 +307,7 @@ QgsCacheDirectoryManagerKeepAlive::QgsCacheDirectoryManagerKeepAlive( std::uniqu
 }
 
 QgsCacheDirectoryManagerKeepAlive::~QgsCacheDirectoryManagerKeepAlive()
-{
-}
+{}
 
 void QgsCacheDirectoryManagerKeepAlive::updateTimestamp()
 {

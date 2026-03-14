@@ -41,7 +41,9 @@ using namespace Qt::StringLiterals;
 
 static const QString SETTINGS_WINDOWS_PATH = u"ogr/%1SourceSelect"_s;
 
-QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsOgrDbSourceSelect::QgsOgrDbSourceSelect(
+  const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode
+)
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
   , mName( theName )

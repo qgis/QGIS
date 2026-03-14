@@ -912,9 +912,18 @@ void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
   }
 
   QList<QWidget *> widgets;
-  widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mResetLayersButton << mAddGroupToolButton
-          << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
+  widgets
+    << mMoveDownToolButton
+    << mMoveUpToolButton
+    << mRemoveToolButton
+    << mAddToolButton
+    << mEditPushButton
+    << mCountToolButton
+    << mResetLayersButton
+    << mAddGroupToolButton
+    << mExpressionFilterButton
+    << mCollapseAllToolButton
+    << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
     w->setEnabled( allowEdits );
 
@@ -1843,7 +1852,9 @@ void QgsLayoutLegendNodeWidget::insertExpression()
     context.appendScope( QgsExpressionContextUtils::layerScope( mLayer->layer() ) );
   }
 
-  context.setHighlightedVariables( QStringList() << u"legend_title"_s << u"legend_column_count"_s << u"legend_split_layers"_s << u"legend_wrap_string"_s << u"legend_filter_by_map"_s << u"legend_filter_out_atlas"_s );
+  context.setHighlightedVariables(
+    QStringList() << u"legend_title"_s << u"legend_column_count"_s << u"legend_split_layers"_s << u"legend_wrap_string"_s << u"legend_filter_by_map"_s << u"legend_filter_out_atlas"_s
+  );
 
   QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
 

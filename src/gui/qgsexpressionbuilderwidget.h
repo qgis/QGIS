@@ -81,13 +81,17 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Initialize with a layer
      * \since QGIS 3.14
      */
-    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll );
+    void initWithLayer(
+      QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll
+    );
 
     /**
      * Initialize with given fields without any layer
      * \since QGIS 3.14
      */
-    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll );
+    void initWithFields(
+      const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll
+    );
 
     /**
      * Sets layer in order to get the fields and values
@@ -191,22 +195,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, SIP_PYCALLABLE );
     //%MethodCode
     Py_XINCREF( a2 );
-    Py_BEGIN_ALLOW_THREADS
-      sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
-        QgsExpressionContext res;
-        SIP_BLOCK_THREADS
-        PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
-        int state;
-        int sipIsError = 0;
-        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-        if ( sipIsError == 0 )
-        {
-          res = QgsExpressionContext( *t1 );
-        }
-        sipReleaseType( t1, sipType_QgsExpressionContext, state );
-        SIP_UNBLOCK_THREADS
-        return res;
-      } );
+    Py_BEGIN_ALLOW_THREADS sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
+      QgsExpressionContext res;
+      SIP_BLOCK_THREADS
+      PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
+      int state;
+      int sipIsError = 0;
+      QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QgsExpressionContext( *t1 );
+      }
+      sipReleaseType( t1, sipType_QgsExpressionContext, state );
+      SIP_UNBLOCK_THREADS
+      return res;
+    } );
 
     Py_END_ALLOW_THREADS
     //%End
@@ -474,7 +477,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       public:
         ExpressionTreeMenuProvider( QgsExpressionBuilderWidget *expressionBuilderWidget )
           : QgsExpressionTreeView::MenuProvider()
-          , mExpressionBuilderWidget( expressionBuilderWidget ) {}
+          , mExpressionBuilderWidget( expressionBuilderWidget )
+        {}
 
         QMenu *createContextMenu( QgsExpressionItem *item ) override;
 

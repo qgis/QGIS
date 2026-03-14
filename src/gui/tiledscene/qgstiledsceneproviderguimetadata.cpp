@@ -33,7 +33,9 @@ class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "Scene" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 51; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddTiledSceneLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsTiledSceneSourceSelect( parent, fl, widgetMode );
     }
@@ -41,8 +43,7 @@ class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
 
 QgsTiledSceneProviderGuiMetadata::QgsTiledSceneProviderGuiMetadata()
   : QgsProviderGuiMetadata( u"tiledscene"_s )
-{
-}
+{}
 
 QList<QgsDataItemGuiProvider *> QgsTiledSceneProviderGuiMetadata::dataItemGuiProviders()
 {

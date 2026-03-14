@@ -75,12 +75,9 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   mWatchProfiles = enabled;
   if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
-    mWatcher = std::make_unique<QFileSystemWatcher>( );
+    mWatcher = std::make_unique<QFileSystemWatcher>();
     mWatcher->addPath( mRootProfilePath );
-    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
-    {
-      emit profilesChanged();
-    } );
+    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this] { emit profilesChanged(); } );
   }
   else
   {
@@ -129,7 +126,7 @@ QString QgsUserProfileManager::lastProfileName() const
   return mSettings->value( u"/core/lastProfile"_s, QString() ).toString();
 }
 
-void QgsUserProfileManager::updateLastProfileName( )
+void QgsUserProfileManager::updateLastProfileName()
 {
   mSettings->setValue( u"/core/lastProfile"_s, userProfile()->name() );
   mSettings->sync();
@@ -235,7 +232,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString &name )
 
 QString QgsUserProfileManager::settingsFile() const
 {
-  return  mRootProfilePath + QDir::separator() + "profiles.ini";
+  return mRootProfilePath + QDir::separator() + "profiles.ini";
 }
 
 QSettings *QgsUserProfileManager::settings()
@@ -250,7 +247,7 @@ QgsUserProfile *QgsUserProfileManager::userProfile()
 
 void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
   const QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
   arguments << QCoreApplication::arguments();
@@ -269,7 +266,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
-  if ( ! mUserProfile )
+  if ( !mUserProfile )
   {
     mUserProfile = profileForName( profile );
   }

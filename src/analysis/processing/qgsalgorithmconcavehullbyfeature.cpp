@@ -57,9 +57,12 @@ QString QgsConcaveHullByFeatureAlgorithm::outputName() const
 
 QString QgsConcaveHullByFeatureAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the concave hull for each feature in an input layer." ) + u"\n\n"_s
-         + QObject::tr( "A concave hull is a polygon which contains all the points of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." ) + u"\n\n"_s
-         + QObject::tr( "It is frequently used to convert a multi-point into a polygonal area which contains all the points from the input geometry." ) + u"\n\n"_s
+  return QObject::tr( "This algorithm calculates the concave hull for each feature in an input layer." )
+         + u"\n\n"_s
+         + QObject::tr( "A concave hull is a polygon which contains all the points of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." )
+         + u"\n\n"_s
+         + QObject::tr( "It is frequently used to convert a multi-point into a polygonal area which contains all the points from the input geometry." )
+         + u"\n\n"_s
          + QObject::tr( "See the 'Concave hull (by layer)' algorithm for a concave hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
@@ -125,8 +128,7 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
     if ( outputGeometry.type() == Qgis::GeometryType::Polygon )
     {
       QgsAttributes attrs = f.attributes();
-      attrs << outputGeometry.constGet()->area()
-            << outputGeometry.constGet()->perimeter();
+      attrs << outputGeometry.constGet()->area() << outputGeometry.constGet()->perimeter();
       f.setAttributes( attrs );
     }
     else
@@ -140,8 +142,7 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
         feedback->pushWarning( QObject::tr( "Concave hull for feature %1 resulted in a point, ignoring" ).arg( f.id() ) );
       }
       QgsAttributes attrs = f.attributes();
-      attrs << QVariant()
-            << QVariant();
+      attrs << QVariant() << QVariant();
       f.setAttributes( attrs );
     }
   }

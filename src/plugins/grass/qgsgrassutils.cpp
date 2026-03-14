@@ -54,8 +54,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface, QString gisbase, QStr
   {
     QString name = QgsGrassUtils::vectorLayerName( map, layers[i], layers.size() );
 
-    QString uri = gisbase + "/" + location + "/"
-                  + mapset + "/" + map + "/" + layers[i];
+    QString uri = gisbase + "/" + location + "/" + mapset + "/" + map + "/" + layers[i];
 
     QgsDebugMsgLevel( QString( "layer = %1" ).arg( layers[i].toLocal8Bit().constData() ), 3 );
     QgsDebugMsgLevel( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ), 3 );
@@ -67,10 +66,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface, QString gisbase, QStr
 
 bool QgsGrassUtils::itemExists( QString element, QString item )
 {
-  QString path = QgsGrass::getDefaultGisdbase() + "/"
-                 + QgsGrass::getDefaultLocation() + "/"
-                 + QgsGrass::getDefaultMapset() + "/"
-                 + "/" + element + "/" + item;
+  QString path = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/" + "/" + element + "/" + item;
 
   QFileInfo fi( path );
   return fi.exists();
@@ -84,8 +80,7 @@ QString QgsGrassUtils::htmlBrowserPath()
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
   : mParent( parent )
-{
-}
+{}
 
 QString QgsGrassElementDialog::getItem( QString element, QString title, QString label, QString text, QString source, bool *ok )
 {

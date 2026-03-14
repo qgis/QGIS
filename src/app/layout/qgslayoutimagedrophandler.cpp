@@ -31,8 +31,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
-{
-}
+{}
 
 bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file )
 {

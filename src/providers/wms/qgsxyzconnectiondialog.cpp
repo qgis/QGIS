@@ -39,9 +39,7 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   mConnectionGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-xyz-tile-services"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-xyz-tile-services"_s ); } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
   connect( mSourceWidget, &QgsXyzSourceWidget::validChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
 }
@@ -84,9 +82,7 @@ void QgsXyzConnectionDialog::updateOkButtonState()
 
 void QgsXyzConnectionDialog::accept()
 {
-  if ( mSourceWidget->zMin() != -1
-       && mSourceWidget->zMax() != -1
-       && mSourceWidget->zMax() < mSourceWidget->zMin() )
+  if ( mSourceWidget->zMin() != -1 && mSourceWidget->zMax() != -1 && mSourceWidget->zMax() < mSourceWidget->zMin() )
   {
     QMessageBox::warning( this, tr( "Connection Properties" ), tr( "The maximum zoom level (%1) cannot be lower than the minimum zoom level (%2)." ).arg( mSourceWidget->zMax() ).arg( mSourceWidget->zMin() ) );
     return;

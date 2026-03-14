@@ -18,8 +18,7 @@
 #include "qgsfeedback.h"
 
 QgsValidityCheckRegistry::QgsValidityCheckRegistry()
-{
-}
+{}
 
 QgsValidityCheckRegistry::~QgsValidityCheckRegistry()
 {

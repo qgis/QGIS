@@ -60,14 +60,8 @@ class TestQgsNetworkAnalysis : public QgsTest
 
 class TestNetworkStrategy : public QgsNetworkStrategy
 {
-    QSet<int> requiredAttributes() const override
-    {
-      return QSet<int>() << 0;
-    }
-    QVariant cost( double, const QgsFeature &f ) const override
-    {
-      return f.attribute( 0 );
-    }
+    QSet<int> requiredAttributes() const override { return QSet<int>() << 0; }
+    QVariant cost( double, const QgsFeature &f ) const override { return f.attribute( 0 ); }
 };
 
 void TestQgsNetworkAnalysis::initTestCase()
@@ -84,11 +78,9 @@ void TestQgsNetworkAnalysis::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 void TestQgsNetworkAnalysis::init()
-{
-}
+{}
 void TestQgsNetworkAnalysis::cleanup()
-{
-}
+{}
 
 void TestQgsNetworkAnalysis::testGraph()
 {
@@ -184,6 +176,26 @@ void TestQgsNetworkAnalysis::testBuild()
   QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList<int>() << 3 );
   QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList<int>() << 2 );
 
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ) );
@@ -195,7 +207,7 @@ void TestQgsNetworkAnalysis::testBuild()
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 8 );
 }
@@ -254,7 +266,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 4 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
@@ -281,6 +293,34 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 5 ).toVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).fromVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).toVertex(), 3 );
+
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 2 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+    QCOMPARE( sources.at( 1 ).fid, 2 );
+    QCOMPARE( sources.at( 1 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 3 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 2 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
 }
 
 void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
@@ -384,7 +424,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   startVertexIdx = graph->findVertex( QgsPointXY( 0, 0 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -426,7 +466,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   startVertexIdx = graph->findVertex( QgsPointXY( 10, 10 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -467,9 +507,11 @@ void TestQgsNetworkAnalysis::testRouteFail()
 {
   auto network = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:28355&field=cost:int"_s, u"x"_s, u"memory"_s );
 
-  const QStringList lines = QStringList() << u"LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)"_s
-                                          << u"LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)"_s
-                                          << u"LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)"_s;
+  const QStringList lines
+    = QStringList()
+      << u"LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)"_s
+      << u"LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)"_s
+      << u"LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)"_s;
   QgsFeatureList flist;
   for ( const QString &line : lines )
   {
@@ -520,10 +562,12 @@ void TestQgsNetworkAnalysis::testRouteFail2()
 {
   auto network = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=cost:double"_s, u"x"_s, u"memory"_s );
 
-  const QStringList lines = QStringList() << u"LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)"_s
-                                          << u"LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)"_s
-                                          << u"LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)"_s
-                                          << u"LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)"_s;
+  const QStringList lines
+    = QStringList()
+      << u"LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)"_s
+      << u"LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)"_s
+      << u"LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)"_s
+      << u"LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)"_s;
   QgsFeatureList flist;
   int i = 0;
   for ( const QString &line : lines )
@@ -663,7 +707,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 8 );
 
@@ -680,7 +724,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularString should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 3 );
   QVERIFY( graph->edgeCount() > 4 );
@@ -712,7 +756,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularString should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 3 );
   QVERIFY( graph->edgeCount() > 4 );
@@ -750,7 +794,10 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   totalLength = builder->distanceArea()->convertLengthMeasurement( totalLength, Qgis::DistanceUnit::Degrees );
   const double expectedLength = M_PI * 5.0;
   const double tolerance = expectedLength * 0.05;
-  QVERIFY2( std::abs( totalLength - expectedLength ) < tolerance, u"Path length %1 differs from expected %2 by more than tolerance %3"_s.arg( totalLength ).arg( expectedLength ).arg( tolerance ).toLatin1().constData() );
+  QVERIFY2(
+    std::abs( totalLength - expectedLength ) < tolerance,
+    u"Path length %1 differs from expected %2 by more than tolerance %3"_s.arg( totalLength ).arg( expectedLength ).arg( tolerance ).toLatin1().constData()
+  );
 
   // MultiCurve
   network.reset( new QgsVectorLayer( u"MultiCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
@@ -764,7 +811,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularStrings should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 6 );
   QVERIFY( graph->edgeCount() > 4 );

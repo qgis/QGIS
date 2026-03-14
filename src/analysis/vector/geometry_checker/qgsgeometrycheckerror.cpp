@@ -23,7 +23,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError(
+  const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType
+)
   : mCheck( check )
   , mLayerId( layerId )
   , mFeatureId( featureId )
@@ -33,10 +35,11 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
   , mValue( value )
   , mValueType( valueType )
   , mStatus( StatusPending )
-{
-}
+{}
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError(
+  const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType
+)
   : mCheck( check )
   , mLayerId( layerFeature.layerId() )
   , mFeatureId( layerFeature.feature().id() )
@@ -204,5 +207,4 @@ void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
 
 QgsGeometryCheck::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn )
   : ids( idsIn )
-{
-}
+{}

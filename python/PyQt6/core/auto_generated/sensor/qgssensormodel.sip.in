@@ -10,7 +10,7 @@
 
 
 
-class QgsSensorModel: QAbstractItemModel
+class QgsSensorModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
 A QAbstractItemModel subclass for showing sensors within a
@@ -23,7 +23,6 @@ A QAbstractItemModel subclass for showing sensors within a
 #include "qgssensormodel.h"
 %End
   public:
-
     enum class Column /BaseType=IntEnum/
     {
       Name,
@@ -54,10 +53,10 @@ Constructor for QgsSensorModel, for the specified ``manager`` and
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const;
-     virtual QModelIndex index( int row, int column,
-                       const QModelIndex &parent = QModelIndex() ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;

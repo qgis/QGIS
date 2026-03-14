@@ -42,8 +42,7 @@ class TestQgsAABB : public QgsTest
 
 //runs before all tests
 void TestQgsAABB::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsAABB::cleanupTestCase()

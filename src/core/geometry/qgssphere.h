@@ -44,13 +44,13 @@ class QgsVector3D;
  */
 class CORE_EXPORT QgsSphere
 {
-
   public:
-
+    // clang-format off
     /**
      * Constructor for an invalid QgsSphere.
      */
     QgsSphere() SIP_HOLDGIL = default;
+    // clang-format on
 
     /**
      * Constructor for QgsSphere with the specified center (\a x, \a y, \a z) and \a radius.
@@ -178,6 +178,7 @@ class CORE_EXPORT QgsSphere
     QgsBox3D boundingBox() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -191,6 +192,7 @@ class CORE_EXPORT QgsSphere
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

@@ -60,7 +60,9 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \param password
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &configId = QString(), const QString &username = QString(), const QString &password = QString(), const QString &dataprovider = QString() );
+    explicit QgsAuthSettingsWidget(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &configId = QString(), const QString &username = QString(), const QString &password = QString(), const QString &dataprovider = QString()
+    );
 
     /**
      * Removes the basic authentication tab from the widget.

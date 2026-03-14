@@ -185,7 +185,8 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
     return;
 
   // make sure the user really wants to delete these definitions
-  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Projections" ), tr( "Are you sure you want to delete %n projection(s)?", "number of rows", selection.size() ), QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::No
+       == QMessageBox::question( this, tr( "Delete Projections" ), tr( "Are you sure you want to delete %n projection(s)?", "number of rows", selection.size() ), QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   std::vector<int> selectedRows;
@@ -310,7 +311,11 @@ bool QgsCustomProjectionOptionsWidget::isValid()
 
       if ( def.wkt.isEmpty() )
       {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "Cannot save '%1' — this Proj string definition is equivalent to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() ) );
+        QMessageBox::warning(
+          this,
+          tr( "Custom Coordinate Reference System" ),
+          tr( "Cannot save '%1' — this Proj string definition is equivalent to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() )
+        );
       }
       else
       {
@@ -322,7 +327,11 @@ bool QgsCustomProjectionOptionsWidget::isValid()
         }
         if ( !ref.isEmpty() && crs.toWkt( Qgis::CrsWktVariant::Preferred ).contains( ref ) )
         {
-          QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref ) );
+          QMessageBox::warning(
+            this,
+            tr( "Custom Coordinate Reference System" ),
+            tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref )
+          );
         }
         else
         {
@@ -356,9 +365,7 @@ void QgsCustomProjectionOptionsWidget::apply()
     }
     else
     {
-      if ( mExistingCRSnames[def.id] != def.name
-           || ( !def.wkt.isEmpty() && mExistingCRSwkt[def.id] != def.wkt )
-           || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj ) )
+      if ( mExistingCRSnames[def.id] != def.name || ( !def.wkt.isEmpty() && mExistingCRSwkt[def.id] != def.wkt ) || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj ) )
       {
         saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Wkt : Qgis::CrsDefinitionFormat::Proj );
       }
@@ -427,8 +434,7 @@ QString QgsCustomProjectionOptionsWidget::helpKey() const
 //
 QgsCustomProjectionOptionsFactory::QgsCustomProjectionOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "User Defined CRS" ), QIcon(), u"user_defined_crs"_s )
-{
-}
+{}
 
 QIcon QgsCustomProjectionOptionsFactory::icon() const
 {

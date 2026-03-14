@@ -29,8 +29,10 @@
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsreadwritelocker.h"
+#include "qgsrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QString>
 
@@ -92,8 +94,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
   }
 
-  mServerSupportsCurves = layerData.value( u"allowTrueCurvesUpdates"_s, false ).toBool();
+  mServerSupportsCurvedUpdates = layerData.value( u"allowTrueCurvesUpdates"_s, false ).toBool();
 
+  const bool useCurvedTypes = mServerSupportsCurvedUpdates || !mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive );
   if ( !isTable )
   {
     // Set extent
@@ -235,6 +238,11 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const bool hasM = layerData[u"hasM"_s].toBool();
     const bool hasZ = layerData[u"hasZ"_s].toBool();
     mSharedData->mGeometryType = QgsArcGisRestUtils::convertGeometryType( layerData[u"geometryType"_s].toString() );
+    if ( useCurvedTypes )
+      mSharedData->mGeometryType = QgsWkbTypes::curveType( mSharedData->mGeometryType );
+    else
+      mSharedData->mGeometryType = QgsWkbTypes::linearType( mSharedData->mGeometryType );
+
     if ( mSharedData->mGeometryType == Qgis::WkbType::Unknown )
     {
       if ( layerData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 ) )
@@ -387,9 +395,7 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
   for ( int i = 0; i < flist.size(); ++i )
   {
     QgsFeature &f = flist[i];
-    if ( mSharedData->mObjectIdFieldIdx >= 0
-         && f.attributes().size() > mSharedData->mObjectIdFieldIdx
-         && f.attribute( mSharedData->mObjectIdFieldIdx ) == "Autogenerate"_L1 )
+    if ( mSharedData->mObjectIdFieldIdx >= 0 && f.attributes().size() > mSharedData->mObjectIdFieldIdx && f.attribute( mSharedData->mObjectIdFieldIdx ) == "Autogenerate"_L1 )
     {
       f.setAttribute( mSharedData->mObjectIdFieldIdx, QgsUnsetAttributeValue() );
     }
@@ -607,9 +613,7 @@ bool QgsAfsProvider::createAttributeIndex( int field )
 
 Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
 {
-  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
-                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
-                                       | Qgis::VectorProviderCapability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
   if ( !mRendererDataMap.empty() )
   {
     c = c | Qgis::VectorProviderCapability::CreateRenderer;
@@ -619,7 +623,7 @@ Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
     c = c | Qgis::VectorProviderCapability::CreateLabeling;
   }
 
-  if ( mServerSupportsCurves )
+  if ( mServerSupportsCurvedUpdates )
     c |= Qgis::VectorProviderCapability::CircularGeometries;
 
   if ( mCapabilityStrings.contains( "delete"_L1, Qt::CaseInsensitive ) )
@@ -760,12 +764,12 @@ void QgsAfsProvider::reloadProviderData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap );
+  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap ).release();
 }
 
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList );
+  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList ).release();
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
@@ -778,8 +782,7 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
 
 QgsAfsProviderMetadata::QgsAfsProviderMetadata()
   : QgsProviderMetadata( QgsAfsProvider::AFS_PROVIDER_KEY, QgsAfsProvider::AFS_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsAfsProviderMetadata::icon() const
 {
@@ -790,8 +793,7 @@ QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
 
-  providers
-    << new QgsArcGisRestDataItemProvider;
+  providers << new QgsArcGisRestDataItemProvider;
 
   return providers;
 }

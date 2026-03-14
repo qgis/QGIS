@@ -32,8 +32,7 @@ QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, Q
   : QgsTerrainTileLoader( terrain, node )
   , mTriangularMesh( triangularMesh )
   , mSymbol( symbol->clone() )
-{
-}
+{}
 
 void QgsMeshTerrainTileLoader::start()
 {
@@ -60,8 +59,7 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::create()
 
 QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
   : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
-{
-}
+{}
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
@@ -124,7 +122,10 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
   return cloned;
 }
 
-QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const { return QgsTerrainGenerator::Mesh; }
+QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const
+{
+  return QgsTerrainGenerator::Mesh;
+}
 
 QgsRectangle QgsMeshTerrainGenerator::rootChunkExtent() const
 {

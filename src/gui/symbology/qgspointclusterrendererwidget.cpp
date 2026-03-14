@@ -60,7 +60,9 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   connect( mRendererSettingsButton, &QPushButton::clicked, this, &QgsPointClusterRendererWidget::mRendererSettingsButton_clicked );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mDistanceUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
@@ -241,6 +243,7 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
 void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )
 {
   QGridLayout *layout = new QGridLayout( this );
-  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a (single) point layer and cannot be displayed by the point cluster renderer." ).arg( layerName ), this );
+  QLabel *label
+    = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a (single) point layer and cannot be displayed by the point cluster renderer." ).arg( layerName ), this );
   layout->addWidget( label );
 }

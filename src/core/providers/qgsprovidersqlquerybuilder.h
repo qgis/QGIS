@@ -32,9 +32,7 @@ email                : nyall dot dawson at gmail dot com
  */
 class CORE_EXPORT QgsProviderSqlQueryBuilder
 {
-
   public:
-
     virtual ~QgsProviderSqlQueryBuilder();
 
     /**

@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 QgsGeometryWidgetFactory::QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
   , mMessageBar( messageBar )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsGeometryWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

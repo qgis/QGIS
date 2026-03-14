@@ -184,9 +184,7 @@ void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
         QAction *action = new QAction( resolutionMethod.name(), mGeometryErrorContextMenu );
         action->setToolTip( resolutionMethod.description() );
         const int fixId = resolutionMethod.id();
-        connect( action, &QAction::triggered, this, [fixId, error, this]() {
-          mGeometryValidationService->fixError( error, fixId );
-        } );
+        connect( action, &QAction::triggered, this, [fixId, error, this]() { mGeometryValidationService->fixError( error, fixId ); } );
         mGeometryErrorContextMenu->addAction( action );
       }
     }
@@ -267,9 +265,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
         resolveLabel->setWordWrap( true );
         layout->addWidget( resolveLabel, resolutionIndex, 1 );
         const int fixId = resolutionMethod.id();
-        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]() {
-          mGeometryValidationService->fixError( error, fixId );
-        } );
+        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]() { mGeometryValidationService->fixError( error, fixId ); } );
         resolutionIndex++;
       }
 
@@ -328,7 +324,8 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
 {
   if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
   {
-    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories
+      = QgsAnalysis::geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
     const QStringList activeChecks = mCurrentLayer->geometryOptions()->geometryChecks();
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
@@ -358,9 +355,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *featureAnimation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
     featureAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( featureAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
-    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this] {
-      mFeatureRubberband->update();
-    } );
+    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this] { mFeatureRubberband->update(); } );
 
     featureAnimation->setDuration( 2000 );
     featureAnimation->setStartValue( QColor( 100, 255, 100, 255 ) );
@@ -373,9 +368,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
-    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this] {
-      mErrorRubberband->update();
-    } );
+    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this] { mErrorRubberband->update(); } );
 
     errorAnimation->setStartValue( QColor( 255, 238, 88, 255 ) );
     errorAnimation->setEndValue( QColor( 255, 238, 88, 0 ) );

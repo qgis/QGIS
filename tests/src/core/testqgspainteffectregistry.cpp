@@ -74,12 +74,10 @@ void TestQgsPaintEffectRegistry::cleanupTestCase()
 }
 
 void TestQgsPaintEffectRegistry::init()
-{
-}
+{}
 
 void TestQgsPaintEffectRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPaintEffectRegistry::metadata()
 {

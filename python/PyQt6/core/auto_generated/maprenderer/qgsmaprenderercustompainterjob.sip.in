@@ -21,7 +21,6 @@ Abstract base class for map renderer jobs which use custom painters.
 #include "qgsmaprenderercustompainterjob.h"
 %End
   public:
-
     QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings );
 %Docstring
 Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
@@ -29,7 +28,6 @@ map ``settings``.
 %End
 
   protected:
-
     void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
 %Docstring
 Prepares the given ``painter`` ready for a map render.
@@ -37,7 +35,6 @@ Prepares the given ``painter`` ready for a map render.
 The ``backgroundColor`` argument specifies the color to use for the
 map's background.
 %End
-
 };
 
 class QgsMapRendererCustomPainterJob : QgsMapRendererAbstractCustomPainterJob

@@ -89,12 +89,10 @@ void TestProjectionIssues::cleanupTestCase()
 }
 
 void TestProjectionIssues::init()
-{
-}
+{}
 
 void TestProjectionIssues::cleanup()
-{
-}
+{}
 
 void TestProjectionIssues::issue5895()
 {

@@ -63,15 +63,19 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
   length->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( length.release() );
 
-  auto angle = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE"_s, QObject::tr( "Angle in degrees from the original line at the vertices" ), Qgis::ProcessingNumberParameterType::Double, 90.0, false, 0, 360 );
+  auto angle
+    = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE"_s, QObject::tr( "Angle in degrees from the original line at the vertices" ), Qgis::ProcessingNumberParameterType::Double, 90.0, false, 0, 360 );
   angle->setIsDynamic( true );
   angle->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Angle in degrees" ), QgsPropertyDefinition::Double ) );
   angle->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( angle.release() );
 
-  addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 )
+  );
 
-  auto direction = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Right to Left" ) << QObject::tr( "Left to Right" ), false, 0, true );
+  auto direction
+    = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Right to Left" ) << QObject::tr( "Left to Right" ), false, 0, true );
   direction->setGuiDefaultValueOverride( 1 );
   addParameter( direction.release() );
 
@@ -186,9 +190,7 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
 
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
-        attrs << current << number << i + 1 << evaluatedAngle
-              << ( ( mOrientation == QgsTransectAlgorithmBase::Both ) ? evaluatedLength * 2 : evaluatedLength )
-              << static_cast<int>( mOrientation );
+        attrs << current << number << i + 1 << evaluatedAngle << ( ( mOrientation == QgsTransectAlgorithmBase::Both ) ? evaluatedLength * 2 : evaluatedLength ) << static_cast<int>( mOrientation );
         outFeat.setAttributes( attrs );
         outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle, mDirection ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
@@ -205,7 +207,9 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
   return outputs;
 }
 
-QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle, const QgsTransectAlgorithmBase::Direction direction )
+QgsGeometry QgsTransectAlgorithmBase::calcTransect(
+  const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle, const QgsTransectAlgorithmBase::Direction direction
+)
 {
   // Transect is built from right to left relative to the reference line direction.
   QgsPoint pStart; // start point of the transect
