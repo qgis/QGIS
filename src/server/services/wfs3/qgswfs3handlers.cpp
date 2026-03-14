@@ -240,6 +240,58 @@ const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiConte
   return path;
 }
 
+bool QgsWfs3AbstractItemsHandler::canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
+  if ( wfstInsertLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::AddFeatures ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  return false;
+}
+
+bool QgsWfs3AbstractItemsHandler::canDeleteFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
+  if ( wfstDeleteLayerIds.contains( mapLayer->id() ) && mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::DeleteFeatures ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  return false;
+}
+
+bool QgsWfs3AbstractItemsHandler::canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+  if ( wfstUpdateLayerIds.contains( mapLayer->id() )
+       && ( mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    {
+      return false;
+    }
+#endif
+    return true;
+  }
+  return false;
+}
+
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {}
 
@@ -1416,7 +1468,12 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         context.response()->setStatusCode( 201 );
         context.response()->setHeader( u"Content-Type"_s, u"application/geo+json"_s );
 
-        QString url { context.request()->url().toString( QUrl::EncodeSpaces ) };
+        QUrl collectionUrl { context.request()->url() };
+        // Remove query and fragment
+        collectionUrl.setQuery( QString() );
+        collectionUrl.setFragment( QString() );
+
+        QString url { collectionUrl.toString( QUrl::EncodeSpaces ) };
         if ( !url.endsWith( '/' ) )
         {
           url.append( '/' );
@@ -1429,6 +1486,26 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       {
         throw QgsServerApiBadRequestException( u"JSON parse error: %1"_s.arg( ex.what() ) );
       }
+      break;
+    }
+    case QgsServerRequest::Method::OptionsMethod:
+    {
+      context.response()->setStatusCode( 200 );
+      QStringList methods;
+      methods << u"GET"_s << u"OPTIONS"_s;
+      if ( canInsertFeatures( mapLayer, context ) )
+      {
+        methods << u"POST"_s;
+      }
+      if ( canDeleteFeatures( mapLayer, context ) )
+      {
+        methods << u"DELETE"_s;
+      }
+      if ( canUpdateFeatures( mapLayer, context ) )
+      {
+        methods << u"PUT"_s << u"PATCH"_s;
+      }
+      context.response()->setHeader( u"Allow"_s, methods.join( ", " ) );
       break;
     }
     // Error
@@ -1835,6 +1912,33 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       break;
     }
+    // //////////////////////////////////////////////////////////////
+    // Options feature
+    case QgsServerRequest::Method::OptionsMethod:
+    {
+      // In theory we could check permissions for the requested feature here but
+      // this method is used by QGIS server to determine the allowed operations on a feature,
+      // so we need to return the allowed operations even if the requested feature is not accessible
+      // otherwise clients won't be able to know that they can update or delete features in this collection.
+      // So we check permissions at collection level, not at feature level.
+      context.response()->setStatusCode( 200 );
+      QStringList methods;
+      methods << u"GET"_s << u"OPTIONS"_s;
+      if ( canInsertFeatures( mapLayer, context ) )
+      {
+        methods << u"POST"_s;
+      }
+      if ( canDeleteFeatures( mapLayer, context ) )
+      {
+        methods << u"DELETE"_s;
+      }
+      if ( canUpdateFeatures( mapLayer, context ) )
+      {
+        methods << u"PUT"_s << u"PATCH"_s;
+      }
+      context.response()->setHeader( u"Allow"_s, methods.join( ", " ) );
+      break;
+    }
     default:
     {
       throw QgsServerApiNotImplementedException( u"%1 method is not implemented."_s.arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
@@ -1928,23 +2032,18 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
               { "default", defaultResponse() } } } } }
     };
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 
-    // get access controls
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     // If the layer has no delete capabilities, remove the delete operation
-    if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    if ( !canDeleteFeatures( mapLayer, context ) )
     {
       data[path].erase( "delete" );
     }
     // If the layer has no update capabilities, remove the put and patch operation
-    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    if ( !canUpdateFeatures( mapLayer, context ) )
     {
       data[path].erase( "put" );
       data[path].erase( "patch" );
     }
-
-#endif
 
   } // end for loop
   return data;
