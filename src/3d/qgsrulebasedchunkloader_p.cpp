@@ -260,7 +260,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
 
 void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
 {
-  const float previousOffset = mTransform->translation()[1];
+  const float previousOffset = mTransform->translation().z();
   float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
   if ( !applyTerrainOffset() )
   {
