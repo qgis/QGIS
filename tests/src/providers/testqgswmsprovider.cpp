@@ -541,7 +541,7 @@ void TestQgsWmsProvider::testBboxPlaceholderReplacement()
   tiles << QgsWmsProvider::TilePosition( 0, 0 );
 
   QgsWmsProvider::TileRequests requests;
-  provider.createTileRequestsXYZ( &tm, tiles, requests, nullptr );
+  provider.createTileRequestsXYZ( &tm, tiles, requests, Qgis::RendererUsage::Unknown );
 
   // Verify the bbox placeholder was replaced
   QCOMPARE( requests.size(), 1 );
