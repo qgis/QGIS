@@ -117,6 +117,7 @@ class CORE_EXPORT QgsLayoutFrame : public QgsLayoutItem
     void drawBackground( QgsRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    void finalizeRestoreFromXml() override;
 
   private:
     QgsLayoutFrame() = delete;

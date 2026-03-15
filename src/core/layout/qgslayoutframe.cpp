@@ -170,13 +170,35 @@ void QgsLayoutFrame::cleanup()
   QgsLayoutItem::cleanup();
 }
 
+void QgsLayoutFrame::finalizeRestoreFromXml()
+{
+  QgsLayoutItem::finalizeRestoreFromXml();
+
+  // when a frame is deleted via the UI, only the QgsLayoutFrame item is removed —
+  // the parent multiframe remains in the layout with its data intact.
+  // on undo, readPropertiesFromElement() correctly resolves mMultiFrame via uuid,
+  // but the multiframe's internal frame list is not updated, so frameIndex() returns -1.
+  // re-register the frame in the multiframe and restore the original frame ordering
+  // and content sections.
+  if ( mMultiFrame && !mMultiFrame->frames().contains( this ) )
+  {
+    mMultiFrame->addFrame( this, false );
+    mMultiFrame->reorderFrames();
+    mMultiFrame->recalculateFrameSizes();
+    mMultiFrame->refresh();
+  }
+}
+
 void QgsLayoutFrame::draw( QgsLayoutItemRenderContext &context )
 {
   if ( mMultiFrame )
   {
     //calculate index of frame
     const int frameIndex = mMultiFrame->frameIndex( this );
-    Q_ASSERT_X( frameIndex >= 0, "QgsLayoutFrame::draw", "Invalid frame index for frame" );
+    //frame may not yet be registered in the multiframe during project load or undo restore —
+    //skip rendering silently until finalizeRestoreFromXml() completes the reconnection
+    if ( frameIndex < 0 )
+      return;
     mMultiFrame->render( context, mSection, frameIndex );
   }
 }
