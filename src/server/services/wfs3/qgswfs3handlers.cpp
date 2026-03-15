@@ -1926,7 +1926,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     case QgsServerRequest::Method::OptionsMethod:
     {
       // In theory we could check permissions for the requested feature here but
-      // this method is used by QGIS server to determine the allowed operations on a feature,
+      // this method is used by QGIS client to determine the allowed operations on a feature,
       // so we need to return the allowed operations even if the requested feature is not accessible
       // otherwise clients won't be able to know that they can update or delete features in this collection.
       // So we check permissions at collection level, not at feature level.
