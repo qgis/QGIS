@@ -647,7 +647,7 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   QDir destDir( destination );
   if ( !destDir.exists() )
   {
-    if ( !destDir.mkdir( destination ) )
+    if ( !destDir.mkpath( destination ) )
     {
       QgsDebugError( u"Cannot copy %1 to %2, could not make target directory"_s.arg( source, destination ) );
       return false;
