@@ -50,6 +50,8 @@ class TestQgsLayoutMultiFrame : public QgsTest
     void displayName();
     void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
     void undoRedoRemovedFrame2();
+    void undoDeleteMainFrame(); //test that deleting the main frame and undoing restores it at index 0
+    void undoDeleteMultipleFrames(); //test that deleting multiple frames and undoing restores original order
     void registry();
     void deleteFrame();
     void writeReadXml();
@@ -301,6 +303,95 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
   QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
   frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
   htmlItem->addFrame( frame1 );
+}
+
+void TestQgsLayoutMultiFrame::undoDeleteMainFrame()
+{
+  //test that deleting the main frame (index 0) and undoing restores it at index 0,
+  //not appended at the end of the frame list
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.undoStack()->stack()->clear();
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame1 );
+  const QString uuid1 = frame1->uuid();
+
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 210, 100, 200 ) );
+  htmlItem->addFrame( frame2 );
+  const QString uuid2 = frame2->uuid();
+
+  QCOMPARE( htmlItem->frameIndex( frame1 ), 0 );
+  QCOMPARE( htmlItem->frameIndex( frame2 ), 1 );
+
+  //delete the main frame via the layout (simulates UI deletion)
+  l.removeLayoutItem( frame1 );
+  QCOMPARE( htmlItem->frameCount(), 1 );
+
+  //undo — frame1 must be restored at index 0, not appended after frame2
+  l.undoStack()->stack()->undo();
+  QCOMPARE( htmlItem->frameCount(), 2 );
+
+  QgsLayoutFrame *restoredFrame1 = qobject_cast<QgsLayoutFrame *>( l.itemByUuid( uuid1, true ) );
+  QgsLayoutFrame *restoredFrame2 = qobject_cast<QgsLayoutFrame *>( l.itemByUuid( uuid2, true ) );
+  QVERIFY( restoredFrame1 );
+  QVERIFY( restoredFrame2 );
+  QCOMPARE( htmlItem->frameIndex( restoredFrame1 ), 0 );
+  QCOMPARE( htmlItem->frameIndex( restoredFrame2 ), 1 );
+}
+
+void TestQgsLayoutMultiFrame::undoDeleteMultipleFrames()
+{
+  //test that deleting multiple frames and undoing restores them in the original order
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.undoStack()->stack()->clear();
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame1 );
+  const QString uuid1 = frame1->uuid();
+
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 210, 100, 200 ) );
+  htmlItem->addFrame( frame2 );
+  const QString uuid2 = frame2->uuid();
+
+  QgsLayoutFrame *frame3 = new QgsLayoutFrame( &l, htmlItem );
+  frame3->attemptSetSceneRect( QRectF( 0, 420, 100, 200 ) );
+  htmlItem->addFrame( frame3 );
+  const QString uuid3 = frame3->uuid();
+
+  QCOMPARE( htmlItem->frameIndex( frame1 ), 0 );
+  QCOMPARE( htmlItem->frameIndex( frame2 ), 1 );
+  QCOMPARE( htmlItem->frameIndex( frame3 ), 2 );
+
+  //delete all three frames
+  l.removeLayoutItem( frame1 );
+  l.removeLayoutItem( frame2 );
+  l.removeLayoutItem( frame3 );
+  QCOMPARE( htmlItem->frameCount(), 0 );
+
+  //undo all three deletions
+  l.undoStack()->stack()->undo();
+  l.undoStack()->stack()->undo();
+  l.undoStack()->stack()->undo();
+  QCOMPARE( htmlItem->frameCount(), 3 );
+
+  //original order must be restored regardless of undo insertion order
+  QgsLayoutFrame *r1 = qobject_cast<QgsLayoutFrame *>( l.itemByUuid( uuid1, true ) );
+  QgsLayoutFrame *r2 = qobject_cast<QgsLayoutFrame *>( l.itemByUuid( uuid2, true ) );
+  QgsLayoutFrame *r3 = qobject_cast<QgsLayoutFrame *>( l.itemByUuid( uuid3, true ) );
+  QVERIFY( r1 );
+  QVERIFY( r2 );
+  QVERIFY( r3 );
+  QCOMPARE( htmlItem->frameIndex( r1 ), 0 );
+  QCOMPARE( htmlItem->frameIndex( r2 ), 1 );
+  QCOMPARE( htmlItem->frameIndex( r3 ), 2 );
 }
 
 void TestQgsLayoutMultiFrame::registry()
