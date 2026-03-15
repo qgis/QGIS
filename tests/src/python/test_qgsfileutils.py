@@ -645,7 +645,7 @@ class TestQgsFileUtils(unittest.TestCase):
             self.assertFalse(QgsFileUtils.copyDirectory(missing_dir, dest_missing))
 
             # copy whole folder:
-            dest_basic = os.path.join(temp_dir, "dest_basic")
+            dest_basic = os.path.join(temp_dir, "nested_folder", "dest_basic")
             self.assertTrue(QgsFileUtils.copyDirectory(src_dir, dest_basic))
             self.assertTrue(os.path.exists(os.path.join(dest_basic, "file1.txt")))
             self.assertTrue(
