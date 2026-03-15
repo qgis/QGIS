@@ -331,6 +331,14 @@ class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayout
      */
     virtual void finalizeRestoreFromXml();
 
+    /**
+     * Reorders the internal frame list to match the original authoring order recorded in mFrameUuids.
+     * Called after undo restoration to correct the frame sequence when frames were restored
+     * in a different order than they were originally created.
+     * \see finalizeRestoreFromXml()
+     */
+    void reorderFrames();
+
   public slots:
 
     /**

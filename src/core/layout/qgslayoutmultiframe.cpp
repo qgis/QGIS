@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QUuid>
+#include <cmath>
 
 #include "moc_qgslayoutmultiframe.cpp"
 
@@ -65,6 +66,14 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   if ( !frame || mFrameItems.contains( frame ) )
     return;
 
+  //track uuid in the ordered list so reorderFrames() can restore the correct
+  //sequence after undo, even for frames added via the UI rather than readXml()
+  if ( !mFrameUuids.contains( frame->uuid() ) )
+  {
+    mFrameUuids.append( frame->uuid() );
+    mFrameTemplateUuids.append( frame->uuid() );
+  }
+
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
@@ -78,6 +87,36 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   {
     recalculateFrameSizes();
   }
+}
+
+void QgsLayoutMultiFrame::reorderFrames()
+{
+  //rebuild mFrameItems in the order recorded in mFrameUuids, which reflects the
+  //original authoring sequence (index 0 = main frame, 1 = first additional frame, etc.)
+  //frames not present in mFrameUuids are appended at the end
+  QList<QgsLayoutFrame *> ordered;
+  ordered.reserve( mFrameItems.size() );
+
+  for ( const QString &uuid : std::as_const( mFrameUuids ) )
+  {
+    for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
+    {
+      if ( frame->uuid() == uuid )
+      {
+        if ( !ordered.contains( frame ) )
+          ordered << frame;
+        break;
+      }
+    }
+  }
+
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
+  {
+    if ( !ordered.contains( frame ) )
+      ordered << frame;
+  }
+
+  mFrameItems = ordered;
 }
 
 void QgsLayoutMultiFrame::setResizeMode( ResizeMode mode )
@@ -108,6 +147,13 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
   double totalHeight = size.height();
 
   if ( totalHeight < 1 )
+  {
+    return;
+  }
+
+  //guard against unreliable totalSize() values during restore (e.g. layer not yet resolved),
+  //which would cause the page-extension loop below to run unboundedly
+  if ( !std::isfinite( totalHeight ) || totalHeight > 1.0e7 )
   {
     return;
   }
@@ -330,9 +376,11 @@ void QgsLayoutMultiFrame::finalizeRestoreFromXml()
 
     if ( frame )
     {
-      addFrame( frame );
+      addFrame( frame, false );
     }
   }
+
+  update();
 }
 
 void QgsLayoutMultiFrame::refresh()
@@ -554,9 +602,21 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
       if ( !frameNodes.isEmpty() )
       {
         QDomElement frameItemElement = frameNodes.at( 0 ).toElement();
-        auto newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
-        newFrame->readXml( frameItemElement, doc, context );
-        addFrame( newFrame.release(), false );
+
+        //reuse an existing frame with this uuid if present in the scene, to avoid
+        //creating a duplicate that would be left orphaned and rendered with an invalid frame index
+        QgsLayoutItem *existingItem = mLayout->itemByUuid( uuid, true );
+        QgsLayoutFrame *existingFrame = qobject_cast<QgsLayoutFrame *>( existingItem );
+        if ( existingFrame )
+        {
+          addFrame( existingFrame, false );
+        }
+        else
+        {
+          auto newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
+          newFrame->readXml( frameItemElement, doc, context );
+          addFrame( newFrame.release(), false );
+        }
       }
     }
   }
