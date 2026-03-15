@@ -237,6 +237,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     {
       continue;
     }
+    settings.setRendererUsage( Qgis::RendererUsage::Export );
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
     settings.setDestinationCrs( mMercatorCrs );
