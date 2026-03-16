@@ -666,6 +666,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \since QGIS 4.0.1
      */
     static const QgsSettingsEntryString *settingsLayoutDefaultFont;
+
+    /**
+     * Settings entry for the default north arrow SVG path.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryString *settingsLayoutDefaultNorthArrow;
 #endif
 
   public slots:

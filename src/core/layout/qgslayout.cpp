@@ -55,6 +55,9 @@ const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates
 const QgsSettingsEntryString *QgsLayout::settingsLayoutDefaultFont
   = new QgsSettingsEntryString( u"default-font"_s, QgsSettingsTree::sTreeLayout, QString(), QObject::tr( "Default font family for new layout items" ) );
 
+const QgsSettingsEntryString *QgsLayout::settingsLayoutDefaultNorthArrow
+  = new QgsSettingsEntryString( u"default-north-arrow"_s, QgsSettingsTree::sTreeLayout, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QObject::tr( "Default north arrow SVG path" ) );
+
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
   , mRenderContext( new QgsLayoutRenderContext( this ) )
