@@ -756,7 +756,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mNativeColorDialogsChkBx->setChecked( QgsSettingsRegistryGui::settingsNativeColorDialogs->value() );
 
-  cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
+  cbxLegendClassifiers->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
@@ -1628,8 +1628,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/Map/highlight/buffer"_s, mIdentifyHighlightBufferSpinBox->value() );
   mSettings->setValue( u"/Map/highlight/minWidth"_s, mIdentifyHighlightMinWidthSpinBox->value() );
 
-  bool showLegendClassifiers = mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool();
-  mSettings->setValue( u"/qgis/showLegendClassifiers"_s, cbxLegendClassifiers->isChecked() );
+  bool showLegendClassifiers = QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value();
+  QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->setValue( cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
