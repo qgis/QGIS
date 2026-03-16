@@ -83,6 +83,8 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
@@ -1099,10 +1101,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mMapCanvas->mapSettings().setFlag( Qgis::MapSettingsFlag::RecordProfile );
 
   // set canvas color right away
-  int myRed = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  int myGreen = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  int myBlue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
+  mMapCanvas->setCanvasColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
 
   // set project linked to main canvas
   mMapCanvas->setProject( QgsProject::instance() );
@@ -2906,14 +2905,14 @@ void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
 void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 {
   QgsSettings settings;
-  canvas->enableAntiAliasing( settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  canvas->enableAntiAliasing( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
   canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
-  canvas->setMapUpdateInterval( settings.value( u"qgis/map_update_interval"_s, 250 ).toInt() );
-  canvas->setSegmentationTolerance( settings.value( u"qgis/segmentationTolerance"_s, "0.01745" ).toDouble() );
-  canvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( settings.enumValue( u"qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle ) ) );
+  canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
+  canvas->setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
+  canvas->setSegmentationToleranceType( QgsSettingsRegistryGui::settingsSegmentationToleranceType->value() );
 }
 
 void QgisApp::readSettings()
@@ -4052,7 +4051,7 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, &QgsMapCanvas::scaleLockChanged, mMagnifierWidget, &QgsStatusBarMagnifierWidget::updateScaleLock );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::magnificationChanged, mMapCanvas, [this]( double factor ) { mMapCanvas->setMagnificationFactor( factor ); } );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
-  mMagnifierWidget->updateMagnification( QSettings().value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble() );
+  mMagnifierWidget->updateMagnification( QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value() );
   mStatusBar->addPermanentWidget( mMagnifierWidget, 0 );
 
   // add a widget to show/set current rotation
@@ -4618,11 +4617,7 @@ void QgisApp::createOverview()
   mOverviewCanvas = new QgsMapOverviewCanvas( nullptr, mMapCanvas );
 
   //set canvas color to default
-  QgsSettings settings;
-  int red = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  int green = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  int blue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  mOverviewCanvas->setBackgroundColor( QColor( red, green, blue ) );
+  mOverviewCanvas->setBackgroundColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
 
   mOverviewMapCursor = new QCursor( Qt::OpenHandCursor );
   mOverviewCanvas->setCursor( *mOverviewMapCursor );
@@ -5916,8 +5911,8 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
-  prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
-  prj->layerTreeRegistryBridge()->setLayerInsertionMethod( settings.enumValue( u"qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+  prj->layerTreeRegistryBridge()->setNewLayersVisible( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
+  prj->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
   //set the canvas to the default project background color
   mOverviewCanvas->setBackgroundColor( prj->backgroundColor() );
@@ -5937,7 +5932,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( u"/projections/defaultProjectCrs"_s, Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
-  const bool planimetric = settings.value( u"measure/planimetric"_s, true, QgsSettings::Core ).toBool();
+  const bool planimetric = QgsSettingsRegistryCore::settingsMeasurePlanimetric->value();
   prj->setCrs( srs, !planimetric ); // If the default ellipsoid is not planimetric, set it from the default crs
   if ( planimetric )
     prj->setEllipsoid( Qgis::geoNone() );
@@ -10666,7 +10661,7 @@ void QgisApp::pasteLayer()
     }
 
     QgsSettings settings;
-    Qgis::LayerTreeInsertionMethod insertionMethod = settings.enumValue( u"/qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup );
+    Qgis::LayerTreeInsertionMethod insertionMethod = QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value();
     QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
     bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root, errorMessage, readWriteContext, insertionMethod, &insertionPoint );
 
@@ -12763,8 +12758,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
   if ( optionsDialog->exec() )
   {
-    QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( u"qgis/new_layers_visible"_s, true ).toBool() );
-    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( mySettings.enumValue( u"qgis/layerTreeInsertionMethod"_s, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+    QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
+    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->value() );
 
     setupLayerTreeViewFromSettings();
 
@@ -12808,7 +12803,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     }
 #endif
 
-    double factor = mySettings.value( u"qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
+    double factor = QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
   }
@@ -14808,7 +14803,7 @@ void QgisApp::showPanMessage( double distance, Qgis::DistanceUnit unit, double b
     return;
 
   const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
-  const int distanceDecimalPlaces = QgsSettings().value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  const int distanceDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
   mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( distanceString, bearingString ), 2000 );

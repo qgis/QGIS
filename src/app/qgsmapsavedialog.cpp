@@ -38,6 +38,7 @@
 #include "qgsproject.h"
 #include "qgsscalecalculator.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QCheckBox>
 #include <QClipboard>
@@ -358,8 +359,8 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       break;
 
     case Image:
-      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
-      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
       break;
   }
 

@@ -37,6 +37,7 @@
 #include "qgsprofilesourceregistry.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsscreenhelper.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsterrainprovider.h"
 
 #include <QPalette>
@@ -813,9 +814,8 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
 void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
-  QgsSettings settings;
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

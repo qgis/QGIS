@@ -19,6 +19,7 @@
 #include "qgsfocuswatcher.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsunittypes.h"
 
 #include <QEnterEvent>
@@ -40,7 +41,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   setAttribute( Qt::WA_TransparentForMouseEvents );
   adjustSize();
 
-  setActive( QgsSettings().value( u"/Cad/Floater"_s, false ).toBool() );
+  setActive( QgsSettingsRegistryGui::settingsCadFloaterActive->value() );
 
   hideIfDisabled();
 
@@ -214,7 +215,7 @@ Qgis::CadMeasurementDisplayType QgsAdvancedDigitizingFloater::itemMeasurementDis
 
 void QgsAdvancedDigitizingFloater::setActive( bool active )
 {
-  QgsSettings().setValue( u"/Cad/Floater"_s, active );
+  QgsSettingsRegistryGui::settingsCadFloaterActive->setValue( active );
 
   mActive = active;
 

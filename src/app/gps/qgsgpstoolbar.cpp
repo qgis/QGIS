@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 #include "qgsunittypes.h"
 
@@ -280,8 +281,8 @@ void QgsGpsToolBar::updateLocationLabel()
               const double measurement = component == Qgis::GpsInformationComponent::TotalTrackLength ? mDigitizing->totalTrackLength() : mDigitizing->trackDistanceFromStart();
 
               const QgsSettings settings;
-              const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
-              const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+              const bool keepBaseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
+              const int decimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
 
               if ( measurement > 0 )
                 parts << mDigitizing->distanceArea().formatDistance( measurement, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit );

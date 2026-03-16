@@ -37,6 +37,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -237,7 +238,7 @@ void TestQgsIdentify::clickxy()
 void TestQgsIdentify::closestPoint()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineStringZM?crs=epsg:3111&field=pk:int&field=col1:double&field=url:string"_s, u"vl"_s, u"memory"_s );
@@ -342,7 +343,7 @@ void TestQgsIdentify::closestPoint()
 void TestQgsIdentify::lengthCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -391,7 +392,7 @@ void TestQgsIdentify::lengthCalculation()
   QGSCOMPARENEAR( length, 88355.1, 0.1 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
@@ -402,7 +403,7 @@ void TestQgsIdentify::lengthCalculation()
   QGSCOMPARENEAR( length, 16.734000, 0.001 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -465,7 +466,7 @@ void TestQgsIdentify::lengthCalculation()
 void TestQgsIdentify::perimeterCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -516,7 +517,7 @@ void TestQgsIdentify::perimeterCalculation()
   QGSCOMPARENEAR( perimeter, 420873.0, 0.1 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
@@ -527,7 +528,7 @@ void TestQgsIdentify::perimeterCalculation()
   QCOMPARE( perimeter, 79.711 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -542,7 +543,7 @@ void TestQgsIdentify::perimeterCalculation()
 void TestQgsIdentify::areaCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -594,7 +595,7 @@ void TestQgsIdentify::areaCalculation()
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -606,7 +607,7 @@ void TestQgsIdentify::areaCalculation()
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );

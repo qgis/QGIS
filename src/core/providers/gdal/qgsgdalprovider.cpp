@@ -44,6 +44,7 @@ using namespace Qt::StringLiterals;
 #include "qgsrasterpyramid.h"
 #include "qgspointxy.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
@@ -3002,8 +3003,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   fileFiltersString = filters.join( ";;"_L1 ) + ";;";
 
   // VSIFileHandler (see qgsogrprovider.cpp) - second
-  QgsSettings settings;
-  if ( settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString() != "no"_L1 )
+  if ( QgsSettingsRegistryCore::settingsScanZipInBrowser->value() != "no"_L1 )
   {
     fileFiltersString.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), u"*.zip *.gz *.tar *.tar.gz *.tgz"_s ) );
     extensions << u"zip"_s << u"gz"_s << u"tar"_s << u"tar.gz"_s << u"tgz"_s;

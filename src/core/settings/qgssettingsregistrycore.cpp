@@ -152,6 +152,36 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
 const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders
   = new QgsSettingsEntryStringList( u"code-execution-denied-projects-folders"_s, QgsSettingsTree::sTreeCore, QStringList(), u"Projects and folders that are untrusted and denied execution of embedded scripts"_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
+  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit
+  = new QgsSettingsEntryBool( u"keep-base-unit"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether to keep base measurement units instead of converting to larger units"_s );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsMeasureDecimalPlaces
+  = new QgsSettingsEntryInteger( u"decimal-places"_s, QgsSettingsTree::sTreeMeasure, 3, u"Number of decimal places for measurements"_s );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureDisplayUnits
+  = new QgsSettingsEntryString( u"display-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Distance display units (encoded unit string)"_s );
+
+const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
+  Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsScanZipInBrowser
+  = new QgsSettingsEntryString( u"scan-zip-in-browser"_s, QgsSettingsTree::sTreeQgis, u"basic"_s, u"Zip scanning behavior in browser (no, basic, full)"_s );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsScanItemsFastScanUris
+  = new QgsSettingsEntryStringList( u"scan-items-fast-scan-uris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"URIs for fast scanning in browser"_s );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex
+  = new QgsSettingsEntryInteger( u"symbols-list-groups-index"_s, QgsSettingsTree::sTreeQgis, 0, u"Currently selected group index in symbols list"_s );
+
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDefaultCanvasColor
+  = new QgsSettingsEntryColor( u"default-canvas-color"_s, QgsSettingsTree::sTreeQgis, QColor( 255, 255, 255 ), u"Default canvas background color"_s );
+
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDefaultSelectionColor
+  = new QgsSettingsEntryColor( u"default-selection-color"_s, QgsSettingsTree::sTreeQgis, QColor( 255, 255, 0, 255 ), u"Default selection color"_s );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {}
@@ -183,6 +213,30 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( u"qgis/networkAndProxy/networkTimeout"_s, true );
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
+
+  // single settings - added in 4.2
+  // Old code used QgsSettings::Core section, so the actual QSettings key has a "core/" prefix
+  settingsMeasurePlanimetric->copyValueFromKey( u"core/measure/planimetric"_s, true );
+  settingsMeasureKeepBaseUnit->copyValueFromKey( u"qgis/measure/keepbaseunit"_s, true );
+  settingsMeasureKeepBaseUnit->copyValueFromKey( u"/qgis/measure/keepbaseunit"_s, true );
+  settingsMeasureDecimalPlaces->copyValueFromKey( u"qgis/measure/decimalplaces"_s, true );
+  settingsMeasureDecimalPlaces->copyValueFromKey( u"/qgis/measure/decimalplaces"_s, true );
+  settingsMeasureDisplayUnits->copyValueFromKey( u"qgis/measure/displayunits"_s, true );
+  settingsMeasureDisplayUnits->copyValueFromKey( u"/qgis/measure/displayunits"_s, true );
+  settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
+  settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
+  settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
+  settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
+  settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
+  settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
+  settingsSymbolsListGroupsIndex->copyValueFromKey( u"/qgis/symbolsListGroupsIndex"_s, true );
+  settingsDefaultCanvasColor->copyValueFromKeys( u"qgis/default_canvas_color_red"_s, u"qgis/default_canvas_color_green"_s, u"qgis/default_canvas_color_blue"_s, QString(), true );
+  settingsDefaultCanvasColor->copyValueFromKeys( u"/qgis/default_canvas_color_red"_s, u"/qgis/default_canvas_color_green"_s, u"/qgis/default_canvas_color_blue"_s, QString(), true );
+  settingsDefaultSelectionColor
+    ->copyValueFromKeys( u"qgis/default_selection_color_red"_s, u"qgis/default_selection_color_green"_s, u"qgis/default_selection_color_blue"_s, u"qgis/default_selection_color_alpha"_s, true );
+  settingsDefaultSelectionColor
+    ->copyValueFromKeys( u"/qgis/default_selection_color_red"_s, u"/qgis/default_selection_color_green"_s, u"/qgis/default_selection_color_blue"_s, u"/qgis/default_selection_color_alpha"_s, true );
 
 #if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( u"core/gps/stop_bits"_s, true );

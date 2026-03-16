@@ -75,6 +75,7 @@ using namespace Qt::StringLiterals;
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
 #include "qgsstylemanagerdialog.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsfileutils.h"
 
 //qt includes
@@ -465,11 +466,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mScaleMethodWidget->setScaleMethod( QgsProject::instance()->scaleMethod() );
 
   //get the color selections and set the button color accordingly
-  int myRedInt = settings.value( u"qgis/default_selection_color_red"_s, 255 ).toInt();
-  int myGreenInt = settings.value( u"qgis/default_selection_color_green"_s, 255 ).toInt();
-  int myBlueInt = settings.value( u"qgis/default_selection_color_blue"_s, 0 ).toInt();
-  int myAlphaInt = settings.value( u"qgis/default_selection_color_alpha"_s, 255 ).toInt();
-  QColor defaultSelectionColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
+  QColor defaultSelectionColor = QgsSettingsRegistryCore::settingsDefaultSelectionColor->value();
 
   pbnSelectionColor->setContext( u"gui"_s );
   pbnSelectionColor->setColor( QgsProject::instance()->selectionColor() );
@@ -478,10 +475,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnSelectionColor->setAllowOpacity( true );
 
   //get the color for map canvas background and set button color accordingly (default white)
-  myRedInt = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
-  myGreenInt = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
-  myBlueInt = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
-  QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  QColor defaultCanvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   pbnCanvasColor->setContext( u"gui"_s );
   pbnCanvasColor->setColor( QgsProject::instance()->backgroundColor() );
