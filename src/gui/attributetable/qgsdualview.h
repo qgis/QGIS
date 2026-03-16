@@ -31,6 +31,7 @@ class QgsFeatureRequest;
 class QgsMapLayerAction;
 class QgsScrollArea;
 class QgsFieldConditionalFormatWidget;
+class QgsSettingsEntryBool;
 class QgsSettingsEntryVariant;
 
 /**
@@ -79,6 +80,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
     Q_ENUM( FeatureListBrowsingAction )
+
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for whether features are highlighted/flashed in the feature list.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature;
+
+#endif
 
     /**
      * \brief Constructor
