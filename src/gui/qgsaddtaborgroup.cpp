@@ -32,10 +32,10 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger *QgsAddAttributeFormContainerDialog::settingsDefaultTabColumnCount
-  = new QgsSettingsEntryInteger( u"attribute-form-default-tab-column-count"_s, QgsSettingsTree::sTreeGui, 1, QObject::tr( "Default column count for tab containers in attribute forms" ) );
+  = new QgsSettingsEntryInteger( u"default-tab-column-count"_s, QgsSettingsTree::sTreeAttributeForm, 1, QObject::tr( "Default column count for tab containers in attribute forms" ) );
 
 const QgsSettingsEntryInteger *QgsAddAttributeFormContainerDialog::settingsDefaultGroupColumnCount
-  = new QgsSettingsEntryInteger( u"attribute-form-default-group-column-count"_s, QgsSettingsTree::sTreeGui, 1, QObject::tr( "Default column count for group box containers in attribute forms" ) );
+  = new QgsSettingsEntryInteger( u"default-group-column-count"_s, QgsSettingsTree::sTreeAttributeForm, 1, QObject::tr( "Default column count for group box containers in attribute forms" ) );
 
 QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent )
   : QDialog( parent )
