@@ -71,6 +71,8 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
+    // only used for point layers for now
+    Qgis::AltitudeClamping mLayerAltitudeClamping = Qgis::AltitudeClamping::Terrain;
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
     int mMaxFeatures;

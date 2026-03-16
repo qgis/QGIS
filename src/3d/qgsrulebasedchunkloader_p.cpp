@@ -27,6 +27,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerchunkloader_p.h"
+#include "qgsvectorlayerelevationproperties.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QString>
@@ -189,6 +190,11 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   , mRootRule( rootRule->clone() )
   , mMaxFeatures( maxFeatures )
 {
+  if ( const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( vl->elevationProperties() ) )
+  {
+    mLayerAltitudeClamping = props->clamping();
+  }
+
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
     // TODO: add support for handling of vector layers
@@ -254,6 +260,7 @@ QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
 bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
 {
   QgsRuleBasedChunkLoaderFactory *loaderFactory = static_cast<QgsRuleBasedChunkLoaderFactory *>( mChunkLoaderFactory );
+  bool useLayerClamping = false;
   if ( loaderFactory )
   {
     QgsRuleBased3DRenderer::Rule *rootRule = loaderFactory->mRootRule.get();
@@ -274,10 +281,13 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
         else if ( symbolType == "point" )
         {
           QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( rule->symbol() );
-          if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+          useLayerClamping = true;
+          Q_NOWARN_DEPRECATED_PUSH
+          if ( pointSymbol && pointSymbol->hasLegacyAltitudeClamping() && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
           {
             return false;
           }
+          Q_NOWARN_DEPRECATED_POP
         }
         else if ( symbolType == "polygon" )
         {
@@ -291,6 +301,18 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
         {
           QgsDebugMsgLevel( u"QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
         }
+      }
+    }
+
+    if ( useLayerClamping )
+    {
+      switch ( loaderFactory->mLayerAltitudeClamping )
+      {
+        case Qgis::AltitudeClamping::Absolute:
+          return false;
+        case Qgis::AltitudeClamping::Relative:
+        case Qgis::AltitudeClamping::Terrain:
+          break;
       }
     }
   }

@@ -35,6 +35,7 @@
 #include "qgsraycastingutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QString>
@@ -190,6 +191,41 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   , mSymbol( symbol->clone() )
   , mMaxFeatures( maxFeatures )
 {
+  if ( const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( vl->elevationProperties() ) )
+  {
+    mLayerAltitudeClamping = props->clamping();
+  }
+
+  const QString symbolType = mSymbol->type();
+  if ( symbolType == "line"_L1 )
+  {
+    if ( QgsLine3DSymbol *lineSymbol = qgis::down_cast<QgsLine3DSymbol *>( mSymbol.get() ) )
+    {
+      mLayerAltitudeClamping = lineSymbol->altitudeClamping();
+    }
+  }
+  else if ( symbolType == "point"_L1 )
+  {
+    // if point symbol has the legacy deprecated symbol level setting for clamping set,
+    // override the layer's one with that
+    if ( QgsPoint3DSymbol *pointSymbol = qgis::down_cast<QgsPoint3DSymbol *>( mSymbol.get() ) )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      if ( pointSymbol->hasLegacyAltitudeClamping() )
+      {
+        mLayerAltitudeClamping = pointSymbol->altitudeClamping();
+      }
+      Q_NOWARN_DEPRECATED_POP
+    }
+  }
+  else if ( symbolType == "polygon" )
+  {
+    if ( QgsPolygon3DSymbol *polygonSymbol = qgis::down_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) )
+    {
+      mLayerAltitudeClamping = polygonSymbol->altitudeClamping();
+    }
+  }
+
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
     // TODO: add support for handling of vector layers
@@ -258,34 +294,13 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
   QgsVectorLayerChunkLoaderFactory *loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
   if ( loaderFactory )
   {
-    QString symbolType = loaderFactory->mSymbol.get()->type();
-    if ( symbolType == "line" )
+    switch ( loaderFactory->mLayerAltitudeClamping )
     {
-      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
-      if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
-      {
+      case Qgis::AltitudeClamping::Absolute:
         return false;
-      }
-    }
-    else if ( symbolType == "point" )
-    {
-      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
-      if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
-      {
-        return false;
-      }
-    }
-    else if ( symbolType == "polygon" )
-    {
-      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
-      if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
-      {
-        return false;
-      }
-    }
-    else
-    {
-      QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
+      case Qgis::AltitudeClamping::Relative:
+      case Qgis::AltitudeClamping::Terrain:
+        break;
     }
   }
 
