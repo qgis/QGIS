@@ -16,6 +16,7 @@
 #include "qgssettingsregistrygui.h"
 
 #include "qgsabstractdbsourceselect.h"
+#include "qgsaddtaborgroup.h"
 #include "qgsapplication.h"
 #include "qgscodeeditor.h"
 #include "qgsfeaturefiltermodel.h"
@@ -140,6 +141,10 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   QgsCodeEditor::settingFontSize->copyValueFromKey( u"gui/codeEditor/fontsize"_s, true );
   QgsMapTool::settingSearchRadiusMM->copyValueFromKey( u"Map/searchRadiusMM"_s, true );
   QgsMapTool::settingSearchRadiusMM->copyValueFromKey( u"/Map/searchRadiusMM"_s, true );
+  QgsAddAttributeFormContainerDialog::settingsDefaultTabColumnCount->copyValueFromKey( u"qgis/attributeForm/defaultTabColumnCount"_s, true );
+  QgsAddAttributeFormContainerDialog::settingsDefaultTabColumnCount->copyValueFromKey( u"/qgis/attributeForm/defaultTabColumnCount"_s, true );
+  QgsAddAttributeFormContainerDialog::settingsDefaultGroupColumnCount->copyValueFromKey( u"qgis/attributeForm/defaultGroupColumnCount"_s, true );
+  QgsAddAttributeFormContainerDialog::settingsDefaultGroupColumnCount->copyValueFromKey( u"/qgis/attributeForm/defaultGroupColumnCount"_s, true );
 
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/GPKGSourceSelect/HoldDialogOpen"_s, { u"ogr/GPKGSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"ogr/SQLiteSourceSelect/HoldDialogOpen"_s, { u"ogr/SQLiteSourceSelect"_s }, true );
