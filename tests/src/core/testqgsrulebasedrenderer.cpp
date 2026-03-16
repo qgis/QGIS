@@ -29,6 +29,7 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -1423,6 +1424,33 @@ class TestQgsRuleBasedRenderer : public QgsTest
       Q_ASSERT( ruleElse->isElse() );
     }
 
+    void testLabelingConcatenationSld()
+    {
+      // 1) Create a layer
+      auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=name:string&field=status:string"_s, u"test"_s, u"memory"_s );
+
+      // 2) Set labeling with a concatenation expression
+      QgsPalLayerSettings settings;
+      settings.isExpression = true;
+      settings.fieldName = u"name || ' - ' || status"_s;
+      layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+      layer->setLabelsEnabled( true );
+
+      // 3) Export to SLD
+      QgsSldExportContext context;
+      QDomDocument doc = layer->exportSldStyleV3( context );
+
+      QString sld = doc.toString();
+
+      // 4) Verify that the concatenation is correctly represented in the SLD as a Function with the correct arguments
+      QVERIFY( sld.contains( u"<ogc:Function name=\"Concatenate\">"_s ) );
+      QVERIFY( sld.contains( u"<ogc:PropertyName>name</ogc:PropertyName>"_s ) );
+      QVERIFY( sld.contains( u"<ogc:Literal> - </ogc:Literal>"_s ) );
+      QVERIFY( sld.contains( u"<ogc:PropertyName>status</ogc:PropertyName>"_s ) );
+
+      // Verify that it is "flat" (only one Concatenate)
+      QCOMPARE( sld.count( u"name=\"Concatenate\""_s ), 1 );
+    }
 
   private:
     void xml2domElement( const QString &testFile, QDomDocument &doc )
