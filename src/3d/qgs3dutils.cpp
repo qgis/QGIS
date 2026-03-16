@@ -523,7 +523,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
 }
 
 void Qgs3DUtils::extractPointPositions(
-  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
+  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, double zOffset, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
@@ -542,13 +542,13 @@ void Qgs3DUtils::extractPointPositions(
     switch ( altClamp )
     {
       case Qgis::AltitudeClamping::Absolute:
-        h = geomZ;
+        h = geomZ + zOffset;
         break;
       case Qgis::AltitudeClamping::Terrain:
-        h = terrainZ;
+        h = terrainZ + zOffset;
         break;
       case Qgis::AltitudeClamping::Relative:
-        h = terrainZ + geomZ;
+        h = terrainZ + geomZ + zOffset;
         break;
     }
     // clang-format off

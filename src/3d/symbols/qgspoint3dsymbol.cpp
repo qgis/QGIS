@@ -151,8 +151,6 @@ void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *laye
 {
   const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
 
-  mAltClamping = props->clamping();
-  mTransform.data()[13] = static_cast<float>( props->zOffset() );
   mShapeProperties[u"length"_s] = props->extrusionEnabled() ? static_cast<float>( props->extrusionHeight() ) : 0.0f;
 }
 
