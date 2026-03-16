@@ -206,6 +206,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 3.30
   QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( u"core/Layout/searchPathsForTemplates"_s, true );
+  QgsLayout::settingsLayoutDefaultFont->copyValueFromKey( u"gui/LayoutDesigner/defaultFont"_s, true );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( u"Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME"_s, true );
   QgsProcessing::settingsTempPath->copyValueFromKey( u"Processing/Configuration/TEMP_PATH2"_s, true );

@@ -52,6 +52,9 @@ using namespace Qt::StringLiterals;
 const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates
   = new QgsSettingsEntryStringList( u"search-paths-for-templates"_s, QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 
+const QgsSettingsEntryString *QgsLayout::settingsLayoutDefaultFont
+  = new QgsSettingsEntryString( u"default-font"_s, QgsSettingsTree::sTreeLayout, QString(), QObject::tr( "Default font family for new layout items" ) );
+
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
   , mRenderContext( new QgsLayoutRenderContext( this ) )
