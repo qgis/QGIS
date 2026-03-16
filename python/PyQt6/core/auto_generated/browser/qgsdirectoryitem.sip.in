@@ -172,6 +172,7 @@ return ``True``.
 .. versionadded:: 3.20
 %End
 
+
     bool isMonitored() const;
 %Docstring
 Returns ``True`` if the directory is currently being monitored for
