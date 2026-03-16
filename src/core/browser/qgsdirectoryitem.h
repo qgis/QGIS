@@ -29,9 +29,7 @@ using namespace Qt::StringLiterals;
 
 class QFileSystemWatcher;
 class QMouseEvent;
-#ifndef SIP_RUN
 class QgsSettingsEntryBool;
-#endif
 
 /**
  * \ingroup core
