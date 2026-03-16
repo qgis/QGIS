@@ -361,8 +361,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     layout->layoutItems( pictureItems );
     int northArrowCount = 0;
 
-    QgsSettings settings;
-    const QString defaultPath = settings.value( u"LayoutDesigner/defaultNorthArrow"_s, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QgsSettings::Gui ).toString();
+    const QString defaultPath = QgsLayout::settingsLayoutDefaultNorthArrow->value();
 
     for ( QgsLayoutItemPicture *p : std::as_const( pictureItems ) )
     {
