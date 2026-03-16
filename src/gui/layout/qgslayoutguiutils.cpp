@@ -51,6 +51,7 @@
 #include "qgslayoutviewrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgsplot.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QString>
 
@@ -291,8 +292,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     }
 
     //set default legend font from settings
-    QgsSettings settings;
-    const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+    const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
     if ( !defaultFontString.isEmpty() )
     {
       QFont font;
@@ -572,8 +572,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     }
 
     //set default table fonts from settings
-    QgsSettings settings;
-    const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+    const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
     if ( !defaultFontString.isEmpty() )
     {
       QgsTextFormat format;
@@ -615,8 +614,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     table->setTableContents( contents );
 
     //set default table fonts from settings
-    QgsSettings settings;
-    const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+    const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
     if ( !defaultFontString.isEmpty() )
     {
       QgsTextFormat format;
@@ -656,8 +654,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     auto profileItem = std::make_unique<QgsLayoutItemElevationProfile>( layout );
 
     //set default fonts from settings
-    QgsSettings settings;
-    const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+    const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
     if ( !defaultFontString.isEmpty() )
     {
       QgsTextFormat format = profileItem->plot()->xAxis().textFormat();

@@ -995,7 +995,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default layout font
   mComposerFontComboBox->blockSignals( true );
 
-  QString layoutFontFamily = mSettings->value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  QString layoutFontFamily = QgsLayout::settingsLayoutDefaultFont->value();
 
   QFont tempLayoutFont( layoutFontFamily );
   // is exact family match returned from system?
@@ -1869,7 +1869,7 @@ void QgsOptions::saveOptions()
 
   //default font
   QString layoutFont = mComposerFontComboBox->currentFont().family();
-  mSettings->setValue( u"LayoutDesigner/defaultFont"_s, layoutFont, QgsSettings::Gui );
+  QgsLayout::settingsLayoutDefaultFont->setValue( layoutFont );
 
   QgsLayoutItemLegend::settingDefaultLegendSyncMode->setValue( mLegendSyncModeCombo->currentData().value< Qgis::LegendSyncMode >() );
 

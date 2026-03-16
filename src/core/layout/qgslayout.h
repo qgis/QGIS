@@ -32,6 +32,7 @@ class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
 class QgsLayoutRenderContext;
 class QgsLayoutReportContext;
+class QgsSettingsEntryString;
 class QgsSettingsEntryStringList;
 
 /**
@@ -659,6 +660,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 #ifndef SIP_RUN
     //! Settings entry search path for templates
     static const QgsSettingsEntryStringList *settingsSearchPathForTemplates;
+
+    /**
+     * Settings entry for the default font family used for new layout items.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryString *settingsLayoutDefaultFont;
 #endif
 
   public slots:
