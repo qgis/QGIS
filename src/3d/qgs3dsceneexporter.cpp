@@ -492,19 +492,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   // built-in Qt3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
   // They are rotated to have their Z axis goes "up", like the rest of the scene
   // Retrieve the rotation matrix
-  QMatrix4x4 instanceMaterialTransform;
-  const QList<Qt3DRender::QMaterial *> materials = entity->findChildren<Qt3DRender::QMaterial *>();
-  if ( !materials.isEmpty() )
-  {
-    for ( const Qt3DRender::QParameter *parameter : materials[0]->parameters() )
-    {
-      if ( parameter->name() == "inst"_L1 )
-      {
-        instanceMaterialTransform = parameter->value().value<QMatrix4x4>();
-        break;
-      }
-    }
-  }
+  const QMatrix4x4 instanceMaterialTransform( 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 );
 
   QVector<Qgs3DExportObject *> objects;
   const QList<Qt3DCore::QGeometry *> geometriesList = entity->findChildren<Qt3DCore::QGeometry *>();
