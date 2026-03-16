@@ -56,7 +56,7 @@ void QgsMatrix4x4::translate( const QgsVector3D &vector )
 QList< double > QgsMatrix4x4::dataList() const
 {
   QList< double > res;
-  res.reserve( 9 );
+  res.reserve( 16 );
   for ( int i = 0; i < 16; ++i )
   {
     res.append( m[i / 4][i % 4] );
