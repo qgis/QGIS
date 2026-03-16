@@ -17,6 +17,7 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
@@ -236,6 +237,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );

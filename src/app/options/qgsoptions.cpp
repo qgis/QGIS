@@ -33,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
+#include "qgsdirectoryitem.h"
 #include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -553,7 +554,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  mCheckMonitorDirectories->setChecked( mSettings->value( u"/qgis/monitorDirectoriesInBrowser"_s, true ).toBool() );
+  mCheckMonitorDirectories->setChecked( QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->value() );
 
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
@@ -1644,7 +1645,7 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
-  mSettings->setValue( u"/qgis/monitorDirectoriesInBrowser"_s, mCheckMonitorDirectories->isChecked() );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
 
