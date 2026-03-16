@@ -349,35 +349,6 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
     material->setEffect( effect );
   }
 
-  // clang-format off
-  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
-  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
-  const QMatrix4x4 transformMatrix(
-    1.0, 0.0,  0.0, 0.0,
-    0.0, 0.0, -1.0, 0.0,
-    0.0, 1.0,  0.0, 0.0,
-    0.0, 0.0,  0.0, 1.0 );
-
-  // transposed inverse of transform matrix
-  const QMatrix4x4 normalMatrix4(
-    1.0, 0.0,  0.0, 0.0,
-    0.0, 0.0, -1.0, 0.0,
-    0.0, 1.0,  0.0, 0.0,
-    0.0, 0.0,  0.0, 0.0
-  );
-  // clang-format on
-
-  Qt3DRender::QParameter *paramInst = new Qt3DRender::QParameter;
-  paramInst->setName( u"inst"_s );
-  paramInst->setValue( transformMatrix );
-
-  Qt3DRender::QParameter *paramInstNormal = new Qt3DRender::QParameter;
-  paramInstNormal->setName( u"instNormal"_s );
-  paramInstNormal->setValue( normalMatrix4 );
-
-  material->addParameter( paramInst );
-  material->addParameter( paramInstNormal );
-
   return material.release();
 }
 

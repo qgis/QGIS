@@ -13,8 +13,6 @@ uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
-uniform mat4 inst;  // transform of individual object instance
-uniform mat4 instNormal;  // should be mat3 but Qt3D only supports mat4...
 uniform vec4 symbolRotation;
 uniform vec4 symbolScale;
 
@@ -33,6 +31,24 @@ void main()
 {
     // vertexPosition uses XY plane as the base plane, with Z going upwards
     // and the coordinates are local to the object
+
+    const mat3 zUpTransform = mat3(
+        // column 1
+        1.0, 0.0, 0.0,
+        // column 2
+        0.0, 0.0, 1.0,
+        // column 3
+        0.0, -1.0, 0.0
+    );
+    // transposed inverse of z-up transform matrix
+    const mat3 zUpNormalTransform = mat3(
+        // column 1
+        1.0, 0.0, 0.0,
+        // column 2
+        0.0, 0.0, 1.0,
+        // column 3
+        0.0, -1.0, 0.0
+    );
 
     vec4 thisInstanceScale;
     vec4 thisInstanceNormalScale;
@@ -64,13 +80,12 @@ void main()
     // 4. Apply per-instance translation
 
     // for vertices:
-    vec3 zUpPosition = mat3(inst) * vertexPosition;
+    vec3 zUpPosition = zUpTransform * vertexPosition;
     vec3 scaledPosition = zUpPosition * thisInstanceScale.xyz;
-    vec3 rotatedPosition = rotateByQuat(scaledPosition, thisInstanceRotation);
-    vec3 vertexPositionObject = rotatedPosition + inst[3].xyz;
+    vec3 vertexPositionObject = rotateByQuat(scaledPosition, thisInstanceRotation);
 
     // for normals:
-    vec3 zUpNormal = mat3(instNormal) * vertexNormal;
+    vec3 zUpNormal = zUpNormalTransform * vertexNormal;
     vec3 scaledNormal = zUpNormal * thisInstanceNormalScale.xyz;
     vec3 vertexNormalObject = rotateByQuat(scaledNormal, thisInstanceRotation);
 
