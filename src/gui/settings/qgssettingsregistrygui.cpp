@@ -17,6 +17,7 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
@@ -92,6 +93,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
   // TODO: remove in QGIS 4.4 (after LTR 4.2)
 
+  QgsSettings::holdFlush();
+
   // single settings - added in 3.30
   settingsRespectScreenDPI->copyValueFromKey( u"gui/qgis/respect_screen_dpi"_s, {}, true );
 
@@ -135,6 +138,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"Windows/MSSQLSourceSelect/HoldDialogOpen"_s, { u"MSSQLSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"Windows/PgSourceSelect/HoldDialogOpen"_s, { u"PgSourceSelect"_s }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( u"Windows/SpatiaLiteSourceSelect/HoldDialogOpen"_s, { u"SpatiaLiteSourceSelect"_s }, true );
+
+  QgsSettings::releaseFlush();
 }
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()

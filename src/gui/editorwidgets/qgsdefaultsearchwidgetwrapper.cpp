@@ -170,10 +170,10 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
   {
     bool ok = false;
     const double doubleValue = QgsDoubleValidator::toDouble( text, &ok );
+
     if ( ok )
     {
-      text = QString::number( doubleValue );
-      ;
+      text = QString::number( doubleValue, 'f', QLocale::FloatingPointShortest );
     }
   }
 
