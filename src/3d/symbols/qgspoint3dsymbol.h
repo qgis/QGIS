@@ -58,10 +58,28 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
     void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer ) override;
 
-    //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
-    //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    /**
+     * Returns TRUE if the symbol has the legacy/deprecated altitudeClamping() setting set.
+     *
+     * \note Not available in Python bindings
+     *
+     * \deprecated QGIS 4.2. Will be removed in QGIS 5.0.
+     */
+    Q_DECL_DEPRECATED bool hasLegacyAltitudeClamping() const SIP_DEPRECATED SIP_SKIP;
+
+    /**
+     * Returns method that determines altitude (whether to clamp to feature to terrain).
+     *
+     * \deprecated QGIS 4.2. Use QgsVectorLayerElevationProperties::clamping() instead.
+     */
+    Q_DECL_DEPRECATED Qgis::AltitudeClamping altitudeClamping() const SIP_DEPRECATED { return mAltClamping; }
+
+    /**
+     * Sets the method that determines altitude (whether to clamp to feature to terrain).
+     *
+     * \deprecated QGIS 4.2. Use QgsVectorLayerElevationProperties::setClamping() instead.
+     */
+    Q_DECL_DEPRECATED void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 
     //! Returns material settings used for shading of the symbol
     QgsAbstractMaterialSettings *materialSettings() const;
@@ -172,6 +190,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;
 
   private:
+    bool mHasLegacyClamping = false;
     //! how to handle altitude of vector features
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Absolute;
 

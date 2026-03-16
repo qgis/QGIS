@@ -56,15 +56,25 @@ Caller takes ownership of the returned symbol.
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
 
-    Qgis::AltitudeClamping altitudeClamping() const;
+
+ Qgis::AltitudeClamping altitudeClamping() const /Deprecated="Since 4.2. Use QgsVectorLayerElevationProperties.clamping() instead."/;
 %Docstring
 Returns method that determines altitude (whether to clamp to feature to
-terrain)
+terrain).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`QgsVectorLayerElevationProperties.clamping()` instead.
 %End
-    void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
+
+ void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
-Sets method that determines altitude (whether to clamp to feature to
-terrain)
+Sets the method that determines altitude (whether to clamp to feature to
+terrain).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`QgsVectorLayerElevationProperties.setClamping()` instead.
 %End
 
     QgsAbstractMaterialSettings *materialSettings() const;
