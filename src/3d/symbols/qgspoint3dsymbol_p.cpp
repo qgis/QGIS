@@ -26,6 +26,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgssourcecache.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
 
 #include <QString>
 #include <QUrl>
@@ -60,8 +61,9 @@ using namespace Qt::StringLiterals;
 class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 {
   public:
-    QgsInstancedPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
+    QgsInstancedPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds, Qgis::AltitudeClamping altitudeClamping )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
+      , mAltitudeClamping( altitudeClamping )
       , mSelectedIds( selectedIds )
     {}
 
@@ -86,6 +88,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
+    Qgis::AltitudeClamping mAltitudeClamping = Qgis::AltitudeClamping::Terrain;
     QVector3D mSymbolScale;
     QQuaternion mSymbolRotation;
     QVector3D mPointTranslation;
@@ -134,7 +137,7 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   }
 
   const std::size_t oldSize = out.positions.size();
-  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions, translation );
+  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mAltitudeClamping, out.positions, translation );
 
   const std::size_t added = out.positions.size() - oldSize;
 
@@ -531,8 +534,9 @@ Qt3DCore::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const Qgs
 class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 {
   public:
-    QgsModelPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
+    QgsModelPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds, Qgis::AltitudeClamping altitudeClamping )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
+      , mAltitudeClamping( altitudeClamping )
       , mSelectedIds( selectedIds )
     {}
 
@@ -575,6 +579,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
+    Qgis::AltitudeClamping mAltitudeClamping = Qgis::AltitudeClamping::Terrain;
 
     QVector3D mSymbolScale;
     QQuaternion mSymbolRotation;
@@ -624,7 +629,7 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
   }
 
   const std::size_t oldSize = out.positions.size();
-  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions, translation );
+  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mAltitudeClamping, out.positions, translation );
   const std::size_t added = out.positions.size() - oldSize;
 
   QVector3D scale = mSymbolScale;
@@ -832,8 +837,9 @@ QgsGeoTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D position, co
 class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
 {
   public:
-    QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
+    QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds, Qgis::AltitudeClamping altitudeClamping )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
+      , mAltitudeClamping( altitudeClamping )
       , mSelectedIds( selectedIds )
     {}
 
@@ -852,6 +858,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
+    Qgis::AltitudeClamping mAltitudeClamping = Qgis::AltitudeClamping::Terrain;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
     // outputs
@@ -877,7 +884,7 @@ void QgsPoint3DBillboardSymbolHandler::processFeature( const QgsFeature &feature
   if ( feature.geometry().isNull() )
     return;
 
-  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions );
+  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mAltitudeClamping, out.positions );
   mFeatureCount++;
 }
 
@@ -951,13 +958,28 @@ namespace Qgs3DSymbolImpl
     if ( !pointSymbol )
       return nullptr;
 
+    // default to layer's altitude clamping
+    Qgis::AltitudeClamping altitudeClamping = Qgis::AltitudeClamping::Terrain;
+    if ( const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( layer->elevationProperties() ) )
+    {
+      altitudeClamping = props->clamping();
+    }
+    // ... but if point symbol has the legacy deprecated symbol level setting for clamping set,
+    // override the layer's one with that
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( pointSymbol->hasLegacyAltitudeClamping() )
+    {
+      altitudeClamping = pointSymbol->altitudeClamping();
+    }
+    Q_NOWARN_DEPRECATED_POP
+
     if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
-      return new QgsModelPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
+      return new QgsModelPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds(), altitudeClamping );
     // Add proper handler for billboard
     else if ( pointSymbol->shape() == Qgis::Point3DShape::Billboard )
-      return new QgsPoint3DBillboardSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
+      return new QgsPoint3DBillboardSymbolHandler( pointSymbol, layer->selectedFeatureIds(), altitudeClamping );
     else
-      return new QgsInstancedPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
+      return new QgsInstancedPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds(), altitudeClamping );
   }
 } // namespace Qgs3DSymbolImpl
 
