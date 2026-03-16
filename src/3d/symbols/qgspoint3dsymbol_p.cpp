@@ -291,9 +291,9 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   QgsMaterial *mat = material( mSymbol.get(), materialContext );
 
   mat->addParameter( new Qt3DRender::QParameter( "useInstanceScale", !out.scales.empty(), mat ) );
-
-  mat->addParameter( new Qt3DRender::QParameter( "symbolRotation", mSymbolRotation.toVector4D(), mat ) );
+  mat->addParameter( new Qt3DRender::QParameter( "symbolScale", mSymbolScale.toVector4D(), mat ) );
   mat->addParameter( new Qt3DRender::QParameter( "useInstanceRotation", !out.rotations.empty(), mat ) );
+  mat->addParameter( new Qt3DRender::QParameter( "symbolRotation", mSymbolRotation.toVector4D(), mat ) );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   QgsGeoTransform *tr = new QgsGeoTransform;
