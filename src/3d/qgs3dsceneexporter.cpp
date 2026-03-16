@@ -494,6 +494,27 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   // Retrieve the rotation matrix
   const QMatrix4x4 instanceMaterialTransform( 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 );
 
+  QVector3D symbolScale;
+  QVector4D symbolRotation;
+  const QList<Qt3DRender::QMaterial *> materials = entity->findChildren<Qt3DRender::QMaterial *>();
+  for ( Qt3DRender::QMaterial *material : materials )
+  {
+    for ( const Qt3DRender::QParameter *parameter : material->parameters() )
+    {
+      if ( parameter->name() == "symbolScale"_L1 )
+      {
+        symbolScale = parameter->value().value<QVector4D>().toVector3D();
+      }
+      else if ( parameter->name() == "symbolRotation"_L1 )
+      {
+        symbolRotation = parameter->value().value<QVector4D>();
+        break;
+      }
+    }
+  }
+
+  QQuaternion rotationQuat( symbolRotation.w(), symbolRotation.x(), symbolRotation.y(), symbolRotation.z() );
+
   QVector<Qgs3DExportObject *> objects;
   const QList<Qt3DCore::QGeometry *> geometriesList = entity->findChildren<Qt3DCore::QGeometry *>();
   for ( Qt3DCore::QGeometry *geometry : geometriesList )
@@ -537,6 +558,8 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
+      instanceTransform.rotate( rotationQuat );
+      instanceTransform.scale( symbolScale );
       instanceTransform *= instanceMaterialTransform;
       object->setupTriangle( positionData, indexData, instanceTransform );
 
