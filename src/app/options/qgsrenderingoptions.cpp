@@ -19,6 +19,7 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QString>
 #include <QThread>
@@ -37,7 +38,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   setupUi( this );
 
   QgsSettings settings;
-  chkAddedVisibility->setChecked( settings.value( u"/qgis/new_layers_visible"_s, true ).toBool() );
+  chkAddedVisibility->setChecked( QgsSettingsRegistryGui::settingsNewLayersVisible->value() );
 
   spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
   spinMaxThreads->setClearValue( 1, tr( "All Available (%1)" ).arg( QThread::idealThreadCount() ) );
@@ -46,12 +47,12 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   else
     spinMaxThreads->clear();
 
-  spinMapUpdateInterval->setValue( settings.value( u"/qgis/map_update_interval"_s, 250 ).toInt() );
+  spinMapUpdateInterval->setValue( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   spinMapUpdateInterval->setClearValue( 250 );
 
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  double magnifierVal = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
+  double magnifierVal = 100 * QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
   doubleSpinBoxMagnifierDefault->setDecimals( 0 );
@@ -59,7 +60,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
   doubleSpinBoxMagnifierDefault->setClearValue( 100 );
 
-  chkAntiAliasing->setChecked( settings.value( u"/qgis/enable_anti_aliasing"_s, true ).toBool() );
+  chkAntiAliasing->setChecked( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
 }
 
 QString QgsRenderingOptionsWidget::helpKey() const
@@ -70,18 +71,18 @@ QString QgsRenderingOptionsWidget::helpKey() const
 void QgsRenderingOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setValue( u"/qgis/new_layers_visible"_s, chkAddedVisibility->isChecked() );
+  QgsSettingsRegistryGui::settingsNewLayersVisible->setValue( chkAddedVisibility->isChecked() );
 
   const int maxThreads = spinMaxThreads->value() == spinMaxThreads->clearValue() ? -1 : spinMaxThreads->value();
   QgsApplication::setMaxThreads( maxThreads );
   settings.setValue( u"/qgis/max_threads"_s, maxThreads );
 
-  settings.setValue( u"/qgis/map_update_interval"_s, spinMapUpdateInterval->value() );
+  QgsSettingsRegistryGui::settingsMapUpdateInterval->setValue( spinMapUpdateInterval->value() );
 
   // magnification
-  settings.setValue( u"/qgis/magnifier_factor_default"_s, doubleSpinBoxMagnifierDefault->value() / 100 );
+  QgsSettingsRegistryGui::settingsMagnifierFactorDefault->setValue( doubleSpinBoxMagnifierDefault->value() / 100 );
 
-  settings.setValue( u"/qgis/enable_anti_aliasing"_s, chkAntiAliasing->isChecked() );
+  QgsSettingsRegistryGui::settingsEnableAntiAliasing->setValue( chkAntiAliasing->isChecked() );
 }
 
 
@@ -90,8 +91,7 @@ void QgsRenderingOptionsWidget::apply()
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), u"rendering"_s )
-{
-}
+{}
 
 QIcon QgsRenderingOptionsFactory::icon() const
 {

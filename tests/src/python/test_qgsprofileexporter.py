@@ -12,36 +12,34 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFields,
+    QgsGeometry,
     QgsLineString,
+    QgsMemoryProviderUtils,
+    QgsProfileExporter,
+    QgsProfileExporterTask,
     QgsProfileIdentifyContext,
     QgsProfilePoint,
     QgsProfileRequest,
     QgsProfileSnapContext,
-    QgsRasterLayer,
-    QgsProfileExporter,
-    QgsProfileExporterTask,
     QgsProject,
-    QgsApplication,
+    QgsRasterLayer,
     QgsVectorLayer,
-    QgsMemoryProviderUtils,
-    QgsFields,
-    QgsFeature,
-    QgsGeometry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsProfileExporter(QgisTestCase):
-
     def testExport(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), "3d", "dtm.tif"), "DTM")
         self.assertTrue(rl.isValid())

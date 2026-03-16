@@ -21,16 +21,17 @@ __copyright__ = "(C) 2015, Giovanni Manghi"
 
 from qgis.core import (
     QgsProcessing,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterField,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
     QgsProcessingException,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
     QgsProcessingParameterVectorDestination,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

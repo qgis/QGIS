@@ -38,7 +38,9 @@ class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spello
     QString text() const override { return QObject::tr( "PostgreSQL" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddPostgisLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsPgSourceSelect( parent, fl, widgetMode );
     }
@@ -49,10 +51,7 @@ class QgsPostgresProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 {
   public:
     QString type() override { return u"postgresql"_s; }
-    QString visibleName() override
-    {
-      return QObject::tr( "PostgreSQL" );
-    }
+    QString visibleName() override { return QObject::tr( "PostgreSQL" ); }
 
     QString showLoadGui() override
     {
@@ -89,8 +88,7 @@ QList<QgsSourceSelectProvider *> QgsPostgresProviderGuiMetadata::sourceSelectPro
 
 QList<QgsDataItemGuiProvider *> QgsPostgresProviderGuiMetadata::dataItemGuiProviders()
 {
-  return QList<QgsDataItemGuiProvider *>()
-         << new QgsPostgresDataItemGuiProvider;
+  return QList<QgsDataItemGuiProvider *>() << new QgsPostgresDataItemGuiProvider;
 }
 
 QList<QgsProjectStorageGuiProvider *> QgsPostgresProviderGuiMetadata::projectStorageGuiProviders()

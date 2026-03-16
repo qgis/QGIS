@@ -228,7 +228,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       const QString initialPath = lastGpkgLog.isEmpty() ? QDir::homePath() : lastGpkgLog;
 
       QString selectedFilter;
-      QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialPath, tr( "GeoPackage" ) + " (*.gpkg *.GPKG);;" + tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;", &selectedFilter, QFileDialog::Option::DontConfirmOverwrite );
+      QString fileName = QFileDialog::
+        getSaveFileName( this, tr( "GPS Log File" ), initialPath, tr( "GeoPackage" ) + " (*.gpkg *.GPKG);;" + tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;", &selectedFilter, QFileDialog::Option::DontConfirmOverwrite );
       if ( fileName.isEmpty() )
       {
         mActionGpkgLog->setChecked( false );
@@ -281,9 +282,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
-  connect( settingsAction, &QAction::triggered, this, [] {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s );
-  } );
+  connect( settingsAction, &QAction::triggered, this, [] { QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s ); } );
 
   addAction( settingsAction );
 }

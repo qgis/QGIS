@@ -32,15 +32,7 @@ using namespace Qt::StringLiterals;
 QgsMssqlTableModel::QgsMssqlTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
 {
-  mColumns << tr( "Schema" )
-           << tr( "Table" )
-           << tr( "Type" )
-           << tr( "Geometry column" )
-           << tr( "SRID" )
-           << tr( "Primary key column" )
-           << tr( "Select at id" )
-           << tr( "SQL" )
-           << tr( "View" );
+  mColumns << tr( "Schema" ) << tr( "Table" ) << tr( "Type" ) << tr( "Geometry column" ) << tr( "SRID" ) << tr( "Primary key column" ) << tr( "Select at id" ) << tr( "SQL" ) << tr( "View" );
   setHorizontalHeaderLabels( mColumns );
 }
 
@@ -78,7 +70,11 @@ bool QgsMssqlTableModel::searchableColumn( int column ) const
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsgLevel( u"%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8"_s.arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName, layerProperty.type, layerProperty.srid, layerProperty.pkCols.join( ',' ), layerProperty.sql, layerProperty.isView ? "yes" : "no" ), 2 );
+  QgsDebugMsgLevel(
+    u"%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8"_s
+      .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName, layerProperty.type, layerProperty.srid, layerProperty.pkCols.join( ',' ), layerProperty.sql, layerProperty.isView ? "yes" : "no" ),
+    2
+  );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;

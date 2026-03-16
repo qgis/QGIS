@@ -197,8 +197,7 @@ struct BillboardVertexWithPixelOffset : BillboardVertex
 };
 #pragma pack( pop )
 
-template<typename VertexType>
-QByteArray createVertexBuffer( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards )
+template<typename VertexType> QByteArray createVertexBuffer( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards )
 {
   QByteArray buffer;
   buffer.resize( billboards.size() * sizeof( VertexType ) );

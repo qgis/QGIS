@@ -11,15 +11,15 @@ __date__ = "07/06/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
-from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsAttributeTableConfig(QgisTestCase):
-
     def testLayerConfig(self):
         """test retrieving attribute table config from a layer"""
 

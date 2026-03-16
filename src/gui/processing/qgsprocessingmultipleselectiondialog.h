@@ -171,7 +171,9 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
      * The \a selectedOptions list may contain extra options which are not present in \a availableOptions,
      * in which case they will be also added as existing options within the dialog.
      */
-    QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleSelectionDialog(
+      const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 
 
     /**
@@ -230,7 +232,13 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     /**
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
-    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingMultipleInputPanelWidget(
+      const QgsProcessingParameterMultipleLayers *parameter,
+      const QVariantList &selectedOptions,
+      const QList<QgsProcessingModelChildParameterSource> &modelSources,
+      QgsProcessingModelAlgorithm *model = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Sets the project associated with the widget.
@@ -242,11 +250,7 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
      *
      * \since QGIS 3.40
      */
-    static QStringList compatibleUrisFromMimeData(
-      const QgsProcessingParameterMultipleLayers *parameter,
-      const QMimeData *data,
-      const QgsMimeDataUtils::UriList &skipUrls
-    ) SIP_SKIP;
+    static QStringList compatibleUrisFromMimeData( const QgsProcessingParameterMultipleLayers *parameter, const QMimeData *data, const QgsMimeDataUtils::UriList &skipUrls ) SIP_SKIP;
 
   private slots:
 
@@ -286,7 +290,14 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
      * The \a selectedOptions list may contain extra options which are not present in \a availableOptions,
      * in which case they will be also added as existing options within the dialog.
      */
-    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleInputDialog(
+      const QgsProcessingParameterMultipleLayers *parameter,
+      const QVariantList &selectedOptions,
+      const QList<QgsProcessingModelChildParameterSource> &modelSources,
+      QgsProcessingModelAlgorithm *model = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 
     /**
      * Returns the ordered list of selected options.

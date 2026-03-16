@@ -88,9 +88,7 @@ void QgsProcessingFieldMapPanelWidget::setLayer( QgsVectorLayer *layer )
 
   QMessageBox dlg( this );
   dlg.setText( tr( "Do you want to reset the field mapping?" ) );
-  dlg.setStandardButtons(
-    QMessageBox::StandardButtons( QMessageBox::Yes | QMessageBox::No )
-  );
+  dlg.setStandardButtons( QMessageBox::StandardButtons( QMessageBox::Yes | QMessageBox::No ) );
   dlg.setDefaultButton( QMessageBox::No );
   if ( dlg.exec() == QMessageBox::Yes )
   {
@@ -139,7 +137,14 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
   for ( const QVariant &field : fields )
   {
     const QVariantMap map = field.toMap();
-    QgsField f( map.value( u"name"_s ).toString(), static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ), map.value( u"type_name"_s, QVariant::typeToName( static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(), map.value( u"length"_s, 0 ).toInt(), map.value( u"precision"_s, 0 ).toInt(), QString(), static_cast<QMetaType::Type>( map.value( u"sub_type"_s, QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
+    QgsField
+      f( map.value( u"name"_s ).toString(),
+         static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ),
+         map.value( u"type_name"_s, QVariant::typeToName( static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
+         map.value( u"length"_s, 0 ).toInt(),
+         map.value( u"precision"_s, 0 ).toInt(),
+         QString(),
+         static_cast<QMetaType::Type>( map.value( u"sub_type"_s, QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
     f.setAlias( map.value( u"alias"_s ).toString() );
     f.setComment( map.value( u"comment"_s ).toString() );
 
@@ -179,6 +184,11 @@ void QgsProcessingFieldMapPanelWidget::registerExpressionContextGenerator( const
   mFieldsView->registerExpressionContextGenerator( generator );
 }
 
+void QgsProcessingFieldMapPanelWidget::setProcessingModeType( Qgis::ProcessingMode type )
+{
+  mType = type;
+}
+
 void QgsProcessingFieldMapPanelWidget::loadFieldsFromLayer()
 {
   if ( mLayer )
@@ -193,12 +203,7 @@ void QgsProcessingFieldMapPanelWidget::addField()
   const int rowCount = mModel->rowCount();
   mModel->appendField( QgsField( u"new_field"_s ) );
   const QModelIndex index = mModel->index( rowCount, 0 );
-  mFieldsView->selectionModel()->select(
-    index,
-    QItemSelectionModel::SelectionFlags(
-      QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Current | QItemSelectionModel::Rows
-    )
-  );
+  mFieldsView->selectionModel()->select( index, QItemSelectionModel::SelectionFlags( QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Current | QItemSelectionModel::Rows ) );
   mFieldsView->scrollTo( index );
 }
 
@@ -206,6 +211,11 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 {
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
+    if ( mType == Qgis::ProcessingMode::Modeler )
+    {
+      // in modeler context the source fields are not determined by the parent layer
+      mFieldsView->setSourceFields( vl->fields() );
+    }
     mFieldsView->setDestinationFields( vl->fields() );
   }
 }
@@ -214,7 +224,9 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 // QgsProcessingFieldMapParameterDefinitionWidget
 //
 
-QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent
+)
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
@@ -262,6 +274,9 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
   }
 
   vlayout->addWidget( mParentLayerComboBox );
+
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -278,8 +293,7 @@ QgsProcessingParameterDefinition *QgsProcessingFieldMapParameterDefinitionWidget
 
 QgsProcessingFieldMapWidgetWrapper::QgsProcessingFieldMapWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
-{
-}
+{}
 
 QString QgsProcessingFieldMapWidgetWrapper::parameterType() const
 {
@@ -296,15 +310,16 @@ QWidget *QgsProcessingFieldMapWidgetWrapper::createWidget()
   mPanel = new QgsProcessingFieldMapPanelWidget( nullptr );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->registerExpressionContextGenerator( this );
+  mPanel->setProcessingModeType( type() );
 
-  connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [this] {
-    emit widgetValueHasChanged( this );
-  } );
+  connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
 
   return mPanel;
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldMapWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldMapWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
+)
 {
   return new QgsProcessingFieldMapParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
@@ -322,9 +337,7 @@ void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstract
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterFieldMapping *>( parameterDefinition() )->parentLayerParameterName() )
         {
           setParentLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
-            setParentLayerWrapperValue( wrapper );
-          } );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setParentLayerWrapperValue( wrapper ); } );
           break;
         }
       }

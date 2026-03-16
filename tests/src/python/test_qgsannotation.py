@@ -14,11 +14,13 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (
     Qgis,
+    QgsAnnotationPictureItem,
+    QgsAnnotationRectangleTextItem,
+    QgsBalloonCallout,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
@@ -35,14 +37,11 @@ from qgis.core import (
     QgsSvgAnnotation,
     QgsTextAnnotation,
     QgsVectorLayer,
-    QgsAnnotationPictureItem,
-    QgsAnnotationRectangleTextItem,
-    QgsBalloonCallout,
 )
 from qgis.gui import QgsFormAnnotation
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
@@ -50,7 +49,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotation(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "annotations"

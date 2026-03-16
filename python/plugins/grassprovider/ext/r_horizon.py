@@ -19,8 +19,8 @@ __author__ = "Médéric Ribreux"
 __date__ = "September 2017"
 __copyright__ = "(C) 2017, Médéric Ribreux"
 
-import os
 import math
+import os
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -62,7 +62,7 @@ def processOutputs(alg, parameters, context, feedback):
             return f"{int(number):03}"
         int_part = int(number)
         dec_part = int((number - int_part) * pow(10, nDecimals))
-        return f'{int_part:03}_{str(dec_part).rjust(nDecimals, "0")}'
+        return f"{int_part:03}_{str(dec_part).rjust(nDecimals, '0')}"
 
     # There will be as many outputs as the difference between start and end divided by steps
     start = alg.parameterAsDouble(parameters, "start", context)

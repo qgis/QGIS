@@ -63,7 +63,9 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
   auto segmentParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 );
   segmentParam->setHelp( QObject::tr( "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
   addParameter( segmentParam.release() );
-  addParameter( new QgsProcessingParameterEnum( u"END_CAP_STYLE"_s, QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"END_CAP_STYLE"_s, QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 )
+  );
   addParameter( new QgsProcessingParameterEnum( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 ) );
 
@@ -79,11 +81,13 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsBufferAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes a buffer area for all the features in an input layer, using a fixed or dynamic distance.\n\n"
-                      "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.\n\n"
-                      "The end cap style parameter controls how line endings are handled in the buffer.\n\n"
-                      "The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.\n\n"
-                      "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join." );
+  return QObject::tr(
+    "This algorithm computes a buffer area for all the features in an input layer, using a fixed or dynamic distance.\n\n"
+    "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.\n\n"
+    "The end cap style parameter controls how line endings are handled in the buffer.\n\n"
+    "The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.\n\n"
+    "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join."
+  );
 }
 
 QString QgsBufferAlgorithm::shortDescription() const
@@ -118,7 +122,9 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   const bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs(), keepDisjointSeparate ? QgsFeatureSink::RegeneratePrimaryKey : QgsFeatureSink::SinkFlags() ) );
+  std::unique_ptr<QgsFeatureSink> sink(
+    parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs(), keepDisjointSeparate ? QgsFeatureSink::RegeneratePrimaryKey : QgsFeatureSink::SinkFlags() )
+  );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
@@ -245,7 +251,9 @@ Qgis::ProcessingAlgorithmFlags QgsBufferAlgorithm::flags() const
   return f;
 }
 
-QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
+QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties(
+  const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties
+) const
 {
   const bool keepDisjointSeparate = parameterAsBoolean( parameters, u"SEPARATE_DISJOINT"_s, context );
 

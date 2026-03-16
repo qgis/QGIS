@@ -46,7 +46,8 @@ class QgsChunkLoader : public QgsChunkQueueJob
   public:
     //! Construct chunk loader for a node
     QgsChunkLoader( QgsChunkNode *node )
-      : QgsChunkQueueJob( node ) {}
+      : QgsChunkQueueJob( node )
+    {}
 
     /**
      * Run in main thread to use loaded data.
@@ -157,13 +158,9 @@ class QgsChunkUpdaterFactory : public QgsChunkQueueJobFactory
   public:
     QgsChunkUpdaterFactory( QgsChunkLoaderFactory *loaderFactory )
       : mChunkLoaderFactory( loaderFactory )
-    {
-    }
+    {}
 
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
-    {
-      return mChunkLoaderFactory->createChunkLoader( chunk );
-    }
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return mChunkLoaderFactory->createChunkLoader( chunk ); }
 
   private:
     QgsChunkLoaderFactory *mChunkLoaderFactory;

@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 QgsProfilerWidgetFactory::QgsProfilerWidgetFactory( QgsRuntimeProfiler *profiler )
   : QgsDevToolWidgetFactory( QObject::tr( "Profiler" ), QgsApplication::getThemeIcon( u"mIconStopwatch.svg"_s ) )
   , mProfiler( profiler )
-{
-}
+{}
 
 QgsDevToolWidget *QgsProfilerWidgetFactory::createWidget( QWidget *parent ) const
 {

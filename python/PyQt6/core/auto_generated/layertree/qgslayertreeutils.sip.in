@@ -21,7 +21,6 @@ Assorted functions for dealing with layer trees.
 #include "qgslayertreeutils.h"
 %End
   public:
-
     static bool readOldLegend( QgsLayerTreeGroup *root, const QDomElement &legendElem );
 %Docstring
 Try to load layer tree from \verbatim <legend> \endverbatim tag from

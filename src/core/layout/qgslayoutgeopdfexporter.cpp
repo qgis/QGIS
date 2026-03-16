@@ -36,10 +36,9 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
+class QgsGeospatialPdfRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-
     QgsGeospatialPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeospatialPdfExporter *exporter, const QStringList &layerIds )
       : mExporter( exporter )
       , mMap( map )
@@ -65,8 +64,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
       QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
 
       // and a transform to PDF coordinate space
-      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(),
-                              -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
+      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(), -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
@@ -95,10 +93,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
       mExporter->pushRenderedFeature( layerId, QgsLayoutGeospatialPdfExporter::RenderedFeature( feature, transformed ), theme );
     }
 
-    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
-    {
-      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
-    }
+    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override { return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES; }
 
   private:
     QTransform mMapToLayoutTransform;
@@ -195,3 +190,42 @@ QgsAbstractGeospatialPdfExporter::VectorComponentDetail QgsLayoutGeospatialPdfEx
   return detail;
 }
 
+QgsLayerTree *QgsLayoutGeospatialPdfExporter::layerTree() const
+{
+  return mLayout->project()->layerTreeRoot();
+}
+
+bool QgsLayoutGeospatialPdfExporter::setMapItemLayersBeforeRendering()
+{
+  bool res = false;
+
+  // Set project layers (including invisible ones) to all maps that
+  // don't follow themes nor locked layers. We'll restore their
+  // previous layer sets right after the rendering.
+  QList< QgsLayoutItemMap * > maps;
+  mLayout->layoutItems( maps );
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+  {
+    if ( !map->followVisibilityPreset() && !map->keepLayerSet() )
+    {
+      // Store previous list of layers to restore it after the rendering
+      mTemporaryLayersToRender.insert( map->uuid(), map->layers() );
+      map->setLayers( mLayout->project()->layerTreeRoot()->layerOrder() );
+      res = true;
+    }
+  }
+  return res;
+}
+
+void QgsLayoutGeospatialPdfExporter::restoreMapItemLayersAfterRendering()
+{
+  for ( auto it = mTemporaryLayersToRender.constBegin(); it != mTemporaryLayersToRender.constEnd(); it++ )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( it.key() );
+    if ( item && item->type() == QgsLayoutItemRegistry::ItemType::LayoutMap )
+    {
+      static_cast< QgsLayoutItemMap * >( item )->setLayers( it.value() );
+    }
+  }
+  mTemporaryLayersToRender.clear();
+}

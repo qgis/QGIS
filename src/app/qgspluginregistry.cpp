@@ -137,9 +137,7 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 void QgsPluginRegistry::dump()
 {
   QgsDebugMsgLevel( u"PLUGINS IN REGISTRY: key -> (name, library)"_s, 1 );
-  for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     QgsDebugMsgLevel( u"PLUGIN: %1 -> (%2, %3)"_s.arg( it.key(), it->name(), it->library() ), 1 );
   }
@@ -173,9 +171,7 @@ void QgsPluginRegistry::removePlugin( const QString &key )
 
 void QgsPluginRegistry::unloadAll()
 {
-  for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
-        it != mPlugins.end();
-        ++it )
+  for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin(); it != mPlugins.end(); ++it )
   {
     if ( it->plugin() )
     {
@@ -401,9 +397,15 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
         else
         {
           // something went wrong
-          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Loading Plugins" ), QObject::tr( "There was an error loading a plugin. "
-                                                                                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
-                                                                                                  .arg( myError ) );
+          QMessageBox::warning(
+            mQgisInterface->mainWindow(),
+            QObject::tr( "Loading Plugins" ),
+            QObject::tr(
+              "There was an error loading a plugin. "
+              "The following diagnostic information may help the QGIS developers resolve the issue:\n%1."
+            )
+              .arg( myError )
+          );
           //disable it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, false );
         }
@@ -731,23 +733,9 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) const
 {
 #ifdef WITH_BINDINGS
-  bool supportsQgis4 = true;
-  const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, u"supportsQt6"_s ).trimmed();
-  if ( supportsQt6.compare( "YES"_L1, Qt::CaseInsensitive ) != 0 && supportsQt6.compare( "TRUE"_L1, Qt::CaseInsensitive ) != 0 )
-  {
-    if ( !getenv( "QGIS_DISABLE_SUPPORTS_QT6_CHECK" ) )
-    {
-      return false;
-    }
-    supportsQgis4 = false;
-  }
   const QString minVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMinimumVersion"_s );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
-  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
-  if ( maxVersion == "__error__"_L1 && minVersion.startsWith( "3."_L1 ) && supportsQgis4 )
-  {
-    maxVersion = "4.99.0"_L1;
-  }
+  const QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
   return minVersion != "__error__"_L1 && checkQgisVersion( minVersion, maxVersion );
 #else
   Q_UNUSED( packageName )

@@ -11,7 +11,10 @@ __date__ = "2021-07"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
+    Qgis,
     QgsCoordinateTransformContext,
     QgsGroupLayer,
     QgsLayerTreeGroup,
@@ -21,16 +24,13 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsProjectUtils(QgisTestCase):
-
     def test_layersMatchingPath(self):
         """
         Test QgsProjectUtils.layersMatchingPath()
@@ -73,6 +73,73 @@ class TestQgsProjectUtils(QgisTestCase):
                 p, unitTestDataPath() + "/mixed_layers.gpkg"
             ),
             [gpkg1, gpkg2, rl],
+        )
+
+    def test_layersMatchingUri(self):
+        """
+        Test QgsProjectUtils.layersMatchingUri()
+        """
+        self.assertFalse(QgsProjectUtils.layersMatchingUri(None, "ogr", ""))
+        self.assertFalse(QgsProjectUtils.layersMatchingUri(None, "ogr", "aaaaa"))
+
+        # add some layers to a project
+        # shapefile
+        layer1 = QgsVectorLayer(unitTestDataPath() + "/points.shp", "l1")
+        self.assertTrue(layer1.isValid())
+        p = QgsProject()
+        p.addMapLayer(layer1)
+
+        gpkg1 = QgsVectorLayer(
+            unitTestDataPath() + "/mixed_layers.gpkg|layername=lines", "l1"
+        )
+        self.assertTrue(gpkg1.isValid())
+        p.addMapLayer(gpkg1)
+
+        gpkg2 = QgsVectorLayer(
+            unitTestDataPath() + "/mixed_layers.gpkg|layername=points", "l1"
+        )
+        self.assertTrue(gpkg2.isValid())
+        p.addMapLayer(gpkg2)
+
+        # raster layer from gpkg
+        rl = QgsRasterLayer(f"GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1")
+        self.assertTrue(rl.isValid())
+        p.addMapLayer(rl)
+
+        self.assertFalse(QgsProjectUtils.layersMatchingUri(p, "ogr", ""))
+        self.assertFalse(QgsProjectUtils.layersMatchingUri(p, "ogr", "aaa"))
+        self.assertCountEqual(
+            QgsProjectUtils.layersMatchingUri(
+                p, "ogr", unitTestDataPath() + "/points.shp"
+            ),
+            [layer1],
+        )
+        self.assertCountEqual(
+            QgsProjectUtils.layersMatchingUri(
+                p,
+                "ogr",
+                unitTestDataPath() + "/mixed_layers.gpkg",
+                Qgis.SourceHierarchyLevel.Connection,
+            ),
+            [gpkg1, gpkg2],
+        )
+        self.assertEqual(
+            QgsProjectUtils.layersMatchingUri(
+                p,
+                "ogr",
+                unitTestDataPath() + "/mixed_layers.gpkg",
+                Qgis.SourceHierarchyLevel.Object,
+            ),
+            [],
+        )
+        self.assertEqual(
+            QgsProjectUtils.layersMatchingUri(
+                p,
+                "ogr",
+                unitTestDataPath() + "/mixed_layers.gpkg|layername=points",
+                Qgis.SourceHierarchyLevel.Object,
+            ),
+            [gpkg2],
         )
 
     def test_updateLayerPath(self):

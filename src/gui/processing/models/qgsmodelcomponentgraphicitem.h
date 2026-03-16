@@ -287,7 +287,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * The \a text argument gives the translated text describing the change about to occur, and the
      * optional \a id can be used to group the associated undo commands.
      */
-    void aboutToChange( const QString &text, int id = 0 );
+    void aboutToChange( const QString &text, const QString &id = QString() );
 
     /**
      * Emitted when the definition of the associated component is changed
@@ -666,6 +666,13 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     ~QgsModelGroupBoxGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    /**
+     * Applies edits to the item, using an updated \a groupBox definition.
+     *
+     * \since QGIS 4.0
+     */
+    void applyEdit( const QgsProcessingModelGroupBox &groupBox );
 
   protected:
     QColor fillColor( State state ) const override;

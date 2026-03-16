@@ -57,13 +57,12 @@ class QDomElement;
 class CORE_EXPORT QgsCoordinateTransformContext
 {
   public:
-
     /**
      * Constructor for QgsCoordinateTransformContext.
      */
     QgsCoordinateTransformContext();
 
-    ~QgsCoordinateTransformContext() ;
+    ~QgsCoordinateTransformContext();
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
     SIP_SKIP QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs );
@@ -126,7 +125,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \deprecated QGIS 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
      */
-    Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform(
+      const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId
+    ) SIP_DEPRECATED;
 
     /**
      * Adds a new \a coordinateOperationProjString to use when projecting coordinates
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \deprecated QGIS 3.40. Use removeCoordinateOperation() instead.
      */
-    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED;
 
     /**
      * Removes the coordinate operation for the specified \a sourceCrs and \a destinationCrs.
@@ -182,8 +183,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * when transforming from the specified \a source CRS to \a destination CRS.
      * \note source and destination are reversible.
      */
-    bool hasTransform( const QgsCoordinateReferenceSystem &source,
-                       const QgsCoordinateReferenceSystem &destination ) const;
+    bool hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     /**
      * Returns the pair of source and destination datum transforms to use
@@ -270,15 +270,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
 
   private:
-
     QExplicitlySharedDataPointer<QgsCoordinateTransformContextPrivate> d;
-
 };
 
 Q_DECLARE_METATYPE( QgsCoordinateTransformContext )
 
 #endif // QGSCOORDINATETRANSFORMCONTEXT_H
-
-
-
-

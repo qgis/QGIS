@@ -39,14 +39,12 @@ class QgsSymbolRenderContext;
  * in the desired style.
  */
 
-class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
+class CORE_EXPORT QgsPointDistanceRenderer : public QgsFeatureRenderer
 {
   public:
-
     //! Contains properties for a feature within a clustered group.
     struct CORE_EXPORT GroupedFeature
     {
-
         /**
          * Constructor for GroupedFeature.
         * \param feature feature
@@ -144,7 +142,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see labelAttributeName()
      * \see labelColor()
      */
-    QFont labelFont() const { return mLabelFont;}
+    QFont labelFont() const { return mLabelFont; }
 
     /**
      * Sets the minimum map \a scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
@@ -169,7 +167,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see setLabelAttributeName()
      * \see setLabelFont()
      */
-    void setLabelColor( const QColor &color ) { mLabelColor = color;}
+    void setLabelColor( const QColor &color ) { mLabelColor = color; }
 
     /**
      * Returns the color used for for labeling points.
@@ -229,7 +227,6 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     const QgsMapUnitScale &toleranceMapUnitScale() const { return mToleranceMapUnitScale; }
 
   protected:
-
     //! Embedded base renderer. This can be used for rendering individual, isolated points.
     std::unique_ptr< QgsFeatureRenderer > mRenderer;
 
@@ -278,7 +275,6 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group ) const;
 
   private:
-
     /**
      * Draws a group of clustered points.
      * \param centerPoint central point (geographic centroid) of all points contained within the cluster
@@ -312,7 +308,6 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \returns new expression context scope
      */
     QgsExpressionContextScope *createGroupScope( const ClusteredGroup &group ) const;
-
 };
 
 #endif // QGSPOINTDISTANCERENDERER_H

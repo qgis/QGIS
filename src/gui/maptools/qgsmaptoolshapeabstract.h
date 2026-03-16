@@ -17,7 +17,6 @@
 #define QGSMAPTOOLSHAPEABSTRACT_H
 
 // no bindings for now, not stable yet
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsabstractgeometry.h"
@@ -26,6 +25,8 @@
 
 #include <QIcon>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsMapMouseEvent;
 class QgsVectorLayer;
@@ -38,8 +39,7 @@ class QKeyEvent;
  * \brief Base class for shape map tools to be used by QgsMapToolCapture.
  * \since QGIS 3.26
  */
-class GUI_EXPORT QgsMapToolShapeAbstract
-  : public QObject
+class GUI_EXPORT QgsMapToolShapeAbstract : public QObject
 {
     Q_OBJECT
   public:
@@ -56,7 +56,8 @@ class GUI_EXPORT QgsMapToolShapeAbstract
 
     //! Constructor
     QgsMapToolShapeAbstract( const QString &id, QgsMapToolCapture *parentTool )
-      : mId( id ), mParentTool( parentTool )
+      : mId( id )
+      , mParentTool( parentTool )
     {
       Q_ASSERT( !mId.isEmpty() );
       Q_ASSERT( parentTool );

@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "6/01/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsBasicNumericFormat,
@@ -29,14 +30,13 @@ from qgis.gui import (
     QgsNumericFormatSelectorWidget,
     QgsNumericFormatWidget,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestFormat(QgsNumericFormat):
-
     def __init__(self):
         super().__init__()
         self.xx = 1
@@ -65,7 +65,6 @@ class TestFormat(QgsNumericFormat):
 
 
 class TestFormatWidget(QgsNumericFormatWidget):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.f = None
@@ -78,7 +77,6 @@ class TestFormatWidget(QgsNumericFormatWidget):
 
 
 class TestWidgetFactory(QgsNumericFormatConfigurationWidgetFactory):
-
     def create(self, format):
         w = TestFormatWidget()
         w.setFormat(format)
@@ -86,7 +84,6 @@ class TestWidgetFactory(QgsNumericFormatConfigurationWidgetFactory):
 
 
 class TestQgsNumericFormatGui(QgisTestCase):
-
     def testRegistry(self):
         """
         Test the GUI registry for numeric formats

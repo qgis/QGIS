@@ -17,7 +17,6 @@
 #ifndef QGSAUTHMETHODREGISTRY_H
 #define QGSAUTHMETHODREGISTRY_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -28,6 +27,8 @@
 #include <QLibrary>
 #include <QMap>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;
@@ -47,7 +48,6 @@ class QgsAuthMethodMetadata;
 */
 class CORE_EXPORT QgsAuthMethodRegistry
 {
-
   public:
     //! Means of accessing canonical single instance
     static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString() );
@@ -102,7 +102,6 @@ class CORE_EXPORT QgsAuthMethodRegistry
     typedef std::map<QString, QgsAuthMethodMetadata *> AuthMethods;
 
   private:
-
     //! Ctor private since instance() creates it
     QgsAuthMethodRegistry( const QString &pluginPath );
 

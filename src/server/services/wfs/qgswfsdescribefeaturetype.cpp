@@ -160,11 +160,7 @@ namespace QgsWfs
       // Get editor widget setup config
       const QVariantMap config = setup.config();
       // Get field format from editor widget setup config
-      const QString fieldFormat = config.value(
-                                          u"field_format"_s,
-                                          QgsDateTimeFieldFormatter::defaultFormat( field.type() )
-      )
-                                    .toString();
+      const QString fieldFormat = config.value( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( field.type() ) ).toString();
       // Define type from field format
       if ( fieldFormat == QgsDateTimeFieldFormatter::TIME_FORMAT ) // const QgsDateTimeFieldFormatter::TIME_FORMAT
         fieldType = u"time"_s;

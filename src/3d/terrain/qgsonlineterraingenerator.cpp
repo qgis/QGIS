@@ -15,6 +15,7 @@
 
 #include "qgsonlineterraingenerator.h"
 
+#include <limits>
 #include <memory>
 
 #include "qgsdemterraintileloader_p.h"
@@ -58,7 +59,7 @@ float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DRender
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else
-    return 0;
+    return std::numeric_limits<float>::quiet_NaN();
 }
 
 QgsTerrainGenerator *QgsOnlineTerrainGenerator::create()

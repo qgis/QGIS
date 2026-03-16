@@ -15,8 +15,6 @@
 
 #include "qgsrenderpassquad.h"
 
-#include <random>
-
 #include <QUrl>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
@@ -26,6 +24,8 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgsrenderpassquad.cpp"
@@ -36,12 +36,14 @@ QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
 {
   Qt3DCore::QGeometry *geom = new Qt3DCore::QGeometry( this );
   Qt3DCore::QAttribute *positionAttribute = new Qt3DCore::QAttribute( this );
-  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, //
-                                1.0f, -1.0f, 0.0f,  //
-                                -1.0f, 1.0f, 0.0f,  //
-                                -1.0f, 1.0f, 0.0f,  //
-                                1.0f, -1.0f, 0.0f,  //
+  // clang-format off
+  const QVector<float> vert = { -1.0f, -1.0f, 0.0f,
+                                1.0f, -1.0f, 0.0f,
+                                -1.0f, 1.0f, 0.0f,
+                                -1.0f, 1.0f, 0.0f,
+                                1.0f, -1.0f, 0.0f,
                                 1.0f, 1.0f, 0.0f };
+  // clang-format on
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DCore::QBuffer *vertexBuffer = nullptr;

@@ -19,7 +19,6 @@
 #ifndef QGSSFCGALENGINE_H
 #define QGSSFCGALENGINE_H
 
-#define SIP_NO_FILE
 
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <source_location>
@@ -32,6 +31,8 @@
 #include "qgsvector3d.h"
 
 #include <QMatrix4x4>
+
+#define SIP_NO_FILE
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
@@ -71,13 +72,12 @@ class QgsSfcgalGeometry;
   }
 
 /// check if no error has been caught else add stacktrace entry, log the stacktrace and throw an exception
-#define THROW_ON_ERROR(errorMsg)                                       \
+#define THROW_ON_ERROR( errorMsg )                                     \
   if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) )    \
   {                                                                    \
     QgsDebugError( sfcgal::errorHandler()->getFullText() );            \
     throw QgsSfcgalException( sfcgal::errorHandler()->getFullText() ); \
   }
-
 
 
 /**
@@ -94,8 +94,8 @@ namespace sfcgal
   //! Class used as SFCGAL geometry deleter.
   struct GeometryDeleter
   {
-    //! Destroys the SFCGAL geometry \a geom, using the static QGIS SFCGAL context.
-    void CORE_EXPORT operator()( geometry *geom ) const;
+      //! Destroys the SFCGAL geometry \a geom, using the static QGIS SFCGAL context.
+      void CORE_EXPORT operator()( geometry *geom ) const;
   };
 
   //! Unique SFCGAL geometry pointer.
@@ -125,8 +125,8 @@ namespace sfcgal
   //! Class used as SFCGAL primitive deleter.
   struct PrimitiveDeleter
   {
-    //! Destroys the SFCGAL primitive \a prim, using the static QGIS SFCGAL context.
-    void CORE_EXPORT operator()( primitive *prim ) const;
+      //! Destroys the SFCGAL primitive \a prim, using the static QGIS SFCGAL context.
+      void CORE_EXPORT operator()( primitive *prim ) const;
   };
 
   //! Unique SFCGAL primitive pointer.
@@ -140,9 +140,9 @@ namespace sfcgal
   //! Hold primitive parameter description
   struct PrimitiveParameterDesc
   {
-    std::string name;
-    std::string type;
-    std::variant<int, double, QgsPoint, QgsVector3D> value;
+      std::string name;
+      std::string type;
+      std::variant<int, double, QgsPoint, QgsVector3D> value;
   };
 
   //! Used by json lib to convert to json
@@ -209,9 +209,9 @@ namespace sfcgal
   CORE_EXPORT ErrorHandler *errorHandler();
 
   //! Shortcut for SFCGAL function definition.
-  using func_geomgeom_to_geom = sfcgal_geometry_t *( * )( const sfcgal_geometry_t *, const sfcgal_geometry_t * );
+  using func_geomgeom_to_geom = sfcgal_geometry_t *( * ) ( const sfcgal_geometry_t *, const sfcgal_geometry_t * );
   //! Shortcut for SFCGAL function definition.
-  using func_geom_to_geom = sfcgal_geometry_t *( * )( const sfcgal_geometry_t * );
+  using func_geom_to_geom = sfcgal_geometry_t *( * ) ( const sfcgal_geometry_t * );
 } // namespace sfcgal
 
 /**
@@ -223,7 +223,6 @@ namespace sfcgal
 class CORE_EXPORT QgsSfcgalEngine
 {
   public:
-
     /**
      * Creates a QgsAbstractGeometry from an internal SFCGAL geometry (from SFCGAL library).
      *
@@ -674,6 +673,32 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
+    /**
+     * Converts a PolyhedralSurface geometry to a Solid geometry.
+     *
+     * The input geometry must be of type PolyhedralSurface. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toSolid( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Converts a Solid geometry to a PolyhedralSurface geometry.
+     *
+     * The input geometry must be of type Solid. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toPolyhedralSurface( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 
     /**
@@ -790,8 +815,7 @@ class SFCGALException : public std::runtime_error
   public:
     explicit SFCGALException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
-    {
-    }
+    {}
 };
 
 /// @endcond

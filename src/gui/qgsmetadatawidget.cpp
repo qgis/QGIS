@@ -37,7 +37,8 @@
 using namespace Qt::StringLiterals;
 
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
-  : QWidget( parent ), mLayer( layer )
+  : QWidget( parent )
+  , mLayer( layer )
 {
   setupUi( this );
   tabWidget->setCurrentIndex( 0 );
@@ -90,14 +91,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mHistoryModel = new QStringListModel( listHistory );
   listHistory->setModel( mHistoryModel );
 
-  for ( QgsDateTimeEdit *w :
-        {
-          mCreationDateTimeEdit,
-          mCreationDateTimeEdit2,
-          mPublishedDateTimeEdit,
-          mRevisedDateTimeEdit,
-          mSupersededDateTimeEdit
-        } )
+  for ( QgsDateTimeEdit *w : { mCreationDateTimeEdit, mCreationDateTimeEdit2, mPublishedDateTimeEdit, mRevisedDateTimeEdit, mSupersededDateTimeEdit } )
   {
     w->setAllowNull( true );
     w->setNullRepresentation( tr( "Not set" ) );
@@ -190,10 +184,12 @@ void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
   mLabelContact->setText( tr( "Contacts related to the %1." ).arg( type ) );
   mLabelLinks->setText( tr( "Links describe ancillary resources and information related to this %1." ).arg( type ) );
   mLabelHistory->setText( tr( "History about the %1." ).arg( type ) );
-  labelKeywords->setText( tr( "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "
-                              "the %1. Edits made in the categories tab will update the category entry below. For the concept, we suggest "
-                              "to use a standard based vocabulary such as <a href=\"https://www.eionet.europa.eu/gemet/en/inspire-themes/\">"
-                              "<span style=\" text-decoration: underline; color:#0000ff;\">GEMET.</span></a></p></body></html>" )
+  labelKeywords->setText( tr(
+                            "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "
+                            "the %1. Edits made in the categories tab will update the category entry below. For the concept, we suggest "
+                            "to use a standard based vocabulary such as <a href=\"https://www.eionet.europa.eu/gemet/en/inspire-themes/\">"
+                            "<span style=\" text-decoration: underline; color:#0000ff;\">GEMET.</span></a></p></body></html>"
+  )
                             .arg( type ) );
   btnAutoSource->setText( tr( "Set from %1" ).arg( mMode == LayerMetadata ? tr( "layer" ) : tr( "project" ) ) );
 }
@@ -1164,8 +1160,7 @@ void QgsMetadataWidget::removeSelectedCategories()
 ///@cond PRIVATE
 LinkItemDelegate::LinkItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -1195,8 +1190,7 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
 
 ConstraintItemDelegate::ConstraintItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

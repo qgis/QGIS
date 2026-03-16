@@ -46,8 +46,9 @@ class CORE_EXPORT QgsTessellator
      * \brief Creates tessellator with a specified origin point of the world (in map coordinates)
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -59,8 +60,9 @@ class CORE_EXPORT QgsTessellator
      * \since QGIS 3.10
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Sets the origin point of the map.
@@ -200,14 +202,34 @@ class CORE_EXPORT QgsTessellator
      * Returns array of triangle vertex data
      *
      * Vertice coordinates are stored as (x, z, -y)
+     *
+     * \deprecated QGIS 4.0. Use vertexBuffer() in combination with indexBuffer().
      */
-    QVector<float> data() const { return mData; }
+    Q_DECL_DEPRECATED QVector<float> data() const SIP_DEPRECATED;
+
+    /**
+     * Returns index buffer for the generated points.
+     * \since QGIS 4.0
+     */
+    QByteArray indexBuffer() const;
+
+    /**
+     * Returns vertex buffer for the generated points.
+     * \since QGIS 4.0
+     */
+    QByteArray vertexBuffer() const;
 
     //! Returns the number of vertices stored in the output data array
     int dataVerticesCount() const;
 
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
+
+    /**
+     * Returns size of one index entry in bytes
+     * \since QGIS 4.0
+    */
+    int indexStride() const { return sizeof( uint32_t ); }
 
     /**
      * Returns the triangulation as a multipolygon geometry.
@@ -233,13 +255,39 @@ class CORE_EXPORT QgsTessellator
      */
     QString error() const { return mError; }
 
-  private:
-    void updateStride();
+    /**
+     * Returns unique vertex count.
+     * \since QGIS 4.0
+     */
+    int uniqueVertexCount() const;
 
+  private:
+    struct VertexPoint
+    {
+        QVector3D position;
+        QVector3D normal;
+
+        inline bool operator==( const VertexPoint &other ) const { return position == other.position && normal == other.normal; }
+    };
+
+    friend uint qHash( const VertexPoint &key )
+    {
+      return qHash( key.position.x() ) ^ qHash( key.position.y() ) ^ qHash( key.position.z() ) ^ qHash( key.normal.x() ) ^ qHash( key.normal.y() ) ^ qHash( key.normal.z() );
+    }
+
+    QVector<uint32_t> mIndexBuffer;
+
+    void updateStride();
     void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
-    void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
-    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>*, float> *zHash );
+    QVector3D applyTransformWithExtrusion( const QVector3D point, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
+    void addVertex(
+      const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer, const size_t &vertexBufferOffset
+    );
+    void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
+    void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );
+    void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height );
+    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
     std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
 

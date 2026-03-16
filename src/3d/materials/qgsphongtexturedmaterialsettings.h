@@ -18,10 +18,10 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
-#include "qgsmaterial.h"
 
 #include <QColor>
 
+class QgsMaterial;
 class QDomElement;
 
 /**
@@ -133,7 +133,14 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     // TODO c++20 - replace with = default
     bool operator==( const QgsPhongTexturedMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient && mSpecular == other.mSpecular && mShininess == other.mShininess && mOpacity == other.mOpacity && mDiffuseTexturePath == other.mDiffuseTexturePath && mTextureScale == other.mTextureScale && mTextureRotation == other.mTextureRotation && dataDefinedProperties() == other.dataDefinedProperties();
+      return mAmbient == other.mAmbient
+             && mSpecular == other.mSpecular
+             && mShininess == other.mShininess
+             && mOpacity == other.mOpacity
+             && mDiffuseTexturePath == other.mDiffuseTexturePath
+             && mTextureScale == other.mTextureScale
+             && mTextureRotation == other.mTextureRotation
+             && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:

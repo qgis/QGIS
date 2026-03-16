@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbol.h"
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
@@ -29,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
-{
-}
+{}
 
 QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 

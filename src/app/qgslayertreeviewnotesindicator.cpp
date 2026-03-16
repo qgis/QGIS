@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewNotesIndicatorProvider::QgsLayerTreeViewNotesIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewNotesIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {

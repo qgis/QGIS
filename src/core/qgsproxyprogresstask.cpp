@@ -25,8 +25,7 @@
 
 QgsProxyProgressTask::QgsProxyProgressTask( const QString &description, bool canCancel )
   : QgsTask( description, canCancel ? QgsTask::CanCancel : QgsTask::Flags() )
-{
-}
+{}
 
 void QgsProxyProgressTask::finalize( bool result )
 {

@@ -31,8 +31,9 @@
  */
 class CORE_EXPORT QgsFileUtils
 {
-  public:
+    Q_GADGET
 
+  public:
     /**
      * Returns the human size from bytes
      */
@@ -178,7 +179,9 @@ class CORE_EXPORT QgsFileUtils
      *
      * \since QGIS 3.22
      */
-    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+    static bool renameDataset(
+      const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile
+    );
 
     /**
      * Returns the limit of simultaneously opened files by the process.
@@ -237,6 +240,54 @@ class CORE_EXPORT QgsFileUtils
      */
     static QString uniquePath( const QString &path );
 
+    /**
+     * Flags controlling behavior of file copy operations.
+     *
+     * \since QGIS 4.0.1
+     */
+    enum class CopyFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoSymLinks = 1 << 0, //!< If present, indicates that symbolic links should be skipped during the copy
+    };
+    Q_ENUM( CopyFlag )
+
+    /**
+     * Flags controlling behavior of file copy operations.
+     *
+     * \since QGIS 4.0.1
+     */
+    Q_DECLARE_FLAGS( CopyFlags, CopyFlag )
+    Q_FLAG( CopyFlags )
+
+    /**
+     * Recursively copies a whole directory.
+     *
+     * Returns TRUE if the copy was successful and all files and folders were copied.
+     *
+     * \note If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+     *
+     * Since QGIS 4.0.1 the \a flags argument can be used to specify flags controlling the
+     * behavior of the copy operation.
+     *
+     * Since QGIS 4.0.1 the \a excludePatterns argument can be used to specify a list of regular expressions. Any files or
+     * folders matching any of these patterns will be excluded from the copy.
+     *
+     * \since QGIS 4.0
+     */
+    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags(), const QStringList &excludePatterns = QStringList() );
+
+    /**
+     * Replaces all occurrences of a given string in a file.
+     *
+     * Returns TRUE if the replacement was successful and the file updated.
+     *
+     * Replacement is case-sensitive.
+     *
+     * \since QGIS 4.0
+     */
+    static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFileUtils::CopyFlags )
 
 #endif // QGSFILEUTILS_H

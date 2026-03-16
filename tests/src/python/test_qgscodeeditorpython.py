@@ -12,20 +12,19 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 
 import os
-from qgis.PyQt.QtCore import QCoreApplication, Qt
-from qgis.PyQt.QtTest import QTest
+import unittest
+
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorPython
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtTest import QTest
+from qgis.testing import QgisTestCase, start_app
 
 COMPLETIONS_PAIRS = {"(": ")", "[": "]", "{": "}", "'": "'", '"': '"'}
 COMPLETIONS_SINGLE_CHARACTERS = ["`", "*"]
 
 
 class TestQgsCodeEditorPython(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -47,7 +46,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         test_string = "Hello World"
 
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             editor.setText(test_string)
 
             # Select the whole text
@@ -58,7 +56,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
             self.assertEqual(editor.text(), opening + test_string + closing)
 
         for character in COMPLETIONS_SINGLE_CHARACTERS:
-
             editor.setText(test_string)
 
             # Type the character
@@ -70,7 +67,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         editor.setText(test_string)
         editor.selectAll()
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             text = editor.text()
             # Select the whole text
             QTest.keyClicks(editor, opening)
@@ -106,7 +102,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         editor = QgsCodeEditorPython()
 
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             # Type the opening character, should insert both characters
             QTest.keyClicks(editor, opening)
             self.assertEqual(editor.text(), opening + closing)

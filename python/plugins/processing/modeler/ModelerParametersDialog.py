@@ -20,59 +20,68 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import webbrowser
-
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QLabel,
-    QLineEdit,
-    QFrame,
-    QPushButton,
-    QSizePolicy,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
-    QTabWidget,
-    QTextEdit,
-)
-from qgis.PyQt.QtGui import QColor
+from typing import Optional
 
 from qgis.core import (
     Qgis,
-    QgsProject,
-    QgsProcessingParameterDefinition,
-    QgsProcessingModelOutput,
+    QgsProcessingAlgorithm,
+    QgsProcessingModelAlgorithm,
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelChildParameterSource,
+    QgsProcessingModelOutput,
     QgsProcessingOutputDefinition,
+    QgsProcessingParameterDefinition,
+    QgsProject,
 )
-
 from qgis.gui import (
-    QgsGui,
-    QgsMessageBar,
-    QgsScrollArea,
+    QgsColorButton,
     QgsFilterLineEdit,
+    QgsGui,
     QgsHelp,
-    QgsProcessingContextGenerator,
-    QgsProcessingModelerParameterWidget,
-    QgsProcessingParameterWidgetContext,
+    QgsMessageBar,
+    QgsModelChildDependenciesWidget,
     QgsPanelWidget,
     QgsPanelWidgetStack,
-    QgsColorButton,
-    QgsModelChildDependenciesWidget,
+    QgsProcessingContextGenerator,
+    QgsProcessingModelConfigWidget,
+    QgsProcessingModelerParameterWidget,
+    QgsProcessingParameterWidgetContext,
+    QgsScrollArea,
+)
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QSizePolicy,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 from qgis.utils import iface
 
-from processing.gui.wrappers import WidgetWrapperFactory
-from processing.gui.wrappers import InvalidParameterValue
+from processing.gui.wrappers import (
+    InvalidParameterValue,
+    WidgetWrapper,
+    WidgetWrapperFactory,
+)
 from processing.tools.dataobjects import createContext
-from processing.gui.wrappers import WidgetWrapper
 
 
 class ModelerParametersDialog(QDialog):
-
-    def __init__(self, alg, model, algName=None, configuration=None):
+    def __init__(
+        self,
+        alg: QgsProcessingAlgorithm,
+        model: QgsProcessingModelAlgorithm,
+        algName: Optional[str] = None,
+        configuration: Optional[dict[str, object]] = None,
+    ):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
         self.setModal(True)
@@ -214,7 +223,6 @@ class ModelerParametersDialog(QDialog):
 
 
 class ModelerParametersPanelWidget(QgsPanelWidget):
-
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
     ):
@@ -227,9 +235,9 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.dialog = dialog
         self.widget_labels = {}
         self.previous_output_definitions = {}
+        self.block_changes_signal = 0
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context
@@ -266,6 +274,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.descriptionBox.setText(self._alg.displayName())
         hLayout.addWidget(descriptionLabel)
         hLayout.addWidget(self.descriptionBox)
+        self.descriptionBox.textChanged.connect(self.emit_changed_signal)
+
         self.verticalLayout.addLayout(hLayout)
         line = QFrame()
         line.setFrameShape(QFrame.Shape.HLine)
@@ -319,6 +329,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             wrapper.registerProcessingContextGenerator(self.context_generator)
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                 widget = wrapper
+                wrapper.changed.connect(self.emit_changed_signal)
             else:
                 widget = wrapper.widget
             if widget is not None:
@@ -391,6 +402,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.mainLayout.addWidget(w)
         self.setLayout(self.mainLayout)
 
+    def emit_changed_signal(self):
+        if not self.block_changes_signal:
+            self.widgetChanged.emit()
+
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
@@ -408,6 +423,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.widget_labels[param.name()].setVisible(self.showAdvanced)
 
     def setPreviousValues(self):
+        self.block_changes_signal += 1
         if self.childId is not None:
             alg = self.model.childAlgorithm(self.childId)
 
@@ -485,6 +501,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     wrapper.setWidgetValue(value)
 
             self.dependencies_panel.setValue(alg.dependencies())
+        self.block_changes_signal -= 1
 
     def createAlgorithm(self):
         alg = QgsProcessingModelChildAlgorithm(self._alg.id())
@@ -584,8 +601,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         return alg
 
 
-class ModelerParametersWidget(QWidget):
-
+class ModelerParametersWidget(QgsProcessingModelConfigWidget):
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
     ):
@@ -600,9 +616,9 @@ class ModelerParametersWidget(QWidget):
         self.widget = ModelerParametersPanelWidget(
             alg, model, algName, configuration, dialog, context
         )
+        self.widget.widgetChanged.connect(self.widgetChanged)
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context

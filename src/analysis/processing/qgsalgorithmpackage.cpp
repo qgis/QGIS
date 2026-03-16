@@ -437,7 +437,9 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   return outputs;
 }
 
-bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent )
+bool QgsPackageAlgorithm::packageVectorLayer(
+  QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent
+)
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = u"GPKG"_s;
@@ -526,8 +528,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
             settings.setValue( u"qgis/overwriteStyle"_s, true );
             QgsMapLayer::SaveStyleResults saveStyleResults = res->saveStyleToDatabaseV2( newLayer, QString(), true, QString(), errorMsg );
             settings.setValue( u"qgis/overwriteStyle"_s, prevOverwriteStyle );
-            if ( saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed )
-                 || saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed ) )
+            if ( saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed ) || saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed ) )
             {
               feedback->reportError( QObject::tr( "Could not save layer style: %1 " ).arg( errorMsg ) );
             }

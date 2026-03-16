@@ -84,11 +84,37 @@ namespace QgsWfs
 
     QDomElement createFeatureGML3( const QgsFeature &feature, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes );
 
-    void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *serverSettings );
+    void hitGetFeature(
+      const QgsServerRequest &request,
+      QgsServerResponse &response,
+      const QgsProject *project,
+      QgsWfsParameters::Format format,
+      int numberOfFeatures,
+      const QStringList &typeNames,
+      const QgsServerSettings *serverSettings
+    );
 
-    void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format, int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings );
+    void startGetFeature(
+      const QgsServerRequest &request,
+      QgsServerResponse &response,
+      const QgsProject *project,
+      QgsWfsParameters::Format format,
+      int prec,
+      QgsCoordinateReferenceSystem &crs,
+      QgsRectangle *rect,
+      const QStringList &typeNames,
+      const QgsServerSettings *settings
+    );
 
-    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes = QgsAttributeList() );
+    void setGetFeature(
+      QgsServerResponse &response,
+      QgsWfsParameters::Format format,
+      const QgsFeature &feature,
+      int featIdx,
+      const createFeatureParams &params,
+      const QgsProject *project,
+      const QgsAttributeList &pkAttributes = QgsAttributeList()
+    );
 
     void endGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format );
 
@@ -333,9 +359,7 @@ namespace QgsWfs
 
       // expression context
       QgsExpressionContext expressionContext;
-      expressionContext << QgsExpressionContextUtils::globalScope()
-                        << QgsExpressionContextUtils::projectScope( project )
-                        << QgsExpressionContextUtils::layerScope( vlayer );
+      expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project ) << QgsExpressionContextUtils::layerScope( vlayer );
       featureRequest.setExpressionContext( expressionContext );
 
       if ( !query.serverFids.isEmpty() )
@@ -363,9 +387,7 @@ namespace QgsWfs
         {
           // expression context for access control filter
           QgsExpressionContext accessControlContext;
-          accessControlContext << QgsExpressionContextUtils::globalScope()
-                               << QgsExpressionContextUtils::projectScope( project )
-                               << QgsExpressionContextUtils::layerScope( vlayer );
+          accessControlContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project ) << QgsExpressionContextUtils::layerScope( vlayer );
           accessControlRequest.setExpressionContext( accessControlContext );
           Q_NOWARN_DEPRECATED_PUSH
           accessControl->filterFeatures( vlayer, accessControlRequest );
@@ -381,10 +403,7 @@ namespace QgsWfs
         {
           attributes.append( vlayer->fields().field( idx ).name() );
         }
-        featureRequest.setSubsetOfAttributes(
-          accessControl->layerAttributes( vlayer, attributes ),
-          vlayer->fields()
-        );
+        featureRequest.setSubsetOfAttributes( accessControl->layerAttributes( vlayer, attributes ), vlayer->fields() );
         attrIndexes = featureRequest.subsetOfAttributes();
       }
 #endif
@@ -550,8 +569,7 @@ namespace QgsWfs
     bool paramContainsFilters = !filterList.isEmpty();
     QString bbox = mWfsParameters.bbox();
     bool paramContainsBbox = !bbox.isEmpty();
-    if ( ( paramContainsFeatureIds
-           && ( paramContainsFilters || paramContainsBbox ) )
+    if ( ( paramContainsFeatureIds && ( paramContainsFilters || paramContainsBbox ) )
          || ( paramContainsFilters && ( paramContainsFeatureIds || paramContainsBbox ) )
          || ( paramContainsBbox && ( paramContainsFeatureIds || paramContainsFilters ) ) )
     {
@@ -1050,23 +1068,13 @@ namespace QgsWfs
 
   namespace
   {
-    static QSet<QString> sParamFilter {
-      u"REQUEST"_s,
-      u"FORMAT"_s,
-      u"OUTPUTFORMAT"_s,
-      u"BBOX"_s,
-      u"FEATUREID"_s,
-      u"TYPENAME"_s,
-      u"FILTER"_s,
-      u"EXP_FILTER"_s,
-      u"MAXFEATURES"_s,
-      u"STARTINDEX"_s,
-      u"PROPERTYNAME"_s,
-      u"_DC"_s
-    };
+    static QSet<QString>
+      sParamFilter { u"REQUEST"_s, u"FORMAT"_s, u"OUTPUTFORMAT"_s, u"BBOX"_s, u"FEATUREID"_s, u"TYPENAME"_s, u"FILTER"_s, u"EXP_FILTER"_s, u"MAXFEATURES"_s, u"STARTINDEX"_s, u"PROPERTYNAME"_s, u"_DC"_s };
 
 
-    void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings )
+    void hitGetFeature(
+      const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings
+    )
     {
       QDateTime now = QDateTime::currentDateTime();
       QString fcString;
@@ -1150,7 +1158,17 @@ namespace QgsWfs
       response.flush();
     }
 
-    void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format, int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings )
+    void startGetFeature(
+      const QgsServerRequest &request,
+      QgsServerResponse &response,
+      const QgsProject *project,
+      QgsWfsParameters::Format format,
+      int prec,
+      QgsCoordinateReferenceSystem &crs,
+      QgsRectangle *rect,
+      const QStringList &typeNames,
+      const QgsServerSettings *settings
+    )
     {
       QString fcString;
 
@@ -1183,7 +1201,15 @@ namespace QgsWfs
         rect = new QgsRectangle( rect->intersect( QgsRectangle( -180.0, -90.0, 180.0, 90.0 ) ) );
 
         fcString = u"{\"type\": \"FeatureCollection\",\n"_s;
-        fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";
+        fcString += " \"bbox\": [ "
+                    + qgsDoubleToString( rect->xMinimum(), prec )
+                    + ", "
+                    + qgsDoubleToString( rect->yMinimum(), prec )
+                    + ", "
+                    + qgsDoubleToString( rect->xMaximum(), prec )
+                    + ", "
+                    + qgsDoubleToString( rect->yMaximum(), prec )
+                    + "],\n";
 
         const QString srsName { request.serverParameters().value( u"SRSNAME"_s ) };
         const QgsCoordinateReferenceSystem destinationCrs { srsName.isEmpty() ? u"EPSG:4326"_s : srsName };
@@ -1328,7 +1354,9 @@ namespace QgsWfs
       }
     }
 
-    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes )
+    void setGetFeature(
+      QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes
+    )
     {
       if ( !feature.isValid() )
         return;
@@ -1656,7 +1684,9 @@ namespace QgsWfs
         const QVariantMap config = setup.config();
         // Get field format, for ISO format then use const display format
         // else use field format saved in editor widget setup config
-        const QString fieldFormat = config.value( u"field_iso_format"_s, false ).toBool() ? QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT : config.value( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( static_cast<QMetaType::Type>( value.userType() ) ) ).toString();
+        const QString fieldFormat = config.value( u"field_iso_format"_s, false ).toBool()
+                                      ? QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT
+                                      : config.value( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( static_cast<QMetaType::Type>( value.userType() ) ) ).toString();
 
         // Convert value to date time
         QDateTime date = value.toDateTime();

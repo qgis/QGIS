@@ -34,7 +34,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 {
   public:
-
     QgsHeatmapRenderer();
     ~QgsHeatmapRenderer() override;
 
@@ -196,7 +195,6 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     void setWeightExpression( const QString &expression ) { mWeightExpressionString = expression; }
 
   private:
-
     QVector<double> mValues;
 
     double mCalculatedMaxValue = 0;

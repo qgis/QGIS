@@ -11,21 +11,19 @@ __date__ = "03/10/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import sys
+import unittest
 
+from qgis.core import QgsApplication, QgsSettings, QgsSettingsTree
+from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
 from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFontDatabase
-from qgis.core import QgsApplication, QgsSettings
-from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 start_app()
 
 
 class TestQgsCodeEditor(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -140,9 +138,9 @@ class TestQgsCodeEditor(QgisTestCase):
             f"Font {font.family()} ({font_db.styleString(font)}) is not fixed pitch",
         )
 
-        QgsSettings().setValue(
-            "codeEditor/fontfamily", getTestFont().family(), QgsSettings.Section.Gui
-        )
+        QgsSettingsTree.node("gui").childNode("code-editor").childSetting(
+            "font-family"
+        ).setValue(getTestFont().family())
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.family(), "QGIS Vera Sans")
 
@@ -151,7 +149,9 @@ class TestQgsCodeEditor(QgisTestCase):
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.pointSize(), 10)
 
-        QgsSettings().setValue("codeEditor/fontsize", 14, QgsSettings.Section.Gui)
+        QgsSettingsTree.node("gui").childNode("code-editor").childSetting(
+            "font-size"
+        ).setValue(14)
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.pointSize(), 14)
 

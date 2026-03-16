@@ -62,7 +62,11 @@ Qgis::WkbType QgsOrientedMinimumBoundingBoxAlgorithm::outputWkbType( Qgis::WkbTy
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." ) + u"\n\n"_s + QObject::tr( "For singlepart point features, the output corresponds to the bounding box of the geometry." ) + u"\n\n"_s + QObject::tr( "See the 'Minimum bounding geometry' algorithm for an oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." )
+         + u"\n\n"_s
+         + QObject::tr( "For singlepart point features, the output corresponds to the bounding box of the geometry." )
+         + u"\n\n"_s
+         + QObject::tr( "See the 'Minimum bounding geometry' algorithm for an oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortDescription() const
@@ -110,21 +114,13 @@ QgsFeatureList QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const Qgs
     const QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
-    attrs << width
-          << height
-          << angle
-          << area
-          << 2 * width + 2 * height;
+    attrs << width << height << angle << area << 2 * width + 2 * height;
     f.setAttributes( attrs );
   }
   else
   {
     QgsAttributes attrs = f.attributes();
-    attrs << QVariant()
-          << QVariant()
-          << QVariant()
-          << QVariant()
-          << QVariant();
+    attrs << QVariant() << QVariant() << QVariant() << QVariant() << QVariant();
     f.setAttributes( attrs );
   }
   return QgsFeatureList() << f;

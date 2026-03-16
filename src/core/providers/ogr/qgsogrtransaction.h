@@ -22,8 +22,9 @@
 #include "qgsogrprovider.h"
 #include "qgstransaction.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsOgrTransaction : public QgsTransaction
 {
@@ -45,13 +46,11 @@ class QgsOgrTransaction : public QgsTransaction
     QgsOgrDatasetSharedPtr sharedDS() const { return mSharedDS; }
 
   private:
-
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
     bool beginTransaction( QString &error, int statementTimeout ) override;
     bool commitTransaction( QString &error ) override;
     bool rollbackTransaction( QString &error ) override;
-
 };
 
 ///@endcond

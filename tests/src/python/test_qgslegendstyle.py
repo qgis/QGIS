@@ -1,4 +1,4 @@
-""""Test QgsLegendStyle
+""" "Test QgsLegendStyle
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -9,23 +9,22 @@ Run with ctest -V -R PyQgsLegendStyle
 
 """
 
+import unittest
+
+from qgis.core import (
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsLegendStyle,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsTextFormat,
+)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (
-    QgsLegendStyle,
-    QgsTextFormat,
-    QgsReadWriteContext,
-    QgsPalLayerSettings,
-    QgsProperty,
-    QgsRenderContext,
-    QgsExpressionContext,
-    QgsExpressionContextScope,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()
@@ -33,7 +32,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsLegendStyle(QgisTestCase):
-
     def test_getters_setters(self):
         style = QgsLegendStyle()
         style.setMargin(QgsLegendStyle.Side.Top, 1.5)

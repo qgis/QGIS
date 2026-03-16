@@ -223,7 +223,9 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     // with a COUNT=1 into a short-lived memory cache, as they are emitted
     // repeatedly in interactive scenarios when adding a WFS layer.
     QString urlString = url.toString();
-    if ( urlString.contains( u"REQUEST=GetCapabilities"_s ) || urlString.contains( u"REQUEST=DescribeFeatureType"_s ) || ( urlString.contains( u"REQUEST=GetFeature"_s ) && urlString.contains( u"COUNT=1"_s ) ) )
+    if ( urlString.contains( u"REQUEST=GetCapabilities"_s )
+         || urlString.contains( u"REQUEST=DescribeFeatureType"_s )
+         || ( urlString.contains( u"REQUEST=GetFeature"_s ) && urlString.contains( u"COUNT=1"_s ) ) )
     {
       QgsSettings s;
       if ( s.value( u"qgis/wfsMemoryCacheAllowed"_s, true ).toBool() )
@@ -292,7 +294,8 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
         };
 
         QMetaObject::Connection authRequestConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );
-        QMetaObject::Connection proxyAuthenticationConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+        QMetaObject::Connection proxyAuthenticationConnection
+          = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
 #ifndef QT_NO_SSL
         QMetaObject::Connection sslErrorConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection );
 #endif
@@ -392,7 +395,9 @@ void QgsBaseNetworkRequest::extractResponseHeadersForUnitTests()
   }
 }
 
-bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
+bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH(
+  const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders
+)
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -730,8 +735,7 @@ void QgsBaseNetworkRequest::replyFinished()
         if ( !exceptionElem.isNull() && exceptionElem.tagName() == "ExceptionReport"_L1 )
         {
           const QDomElement exception = exceptionElem.firstChildElement( u"Exception"_s );
-          mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" )
-                            .arg( exception.attribute( u"exceptionCode"_s, tr( "missing" ) ), exception.firstChildElement( u"ExceptionText"_s ).text() );
+          mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" ).arg( exception.attribute( u"exceptionCode"_s, tr( "missing" ) ), exception.firstChildElement( u"ExceptionText"_s ).text() );
         }
       }
       else if ( !replyContent.isEmpty() )

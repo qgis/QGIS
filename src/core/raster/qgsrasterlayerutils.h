@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspointxy.h"
 #include "qgsrange.h"
 
 class QgsRasterLayer;
@@ -37,7 +38,6 @@ class QgsRectangle;
 class CORE_EXPORT QgsRasterLayerUtils
 {
   public:
-
     /**
      * Given a raster \a layer, returns the band which should be used for
      * rendering the layer for a specified temporal and elevation range,
@@ -50,11 +50,7 @@ class CORE_EXPORT QgsRasterLayerUtils
      *
      * \returns Matched band, or -1 if the layer does not have any elevation or temporal settings which affect the rendered band.
      */
-    static int renderedBandForElevationAndTemporalRange(
-      QgsRasterLayer *layer,
-      const QgsDateTimeRange &temporalRange,
-      const QgsDoubleRange &elevationRange,
-      bool &matched SIP_OUT );
+    static int renderedBandForElevationAndTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &temporalRange, const QgsDoubleRange &elevationRange, bool &matched SIP_OUT );
 
     /**
      * Compute the \a min \a max values for \a provider along \a band according to
@@ -62,15 +58,21 @@ class CORE_EXPORT QgsRasterLayerUtils
      *
      * \since QGIS 4.0
      */
-    static void computeMinMax( QgsRasterDataProvider *provider,
-                               int band,
-                               const QgsRasterMinMaxOrigin &mmo,
-                               Qgis::RasterRangeLimit limits,
-                               const QgsRectangle &extent,
-                               int sampleSize,
-                               double &min SIP_OUT,
-                               double &max SIP_OUT );
+    static void computeMinMax(
+      QgsRasterDataProvider *provider, int band, const QgsRasterMinMaxOrigin &mmo, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, double &min SIP_OUT, double &max SIP_OUT
+    );
 
+    /**
+     * Returns a new extent that includes the given \a extent with corners coordinates
+     * aligned to the pixel grid defined by the \a origin and \a pixelSizeX and \a pixelSizeY arguments.
+     *
+     * The resulting extent will be expanded if necessary to ensure that its corners fall on pixel boundaries defined by the origin and pixel sizes.
+     *
+     * \returns The aligned extent or the original extent if pixel sizes are zero (to avoid division by zero) or if the extent is empty.
+     *
+     * \since QGIS 4.0
+     */
+    static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
 };
 
 #endif //QGSRASTERLAYERUTILS_H

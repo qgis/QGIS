@@ -21,27 +21,25 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import QgsWkbTypes
-
-from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
-from ..html_elems import (
-    HtmlContent,
-    HtmlSection,
-    HtmlParagraph,
-    HtmlTable,
-    HtmlTableHeader,
-    HtmlTableCol,
-)
-
 # Syntax Highlight for VIEWS/MVIEWS
 from pygments import highlight
-from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+from qgis.core import QgsWkbTypes
+from qgis.PyQt.QtWidgets import QApplication
+
+from ..html_elems import (
+    HtmlContent,
+    HtmlParagraph,
+    HtmlSection,
+    HtmlTable,
+    HtmlTableCol,
+    HtmlTableHeader,
+)
+from ..info_model import DatabaseInfo, TableInfo, VectorTableInfo
 
 
 class ORDatabaseInfo(DatabaseInfo):
-
     def __init__(self, db):
         self.db = db
 
@@ -105,7 +103,6 @@ class ORDatabaseInfo(DatabaseInfo):
 
 
 class ORTableInfo(TableInfo):
-
     def __init__(self, table):
         self.table = table
         if not self.table.objectType:
@@ -410,8 +407,8 @@ class ORTableInfo(TableInfo):
                     idx.compression,
                     idx.isUnique,
                     (
-                        '<a href="action:index/{}/rebuild">Rebuild'
-                        """</a>""".format(idx.name)
+                        f'<a href="action:index/{idx.name}/rebuild">Rebuild'
+                        """</a>"""
                     ),
                 )
             )
@@ -452,8 +449,8 @@ class ORTableInfo(TableInfo):
                 )
 
             txt_enabled = (
-                """{0} (<a href="action:trigger/"""
-                """{1}/{2}">{2}</a>)""".format(enabled, trig.name, action)
+                f"""{enabled} (<a href="action:trigger/"""
+                f"""{trig.name}/{action}">{action}</a>)"""
             )
 
             tbl.append((name, trig.event, trig.type, txt_enabled))
@@ -651,7 +648,6 @@ class ORTableInfo(TableInfo):
 
 
 class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
-
     def __init__(self, table):
         VectorTableInfo.__init__(self, table)
         ORTableInfo.__init__(self, table)
@@ -708,7 +704,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             self.table.blockSignals(False)
 
         if self.table.estimatedExtent:
-            estimated_extent_str = "{:.9f}, {:.9f} - {:.9f}, " "{:.9f}".format(
+            estimated_extent_str = "{:.9f}, {:.9f} - {:.9f}, {:.9f}".format(
                 *self.table.estimatedExtent
             )
 
@@ -722,7 +718,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
         # extent
         extent_str = None
         if self.table.extent and len(self.table.extent) == 4:
-            extent_str = "{:.9f}, {:.9f} - {:.9f}, " "{:.9f}".format(*self.table.extent)
+            extent_str = "{:.9f}, {:.9f} - {:.9f}, {:.9f}".format(*self.table.extent)
         elif (self.table.rowCount is not None and self.table.rowCount > 0) or (
             self.table.estimatedRowCount is not None
             and self.table.estimatedRowCount > 0

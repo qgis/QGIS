@@ -14,20 +14,18 @@ import http.server
 import os
 import socketserver
 import threading
+import unittest
 
+from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
-from qgis.core import QgsNetworkContentFetcher
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
 class TestQgsNetworkContentFetcher(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -22,7 +22,6 @@ An annotation item which renders text along a line geometry.
 #include "qgsannotationlinetextitem.h"
 %End
   public:
-
     QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve /Transfer/ );
 %Docstring
 Constructor for QgsAnnotationLineTextItem, with the specified ``curve``

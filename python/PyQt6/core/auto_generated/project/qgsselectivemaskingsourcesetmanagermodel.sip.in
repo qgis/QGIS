@@ -25,7 +25,6 @@ selective masking source sets manager.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Object,
@@ -55,7 +54,6 @@ Returns the model index corresponding to a ``set``.
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
-
 };
 
 
@@ -72,12 +70,10 @@ QSortFilterProxyModel subclass for
 #include "qgsselectivemaskingsourcesetmanagermodel.h"
 %End
   public:
-
     explicit QgsSelectiveMaskingSourceSetManagerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSelectiveMaskingSourceSetManagerProxyModel.
 %End
-
 };
 
 /************************************************************************

@@ -23,9 +23,9 @@ import os
 import time
 import warnings
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl, QFileInfo, QDir
 from qgis.gui import QgsDockWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QDir, QFileInfo, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 
@@ -39,7 +39,6 @@ with warnings.catch_warnings():
 
 
 class ResultsDock(QgsDockWidget, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)
@@ -83,7 +82,6 @@ class ResultsDock(QgsDockWidget, WIDGET):
 
 
 class TreeResultItem(QTreeWidgetItem):
-
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
         self.setIcon(0, result.icon)

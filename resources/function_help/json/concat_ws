@@ -1,0 +1,26 @@
+{
+  "name": "concat_ws",
+  "type": "function",
+  "groups": ["String"],
+  "description": "Concatenates all but first arguments with separators into a single string. The first parameter is used as a separator. NULL arguments are ignored.",
+  "variableLenArguments": true,
+  "arguments": [{
+    "arg": "separator",
+    "description": "separator to use when concatenating non-null values"
+  }, {
+    "arg": "string",
+    "syntaxOnly": true
+  }, {
+    "arg": "string2",
+    "syntaxOnly": true
+  }, {
+    "arg": "string",
+    "descOnly": true,
+    "description": "a string value"
+  }],
+  "examples": [{
+    "expression": "concat_ws(',', 'abcde', 2, NULL, 22)",
+    "returns": "'abcde,2,22'"
+  }],
+  "tags": ["empty", "converted", "numbers", "concatenates", "null", "strings", "several", "other", "values", "separator", "join"]
+}

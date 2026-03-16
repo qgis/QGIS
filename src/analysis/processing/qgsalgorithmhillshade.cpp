@@ -74,10 +74,7 @@ void QgsHillshadeAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
-  zFactorParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
-    }
-  );
+  zFactorParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } ) } );
   addParameter( zFactorParam.release() );
 
   addParameter( new QgsProcessingParameterNumber( u"AZIMUTH"_s, QObject::tr( "Azimuth (horizontal angle)" ), Qgis::ProcessingNumberParameterType::Double, 300, false, 0, 360 ) );

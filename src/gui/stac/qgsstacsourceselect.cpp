@@ -216,8 +216,7 @@ void QgsStacSourceSelect::btnEdit_clicked()
 
 void QgsStacSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -305,13 +304,17 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
       // collections endpoint should have a "data" relation according to spec but some servers don't
       // so let's be less strict and only check the href and optionally the media type
       if ( QUrl( l.href() ).path().endsWith( "/collections" ) && // allow query parameters in the url
-           ( l.mediaType().isEmpty() ||                          // media type is optional
-             l.mediaType() == "application/json"_L1 ||           // but if it's there it should be json or geojson
+           ( l.mediaType().isEmpty()
+             || // media type is optional
+             l.mediaType() == "application/json"_L1
+             || // but if it's there it should be json or geojson
              l.mediaType() == "application/geo+json"_L1 ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" &&                 // relation needs to be "search" according to spec
-                ( l.mediaType().isEmpty() ||                // media type is optional
-                  l.mediaType() == "application/json"_L1 || // but if it's there it should be json or geojson
+      else if ( l.relation() == "search" && // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty()
+                  || // media type is optional
+                  l.mediaType() == "application/json"_L1
+                  || // but if it's there it should be json or geojson
                   l.mediaType() == "application/geo+json"_L1 ) )
         mSearchUrl = l.href();
 
@@ -455,10 +458,7 @@ void QgsStacSourceSelect::search()
     }
     else
     {
-      dateString = u"%1/%2"_s.arg(
-        fromDate.isNull() ? u".."_s : fromDate.toString( Qt::ISODateWithMs ),
-        toDate.isNull() ? u".."_s : toDate.toString( Qt::ISODateWithMs )
-      );
+      dateString = u"%1/%2"_s.arg( fromDate.isNull() ? u".."_s : fromDate.toString( Qt::ISODateWithMs ), toDate.isNull() ? u".."_s : toDate.toString( Qt::ISODateWithMs ) );
     }
     q.addQueryItem( u"datetime"_s, dateString );
   }
@@ -570,9 +570,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   } );
 
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
-  connect( detailsAction, &QAction::triggered, this, [this, index] {
-    showItemDetails( index );
-  } );
+  connect( detailsAction, &QAction::triggered, this, [this, index] { showItemDetails( index ); } );
 
 
   if ( mapCanvas() )

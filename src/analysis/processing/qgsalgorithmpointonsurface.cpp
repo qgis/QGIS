@@ -85,11 +85,7 @@ QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
 
 void QgsPointOnSurfaceAlgorithm::initParameters( const QVariantMap & )
 {
-  auto allParts = std::make_unique<QgsProcessingParameterBoolean>(
-    u"ALL_PARTS"_s,
-    QObject::tr( "Create point on surface for each part" ),
-    false
-  );
+  auto allParts = std::make_unique<QgsProcessingParameterBoolean>( u"ALL_PARTS"_s, QObject::tr( "Create point on surface for each part" ), false );
   allParts->setIsDynamic( true );
   allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( u"All parts"_s, QObject::tr( "Create point on surface for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( u"INPUT"_s );

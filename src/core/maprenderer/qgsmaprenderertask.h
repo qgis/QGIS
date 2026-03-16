@@ -47,13 +47,12 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     Q_OBJECT
 
   public:
-
     //! \brief Error type
     enum ErrorType
     {
       ImageAllocationFail = 1, //!< Image allocation failure
-      ImageSaveFail, //!< Image save failure
-      ImageUnsupportedFormat //!< Format is unsupported on the platform \since QGIS 3.4
+      ImageSaveFail,           //!< Image save failure
+      ImageUnsupportedFormat   //!< Format is unsupported on the platform \since QGIS 3.4
     };
 
 #ifndef SIP_RUN
@@ -66,12 +65,15 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      *
      * Since QGIS 3.26 the optional \a flags argument can be used to control the task flags.
      */
-    QgsMapRendererTask( const QgsMapSettings &ms,
-                        const QString &fileName,
-                        const QString &fileFormat = QString( "PNG" ),
-                        bool forceRaster = false,
-                        QgsTask::Flags flags = QgsTask::CanCancel, bool geospatialPdf = false, const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails = QgsAbstractGeospatialPdfExporter::ExportDetails()
-                      );
+    QgsMapRendererTask(
+      const QgsMapSettings &ms,
+      const QString &fileName,
+      const QString &fileFormat = QString( "PNG" ),
+      bool forceRaster = false,
+      QgsTask::Flags flags = QgsTask::CanCancel,
+      bool geospatialPdf = false,
+      const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails = QgsAbstractGeospatialPdfExporter::ExportDetails()
+    );
 #else
 
     /**
@@ -79,18 +81,13 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      *
      * Since QGIS 3.26 the optional \a flags argument can be used to control the task flags.
      */
-    QgsMapRendererTask( const QgsMapSettings &ms,
-                        const QString &fileName,
-                        const QString &fileFormat = QString( "PNG" ),
-                        bool forceRaster = false,
-                        QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat = QString( "PNG" ), bool forceRaster = false, QgsTask::Flags flags = QgsTask::CanCancel );
 #endif
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.
      */
-    QgsMapRendererTask( const QgsMapSettings &ms,
-                        QPainter *p );
+    QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p );
 
     ~QgsMapRendererTask() override;
 
@@ -129,12 +126,10 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     void errorOccurred( int error );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     //! Prepares the job, doing the work which HAS to be done on the main thread in advance
     void prepare();
     bool mErrored = false;
@@ -168,8 +163,6 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QStringList mMapLayerOrder;
 
     int mError = 0;
-
-
 };
 
 // clazy:excludeall=qstring-allocations

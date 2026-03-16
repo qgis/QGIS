@@ -1,7 +1,0 @@
-from qgis_sip_project import QgisProject, QgisBindings
-
-class QgisServerBindings(QgisBindings):
-    name = "server"
-
-class QgisServerProject(QgisProject):
-    bindings_factories = [QgisServerBindings]

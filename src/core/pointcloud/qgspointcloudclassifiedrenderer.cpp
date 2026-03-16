@@ -17,7 +17,6 @@
 
 #include "qgspointcloudclassifiedrenderer.h"
 
-#include "qgscolorramp.h"
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgspointcloudblock.h"
@@ -34,16 +33,11 @@ QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &col
   , mPointSize( pointSize )
   , mLabel( label )
   , mRender( render )
-{
-}
+{}
 
 bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) const
 {
-  return mValue == other.value() &&
-         mColor == other.color() &&
-         mPointSize == other.pointSize() &&
-         mLabel == other.label() &&
-         mRender == other.renderState();
+  return mValue == other.value() && mColor == other.color() && mPointSize == other.pointSize() && mLabel == other.label() && mRender == other.renderState();
 }
 
 //
@@ -53,8 +47,7 @@ bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) con
 QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer( const QString &attributeName, const QgsPointCloudCategoryList &categories )
   : mAttribute( attributeName )
   , mCategories( categories )
-{
-}
+{}
 
 QString QgsPointCloudClassifiedRenderer::type() const
 {
@@ -178,7 +171,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
   if ( !pointAttributes.contains( mAttribute ) )
     return false;
   bool parsedCorrectly;
-  int attributeInt = pointAttributes[ mAttribute ].toInt( &parsedCorrectly );
+  int attributeInt = pointAttributes[mAttribute].toInt( &parsedCorrectly );
   if ( !parsedCorrectly )
     return false;
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
@@ -225,7 +218,8 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
 {
-  return QgsPointCloudCategoryList() << QgsPointCloudCategory( 0, QColor( "#BABABA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 0 ) )
+  return QgsPointCloudCategoryList()
+         << QgsPointCloudCategory( 0, QColor( "#BABABA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 0 ) )
          << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
          << QgsPointCloudCategory( 2, QColor( "#AA5500" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 2 ) )
          << QgsPointCloudCategory( 3, QColor( "#00AAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 3 ) )
@@ -396,5 +390,3 @@ QColor QgsPointCloudClassifiedRendererPreparedData::pointColor( const QgsPointCl
   QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
   return colors.value( attributeValue );
 }
-
-

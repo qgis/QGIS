@@ -19,8 +19,6 @@
 #define QGSMESHVECTORRENDERER_H
 
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
@@ -29,6 +27,8 @@
 
 #include <QSize>
 #include <QVector>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 class QgsInterpolatedLineColor;
@@ -39,7 +39,6 @@ class QgsMeshLayerRendererFeedback;
 class QgsMeshVectorRenderer
 {
   public:
-
     QgsMeshVectorRenderer() = default;
 
     /**
@@ -50,18 +49,20 @@ class QgsMeshVectorRenderer
     virtual void draw() = 0;
 
     //! Vector renderer factory. The returned renderer type depend on the settings
-    static QgsMeshVectorRenderer *makeVectorRenderer( const QgsTriangularMesh &m,
-        const QgsMeshDataBlock &datasetVectorValues,
-        const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-        const QVector<double> &datasetValuesMag,
-        double datasetMagMaximumValue,
-        double datasetMagMinimumValue,
-        QgsMeshDatasetGroupMetadata::DataType dataType,
-        const QgsMeshRendererVectorSettings &settings,
-        QgsRenderContext &context,
-        const QgsRectangle &layerExtent,
-        QgsMeshLayerRendererFeedback *feedBack,
-        const QSize &size );
+    static QgsMeshVectorRenderer *makeVectorRenderer(
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      const QSize &size
+    );
 };
 
 /**
@@ -76,15 +77,17 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 {
   public:
     //! Ctor
-    QgsMeshVectorArrowRenderer( const QgsTriangularMesh &m,
-                                const QgsMeshDataBlock &datasetValues,
-                                const QVector<double> &datasetValuesMag,
-                                double datasetMagMaximumValue,
-                                double datasetMagMinimumValue,
-                                QgsMeshDatasetGroupMetadata::DataType dataType,
-                                const QgsMeshRendererVectorSettings &settings,
-                                QgsRenderContext &context,
-                                QSize size );
+    QgsMeshVectorArrowRenderer(
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      QSize size
+    );
     ~QgsMeshVectorArrowRenderer() override;
 
     /**
@@ -94,27 +97,28 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 
   private:
     //! Draws for data defined on vertices
-    void drawVectorDataOnVertices( );
+    void drawVectorDataOnVertices();
     //! Draws for data defined on face centers
-    void drawVectorDataOnFaces( );
+    void drawVectorDataOnFaces();
     //! Draws for data defined on edge centers
-    void drawVectorDataOnEdges( );
+    void drawVectorDataOnEdges();
     //! Draws for data defined on edge centers or face centers
     void drawVectorDataOnPoints( const QSet<int> indexesToRender, const QVector<QgsMeshVertex> &points );
     //! Draws data on user-defined grid
-    void drawVectorDataOnGrid( );
+    void drawVectorDataOnGrid();
     //! Draws arrow from start point and vector data
     virtual void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
     //! Calculates the end point of the arrow based on start point and vector data
-    bool calcVectorLineEnd( QgsPointXY &lineEnd,
-                            double &vectorLength,
-                            double &cosAlpha,
-                            double &sinAlpha, //out
-                            const QgsPointXY &lineStart,
-                            double xVal,
-                            double yVal,
-                            double magnitude //in
-                          );
+    bool calcVectorLineEnd(
+      QgsPointXY &lineEnd,
+      double &vectorLength,
+      double &cosAlpha,
+      double &sinAlpha, //out
+      const QgsPointXY &lineStart,
+      double xVal,
+      double yVal,
+      double magnitude //in
+    );
 
     /**
      * Calculates the buffer size
@@ -138,7 +142,6 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     const QgsMeshRendererVectorSettings mCfg;
     QSize mOutputSize;
     QgsInterpolatedLineColor mVectorColoring;
-
 };
 
 /**
@@ -153,26 +156,26 @@ class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
 {
   public:
     //! Ctor
-    QgsMeshVectorWindBarbRenderer( const QgsTriangularMesh &m,
-                                   const QgsMeshDataBlock &datasetValues,
-                                   const QVector<double> &datasetValuesMag,
-                                   double datasetMagMaximumValue,
-                                   double datasetMagMinimumValue,
-                                   QgsMeshDatasetGroupMetadata::DataType dataType,
-                                   const QgsMeshRendererVectorSettings &settings,
-                                   QgsRenderContext &context,
-                                   QSize size );
+    QgsMeshVectorWindBarbRenderer(
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      QSize size
+    );
     ~QgsMeshVectorWindBarbRenderer() override;
 
   private:
     void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude ) override;
 
     QgsCoordinateTransform mGeographicTransform;
-
 };
 
 ///@endcond
-
 
 
 #endif // QGSMESHVECTORRENDERER_H

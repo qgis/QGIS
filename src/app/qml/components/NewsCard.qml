@@ -5,7 +5,7 @@ import QtQuick.Controls
 Rectangle {
   id: root
   implicitWidth: 340
-  implicitHeight: 160
+  implicitHeight: newsLayout.childrenRect.height + 32
   radius: 6
 
   property string title: ""
@@ -27,9 +27,12 @@ Rectangle {
   }
 
   ColumnLayout {
-    anchors.fill: parent
-    anchors.margins: 16
-    anchors.rightMargin: root.showCloseButton ? 36 : 16
+    id: newsLayout
+    width: root.width - (root.showCloseButton ? 52 : 32)
+    anchors.top: parent.top
+    anchors.topMargin: 16
+    anchors.left: parent.left
+    anchors.leftMargin: 16
     spacing: 8
 
     Text {
@@ -39,19 +42,14 @@ Rectangle {
       font.bold: true
       color: "#1a365d"
       wrapMode: Text.WordWrap
-      elide: Text.ElideRight
-      maximumLineCount: 2
     }
 
     Text {
       Layout.fillWidth: true
-      Layout.fillHeight: true
       text: root.description
       font.pointSize: Application.font.pointSize * 0.8
       color: "#4a5568"
       wrapMode: Text.WordWrap
-      elide: Text.ElideRight
-      maximumLineCount: 4
       lineHeight: 1.3
       linkColor: "#589632"
       
@@ -61,6 +59,7 @@ Rectangle {
     }
 
     Text {
+      Layout.fillWidth: true
       text: root.linkText
       font.pointSize: Application.font.pointSize * 0.8
       font.underline: mouseArea.containsMouse

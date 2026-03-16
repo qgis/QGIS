@@ -11,18 +11,17 @@ __date__ = "22/03/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtTest import QSignalSpy
 import unittest
 
 from qgis.gui import QgsCheckableComboBox
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCheckableComboBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsCheckableComboBox()

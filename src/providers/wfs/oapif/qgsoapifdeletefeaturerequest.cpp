@@ -21,8 +21,7 @@
 
 QgsOapifDeleteFeatureRequest::QgsOapifDeleteFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
-{
-}
+{}
 
 QString QgsOapifDeleteFeatureRequest::errorMessageWithReason( const QString &reason )
 {

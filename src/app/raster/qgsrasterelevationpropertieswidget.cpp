@@ -90,14 +90,10 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mCalculateFixedRangePerBandButton->setPopupMode( QToolButton::InstantPopup );
   QAction *calculateLowerAction = new QAction( "Calculate Lower by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateLowerAction );
-  connect( calculateLowerAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( false );
-  } );
+  connect( calculateLowerAction, &QAction::triggered, this, [this] { calculateRangeByExpression( false ); } );
   QAction *calculateUpperAction = new QAction( "Calculate Upper by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateUpperAction );
-  connect( calculateUpperAction, &QAction::triggered, this, [this] {
-    calculateRangeByExpression( true );
-  } );
+  connect( calculateUpperAction, &QAction::triggered, this, [this] { calculateRangeByExpression( true ); } );
 
   syncToLayer( layer );
 
@@ -220,12 +216,8 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       break;
   }
 
-  mLowerExpressionWidget->setExpression(
-    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression()
-  );
-  mUpperExpressionWidget->setExpression(
-    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression()
-  );
+  mLowerExpressionWidget->setExpression( props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression() );
+  mUpperExpressionWidget->setExpression( props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression() );
 
   mDynamicRangePerBandModel->setLowerExpression( mLowerExpressionWidget->expression() );
   mDynamicRangePerBandModel->setUpperExpression( mUpperExpressionWidget->expression() );
@@ -235,12 +227,8 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   {
     bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
   }
-  mLowerExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
-    return createExpressionContextForBand( value.toInt() );
-  } );
-  mUpperExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
-    return createExpressionContextForBand( value.toInt() );
-  } );
+  mLowerExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext { return createExpressionContextForBand( value.toInt() ); } );
+  mUpperExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext { return createExpressionContextForBand( value.toInt() ); } );
 
   mBlockUpdates = false;
 }
@@ -351,9 +339,7 @@ void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUppe
   {
     bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
   }
-  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
-    return createExpressionContextForBand( value.toInt() );
-  } );
+  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext { return createExpressionContextForBand( value.toInt() ); } );
 
   if ( dlg.exec() )
   {
@@ -382,8 +368,12 @@ QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
   bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable(
+    QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) )
+  );
+  bandScope->addVariable(
+    QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) )
+  );
   context.appendScope( bandScope );
   context.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
   return context;
@@ -432,8 +422,7 @@ QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHi
 
 QgsRasterBandFixedElevationRangeModel::QgsRasterBandFixedElevationRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsRasterBandFixedElevationRangeModel::columnCount( const QModelIndex & ) const
 {
@@ -630,8 +619,7 @@ void QgsRasterBandFixedElevationRangeModel::setLayerData( QgsRasterLayer *layer,
 
 QgsRasterBandDynamicElevationRangeModel::QgsRasterBandDynamicElevationRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsRasterBandDynamicElevationRangeModel::columnCount( const QModelIndex & ) const
 {
@@ -714,8 +702,12 @@ QVariant QgsRasterBandDynamicElevationRangeModel::data( const QModelIndex &index
           context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
           QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
           bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+          bandScope->addVariable(
+            QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) )
+          );
+          bandScope->addVariable(
+            QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) )
+          );
           context.appendScope( bandScope );
 
           return expression.evaluate( &context );
@@ -794,8 +786,7 @@ void QgsRasterBandDynamicElevationRangeModel::setUpperExpression( const QString 
 
 QgsFixedElevationRangeDelegate::QgsFixedElevationRangeDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsFixedElevationRangeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {

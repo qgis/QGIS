@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_TYPE_CHECK_H
 #define QGS_GEOMETRY_TYPE_CHECK_H
 
 #include "qgssinglegeometrycheck.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis
@@ -37,8 +38,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
     QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, Qgis::WkbType flatType )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation )
       , mFlatType( flatType )
-    {
-    }
+    {}
 
     bool isEqual( const QgsSingleGeometryCheckError *other ) const override;
 

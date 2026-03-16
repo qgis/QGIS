@@ -226,9 +226,10 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
       {
         if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
         {
-          QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
-                                                                                           : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
-                                                                                                                                               : layer->name();
+          QString title = !layer->metadata().title().isEmpty()                ? layer->metadata().title()
+                          : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
+                          : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
+                                                                              : layer->name();
 
           title = "<b>" + title.toHtmlEscaped() + "</b>";
 
@@ -528,14 +529,22 @@ void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString
   // Mark the node so that we know which custom nodes correspond to elevation profile sources
   customNode->setCustomProperty( u"source"_s, QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
 
-  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( 0, customNode.release() );
   if ( !node )
-    QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
+    QgsDebugError( u"The custom node with id '%1' could not be added!"_s.arg( sourceId ) );
 }
 
 void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
 {
-  mLayerTree->removeCustomNode( sourceId );
+  QgsLayerTreeCustomNode *node = mLayerTree->findCustomNode( sourceId );
+  if ( node )
+  {
+    qobject_cast< QgsLayerTreeGroup * >( node->parent() )->removeChildNode( node );
+  }
+  else
+  {
+    QgsDebugError( u"The custom node with id '%1' was not found and couldn't be removed!"_s.arg( sourceId ) );
+  }
 }
 
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()

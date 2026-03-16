@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 #include "qgsvirtualpointcloudprovider.h"
 
@@ -61,18 +62,8 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   if ( provider()->overview() )
   {
     // use -2 as a special identifier for overview files in chunked entity
-    mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
-      mapSettings(),
-      mLayer,
-      -2,
-      mCoordinateTransform,
-      dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
-      mMaximumScreenSpaceError,
-      false,
-      mZValueScale,
-      mZValueOffset,
-      mPointBudget
-    );
+    mOverviewEntity
+      = new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, -2, mCoordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, false, mZValueScale, mZValueOffset, mPointBudget );
     mOverviewEntity->setParent( this );
     connect( mOverviewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
     connect( mOverviewEntity, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
@@ -116,18 +107,8 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   if ( !si.index() || mBboxes.at( i ).isEmpty() || !si.index().isValid() )
     return;
 
-  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
-    mapSettings(),
-    mLayer,
-    i,
-    mCoordinateTransform,
-    static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
-    mMaximumScreenSpaceError,
-    mShowBoundingBoxes,
-    mZValueScale,
-    mZValueOffset,
-    mPointBudget
-  );
+  QgsPointCloudLayerChunkedEntity *newChunkedEntity
+    = new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, i, mCoordinateTransform, static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, mShowBoundingBoxes, mZValueScale, mZValueOffset, mPointBudget );
 
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
   newChunkedEntity->setParent( this );
@@ -183,7 +164,9 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   }
   updateBboxEntity();
 
-  if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+  if ( provider()->overview()
+       && rendererBehavior
+       && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
     // no need to render the overview if all sub indexes are shown
     if ( !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size() )

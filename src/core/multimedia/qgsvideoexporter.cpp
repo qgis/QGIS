@@ -42,13 +42,10 @@ QgsVideoExporter::QgsVideoExporter( const QString &filename, QSize size, double 
   , mSize( size )
   , mFramesPerSecond( framesPerSecond )
   , mFrameDurationUs( static_cast< qint64>( 1000000 / framesPerSecond ) )
-{
-
-}
+{}
 
 QgsVideoExporter::~QgsVideoExporter()
-{
-}
+{}
 
 void QgsVideoExporter::setFeedback( QgsFeedback *feedback )
 {
@@ -67,7 +64,7 @@ void QgsVideoExporter::setInputFiles( const QStringList &files )
 
 void QgsVideoExporter::setInputFilesByPattern( const QString &directory, const QString &pattern )
 {
-  QDirIterator it( directory, pattern.isEmpty() ? QStringList() : QStringList{ pattern }, QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags );
+  QDirIterator it( directory, pattern.isEmpty() ? QStringList() : QStringList { pattern }, QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags );
   mInputFiles.clear();
   while ( it.hasNext() )
   {
@@ -155,9 +152,7 @@ void QgsVideoExporter::writeVideo()
 void QgsVideoExporter::feedFrames()
 {
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
-  if ( !mRecorder
-       || !mVideoInput
-       || mRecorder->recorderState() != QMediaRecorder::RecorderState::RecordingState )
+  if ( !mRecorder || !mVideoInput || mRecorder->recorderState() != QMediaRecorder::RecorderState::RecordingState )
     return;
 
   while ( mCurrentFrameIndex < mInputFiles.count() )

@@ -13,10 +13,10 @@ __copyright__ = "Copyright 2018, Nyall Dawson"
 import math
 import os
 import struct
-import numpy as np
+import unittest
 
+import numpy as np
 from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
     QgsPointXY,
@@ -24,11 +24,10 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 from raster_provider_test_base import RasterProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -39,7 +38,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
-
     def get_layer(self, test_id: str) -> QgsRasterLayer:
         return QgsRasterLayer(
             self.get_test_data_path("landsat_4326.tif").as_posix(), test_id
@@ -130,6 +128,53 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(parts, {"path": "/my/raster.gpkg", "layerName": "mylayer"})
         encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
         self.assertEqual(encodedUri, uri)
+
+    def testDecodeEncodeUriOpenFileGDB(self):
+        """Test decodeUri/encodeUri OpenFileGDB support"""
+        uri = "/my/raster.gdb"
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(parts, {"path": "/my/raster.gdb", "layerName": None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(encodedUri, uri)
+
+        uri = "OpenFileGDB:/my/raster.gdb"
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(parts, {"path": "/my/raster.gdb", "layerName": None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(encodedUri, "/my/raster.gdb")
+
+        uri = 'OpenFileGDB:"/my/raster.gdb"'
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(parts, {"path": "/my/raster.gdb", "layerName": None})
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(encodedUri, "/my/raster.gdb")
+
+        uri = "OpenFileGDB:/my/raster.gdb:mylayer"
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(parts, {"path": "/my/raster.gdb", "layerName": "mylayer"})
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(encodedUri, 'OpenFileGDB:"/my/raster.gdb":mylayer')
+
+        uri = 'OpenFileGDB:"/my/raster.gdb":mylayer'
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(parts, {"path": "/my/raster.gdb", "layerName": "mylayer"})
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(encodedUri, 'OpenFileGDB:"/my/raster.gdb":mylayer')
+
+        uri = 'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall'
+        parts = QgsProviderRegistry.instance().decodeUri("gdal", uri)
+        self.assertEqual(
+            parts,
+            {
+                "path": "e:\\EUSeaMap_2023_CaspianSea\\EUSeaMap_2023_CaspianSea.gdb",
+                "layerName": "EUSM2023_caspian_confidence_classification_overall",
+            },
+        )
+        encodedUri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        self.assertEqual(
+            encodedUri,
+            'OpenFileGDB:"e:\EUSeaMap_2023_CaspianSea\EUSeaMap_2023_CaspianSea.gdb":EUSM2023_caspian_confidence_classification_overall',
+        )
 
     def testDecodeEncodeUriOptions(self):
         """Test decodeUri/encodeUri options support"""
@@ -637,6 +682,45 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         # Get band data type and ensure it's byte
         band_type = provider.sourceDataType(2)
         self.assertEqual(band_type, Qgis.DataType.Byte)
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 11, 0),
+        "GDAL 3.11.0 required",
+    )
+    def testFloat16(self):
+        """Test Float16 support (as Float32)"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), "testFloat16.tif")
+        ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Float16)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack("e" * 4, 1.5, 127.5, 0, -128.5))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfile, "test")
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float32)
+
+        extent = raster_layer.extent()
+        block = raster_layer.dataProvider().block(1, extent, 2, 2)
+
+        full_content = [1.5, 127.5, 0, -128.5]
+        self.checkBlockContents(block, full_content)
+
+        pos = QgsPointXY(0, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[0])
+
+        pos = QgsPointXY(1, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[1])
+
+        pos = QgsPointXY(0, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[2])
+
+        pos = QgsPointXY(1, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[3])
 
 
 if __name__ == "__main__":

@@ -22,33 +22,28 @@
 #include <memory>
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsgeos.h"
-#include "qgslinesymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
-#include "qgsvector3d.h"
-
-class QgsProfileRequest;
-class QgsCurve;
-class QgsPointCloudLayer;
-class QgsAbstractTerrainProvider;
-class QgsProfileSnapContext;
-class QgsPointCloudRenderer;
-class QgsPointCloudNodeId;
-class QgsPointCloudIndex;
-class QgsPointCloudRequest;
-class QgsPointCloudBlock;
-class QgsGeos;
-class QgsPreparedPointCloudRendererData;
 
 #define SIP_NO_FILE
+
+class QgsAbstractTerrainProvider;
+class QgsCurve;
+class QgsGeos;
+class QgsPointCloudBlock;
+class QgsPointCloudLayer;
+class QgsPointCloudNodeId;
+class QgsPointCloudRenderer;
+class QgsPointCloudRequest;
+class QgsPreparedPointCloudRendererData;
+class QgsProfileRequest;
+class QgsProfileSnapContext;
 
 
 /**
@@ -60,20 +55,18 @@ class QgsPreparedPointCloudRendererData;
  */
 class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileResults
 {
-
   public:
-
     QgsPointCloudLayerProfileResults();
     ~QgsPointCloudLayerProfileResults() override;
 
     struct PointResult
     {
-      double x = 0;
-      double y = 0;
-      double z = 0;
-      double distanceAlongCurve = 0;
-      double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
-      QRgb color;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double distanceAlongCurve = 0;
+        double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
+        QRgb color;
     };
 
     /**
@@ -99,7 +92,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
-    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -107,7 +100,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 
   private:
-
     GEOSSTRtree *mPointIndex = nullptr;
     QPointer< QgsPointCloudLayer > mLayer;
     QgsCoordinateReferenceSystem mCurveCrs;
@@ -139,7 +131,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
     virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
 
   protected:
-
     /**
      * Collects point cloud data along a curve within the specified range and tolerance.
      *
@@ -214,7 +205,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
      * \param zRange Vertical range for filtering points.
      * \return Number of successfully processed nodes.
      */
-    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
 
     /**
      * Visits a point cloud block and collects points within the given Z range and search geometry.
@@ -267,9 +258,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
  */
 class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
-
   public:
-
     /**
      * Constructor for QgsPointCloudLayerProfileGenerator.
      */
@@ -309,9 +298,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayer
  */
 class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -340,9 +327,7 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstr
  */
 class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
-
   public:
-
     /**
      * Constructor for QgsTriangulatedPointCloudLayerProfileGenerator.
      */

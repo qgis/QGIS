@@ -35,21 +35,20 @@
  * See details in QEP #17
  ****************************************************************************/
 
-#define SIP_NO_FILE
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransform.h"
 
+#define SIP_NO_FILE
+
 class QgsCoordinateTransformContextPrivate : public QSharedData
 {
-
   public:
-
     QgsCoordinateTransformContextPrivate() = default;
 
     QgsCoordinateTransformContextPrivate( const QgsCoordinateTransformContextPrivate &other )
       : QSharedData( other )
-      , mLock{}
+      , mLock {}
     {
       other.mLock.lockForRead();
       mSourceDestDatumTransforms = other.mSourceDestDatumTransforms;
@@ -66,18 +65,15 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
         bool allowFallback = true;
 
         // TODO c++20 - replace with = default
-        bool operator==( const OperationDetails &other ) const
-        {
-          return operation == other.operation && allowFallback == other.allowFallback;
-        }
+        bool operator==( const OperationDetails &other ) const { return operation == other.operation && allowFallback == other.allowFallback; }
     };
     QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, OperationDetails > mSourceDestDatumTransforms;
 
     //! Mutex for making QgsCoordinateTransformContextPrivate thread safe
-    mutable QReadWriteLock mLock{};
+    mutable QReadWriteLock mLock {};
 
   private:
-    QgsCoordinateTransformContextPrivate &operator= ( const QgsCoordinateTransformContextPrivate & ) = delete;
+    QgsCoordinateTransformContextPrivate &operator=( const QgsCoordinateTransformContextPrivate & ) = delete;
 };
 
 
@@ -85,7 +81,3 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
 
 
 #endif // QGSCOORDINATETRANSFORMCONTEXT_PRIVATE_H
-
-
-
-

@@ -18,12 +18,13 @@
 #ifndef QGSMESHLAYERLABELPROVIDER_H
 #define QGSMESHLAYERLABELPROVIDER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
+
+#define SIP_NO_FILE
 
 class QgsMeshLayer;
 
@@ -41,13 +42,8 @@ class QgsMeshLayer;
 class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
 {
   public:
-
     //! Convenience constructor to initialize the provider from given mesh layer
-    explicit QgsMeshLayerLabelProvider( QgsMeshLayer *layer,
-                                        const QString &providerId,
-                                        const QgsPalLayerSettings *settings,
-                                        const QString &layerName = QString(),
-                                        bool labelFaces = false );
+    explicit QgsMeshLayerLabelProvider( QgsMeshLayer *layer, const QString &providerId, const QgsPalLayerSettings *settings, const QString &layerName = QString(), bool labelFaces = false );
 
     ~QgsMeshLayerLabelProvider() override;
 

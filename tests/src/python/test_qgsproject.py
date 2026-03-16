@@ -14,43 +14,42 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 import codecs
 import os
 import re
+import unittest
 from io import BytesIO
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
-from lxml import etree as et
 
+from lxml import etree as et
 from osgeo import ogr
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
+    QgsElevationProfile,
     QgsExpressionContextUtils,
     QgsFeature,
     QgsGeometry,
-    QgsLayerNotesUtils,
     QgsLabelingEngineSettings,
+    QgsLayerNotesUtils,
     QgsMapLayer,
     QgsProject,
     QgsProjectColorScheme,
     QgsProjectDirtyBlocker,
     QgsRasterLayer,
-    QgsSettings,
+    QgsSelectiveMaskingSourceSet,
+    QgsSettingsTree,
     QgsUnitTypes,
     QgsVectorLayer,
-    QgsElevationProfile,
-    QgsSelectiveMaskingSourceSet,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from utilities import unitTestDataPath, getTempfilePath
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
+from utilities import getTempfilePath, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -61,7 +60,6 @@ def createLayer(name):
 
 
 class TestQgsProject(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
@@ -1791,13 +1789,14 @@ class TestQgsProject(QgisTestCase):
 
     def testBackgroundColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_canvas_color_red", 255))
-        green = int(s.value("qgis/default_canvas_color_green", 255))
-        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-canvas-color")
+            .valueAsVariant()
+        )
         # test default canvas background color
-        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        self.assertEqual(p.backgroundColor(), defaultColor)
         spy = QSignalSpy(p.backgroundColorChanged)
         p.setBackgroundColor(QColor(0, 0, 0))
         self.assertEqual(len(spy), 1)
@@ -1809,14 +1808,14 @@ class TestQgsProject(QgisTestCase):
 
     def testSelectionColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_selection_color_red", 255))
-        green = int(s.value("qgis/default_selection_color_green", 255))
-        blue = int(s.value("qgis/default_selection_color_blue", 0))
-        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-selection-color")
+            .valueAsVariant()
+        )
         # test default feature selection color
-        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        self.assertEqual(p.selectionColor(), defaultColor)
         spy = QSignalSpy(p.selectionColorChanged)
         p.setSelectionColor(QColor(0, 0, 0, 50))
         self.assertEqual(len(spy), 1)

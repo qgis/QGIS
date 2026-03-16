@@ -47,7 +47,8 @@ class TestQgsInvertedPolygon : public QgsTest
 
   public:
     TestQgsInvertedPolygon()
-      : QgsTest( u"Inverted Polygon Renderer Tests"_s, u"symbol_invertedpolygon"_s ) {}
+      : QgsTest( u"Inverted Polygon Renderer Tests"_s, u"symbol_invertedpolygon"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

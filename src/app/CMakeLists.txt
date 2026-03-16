@@ -133,13 +133,11 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationoverlay.cpp
 
   pointcloud/qgspointcloudelevationpropertieswidget.cpp
-  pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
   tiledscene/qgstiledsceneelevationpropertieswidget.cpp
-  tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledscenelayerstylewidget.cpp
 
   vertextool/qgslockedfeature.cpp
@@ -521,7 +519,6 @@ qt_add_qml_module(qgis_app
         /qt/qml/
     RESOURCES
         qml/images/basemap.jpg
-        qml/images/blank.jpg
         qml/images/close.svg
         qml/images/love.svg
         qml/images/qgis.svg

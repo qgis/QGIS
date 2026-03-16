@@ -34,9 +34,10 @@ namespace Qt3DCore
   class QEntity;
 }
 
-#define SIP_NO_FILE
 
 #include <QObject>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

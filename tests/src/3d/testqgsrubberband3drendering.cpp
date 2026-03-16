@@ -20,13 +20,13 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
 #include "qgsrubberband3d.h"
-#include "qgsstyle.h"
 #include "qgstest.h"
 
 #include <QString>
@@ -38,7 +38,8 @@ class TestQgsRubberBand3DRendering : public QgsTest
     Q_OBJECT
   public:
     TestQgsRubberBand3DRendering()
-      : QgsTest( u"Rubberband 3D Rendering Tests"_s, u"3d"_s ) {}
+      : QgsTest( u"Rubberband 3D Rendering Tests"_s, u"3d"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -75,7 +76,12 @@ void TestQgsRubberBand3DRendering::initTestCase()
   mProject->addMapLayer( mLayer );
   mProject->setCrs( mLayer->crs() );
 
-  const QVector<QgsPoint> *points = new QVector<QgsPoint>( { QgsPoint( mLayer->extent().center().x() - 25, mLayer->extent().center().y() - 25, 0 ), QgsPoint( mLayer->extent().center().x() + 25, mLayer->extent().center().y() - 25, 0 ), QgsPoint( mLayer->extent().center().x() + 25, mLayer->extent().center().y() + 25, 0 ), QgsPoint( mLayer->extent().center().x() - 25, mLayer->extent().center().y() + 25, 0 ) } );
+  const QVector<QgsPoint> *points = new QVector<QgsPoint>(
+    { QgsPoint( mLayer->extent().center().x() - 25, mLayer->extent().center().y() - 25, 0 ),
+      QgsPoint( mLayer->extent().center().x() + 25, mLayer->extent().center().y() - 25, 0 ),
+      QgsPoint( mLayer->extent().center().x() + 25, mLayer->extent().center().y() + 25, 0 ),
+      QgsPoint( mLayer->extent().center().x() - 25, mLayer->extent().center().y() + 25, 0 ) }
+  );
   mPoints = new QgsLineString( *points );
 }
 

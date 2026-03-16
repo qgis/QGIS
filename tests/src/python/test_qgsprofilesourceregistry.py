@@ -11,9 +11,8 @@ __date__ = "03/05/2024"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QRectF, Qt, QPointF
-from qgis.PyQt.QtGui import QColor, QPainterPath, QPolygonF
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsAbstractProfileGenerator,
@@ -39,9 +38,10 @@ from qgis.core import (
     QgsTextFormat,
 )
 from qgis.gui import QgsElevationProfileCanvas
-
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QPointF, QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QPainterPath, QPolygonF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -211,7 +211,6 @@ class MyProfileSource(QgsAbstractProfileSource):
 
 
 class TestQgsProfileSourceRegistry(QgisTestCase):
-
     def test_register_unregister_legacy_source(self):
         initial_sources = QgsApplication.profileSourceRegistry().profileSources()
 

@@ -41,8 +41,7 @@ QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanv
   : QgsPanelWidget( parent )
   , mLayer( layer )
   , mMapCanvas( canvas )
-{
-}
+{}
 
 void QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )
 {
@@ -50,5 +49,4 @@ void QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( const QgsMapLayerC
 }
 
 void QgsMapLayerConfigWidget::focusDefaultWidget()
-{
-}
+{}

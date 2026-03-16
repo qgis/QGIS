@@ -13,27 +13,26 @@ __date__ = "12/05/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import math
+import unittest
 
-from qgis.PyQt.QtCore import QT_VERSION_STR, QSizeF
 from qgis.core import (
     Qgis,
     QgsFontUtils,
+    QgsMargins,
     QgsStringUtils,
     QgsTextBlock,
     QgsTextCharacterFormat,
     QgsTextDocument,
-    QgsTextFragment,
     QgsTextFormat,
-    QgsMargins,
+    QgsTextFragment,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QT_VERSION_STR, QSizeF
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTextDocument(QgisTestCase):
-
     def testConstructors(self):
         # empty
         doc = QgsTextDocument()

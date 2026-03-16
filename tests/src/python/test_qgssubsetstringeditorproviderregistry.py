@@ -10,7 +10,8 @@ __author__ = "Even Rouault"
 __date__ = "15/11/2020"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
+import unittest
+
 from qgis.core import QgsVectorLayer
 from qgis.gui import (
     QgsGui,
@@ -18,21 +19,19 @@ from qgis.gui import (
     QgsSubsetStringEditorInterface,
     QgsSubsetStringEditorProvider,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class SubsetStringDialog(QgsSubsetStringEditorInterface):
-
     def __init__(self, parent=None, fl=Qt.WindowFlags()):
         super().__init__(parent, fl)
         self.setObjectName("my_custom_dialog")
 
 
 class TestProvider(QgsSubsetStringEditorProvider):
-
     def __init__(self, name):
         super().__init__()
         self._name = name
@@ -48,7 +47,6 @@ class TestProvider(QgsSubsetStringEditorProvider):
 
 
 class TestQgsSubsetStringEditorProviderRegistry(QgisTestCase):
-
     def testGuiRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsGui.subsetStringEditorProviderRegistry())

@@ -22,21 +22,21 @@ __copyright__ = "(C) 2025 by Jan Caha"
 import os
 from pathlib import Path
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
     QgsProcessingMultiStepFeedback,
     QgsProcessingOutputMultipleLayers,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterFolderDestination,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
     QgsRasterLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -182,7 +182,6 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(len(self.inputLayers), feedback)
 
         for i, inputLayer in enumerate(self.inputLayers):
-
             if feedback.isCanceled():
                 return {}
 

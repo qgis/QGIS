@@ -15,7 +15,6 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
-#define SIP_NO_FILE
 
 #include <geos_c.h>
 
@@ -27,6 +26,8 @@
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgsmargins.h"
+
+#define SIP_NO_FILE
 
 namespace pal
 {
@@ -58,7 +59,6 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-
     /**
      * Constructor for QgsLabelFeature.
      *
@@ -817,7 +817,6 @@ class CORE_EXPORT QgsLabelFeature
     Qgis::LabelPolygonPlacementFlags mPolygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
-
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
     geos::unique_ptr mPermissibleZoneGeos;
 
@@ -849,7 +848,6 @@ class CORE_EXPORT QgsLabelFeature
     double mMinimumSize = 0.0;
 
     Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
-
 };
 
 #endif // QGSLABELFEATURE_H

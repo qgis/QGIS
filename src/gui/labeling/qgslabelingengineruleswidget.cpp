@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 
 QgsLabelingEngineRulesModel::QgsLabelingEngineRulesModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsLabelingEngineRulesModel::flags( const QModelIndex &index ) const
 {
@@ -283,14 +282,10 @@ void QgsLabelingEngineRulesWidget::createTypesMenu()
       continue;
 
     QAction *action = new QAction( QgsApplication::labelingEngineRuleRegistry()->create( id )->displayType() );
-    connect( action, &QAction::triggered, this, [this, id] {
-      createRule( id );
-    } );
+    connect( action, &QAction::triggered, this, [this, id] { createRule( id ); } );
     actions << action;
   }
-  std::sort( actions.begin(), actions.end(), []( const QAction *a, const QAction *b ) -> bool {
-    return QString::localeAwareCompare( a->text(), b->text() ) < 0;
-  } );
+  std::sort( actions.begin(), actions.end(), []( const QAction *a, const QAction *b ) -> bool { return QString::localeAwareCompare( a->text(), b->text() ) < 0; } );
   mAddRuleMenu->addActions( actions );
 }
 
@@ -422,9 +417,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s ); } );
 }
 
 void QgsLabelingEngineRulesDialog::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )

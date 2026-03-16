@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMFIXGEOMETRYDUPLICATENODES_H
 #define QGSALGORITHMFIXGEOMETRYDUPLICATENODES_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

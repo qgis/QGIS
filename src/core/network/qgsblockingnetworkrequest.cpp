@@ -79,10 +79,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRe
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
 {
-  mPayloadData = data;
-  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
-  mPayloadData = nullptr;
-  return res;
+  mPayloadDataVariant = data;
+  return doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QHttpMultiPart *data, bool forceRefresh, QgsFeedback *feedback )
+{
+  mPayloadDataVariant = data;
+  return doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
@@ -100,10 +104,8 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkReq
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
-  mPayloadData = data;
-  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Put, request, true, feedback );
-  mPayloadData = nullptr;
-  return res;
+  mPayloadDataVariant = data;
+  return doRequest( Qgis::HttpMethod::Put, request, true, feedback );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )
@@ -120,7 +122,19 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
       break;
 
     case Qgis::HttpMethod::Post:
-      mReply = QgsNetworkAccessManager::instance()->post( request, mPayloadData );
+      if ( std::holds_alternative<QHttpMultiPart *>( mPayloadDataVariant ) )
+      {
+        mReply = QgsNetworkAccessManager::instance()->post( request, std::get<QHttpMultiPart *>( mPayloadDataVariant ) );
+      }
+      else if ( std::holds_alternative<QIODevice *>( mPayloadDataVariant ) )
+      {
+        mReply = QgsNetworkAccessManager::instance()->post( request, std::get<QIODevice *>( mPayloadDataVariant ) );
+      }
+      else
+      {
+        // should not happen, but might if someone extends the variant type without updating this code
+        QgsDebugError( QString( "Not implemented std::variant type" ) );
+      }
       break;
 
     case Qgis::HttpMethod::Head:
@@ -128,7 +142,7 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
       break;
 
     case Qgis::HttpMethod::Put:
-      mReply = QgsNetworkAccessManager::instance()->put( request, mPayloadData );
+      mReply = QgsNetworkAccessManager::instance()->put( request, std::get<QIODevice *>( mPayloadDataVariant ) );
       break;
 
     case Qgis::HttpMethod::Delete:
@@ -153,7 +167,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
   mForceRefresh = forceRefresh;
   mReplyContent.clear();
 
-  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+  if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
   {
     mErrorCode = NetworkError;
     mErrorMessage = errorMessageFailedAuth();
@@ -181,8 +195,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  const std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
-  {
+  const std::function<void()> downloaderFunction = [this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread]() {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
     Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
@@ -220,8 +233,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
       if ( request.hasRawHeader( "Range" ) )
         connect( mReply, &QNetworkReply::metaDataChanged, this, &QgsBlockingNetworkRequest::abortIfNotPartialContentReturned, Qt::DirectConnection );
 
-      auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty ]()
-      {
+      auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty]() {
         // when this method is called we have "produced" a single authentication request -- so the buffer is now full
         // and it's time for the "consumer" (main thread) to do its part
         waitConditionMutex.lock();
@@ -356,7 +368,6 @@ void QgsBlockingNetworkRequest::replyFinished()
 {
   if ( !mIsAborted && mReply )
   {
-
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( u"reply OK"_s, 2 );

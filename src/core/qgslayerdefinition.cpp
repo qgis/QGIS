@@ -42,7 +42,9 @@
 
 using namespace Qt::StringLiterals;
 
-bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
+bool QgsLayerDefinition::loadLayerDefinition(
+  const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint
+)
 {
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -69,7 +71,15 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
   return loadLayerDefinition( doc, project, rootGroup, errorMessage, context, insertMethod, insertPoint );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
+bool QgsLayerDefinition::loadLayerDefinition(
+  QDomDocument doc,
+  QgsProject *project,
+  QgsLayerTreeGroup *rootGroup,
+  QString &errorMessage,
+  QgsReadWriteContext &context,
+  Qgis::LayerTreeInsertionMethod insertMethod,
+  const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint
+)
 {
   errorMessage.clear();
 
@@ -90,7 +100,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     QDomNode layersNode = doc.elementsByTagName( u"maplayers"_s ).at( 0 );
     // replace old children with new ones
     QDomNode childNode = layersNode.firstChild();
-    for ( int i = 0; ! childNode.isNull(); i++ )
+    for ( int i = 0; !childNode.isNull(); i++ )
     {
       layersNode.replaceChild( clonedSorted.at( i ), childNode );
       childNode = childNode.nextSibling();
@@ -113,7 +123,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     // Replace IDs for map layers
     const QDomNodeList ids = doc.elementsByTagName( u"id"_s );
     QDomNode idnode = ids.at( 0 );
-    for ( int j = 0; ! idnode.isNull() ; ++j )
+    for ( int j = 0; !idnode.isNull(); ++j )
     {
       idnode = ids.at( j );
       const QDomElement idElem = idnode.toElement();
@@ -227,7 +237,7 @@ bool QgsLayerDefinition::exportLayerDefinition( const QString &path, const QList
 
 bool QgsLayerDefinition::exportLayerDefinition( const QString &p, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage )
 {
-  const QString path = QgsFileUtils::ensureFileNameHasExtension( p, { u"qlr"_s} );
+  const QString path = QgsFileUtils::ensureFileNameHasExtension( p, { u"qlr"_s } );
 
   QFile file( path );
   if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
@@ -273,9 +283,9 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   const QList<QgsLayerTreeLayer *> layers = root.findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( ! layer->layer() )
+    if ( !layer->layer() )
     {
-      QgsDebugMsgLevel( u"Not a valid map layer: skipping %1"_s.arg( layer->name( ) ), 4 );
+      QgsDebugMsgLevel( u"Not a valid map layer: skipping %1"_s.arg( layer->name() ), 4 );
       continue;
     }
     QDomElement layerelm = doc.createElement( u"maplayer"_s );
@@ -319,7 +329,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
     layerElem = document.documentElement().firstChildElement( u"maplayers"_s ).firstChildElement( u"maplayer"_s );
   }
 
-  while ( ! layerElem.isNull() )
+  while ( !layerElem.isNull() )
   {
     const QString type = layerElem.attribute( u"type"_s );
     QgsMapLayer *layer = nullptr;
@@ -462,7 +472,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
       layersToSort << qMakePair( id, layerElem );
       mDependentLayerIds.insert( id );
     }
-    layerElem = layerElem.nextSiblingElement( );
+    layerElem = layerElem.nextSiblingElement();
   }
 
   // check that all dependencies are present
@@ -477,10 +487,10 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
         // some dependencies are not satisfied
         mHasMissingDependency = true;
         layerElem = firstElement;
-        while ( ! layerElem.isNull() )
+        while ( !layerElem.isNull() )
         {
           mSortedLayerNodes << layerElem;
-          layerElem = layerElem.nextSiblingElement( );
+          layerElem = layerElem.nextSiblingElement();
         }
         mSortedLayerIds = layerIds;
         return;
@@ -547,8 +557,8 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
 
   QDomDocument doc;
   QFile pFile( qgsProjectFile );
-  ( void )pFile.open( QIODevice::ReadOnly );
-  ( void )doc.setContent( &pFile );
+  ( void ) pFile.open( QIODevice::ReadOnly );
+  ( void ) doc.setContent( &pFile );
   init( doc );
 }
 
@@ -556,5 +566,3 @@ bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &laye
 {
   return mDependentLayerIds.contains( layerId );
 }
-
-

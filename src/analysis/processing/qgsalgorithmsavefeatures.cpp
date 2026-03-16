@@ -53,10 +53,12 @@ QString QgsSaveFeaturesAlgorithm::groupId() const
 
 QString QgsSaveFeaturesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm saves vector features to a specified file dataset.\n\n"
-                      "For dataset formats supporting layers, an optional layer name parameter can be used to specify a custom string.\n\n"
-                      "Optional GDAL-defined dataset and layer options can be specified. For more information on this, "
-                      "read the online GDAL documentation." );
+  return QObject::tr(
+    "This algorithm saves vector features to a specified file dataset.\n\n"
+    "For dataset formats supporting layers, an optional layer name parameter can be used to specify a custom string.\n\n"
+    "Optional GDAL-defined dataset and layer options can be specified. For more information on this, "
+    "read the online GDAL documentation."
+  );
 }
 
 QString QgsSaveFeaturesAlgorithm::shortDescription() const
@@ -84,7 +86,17 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
 
-  auto paramEnum = std::make_unique<QgsProcessingParameterEnum>( u"ACTION_ON_EXISTING_FILE"_s, QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0 );
+  auto paramEnum = std::make_unique<QgsProcessingParameterEnum>(
+    u"ACTION_ON_EXISTING_FILE"_s,
+    QObject::tr( "Action to take on pre-existing file" ),
+    QStringList()
+      << QObject::tr( "Create or overwrite file" )
+      << QObject::tr( "Create or overwrite layer" )
+      << QObject::tr( "Append features to existing layer, but do not create new fields" )
+      << QObject::tr( "Append features to existing layer, and create new fields if needed" ),
+    false,
+    0
+  );
   paramEnum->setFlags( paramEnum->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramEnum.release() );
 
@@ -124,7 +136,9 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
   saveOptions.actionOnExistingFile = actionOnExistingFile;
 
-  std::unique_ptr<QgsVectorFileWriter> writer( QgsVectorFileWriter::create( destination, source->fields(), source->wkbType(), source->sourceCrs(), context.transformContext(), saveOptions, QgsFeatureSink::SinkFlags(), &finalFileName, &finalLayerName ) );
+  std::unique_ptr<QgsVectorFileWriter> writer(
+    QgsVectorFileWriter::create( destination, source->fields(), source->wkbType(), source->sourceCrs(), context.transformContext(), saveOptions, QgsFeatureSink::SinkFlags(), &finalFileName, &finalLayerName )
+  );
   if ( writer->hasError() )
   {
     throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );

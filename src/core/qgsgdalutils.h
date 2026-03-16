@@ -16,13 +16,14 @@
 #ifndef QGSGDALUTILS_H
 #define QGSGDALUTILS_H
 
-#define SIP_NO_FILE
 
 #include <gdal.h>
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
+
+#define SIP_NO_FILE
 
 class QgsRasterBlock;
 
@@ -37,18 +38,17 @@ class QgsRasterBlock;
 class CORE_EXPORT QgsGdalOption
 {
   public:
-
     /**
      * Option types
      */
     enum class Type
     {
       Invalid, //!< Invalid option
-      Select, //!< Selection option
+      Select,  //!< Selection option
       Boolean, //!< Boolean option
-      Text, //!< Text option
-      Int, //!< Integer option
-      Double, //!< Double option
+      Text,    //!< Text option
+      Int,     //!< Integer option
+      Double,  //!< Double option
     };
 
     //! Option name
@@ -101,7 +101,6 @@ class CORE_EXPORT QgsGdalOption
 class CORE_EXPORT QgsGdalUtils
 {
   public:
-
     /**
      * Reads whether a driver supports GDALCreate() for raster purposes.
      * \param driver GDAL driver
@@ -150,11 +149,9 @@ class CORE_EXPORT QgsGdalUtils
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS,
-                                          GDALDatasetH hDstDS,
-                                          GDALResampleAlg resampleAlg,
-                                          const QgsCoordinateReferenceSystem &sourceCrs,
-                                          const QgsCoordinateReferenceSystem &destinationCrs );
+    static bool resampleSingleBandRaster(
+      GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs
+    );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.
@@ -196,7 +193,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.26
      */
-    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType );
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block, GDALDataType dataType );
 
     /**
      * Converts a raster \a block to a single band GDAL memory dataset.
@@ -215,7 +212,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize,  double gridYSize,   QgsRasterBlock *block );
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize, double gridYSize, QgsRasterBlock *block );
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
@@ -225,13 +222,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.14
      */
-    static GDALDatasetH rpcAwareAutoCreateWarpedVrt(
-      GDALDatasetH hSrcDS,
-      const char *pszSrcWKT,
-      const char *pszDstWKT,
-      GDALResampleAlg eResampleAlg,
-      double dfMaxError,
-      const GDALWarpOptions *psOptionsIn );
+    static GDALDatasetH rpcAwareAutoCreateWarpedVrt( GDALDatasetH hSrcDS, const char *pszSrcWKT, const char *pszDstWKT, GDALResampleAlg eResampleAlg, double dfMaxError, const GDALWarpOptions *psOptionsIn );
 
     /**
      * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
@@ -308,11 +299,11 @@ class CORE_EXPORT QgsGdalUtils
      */
     struct VsiNetworkFileSystemDetails
     {
-      //! VSI handler identifier, eg "vsis3"
-      QString identifier;
+        //! VSI handler identifier, eg "vsis3"
+        QString identifier;
 
-      //! Translated, user-friendly name.
-      QString name;
+        //! Translated, user-friendly name.
+        QString name;
     };
 
     /**
@@ -397,7 +388,6 @@ class CORE_EXPORT QgsGdalUtils
 class CORE_EXPORT QgsGdalProgressAdapter
 {
   public:
-
     /**
      * Constructor from \a feedback (which may be NULL).
      *

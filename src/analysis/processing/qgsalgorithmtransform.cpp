@@ -35,11 +35,17 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
 
   // Transform Z
   auto transformZParam = std::make_unique<QgsProcessingParameterBoolean>( u"TRANSFORM_Z"_s, QObject::tr( "Also transform Z coordinates" ), false );
-  transformZParam->setHelp( QObject::tr( "If checked, the z coordinates will also be transformed. This requires that the z coordinates in the geometries represent height relative to the vertical datum of the source CRS (generally ellipsoidal heights) and are expressed in its vertical units (generally meters). If unchecked, then z coordinates will not be changed by the transform." ) );
+  transformZParam->setHelp(
+    QObject::tr(
+      "If checked, the z coordinates will also be transformed. This requires that the z coordinates in the geometries represent height relative to the vertical datum of the source CRS (generally "
+      "ellipsoidal heights) and are expressed in its vertical units (generally meters). If unchecked, then z coordinates will not be changed by the transform."
+    )
+  );
   addParameter( transformZParam.release() );
 
   // Optional coordinate operation
-  auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( u"OPERATION"_s, QObject::tr( "Coordinate operation" ), QVariant(), u"INPUT"_s, u"TARGET_CRS"_s, QVariant(), QVariant(), true );
+  auto crsOpParam
+    = std::make_unique<QgsProcessingParameterCoordinateOperation>( u"OPERATION"_s, QObject::tr( "Coordinate operation" ), QVariant(), u"INPUT"_s, u"TARGET_CRS"_s, QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 }
@@ -86,9 +92,11 @@ QString QgsTransformAlgorithm::groupId() const
 
 QString QgsTransformAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm reprojects a vector layer. It creates a new layer with the same features "
-                      "as the input one, but with geometries reprojected to a new CRS.\n\n"
-                      "Attributes are not modified by this algorithm." );
+  return QObject::tr(
+    "This algorithm reprojects a vector layer. It creates a new layer with the same features "
+    "as the input one, but with geometries reprojected to a new CRS.\n\n"
+    "Attributes are not modified by this algorithm."
+  );
 }
 
 QString QgsTransformAlgorithm::shortDescription() const
@@ -147,9 +155,13 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
 
       if ( !mWarnedAboutFallbackTransform && mTransform.fallbackOperationOccurred() )
       {
-        feedback->reportError( QObject::tr( "An alternative, ballpark-only transform was used when transforming coordinates for one or more features. "
-                                            "(Possibly an incorrect choice of operation was made for transformations between these reference systems - check "
-                                            "that the selected operation is valid for the full extent of the input layer.)" ) );
+        feedback->reportError(
+          QObject::tr(
+            "An alternative, ballpark-only transform was used when transforming coordinates for one or more features. "
+            "(Possibly an incorrect choice of operation was made for transformations between these reference systems - check "
+            "that the selected operation is valid for the full extent of the input layer.)"
+          )
+        );
         mWarnedAboutFallbackTransform = true; // only warn once to avoid flooding the log
       }
     }

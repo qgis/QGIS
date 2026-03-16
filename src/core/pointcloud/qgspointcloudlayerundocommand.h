@@ -16,13 +16,14 @@
 #ifndef QGSPOINTCLOUDLAYERUNDOCOMMAND_H
 #define QGSPOINTCLOUDLAYERUNDOCOMMAND_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 
 #include <QUndoCommand>
+
+#define SIP_NO_FILE
 
 class QgsPointCloudLayer;
 
@@ -51,7 +52,6 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommand : public QUndoCommand
 class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPointCloudLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsPointCloudLayerUndoCommandChangeAttribute
      * \param layer associated point cloud layer
@@ -67,17 +67,17 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
   private:
     struct PerNodeData
     {
-      QHash<int, double> oldPointValues;
-      bool firstEdit = false;
-      int attributeOffset = 0;
+        QHash<int, double> oldPointValues;
+        bool firstEdit = false;
+        int attributeOffset = 0;
     };
 
     struct NodeProcessData
     {
-      int position;
-      QgsPointCloudIndex index;
-      QgsPointCloudNodeId nodeId;
-      QVector<int> points;
+        int position;
+        QgsPointCloudIndex index;
+        QgsPointCloudNodeId nodeId;
+        QVector<int> points;
     };
 
     void undoRedoPrivate( bool isUndo );

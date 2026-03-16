@@ -69,7 +69,7 @@ Returns topology tolerance
 Returns measurement tool
 %End
 
-    virtual void addVertex( int id, const QgsPointXY &pt );
+    virtual int addVertex( int id, const QgsPointXY &pt );
 %Docstring
 Add vertex to the graph
 
@@ -79,6 +79,8 @@ Add vertex to the graph
 .. note::
 
    id and pt are redundant. You can use pt or id to identify the vertex
+
+:return: the index of the newly added vertex
 %End
 
     virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &strategies );

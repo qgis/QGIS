@@ -21,7 +21,6 @@ Implementation of a fixed interval classification.
 #include "qgsclassificationfixedinterval.h"
 %End
   public:
-
     QgsClassificationFixedInterval();
     virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 

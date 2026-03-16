@@ -18,13 +18,14 @@
 #include <memory>
 
 #include "delaunator.hpp"
-#include "qgsaabb.h"
 #include "qgsfeedback.h"
 #include "qgsgeotransform.h"
+#include "qgsmaterial.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudrequest.h"
 
 #include <QPointSize>
@@ -268,8 +269,7 @@ void QgsClassificationPointCloud3DGeometry::makeVertexBuffer( const QgsPointClou
 }
 
 QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, const QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
@@ -425,10 +425,7 @@ void QgsPointCloud3DSymbolHandler::calculateNormals( const std::vector<size_t> &
     }
     //calculate normals
     for ( size_t j = 0; j < 3; ++j )
-      normals[triangles.at( i + j )] += QVector3D::crossProduct(
-        triangleVertices.at( 1 ) - triangleVertices.at( 0 ),
-        triangleVertices.at( 2 ) - triangleVertices.at( 0 )
-      );
+      normals[triangles.at( i + j )] += QVector3D::crossProduct( triangleVertices.at( 1 ) - triangleVertices.at( 0 ), triangleVertices.at( 2 ) - triangleVertices.at( 0 ) );
   }
 
   // Build now normals array
@@ -534,7 +531,9 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex &pc, const Qg
   filterTriangles( triangleIndexes, context, box3D );
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock(
+  QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context
+)
 {
   std::unique_ptr<QgsPointCloudBlock> block;
   if ( pc.accessType() == Qgis::PointCloudAccessType::Local )
@@ -567,8 +566,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBloc
 
 QgsSingleColorPointCloud3DSymbolHandler::QgsSingleColorPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsSingleColorPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -646,8 +644,7 @@ Qt3DCore::QGeometry *QgsSingleColorPointCloud3DSymbolHandler::makeGeometry( Qt3D
 
 QgsColorRampPointCloud3DSymbolHandler::QgsColorRampPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -783,8 +780,7 @@ Qt3DCore::QGeometry *QgsColorRampPointCloud3DSymbolHandler::makeGeometry( Qt3DCo
 
 QgsRGBPointCloud3DSymbolHandler::QgsRGBPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsRGBPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -927,8 +923,7 @@ Qt3DCore::QGeometry *QgsRGBPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QN
 
 QgsClassificationPointCloud3DSymbolHandler::QgsClassificationPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
-{
-}
+{}
 
 bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
 {
@@ -1010,8 +1005,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   for ( QgsPointCloudCategory &c : categoriesList )
   {
     categoriesValues.push_back( c.value() );
-    categoriesPointSizes.insert( c.value(), c.pointSize() > 0 ? c.pointSize() : context.symbol() ? context.symbol()->pointSize()
-                                                                                                 : 1.0 );
+    categoriesPointSizes.insert( c.value(), c.pointSize() > 0 ? c.pointSize() : context.symbol() ? context.symbol()->pointSize() : 1.0 );
   }
 
   if ( !output )

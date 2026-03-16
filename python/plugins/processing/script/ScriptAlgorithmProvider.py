@@ -23,28 +23,25 @@ import os
 
 from qgis.core import (
     Qgis,
-    QgsMessageLog,
     QgsApplication,
+    QgsMessageLog,
     QgsProcessingProvider,
     QgsRuntimeProfiler,
 )
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-
 from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
-
+from processing.script import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
-from processing.script.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.AddScriptFromTemplateAction import AddScriptFromTemplateAction
+from processing.script.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.DeleteScriptAction import DeleteScriptAction
 from processing.script.EditScriptAction import EditScriptAction
 from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
-from processing.script import ScriptUtils
 from processing.tools.system import userFolder
 
 
 class ScriptAlgorithmProvider(QgsProcessingProvider):
-
     def __init__(self):
         super().__init__()
         self.algs = []

@@ -69,10 +69,12 @@ Qgis::WkbType QgsFixGeometriesAlgorithm::outputWkbType( Qgis::WkbType type ) con
 
 QString QgsFixGeometriesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm attempts to create a valid representation of a given invalid geometry without "
-                      "losing any of the input vertices. Already-valid geometries are returned without further intervention. "
-                      "Always outputs multi-geometry layer.\n\n"
-                      "NOTE: M values will be dropped from the output." );
+  return QObject::tr(
+    "This algorithm attempts to create a valid representation of a given invalid geometry without "
+    "losing any of the input vertices. Already-valid geometries are returned without further intervention. "
+    "Always outputs multi-geometry layer.\n\n"
+    "NOTE: M values will be dropped from the output."
+  );
 }
 
 QString QgsFixGeometriesAlgorithm::shortDescription() const
@@ -99,13 +101,7 @@ bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
 {
-  auto methodParameter = std::make_unique<QgsProcessingParameterEnum>(
-    u"METHOD"_s,
-    QObject::tr( "Repair method" ),
-    QStringList { QObject::tr( "Linework" ), QObject::tr( "Structure" ) },
-    0,
-    false
-  );
+  auto methodParameter = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Repair method" ), QStringList { QObject::tr( "Linework" ), QObject::tr( "Structure" ) }, 0, false );
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
   methodParameter->setDefaultValue( 0 );
 #else

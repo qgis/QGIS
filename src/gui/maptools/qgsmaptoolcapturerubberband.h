@@ -21,11 +21,11 @@
 
 #include "qgsgeometryrubberband.h"
 
+#define SIP_NO_FILE
+
 class QgsMapToolCaptureRubberBand;
 class QgsRubberBand;
 
-
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

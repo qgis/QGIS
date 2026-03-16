@@ -16,7 +16,6 @@
 #ifndef QGSOGRUTILS_H
 #define QGSOGRUTILS_H
 
-#define SIP_NO_FILE
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -27,6 +26,8 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+
+#define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;
@@ -42,12 +43,10 @@ namespace gdal
    */
   struct OGRDataSourceDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR data \a source, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRDataSourceH source ) const;
-
+      void CORE_EXPORT operator()( OGRDataSourceH source ) const;
   };
 
   /**
@@ -55,12 +54,10 @@ namespace gdal
    */
   struct OGRGeometryDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR \a geometry, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
-
+      void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
   };
 
   /**
@@ -68,12 +65,10 @@ namespace gdal
    */
   struct OGRFldDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR field \a definition, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
-
+      void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
   };
 
   /**
@@ -81,12 +76,10 @@ namespace gdal
    */
   struct OGRFeatureDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR \a feature, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFeatureH feature ) const;
-
+      void CORE_EXPORT operator()( OGRFeatureH feature ) const;
   };
 
   /**
@@ -94,12 +87,10 @@ namespace gdal
    */
   struct GDALDatasetCloser
   {
-
-    /**
+      /**
      * Destroys an gdal \a dataset, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
-
+      void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
   };
 
   /**
@@ -107,27 +98,23 @@ namespace gdal
    */
   struct GDALWarpOptionsDeleter
   {
-
-    /**
+      /**
      * Destroys GDAL warp \a options, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
-
+      void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
   };
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
   /**
    * Closes and cleanups GDAL relationship.
    */
   struct GDALRelationshipDeleter
   {
-
-    /**
+      /**
      * Destroys GDAL \a relationship, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
-
+      void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
   };
 #endif
 
@@ -171,14 +158,14 @@ namespace gdal
    */
   using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
   /**
    * Scoped GDAL relationship.
    */
   using relationship_unique_ptr = std::unique_ptr< std::remove_pointer<GDALRelationshipH>::type, GDALRelationshipDeleter >;
 #endif
-}
+} //namespace gdal
 
 /**
  * \ingroup core
@@ -191,7 +178,6 @@ namespace gdal
 class CORE_EXPORT QgsOgrUtils
 {
   public:
-
     /**
      * Converts an OGRField \a value of the specified \a type into a QVariant.
      * \since QGIS 3.20
@@ -322,6 +308,18 @@ class CORE_EXPORT QgsOgrUtils
     static Qgis::WkbType ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
 
     /**
+     * Converts a QgsWkbTypes::Type to a OGRwkbGeometryType
+     *
+     * If \a approx is set to true, an attempt will be made to find the closest
+     * OGR geometry type when there is no exact match.
+     *
+     * It may return wkbUnknown if there is no match.
+     *
+     * \since QGIS 4.0
+     */
+    static OGRwkbGeometryType qgsWkbTypeToOgrGeometryType( Qgis::WkbType wkbType, bool approx = false );
+
+    /**
      * Returns a WKT string corresponding to the specified OGR \a srs object.
      *
      * The WKT string format will be selected using the most appropriate format (usually WKT2 if GDAL 3 is available).
@@ -438,7 +436,7 @@ class CORE_EXPORT QgsOgrUtils
     static QList<QgsVectorDataProvider::NativeType> nativeFieldTypesForDriver( GDALDriverH driver ) SIP_SKIP;
 
 #ifndef SIP_RUN
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
 
     /**
      * Converts an OGR field domain definition to a QgsFieldDomain equivalent.
@@ -461,7 +459,7 @@ class CORE_EXPORT QgsOgrUtils
 #endif
 
 #ifndef SIP_RUN
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
     /**
      * Converts an GDAL \a relationship definition to a QgsWeakRelation equivalent.
@@ -488,9 +486,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.34
      */
-    static int listStyles( GDALDatasetH hDS, const QString &layerName,
-                           const QString &geomColumn, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString &errCause );
+    static int listStyles( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause );
 
     /**
      * Helper function for checking whether a style exists in ogr/gdal database datasources.
@@ -511,11 +507,18 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.34
      */
-    static bool saveStyle( GDALDatasetH hDS, const QString &layerName,
-                           const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle,
-                           const QString &styleName, const QString &styleDescription,
-                           const QString &uiFileContent, bool useAsDefault, QString &errCause
-                         );
+    static bool saveStyle(
+      GDALDatasetH hDS,
+      const QString &layerName,
+      const QString &geomColumn,
+      const QString &qmlStyle,
+      const QString &sldStyle,
+      const QString &styleName,
+      const QString &styleDescription,
+      const QString &uiFileContent,
+      bool useAsDefault,
+      QString &errCause
+    );
 
     /**
      * Helper function for deleting a style by id from ogr/gdal database datasources.

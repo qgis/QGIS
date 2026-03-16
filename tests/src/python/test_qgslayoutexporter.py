@@ -13,37 +13,26 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import os
 import subprocess
 import tempfile
+import unittest
 import xml.etree.ElementTree as etree
-from uuid import UUID
 from io import StringIO
-
 from typing import Optional
+from uuid import UUID
 
-from osgeo import gdal
-from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
-    QDir,
-    QRectF,
-    QSize,
-    Qt,
-    QTime,
-    QTimeZone,
-)
-from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer
+from osgeo import gdal, ogr
 from qgis.core import (
     Qgis,
+    QgsColorRampLegendNode,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
+    QgsFontUtils,
     QgsGeometry,
     QgsLayout,
     QgsLayoutExporter,
     QgsLayoutGuide,
     QgsLayoutItemLabel,
+    QgsLayoutItemLegend,
     QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutItemScaleBar,
@@ -56,6 +45,7 @@ from qgis.core import (
     QgsPointXY,
     QgsPrintLayout,
     QgsProject,
+    QgsRasterLayer,
     QgsRectangle,
     QgsRenderContext,
     QgsReport,
@@ -64,14 +54,22 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsRasterLayer,
-    QgsLayoutItemLegend,
-    QgsColorRampLegendNode,
-    QgsFontUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QDir,
+    QPointF,
+    QRectF,
+    QSize,
+    Qt,
+    QTime,
+    QTimeZone,
+)
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.testing import QgisTestCase, start_app
 from utilities import getExecutablePath, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -92,7 +90,7 @@ for util in [
 # noinspection PyUnboundLocalVariable
 if not PDFUTIL:
     raise Exception(
-        "PDF-to-image utility not found on PATH: " "install Poppler (with Cairo)"
+        "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
     )
 
 
@@ -143,10 +141,7 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
         subprocess.check_call(call)
     except subprocess.CalledProcessError as e:
         assert False, (
-            "exportToPdf failed!\n"
-            "cmd: {}\n"
-            "returncode: {}\n"
-            "message: {}".format(e.cmd, e.returncode, e.message)
+            f"exportToPdf failed!\ncmd: {e.cmd}\nreturncode: {e.returncode}\nmessage: {e.message}"
         )
 
 
@@ -172,7 +167,6 @@ start_app()
 
 
 class TestQgsLayoutExporter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1938,6 +1932,223 @@ class TestQgsLayoutExporter(QgisTestCase):
                     if isinstance(legend_node, QgsColorRampLegendNode):
                         self.assertAlmostEqual(legend_node.minimum(), 114.90, places=2)
                         self.assertEqual(legend_node.maximum(), 165)
+
+    def testGeospatialPdfLayerTree(self):
+        def exportLayout(project_name, pdf_name, settings):
+            p = QgsProject()
+            p.read(os.path.join(TEST_DATA_DIR, "geospatial_pdf_projects", project_name))
+            l = p.layoutManager().layoutByName("layout")
+            exporter = QgsLayoutExporter(l)
+
+            pdf_file_path = os.path.join(self.basetestpath, pdf_name)
+            self.assertEqual(
+                exporter.exportToPdf(pdf_file_path, settings),
+                QgsLayoutExporter.ExportResult.Success,
+            )
+            self.assertTrue(os.path.exists(pdf_file_path))
+
+            ds = gdal.Open(pdf_file_path)
+            op = gdal.InfoOptions(options="-mdd LAYERS -json")
+            i = gdal.Info(ds, options=op)
+            return ds, i
+
+        def check_no_feature_info(ds):
+            defn = ds.GetLayerByName("points").GetLayerDefn()
+            self.assertEqual(defn.GetFieldCount(), 0)
+
+        def check_feature_info(ds):
+            defn = ds.GetLayerByName("points").GetLayerDefn()
+            self.assertEqual(
+                ogr.GeometryTypeToName(ds.GetLayerByName("points").GetGeomType()),
+                "Point",
+            )
+            self.assertEqual(defn.GetFieldCount(), 6)
+            self.assertEqual(ds.GetLayerByName("points").GetFeatureCount(), 17)
+            self.assertEqual(
+                ds.GetLayerByName("points").GetFeature(0).GetField("Class"), "Jet"
+            )
+
+        # Check export with no features
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "group1.multipoint",
+            "LAYER_03_NAME": "group1.sub-group1",
+            "LAYER_04_NAME": "group1.sub-group1.lines",
+            "LAYER_05_NAME": "group1.polys",
+            "LAYER_06_NAME": "raster_layer",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics.qgz",
+            "test_geospatial_pdf_qgis_layer_tree.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+        # Check export with no features (grouped graphics)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_with_grouped_graphics.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features_grouped_graphics.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "group1.multipoint",
+            "LAYER_03_NAME": "group1.sub-group1",
+            "LAYER_04_NAME": "group1.sub-group1.lines",
+            "LAYER_05_NAME": "group1.polys",
+            "LAYER_06_NAME": "raster_layer",
+            "LAYER_07_NAME": "Map_info",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features (grouped graphics)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_with_grouped_graphics.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_grouped_graphics.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+        # Check export with no features (invisible nodes)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics_invisible_layers.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features_invisible_layers.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "group1.multipoint",
+            "LAYER_03_NAME": "group1.sub-group1",
+            "LAYER_04_NAME": "group1.sub-group1.lines",
+            "LAYER_05_NAME": "group1.polys",
+            "LAYER_06_NAME": "raster_layer",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features (invisible nodes)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics_invisible_layers.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_invisible_layers.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+        # Check export with no features (with grouplayer)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_non_nested_group_no_graphics_with_grouplayer.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features_group_layer.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "polys",
+            "LAYER_03_NAME": "raster_layer",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features (with grouplayer)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useLayerTreeConfig = True
+
+        ds, i = exportLayout(
+            "test_non_nested_group_no_graphics_with_grouplayer.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_group_layer.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+    def testErrorGeospatialPdfLayerTreeAndThemes(self):
+        p = QgsProject()
+        p.read(
+            os.path.join(
+                TEST_DATA_DIR,
+                "geospatial_pdf_projects",
+                "test_nested_groups_no_graphics.qgz",
+            )
+        )
+        l = p.layoutManager().layoutByName("layout")
+
+        # Make the map item follow a locked set, which is
+        # incompatible with the Follo QGIS layer tree option
+        map = l.referenceMap()
+        map.setKeepLayerSet(True)
+
+        exporter = QgsLayoutExporter(l)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.useLayerTreeConfig = True
+
+        # Check that we get an error and an error message
+        pdf_file_path = os.path.join(
+            self.basetestpath,
+            "test_error_export_geospatial_pdf_qgis_layer_tree_and_themes.pdf",
+        )
+        self.assertEqual(
+            exporter.exportToPdf(pdf_file_path, settings),
+            QgsLayoutExporter.ExportResult.PrintError,
+        )
+        self.assertTrue(len(exporter.errorMessage()) > 0)
 
 
 if __name__ == "__main__":

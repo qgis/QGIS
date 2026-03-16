@@ -72,15 +72,9 @@ class TestNineCellFilters : public QgsTest
 
     template<class T> void _testAlg( const QString &name, bool useOpenCl = false );
 
-    static QString referenceFile( const QString &name )
-    {
-      return u"%1/analysis/%2.tif"_s.arg( TEST_DATA_DIR, name );
-    }
+    static QString referenceFile( const QString &name ) { return u"%1/analysis/%2.tif"_s.arg( TEST_DATA_DIR, name ); }
 
-    static QString tempFile( const QString &name )
-    {
-      return u"%1/ninecellfilterstest-%2.tif"_s.arg( QDir::tempPath(), name );
-    }
+    static QString tempFile( const QString &name ) { return u"%1/ninecellfilterstest-%2.tif"_s.arg( QDir::tempPath(), name ); }
 };
 
 
@@ -105,8 +99,7 @@ void TestNineCellFilters::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-template<class T>
-void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
+template<class T> void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 {
 #ifdef HAVE_OPENCL
   QgsOpenClUtils::setEnabled( useOpenCl );

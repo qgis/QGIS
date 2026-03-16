@@ -17,12 +17,13 @@
 #define QGSATTRIBUTESFORMTREEVIEWINDICATOR_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 
 #include <QIcon>
 #include <QObject>
+
+#define SIP_NO_FILE
 
 /**
  * \brief Indicator that can be used in an Attributes Form tree view to display icons next to field items.

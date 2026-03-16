@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsziputils.h"
 
 #include <QApplication>
@@ -53,15 +54,23 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   setColumnCount( 1 );
 
+  const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
+
   QStandardItem *emptyProjectItem = new QStandardItem();
+  emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
+  emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Blank ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "Blank" ), static_cast<int>( CustomRole::TitleRole ) );
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) ); } );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() {
+    emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
+  } );
   emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );
   appendRow( emptyProjectItem );
 
   emptyProjectItem = new QStandardItem();
+  emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
+  emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Basemap ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "OpenStreetMap Basemap" ), static_cast<int>( CustomRole::TitleRole ) );
   emptyProjectItem->setData( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
@@ -78,6 +87,8 @@ QHash<int, QByteArray> QgsTemplateProjectsModel::roleNames() const
   roles[static_cast<int>( CustomRole::NativePathRole )] = "TemplateNativePath"; //#spellok
   roles[static_cast<int>( CustomRole::CrsRole )] = "Crs";
   roles[static_cast<int>( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
+  roles[static_cast<int>( CustomRole::WritableRole )] = "Writable";
+  roles[static_cast<int>( CustomRole::CanvasColorRole )] = "CanvasColor";
   return roles;
 }
 
@@ -104,10 +115,15 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
     }
   }
 
+  // Use default canvas color when preview image is missing
+  const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
+
   // Refill with templates from this directory
   for ( const QFileInfo &file : files )
   {
     auto item = std::make_unique<QStandardItem>( file.fileName() );
+    item->setData( file.isWritable(), static_cast<int>( CustomRole::WritableRole ) );
+    item->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
     item->setData( static_cast<int>( TemplateType::File ), static_cast<int>( CustomRole::TypeRole ) );
 
     const QString fileId = QCryptographicHash::hash( file.filePath().toUtf8(), QCryptographicHash::Sha224 ).toHex();

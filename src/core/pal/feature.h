@@ -30,8 +30,6 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#define SIP_NO_FILE
-
 
 #include <cmath>
 #include <fstream>
@@ -44,6 +42,8 @@
 #include "qgstextrendererutils.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 namespace pal
 {
@@ -58,9 +58,7 @@ namespace pal
    */
   class CORE_EXPORT FeaturePart : public PointSet
   {
-
     public:
-
       //! Path offset variances used in curved placement.
       enum PathOffset
       {
@@ -226,9 +224,17 @@ namespace pal
        * \param flags curved text behavior flags
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
-          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
-          Qgis::CurvedTextFlags flags, double additionalCharacterSpacing, double additionalWordSpacing );
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset(
+        PointSet *mapShape,
+        const std::vector<double> &pathDistances,
+        QgsTextRendererUtils::LabelLineDirection direction,
+        double distance,
+        bool &labeledLineSegmentIsRightToLeft,
+        bool applyAngleConstraints,
+        Qgis::CurvedTextFlags flags,
+        double additionalCharacterSpacing,
+        double additionalWordSpacing
+      );
 
       /**
        * Generate curved candidates for line features.
@@ -366,7 +372,6 @@ namespace pal
       void setTotalRepeats( int repeats );
 
     protected:
-
       QgsLabelFeature *mLF = nullptr;
       QList<FeaturePart *> mHoles;
 
@@ -374,7 +379,6 @@ namespace pal
       void extractCoords( const GEOSGeometry *geom );
 
     private:
-
       Qgis::LabelQuadrantPosition quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
@@ -382,7 +386,7 @@ namespace pal
       mutable std::size_t mCachedMaxLineCandidates = 0;
       mutable std::size_t mCachedMaxPolygonCandidates = 0;
 
-      FeaturePart &operator= ( const FeaturePart & ) = delete;
+      FeaturePart &operator=( const FeaturePart & ) = delete;
   };
 
 } // end namespace pal

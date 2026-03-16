@@ -33,9 +33,7 @@ using namespace Qt::StringLiterals;
 QgsTiledSceneRenderContext::QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback )
   : mRenderContext( context )
   , mFeedback( feedback )
-{
-
-}
+{}
 
 QImage QgsTiledSceneRenderContext::textureImage() const
 {

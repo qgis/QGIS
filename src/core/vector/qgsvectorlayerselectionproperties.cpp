@@ -27,9 +27,8 @@
 using namespace Qt::StringLiterals;
 
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
-  :  QgsMapLayerSelectionProperties( parent )
-{
-}
+  : QgsMapLayerSelectionProperties( parent )
+{}
 
 QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = default;
 

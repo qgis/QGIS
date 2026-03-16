@@ -22,6 +22,7 @@ Base class for effect properties widgets.
 %End
   public:
     QgsPaintEffectWidget( QWidget *parent /TransferThis/ = 0 );
+
     virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 %Docstring
 Sets the paint effect to modify with the widget

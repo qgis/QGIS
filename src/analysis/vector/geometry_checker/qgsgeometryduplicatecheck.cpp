@@ -45,7 +45,9 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
 }
 
 
-QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -115,7 +117,9 @@ QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QS
   return QgsGeometryCheck::Result::Success;
 }
 
-void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryDuplicateCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsFeaturePool *featurePoolA = featurePools[error->layerId()];
   QgsFeature featureA;
@@ -167,9 +171,7 @@ void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "No action" )
-                                     << tr( "Remove duplicates" );
+  static const QStringList methods = QStringList() << tr( "No action" ) << tr( "Remove duplicates" );
   return methods;
 }
 

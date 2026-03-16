@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODE
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    void addVertex( int id, const QgsPointXY &pt ) override;
+    int addVertex( int id, const QgsPointXY &pt ) override;
 
     void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &prop ) override;
 
@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODE
      *
      * \since QGIS 3.22
      */
-    QgsGraph *takeGraph() SIP_FACTORY;
+    std::unique_ptr< QgsGraph > takeGraph();
 
   private:
     std::unique_ptr<QgsGraph> mGraph;

@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgspointcloudeditingindex.h"
 #include "qgspointcloudstatistics.h"
-#include "qgstiledownloadmanager.h"
 
 #include <QDir>
 #include <QFile>
@@ -34,7 +33,6 @@
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
-#include <qstringliteral.h>
 
 using namespace Qt::StringLiterals;
 
@@ -105,15 +103,11 @@ QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, cons
   , mUri( uri )
   , mRequest( request )
   , mSubsetString( subset )
-{
-}
+{}
 
 bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) const
 {
-  return mNode == other.mNode &&
-         mUri == other.mUri &&
-         mRequest == other.mRequest &&
-         mSubsetString == other.mSubsetString;
+  return mNode == other.mNode && mUri == other.mUri && mRequest == other.mRequest && mSubsetString == other.mSubsetString;
 }
 
 uint qHash( const QgsPointCloudCacheKey &key )
@@ -261,12 +255,12 @@ QString QgsAbstractPointCloudIndex::subsetString() const
 QgsPointCloudStatistics QgsAbstractPointCloudIndex::metadataStatistics() const
 {
   QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
-  statsMap[ "X" ].minimum = mExtent.xMinimum();
-  statsMap[ "X" ].maximum = mExtent.xMaximum();
-  statsMap[ "Y" ].minimum = mExtent.yMinimum();
-  statsMap[ "Y" ].maximum = mExtent.yMinimum();
-  statsMap[ "Z" ].minimum = mZMin;
-  statsMap[ "Z" ].maximum = mZMax;
+  statsMap["X"].minimum = mExtent.xMinimum();
+  statsMap["X"].maximum = mExtent.xMaximum();
+  statsMap["Y"].minimum = mExtent.yMinimum();
+  statsMap["Y"].maximum = mExtent.yMinimum();
+  statsMap["Z"].minimum = mZMin;
+  statsMap["Z"].maximum = mZMax;
 
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
@@ -307,7 +301,9 @@ void QgsAbstractPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data,
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }
 
-void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic(
+  QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri
+)
 {
   if ( !data )
     return;

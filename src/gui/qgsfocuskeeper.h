@@ -18,10 +18,10 @@
 
 #include "qgis_gui.h"
 
-#define SIP_NO_FILE
-
 #include <QObject>
 #include <QPointer>
+
+#define SIP_NO_FILE
 
 class QWidget;
 

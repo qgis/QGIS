@@ -20,6 +20,9 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsunittypes.h"
 
 #include <QCloseEvent>
 #include <QPushButton>
@@ -176,13 +179,10 @@ void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
 
 void Qgs3DMeasureDialog::updateSettings()
 {
-  const QgsSettings settings;
-
-  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, "3" ).toInt();
+  mDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
-  mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
-    settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
-  );
+  const QString displayUnitsStr = QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value();
+  mDisplayedDistanceUnit = displayUnitsStr.isEmpty() ? Qgis::DistanceUnit::Unknown : QgsUnitTypes::decodeDistanceUnit( displayUnitsStr );
   setupTableHeader();
   mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
 }
@@ -203,7 +203,7 @@ double Qgs3DMeasureDialog::convertLength( double length, Qgis::DistanceUnit toUn
 QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
 }
 

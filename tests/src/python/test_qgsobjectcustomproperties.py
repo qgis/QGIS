@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "02/06/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsObjectCustomProperties
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsObjectCustomProperties
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsObjectCustomProperties(QgisTestCase):
-
     def testSimple(self):
         """test storing/retrieving properties"""
         props = QgsObjectCustomProperties()

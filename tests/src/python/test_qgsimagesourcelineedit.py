@@ -11,19 +11,17 @@ __date__ = "5/12/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import QgsImageSourceLineEdit
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.gui import QgsImageSourceLineEdit
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsImageSourceLineEdit(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsImageSourceLineEdit()

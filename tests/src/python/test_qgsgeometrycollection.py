@@ -13,23 +13,22 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 import unittest
 
 from qgis.core import (
-    QgsGeometryCollection,
-    QgsPoint,
     Qgis,
+    QgsGeometryCollection,
     QgsLineString,
-    QgsPolygon,
-    QgsMultiPoint,
     QgsMultiLineString,
+    QgsMultiPoint,
     QgsMultiPolygon,
+    QgsPoint,
+    QgsPolygon,
     QgsRectangle,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsGeometryCollection(QgisTestCase):
-
     def testFuzzyComparisons(self):
         ######
         # 2D #

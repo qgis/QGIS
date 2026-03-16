@@ -11,6 +11,8 @@ __date__ = "11/1/2021"
 __copyright__ = "Copyright 2021, QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
@@ -19,8 +21,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -74,7 +75,6 @@ def formatAttributes(attrs):
 
 
 class TestQgsRelation(QgisTestCase):
-
     def setUp(self):
         self.referencedLayer1 = createReferencedLayer("referencedlayer1")
         self.referencedLayer2 = createReferencedLayer("referencedlayer2")

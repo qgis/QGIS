@@ -23,12 +23,12 @@
 
 #include <QDialog>
 
+#define SIP_NO_FILE
+
 class QgsProcessingAlgorithm;
 
 
 ///@cond NOT_STABLE
-
-#define SIP_NO_FILE
 
 
 /**

@@ -12,14 +12,13 @@ __author__ = "(C) 2022 by Nyall Dawson"
 __date__ = "14/07/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
 from qgis.gui import (
-    QgsInputControllerManager,
     QgsAbstract2DMapController,
     QgsAbstract3DMapController,
+    QgsInputControllerManager,
 )
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
 from qgis.testing import start_app, unittest
-
 from utilities import unitTestDataPath
 
 start_app()
@@ -27,7 +26,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class Dummy2dController(QgsAbstract2DMapController):
-
     def deviceId(self):
         return "dummy2d"
 
@@ -36,7 +34,6 @@ class Dummy2dController(QgsAbstract2DMapController):
 
 
 class Dummy3dController(QgsAbstract3DMapController):
-
     def deviceId(self):
         return "dummy3d"
 
@@ -45,7 +42,6 @@ class Dummy3dController(QgsAbstract3DMapController):
 
 
 class TestQgsInputController(unittest.TestCase):
-
     def test_registration(self):
         manager = QgsInputControllerManager()
         self.assertFalse(manager.available2DMapControllers())

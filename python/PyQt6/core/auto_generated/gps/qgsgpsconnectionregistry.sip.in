@@ -26,7 +26,6 @@ but rather accessed through
 #include "qgsgpsconnectionregistry.h"
 %End
   public:
-
     QgsGpsConnectionRegistry();
     ~QgsGpsConnectionRegistry();
 

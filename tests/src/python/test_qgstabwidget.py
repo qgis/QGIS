@@ -14,16 +14,16 @@ test_qgstabwidget.py
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtWidgets import QWidget
-from qgis.gui import QgsTabWidget
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsTabWidget
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTabWidget(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         pass

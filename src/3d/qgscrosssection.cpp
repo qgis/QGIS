@@ -23,8 +23,7 @@ QgsCrossSection::QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double
   : mStartPoint( p1 )
   , mEndPoint( p2 )
   , mHalfWidth( halfWidth )
-{
-}
+{}
 
 QgsGeometry QgsCrossSection::asGeometry( const QgsCoordinateTransform *ct ) const
 {
@@ -42,12 +41,14 @@ QgsGeometry QgsCrossSection::asGeometry( const QgsCoordinateTransform *ct ) cons
   }
   else
   {
+    // clang-format off
     QVector<QgsPointXY> points = {
       mStartPoint + vec * mHalfWidth,
       mEndPoint + vec * mHalfWidth,
       mEndPoint - vec * mHalfWidth,
       mStartPoint - vec * mHalfWidth
     };
+    // clang-format on
     geom = QgsGeometry( new QgsPolygon( new QgsLineString( points ) ) );
   }
 

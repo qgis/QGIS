@@ -17,7 +17,6 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -317,8 +316,7 @@ void QgsLightsWidget::onDirectionChange()
 //
 QgsLightsModel::QgsLightsModel( QObject *parent )
   : QAbstractListModel( parent )
-{
-}
+{}
 
 int QgsLightsModel::rowCount( const QModelIndex &parent ) const
 {

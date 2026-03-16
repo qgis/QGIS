@@ -24,6 +24,7 @@ using namespace Qt::StringLiterals;
 //qgis includes...
 #include "qgis.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
@@ -47,7 +48,8 @@ class TestQgsOgrProvider : public QgsTest
 
   public:
     TestQgsOgrProvider()
-      : QgsTest( u"OGR Provider Tests"_s ) {}
+      : QgsTest( u"OGR Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -100,12 +102,12 @@ void TestQgsOgrProvider::setupProxy()
 {
   QgsSettings settings;
   {
-    settings.setValue( u"proxy/proxyEnabled"_s, true );
-    settings.setValue( u"proxy/proxyPort"_s, u"38124"_s );
-    settings.setValue( u"proxy/proxyHost"_s, u"myproxyhostname.com"_s );
-    settings.setValue( u"proxy/proxyUser"_s, u"username"_s );
-    settings.setValue( u"proxy/proxyPassword"_s, u"password"_s );
-    settings.setValue( u"proxy/proxyExcludedUrls"_s, u"http://www.myhost.com|http://www.myotherhost.com"_s );
+    QgsNetworkAccessManager::settingsProxyEnabled->setValue( true );
+    QgsNetworkAccessManager::settingsProxyPort->setValue( u"38124"_s );
+    QgsNetworkAccessManager::settingsProxyHost->setValue( u"myproxyhostname.com"_s );
+    QgsNetworkAccessManager::settingsProxyUser->setValue( u"username"_s );
+    QgsNetworkAccessManager::settingsProxyPassword->setValue( u"password"_s );
+    QgsNetworkAccessManager::settingsProxyExcludedUrls->setValue( u"http://www.myhost.com|http://www.myotherhost.com"_s );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     const QgsVectorLayer vl( mTestDataDir + '/' + u"lines.shp"_s, u"proxy_test"_s, "ogr"_L1 );
     QVERIFY( vl.isValid() );
@@ -117,11 +119,11 @@ void TestQgsOgrProvider::setupProxy()
 
   {
     // Test partial config
-    settings.setValue( u"proxy/proxyEnabled"_s, true );
-    settings.remove( u"proxy/proxyPort"_s );
-    settings.setValue( u"proxy/proxyHost"_s, u"myproxyhostname.com"_s );
-    settings.setValue( u"proxy/proxyUser"_s, u"username"_s );
-    settings.remove( u"proxy/proxyPassword"_s );
+    QgsNetworkAccessManager::settingsProxyEnabled->setValue( true );
+    QgsNetworkAccessManager::settingsProxyPort->remove();
+    QgsNetworkAccessManager::settingsProxyHost->setValue( u"myproxyhostname.com"_s );
+    QgsNetworkAccessManager::settingsProxyUser->setValue( u"username"_s );
+    QgsNetworkAccessManager::settingsProxyPassword->remove();
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     const QgsVectorLayer vl( mTestDataDir + '/' + u"lines.shp"_s, u"proxy_test"_s, "ogr"_L1 );
     QVERIFY( vl.isValid() );
@@ -315,7 +317,11 @@ class ReadVectorLayer : public QThread
 
   public:
     ReadVectorLayer( const QString &filePath, QMutex &mutex, QWaitCondition &waitForVlCreation, QWaitCondition &waitForProcessEvents )
-      : _filePath( filePath ), _mutex( mutex ), _waitForVlCreation( waitForVlCreation ), _waitForProcessEvents( waitForProcessEvents ) {}
+      : _filePath( filePath )
+      , _mutex( mutex )
+      , _waitForVlCreation( waitForVlCreation )
+      , _waitForProcessEvents( waitForProcessEvents )
+    {}
 
     void run() override
     {
@@ -523,7 +529,8 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( vl->dataProvider()->dataSourceUri(), u"/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES"_s );
 
   // credentials should be bucket specific
-  auto vl2 = std::make_unique<QgsVectorLayer>( u"/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost"_s, u"test"_s, u"ogr"_s );
+  auto vl2 = std::make_unique<
+    QgsVectorLayer>( u"/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost"_s, u"test"_s, u"ogr"_s );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, u"YES"_s );
   region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
@@ -591,7 +598,8 @@ void TestQgsOgrProvider::testJSONFields_data()
   QTest::addColumn<int>( "expectedType" );
   QTest::addColumn<int>( "expectedSubType" );
 
-  QTest::newRow( "array of map string fallback" ) << QStringLiteral( R"json(
+  QTest::newRow( "array of map string fallback" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -608,10 +616,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QString )
-                                                  << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::QString )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "simple map" ) << QStringLiteral( R"json(
+  QTest::newRow( "simple map" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -626,10 +636,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QVariantMap )
-                                << static_cast<int>( QMetaType::Type::QString );
+)json" )
+    << static_cast<int>( QMetaType::Type::QVariantMap )
+    << static_cast<int>( QMetaType::Type::QString );
 
-  QTest::newRow( "complex map" ) << QStringLiteral( R"json(
+  QTest::newRow( "complex map" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -644,10 +656,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QVariantMap )
-                                 << static_cast<int>( QMetaType::Type::QString );
+)json" )
+    << static_cast<int>( QMetaType::Type::QVariantMap )
+    << static_cast<int>( QMetaType::Type::QString );
 
-  QTest::newRow( "int" ) << QStringLiteral( R"json(
+  QTest::newRow( "int" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -659,10 +673,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::Int )
-                         << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::Int )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "stringlist" ) << QStringLiteral( R"json(
+  QTest::newRow( "stringlist" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -674,10 +690,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QStringList )
-                                << static_cast<int>( QMetaType::Type::QString );
+)json" )
+    << static_cast<int>( QMetaType::Type::QStringList )
+    << static_cast<int>( QMetaType::Type::QString );
 
-  QTest::newRow( "string" ) << QStringLiteral( R"json(
+  QTest::newRow( "string" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -689,10 +707,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QString )
-                            << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::QString )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "double" ) << QStringLiteral( R"json(
+  QTest::newRow( "double" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -704,10 +724,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::Double )
-                            << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::Double )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "bool" ) << QStringLiteral( R"json(
+  QTest::newRow( "bool" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -719,10 +741,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::Bool )
-                          << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::Bool )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "int list" ) << QStringLiteral( R"json(
+  QTest::newRow( "int list" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -734,10 +758,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
-                              << static_cast<int>( QMetaType::Type::Int );
+)json" )
+    << static_cast<int>( QMetaType::Type::QVariantList )
+    << static_cast<int>( QMetaType::Type::Int );
 
-  QTest::newRow( "real list" ) << QStringLiteral( R"json(
+  QTest::newRow( "real list" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -749,11 +775,13 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
-                               << static_cast<int>( QMetaType::Type::Double );
+)json" )
+    << static_cast<int>( QMetaType::Type::QVariantList )
+    << static_cast<int>( QMetaType::Type::Double );
 
 
-  QTest::newRow( "array mixed types string fallback" ) << QStringLiteral( R"json(
+  QTest::newRow( "array mixed types string fallback" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -765,10 +793,12 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QString )
-                                                       << static_cast<int>( QMetaType::Type::UnknownType );
+)json" )
+    << static_cast<int>( QMetaType::Type::QString )
+    << static_cast<int>( QMetaType::Type::UnknownType );
 
-  QTest::newRow( "array mixed numeric types" ) << QStringLiteral( R"json(
+  QTest::newRow( "array mixed numeric types" )
+    << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -780,8 +810,9 @@ void TestQgsOgrProvider::testJSONFields_data()
     }
   ]
 }
-)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
-                                               << static_cast<int>( QMetaType::Type::Double );
+)json" )
+    << static_cast<int>( QMetaType::Type::QVariantList )
+    << static_cast<int>( QMetaType::Type::Double );
 }
 
 void TestQgsOgrProvider::testJSONFields()

@@ -16,11 +16,12 @@
 #ifndef QGSOGRPROXYTEXTCODEC_H
 #define QGSOGRPROXYTEXTCODEC_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QTextCodec>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -29,10 +30,9 @@
  * \note not available in Python bindings
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
+class CORE_EXPORT QgsOgrProxyTextCodec : public QTextCodec
 {
   public:
-
     /**
      * Constructor for QgsOgrProxyTextCodec, for the specified encoding \a name.
      */
@@ -51,7 +51,6 @@ class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
     static QStringList supportedCodecs();
 
   private:
-
     QByteArray mName;
 };
 

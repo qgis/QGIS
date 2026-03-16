@@ -17,7 +17,6 @@
 #define QGSATTRIBUTEFORMCONTAINEREDIT_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsattributeformcontaineredit.h"
 
@@ -25,6 +24,8 @@
 #include "qgsattributesformmodel.h"
 
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 /**
  * Widget to edit a container (tab, group box, or row) of a form configuration.

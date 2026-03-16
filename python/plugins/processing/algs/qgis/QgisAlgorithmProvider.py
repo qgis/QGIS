@@ -22,7 +22,6 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 
 from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot

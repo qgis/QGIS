@@ -21,10 +21,11 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
     QgsProcessingAlgorithm,
+    QgsProcessingOutputVectorLayer,
     QgsProcessingParameterFile,
     QgsProcessingParameterVectorLayer,
-    QgsProcessingOutputVectorLayer,
 )
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

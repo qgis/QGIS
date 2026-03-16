@@ -18,7 +18,6 @@
 #define QGSGRAPHICSVIEWMOUSEHANDLES_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -28,6 +27,8 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPointer>
+
+#define SIP_NO_FILE
 
 class QGraphicsView;
 class QInputEvent;

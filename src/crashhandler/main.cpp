@@ -33,8 +33,10 @@ int main( int argc, char *argv[] )
 {
   if ( argc < 2 )
   {
-    std::cout << "QGIS Crash Handler Usage: \n"
-              << "qgiscrashhandler {infofile}" << std::endl;
+    std::cout
+      << "QGIS Crash Handler Usage: \n"
+      << "qgiscrashhandler {infofile}"
+      << std::endl;
     return -1;
   }
 

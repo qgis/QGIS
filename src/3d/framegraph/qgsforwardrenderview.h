@@ -18,6 +18,8 @@
 
 #include "qgsabstractrenderview.h"
 
+#define SIP_NO_FILE
+
 namespace Qt3DRender
 {
   class QRenderSettings;
@@ -35,7 +37,6 @@ namespace Qt3DRender
   class QDebugOverlay;
 } // namespace Qt3DRender
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

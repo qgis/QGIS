@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 
 Qgs3DHighlightFeatureHandler::Qgs3DHighlightFeatureHandler( Qgs3DMapScene *scene )
   : mScene( scene )
-{
-}
+{}
 
 Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler()
 {

@@ -15,8 +15,6 @@
 
 #include "qgsterraintextureimage_p.h"
 
-#include "qgsterraintexturegenerator_p.h"
-
 #include <Qt3DRender/QTextureImageDataGenerator>
 
 #include "moc_qgsterraintextureimage_p.cpp"
@@ -38,7 +36,11 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     }
 
     TerrainTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
-      : mExtent( extent ), mDebugText( debugText ), mImage( img ), mVersion( version ) {}
+      : mExtent( extent )
+      , mDebugText( debugText )
+      , mImage( img )
+      , mVersion( version )
+    {}
 
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -47,10 +49,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
       return dataPtr;
     }
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TerrainTextureImageDataGenerator>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TerrainTextureImageDataGenerator>::id ); }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override
     {
@@ -73,8 +72,7 @@ QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRe
   , mExtent( extent )
   , mDebugText( debugText )
   , mImage( image )
-{
-}
+{}
 
 Qt3DRender::QTextureImageDataGeneratorPtr QgsTerrainTextureImage::dataGenerator() const
 {

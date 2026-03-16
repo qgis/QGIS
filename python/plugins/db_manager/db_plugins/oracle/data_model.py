@@ -21,21 +21,20 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QElapsedTimer
 from qgis.core import QgsMessageLog
+from qgis.PyQt.QtCore import QElapsedTimer
+
 from ..data_model import (
-    TableDataModel,
+    BaseTableModel,
     SqlResultModel,
     SqlResultModelAsync,
     SqlResultModelTask,
-    BaseTableModel,
+    TableDataModel,
 )
-from ..plugin import DbError
-from ..plugin import BaseError
+from ..plugin import BaseError, DbError
 
 
 class ORTableDataModel(TableDataModel):
-
     def __init__(self, table, parent=None):
         self.cursor = None
         TableDataModel.__init__(self, table, parent)
@@ -58,28 +57,23 @@ class ORTableDataModel(TableDataModel):
     def _sanitizeTableField(self, field):
         # get fields, ignore geometry columns
         if field.dataType.upper() == "SDO_GEOMETRY":
-            return (
-                "CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'"
-                "END AS {0}".format(self.db.quoteId(field.name))
+            return "CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'END AS {0}".format(
+                self.db.quoteId(field.name)
             )
         if field.dataType.upper() == "DATE":
             return f"CAST({self.db.quoteId(field.name)} AS VARCHAR2(8))"
         if "TIMESTAMP" in field.dataType.upper():
-            return "TO_CHAR({}, 'YYYY-MM-DD HH:MI:SS.FF')".format(
-                self.db.quoteId(field.name)
-            )
+            return f"TO_CHAR({self.db.quoteId(field.name)}, 'YYYY-MM-DD HH:MI:SS.FF')"
         if field.dataType.upper() == "NUMBER":
             if not field.charMaxLen:
                 return f"CAST({self.db.quoteId(field.name)} AS VARCHAR2(135))"
             elif field.modifier:
                 nbChars = 2 + int(field.charMaxLen) + int(field.modifier)
-                return "CAST({} AS VARCHAR2({}))".format(
-                    self.db.quoteId(field.name), str(nbChars)
+                return (
+                    f"CAST({self.db.quoteId(field.name)} AS VARCHAR2({str(nbChars)}))"
                 )
 
-        return "CAST({} As VARCHAR2({}))".format(
-            self.db.quoteId(field.name), field.charMaxLen
-        )
+        return f"CAST({self.db.quoteId(field.name)} As VARCHAR2({field.charMaxLen}))"
 
     def _deleteCursor(self):
         self.db._close_cursor(self.cursor)
@@ -117,7 +111,6 @@ class ORTableDataModel(TableDataModel):
 
 
 class ORSqlResultModelTask(SqlResultModelTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(db, sql, parent)
 
@@ -137,7 +130,6 @@ class ORSqlResultModelTask(SqlResultModelTask):
 
 
 class ORSqlResultModelAsync(SqlResultModelAsync):
-
     def __init__(self, db, sql, parent):
         super().__init__()
 
@@ -147,7 +139,6 @@ class ORSqlResultModelAsync(SqlResultModelAsync):
 
 
 class ORSqlResultModel(SqlResultModel):
-
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 

@@ -75,27 +75,36 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( u"resampling-method"_s, sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, u"Last used georeferencer resampling method"_s );
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<
+  QgsImageWarper::ResamplingMethod>( u"resampling-method"_s, sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, u"Last used georeferencer resampling method"_s );
 
-const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( u"creation-options"_s, sTreeGeoreferencer, QStringList(), u"Last used georeferencer raster creation options"_s );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions
+  = new QgsSettingsEntryStringList( u"creation-options"_s, sTreeGeoreferencer, QStringList(), u"Last used georeferencer raster creation options"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( u"use-zero-for-transparent"_s, sTreeGeoreferencer, false, u"Last used georeferencer use-zero-as-transparent option"_s );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent
+  = new QgsSettingsEntryBool( u"use-zero-for-transparent"_s, sTreeGeoreferencer, false, u"Last used georeferencer use-zero-as-transparent option"_s );
 
-const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( u"transform-method"_s, sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, u"Last used georeferencer transform method"_s );
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<
+  QgsGcpTransformerInterface::TransformMethod>( u"transform-method"_s, sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, u"Last used georeferencer transform method"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( u"save-gcp-points"_s, sTreeGeoreferencer, false, u"Whether georeferencer should automatically save .points files"_s );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps
+  = new QgsSettingsEntryBool( u"save-gcp-points"_s, sTreeGeoreferencer, false, u"Whether georeferencer should automatically save .points files"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( u"load-result-in-project"_s, sTreeGeoreferencer, true, u"Whether georeferencer should automatically load results into the current project"_s );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject
+  = new QgsSettingsEntryBool( u"load-result-in-project"_s, sTreeGeoreferencer, true, u"Whether georeferencer should automatically load results into the current project"_s );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeGeoreferencer, QString(), u"Last used folder for georeferencer source files"_s );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder
+  = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeGeoreferencer, QString(), u"Last used folder for georeferencer source files"_s );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( u"last-raster-file-filter"_s, sTreeGeoreferencer, QString(), u"Last used raster file filter for georeferencer source files"_s );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter
+  = new QgsSettingsEntryString( u"last-raster-file-filter"_s, sTreeGeoreferencer, QString(), u"Last used raster file filter for georeferencer source files"_s );
 
 const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( u"last-target-crs"_s, sTreeGeoreferencer, QString(), u"Last used georeferencer target CRS"_s );
 
 const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( u"snapping-enabled"_s, sTreeGeoreferencer, false, u"Snapping enabled."_s );
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( u"snapping-types"_s, sTreeGeoreferencer, Qgis::SnappingType::Vertex, u"Snapping types."_s );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes
+  = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( u"snapping-types"_s, sTreeGeoreferencer, Qgis::SnappingType::Vertex, u"Snapping types."_s );
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
@@ -223,7 +232,8 @@ void QgsGeoreferencerMainWindow::closeEvent( QCloseEvent *e )
 
 void QgsGeoreferencerMainWindow::reset()
 {
-  if ( QMessageBox::question( this, tr( "Reset Georeferencer" ), tr( "Reset georeferencer and clear all GCP points?" ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Cancel )
+  if ( QMessageBox::question( this, tr( "Reset Georeferencer" ), tr( "Reset georeferencer and clear all GCP points?" ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+       != QMessageBox::Cancel )
   {
     mFileName.clear();
     mModifiedFileName.clear();
@@ -500,8 +510,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   }
   mWorldFileName = guessWorldFileName( mFileName );
 
-  const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformMethod
-                              || ( mLayer && mLayer->crs().isValid() );
+  const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformMethod || ( mLayer && mLayer->crs().isValid() );
   mActionLinkGeorefToQgis->setEnabled( hasReferencing );
   mActionLinkQGisToGeoref->setEnabled( hasReferencing );
   if ( !hasReferencing )
@@ -1655,7 +1664,9 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( !validate() )
     return false;
 
-  if ( mLayer->type() == Qgis::LayerType::Raster && mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() || QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
+  if ( mLayer->type() == Qgis::LayerType::Raster
+       && mCreateWorldFileOnly
+       && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() || QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
@@ -1669,10 +1680,17 @@ bool QgsGeoreferencerMainWindow::georeference()
     {
       if ( QFile::exists( mWorldFileName ) )
       {
-        int r = QMessageBox::question( this, tr( "Georeference" ), tr( "<p>The selected file already seems to have a "
-                                                                       "world file! Do you want to replace it with the "
-                                                                       "new world file?</p>" ),
-                                       QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape );
+        int r = QMessageBox::question(
+          this,
+          tr( "Georeference" ),
+          tr(
+            "<p>The selected file already seems to have a "
+            "world file! Do you want to replace it with the "
+            "new world file?</p>"
+          ),
+          QMessageBox::Yes | QMessageBox::Default,
+          QMessageBox::No | QMessageBox::Escape
+        );
         if ( r == QMessageBox::No )
           return false;
         else
@@ -1718,26 +1736,12 @@ bool QgsGeoreferencerMainWindow::georeference()
 
 bool QgsGeoreferencerMainWindow::georeferenceRaster()
 {
-  QgsImageWarperTask *task = new QgsImageWarperTask(
-    mFileName,
-    mModifiedFileName,
-    mGeorefTransform,
-    mResamplingMethod,
-    mUseZeroForTrans,
-    mCreationOptions,
-    mTargetCrs,
-    mUserResX,
-    mUserResY
-  );
+  QgsImageWarperTask *task = new QgsImageWarperTask( mFileName, mModifiedFileName, mGeorefTransform, mResamplingMethod, mUseZeroForTrans, mCreationOptions, mTargetCrs, mUserResX, mUserResY );
 
   auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
-  connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
-    progressDialog->setValue( static_cast<int>( progress ) );
-  } );
-  connect( progressDialog.get(), &QProgressDialog::canceled, task, [&] {
-    task->cancel();
-  } );
+  connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) { progressDialog->setValue( static_cast<int>( progress ) ); } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, task, [&] { task->cancel(); } );
   progressDialog->show();
 
   // task is running in a thread, so we don't strictly need to show a blocking progress dialog here... but we don't have a good ui
@@ -1792,12 +1796,8 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
 
   auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
-  connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
-    progressDialog->setValue( static_cast<int>( progress ) );
-  } );
-  connect( progressDialog.get(), &QProgressDialog::canceled, task, [&] {
-    task->cancel();
-  } );
+  connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) { progressDialog->setValue( static_cast<int>( progress ) ); } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, task, [&] { task->cancel(); } );
   progressDialog->show();
 
   // task is running in a thread, so we don't strictly need to show a blocking progress dialog here... but we don't have a good ui
@@ -1890,12 +1890,19 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   // in world files we need to use center of the upper left pixel, not the corner
   // see https://github.com/qgis/QGIS/issues/41795
   QTextStream stream( &file );
-  stream << qgsDoubleToString( pixelXSize ) << Qt::endl
-         << rotationX << Qt::endl
-         << rotationY << Qt::endl
-         << qgsDoubleToString( -pixelYSize ) << Qt::endl
-         << qgsDoubleToString( origin.x() + pixelXSize / 2.0 ) << Qt::endl
-         << qgsDoubleToString( origin.y() - pixelYSize / 2.0 ) << Qt::endl;
+  stream
+    << qgsDoubleToString( pixelXSize )
+    << Qt::endl
+    << rotationX
+    << Qt::endl
+    << rotationY
+    << Qt::endl
+    << qgsDoubleToString( -pixelYSize )
+    << Qt::endl
+    << qgsDoubleToString( origin.x() + pixelXSize / 2.0 )
+    << Qt::endl
+    << qgsDoubleToString( origin.y() - pixelYSize / 2.0 )
+    << Qt::endl;
   return true;
 }
 
@@ -2147,11 +2154,12 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QgsLayoutTableColumns parameterTableColumns;
   if ( wldTransform )
   {
-    parameterTableColumns << QgsLayoutTableColumn( tr( "Translation x" ) )
-                          << QgsLayoutTableColumn( tr( "Translation y" ) )
-                          << QgsLayoutTableColumn( tr( "Scale x" ) )
-                          << QgsLayoutTableColumn( tr( "Scale y" ) )
-                          << QgsLayoutTableColumn( tr( "Rotation [degrees]" ) );
+    parameterTableColumns
+      << QgsLayoutTableColumn( tr( "Translation x" ) )
+      << QgsLayoutTableColumn( tr( "Translation y" ) )
+      << QgsLayoutTableColumn( tr( "Scale x" ) )
+      << QgsLayoutTableColumn( tr( "Scale y" ) )
+      << QgsLayoutTableColumn( tr( "Rotation [degrees]" ) );
   }
   parameterTableColumns << QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
   parameterTable->setColumns( parameterTableColumns );
@@ -2159,11 +2167,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QStringList parameterTableRow;
   if ( wldTransform )
   {
-    parameterTableRow << QString::number( origin.x(), 'f', 3 )
-                      << QString::number( origin.y(), 'f', 3 )
-                      << QString::number( scaleX )
-                      << QString::number( scaleY )
-                      << QString::number( rotation * 180 / M_PI );
+    parameterTableRow << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI );
   }
   parameterTableRow << QString::number( meanError );
   parameterTable->addRow( parameterTableRow );
@@ -2198,15 +2202,16 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   gcpTable->setContentTextFormat( tableContentFormat );
   gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
   QgsLayoutTableColumns gcpTableColumns;
-  gcpTableColumns << QgsLayoutTableColumn( tr( "ID" ) )
-                  << QgsLayoutTableColumn( tr( "Enabled" ) )
-                  << QgsLayoutTableColumn( tr( "Pixel X" ) )
-                  << QgsLayoutTableColumn( tr( "Pixel Y" ) )
-                  << QgsLayoutTableColumn( tr( "Map X" ) )
-                  << QgsLayoutTableColumn( tr( "Map Y" ) )
-                  << QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
-                  << QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
-                  << QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+  gcpTableColumns
+    << QgsLayoutTableColumn( tr( "ID" ) )
+    << QgsLayoutTableColumn( tr( "Enabled" ) )
+    << QgsLayoutTableColumn( tr( "Pixel X" ) )
+    << QgsLayoutTableColumn( tr( "Pixel Y" ) )
+    << QgsLayoutTableColumn( tr( "Map X" ) )
+    << QgsLayoutTableColumn( tr( "Map Y" ) )
+    << QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+    << QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+    << QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
 
   gcpTable->setColumns( gcpTableColumns );
 
@@ -2230,8 +2235,14 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
 
     const QgsPointXY transformedDestinationPoint = ( *gcpIt )->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
 
-    currentGCPStrings << QString::number( ( *gcpIt )->sourcePoint().x(), 'f', 0 ) << QString::number( ( *gcpIt )->sourcePoint().y(), 'f', 0 ) << QString::number( transformedDestinationPoint.x(), 'f', 3 )
-                      << QString::number( transformedDestinationPoint.y(), 'f', 3 ) << QString::number( residual.x() ) << QString::number( residual.y() ) << QString::number( residualTot );
+    currentGCPStrings
+      << QString::number( ( *gcpIt )->sourcePoint().x(), 'f', 0 )
+      << QString::number( ( *gcpIt )->sourcePoint().y(), 'f', 0 )
+      << QString::number( transformedDestinationPoint.x(), 'f', 3 )
+      << QString::number( transformedDestinationPoint.y(), 'f', 3 )
+      << QString::number( residual.x() )
+      << QString::number( residual.y() )
+      << QString::number( residualTot );
     gcpTableContents << currentGCPStrings;
   }
 
@@ -2338,7 +2349,9 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   {
     const QgsPointXY pixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
     const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << u"-gcp %1 %2 %3 %4"_s.arg( qgsDoubleToString( pixel.x(), 3 ), qgsDoubleToString( -pixel.y(), 3 ), qgsDoubleToString( transformedDestinationPoint.x(), precision ), qgsDoubleToString( transformedDestinationPoint.y(), precision ) );
+    gdalCommand
+      << u"-gcp %1 %2 %3 %4"_s
+           .arg( qgsDoubleToString( pixel.x(), 3 ), qgsDoubleToString( -pixel.y(), 3 ), qgsDoubleToString( transformedDestinationPoint.x(), precision ), qgsDoubleToString( transformedDestinationPoint.y(), precision ) );
   }
 
   QFileInfo rasterFileInfo( mFileName );
@@ -2359,7 +2372,12 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     const QgsPointXY dest = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << u"-gcp %1 %2 %3 %4"_s.arg( qgsDoubleToString( pt->sourcePoint().x(), sourcePrecision ), qgsDoubleToString( pt->sourcePoint().y(), sourcePrecision ), qgsDoubleToString( dest.x(), destPrecision ), qgsDoubleToString( dest.y(), destPrecision ) );
+    gdalCommand << u"-gcp %1 %2 %3 %4"_s.arg(
+      qgsDoubleToString( pt->sourcePoint().x(), sourcePrecision ),
+      qgsDoubleToString( pt->sourcePoint().y(), sourcePrecision ),
+      qgsDoubleToString( dest.x(), destPrecision ),
+      qgsDoubleToString( dest.y(), destPrecision )
+    );
   }
 
   switch ( mTransformMethod )
@@ -2450,7 +2468,8 @@ bool QgsGeoreferencerMainWindow::validate()
     return false;
   }
 
-  if ( mModifiedFileName.isEmpty() && ( !mCreateWorldFileOnly || ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) ) )
+  if ( mModifiedFileName.isEmpty()
+       && ( !mCreateWorldFileOnly || ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) ) )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output file name." ) );
     showTransformSettingsDialog();
@@ -2459,7 +2478,11 @@ bool QgsGeoreferencerMainWindow::validate()
 
   if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
-    mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %n GCPs. Please define more.", nullptr, mGeorefTransform.minimumGcpCount() ).arg( QgsGcpTransformerInterface::methodToString( mTransformMethod ) ), Qgis::MessageLevel::Critical );
+    mMessageBar->pushMessage(
+      tr( "Not Enough GCPs" ),
+      tr( "%1 transformation requires at least %n GCPs. Please define more.", nullptr, mGeorefTransform.minimumGcpCount() ).arg( QgsGcpTransformerInterface::methodToString( mTransformMethod ) ),
+      Qgis::MessageLevel::Critical
+    );
     return false;
   }
 

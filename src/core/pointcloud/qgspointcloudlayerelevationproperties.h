@@ -25,8 +25,6 @@
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
 
 /**
  * \class QgsPointCloudLayerElevationProperties
@@ -37,11 +35,9 @@
  */
 class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointCloudLayerElevationProperties, with the specified \a parent object.
      */

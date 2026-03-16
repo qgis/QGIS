@@ -37,7 +37,6 @@ with warnings.catch_warnings():
 
 
 class RenderingStyleFilePanel(BASE, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)

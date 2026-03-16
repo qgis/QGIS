@@ -23,7 +23,6 @@ Contains information about a node used for editing an annotation item.
 #include "qgsannotationitemnode.h"
 %End
   public:
-
     QgsAnnotationItemNode();
 
     QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type, Qt::CursorShape cursor = Qt::CursorShape::ArrowCursor );
@@ -34,14 +33,14 @@ Constructor for QgsAnnotationItemNode, with the specified ``id``,
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
-                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
-                  .arg( sipCpp->point().x() )
-                  .arg( sipCpp->point().y() );
+        QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
+          .arg( qgsEnumValueToKey( sipCpp->type() ) )
+          .arg( sipCpp->point().x() )
+          .arg( sipCpp->point().y() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsVertexId id() const;
+        QgsVertexId id() const;
 %Docstring
 Returns the ID number of the node, used for uniquely identifying the
 node in the item.

@@ -11,6 +11,8 @@ __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
@@ -21,14 +23,12 @@ from qgis.core import (
     QgsMeshTerrainProvider,
     QgsProfileRequest,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProfileRequest(QgisTestCase):
-
     def testBasic(self):
         req = QgsProfileRequest(QgsLineString([[1, 2], [3, 4]]))
         self.assertEqual(req.profileCurve().asWkt(), "LineString (1 2, 3 4)")

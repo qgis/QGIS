@@ -19,8 +19,9 @@ __author__ = "Victor Olaya"
 __date__ = "August 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
-from qgis.PyQt import uic
 import logging
+
+from qgis.PyQt import uic
 
 uic.properties.logger.setLevel(logging.WARNING)
 uic.uiparser.logger.setLevel(logging.WARNING)

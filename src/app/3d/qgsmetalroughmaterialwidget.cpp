@@ -47,8 +47,7 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
 }
 
 void QgsMetalRoughMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
-{
-}
+{}
 
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
@@ -75,5 +74,4 @@ QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
 }
 
 void QgsMetalRoughMaterialWidget::updateWidgetState()
-{
-}
+{}

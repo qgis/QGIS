@@ -126,10 +126,7 @@ class TestParamDefinition : public QgsProcessingParameterDefinition
     {}
     QString mType;
 
-    QgsProcessingParameterDefinition *clone() const override
-    {
-      return new TestParamDefinition( mType, name() );
-    }
+    QgsProcessingParameterDefinition *clone() const override { return new TestParamDefinition( mType, name() ); }
 
     QString type() const override { return mType; }
     QString valueAsPythonString( const QVariant &, QgsProcessingContext & ) const override { return QString(); }
@@ -146,34 +143,16 @@ class TestParameterType : public QgsProcessingParameterType
     {}
     QString mType;
 
-    QgsProcessingParameterDefinition *create( const QString &name ) const override
-    {
-      return new QgsProcessingParameterString( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override { return new QgsProcessingParameterString( name ); }
 
-    QString description() const override
-    {
-      return u"Dummy Parameter Description"_s;
-    }
+    QString description() const override { return u"Dummy Parameter Description"_s; }
 
-    QString name() const override
-    {
-      return u"Dummy Parameter Type"_s;
-    }
+    QString name() const override { return u"Dummy Parameter Type"_s; }
 
-    QString id() const override
-    {
-      return mType;
-    }
+    QString id() const override { return mType; }
 
-    QStringList acceptedParameterTypes() const override
-    {
-      return QStringList();
-    }
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList();
-    }
+    QStringList acceptedParameterTypes() const override { return QStringList(); }
+    QStringList acceptedOutputTypes() const override { return QStringList(); }
 };
 
 
@@ -184,24 +163,13 @@ class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // 
       : QgsAbstractProcessingParameterWidgetWrapper( parameter, type )
     {}
 
-    QWidget *createWidget() override
-    {
-      return nullptr;
-    }
+    QWidget *createWidget() override { return nullptr; }
 
-    QLabel *createLabel() override
-    {
-      return nullptr;
-    }
+    QLabel *createLabel() override { return nullptr; }
 
-    void setWidgetValue( const QVariant &, QgsProcessingContext & ) override
-    {
-    }
+    void setWidgetValue( const QVariant &, QgsProcessingContext & ) override {}
 
-    QVariant widgetValue() const override
-    {
-      return QVariant();
-    }
+    QVariant widgetValue() const override { return QVariant(); }
 };
 
 class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
@@ -213,10 +181,7 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
 
     QString type;
 
-    QString parameterType() const override
-    {
-      return type;
-    }
+    QString parameterType() const override { return type; }
 
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override
     {
@@ -426,8 +391,7 @@ void TestProcessingGui::cleanupTestCase()
 }
 
 void TestProcessingGui::init()
-{
-}
+{}
 
 void TestProcessingGui::cleanup()
 {
@@ -476,6 +440,32 @@ void TestProcessingGui::testModelUndo()
   QCOMPARE( model.designerParameterValues(), params );
   command.redo();
   QCOMPARE( model.designerParameterValues(), params );
+
+  // merge logic
+  QgsModelUndoCommand command1( &model, u"c1"_s );
+  QgsModelUndoCommand command2( &model, u"c2"_s );
+  // not compatible, no operation or id string
+  QVERIFY( !command1.mergeWith( &command2 ) );
+  QVERIFY( !command2.mergeWith( &command1 ) );
+
+  QgsModelUndoCommand command3( &model, u"c1"_s, QgsModelUndoCommand::CommandOperation::GroupChanged );
+  QgsModelUndoCommand command4( &model, u"c2"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  QgsModelUndoCommand command5( &model, u"c3"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  // not compatible, different operation
+  QVERIFY( !command3.mergeWith( &command4 ) );
+  QVERIFY( !command4.mergeWith( &command3 ) );
+  // compatible, same operation
+  QVERIFY( command4.mergeWith( &command5 ) );
+
+  QgsModelUndoCommand command6( &model, u"c1"_s, u"id1"_s );
+  QgsModelUndoCommand command7( &model, u"c2"_s, u"id2"_s );
+  QgsModelUndoCommand command8( &model, u"c3"_s, u"id2"_s );
+  // not compatible, different id string
+  QVERIFY( !command6.mergeWith( &command7 ) );
+  QVERIFY( !command6.mergeWith( &command8 ) );
+  QVERIFY( !command7.mergeWith( &command6 ) );
+  // compatible, same id string
+  QVERIFY( command7.mergeWith( &command8 ) );
 }
 
 void TestProcessingGui::testSetGetConfig()
@@ -672,10 +662,7 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
       : mContext( context )
     {}
 
-    QgsProcessingContext *processingContext() override
-    {
-      return &mContext;
-    }
+    QgsProcessingContext *processingContext() override { return &mContext; }
 
     QgsProcessingContext &mContext;
 };
@@ -917,7 +904,12 @@ void TestProcessingGui::testModelerWrapper()
 
   w = new QgsProcessingModelerParameterWidget( &model, "alg4", layerDef, context );
 
-  w->setWidgetValue( QList<QgsProcessingModelChildParameterSource>() << QgsProcessingModelChildParameterSource::fromChildOutput( u"alg3"_s, u"OUTPUT"_s ) << QgsProcessingModelChildParameterSource::fromModelParameter( u"p1"_s ) << QgsProcessingModelChildParameterSource::fromStaticValue( u"something"_s ) );
+  w->setWidgetValue(
+    QList<QgsProcessingModelChildParameterSource>()
+    << QgsProcessingModelChildParameterSource::fromChildOutput( u"alg3"_s, u"OUTPUT"_s )
+    << QgsProcessingModelChildParameterSource::fromModelParameter( u"p1"_s )
+    << QgsProcessingModelChildParameterSource::fromStaticValue( u"something"_s )
+  );
   QCOMPARE( w->value().toList().count(), 3 );
 
   QCOMPARE( w->value().toList().at( 0 ).value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
@@ -4133,18 +4125,25 @@ void TestProcessingGui::testMultipleSelectionDialog()
   QCOMPARE( dlg->mModel->item( 0 )->text(), u"a"_s );
   QCOMPARE( dlg->mModel->item( 1 )->text(), u"6"_s );
   QCOMPARE( dlg->mModel->item( 2 )->text(), u"6.2"_s );
-  dlg->setValueFormatter( []( const QVariant &v ) -> QString {
-    return v.toString() + '_';
-  } );
+  dlg->setValueFormatter( []( const QVariant &v ) -> QString { return v.toString() + '_'; } );
   QCOMPARE( dlg->mModel->item( 0 )->text(), u"a_"_s );
   QCOMPARE( dlg->mModel->item( 1 )->text(), u"6_"_s );
   QCOMPARE( dlg->mModel->item( 2 )->text(), u"6.2_"_s );
 
   // mix of fixed + model choices
-  availableOptions = QVariantList() << QVariant( "a" ) << 6 << 6.2
-                                    << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg"_s, u"out"_s ) )
-                                    << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"input"_s ) );
-  dlg = std::make_unique<QgsProcessingMultipleSelectionPanelWidget>( availableOptions, QVariantList() << 6 << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg"_s, u"out"_s ) ) << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"input"_s ) ) );
+  availableOptions = QVariantList()
+                     << QVariant( "a" )
+                     << 6
+                     << 6.2
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg"_s, u"out"_s ) )
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"input"_s ) );
+  dlg = std::make_unique<QgsProcessingMultipleSelectionPanelWidget>(
+    availableOptions,
+    QVariantList()
+      << 6
+      << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg"_s, u"out"_s ) )
+      << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"input"_s ) )
+  );
 
   // when any selected option is a model child parameter source, then we require that all options are upgraded in place to model child parameter sources
   QVariantList res = dlg->selectedOptions();
@@ -4220,7 +4219,8 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource>() );
+  dlg = std::make_unique<
+    QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"raster [EPSG:4326]"_s );
@@ -4233,7 +4233,8 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
 
   // should remember layer order
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
+  dlg = std::make_unique<
+    QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
@@ -4754,7 +4755,13 @@ void TestProcessingGui::testMultipleInputWrapper()
     {
       // different mix of sources
 
-      wrapper2.setWidgetValue( QVariantList() << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg3"_s, u"OUTPUT"_s ) ) << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"p1"_s ) ) << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( u"something"_s ) ), context );
+      wrapper2.setWidgetValue(
+        QVariantList()
+          << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( u"alg3"_s, u"OUTPUT"_s ) )
+          << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( u"p1"_s ) )
+          << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( u"something"_s ) ),
+        context
+      );
       QCOMPARE( wrapper2.widgetValue().toList().count(), 3 );
 
       QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
@@ -6445,17 +6452,32 @@ void TestProcessingGui::testCoordinateOperationWrapper()
     wrapper.setDestinationCrsParameterValue( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
 
     QSignalSpy spy( &wrapper, &QgsProcessingCoordinateOperationWidgetWrapper::widgetValueHasChanged );
-    wrapper.setWidgetValue( u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s, context );
+    wrapper.setWidgetValue(
+      u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s,
+      context
+    );
     QCOMPARE( spy.count(), 1 );
-    QCOMPARE( wrapper.widgetValue().toString(), u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+    QCOMPARE(
+      wrapper.widgetValue().toString(),
+      u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+    );
     switch ( type )
     {
       case Qgis::ProcessingMode::Standard:
       {
-        QCOMPARE( static_cast<QgsCoordinateOperationWidget *>( wrapper.wrappedWidget() )->selectedOperation().proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
-        wrapper.setWidgetValue( u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s, context );
+        QCOMPARE(
+          static_cast<QgsCoordinateOperationWidget *>( wrapper.wrappedWidget() )->selectedOperation().proj,
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+        );
+        wrapper.setWidgetValue(
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s,
+          context
+        );
         QCOMPARE( spy.count(), 2 );
-        QCOMPARE( static_cast<QgsCoordinateOperationWidget *>( wrapper.wrappedWidget() )->selectedOperation().proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+        QCOMPARE(
+          static_cast<QgsCoordinateOperationWidget *>( wrapper.wrappedWidget() )->selectedOperation().proj,
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+        );
 
         // check signal
         QgsCoordinateOperationWidget::OperationDetails deets;
@@ -6468,13 +6490,24 @@ void TestProcessingGui::testCoordinateOperationWrapper()
       case Qgis::ProcessingMode::Modeler:
       case Qgis::ProcessingMode::Batch:
       {
-        QCOMPARE( wrapper.mLineEdit->text(), u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
-        wrapper.setWidgetValue( u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s, context );
+        QCOMPARE(
+          wrapper.mLineEdit->text(),
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+        );
+        wrapper.setWidgetValue(
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s,
+          context
+        );
         QCOMPARE( spy.count(), 2 );
-        QCOMPARE( wrapper.mLineEdit->text(), u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+        QCOMPARE(
+          wrapper.mLineEdit->text(),
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+        );
 
         // check signal
-        wrapper.mLineEdit->setText( u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+        wrapper.mLineEdit->setText(
+          u"+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s
+        );
         QCOMPARE( spy.count(), 3 );
         break;
       }
@@ -6740,7 +6773,8 @@ void TestProcessingGui::mapLayerComboBox()
   param.reset();
 
   // map layer param, only point vector and raster types are acceptable
-  param = std::make_unique<QgsProcessingParameterMapLayer>( u"param"_s, QString(), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::Raster ) );
+  param = std::make_unique<
+    QgsProcessingParameterMapLayer>( u"param"_s, QString(), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::Raster ) );
   combo = std::make_unique<QgsProcessingMapLayerComboBox>( param.get() );
   combo->setLayer( point );
   QCOMPARE( combo->currentLayer(), point );
@@ -7079,9 +7113,11 @@ void TestProcessingGui::mapLayerComboBox()
   param.reset();
 
   // combination point and line only
-  param = std::make_unique<QgsProcessingParameterVectorLayer>( u"param"_s, QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) );
+  param = std::make_unique<
+    QgsProcessingParameterVectorLayer>( u"param"_s, QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) );
   combo = std::make_unique<QgsProcessingMapLayerComboBox>( param.get() );
-  param2 = std::make_unique<QgsProcessingParameterFeatureSource>( u"param"_s, QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) );
+  param2 = std::make_unique<
+    QgsProcessingParameterFeatureSource>( u"param"_s, QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) );
   combo2 = std::make_unique<QgsProcessingMapLayerComboBox>( param2.get() );
   combo->setLayer( point );
   QCOMPARE( combo->currentLayer(), point );
@@ -11434,7 +11470,31 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     {
       case Qgis::ProcessingMode::Standard:
       case Qgis::ProcessingMode::Batch:
-        QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << u"X"_s << u"Y"_s << u"Z"_s << u"Intensity"_s << u"ReturnNumber"_s << u"NumberOfReturns"_s << u"ScanDirectionFlag"_s << u"EdgeOfFlightLine"_s << u"Classification"_s << u"ScanAngleRank"_s << u"UserData"_s << u"PointSourceId"_s << u"Synthetic"_s << u"KeyPoint"_s << u"Withheld"_s << u"Overlap"_s << u"ScannerChannel"_s << u"GpsTime"_s << u"Red"_s << u"Green"_s << u"Blue"_s );
+        QCOMPARE(
+          wrapper4.widgetValue().toList(),
+          QVariantList()
+            << u"X"_s
+            << u"Y"_s
+            << u"Z"_s
+            << u"Intensity"_s
+            << u"ReturnNumber"_s
+            << u"NumberOfReturns"_s
+            << u"ScanDirectionFlag"_s
+            << u"EdgeOfFlightLine"_s
+            << u"Classification"_s
+            << u"ScanAngleRank"_s
+            << u"UserData"_s
+            << u"PointSourceId"_s
+            << u"Synthetic"_s
+            << u"KeyPoint"_s
+            << u"Withheld"_s
+            << u"Overlap"_s
+            << u"ScannerChannel"_s
+            << u"GpsTime"_s
+            << u"Red"_s
+            << u"Green"_s
+            << u"Blue"_s
+        );
         break;
 
       case Qgis::ProcessingMode::Modeler:
@@ -11613,10 +11673,10 @@ void TestProcessingGui::testModelGraphicsView()
   //check model bounds
   scene2.updateBounds();
   QRectF modelRect = scene2.sceneRect();
-  QGSCOMPARENEAR( modelRect.height(), 624.4, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
-  QGSCOMPARENEAR( modelRect.width(), 655.00, 0.01 );
-  QGSCOMPARENEAR( modelRect.left(), -252.0, 0.01 );
-  QGSCOMPARENEAR( modelRect.top(), -232.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.height(), 1523, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect.width(), 1555.00, 0.01 );
+  QGSCOMPARENEAR( modelRect.left(), -702.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.top(), -682.0, 0.01 );
 
 
   // test model large modelRect
@@ -11641,10 +11701,10 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene3.updateBounds();
   QRectF modelRect2 = scene3.sceneRect();
-  QGSCOMPARENEAR( modelRect2.height(), 4505.4, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
-  QGSCOMPARENEAR( modelRect2.width(), 4603.0, 0.01 );
-  QGSCOMPARENEAR( modelRect2.left(), -201.0, 0.01 );
-  QGSCOMPARENEAR( modelRect2.top(), -150.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.height(), 5404, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.width(), 5503.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.left(), -651.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.top(), -600.0, 0.01 );
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );
@@ -11690,7 +11750,7 @@ void TestProcessingGui::testModelGraphicsView()
   }
   QVERIFY( outputItem );
   QCOMPARE( dynamic_cast<QgsProcessingModelOutput *>( outputItem->component() )->childOutputName(), u"my_output"_s );
-
+  QCOMPARE( scene.outputItem( u"buffer"_s, u"my_output"_s ), outputItem );
 
   layerCommentItem = nullptr;
   QgsModelCommentGraphicItem *algCommentItem = nullptr;

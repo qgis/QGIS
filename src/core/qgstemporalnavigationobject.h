@@ -41,7 +41,6 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     Q_OBJECT
 
   public:
-
     /**
       * Constructor for QgsTemporalNavigationObject, with the specified \a parent object.
       */
@@ -335,7 +334,6 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     void timerTimeout();
 
   private:
-
     //! The controller temporal navigation extent range.
     QgsDateTimeRange mTemporalExtents;
 
@@ -369,7 +367,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long mTotalMovieFrames = 100;
 
     QgsTemporalNavigationObject( const QgsTemporalNavigationObject & ) = delete;
-    QgsTemporalNavigationObject &operator= ( const QgsTemporalNavigationObject & ) = delete;
+    QgsTemporalNavigationObject &operator=( const QgsTemporalNavigationObject & ) = delete;
 };
 
 #endif // QGSTEMPORALNAVIGATIONOBJECT_H

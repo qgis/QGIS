@@ -120,7 +120,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
     }
 
     case Qt::DecorationRole:
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->icon();
       }
@@ -132,7 +132,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
     case Qt::ToolTipRole:
     case static_cast< int >( CustomRole::Uri ):
     {
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->uri();
       }
@@ -144,7 +144,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
 
     case static_cast< int >( CustomRole::Configuration ):
     {
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->configuration();
       }

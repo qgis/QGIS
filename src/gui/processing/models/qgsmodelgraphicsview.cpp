@@ -27,6 +27,7 @@
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsxmlutils.h"
 
 #include <QApplication>
@@ -58,6 +59,12 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  // Workaround for Qt default behavior where during the scroll the visible scene rect would be also updated on the axis that is not being scrolled.
+  // With ScrollBarAlwaysOn, we ensure that the visible scene rect is stable during scroll.
+  // See https://github.com/qgis/QGIS/pull/64605#issuecomment-3771638032
+  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+
   connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
   connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
@@ -71,9 +78,7 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
-       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
-       || event->mimeData()->hasText() )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -89,9 +94,7 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     QString algorithmId;
     stream >> algorithmId;
 
-    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId] {
-      emit algorithmDropped( algorithmId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId] { emit algorithmDropped( algorithmId, dropPoint ); } );
     event->accept();
   }
   else if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) )
@@ -101,17 +104,13 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     QString paramTypeId;
     stream >> paramTypeId;
 
-    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] {
-      emit inputDropped( paramTypeId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] { emit inputDropped( paramTypeId, dropPoint ); } );
     event->accept();
   }
   else if ( event->mimeData()->hasText() )
   {
     const QString itemId = event->mimeData()->text();
-    QTimer::singleShot( 0, this, [this, dropPoint, itemId] {
-      emit inputDropped( itemId, dropPoint );
-    } );
+    QTimer::singleShot( 0, this, [this, dropPoint, itemId] { emit inputDropped( itemId, dropPoint ); } );
     event->accept();
   }
   else
@@ -122,9 +121,7 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
-       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
-       || event->mimeData()->hasText() )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -150,9 +147,8 @@ void QgsModelGraphicsView::wheelEvent( QWheelEvent *event )
 void QgsModelGraphicsView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
-  QgsSettings settings;
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -366,10 +362,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     }
     event->accept();
   }
-  else if ( event->key() == Qt::Key_Left
-            || event->key() == Qt::Key_Right
-            || event->key() == Qt::Key_Up
-            || event->key() == Qt::Key_Down )
+  else if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down )
   {
     QgsModelGraphicsScene *s = modelScene();
     const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
@@ -377,12 +370,13 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     {
       QPointF delta = deltaForKeyEvent( event );
 
-      itemList.at( 0 )->aboutToChange( tr( "Move Items" ) );
+      startMacroCommand( tr( "Move Items" ) );
       for ( QgsModelComponentGraphicItem *item : itemList )
       {
         item->moveComponentBy( delta.x(), delta.y() );
       }
       itemList.at( 0 )->changed();
+      endMacroCommand();
     }
     event->accept();
   }
@@ -521,6 +515,13 @@ void QgsModelGraphicsView::friendlySetSceneRect()
   newSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
   newSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
   newSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
+
+  // Qt scrollbar range are dealt in integer, so we round it ourselves to avoid a small "jump"
+  newSceneRect.setLeft( std::floor( newSceneRect.left() ) );
+  newSceneRect.setTop( std::floor( newSceneRect.top() ) );
+  newSceneRect.setRight( std::ceil( newSceneRect.right() ) );
+  newSceneRect.setBottom( std::ceil( newSceneRect.bottom() ) );
+
 
   // the above conversions may involve small rounding errors which stack up and could
   // result in unwanted small shifts of the visible scene area => only update the
@@ -829,7 +830,9 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
           pastedBounds = pastedBounds.united( QRectF( newOutput.position() - QPointF( newOutput.size().width() / 2.0, newOutput.size().height() / 2.0 ), newOutput.size() ) );
 
           if ( !alg.comment()->description().isEmpty() )
-            pastedBounds = pastedBounds.united( QRectF( newOutput.comment()->position() - QPointF( newOutput.comment()->size().width() / 2.0, newOutput.comment()->size().height() / 2.0 ), newOutput.comment()->size() ) );
+            pastedBounds = pastedBounds.united(
+              QRectF( newOutput.comment()->position() - QPointF( newOutput.comment()->size().width() / 2.0, newOutput.comment()->size().height() / 2.0 ), newOutput.comment()->size() )
+            );
         }
         alg.setModelOutputs( pastedOutputs );
 
@@ -871,7 +874,12 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
           for ( auto it = outputs.begin(); it != outputs.end(); ++it )
           {
             modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).position() + offset );
-            modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->position() + offset );
+            modelScene()
+              ->model()
+              ->childAlgorithm( pastedAlg )
+              .modelOutput( it.key() )
+              .comment()
+              ->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->position() + offset );
           }
         }
       }

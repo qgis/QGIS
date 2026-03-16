@@ -65,12 +65,14 @@ class CORE_EXPORT QgsRasterBlock
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
 
+    // clang-format off
     /**
      * \brief Returns TRUE if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
     bool isValid() const SIP_HOLDGIL { return mValid; }
+    // clang-format on
 
     //! \brief Mark block as valid or invalid
     void setValid( bool valid ) SIP_HOLDGIL { mValid = valid; }
@@ -563,6 +565,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool fill( double value );
 #else
+// clang-format off
 
     /**
      * Fills the whole block with a constant \a value.
@@ -594,6 +597,7 @@ class CORE_EXPORT QgsRasterBlock
       sipCpp->fill( a0 );
     }
     % End
+// clang-format on
 #endif
 
     /**

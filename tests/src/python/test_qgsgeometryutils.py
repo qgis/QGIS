@@ -11,6 +11,7 @@ __date__ = "January 2026"
 __copyright__ = "Copyright 2026, The QGIS Project"
 
 import math
+
 from qgis.core import (
     QgsGeometryUtils,
     QgsPoint,
@@ -19,7 +20,6 @@ from qgis.testing import unittest
 
 
 class TestQgsGeometryUtils(unittest.TestCase):
-
     def test_line_by_two_angles(self):
         """Test intersectionPointOfLinesByBearing function"""
         # Test 1: Simple right angle intersection

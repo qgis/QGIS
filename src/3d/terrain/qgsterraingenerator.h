@@ -20,6 +20,8 @@
 #include "qgschunkloader.h"
 #include "qgstilingscheme.h"
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class Qgs3DMapSettings;
 class Qgs3DRenderContext;
@@ -31,7 +33,6 @@ class QDomElement;
 class QDomDocument;
 class QgsProject;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d
@@ -106,7 +107,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
     //! Returns height at (x,y) in map's CRS
-    virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
+    virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const = 0;
 
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );

@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer )
   : QObject( nullptr )
   , mDesigner( designer )
-{
-}
+{}
 
 QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const
 {
@@ -54,9 +53,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     if ( selectedItems.count() > 1 )
     {
       QAction *groupAction = new QAction( tr( "Group" ), menu );
-      connect( groupAction, &QAction::triggered, this, [this]() {
-        mDesigner->view()->groupSelectedItems();
-      } );
+      connect( groupAction, &QAction::triggered, this, [this]() { mDesigner->view()->groupSelectedItems(); } );
       menu->addAction( groupAction );
       addedGroupAction = true;
     }
@@ -74,9 +71,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     if ( foundSelectedGroup )
     {
       QAction *ungroupAction = new QAction( tr( "Ungroup" ), menu );
-      connect( ungroupAction, &QAction::triggered, this, [this]() {
-        mDesigner->view()->ungroupSelectedItems();
-      } );
+      connect( ungroupAction, &QAction::triggered, this, [this]() { mDesigner->view()->ungroupSelectedItems(); } );
       menu->addAction( ungroupAction );
       addedGroupAction = true;
     }
@@ -85,14 +80,10 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       menu->addSeparator()->setObjectName( "AddedGroupSeparator"_L1 );
 
     QAction *copyAction = new QAction( tr( "Copy" ), menu );
-    connect( copyAction, &QAction::triggered, this, [this]() {
-      mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCopy );
-    } );
+    connect( copyAction, &QAction::triggered, this, [this]() { mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCopy ); } );
     menu->addAction( copyAction );
     QAction *cutAction = new QAction( tr( "Cut" ), menu );
-    connect( cutAction, &QAction::triggered, this, [this]() {
-      mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCut );
-    } );
+    connect( cutAction, &QAction::triggered, this, [this]() { mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCut ); } );
     menu->addAction( cutAction );
     menu->addSeparator()->setObjectName( "CopyCutSeparator"_L1 );
   }
@@ -113,9 +104,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   {
     const int pageNumber = layout->pageCollection()->pageNumber( page );
     QAction *pagePropertiesAction = new QAction( tr( "Page Properties…" ), menu );
-    connect( pagePropertiesAction, &QAction::triggered, this, [this, page]() {
-      mDesigner->showItemOptions( page, true );
-    } );
+    connect( pagePropertiesAction, &QAction::triggered, this, [this, page]() { mDesigner->showItemOptions( page, true ); } );
     menu->addAction( pagePropertiesAction );
 
     if ( mDesigner->guideWidget() )
@@ -149,9 +138,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   {
     QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
     QgsLayoutItem *item = selectedItems.at( 0 );
-    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() {
-      mDesigner->showItemOptions( item, true );
-    } );
+    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() { mDesigner->showItemOptions( item, true ); } );
     menu->addAction( itemPropertiesAction );
   }
 

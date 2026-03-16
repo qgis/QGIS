@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmodeldesignerdialog.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
 
@@ -42,6 +43,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAbstractParameterDefinitionWidget;
 class QgsMessageBar;
 class QgsBrowserGuiModel;
+class QgsModelGraphicsScene;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -223,6 +225,47 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setActiveLayer( QgsMapLayer *layer );
 
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * The \a generator must exist for the lifetime of the widget, ownership is not transferred.
+     *
+     * \see processingContextGenerator()
+     *
+     * \since QGIS 4.0
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    /**
+     * Returns the Processing context generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \see registerProcessingContextGenerator()
+     * \since QGIS 4.0
+     */
+    QgsProcessingContextGenerator *processingContextGenerator();
+
+    /**
+     * Returns the associated model designer dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see setModelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    QgsModelDesignerDialog *modelDesignerDialog() const;
+
+    /**
+     * Sets the associated model designer \a dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see modelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    void setModelDesignerDialog( QgsModelDesignerDialog *dialog );
+
   private:
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
@@ -237,6 +280,10 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsBrowserGuiModel *mBrowserModel = nullptr;
 
     QgsMapLayer *mActiveLayer = nullptr;
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+
+    QgsModelDesignerDialog *mModelDialog = nullptr;
 };
 
 #ifndef SIP_RUN
@@ -244,7 +291,12 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 class GUI_EXPORT QgsProcessingWidgetWrapperUtils
 {
   public:
-    static QgsExpressionContext createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator = nullptr, const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(), const QgsProcessingAlgorithm *algorithm = nullptr, const QgsVectorLayer *linkedLayer = nullptr );
+    static QgsExpressionContext createExpressionContext(
+      QgsProcessingContextGenerator *processingContextGenerator = nullptr,
+      const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(),
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      const QgsVectorLayer *linkedLayer = nullptr
+    );
 };
 ///@endcond
 #endif
@@ -277,7 +329,9 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
      */
-    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsAbstractProcessingParameterWidgetWrapper(
+      const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns the dialog type for which widgets and labels will be created by this wrapper.
@@ -546,7 +600,9 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      *
      * \see createWidgetWrapper()
      */
-    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context );
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper(
+      QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context
+    );
 
     /**
      * Creates a new parameter definition widget allowing for configuration of an instance of
@@ -573,10 +629,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \since QGIS 3.10
      */
     virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
-      QgsProcessingContext &context,
-      const QgsProcessingParameterWidgetContext &widgetContext,
-      const QgsProcessingParameterDefinition *definition = nullptr,
-      const QgsProcessingAlgorithm *algorithm = nullptr
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
     ) SIP_FACTORY;
 
   protected:

@@ -57,11 +57,13 @@ QString QgsApproximateMedialAxisAlgorithm::groupId() const
 
 QString QgsApproximateMedialAxisAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Approximate Medial Axis algorithm generates a simplified skeleton of a shape by approximating its medial axis. \n\n"
-                      "The output is a collection of lines that follow the central structure of the shape. The result is a thin, stable set "
-                      "of curves that capture the main topology while ignoring noise.\n\n"
-                      "This algorithm ignores the Z dimensions. If the geometry is 3D, the approximate medial axis will be calculated from "
-                      "its 2D projection." );
+  return QObject::tr(
+    "The Approximate Medial Axis algorithm generates a simplified skeleton of a shape by approximating its medial axis. \n\n"
+    "The output is a collection of lines that follow the central structure of the shape. The result is a thin, stable set "
+    "of curves that capture the main topology while ignoring noise.\n\n"
+    "This algorithm ignores the Z dimensions. If the geometry is 3D, the approximate medial axis will be calculated from "
+    "its 2D projection."
+  );
 }
 
 QString QgsApproximateMedialAxisAlgorithm::shortDescription() const

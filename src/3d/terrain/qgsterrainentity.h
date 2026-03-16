@@ -27,12 +27,13 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include <memory>
 
 #include "qgschunkedentity.h"
 #include "qgschunkqueuejob.h"
+
+#define SIP_NO_FILE
 
 namespace Qt3DCore
 {

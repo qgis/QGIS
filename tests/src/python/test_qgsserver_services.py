@@ -24,8 +24,8 @@ __copyright__ = "(C) 2016, David Marteau"
 
 """ QGIS test for server services
 """
-from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
 from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
 from qgis.server import (
     QgsServerRequest,
     QgsServerResponse,
@@ -36,7 +36,6 @@ from qgis.testing import unittest
 
 
 class Response(QgsServerResponse):
-
     def __init__(self):
         QgsServerResponse.__init__(self)
         self._buffer = QBuffer()
@@ -71,7 +70,6 @@ class Response(QgsServerResponse):
 
 
 class MyService(QgsService):
-
     def __init__(self, name, version, response):
         QgsService.__init__(self)
         self._response = response

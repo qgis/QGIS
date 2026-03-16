@@ -19,8 +19,8 @@ __author__ = "Nyall Dawson"
 __date__ = "October 2021"
 __copyright__ = "(C) 2021, Nyall Dawson"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -34,9 +34,9 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -44,7 +44,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLineburstSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_lineburst"

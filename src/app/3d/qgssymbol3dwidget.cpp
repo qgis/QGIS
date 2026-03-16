@@ -18,7 +18,6 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
 #include "qgsabstract3dsymbol.h"
-#include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"

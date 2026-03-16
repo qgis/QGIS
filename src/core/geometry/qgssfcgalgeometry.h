@@ -120,6 +120,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
+    // clang-format off
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
@@ -130,6 +131,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Clones the geometry by performing a deep copy
@@ -614,6 +616,30 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the geometry to a Solid geometry.
+     * The geometry must be of type PolyhedralSurface
+     *
+     * \return geometry as a Solid
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the geometry to a PolyhedralSurface geometry.
+     * The geometry must be of type Solid
+     *
+     * \return geometry as a PolyhedralSurface
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const SIP_THROW( QgsSfcgalException );
 
     // ============= PRIMITIVE
 

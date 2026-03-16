@@ -19,9 +19,8 @@ __author__ = "Alexander Bruy"
 __date__ = "February 2016"
 __copyright__ = "(C) 2016, Alexander Bruy"
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal
-
 from qgis.gui import QgsMapToolEmitPoint
+from qgis.PyQt.QtCore import Qt, pyqtSignal
 
 
 class PointMapTool(QgsMapToolEmitPoint):

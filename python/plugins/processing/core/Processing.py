@@ -22,34 +22,33 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import traceback
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QApplication
-from qgis.PyQt.QtGui import QCursor
-
-from qgis.utils import iface
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
-    QgsMessageLog,
     QgsApplication,
     QgsMapLayer,
-    QgsProcessingProvider,
+    QgsMessageLog,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingOutputVectorLayer,
-    QgsProcessingOutputRasterLayer,
-    QgsProcessingOutputPointCloudLayer,
+    QgsProcessingFeedback,
     QgsProcessingOutputMapLayer,
     QgsProcessingOutputMultipleLayers,
-    QgsProcessingFeedback,
+    QgsProcessingOutputPointCloudLayer,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterDefinition,
+    QgsProcessingProvider,
     QgsRuntimeProfiler,
 )
-from qgis.analysis import QgsNativeAlgorithms
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.utils import iface
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
@@ -100,7 +99,6 @@ class Processing:
             return
 
         with QgsRuntimeProfiler.profile("Initialize"):
-
             # add native provider if not already added
             if "native" not in [
                 p.id() for p in QgsApplication.processingRegistry().providers()

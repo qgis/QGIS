@@ -17,26 +17,25 @@
 
 import unittest
 
-from qgis.PyQt.QtCore import QPointF, QSize
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
+    QgsBasicNumericFormat,
     QgsFeature,
+    QgsFillSymbol,
+    QgsFontUtils,
     QgsGeometry,
+    QgsLinearReferencingSymbolLayer,
     QgsLineSymbol,
     QgsMapSettings,
-    QgsRenderContext,
-    QgsLinearReferencingSymbolLayer,
-    QgsTextFormat,
-    QgsFontUtils,
-    QgsBasicNumericFormat,
     QgsMarkerSymbol,
-    QgsFillSymbol,
-    QgsVectorLayer,
+    QgsRenderContext,
     QgsSingleSymbolRenderer,
+    QgsTextFormat,
+    QgsVectorLayer,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -44,7 +43,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSimpleLineSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_linearref"

@@ -44,7 +44,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     Q_NOWARN_DEPRECATED_POP
     // TODO QGIS 5 do not inherit QgsSettingsRegistry
   public:
-
     QgsSettingsRegistryCore();
     ~QgsSettingsRegistryCore() override;
 
@@ -57,12 +56,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      * \since QGIS 4.0
      */
     static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
-
-    /**
-     * Settings entry digitizing NURBS mode
-     * \since QGIS 4.0
-     */
-    static const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *settingsDigitizingNurbsMode;
 
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
@@ -189,9 +182,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry network cache directory
     static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
 
-    //! Settings entry autosize columns by default when opening attribute table
-    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
-
     //! Settings entry for behavior handling embedded scripts within projects
     static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
 
@@ -200,6 +190,36 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry for projects and folders that are denied execution of embedded scripts across sessions
     static const QgsSettingsEntryStringList *settingsCodeExecutionUntrustedProjectsFolders;
+
+    //! Settings entry for whether measurements should be planimetric (ellipsoid off) or use the ellipsoid
+    static const QgsSettingsEntryBool *settingsMeasurePlanimetric;
+
+    //! Settings entry for whether to keep base measurement units
+    static const QgsSettingsEntryBool *settingsMeasureKeepBaseUnit;
+
+    //! Settings entry for number of decimal places for measurements
+    static const QgsSettingsEntryInteger *settingsMeasureDecimalPlaces;
+
+    //! Settings entry for distance display units
+    static const QgsSettingsEntryString *settingsMeasureDisplayUnits;
+
+    //! Settings entry for layer tree insertion method
+    static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
+
+    //! Settings entry for zip scanning behavior in browser
+    static const QgsSettingsEntryString *settingsScanZipInBrowser;
+
+    //! Settings entry for fast scan URIs in browser
+    static const QgsSettingsEntryStringList *settingsScanItemsFastScanUris;
+
+    //! Settings entry for symbols list groups index
+    static const QgsSettingsEntryInteger *settingsSymbolsListGroupsIndex;
+
+    //! Settings entry for default canvas background color
+    static const QgsSettingsEntryColor *settingsDefaultCanvasColor;
+
+    //! Settings entry for default selection color
+    static const QgsSettingsEntryColor *settingsDefaultSelectionColor;
 
   private:
     friend class QgsApplication;

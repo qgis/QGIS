@@ -68,8 +68,7 @@ QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
   , mLabel( cat.mLabel )
   , mRender( cat.mRender )
   , mUuid( cat.mUuid )
-{
-}
+{}
 
 QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
 {
@@ -118,7 +117,8 @@ void QgsRendererCategory::setValue( const QVariant &value )
 
 void QgsRendererCategory::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
 void QgsRendererCategory::setLabel( const QString &label )
@@ -141,7 +141,7 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
   if ( !mSymbol.get() || props.value( u"attribute"_s, QString() ).toString().isEmpty() )
     return;
 
-  QString attrName = props[ u"attribute"_s].toString();
+  QString attrName = props[u"attribute"_s].toString();
 
   QgsSldExportContext context;
   context.setExtraProperties( props );
@@ -166,9 +166,7 @@ bool QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, const 
   }
   else if ( attrExpression.isField() )
   {
-    attrName = QgsExpression::quotedColumnRef(
-                 qgis::down_cast<const QgsExpressionNodeColumnRef *>( attrExpression.rootNode() )->name()
-               );
+    attrName = QgsExpression::quotedColumnRef( qgis::down_cast<const QgsExpressionNodeColumnRef *>( attrExpression.rootNode() )->name() );
   }
 
   QDomElement ruleElem = doc.createElement( u"se:Rule"_s );
@@ -201,8 +199,7 @@ bool QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, const 
       {
         valuesList << QgsExpression::quotedValue( v );
       }
-      filterFunc = u"%1 IN (%2)"_s.arg( attrName,
-                                        valuesList.join( ',' ) );
+      filterFunc = u"%1 IN (%2)"_s.arg( attrName, valuesList.join( ',' ) );
     }
   }
   else if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
@@ -454,7 +451,8 @@ void QgsCategorizedSymbolRenderer::deleteAllCategories()
 
 void QgsCategorizedSymbolRenderer::moveCategory( int from, int to )
 {
-  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() ) return;
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() )
+    return;
   mCategories.move( from, to );
 }
 
@@ -608,7 +606,7 @@ bool QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &elemen
 {
   const QVariantMap oldProps = context.extraProperties();
   QVariantMap newProps = oldProps;
-  newProps[ u"attribute"_s] = mAttrName;
+  newProps[u"attribute"_s] = mAttrName;
   context.setExtraProperties( newProps );
 
   // create a Rule for each range
@@ -766,8 +764,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QgsCategoryList cats;
 
   // Value from string (long, ulong, double and string)
-  const auto valueFromString = []( const QString & value, const QString & valueType ) -> QVariant
-  {
+  const auto valueFromString = []( const QString &value, const QString &valueType ) -> QVariant {
     if ( valueType == "double"_L1 )
     {
       bool ok;
@@ -820,7 +817,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       QVariant value;
       if ( catElem.hasAttribute( u"value"_s ) )
       {
-        value = valueFromString( catElem.attribute( u"value"_s ), catElem.attribute( u"type"_s, QString() ) ) ;
+        value = valueFromString( catElem.attribute( u"value"_s ), catElem.attribute( u"type"_s, QString() ) );
       }
       else
       {
@@ -903,15 +900,11 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   {
     for ( const QgsRendererCategory &cat : r->mCategories )
     {
-      convertSymbolSizeScale( cat.symbol(),
-                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                              sizeScaleElem.attribute( u"field"_s ) );
+      convertSymbolSizeScale( cat.symbol(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
     }
     if ( r->mSourceSymbol && r->mSourceSymbol->type() == Qgis::SymbolType::Marker )
     {
-      convertSymbolSizeScale( r->mSourceSymbol.get(),
-                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                              sizeScaleElem.attribute( u"field"_s ) );
+      convertSymbolSizeScale( r->mSourceSymbol.get(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
     }
   }
 
@@ -934,8 +927,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
 
   // String for type
   // We just need string, bool, and three numeric types: double, ulong and long for unsigned, signed and float/double
-  const auto stringForType = []( const QMetaType::Type type ) -> QString
-  {
+  const auto stringForType = []( const QMetaType::Type type ) -> QString {
     if ( type == QMetaType::Type::QChar || type == QMetaType::Type::Int || type == QMetaType::Type::LongLong )
     {
       return u"long"_s;
@@ -946,7 +938,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
     }
     else if ( type == QMetaType::Type::Double )
     {
-      return u"double"_s ;
+      return u"double"_s;
     }
     else if ( type == QMetaType::Type::Bool )
     {
@@ -1486,7 +1478,9 @@ QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() 
   return mDataDefinedSizeLegend.get();
 }
 
-int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+int QgsCategorizedSymbolRenderer::matchToSymbols(
+  QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch
+)
 {
   if ( !style )
     return 0;
@@ -1573,7 +1567,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
           const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           categoryName = formatter->representValue( layer, fieldIdx, setup.config(), QVariant(), value );
         }
-        cats.append( QgsRendererCategory( value, newSymbol,  categoryName, true ) );
+        cats.append( QgsRendererCategory( value, newSymbol, categoryName, true ) );
       }
     }
   }

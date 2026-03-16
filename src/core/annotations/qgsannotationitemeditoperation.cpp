@@ -46,9 +46,7 @@ void QgsAnnotationItemEditContext::setRenderContext( const QgsRenderContext &con
 //
 QgsAbstractAnnotationItemEditOperation::QgsAbstractAnnotationItemEditOperation( const QString &itemId )
   : mItemId( itemId )
-{
-
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation() = default;
 
@@ -56,17 +54,16 @@ QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation(
 //
 // QgsAnnotationItemEditOperationMoveNode
 //
-QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
-    double translatePixelsX, double translatePixelsY )
+QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode(
+  const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after, double translatePixelsX, double translatePixelsY
+)
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mNodeId( nodeId )
   , mBefore( before )
   , mAfter( after )
   , mTranslatePixelsX( translatePixelsX )
   , mTranslatePixelsY( translatePixelsY )
-{
-
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationMoveNode::type() const
 {
@@ -82,9 +79,7 @@ QgsAnnotationItemEditOperationDeleteNode::QgsAnnotationItemEditOperationDeleteNo
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mNodeId( nodeId )
   , mBefore( before )
-{
-
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDeleteNode::type() const
 {
@@ -101,9 +96,7 @@ QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTrans
   , mTranslateY( translateY )
   , mTranslatePixelsX( translatePixelsX )
   , mTranslatePixelsY( translatePixelsY )
-{
-
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTranslateItem::type() const
 {
@@ -118,8 +111,7 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTrans
 QgsAnnotationItemEditOperationRotateItem::QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mAngle( angle )
-{
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationRotateItem::type() const
 {
@@ -134,9 +126,7 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationRotat
 QgsAnnotationItemEditOperationAddNode::QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mPoint( point )
-{
-
-}
+{}
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationAddNode::type() const
 {

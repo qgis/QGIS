@@ -21,7 +21,6 @@ A layout item subclass that renders chart plots.
 #include "qgslayoutitemchart.h"
 %End
   public:
-
     class SeriesDetails
     {
 %Docstring(signature="appended")
@@ -36,13 +35,11 @@ Chart series details covering all supported series types.
 %End
 
       public:
-
         explicit SeriesDetails( const QString &name = QString() );
 %Docstring
 Constructor for SeriesDetails with an optional ``name`` parameter to
 provide a name string to the series.
 %End
-
         bool operator==( const SeriesDetails &other ) const;
 
         QString name() const;
@@ -232,6 +229,66 @@ Returns the plot series details used to generate the plot data.
 .. seealso:: :py:func:`setSeriesList`
 %End
 
+    void setMap( QgsLayoutItemMap *map );
+%Docstring
+Sets a layout ``map`` to use to limit the series' use of features. This
+setting only has an effect if setFilterOnlyVisibleFeatures is set to
+``True``. Changing the map forces the chart to refetch features from its
+vector layer.
+
+.. seealso:: :py:func:`map`
+
+.. seealso:: :py:func:`filterOnlyVisibleFeatures`
+%End
+
+    QgsLayoutItemMap *map() const;
+%Docstring
+Returns the layout ``map`` to use to limit the series' use of features.
+This setting only has an effect if setFilterOnlyVisibleFeatures is set
+to ``True``.
+
+.. seealso:: :py:func:`setMap`
+
+.. seealso:: :py:func:`setFilterOnlyVisibleFeatures`
+%End
+
+    void setFilterOnlyVisibleFeatures( bool visibleOnly );
+%Docstring
+Sets the series to only use features which are visible in a map item.
+Changing this setting forces the chart to refetch features from its
+vector layer.
+
+.. seealso:: :py:func:`filterOnlyVisibleFeatures`
+
+.. seealso:: :py:func:`setMap`
+%End
+
+    bool filterOnlyVisibleFeatures() const;
+%Docstring
+Returns ``True`` if the series are set to use only features visible on a
+corresponding map item.
+
+.. seealso:: :py:func:`map`
+
+.. seealso:: :py:func:`setFilterOnlyVisibleFeatures`
+%End
+
+    void setFilterToAtlasFeature( bool filterToAtlas );
+%Docstring
+Sets series to only use features which intersect the current atlas
+feature.
+
+.. seealso:: :py:func:`filterToAtlasFeature`
+%End
+
+    bool filterToAtlasFeature() const;
+%Docstring
+Returns ``True`` if the series are set to only show features which
+intersect the current atlas feature.
+
+.. seealso:: :py:func:`setFilterToAtlasFeature`
+%End
+
     static QgsLayoutItemChart *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new chart item for the specified ``layout``.
@@ -241,6 +298,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
+    virtual void finalizeRestoreFromXml();
+
 
   public slots:
 
@@ -248,7 +307,6 @@ The caller takes responsibility for deleting the returned object.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

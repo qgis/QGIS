@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
@@ -42,7 +43,8 @@ class TestQgsMesh3DRendering : public QgsTest
 
   public:
     TestQgsMesh3DRendering()
-      : QgsTest( u"Mesh 3D Rendering Tests"_s, u"3d"_s ) {}
+      : QgsTest( u"Mesh 3D Rendering Tests"_s, u"3d"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -366,8 +368,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   engine.setRootEntity( scene );
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 1.0, 0, 0.0, 1.0 );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 1.0, 0, 0.0, 1.0 );
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.

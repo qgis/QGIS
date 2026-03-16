@@ -56,15 +56,27 @@ QStringList QgsPdalCompareAlgorithm::tags() const
 
 QString QgsPdalCompareAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm compares two point clouds using an M3C2 (Multiscale Model-to-Model Cloud Comparison) algorithm and outputs a subset (filtered using Poisson sampling, based on Subsampling cell size parameter ) of the original point cloud." )
+  return QObject::tr(
+           "This algorithm compares two point clouds using an M3C2 (Multiscale Model-to-Model Cloud Comparison) algorithm and outputs a subset (filtered using Poisson sampling, based on Subsampling "
+           "cell size parameter ) of the original point cloud."
+         )
          + u"\n\n"_s
          + QObject::tr( "The output point cloud will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." )
          + u"\n\n"_s
-         + QObject::tr( "The M3C2 algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures the average distance between clouds within a cylindrical projection along those normals." )
+         + QObject::tr(
+           "The M3C2 algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures "
+           "the average distance between clouds within a cylindrical projection along those normals."
+         )
          + u"\n\n"_s
-         + QObject::tr( "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error." )
+         + QObject::tr(
+           "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating "
+           "whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error."
+         )
          + u"\n\n"_s
-         + QObject::tr( "References: Lague, Dimitri, Nicolas Brodu, and Jérôme Leroux. Accurate 3D Comparison of Complex Topography with Terrestrial Laser Scanner: Application to the Rangitikei Canyon (N-Z). arXiv, 2013, https://arxiv.org/abs/1302.1183." );
+         + QObject::tr(
+           "References: Lague, Dimitri, Nicolas Brodu, and Jérôme Leroux. Accurate 3D Comparison of Complex Topography with Terrestrial Laser Scanner: Application to the Rangitikei Canyon (N-Z). "
+           "arXiv, 2013, https://arxiv.org/abs/1302.1183."
+         );
   ;
 }
 
@@ -104,7 +116,8 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
   regError->setHelp( QObject::tr( "The estimated registration error between the two point clouds." ) );
   addParameter( regError.release() );
 
-  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << QObject::tr( "Up" ) << QObject::tr( "Origin" ) << QObject::tr( "None" ), false, 0 );
+  auto cylOrientation = std::make_unique<
+    QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << QObject::tr( "Up" ) << QObject::tr( "Origin" ) << QObject::tr( "None" ), false, 0 );
   cylOrientation->setHelp( QObject::tr( "Which direction to orient the cylinder/normal vector used for comparison between the two point clouds." ) );
   addParameter( cylOrientation.release() );
 
@@ -178,7 +191,18 @@ QStringList QgsPdalCompareAlgorithm::createArgumentLists( const QVariantMap &par
   checkOutputFormat( inputLayer->source(), outputFile );
   setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { u"compare"_s, u"--input=%1"_s.arg( inputLayer->source() ), u"--input-compare=%1"_s.arg( inputCompareLayer->source() ), u"--output=%1"_s.arg( outputFile ), u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ), u"--normal-radius=%1"_s.arg( normalRadius ), u"--cyl-radius=%1"_s.arg( cylRadius ), u"--cyl-halflen=%1"_s.arg( cylHalflen ), u"--reg-error=%1"_s.arg( regError ), u"--cyl-orientation=%1"_s.arg( cylOrientation.toLower() ) };
+  QStringList args = {
+    u"compare"_s,
+    u"--input=%1"_s.arg( inputLayer->source() ),
+    u"--input-compare=%1"_s.arg( inputCompareLayer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
+    u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ),
+    u"--normal-radius=%1"_s.arg( normalRadius ),
+    u"--cyl-radius=%1"_s.arg( cylRadius ),
+    u"--cyl-halflen=%1"_s.arg( cylHalflen ),
+    u"--reg-error=%1"_s.arg( regError ),
+    u"--cyl-orientation=%1"_s.arg( cylOrientation.toLower() )
+  };
 
   applyCommonParameters( args, inputLayer->crs(), parameters, context );
   applyThreadsParameter( args, context );

@@ -129,12 +129,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   syncToLayer();
 
   QList<QWidget *> widgets;
-  widgets << mOpacityWidget
-          << cboRenderers
-          << checkboxEnableOrderBy
-          << mBlendModeComboBox
-          << mFeatureBlendComboBox
-          << mEffectWidget;
+  widgets << mOpacityWidget << cboRenderers << checkboxEnableOrderBy << mBlendModeComboBox << mFeatureBlendComboBox << mEffectWidget;
 
   connectValueChanged( widgets );
   connect( mEffectWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );

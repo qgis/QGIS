@@ -18,5 +18,4 @@
 QgsDevToolWidgetFactory::QgsDevToolWidgetFactory( const QString &title, const QIcon &icon )
   : mIcon( icon )
   , mTitle( title )
-{
-}
+{}

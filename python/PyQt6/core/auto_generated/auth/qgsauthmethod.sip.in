@@ -21,7 +21,6 @@ Abstract base class for authentication method plugins.
 #include "qgsauthmethod.h"
 %End
   public:
-
     enum Expansion /BaseType=IntEnum/
     {
       // TODO: Figure out all different authentication expansions current layer providers use
@@ -86,8 +85,7 @@ authcfgs that are not applicable to a given provider, or where the
 updating code is not currently implemented.
 %End
 
-    virtual bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                                       const QString &dataprovider = QString() );
+    virtual bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Update a network request with authentication components
 
@@ -100,8 +98,7 @@ Update a network request with authentication components
 :return: Whether the update succeeded
 %End
 
-    virtual bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-                                     const QString &dataprovider = QString() );
+    virtual bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Update a network reply with authentication components
 
@@ -114,8 +111,7 @@ Update a network reply with authentication components
 :return: Whether the update succeeded
 %End
 
-    virtual bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                           const QString &dataprovider = QString() );
+    virtual bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Update data source connection items with authentication components
 
@@ -129,8 +125,7 @@ Update data source connection items with authentication components
 :return: Whether the update succeeded
 %End
 
-    virtual bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
-                                     const QString &dataprovider = QString() );
+    virtual bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Update proxy settings with authentication components
 
@@ -166,7 +161,6 @@ Update an authentication configuration in place
 %End
 
   protected:
-
     explicit QgsAuthMethod();
 %Docstring
 Construct a default authentication method

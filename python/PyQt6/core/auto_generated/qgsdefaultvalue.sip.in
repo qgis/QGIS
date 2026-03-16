@@ -55,7 +55,7 @@ Create a new default value with the given ``expression`` and
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QString expression() const;
+        QString expression() const;
 %Docstring
 The expression will be evaluated whenever a default value needs to be
 calculated for a field.

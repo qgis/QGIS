@@ -13,14 +13,14 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
     Qgis,
-    QgsTiledSceneLayer,
     QgsCoordinateReferenceSystem,
     QgsOrientedBox3D,
+    QgsTiledSceneLayer,
     QgsTiledSceneRequest,
 )
+from qgis.PyQt.QtCore import QUrl
 from qgis.testing import start_app, unittest
 
 start_app()

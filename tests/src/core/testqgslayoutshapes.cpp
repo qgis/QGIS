@@ -38,7 +38,8 @@ class TestQgsLayoutShapes : public QgsTest
 
   public:
     TestQgsLayoutShapes()
-      : QgsTest( u"Layout Shape Tests"_s, u"composer_shapes"_s ) {}
+      : QgsTest( u"Layout Shape Tests"_s, u"composer_shapes"_s )
+    {}
 
   private slots:
     void initTestCase();     // will be called before the first testfunction is executed.
@@ -205,9 +206,7 @@ void TestQgsLayoutShapes::readWriteXml()
 
   //save original item to xml
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( u"qgis"_s );
 

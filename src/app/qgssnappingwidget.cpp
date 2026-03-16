@@ -135,8 +135,11 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   avoidIntersectionsModeMenu->setObjectName( u"avoidIntersectionsModeMenu"_s );
   mAllowIntersectionsAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAllowIntersections.svg" ) ), tr( "Allow Overlap" ), avoidIntersectionsModeMenu );
   mAllowIntersectionsAction->setObjectName( u"mAllowIntersectionsAction"_s );
-  mAvoidIntersectionsCurrentLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsCurrentLayer.svg" ) ), tr( "Avoid Overlap on Active Layer" ), avoidIntersectionsModeMenu );
-  mAvoidIntersectionsCurrentLayerAction->setToolTip( tr( "Avoid Overlap on Active Layer.\nBeware that this option will be applied on all vertices of the edited geometries, even if outside the current view extent" ) );
+  mAvoidIntersectionsCurrentLayerAction
+    = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsCurrentLayer.svg" ) ), tr( "Avoid Overlap on Active Layer" ), avoidIntersectionsModeMenu );
+  mAvoidIntersectionsCurrentLayerAction->setToolTip(
+    tr( "Avoid Overlap on Active Layer.\nBeware that this option will be applied on all vertices of the edited geometries, even if outside the current view extent" )
+  );
   mAvoidIntersectionsCurrentLayerAction->setObjectName( u"mAvoidIntersectionsCurrentLayerAction"_s );
   mAvoidIntersectionsLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsLayers.svg" ) ), tr( "Follow Advanced Configuration" ), avoidIntersectionsModeMenu );
   mAvoidIntersectionsLayersAction->setObjectName( u"mAvoidIntersectionsLayersAction"_s );

@@ -30,9 +30,8 @@
 
 import contextlib
 import sys
-import time
 import tempfile
-
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 
@@ -124,7 +123,6 @@ class SequentialHandler:
         if req_resp.custom_method:
             req_resp.custom_method(request)
         else:
-
             if req_resp.expected_headers:
                 for k in req_resp.expected_headers:
                     if (
@@ -206,7 +204,6 @@ class SequentialHandler:
 
 
 class DispatcherHttpHandler(BaseHTTPRequestHandler):
-
     # protocol_version = 'HTTP/1.1'
 
     def log_request(self, code="-", size="-"):
@@ -260,7 +257,6 @@ class DispatcherHttpHandler(BaseHTTPRequestHandler):
 
 
 class ThreadedHttpServer(Thread):
-
     def __init__(self, handlerClass):
         Thread.__init__(self)
         self.server = HTTPServer(("", 0), handlerClass)

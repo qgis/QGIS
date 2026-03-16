@@ -12,10 +12,8 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QSortFilterProxyModel, Qt, QTemporaryDir, QVariant
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsConditionalStyle,
@@ -25,27 +23,28 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
     QgsMemoryProviderUtils,
-    QgsPointXY,
     QgsPoint,
+    QgsPointXY,
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerCache,
     QgsVectorLayerExporter,
 )
 from qgis.gui import (
-    QgsAttributeTableModel,
     QgsAttributeTableFilterModel,
+    QgsAttributeTableModel,
     QgsEditorWidgetFactory,
     QgsGui,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSortFilterProxyModel, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsAttributeTableModel(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -53,7 +52,6 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         # to track down whether or not we have created widget regarding the field
         class TestEditorWidgetFactory(QgsEditorWidgetFactory):
-
             def __init__(self):
                 super().__init__("test")
                 self.widgetLoaded = 0
@@ -345,7 +343,6 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         # to check our extra column is working
         class TestFilterModel(QSortFilterProxyModel):
-
             def __init__(self):
                 super().__init__()
 

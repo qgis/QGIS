@@ -35,8 +35,7 @@ namespace QgsWfs
   QgsWfsParameter::QgsWfsParameter( const QgsWfsParameter::Name name, const QMetaType::Type type, const QVariant defaultValue )
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
-  {
-  }
+  {}
 
   int QgsWfsParameter::toInt() const
   {
@@ -250,9 +249,14 @@ namespace QgsWfs
       f = Format::GML2;
     else if ( fStr.compare( "text/xml; subtype=gml/3.1.1"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML3;
-    else if ( fStr.compare( "application/vnd.geo+json"_L1, Qt::CaseInsensitive ) == 0 ||
+    else if ( fStr.compare( "application/vnd.geo+json"_L1, Qt::CaseInsensitive ) == 0
+              ||
               // Needs to check for space too, because a + sign in the query string is interpreted as a space
-              fStr.compare( "application/vnd.geo json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/geo+json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/geo json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "geojson"_L1, Qt::CaseInsensitive ) == 0 )
+              fStr.compare( "application/vnd.geo json"_L1, Qt::CaseInsensitive ) == 0
+              || fStr.compare( "application/geo+json"_L1, Qt::CaseInsensitive ) == 0
+              || fStr.compare( "application/geo json"_L1, Qt::CaseInsensitive ) == 0
+              || fStr.compare( "application/json"_L1, Qt::CaseInsensitive ) == 0
+              || fStr.compare( "geojson"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GeoJSON;
     else if ( fStr.compare( "gml2"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML2;

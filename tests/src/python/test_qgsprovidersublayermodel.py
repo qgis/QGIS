@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "05/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QModelIndex, Qt
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMapLayerType,
@@ -19,8 +20,8 @@ from qgis.core import (
     QgsProviderSublayerProxyModel,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -28,7 +29,6 @@ start_app()
 
 
 class TestQgsProviderSublayerModel(QgisTestCase):
-
     def test_model(self):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)

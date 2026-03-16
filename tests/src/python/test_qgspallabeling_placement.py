@@ -19,6 +19,10 @@ import sys
 from qgis.core import (
     Qgis,
     QgsLabeling,
+    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature,
+    QgsLabelingEngineRuleMaximumDistanceLabelToFeature,
+    QgsLabelingEngineRuleMinimumDistanceLabelToFeature,
+    QgsLabelingEngineRuleMinimumDistanceLabelToLabel,
     QgsLabelingEngineSettings,
     QgsLabelObstacleSettings,
     QgsMarkerSymbol,
@@ -26,18 +30,12 @@ from qgis.core import (
     QgsProperty,
     QgsSingleSymbolRenderer,
     QgsVectorLayerSimpleLabeling,
-    QgsLabelingEngineRuleMinimumDistanceLabelToFeature,
-    QgsLabelingEngineRuleMaximumDistanceLabelToFeature,
-    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature,
-    QgsLabelingEngineRuleMinimumDistanceLabelToLabel,
 )
-
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 
 
 # noinspection PyPep8Naming
 class TestPlacementBase(TestQgsPalLabeling):
-
     @classmethod
     def setUpClass(cls):
         if not cls._BaseSetup:
@@ -82,7 +80,6 @@ class TestPlacementBase(TestQgsPalLabeling):
 
 
 class TestPointPlacement(TestPlacementBase):
-
     @classmethod
     def setUpClass(cls):
         TestPlacementBase.setUpClass()

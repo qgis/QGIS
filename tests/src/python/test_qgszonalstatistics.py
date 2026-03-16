@@ -12,8 +12,8 @@ __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
 import shutil
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
 from qgis.analysis import QgsZonalStatistics
 from qgis.core import (
     QgsFeature,
@@ -22,9 +22,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()

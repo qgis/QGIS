@@ -21,16 +21,15 @@ email                : brush.tyler@gmail.com
 from qgis.core import QgsMessageLog
 
 from ..data_model import (
-    TableDataModel,
     SqlResultModel,
     SqlResultModelAsync,
     SqlResultModelTask,
+    TableDataModel,
 )
 from ..plugin import BaseError
 
 
 class GPKGTableDataModel(TableDataModel):
-
     def __init__(self, table, parent=None):
         TableDataModel.__init__(self, table, parent)
 
@@ -54,7 +53,6 @@ class GPKGTableDataModel(TableDataModel):
 
 
 class GPKGSqlResultModelTask(SqlResultModelTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(db, sql, parent)
 
@@ -73,7 +71,6 @@ class GPKGSqlResultModelTask(SqlResultModelTask):
 
 
 class GPKGSqlResultModelAsync(SqlResultModelAsync):
-
     def __init__(self, db, sql, parent):
         super().__init__()
 

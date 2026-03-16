@@ -10,11 +10,8 @@ __author__ = "Matthias Kuhn"
 __date__ = "28/11/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QGridLayout,
-    QLabel,
-)
+import unittest
+
 from qgis.core import QgsRelation
 from qgis.gui import (
     QgsAbstractRelationEditorConfigWidget,
@@ -24,14 +21,17 @@ from qgis.gui import (
     QgsRelationEditorConfigWidget,
     QgsRelationEditorWidget,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QGridLayout,
+    QLabel,
+)
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """
@@ -64,14 +64,13 @@ class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
     def test_creates_new_widget(self):
         # define the widget
         class QgsExampleRelationEditorWidget(QgsAbstractRelationEditorWidget):
-
             def __init__(self, config, parent):
                 super().__init__(config, parent)
 
                 self.setLayout(QGridLayout())
                 self.label = QLabel()
                 self.label.setText(
-                    f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}'
+                    f"According to the configuration, the checkboxin state was {str(config.get('checkboxin', 'Unknown'))}"
                 )
                 self.layout().addWidget(self.label)
 
@@ -80,14 +79,13 @@ class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
 
             def setConfig(self, config):
                 self.label.setText(
-                    f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}'
+                    f"According to the configuration, the checkboxin state was {str(config.get('checkboxin', 'Unknown'))}"
                 )
 
         # define the config widget
         class QgsExampleRelationEditorConfigWidget(
             QgsAbstractRelationEditorConfigWidget
         ):
-
             def __init__(self, relation, parent):
                 super().__init__(relation, parent)
 

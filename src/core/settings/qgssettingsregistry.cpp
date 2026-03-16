@@ -26,12 +26,10 @@ using namespace Qt::StringLiterals;
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()
   , mSettingsRegistryChildList()
-{
-}
+{}
 
 QgsSettingsRegistry::~QgsSettingsRegistry()
-{
-}
+{}
 
 bool QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
 {

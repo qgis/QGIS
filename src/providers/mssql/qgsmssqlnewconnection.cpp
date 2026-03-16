@@ -108,13 +108,9 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 
   connect( schemaView, &QWidget::customContextMenuRequested, this, [this]( const QPoint &p ) {
     QMenu menu;
-    menu.addAction( tr( "Check All" ), this, [this] {
-      mSchemaModel.checkAll();
-    } );
+    menu.addAction( tr( "Check All" ), this, [this] { mSchemaModel.checkAll(); } );
 
-    menu.addAction( tr( "Uncheck All" ), this, [this] {
-      mSchemaModel.unCheckAll();
-    } );
+    menu.addAction( tr( "Uncheck All" ), this, [this] { mSchemaModel.unCheckAll(); } );
 
     menu.exec( this->schemaView->viewport()->mapToGlobal( p ) );
   } );
@@ -131,7 +127,10 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + "/service" ) || settings.contains( baseKey + txtName->text() + "/host" ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 )
+       && ( settings.contains( baseKey + txtName->text() + "/service" ) || settings.contains( baseKey + txtName->text() + "/host" ) )
+       && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel )
+            == QMessageBox::Cancel )
   {
     return;
   }

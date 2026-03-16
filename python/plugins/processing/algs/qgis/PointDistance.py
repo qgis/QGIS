@@ -19,33 +19,32 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
 import math
-
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QMetaType
+import os
 
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsDistanceArea,
+    QgsFeature,
     QgsFeatureRequest,
+    QgsFeatureSink,
     QgsField,
     QgsFields,
-    QgsProject,
-    QgsFeature,
     QgsGeometry,
-    QgsDistanceArea,
-    QgsFeatureSink,
-    QgsProcessingParameterFeatureSource,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterFeatureSink,
+    QgsProject,
     QgsSpatialIndex,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 

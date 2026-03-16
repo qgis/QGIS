@@ -28,15 +28,15 @@
 //
 
 #include "qgis.h"
-#include "qgsaabb.h"
 #include "qgsbox3d.h"
 
 #include <QString>
 #include <QTime>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
-#define SIP_NO_FILE
 
 namespace Qt3DCore
 {
@@ -67,7 +67,11 @@ struct QgsChunkNodeId
    * Constructs node ID from depth, x, y and z.
    */
     QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
-      : d( _d ), x( _x ), y( _y ), z( _z ) {}
+      : d( _d )
+      , x( _x )
+      , y( _y )
+      , z( _z )
+    {}
 
     /**
    * Constructs node ID from a unique integer ID.
@@ -97,14 +101,10 @@ struct QgsChunkNodeId
 
     bool operator==( const QgsChunkNodeId &other ) const
     {
-      return ( uniqueId == -1 && other.uniqueId == -1 && d == other.d && x == other.x && y == other.y && z == other.z )
-             || ( uniqueId != -1 && uniqueId == other.uniqueId );
+      return ( uniqueId == -1 && other.uniqueId == -1 && d == other.d && x == other.x && y == other.y && z == other.z ) || ( uniqueId != -1 && uniqueId == other.uniqueId );
     }
 
-    bool operator!=( const QgsChunkNodeId &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsChunkNodeId &other ) const { return !( *this == other ); }
 };
 
 /**

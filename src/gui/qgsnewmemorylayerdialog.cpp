@@ -336,7 +336,9 @@ void QgsNewMemoryLayerDialog::accept()
     const QString currentFieldName = mFieldNameEdit->text();
     if ( fields().lookupField( currentFieldName ) == -1 )
     {
-      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::
+             question( this, tr( "New Temporary Scratch Layer" ), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return;
       }

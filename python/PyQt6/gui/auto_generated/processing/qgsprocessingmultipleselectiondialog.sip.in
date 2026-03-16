@@ -133,7 +133,9 @@ A dialog for selection of multiple options from a fixed list of options.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-    QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleSelectionDialog(
+      const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 %Docstring
 Constructor for :py:class:`QgsProcessingMultipleSelectionPanelWidget`.
 
@@ -201,7 +203,13 @@ options.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingMultipleInputPanelWidget(
+      const QgsProcessingParameterMultipleLayers *parameter,
+      const QVariantList &selectedOptions,
+      const QList<QgsProcessingModelChildParameterSource> &modelSources,
+      QgsProcessingModelAlgorithm *model = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Constructor for QgsProcessingMultipleInputPanelWidget.
 %End
@@ -237,7 +245,14 @@ A dialog for selection of multiple layer inputs.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleInputDialog(
+      const QgsProcessingParameterMultipleLayers *parameter,
+      const QVariantList &selectedOptions,
+      const QList<QgsProcessingModelChildParameterSource> &modelSources,
+      QgsProcessingModelAlgorithm *model = 0,
+      QWidget *parent /TransferThis/ = 0,
+      Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 %Docstring
 Constructor for QgsProcessingMultipleInputDialog.
 

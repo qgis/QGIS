@@ -29,7 +29,6 @@ except:
 
 
 class TestQgsSipCoverage(unittest.TestCase):
-
     def testCoverage(self):
         print("CTEST_FULL_OUTPUT")
         prefixPath = os.environ["QGIS_PREFIX_PATH"]

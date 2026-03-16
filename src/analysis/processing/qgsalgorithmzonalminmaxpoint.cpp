@@ -57,12 +57,14 @@ QString QgsZonalMinimumMaximumPointAlgorithm::shortDescription() const
 
 QString QgsZonalMinimumMaximumPointAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts point features corresponding to the minimum "
-                      "and maximum pixel values contained within polygon zones.\n\n"
-                      "The output will contain one point feature for the minimum and one "
-                      "for the maximum raster value for every individual zonal feature "
-                      "from a polygon layer.\n\n"
-                      "The created point layer will be in the same spatial reference system as the selected raster layer." );
+  return QObject::tr(
+    "This algorithm extracts point features corresponding to the minimum "
+    "and maximum pixel values contained within polygon zones.\n\n"
+    "The output will contain one point feature for the minimum and one "
+    "for the maximum raster value for every individual zonal feature "
+    "from a polygon layer.\n\n"
+    "The created point layer will be in the same spatial reference system as the selected raster layer."
+  );
 }
 
 QList<int> QgsZonalMinimumMaximumPointAlgorithm::inputLayerTypes() const
@@ -167,7 +169,8 @@ QgsFeatureList QgsZonalMinimumMaximumPointAlgorithm::processFeature( const QgsFe
       feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
   }
 
-  const QMap<Qgis::ZonalStatistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand, Qgis::ZonalStatistic::Min | Qgis::ZonalStatistic::MinimumPoint | Qgis::ZonalStatistic::Max | Qgis::ZonalStatistic::MaximumPoint );
+  const QMap<Qgis::ZonalStatistic, QVariant> results = QgsZonalStatistics::
+    calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand, Qgis::ZonalStatistic::Min | Qgis::ZonalStatistic::MinimumPoint | Qgis::ZonalStatistic::Max | Qgis::ZonalStatistic::MaximumPoint );
 
   QgsFeature minPointFeature( mOutputFields );
   QgsAttributes minAttributes = attributes;

@@ -21,12 +21,11 @@ __copyright__ = "(C) 2021, Nyall Dawson"
 
 import os
 import tempfile
-
-from qgis.PyQt.QtCore import QProcess
-from qgis.core import QgsBlockingProcess, QgsFeedback
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsBlockingProcess, QgsFeedback
+from qgis.PyQt.QtCore import QProcess
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -35,7 +34,6 @@ app = start_app()
 
 
 class TestQgsBlockingProcess(QgisTestCase):
-
     def test_process_ok(self):
         def std_out(ba):
             std_out.val += ba.data().decode("UTF-8")

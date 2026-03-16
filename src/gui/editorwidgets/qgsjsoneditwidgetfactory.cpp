@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsJsonEditWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

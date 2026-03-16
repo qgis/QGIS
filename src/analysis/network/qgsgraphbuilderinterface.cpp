@@ -26,10 +26,11 @@ QgsGraphBuilderInterface::QgsGraphBuilderInterface( const QgsCoordinateReference
   mDa.setEllipsoid( ellipsoidID );
 }
 
-void QgsGraphBuilderInterface::addVertex( int id, const QgsPointXY &pt )
+int QgsGraphBuilderInterface::addVertex( int id, const QgsPointXY &pt )
 {
   Q_UNUSED( id )
   Q_UNUSED( pt )
+  return 0;
 }
 
 void QgsGraphBuilderInterface::addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &strategies )

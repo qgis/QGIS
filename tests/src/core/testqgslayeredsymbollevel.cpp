@@ -48,7 +48,8 @@ class TestQgsLayeredSymbolLevel : public QgsTest
     Q_OBJECT
   public:
     TestQgsLayeredSymbolLevel()
-      : QgsTest( u"Layered Symbol Level Rendering Tests"_s ) {}
+      : QgsTest( u"Layered Symbol Level Rendering Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

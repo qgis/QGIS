@@ -19,8 +19,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgsgdalutils.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 //! Root item for GDAL cloud connections
 class CORE_EXPORT QgsGdalCloudRootItem : public QgsConnectionsRootItem
@@ -32,7 +33,6 @@ class CORE_EXPORT QgsGdalCloudRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 8; }
-
 };
 
 //! Generic item for individual GDAL cloud providers, eg "Amazon S3", "Microsoft Azure"
@@ -46,7 +46,6 @@ class CORE_EXPORT QgsGdalCloudProviderItem : public QgsDataCollectionItem
 
   private:
     QgsGdalUtils::VsiNetworkFileSystemDetails mVsiHandler;
-
 };
 
 //! Item for a specific connection to a cloud container
@@ -57,6 +56,7 @@ class CORE_EXPORT QgsGdalCloudConnectionItem : public QgsDataCollectionItem
     QgsGdalCloudConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     bool equal( const QgsDataItem *other ) override;
     QVector<QgsDataItem *> createChildren() override;
+
   private:
     QString mConnName;
 };
@@ -68,8 +68,8 @@ class CORE_EXPORT QgsGdalCloudDirectoryItem : public QgsDataCollectionItem
   public:
     QgsGdalCloudDirectoryItem( QgsDataItem *parent, QString name, QString path, const QString &connectionName, const QString &directory );
     QVector<QgsDataItem *> createChildren() override;
-  private:
 
+  private:
     QString mConnName;
     QString mDirectory;
 };

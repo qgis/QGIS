@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
@@ -74,12 +75,10 @@ void TestQgs3DSymbolRegistry::cleanupTestCase()
 }
 
 void TestQgs3DSymbolRegistry::init()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::cleanup()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::metadata()
 {

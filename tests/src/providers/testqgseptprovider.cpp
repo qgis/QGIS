@@ -54,7 +54,8 @@ class TestQgsEptProvider : public QgsTest
 
   public:
     TestQgsEptProvider()
-      : QgsTest( u"EPT Provider Tests"_s ) {}
+      : QgsTest( u"EPT Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

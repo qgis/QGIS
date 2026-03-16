@@ -10,16 +10,16 @@ __author__ = "Tim Sutton"
 __date__ = "20/08/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
-from qgis.PyQt.QtCore import QPointF
-from qgis.core import QgsPoint, QgsPointXY, QgsWkbTypes
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsPoint, QgsPointXY, QgsWkbTypes
+from qgis.PyQt.QtCore import QPointF
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsPointXY(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
@@ -128,7 +128,6 @@ class TestQgsPointXY(QgisTestCase):
 
 
 class TestQgsPoint(QgisTestCase):
-
     def testInvalidConstructorArguments(self):
         """Test GH #34557"""
 

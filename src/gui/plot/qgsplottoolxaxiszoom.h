@@ -22,9 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsplottoolzoom.h"
 
+#define SIP_NO_FILE
+
 // we probably want to generalize this in future to allow for y/other axis constrained
 // zooms, so let's not get locked to stable api...
-#define SIP_NO_FILE
 
 class QgsPlotRectangularRubberBand;
 class QgsElevationProfileCanvas;

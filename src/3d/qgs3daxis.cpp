@@ -15,12 +15,13 @@
 
 #include "qgs3daxis.h"
 
-#include <ctime>
-
+#include "qgs3daxisrenderview.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dwiredmesh_p.h"
-#include "qgsabstractterrainsettings.h"
+#include "qgsaabb.h"
+#include "qgscameracontroller.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgsframegraph.h"
 #include "qgsterrainentity.h"
@@ -29,23 +30,32 @@
 #include <QActionGroup>
 #include <QApplication>
 #include <QFontDatabase>
-#include <QScreen>
+#include <QMenu>
 #include <QString>
-#include <QWidget>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QConeMesh>
+#include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QText2DEntity>
+#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QScreenRayCaster>
 #include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/qcameralens.h>
 
 #include "moc_qgs3daxis.cpp"
 
 using namespace Qt::StringLiterals;
 
-Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
-                      QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )
+Qgs3DAxis::Qgs3DAxis(
+  Qgs3DMapCanvas *canvas,
+  Qt3DCore::QEntity *parent3DScene,
+  Qgs3DMapScene *mapScene, //
+  QgsCameraController *cameraCtrl,
+  Qgs3DMapSettings *map
+)
   : QObject( canvas )
   , mMapSettings( map )
   , mCanvas( canvas )
@@ -765,9 +775,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::XAxis:
       mTextX = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextX->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextX, text );
-      } );
+      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextX, text ); } );
       mTextTransformX = new Qt3DCore::QTransform();
       mTextCoordX = QVector3D( mCylinderLength + coneLength / 2.0f, 0.0f, 0.0f );
 
@@ -781,9 +789,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::YAxis:
       mTextY = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextY->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextY, text );
-      } );
+      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextY, text ); } );
       mTextTransformY = new Qt3DCore::QTransform();
       mTextCoordY = QVector3D( 0.0f, mCylinderLength + coneLength / 2.0f, 0.0f );
 
@@ -798,9 +804,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::ZAxis:
       mTextZ = new Qt3DExtras::QText2DEntity();   // object initialization in two step:
       mTextZ->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) {
-        updateAxisLabelText( mTextZ, text );
-      } );
+      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString &text ) { updateAxisLabelText( mTextZ, text ); } );
       mTextTransformZ = new Qt3DCore::QTransform();
       mTextCoordZ = QVector3D( 0.0f, 0.0f, mCylinderLength + coneLength / 2.0f );
 
@@ -915,10 +919,7 @@ void Qgs3DAxis::onCameraUpdate()
 {
   Qt3DRender::QCamera *parentCamera = mCameraController->camera();
 
-  if ( parentCamera->viewVector() != mPreviousVector
-       && !std::isnan( parentCamera->viewVector().x() )
-       && !std::isnan( parentCamera->viewVector().y() )
-       && !std::isnan( parentCamera->viewVector().z() ) )
+  if ( parentCamera->viewVector() != mPreviousVector && !std::isnan( parentCamera->viewVector().x() ) && !std::isnan( parentCamera->viewVector().y() ) && !std::isnan( parentCamera->viewVector().z() ) )
   {
     mPreviousVector = parentCamera->viewVector();
 

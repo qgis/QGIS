@@ -68,8 +68,10 @@ void QgsFilterByGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsFilterByGeometryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm filters features by their geometry type. Incoming features will be directed to different "
-                      "outputs based on whether they have a point, line or polygon geometry." );
+  return QObject::tr(
+    "This algorithm filters features by their geometry type. Incoming features will be directed to different "
+    "outputs based on whether they have a point, line or polygon geometry."
+  );
 }
 
 QString QgsFilterByGeometryAlgorithm::shortDescription() const
@@ -271,8 +273,10 @@ void QgsFilterByLayerTypeAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsFilterByLayerTypeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm filters layer by their type. Incoming layers will be directed to different "
-                      "outputs based on whether they are a vector or raster layer." );
+  return QObject::tr(
+    "This algorithm filters layer by their type. Incoming layers will be directed to different "
+    "outputs based on whether they are a vector or raster layer."
+  );
 }
 
 QString QgsFilterByLayerTypeAlgorithm::shortDescription() const

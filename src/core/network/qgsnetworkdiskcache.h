@@ -18,12 +18,13 @@
 #ifndef QGSNETWORKDISKCACHE_H
 #define QGSNETWORKDISKCACHE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QMutex>
 #include <QNetworkDiskCache>
+
+#define SIP_NO_FILE
 
 class QNetworkDiskCache;
 
@@ -34,7 +35,9 @@ class ExpirableNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-    explicit ExpirableNetworkDiskCache( QObject *parent = nullptr ) : QNetworkDiskCache( parent ) {}
+    explicit ExpirableNetworkDiskCache( QObject *parent = nullptr )
+      : QNetworkDiskCache( parent )
+    {}
     qint64 runExpire() { return QNetworkDiskCache::expire(); }
 };
 
@@ -52,6 +55,55 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
+    /**
+     * Registers the original request headers for a pending request to the specified \a url.
+     *
+     * This method is thread-safe.
+     *
+     * \see hasPendingRequestForUrl()
+     * \see removePendingRequestForUrl()
+     * \since QGIS 4.0
+     */
+    void insertPendingRequestHeaders( const QUrl &url, const QVariantMap &headers );
+
+    /**
+     * Returns TRUE if there is a pending (ongoing) request in place for the specified \a url.
+     *
+      * This method is thread-safe.
+     *
+     * \see insertPendingRequestHeaders()
+     * \see removePendingRequestForUrl()
+     *
+     * \since QGIS 4.0
+     */
+    bool hasPendingRequestForUrl( const QUrl &url ) const;
+
+    /**
+     * Removes a pending (ongoing) request in place for the specified \a url.
+     *
+     * This method is thread-safe.
+     *
+     * \see insertPendingRequestHeaders()
+     * \see hasPendingRequestForUrl()
+     *
+     * \since QGIS 4.0
+     */
+    void removePendingRequestForUrl( const QUrl &url ) const;
+
+    /**
+     * Returns TRUE if the cache has a matching but invalid entry for a \a request.
+     *
+     * Since QNetworkDiskCache entirely basis cache storage on URLs alone, we may
+     * get situations where there's a match for a URL in the cache but it should
+     * NOT be used for the specified \a request (e.g. when the previous response
+     * had a non-matching "Vary" attribute).
+     *
+     * If this method returns FALSE, then the request should be amended to
+     * prevent potential false-positive retrieval from cache.
+     *
+     * This method is thread-safe.
+     */
+    bool hasInvalidMatchForRequest( const QNetworkRequest &request );
 
     //! \see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
@@ -108,6 +160,8 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
 
     static ExpirableNetworkDiskCache sDiskCache;
     static QMutex sDiskCacheMutex;
+
+    static QHash<QUrl, QVariantMap> sPendingRequestHeaders;
 
     friend class QgsNetworkAccessManager;
 };

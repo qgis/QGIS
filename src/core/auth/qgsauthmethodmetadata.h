@@ -17,12 +17,13 @@
 #ifndef QGSAUTHMETHODMETADATA_H
 #define QGSAUTHMETHODMETADATA_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAuthMethod;
 
@@ -43,7 +44,6 @@ class QgsAuthMethod;
 class CORE_EXPORT QgsAuthMethodMetadata
 {
   public:
-
     /**
      * Construct an authentication method metadata container
      * \param key Textual key of the library plugin
@@ -89,7 +89,6 @@ class CORE_EXPORT QgsAuthMethodMetadata
     //virtual QStringList supportedDataProviders() const; // TODO QGIS 5 = 0;
 
   private:
-
     /// unique key for method
     QString mKey;
 

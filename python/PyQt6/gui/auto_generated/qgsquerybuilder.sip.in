@@ -61,6 +61,7 @@ Returns the code editor widget for the SQL.
 .. versionadded:: 3.18
 %End
 %End
+
 %If (!HAVE_QSCI_SIP)
 
     QWidget *codeEditorWidget() const;

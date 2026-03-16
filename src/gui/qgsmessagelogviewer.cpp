@@ -42,13 +42,16 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
 {
   setupUi( this );
 
-  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLog::messageReceived ), this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
+  connect(
+    QgsApplication::messageLog(),
+    static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ),
+    this,
+    static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat )>( &QgsMessageLogViewer::logMessage )
+  );
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 
-  connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
-    tabWidget->setTabIcon( index, QIcon() );
-  } );
+  connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) { tabWidget->setTabIcon( index, QIcon() ); } );
 
   mTabBarContextMenu = new QMenu( this );
   tabWidget->tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -67,9 +70,7 @@ void QgsMessageLogViewer::showContextMenuForTabBar( QPoint point )
   const int tabIndex = tabWidget->tabBar()->tabAt( point );
 
   QAction *actionCloseTab = new QAction( tr( "Close Tab" ), mTabBarContextMenu );
-  connect( actionCloseTab, &QAction::triggered, this, [this, tabIndex] {
-    closeTab( tabIndex );
-  } );
+  connect( actionCloseTab, &QAction::triggered, this, [this, tabIndex] { closeTab( tabIndex ); } );
   mTabBarContextMenu->addAction( actionCloseTab );
 
   QAction *actionCloseOtherTabs = new QAction( tr( "Close Other Tabs" ), mTabBarContextMenu );
@@ -106,10 +107,9 @@ void QgsMessageLogViewer::closeEvent( QCloseEvent *e )
 }
 
 void QgsMessageLogViewer::reject()
-{
-}
+{}
 
-void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
   // Avoid logging too many messages, which might blow memory.
@@ -172,9 +172,17 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   }
   const QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
 
-  const QString prefix = u"<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>"_s
-                           .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
-  QString cleanedMessage = message.toHtmlEscaped();
+  const QString prefix = u"<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>"_s.arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
+  QString cleanedMessage;
+  switch ( format )
+  {
+    case Qgis::StringFormat::PlainText:
+      cleanedMessage = message.toHtmlEscaped();
+      break;
+    case Qgis::StringFormat::Html:
+      cleanedMessage = message;
+      break;
+  }
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
     cleanedMessage = tr( "Message log truncated" );
 

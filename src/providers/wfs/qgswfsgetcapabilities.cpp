@@ -36,7 +36,8 @@
 using namespace Qt::StringLiterals;
 
 QgsWfsGetCapabilitiesRequest::QgsWfsGetCapabilitiesRequest( const QString &uri, const QgsDataProvider::ProviderOptions &options )
-  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ), mOptions( options )
+  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
+  , mOptions( options )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -473,12 +474,8 @@ void QgsWfsGetCapabilitiesRequest::capabilitiesReplyFinished()
       // be expressed in <SRS>. From the WFS schema;
       // <!-- The LatLongBoundingBox element is used to indicate the edges of
       // an enclosing rectangle in the SRS of the associated feature type.
-      featureType.bbox = QgsRectangle(
-        latLongBB.attribute( u"minx"_s ).toDouble(),
-        latLongBB.attribute( u"miny"_s ).toDouble(),
-        latLongBB.attribute( u"maxx"_s ).toDouble(),
-        latLongBB.attribute( u"maxy"_s ).toDouble()
-      );
+      featureType.bbox
+        = QgsRectangle( latLongBB.attribute( u"minx"_s ).toDouble(), latLongBB.attribute( u"miny"_s ).toDouble(), latLongBB.attribute( u"maxx"_s ).toDouble(), latLongBB.attribute( u"maxy"_s ).toDouble() );
       featureType.bboxSRSIsWGS84 = false;
 
       // But some servers do not honour this and systematically reproject to WGS84
@@ -505,7 +502,10 @@ void QgsWfsGetCapabilitiesRequest::capabilitiesReplyFinished()
             QgsDebugMsgLevel( ptMinBack.toString(), 2 );
             QgsDebugMsgLevel( ptMaxBack.toString(), 2 );
 
-            if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 && std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 && std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 && std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+            if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5
+                 && std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5
+                 && std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5
+                 && std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
             {
               QgsDebugMsgLevel( u"Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units"_s, 2 );
               featureType.bboxSRSIsWGS84 = true;
@@ -532,12 +532,7 @@ void QgsWfsGetCapabilitiesRequest::capabilitiesReplyFinished()
           QStringList upperCornerList = upperCorner.text().split( u" "_s, Qt::SkipEmptyParts );
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
-            featureType.bbox = QgsRectangle(
-              lowerCornerList[0].toDouble(),
-              lowerCornerList[1].toDouble(),
-              upperCornerList[0].toDouble(),
-              upperCornerList[1].toDouble()
-            );
+            featureType.bbox = QgsRectangle( lowerCornerList[0].toDouble(), lowerCornerList[1].toDouble(), upperCornerList[0].toDouble(), upperCornerList[1].toDouble() );
             featureType.bboxSRSIsWGS84 = true;
           }
         }
@@ -723,10 +718,8 @@ void QgsWfsGetCapabilitiesRequest::parseFilterCapabilities( const QDomElement &f
   }
 
   // WFS 1.0
-  QDomElement function_Names = filterCapabilitiesElem.firstChildElement( u"Scalar_Capabilities"_s )
-                                 .firstChildElement( u"Arithmetic_Operators"_s )
-                                 .firstChildElement( u"Functions"_s )
-                                 .firstChildElement( u"Function_Names"_s );
+  QDomElement function_Names
+    = filterCapabilitiesElem.firstChildElement( u"Scalar_Capabilities"_s ).firstChildElement( u"Arithmetic_Operators"_s ).firstChildElement( u"Functions"_s ).firstChildElement( u"Function_Names"_s );
   QDomElement function_NameElem = function_Names.firstChildElement( u"Function_Name"_s );
   while ( !function_NameElem.isNull() )
   {
@@ -751,10 +744,8 @@ void QgsWfsGetCapabilitiesRequest::parseFilterCapabilities( const QDomElement &f
   }
 
   // WFS 1.1
-  QDomElement functionNames = filterCapabilitiesElem.firstChildElement( u"Scalar_Capabilities"_s )
-                                .firstChildElement( u"ArithmeticOperators"_s )
-                                .firstChildElement( u"Functions"_s )
-                                .firstChildElement( u"FunctionNames"_s );
+  QDomElement functionNames
+    = filterCapabilitiesElem.firstChildElement( u"Scalar_Capabilities"_s ).firstChildElement( u"ArithmeticOperators"_s ).firstChildElement( u"Functions"_s ).firstChildElement( u"FunctionNames"_s );
   QDomElement functionNameElem = functionNames.firstChildElement( u"FunctionName"_s );
   while ( !functionNameElem.isNull() )
   {

@@ -21,20 +21,21 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import tempfile
+from multiprocessing import cpu_count
 from pathlib import Path
 
-from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (
     NULL,
     QgsApplication,
+    QgsProcessingUtils,
+    QgsRasterFileWriter,
     QgsSettings,
     QgsVectorFileWriter,
-    QgsRasterFileWriter,
-    QgsProcessingUtils,
 )
-from processing.tools.system import defaultOutputFolder
+from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
+
 import processing.tools.dataobjects
-from multiprocessing import cpu_count
+from processing.tools.system import defaultOutputFolder
 
 
 class SettingsWatcher(QObject):
@@ -204,9 +205,7 @@ class ProcessingConfig:
             )
         )
 
-        threads = (
-            QgsApplication.maxThreads()
-        )  # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = QgsApplication.maxThreads()  # if user specified limit for rendering, lets keep that as default here, otherwise max
         threads = (
             cpu_count() if threads == -1 else threads
         )  # if unset, maxThreads() returns -1

@@ -38,6 +38,8 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsAbstractRenderView;
 class QgsAmbientOcclusionRenderView;
@@ -55,7 +57,6 @@ class QgsRectangle;
 class QgsShadowRenderView;
 class QgsShadowSettings;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

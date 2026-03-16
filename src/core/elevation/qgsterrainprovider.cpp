@@ -27,16 +27,12 @@ using namespace Qt::StringLiterals;
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 
 void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * )
-{
-
-}
+{}
 
 QgsAbstractTerrainProvider::QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other )
   : mScale( other.mScale )
   , mOffset( other.mOffset )
-{
-
-}
+{}
 
 void QgsAbstractTerrainProvider::writeCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
 {
@@ -94,7 +90,6 @@ QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
 void QgsFlatTerrainProvider::prepare()
 {
   Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsFlatTerrainProvider::prepare", "prepare() must be called from the main thread" );
-
 }
 
 bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
@@ -120,7 +115,7 @@ QString QgsRasterDemTerrainProvider::type() const
 void QgsRasterDemTerrainProvider::resolveReferences( const QgsProject *project )
 {
   if ( mRasterLayer )
-    return;  // already assigned
+    return; // already assigned
 
   mRasterLayer.resolve( project );
 }
@@ -158,8 +153,7 @@ QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const
 
 QgsCoordinateReferenceSystem QgsRasterDemTerrainProvider::crs() const
 {
-  return mRasterProvider ? mRasterProvider->crs()
-         : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
+  return mRasterProvider ? mRasterProvider->crs() : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
 }
 
 double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
@@ -194,9 +188,7 @@ bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *othe
     return false;
 
   const QgsRasterDemTerrainProvider *otherTerrain = qgis::down_cast< const QgsRasterDemTerrainProvider * >( other );
-  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
-       || !qgsDoubleNear( otherTerrain->scale(), mScale )
-       || mRasterLayer.get() != otherTerrain->layer() )
+  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset ) || !qgsDoubleNear( otherTerrain->scale(), mScale ) || mRasterLayer.get() != otherTerrain->layer() )
     return false;
 
   return true;
@@ -224,8 +216,7 @@ QgsRasterDemTerrainProvider::QgsRasterDemTerrainProvider( const QgsRasterDemTerr
   : QgsAbstractTerrainProvider( other )
   , mRasterLayer( other.mRasterLayer )
   , mRasterProvider( nullptr )
-{
-}
+{}
 
 
 //
@@ -240,7 +231,7 @@ QString QgsMeshTerrainProvider::type() const
 void QgsMeshTerrainProvider::resolveReferences( const QgsProject *project )
 {
   if ( mMeshLayer )
-    return;  // already assigned
+    return; // already assigned
 
   mMeshLayer.resolve( project );
 }
@@ -300,9 +291,7 @@ bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
     return false;
 
   const QgsMeshTerrainProvider *otherTerrain = qgis::down_cast< const QgsMeshTerrainProvider * >( other );
-  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
-       || !qgsDoubleNear( otherTerrain->scale(), mScale )
-       || mMeshLayer.get() != otherTerrain->layer() )
+  if ( !qgsDoubleNear( otherTerrain->offset(), mOffset ) || !qgsDoubleNear( otherTerrain->scale(), mScale ) || mMeshLayer.get() != otherTerrain->layer() )
     return false;
 
   return true;
@@ -332,6 +321,4 @@ QgsMeshTerrainProvider::QgsMeshTerrainProvider( const QgsMeshTerrainProvider &ot
   : QgsAbstractTerrainProvider( other )
   , mMeshLayer( other.mMeshLayer )
   , mTriangularMesh( QgsTriangularMesh() )
-{
-
-}
+{}

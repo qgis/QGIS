@@ -55,7 +55,12 @@ QString QgsPdalClassifyGroundAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm classifies ground points using the Simple Morphological Filter (SMRF) algorithm." )
          + u"\n\n"_s
-         + QObject::tr( "Cell Size is the cell size for processing grid in map units, where smaller values give finer detail but may increase noise. Scalar is the threshold for steeper slopes; a higher value is needed if the terrain is rough, otherwise real ground might be misclassified. Slope is the slope threshold measured as rise over run, indicating how much slope is tolerated as ground and should be higher for steep terrain. Threshold is the elevation threshold for separating ground from objects; higher values allow larger deviations from the ground. Window Size is the maximum filter window size, where higher values better identify large buildings or objects while smaller values protect smaller features." );
+         + QObject::tr(
+           "Cell Size is the cell size for processing grid in map units, where smaller values give finer detail but may increase noise. Scalar is the threshold for steeper slopes; a higher value is "
+           "needed if the terrain is rough, otherwise real ground might be misclassified. Slope is the slope threshold measured as rise over run, indicating how much slope is tolerated as ground and "
+           "should be higher for steep terrain. Threshold is the elevation threshold for separating ground from objects; higher values allow larger deviations from the ground. Window Size is the "
+           "maximum filter window size, where higher values better identify large buildings or objects while smaller values protect smaller features."
+         );
 }
 
 QString QgsPdalClassifyGroundAlgorithm::shortDescription() const
@@ -116,7 +121,16 @@ QStringList QgsPdalClassifyGroundAlgorithm::createArgumentLists( const QVariantM
   const double threshold = parameterAsDouble( parameters, u"THRESHOLD"_s, context );
   const double windowSize = parameterAsDouble( parameters, u"WINDOW_SIZE"_s, context );
 
-  QStringList args = { u"classify_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--cell-size=%1"_s.arg( cellSize ), u"--scalar=%1"_s.arg( scalar ), u"--slope=%1"_s.arg( slope ), u"--threshold=%1"_s.arg( threshold ), u"--window-size=%1"_s.arg( windowSize ) };
+  QStringList args = {
+    u"classify_ground"_s,
+    u"--input=%1"_s.arg( layer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
+    u"--cell-size=%1"_s.arg( cellSize ),
+    u"--scalar=%1"_s.arg( scalar ),
+    u"--slope=%1"_s.arg( slope ),
+    u"--threshold=%1"_s.arg( threshold ),
+    u"--window-size=%1"_s.arg( windowSize )
+  };
 
   applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );

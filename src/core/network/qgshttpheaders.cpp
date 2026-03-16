@@ -91,7 +91,7 @@ bool QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key )
   settings.remove( keyHH ); // cleanup
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
-    settings.setValue( keyHH  + ite.key(), ite.value() );
+    settings.setValue( keyHH + ite.key(), ite.value() );
   }
 
   if ( !mHeaders[QgsHttpHeaders::KEY_REFERER].toString().isEmpty() && settings.contains( keyFixed + QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
@@ -212,13 +212,13 @@ void QgsHttpHeaders::setFromMap( const QVariantMap &map )
     if ( key.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
     {
       QString name = key.right( key.size() - QgsHttpHeaders::PARAM_PREFIX.size() );
-      mHeaders[sanitizeKey( name )] = map [key].toString();
+      mHeaders[sanitizeKey( name )] = map[key].toString();
     }
   }
 
   if ( map.contains( QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
-    mHeaders[QgsHttpHeaders::KEY_REFERER] = map [QgsHttpHeaders::KEY_REFERER].toString();
+    mHeaders[QgsHttpHeaders::KEY_REFERER] = map[QgsHttpHeaders::KEY_REFERER].toString();
   }
 }
 
@@ -242,7 +242,6 @@ void QgsHttpHeaders::setFromDomElement( const QDomElement &el )
   {
     mHeaders[QgsHttpHeaders::KEY_REFERER] = attribs.namedItem( QgsHttpHeaders::KEY_REFERER ).nodeValue();
   }
-
 }
 
 QString QgsHttpHeaders::toSpacedString() const
@@ -253,12 +252,11 @@ QString QgsHttpHeaders::toSpacedString() const
     out += u" %1%2='%3'"_s.arg( QgsHttpHeaders::PARAM_PREFIX, ite.key(), ite.value().toString() );
   }
 
-  if ( !mHeaders [ QgsHttpHeaders::KEY_REFERER ].toString().isEmpty() )
-    out += u" %1='%2'"_s.arg( QgsHttpHeaders::KEY_REFERER, mHeaders [QgsHttpHeaders::KEY_REFERER].toString() );
+  if ( !mHeaders[QgsHttpHeaders::KEY_REFERER].toString().isEmpty() )
+    out += u" %1='%2'"_s.arg( QgsHttpHeaders::KEY_REFERER, mHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
 
   return out;
 }
-
 
 
 // To clean the path
@@ -279,7 +277,7 @@ const QVariant QgsHttpHeaders::operator[]( const QString &key ) const
   return mHeaders[sanitizeKey( key )];
 }
 
-QgsHttpHeaders &QgsHttpHeaders::operator = ( const QMap<QString, QVariant> &headers )
+QgsHttpHeaders &QgsHttpHeaders::operator=( const QMap<QString, QVariant> &headers )
 {
   mHeaders = headers;
   return *this;

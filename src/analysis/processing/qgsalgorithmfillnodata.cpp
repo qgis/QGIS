@@ -73,11 +73,13 @@ void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsFillNoDataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm resets the NoData values in the input raster "
-                      "to a chosen value, resulting in a raster dataset with no NoData pixels. "
-                      "This value can be set by the user using the Fill value parameter. "
-                      "The algorithm respects the input raster data type (eg. a floating point fill value will be truncated "
-                      "when applied to an integer raster)." );
+  return QObject::tr(
+    "This algorithm resets the NoData values in the input raster "
+    "to a chosen value, resulting in a raster dataset with no NoData pixels. "
+    "This value can be set by the user using the Fill value parameter. "
+    "The algorithm respects the input raster data type (eg. a floating point fill value will be truncated "
+    "when applied to an integer raster)."
+  );
 }
 
 QString QgsFillNoDataAlgorithm::shortDescription() const

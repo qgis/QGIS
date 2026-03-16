@@ -10,7 +10,6 @@ __author__ = "Nyall Dawson"
 __date__ = "2015-08"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.core import (
     Qgis,
     QgsColorBrewerColorRamp,
@@ -21,11 +20,11 @@ from qgis.core import (
     QgsPresetSchemeColorRamp,
     QgsRandomColorRamp,
 )
+from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
 
 class PyQgsColorRamp(unittest.TestCase):
-
     def testQgsGradientColorRamp(self):
         # test QgsGradientStop
         stop = QgsGradientStop(0.9, QColor(200, 150, 100))

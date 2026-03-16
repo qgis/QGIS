@@ -34,26 +34,24 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
       break;
 
     case Qgis::LayerType::VectorTile:
-      mCategoryList << QgsMapLayer::StyleCategory::Symbology
-                    << QgsMapLayer::StyleCategory::Labeling
-                    << QgsMapLayer::StyleCategory::AllVisualStyleCategories
-                    << QgsMapLayer::StyleCategory::AllStyleCategories;
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling << QgsMapLayer::StyleCategory::AllVisualStyleCategories << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
 
     case Qgis::LayerType::Raster:
-      mCategoryList << QgsMapLayer::StyleCategory::LayerConfiguration
-                    << QgsMapLayer::StyleCategory::Symbology
-                    << QgsMapLayer::StyleCategory::Labeling
-                    << QgsMapLayer::StyleCategory::MapTips
-                    << QgsMapLayer::StyleCategory::Rendering
-                    << QgsMapLayer::StyleCategory::CustomProperties
-                    << QgsMapLayer::StyleCategory::Temporal
-                    << QgsMapLayer::StyleCategory::Elevation
-                    << QgsMapLayer::StyleCategory::AttributeTable
-                    << QgsMapLayer::StyleCategory::Notes
-                    << QgsMapLayer::StyleCategory::Legend
-                    << QgsMapLayer::StyleCategory::AllVisualStyleCategories
-                    << QgsMapLayer::StyleCategory::AllStyleCategories;
+      mCategoryList
+        << QgsMapLayer::StyleCategory::LayerConfiguration
+        << QgsMapLayer::StyleCategory::Symbology
+        << QgsMapLayer::StyleCategory::Labeling
+        << QgsMapLayer::StyleCategory::MapTips
+        << QgsMapLayer::StyleCategory::Rendering
+        << QgsMapLayer::StyleCategory::CustomProperties
+        << QgsMapLayer::StyleCategory::Temporal
+        << QgsMapLayer::StyleCategory::Elevation
+        << QgsMapLayer::StyleCategory::AttributeTable
+        << QgsMapLayer::StyleCategory::Notes
+        << QgsMapLayer::StyleCategory::Legend
+        << QgsMapLayer::StyleCategory::AllVisualStyleCategories
+        << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
@@ -571,8 +569,7 @@ Qt::ItemFlags QgsMapLayerStyleCategoriesModel::flags( const QModelIndex & ) cons
 
 QgsCategoryDisplayLabelDelegate::QgsCategoryDisplayLabelDelegate( QObject *parent )
   : QItemDelegate( parent )
-{
-}
+{}
 
 void QgsCategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const
 {

@@ -51,17 +51,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     Q_OBJECT
 
   public:
-
     //! Preset item z-values, to ensure correct stacking
     enum ZValues
     {
-      ZPage = 0, //!< Z-value for page (paper) items
-      ZItem = 1, //!< Minimum z value for items
-      ZGrid = 9997, //!< Z-value for page grids
-      ZGuide = 9998, //!< Z-value for page guides
-      ZSmartGuide = 9999, //!< Z-value for smart (item bounds based) guides
-      ZMouseHandles = 10000, //!< Z-value for mouse handles
-      ZViewTool = 10001, //!< Z-value for temporary view tool items
+      ZPage = 0,              //!< Z-value for page (paper) items
+      ZItem = 1,              //!< Minimum z value for items
+      ZGrid = 9997,           //!< Z-value for page grids
+      ZGuide = 9998,          //!< Z-value for page guides
+      ZSmartGuide = 9999,     //!< Z-value for smart (item bounds based) guides
+      ZMouseHandles = 10000,  //!< Z-value for mouse handles
+      ZViewTool = 10001,      //!< Z-value for temporary view tool items
       ZSnapIndicator = 10002, //!< Z-value for snapping indicator
     };
 
@@ -142,7 +141,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
       objectList.clear();
       const QList<QGraphicsItem *> itemList( items() );
       const QList<QgsLayoutMultiFrame *> frameList( multiFrames() );
-      for ( const auto &obj :  itemList )
+      for ( const auto &obj : itemList )
       {
         T *item = dynamic_cast<T *>( obj );
         if ( item )
@@ -150,7 +149,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
           objectList.push_back( item );
         }
       }
-      for ( const auto &obj :  frameList )
+      for ( const auto &obj : frameList )
       {
         T *item = dynamic_cast<T *>( obj );
         if ( item )
@@ -612,9 +611,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * A list of the newly added items is returned.
      */
-    QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
-        const QgsReadWriteContext &context,
-        QPointF *position = nullptr, bool pasteInPlace = false );
+    QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position = nullptr, bool pasteInPlace = false );
 
     /**
      * Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
@@ -725,7 +722,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void itemBackgroundTaskCountChanged( int count );
 
   private:
-
     QgsProject *mProject = nullptr;
     std::unique_ptr< QgsLayoutModel > mItemsModel;
 

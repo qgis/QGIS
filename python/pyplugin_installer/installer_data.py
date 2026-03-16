@@ -22,40 +22,45 @@
  ***************************************************************************/
 """
 
-from typing import Dict, Optional, Any
-
-from qgis.PyQt.QtCore import (
-    pyqtSignal,
-    QObject,
-    QCoreApplication,
-    QFile,
-    QDir,
-    QDirIterator,
-    QDate,
-    QUrl,
-    QFileInfo,
-    QLocale,
-    QByteArray,
-    QT_VERSION_STR,
-)
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
-import sys
+import configparser
 import os
 import re
-import configparser
-import qgis.utils
-from qgis.core import QgsNetworkAccessManager, QgsApplication
-from qgis.gui import QgsGui
-from qgis.utils import iface, plugin_paths, HOME_PLUGIN_PATH
-from .version_compare import (
-    pyQgisVersion,
-    compareVersions,
-    normalizeVersion,
-    isCompatible,
-)
+import sys
+from typing import Any, Optional
 
+import qgis.utils
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
+    QgsSettings,
+    QgsSettingsTree,
+)
+from qgis.gui import QgsGui
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QDate,
+    QDir,
+    QDirIterator,
+    QFile,
+    QFileInfo,
+    QLocale,
+    QObject,
+    QUrl,
+    pyqtSignal,
+)
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.utils import HOME_PLUGIN_PATH, iface, plugin_paths
+
+from .version_compare import (
+    compareVersions,
+    isCompatible,
+    normalizeVersion,
+    pyQgisVersion,
+)
 
 """
 Data structure:
@@ -127,17 +132,16 @@ officialRepo = (
 # --- common functions ------------------------------------------------------------------- #
 def removeDir(path):
     result = ""
+    fi = QFileInfo(path)
     if not QFile(path).exists():
-        result = (
-            QCoreApplication.translate(
-                "QgsPluginInstaller",
-                "Nothing to remove! Plugin directory doesn't exist:",
-            )
-            + "\n"
-            + path
-        )
-    elif QFile(path).remove():  # if it is only link, just remove it without resolving.
         pass
+    elif fi.isSymbolicLink() or fi.isAlias() or fi.isJunction():
+        if sys.platform.startswith("win") and QDir(path).exists():
+            # it is a windows directory junction or directory sym link
+            QDir().rmdir(path)
+        else:
+            # if it is only a link, just remove it without resolving.
+            QFile(path).remove()
     else:
         fltr = QDir.Filter.Dirs | QDir.Filter.Files | QDir.Filter.Hidden
         iterator = QDirIterator(path, fltr, QDirIterator.IteratorFlag.Subdirectories)
@@ -151,6 +155,7 @@ def removeDir(path):
             item = iterator.next()
             if QDir().rmpath(item):
                 pass
+
     if QFile(path).exists():
         result = (
             QCoreApplication.translate(
@@ -431,11 +436,12 @@ class Repositories(QObject):
             self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
             self.mRepositories[reposName]["error"] = reply.errorString()
             if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
-                self.mRepositories[reposName][
-                    "error"
-                ] += "\n\n" + QCoreApplication.translate(
-                    "QgsPluginInstaller",
-                    "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.",
+                self.mRepositories[reposName]["error"] += (
+                    "\n\n"
+                    + QCoreApplication.translate(
+                        "QgsPluginInstaller",
+                        "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.",
+                    )
                 )
         elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 301:
             redirectionUrl = reply.attribute(
@@ -657,14 +663,8 @@ class Repositories(QObject):
                         .text()
                         .strip()
                     )
-                    supports_qt6 = pluginNodes.item(i).firstChildElement(
-                        "supports_qt6"
-                    ).text().strip().upper() in ["TRUE", "YES"]
                     if not qgisMaximumVersion:
-                        if qgisMinimumVersion[0] == "3" and supports_qt6:
-                            qgisMaximumVersion = "4.99"
-                        else:
-                            qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                        qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement(
                         "disabled"
@@ -726,9 +726,7 @@ class Plugins(QObject):
         self.mPlugins = {}  # the dict of plugins (dicts)
         self.repoCache = {}  # the dict of lists of plugins (dicts)
         self.localCache = {}  # the dict of plugins (dicts)
-        self.obsoletePlugins = (
-            []
-        )  # the list of outdated 'user' plugins masking newer 'system' ones
+        self.obsoletePlugins = []  # the list of outdated 'user' plugins masking newer 'system' ones
 
     # ----------------------------------------- #
     def all(self):
@@ -833,27 +831,13 @@ class Plugins(QObject):
         if os.path.exists(metadataFile):
             version = normalizeVersion(pluginMetadata("version"))
 
-        qt_version = int(QT_VERSION_STR.split(".")[0])
-        supports_qt6 = pluginMetadata("supportsQt6").strip().upper() in ("TRUE", "YES")
-        if (
-            qt_version == 6
-            and not supports_qt6
-            and "QGIS_DISABLE_SUPPORTS_QT6_CHECK" not in os.environ
-        ):
-            error = "incompatible"
-            errorDetails = QCoreApplication.translate(
-                "QgsPluginInstaller", "Plugin does not support Qt6 versions of QGIS"
-            )
-        elif version:
+        if version:
             qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
             if not qgisMinimumVersion:
                 qgisMinimumVersion = "0"
             qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
             if not qgisMaximumVersion:
-                if qgisMinimumVersion[0] == "3" and supports_qt6:
-                    qgisMaximumVersion = "4.99"
-                else:
-                    qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
             # if compatible, add the plugin to the list
             if not isCompatible(
                 pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion
@@ -1030,7 +1014,6 @@ class Plugins(QObject):
                         and not plugin["experimental"]
                     )
                 ):
-
                     # The mPlugins dict contains now locally installed plugins.
                     # Now, add the available one if not present yet or update it if present already.
                     if key not in self.mPlugins:

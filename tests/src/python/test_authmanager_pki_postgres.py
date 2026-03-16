@@ -25,9 +25,8 @@ import glob
 import os
 import stat
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QFile
-from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
@@ -35,9 +34,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QFile
+from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 __author__ = "Alessandro Pasotti"
@@ -48,7 +47,6 @@ qgis_app = start_app()
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""

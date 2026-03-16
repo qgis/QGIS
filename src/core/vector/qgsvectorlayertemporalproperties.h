@@ -39,7 +39,6 @@ class QgsFields;
 class CORE_EXPORT QgsVectorLayerTemporalContext
 {
   public:
-
     /**
      * Returns the associated layer.
      *
@@ -55,7 +54,6 @@ class CORE_EXPORT QgsVectorLayerTemporalContext
     void setLayer( QgsVectorLayer *layer );
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
 };
 
@@ -71,7 +69,6 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorLayerTemporalProperties, with the specified \a parent object.
      *
@@ -340,7 +337,6 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
 
   private:
-
     //! Temporal layer mode.
     Qgis::VectorTemporalMode mMode = Qgis::VectorTemporalMode::FixedTemporalRange;
 
@@ -361,7 +357,6 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
 
     QString mStartExpression;
     QString mEndExpression;
-
 };
 
 #endif // QGSVECTORLAYERTEMPORALPROPERTIES_H

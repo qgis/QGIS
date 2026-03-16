@@ -26,8 +26,7 @@
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 
 QVariant QgsValueMapWidgetWrapper::value() const

@@ -36,7 +36,6 @@ class ProcessingResults(QObject):
 
 
 class Result:
-
     def __init__(self, icon, name, timestamp, filename):
         self.icon = icon
         self.name = name

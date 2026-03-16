@@ -25,7 +25,6 @@ which takes a painter bounds argument.
 #include "qgsannotationrectitem.h"
 %End
   public:
-
     QgsAnnotationRectItem( const QgsRectangle &bounds );
 %Docstring
 Constructor for QgsAnnotationRectItem, rendering the annotation within

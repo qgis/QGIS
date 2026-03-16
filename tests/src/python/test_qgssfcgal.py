@@ -22,13 +22,12 @@ from qgis.core import (
     QgsSfcgalGeometry,
     QgsVector3D,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsSFCGAL(QgisTestCase):
-
     def test_constructor(self):
         default_geom = QgsSfcgalGeometry(QgsPolyhedralSurface())
         self.assertTrue(default_geom.isEmpty())

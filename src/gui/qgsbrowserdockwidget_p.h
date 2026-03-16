@@ -42,6 +42,8 @@
 
 #include <QSortFilterProxyModel>
 
+#define SIP_NO_FILE
+
 class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
@@ -49,7 +51,6 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsDirectoryParamWidget;
 
-#define SIP_NO_FILE
 
 /**
  * Hack to show wrapped text without spaces

@@ -50,10 +50,7 @@ using namespace Qt::StringLiterals;
 class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
-
-    QgsLayoutItemElevationProfilePlot()
-    {
-    }
+    QgsLayoutItemElevationProfilePlot() {}
 
     void setRenderer( QgsProfilePlotRenderer *renderer )
     {
@@ -77,9 +74,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
     double xScale = 1;
 
   private:
-
     QgsProfilePlotRenderer *mRenderer = nullptr;
-
 };
 ///@endcond PRIVATE
 
@@ -98,10 +93,7 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
     connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemElevationProfile::invalidateCache );
   }
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
-    invalidateCache();
-  } );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] { invalidateCache(); } );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -509,7 +501,7 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
     // Legacy: If we have layers, extract their sources and return them.
     // We don't set mSources here, because we want the previous check to
     // continue failing if only layers are set.
-    // TODO: Remove in QGIS 5.0.
+    // TODO: Remove this if block in QGIS 5.0 along with setLayers/layers methods.
     QList< QgsAbstractProfileSource * > sources;
     const QList<QgsMapLayer *> layersToGenerate = layers();
     sources.reserve( layersToGenerate.size() );
@@ -529,12 +521,45 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
     return sources;
   }
 
-  return mSources;
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( mSources.count() );
+  for ( const auto &source : mSources )
+  {
+    if ( const QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
+    {
+      if ( QgsMapLayer *layer = layerRef->get() )
+      {
+        sources << layer->profileSource();
+      }
+    }
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+    }
+  }
+
+  return sources;
 }
 
 void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
 {
-  mSources = sources;
+  mSources.clear();
+  mSources.reserve( sources.count() );
+  for ( QgsAbstractProfileSource *profileSource : sources )
+  {
+    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
+    {
+      mSources << QgsMapLayerRef( layer );
+    }
+    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    {
+      mSources << profileSource;
+    }
+  }
+
   invalidateCache();
 }
 
@@ -639,11 +664,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
       if (
         ( mRenderJob && mCacheInvalidated && !mDrawingPreview ) // current job was invalidated - start a new one
-        ||
-        ( !mRenderJob && !mDrawingPreview ) // this is the profiles's very first paint - trigger a cache update
+        || ( !mRenderJob && !mDrawingPreview )                  // this is the profiles's very first paint - trigger a cache update
       )
       {
-
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
@@ -696,8 +719,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
       const bool forceVector = mLayout && mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
-      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-           && !forceVector )
+      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) ) && !forceVector )
       {
         // rasterize
         double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;
@@ -773,7 +795,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         QgsScopedQPainterState painterState( painter );
         QgsScopedQPainterState stagedPainterState( painter );
         double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-        layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+        layoutSize *= dotsPerMM;                        // output size will be in dots (pixels)
         painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
@@ -847,8 +869,7 @@ void QgsLayoutItemElevationProfile::invalidateCache()
 }
 
 void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
-{
-}
+{}
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
@@ -871,7 +892,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
   if ( mCurve )
   {
     QDomElement curveElem = doc.createElement( u"curve"_s );
-    curveElem.appendChild( doc.createTextNode( mCurve->asWkt( ) ) );
+    curveElem.appendChild( doc.createTextNode( mCurve->asWkt() ) );
     layoutProfileElem.appendChild( curveElem );
   }
 
@@ -888,24 +909,28 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
   {
     QDomElement sourcesElement = doc.createElement( u"profileSources"_s );
-    for ( QgsAbstractProfileSource *source : mSources )
+    for ( const auto &source : mSources )
     {
-      if ( source )
+      if ( const QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
       {
-        if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
-        {
-          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
-          sourceElement.setAttribute( u"id"_s, source->profileSourceId() );
-          sourcesElement.appendChild( sourceElement );
-        }
-        else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
+        if ( layerRef->get() )
         {
           QDomElement sourceElement = doc.createElement( u"profileLayerSource"_s );
-          layer.writeXml( sourceElement, rwContext );
+          layerRef->writeXml( sourceElement, rwContext );
+          sourcesElement.appendChild( sourceElement );
+        }
+      }
+      else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+      {
+        if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+        {
+          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
+          sourceElement.setAttribute( u"id"_s, ( *profileSource )->profileSourceId() );
           sourcesElement.appendChild( sourceElement );
         }
       }
     }
+
     layoutProfileElem.appendChild( sourcesElement );
   }
 
@@ -974,6 +999,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
 
   {
     mSources.clear();
+    mSources.reserve( itemElem.elementsByTagName( u"profileSources"_s ).count() );
     const QDomElement sourcesElement = itemElem.firstChildElement( u"profileSources"_s );
     QDomElement sourceElement = sourcesElement.firstChildElement();
     while ( !sourceElement.isNull() )
@@ -983,7 +1009,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         const QString sourceId = sourceElement.attribute( u"id"_s );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
-          mSources.append( profileSource );
+          mSources << profileSource;
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
@@ -993,7 +1019,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         ref.resolveWeakly( mLayout->project() );
         if ( ref.get() )
         {
-          mSources.append( ref.get()->profileSource() );
+          mSources << ref;
         }
       }
 
@@ -1012,7 +1038,6 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     }
   }
 
-
   return true;
 }
 
@@ -1024,8 +1049,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
     QgsProfilePlotRenderer *oldJob = mRenderJob.release();
     QPainter *oldPainter = mPainter.release();
     QImage *oldImage = mCacheRenderingImage.release();
-    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage]
-    {
+    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage] {
       oldJob->deleteLater();
       delete oldPainter;
       delete oldImage;
@@ -1104,8 +1128,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
 
   mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
-  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale /
-                                  mCacheRenderingImage->size().width();
+  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / mCacheRenderingImage->size().width();
   rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   // size must be in pixels, not layout units
@@ -1204,5 +1227,8 @@ void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol 
 
 void QgsLayoutItemElevationProfile::setSourcesPrivate()
 {
-  mSources = QgsApplication::profileSourceRegistry()->profileSources();
+  mSources.clear();
+  mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
+  for ( QgsAbstractProfileSource *source : QgsApplication::profileSourceRegistry()->profileSources() )
+    mSources << source;
 }

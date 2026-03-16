@@ -175,8 +175,7 @@ void QgsNewNameDialog::nameChanged()
 
   if ( !conflicts.isEmpty() )
   {
-    const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                                                               : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", "_L1 ) );
+    const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", "_L1 ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {

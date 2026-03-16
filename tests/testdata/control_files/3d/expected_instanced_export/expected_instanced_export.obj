@@ -1,0 +1,35 @@
+mtllib instanced_export.mtl
+o points Z_instance_point
+usemtl points Z_instance_point_material
+s off
+v -0.05 -0.5 -0.075
+vn 0 1 0
+v -0.05 -0.5 0.025
+vn 0 1 0
+v 0.05 -0.5 -0.075
+vn 0 1 0
+v -0.05 -0.5 0.025
+vn 0 1 0
+v 0.05 -0.5 0.025
+vn 0 1 0
+v 0.05 -0.5 -0.075
+vn 0 1 0
+f -6//-6 -5//-5 -4//-4
+f -3//-3 -2//-2 -1//-1
+o points Z_instance_point2
+usemtl points Z_instance_point2_material
+s off
+v -0.05 0.5 -0.025
+vn 0 1 0
+v -0.05 0.5 0.075
+vn 0 1 0
+v 0.05 0.5 -0.025
+vn 0 1 0
+v -0.05 0.5 0.075
+vn 0 1 0
+v 0.05 0.5 0.075
+vn 0 1 0
+v 0.05 0.5 -0.025
+vn 0 1 0
+f -6//-6 -5//-5 -4//-4
+f -3//-3 -2//-2 -1//-1

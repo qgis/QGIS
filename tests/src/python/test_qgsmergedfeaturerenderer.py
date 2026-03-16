@@ -12,7 +12,6 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsFillSymbol,
@@ -28,16 +27,15 @@ from qgis.core import (
     QgsTemplatedLineSymbolLayerBase,
     QgsVectorLayer,
 )
-from qgis.testing import unittest, QgisTestCase
-
-from utilities import unitTestDataPath, start_app
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, unittest
+from utilities import start_app, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsMergedFeatureRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "mergedfeaturerenderer"

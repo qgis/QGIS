@@ -20,22 +20,21 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
-
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsMapLayerType,
+    QgsProject,
+    QgsProviderRegistry,
+    QgsSettings,
     QgsVectorDataProvider,
     QgsVectorLayer,
-    QgsMapLayerType,
-    QgsProviderRegistry,
-    QgsCoordinateReferenceSystem,
     QgsVectorLayerExporter,
-    QgsProject,
-    QgsSettings,
 )
 from qgis.gui import QgsMessageViewer
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 from qgis.utils import OverrideCursor, iface
 
 from .gui_utils import GuiUtils
@@ -253,7 +252,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboSchema.setCurrentIndex(index)
 
     def hideSchemas(self):
-        self.cboSchema.setEnabled(False)
+        self.cboSchema.setVisible(False)
+        self.lblSchema.setVisible(False)
 
     def populateTables(self):
         if not self.db:

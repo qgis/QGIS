@@ -161,7 +161,8 @@ void QgsAuthPlanetaryComputerEdit::updateServerType( int indx )
   lblTenantId->setVisible( isPro );
   leTenantId->setVisible( isPro );
 
-  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>"_L1 );
+  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." )
+                             .arg( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>"_L1 );
   const QString proHelp = u"%1<br/>%2: <a href=\"%3\">%3</a>"_s.arg( tr( "Contact your Microsoft Entra admin for App Registration details." ), tr( "Setup guide" ), u"http://aka.ms/qgis"_s );
 
   lblHelp->setText( u"<html><head/><body><p><span style=\" font-style:italic;\">%1</span></p></body></html>"_s.arg( isPro ? proHelp : openHelp ) );

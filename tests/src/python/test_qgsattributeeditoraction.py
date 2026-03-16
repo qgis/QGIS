@@ -12,7 +12,8 @@ __author__ = "Alessandro Pasotti"
 __date__ = "16/08/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from qgis.PyQt.QtCore import QUuid
+import unittest
+
 from qgis.core import (
     QgsAction,
     QgsAttributeEditorAction,
@@ -20,8 +21,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QUuid
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -29,7 +30,6 @@ from qgis.testing import QGISAPP
 
 
 class TestQgsActionWidgetWrapper(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -17,7 +17,7 @@
 #ifndef QGSMAPLAYERUTILS_H
 #define QGSMAPLAYERUTILS_H
 
-#define MAXIMUM_OPENSTREETMAP_TILES_FETCH  5000
+#define MAXIMUM_OPENSTREETMAP_TILES_FETCH 5000
 
 #include "qgis.h"
 #include "qgis_core.h"
@@ -37,9 +37,7 @@ class QgsGeometry;
 */
 class CORE_EXPORT QgsMapLayerUtils
 {
-
   public:
-
     /**
      * Returns the combined extent of a list of \a layers.
      *
@@ -62,6 +60,24 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 3.22
      */
     static bool layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path );
+
+    /**
+     * Returns TRUE if a \a layer and \a uri point to the same resource at the specified hierarchy \a level.
+     *
+     * This method parses the underlying connection parameters of the \a layer and \a uri
+     * to check if they share the same scope defined by \a level.
+     *
+     * \note This method is only valid for a \a uri from the same data provider as \a layer.
+     *
+     * \warning Not all providers implement this functionality. Check whether the provider's metadata capabilities returns the
+     * QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame to determine whether a specific provider metadata object
+     * supports this method.
+     *
+     * \throws QgsNotSupportedException if the layer's provider does not implement the QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame capability.
+     *
+     * \since QGIS 4.0
+     */
+    static bool layerRefersToUri( const QgsMapLayer *layer, const QString &uri, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Updates a \a layer's data source, replacing its data source with a path referring to \a newPath.
@@ -110,9 +126,6 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 4.0
      */
     static QString layerTypeToString( Qgis::LayerType type );
-
 };
 
 #endif // QGSMAPLAYERUTILS_H
-
-

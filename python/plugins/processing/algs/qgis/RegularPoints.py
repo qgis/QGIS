@@ -20,28 +20,28 @@ __date__ = "September 2014"
 __copyright__ = "(C) 2014, Alexander Bruy"
 
 import os
-from random import seed, uniform
 from math import sqrt
+from random import seed, uniform
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsApplication,
-    QgsFields,
+    QgsFeature,
     QgsFeatureSink,
     QgsField,
-    QgsFeature,
-    QgsWkbTypes,
+    QgsFields,
     QgsGeometry,
     QgsPoint,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterExtent,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterExtent,
     QgsProcessingParameterFeatureSink,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 

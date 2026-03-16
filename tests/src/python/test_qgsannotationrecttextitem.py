@@ -8,25 +8,28 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import Qt, QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
+    QgsAnnotationItemEditContext,
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
     QgsAnnotationItemEditOperationTranslateItem,
-    QgsAnnotationItemEditContext,
     QgsAnnotationItemNode,
     QgsAnnotationRectangleTextItem,
+    QgsBalloonCallout,
+    QgsCallout,
     QgsCircularString,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCurvePolygon,
     QgsFillSymbol,
+    QgsGeometry,
     QgsLineString,
     QgsMapSettings,
+    QgsMargins,
     QgsPoint,
     QgsPointXY,
     QgsPolygon,
@@ -34,17 +37,14 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsRenderContext,
-    QgsVertexId,
-    QgsTextFormat,
-    QgsMargins,
-    QgsCallout,
-    QgsBalloonCallout,
-    QgsGeometry,
     QgsSimpleLineCallout,
+    QgsTextFormat,
+    QgsVertexId,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
@@ -52,7 +52,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotationRectangleTextItem(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "annotation_layer"

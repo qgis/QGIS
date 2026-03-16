@@ -18,10 +18,9 @@
 
 #include "ui_metalroughmaterialwidget.h"
 
-#include "qgsabstractmaterialsettings.h"
 #include "qgsmaterialsettingswidget.h"
 
-class QgsMetalRoughMaterialSettings;
+class QgsAbstractMaterialSettings;
 
 
 //! Widget for configuration of metal rough material settings

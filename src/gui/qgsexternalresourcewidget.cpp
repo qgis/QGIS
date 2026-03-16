@@ -403,9 +403,7 @@ void QgsExternalResourceWidget::onFetchFinished()
   }
   else if ( content == mContent && mContent->status() == Qgis::ContentStatus::Finished )
   {
-    const QString filePath = mDocumentViewerContent == Web
-                               ? QUrl::fromLocalFile( mContent->filePath() ).toString()
-                               : mContent->filePath();
+    const QString filePath = mDocumentViewerContent == Web ? QUrl::fromLocalFile( mContent->filePath() ).toString() : mContent->filePath();
 
     updateDocumentContent( filePath );
   }

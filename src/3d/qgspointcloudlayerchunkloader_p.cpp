@@ -26,6 +26,7 @@
 #include "qgspointcloud3dsymbol_p.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudrequest.h"
 #include "qgsray3d.h"
@@ -49,12 +50,13 @@ using namespace Qt::StringLiterals;
 
 ///////////////
 
-QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset )
+QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader(
+  const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset
+)
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mRenderContext, coordinateTransform, std::move( symbol ), zValueScale, zValueOffset )
-{
-}
+{}
 
 void QgsPointCloudLayerChunkLoader::start()
 {
@@ -145,7 +147,9 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget )
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory(
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
+)
   : mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
   , mPointCloudIndex( std::move( pc ) )
@@ -285,7 +289,18 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, const int indexPosition, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
+  Qgs3DMapSettings *map,
+  QgsPointCloudLayer *pcl,
+  const int indexPosition,
+  const QgsCoordinateTransform &coordinateTransform,
+  QgsPointCloud3DSymbol *symbol,
+  float maximumScreenSpaceError,
+  bool showBoundingBoxes,
+  double zValueScale,
+  double zValueOffset,
+  int pointBudget
+)
   : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
   , mLayer( pcl )
   , mIndexPosition( indexPosition )

@@ -74,9 +74,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSortingEnabled( false );
   mTreeView->setModel( mProxyModel );
 
-  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [this] {
-    mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn );
-  } );
+  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [this] { mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn ); } );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this );
@@ -443,9 +441,7 @@ void QgsPalettedRendererWidget::classify()
 
     mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
-    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [this]( int progress ) {
-      mCalculatingProgressBar->setValue( progress );
-    } );
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [this]( int progress ) { mCalculatingProgressBar->setValue( progress ); } );
 
     mCalculatingProgressBar->show();
     mCancelButton->show();
@@ -488,11 +484,17 @@ void QgsPalettedRendererWidget::bandChanged( int band )
   bool deleteExisting = false;
   if ( !mModel->classData().isEmpty() )
   {
-    int res = QMessageBox::question( this, tr( "Delete Classification" ), tr( "The classification band was changed from %1 to %2.\n"
-                                                                              "Should the existing classes be deleted?" )
-                                                                            .arg( mBand )
-                                                                            .arg( band ),
-                                     QMessageBox::Yes | QMessageBox::No );
+    int res = QMessageBox::question(
+      this,
+      tr( "Delete Classification" ),
+      tr(
+        "The classification band was changed from %1 to %2.\n"
+        "Should the existing classes be deleted?"
+      )
+        .arg( mBand )
+        .arg( band ),
+      QMessageBox::Yes | QMessageBox::No
+    );
 
     deleteExisting = ( res == QMessageBox::Yes );
   }
@@ -541,8 +543,7 @@ void QgsPalettedRendererWidget::layerWillBeRemoved( QgsMapLayer *layer )
 ///@cond PRIVATE
 QgsPalettedRendererModel::QgsPalettedRendererModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 void QgsPalettedRendererModel::setClassData( const QgsPalettedRasterRenderer::ClassData &data )
 {

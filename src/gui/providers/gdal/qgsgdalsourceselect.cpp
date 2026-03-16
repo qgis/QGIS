@@ -217,9 +217,16 @@ void QgsGdalSourceSelect::addButtonClicked()
     {
       if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::NotAsked )
       {
-        if ( QMessageBox::warning( this, tr( "Add Raster Layer" ), tr( "Directly adding HTTP(S) or FTP sources can be very slow, as it requires a full download of the dataset.\n\n"
-                                                                       "Would you like to use a streaming method to access this dataset instead (recommended)?" ),
-                                   QMessageBox::Button::Yes | QMessageBox::Button::No, QMessageBox::Button::Yes )
+        if ( QMessageBox::warning(
+               this,
+               tr( "Add Raster Layer" ),
+               tr(
+                 "Directly adding HTTP(S) or FTP sources can be very slow, as it requires a full download of the dataset.\n\n"
+                 "Would you like to use a streaming method to access this dataset instead (recommended)?"
+               ),
+               QMessageBox::Button::Yes | QMessageBox::Button::No,
+               QMessageBox::Button::Yes
+             )
              == QMessageBox::Yes )
         {
           promoteToVsiCurlStatus = PromoteToVsiCurlStatus::AutoPromote;
@@ -260,9 +267,7 @@ bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
   {
     for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
     {
-      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [opt]( QWidget *widget ) {
-        return widget->objectName() == opt.key();
-      } ) };
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [opt]( QWidget *widget ) { return widget->objectName() == opt.key(); } ) };
 
       if ( widget != mOpenOptionsWidgets.cend() )
       {
@@ -383,7 +388,10 @@ void QgsGdalSourceSelect::computeDataSources()
       parts.insert( u"openOptions"_s, openOptions );
     if ( !credentialOptions.isEmpty() )
       parts.insert( u"credentialOptions"_s, credentialOptions );
-    parts.insert( u"path"_s, QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() ) );
+    parts.insert(
+      u"path"_s,
+      QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() )
+    );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
   }
 }
@@ -459,8 +467,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
   for ( const QgsGdalOption &option : options )
   {
     // Exclude options that are not of raster scope
-    if ( !option.scope.isEmpty()
-         && option.scope.compare( "raster"_L1, Qt::CaseInsensitive ) != 0 )
+    if ( !option.scope.isEmpty() && option.scope.compare( "raster"_L1, Qt::CaseInsensitive ) != 0 )
       continue;
 
     QWidget *control = QgsGdalGuiUtils::createWidgetForOption( option, nullptr, true );
@@ -468,8 +475,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
       continue;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 8, 0 )
-    if ( QString( GDALGetDriverShortName( hDriver ) ).compare( "BAG"_L1 ) == 0
-         && option.name == "MODE"_L1 && option.options.contains( "INTERPOLATED"_L1 ) )
+    if ( QString( GDALGetDriverShortName( hDriver ) ).compare( "BAG"_L1 ) == 0 && option.name == "MODE"_L1 && option.options.contains( "INTERPOLATED"_L1 ) )
     {
       gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
       if ( hSrcDS && QString { GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == "TRUE"_L1 )

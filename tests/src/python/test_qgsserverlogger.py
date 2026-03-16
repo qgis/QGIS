@@ -12,12 +12,10 @@ import os
 
 from qgis.server import QgsServerLogger
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
 class TestQgsServerLogger(unittest.TestCase):
-
     log_file = os.path.join(unitTestDataPath("qgis_server"), "qgis_server_test.log")
 
     @staticmethod

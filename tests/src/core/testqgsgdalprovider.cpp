@@ -52,7 +52,8 @@ class TestQgsGdalProvider : public QgsTest
 
   public:
     TestQgsGdalProvider()
-      : QgsTest( u"GDAL Provider Tests"_s ) {}
+      : QgsTest( u"GDAL Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -476,17 +477,11 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
   const QString filename = u"/vsimem/temp.tif"_s;
 
   // Create a all-0 dataset
-  auto provider = QgsRasterDataProvider::create(
-    u"gdal"_s, filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs
-  );
+  auto provider = QgsRasterDataProvider::create( u"gdal"_s, filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs );
   delete provider;
 
   // Open it
-  provider = dynamic_cast<QgsRasterDataProvider *>(
-    QgsProviderRegistry::instance()->createProvider(
-      u"gdal"_s, filename, QgsDataProvider::ProviderOptions()
-    )
-  );
+  provider = dynamic_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u"gdal"_s, filename, QgsDataProvider::ProviderOptions() ) );
   QVERIFY( provider );
   auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
@@ -946,10 +941,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
   std::unique_ptr<QgsRasterLayer> rl;
 
   // netcdf file
-  res = mGdalMetadata->querySublayers(
-    QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc",
-    Qgis::SublayerQueryFlag::FastScan
-  );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), u"trap_steady_05_3D"_s );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
@@ -958,10 +950,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
   // netcdf with open options
-  res = mGdalMetadata->querySublayers(
-    QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES",
-    Qgis::SublayerQueryFlag::FastScan
-  );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), u"trap_steady_05_3D"_s );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
@@ -1015,7 +1004,8 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
   QCOMPARE( region, QString() );
 
   // credentials should be bucket specific
-  auto rl2 = std::make_unique<QgsRasterLayer>( u"/vsis3/another/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost"_s, u"test"_s, u"gdal"_s );
+  auto rl2 = std::make_unique<
+    QgsRasterLayer>( u"/vsis3/another/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost"_s, u"test"_s, u"gdal"_s );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, u"YES"_s );
   region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );

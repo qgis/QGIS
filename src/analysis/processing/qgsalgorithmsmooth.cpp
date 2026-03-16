@@ -55,20 +55,22 @@ QString QgsSmoothAlgorithm::outputName() const
 
 QString QgsSmoothAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the "
-                      "same features as the ones in the input layer, but with geometries containing a higher number of vertices "
-                      "and corners in the geometries smoothed out.\n\n"
-                      "The iterations parameter dictates how many smoothing iterations will be applied to each "
-                      "geometry. A higher number of iterations results in smoother geometries with the cost of "
-                      "greater number of nodes in the geometries.\n\n"
-                      "The offset parameter controls how \"tightly\" the smoothed geometries follow the original geometries. "
-                      "Smaller values results in a tighter fit, and larger values will create a looser fit.\n\n"
-                      "The maximum angle parameter can be used to prevent smoothing of "
-                      "nodes with large angles. Any node where the angle of the segments to either "
-                      "side is larger than this will not be smoothed. For example, setting the maximum "
-                      "angle to 90 degrees or lower would preserve right angles in the geometry.\n\n"
-                      "If input geometries contain Z or M values, these will also be smoothed and the output "
-                      "geometry will retain the same dimensionality as the input geometry." );
+  return QObject::tr(
+    "This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the "
+    "same features as the ones in the input layer, but with geometries containing a higher number of vertices "
+    "and corners in the geometries smoothed out.\n\n"
+    "The iterations parameter dictates how many smoothing iterations will be applied to each "
+    "geometry. A higher number of iterations results in smoother geometries with the cost of "
+    "greater number of nodes in the geometries.\n\n"
+    "The offset parameter controls how \"tightly\" the smoothed geometries follow the original geometries. "
+    "Smaller values results in a tighter fit, and larger values will create a looser fit.\n\n"
+    "The maximum angle parameter can be used to prevent smoothing of "
+    "nodes with large angles. Any node where the angle of the segments to either "
+    "side is larger than this will not be smoothed. For example, setting the maximum "
+    "angle to 90 degrees or lower would preserve right angles in the geometry.\n\n"
+    "If input geometries contain Z or M values, these will also be smoothed and the output "
+    "geometry will retain the same dimensionality as the input geometry."
+  );
 }
 
 QString QgsSmoothAlgorithm::shortDescription() const

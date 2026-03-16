@@ -14,17 +14,16 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import unittest
 
-from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
     Qgis,
-    QgsTiledSceneBoundingVolume,
     QgsBox3d,
     QgsMatrix4x4,
-    QgsTiledSceneTile,
     QgsOrientedBox3D,
+    QgsTiledSceneBoundingVolume,
+    QgsTiledSceneTile,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QUrl
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()

@@ -10,11 +10,11 @@ __author__ = "Nyall Dawson"
 __date__ = "25/10/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import os
 import shutil
 import tempfile
-import os
+import unittest
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
     Qgis,
@@ -31,9 +31,8 @@ from qgis.core import (
     QgsVectorLayerJoinInfo,
     QgsVectorLayerUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -52,7 +51,6 @@ def createLayerWithOnePoint():
 
 
 class TestQgsVectorLayerUtils(QgisTestCase):
-
     def test_field_is_read_only(self):
         """
         Test fieldIsReadOnly

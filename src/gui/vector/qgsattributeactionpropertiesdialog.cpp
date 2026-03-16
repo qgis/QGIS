@@ -36,7 +36,19 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog(
+  Qgis::AttributeActionType type,
+  const QString &description,
+  const QString &shortTitle,
+  const QString &iconPath,
+  const QString &actionText,
+  bool capture,
+  const QSet<QString> &actionScopes,
+  const QString &notificationMessage,
+  bool isEnabledOnlyWhenEditable,
+  QgsVectorLayer *layer,
+  QWidget *parent
+)
   : QDialog( parent )
   , mLayer( layer )
 {
@@ -66,10 +78,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   populateActionTypes();
 
   QSet<QString> defaultActionScopes;
-  defaultActionScopes << u"Canvas"_s
-                      << u"FieldSpecific"_s
-                      << u"Feature"_s
-                      << u"FeatureForm"_s;
+  defaultActionScopes << u"Canvas"_s << u"FieldSpecific"_s << u"Feature"_s << u"FeatureForm"_s;
 
   init( defaultActionScopes );
 }
@@ -150,9 +159,7 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
 void QgsAttributeActionPropertiesDialog::browse()
 {
   // Popup a file browser and place the results into the action widget
-  const QString action = QFileDialog::getOpenFileName(
-    this, tr( "Select an action", "File dialog window title" ), QDir::homePath()
-  );
+  const QString action = QFileDialog::getOpenFileName( this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
 
   if ( !action.isNull() )
     mActionText->insertText( action );

@@ -17,9 +17,11 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 
 #include "qgsattributeform.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QString>
@@ -33,8 +35,7 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
   , mCanvas( canvas )
   , mMessageBar( messageBar )
 
-{
-}
+{}
 
 QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 {
@@ -70,10 +71,10 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOpenFormButtonVisible( showOpenFormButton );
 
-  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() > 0 ).toBool();
   if ( fetchLimitActive )
   {
-    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
+    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() ).toInt() );
   }
 
   if ( config( u"FilterFields"_s, QVariant() ).isValid() )

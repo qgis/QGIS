@@ -18,9 +18,10 @@
 #ifndef QGSALGORITHMEXECUTEANDLOADPOSTGISQUERY_H
 #define QGSALGORITHMEXECUTEANDLOADPOSTGISQUERY_H
 
-#define SIP_NO_FILE
 
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

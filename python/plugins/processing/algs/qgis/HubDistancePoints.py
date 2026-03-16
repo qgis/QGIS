@@ -19,28 +19,29 @@ __author__ = "Michael Minn"
 __date__ = "May 2010"
 __copyright__ = "(C) 2010, Michael Minn"
 
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     Qgis,
-    QgsField,
-    QgsFields,
-    QgsProcessingUtils,
-    QgsGeometry,
-    QgsFeatureSink,
     QgsDistanceArea,
     QgsFeature,
     QgsFeatureRequest,
-    QgsSpatialIndex,
-    QgsWkbTypes,
-    QgsUnitTypes,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
     QgsProcessing,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterField,
+    QgsProcessingAlgorithm,
+    QgsProcessingException,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
-    QgsProcessingException,
-    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingUtils,
+    QgsSpatialIndex,
+    QgsUnitTypes,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

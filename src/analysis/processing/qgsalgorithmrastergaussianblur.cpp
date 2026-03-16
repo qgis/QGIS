@@ -52,9 +52,11 @@ QString QgsRasterGaussianBlurAlgorithm::groupId() const
 
 QString QgsRasterGaussianBlurAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm applies a Gaussian blur filter to an input raster layer.\n\n"
-                      "The radius parameter controls the strength of the blur. "
-                      "A larger radius results in a smoother output, at the cost of execution time." );
+  return QObject::tr(
+    "This algorithm applies a Gaussian blur filter to an input raster layer.\n\n"
+    "The radius parameter controls the strength of the blur. "
+    "A larger radius results in a smoother output, at the cost of execution time."
+  );
 }
 
 QString QgsRasterGaussianBlurAlgorithm::shortDescription() const
@@ -172,7 +174,8 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
   std::vector<double> horizBuffer;
   std::vector<qint8> horizNoData;
   // reserve max potential size to avoid reallocations
-  const std::size_t maxBufferSize = static_cast< std::size_t >( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH + 2 * radius ) * static_cast< std::size_t >( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT + 2 * radius );
+  const std::size_t maxBufferSize = static_cast< std::size_t >( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH + 2 * radius )
+                                    * static_cast< std::size_t >( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT + 2 * radius );
   horizBuffer.reserve( maxBufferSize );
   horizNoData.reserve( maxBufferSize );
 

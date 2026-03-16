@@ -13,20 +13,20 @@ __copyright__ = "Copyright 2024, The QGIS Project"
 import os
 import unittest
 
-from qgis.PyQt.QtCore import Qt, QSize, QLine, QLineF, QPoint, QPointF, QRect, QRectF
+from qgis.core import QgsGeometryPaintDevice
+from qgis.PyQt.QtCore import QLine, QLineF, QPoint, QPointF, QRect, QRectF, QSize, Qt
 from qgis.PyQt.QtGui import (
     QColor,
-    QPainter,
-    QPen,
-    QTransform,
     QPaintDevice,
+    QPainter,
+    QPainterPath,
+    QPen,
     QPolygon,
     QPolygonF,
-    QPainterPath,
+    QTransform,
 )
-from qgis.core import QgsGeometryPaintDevice
-from qgis.testing import start_app, QgisTestCase
-from utilities import unitTestDataPath, getTestFont
+from qgis.testing import QgisTestCase, start_app
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -48,7 +48,6 @@ class SafePainter(QPainter):
 
 
 class TestQgsGeometryPaintDevice(QgisTestCase):
-
     def test_lines(self):
         """
         Test drawing lines

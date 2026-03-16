@@ -64,12 +64,10 @@ void TestQgsGdalUtils::cleanupTestCase()
 }
 
 void TestQgsGdalUtils::init()
-{
-}
+{}
 
 void TestQgsGdalUtils::cleanup()
-{
-}
+{}
 
 void TestQgsGdalUtils::supportsRasterCreate()
 {

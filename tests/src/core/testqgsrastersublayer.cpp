@@ -53,7 +53,8 @@ class TestQgsRasterSubLayer : public QgsTest
 
   public:
     TestQgsRasterSubLayer()
-      : QgsTest( u"Raster Sub Layer Tests"_s ) {}
+      : QgsTest( u"Raster Sub Layer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

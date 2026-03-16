@@ -15,9 +15,11 @@
 
 #include "qgspoint3dsymbol_p.h"
 
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgshighlightmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"
@@ -60,7 +62,8 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
   public:
     QgsInstancedPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
-      , mSelectedIds( selectedIds ) {}
+      , mSelectedIds( selectedIds )
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
@@ -266,12 +269,14 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
 
   // QMatrix3x3 is not supported for passing to shaders, so we pass QMatrix4x4
   float *n = normalMatrix.data();
+  // clang-format off
   const QMatrix4x4 normalMatrix4(
     n[0], n[3], n[6], 0,
     n[1], n[4], n[7], 0,
     n[2], n[5], n[8], 0,
     0, 0, 0, 0
   );
+  // clang-format on
 
   Qt3DRender::QParameter *paramInst = new Qt3DRender::QParameter;
   paramInst->setName( u"inst"_s );
@@ -414,7 +419,8 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
   public:
     QgsModelPoint3DSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
-      , mSelectedIds( selectedIds ) {}
+      , mSelectedIds( selectedIds )
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
@@ -422,7 +428,9 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
   private:
     static void addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
-    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted );
+    static void addMeshEntities(
+      const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted
+    );
     static QgsGeoTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin );
 
     //! temporary data we will pass to the tessellator
@@ -492,9 +500,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   else
   {
     //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
-    if ( mSymbol->shapeProperty( u"overwriteMaterial"_s ).toBool()
-         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != "null"_L1 )
-         || mHighlightingEnabled )
+    if ( mSymbol->shapeProperty( u"overwriteMaterial"_s ).toBool() || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != "null"_L1 ) || mHighlightingEnabled )
     {
       addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false, mHighlightingEnabled );
     }
@@ -506,7 +512,9 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 }
 
 
-void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
+void QgsModelPoint3DSymbolHandler::addSceneEntities(
+  const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent
+)
 {
   Q_UNUSED( context );
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
@@ -536,7 +544,9 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
   }
 }
 
-void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted )
+void QgsModelPoint3DSymbolHandler::addMeshEntities(
+  const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted
+)
 {
   if ( positions.empty() )
     return;
@@ -598,7 +608,8 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
   public:
     QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
-      , mSelectedIds( selectedIds ) {}
+      , mSelectedIds( selectedIds )
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;

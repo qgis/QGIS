@@ -45,8 +45,8 @@ using namespace Qt::StringLiterals;
 #include <GeographicLib/Constants.hpp>
 #endif
 
-#define qgis_xstr(x) qgis_str(x)
-#define qgis_str(x) #x
+#define qgis_xstr( x ) qgis_str( x )
+#define qgis_str( x ) #x
 
 // Version constants
 //
@@ -662,9 +662,7 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
     {
       const QString lhsString = lhs.toString();
       const QString rhsString = rhs.toString();
-      return lhsString.isNull() == rhsString.isNull()
-             && lhsString.isEmpty() == rhsString.isEmpty()
-             && lhsString == rhsString;
+      return lhsString.isNull() == rhsString.isNull() && lhsString.isEmpty() == rhsString.isEmpty() && lhsString == rhsString;
     }
     if ( lhs == rhs )
       return true;
@@ -675,8 +673,10 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 
 QString Qgis::defaultProjectScales()
 {
-  return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-                         "1:10000,1:5000,1:2500,1:1000,1:500" );
+  return QStringLiteral(
+    "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+    "1:10000,1:5000,1:2500,1:1000,1:500"
+  );
 }
 
 QString Qgis::version()
@@ -749,11 +749,7 @@ bool Qgis::hasQtWebkit()
 
 int Qgis::geosVersionInt()
 {
-  static const int version = u"%1%2%3"_s
-                             .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
-                             .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
-                             .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
-                             ;
+  static const int version = u"%1%2%3"_s.arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) ).arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt();
   return version;
 }
 

@@ -64,8 +64,10 @@ QString QgsForceCWAlgorithm::outputName() const
 
 QString QgsForceCWAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm forces polygon geometries to respect the convention where the exterior ring is oriented in a clockwise direction "
-                      "and the interior rings in a counter-clockwise direction." );
+  return QObject::tr(
+    "This algorithm forces polygon geometries to respect the convention where the exterior ring is oriented in a clockwise direction "
+    "and the interior rings in a counter-clockwise direction."
+  );
 }
 
 QString QgsForceCWAlgorithm::shortDescription() const

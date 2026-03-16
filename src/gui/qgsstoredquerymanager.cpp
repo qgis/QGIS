@@ -32,8 +32,7 @@ const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryDefinition = ne
 
 QgsStoredQueryManager::QgsStoredQueryManager( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsStoredQueryManager::storeQuery( const QString &name, const QString &query, Qgis::QueryStorageBackend backend )
 {
@@ -96,9 +95,7 @@ void QgsStoredQueryManager::removeQuery( const QString &name, Qgis::QueryStorage
     case Qgis::QueryStorageBackend::CurrentProject:
     {
       wasDeleted = QgsProject::instance()->subkeyList( u"DBManager"_s, u"savedQueries"_s ).contains( hash );
-      QgsProject::instance()->removeEntry(
-        "DBManager", u"savedQueries/%1"_s.arg( hash )
-      );
+      QgsProject::instance()->removeEntry( "DBManager", u"savedQueries/%1"_s.arg( hash ) );
       break;
     }
   }
@@ -129,9 +126,7 @@ QStringList QgsStoredQueryManager::allQueryNames( Qgis::QueryStorageBackend back
       names.reserve( hashes.size() );
       for ( const QString &hash : hashes )
       {
-        names.append( QgsProject::instance()->readEntry(
-          u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash )
-        ) );
+        names.append( QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash ) ) );
       }
       break;
     }
@@ -179,12 +174,8 @@ QList<QgsStoredQueryManager::QueryDetails> QgsStoredQueryManager::allQueries() c
   for ( const QString &hash : projectHashes )
   {
     QueryDetails details;
-    details.name = QgsProject::instance()->readEntry(
-      u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash )
-    );
-    details.definition = QgsProject::instance()->readEntry(
-      u"DBManager"_s, u"savedQueries/%1/query"_s.arg( hash )
-    );
+    details.name = QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/name"_s.arg( hash ) );
+    details.definition = QgsProject::instance()->readEntry( u"DBManager"_s, u"savedQueries/%1/query"_s.arg( hash ) );
     details.backend = Qgis::QueryStorageBackend::CurrentProject;
     res.append( details );
   }

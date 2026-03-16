@@ -10,15 +10,14 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QFileInfo
 from qgis.core import (
     QgsHillshadeRenderer,
     QgsRasterLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -27,7 +26,6 @@ start_app()
 
 
 class TestQgsHillshadeRenderer(QgisTestCase):
-
     def test_renderer(self):
         path = os.path.join(unitTestDataPath(), "landsat.tif")
         info = QFileInfo(path)

@@ -25,6 +25,7 @@
 #include "qgsguiutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgssymbollayerutils.h"
 
 #include <QBuffer>
@@ -73,9 +74,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize.setHeight( std::max( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 
   // If project colors change, we need to redraw the button, as it may be set to follow a project color
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] {
-    setButtonBackground();
-  } );
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] { setButtonBackground(); } );
 }
 
 QSize QgsColorButton::minimumSizeHint() const
@@ -122,7 +121,7 @@ void QgsColorButton::showColorDialog()
   const QgsSettings settings;
 
   // first check if we need to use the limited native dialogs
-  const bool useNative = settings.value( u"qgis/native_color_dialogs"_s, false ).toBool();
+  const bool useNative = QgsSettingsRegistryGui::settingsNativeColorDialogs->value();
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?

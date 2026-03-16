@@ -537,6 +537,7 @@
 %Include auto_generated/pointcloud/qgspointcloudlayer.sip
 %Include auto_generated/pointcloud/qgspointcloudlayerelevationproperties.sip
 %Include auto_generated/pointcloud/qgspointcloudindex.sip
+%Include auto_generated/pointcloud/qgspointcloudsubindex.sip
 %Include auto_generated/pointcloud/qgspointclouddataprovider.sip
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
@@ -565,6 +566,7 @@
 %Include auto_generated/metadata/qgslayermetadataproviderregistry.sip
 %Include auto_generated/network/qgsblockingnetworkrequest.sip
 %Include auto_generated/network/qgsfiledownloader.sip
+%Include auto_generated/network/qgsfileuploader.sip
 %Include auto_generated/network/qgsnetworkaccessmanager.sip
 %Include auto_generated/network/qgsnetworkcontentfetcher.sip
 %Include auto_generated/network/qgsnetworkcontentfetcherregistry.sip
@@ -772,6 +774,8 @@
 %Include auto_generated/symbology/qgssymbollayerutils.sip
 %Include auto_generated/symbology/qgssymbolrendercontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
+%Include auto_generated/symbology/converters/qgssymbolconverter.sip
+%Include auto_generated/symbology/converters/qgssymbolconverterregistry.sip
 %Include auto_generated/textrenderer/qgsfontmanager.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip

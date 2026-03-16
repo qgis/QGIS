@@ -16,12 +16,13 @@
 #ifndef QGSBLANKSEGMENTUTILS_H
 #define QGSBLANKSEGMENTUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgis_core.h"
 
 #include <QPair>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 
@@ -33,7 +34,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsBlankSegmentUtils
 {
   public:
-
     typedef QList<QPair<double, double>> BlankSegments;
 
     /**
@@ -52,7 +52,6 @@ class CORE_EXPORT QgsBlankSegmentUtils
     static QList<QList<BlankSegments>> parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error );
 
   private:
-
 };
 
 #endif

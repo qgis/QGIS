@@ -20,7 +20,6 @@ layout.
 #include "qgslayoutrendercontext.h"
 %End
   public:
-
     QgsLayoutRenderContext( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutRenderContext.
@@ -396,9 +395,6 @@ Emitted when the list of predefined scales changes.
 %End
 
 };
-
-
-
 
 
 /************************************************************************

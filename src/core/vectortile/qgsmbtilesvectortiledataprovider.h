@@ -22,9 +22,10 @@
 #include "qgsvectortiledataprovider.h"
 #include "qgsvectortilematrixset.h"
 
+#define SIP_NO_FILE
+
 class QgsMbTiles;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -33,9 +34,7 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
     Q_OBJECT
 
   public:
-    QgsMbTilesVectorTileDataProvider( const QString &uri,
-                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                      Qgis::DataProviderReadFlags flags );
+    QgsMbTilesVectorTileDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
 
     QgsMbTilesVectorTileDataProvider( const QgsMbTilesVectorTileDataProvider &other );
 
@@ -57,13 +56,11 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
     static QString MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION;
 
   private:
-
     //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
     bool mIsValid = false;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
-
 };
 
 class QgsMbTilesVectorTileDataProviderMetadata : public QgsProviderMetadata

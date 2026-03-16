@@ -22,20 +22,19 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterBand,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterFileDestination,
     QgsProcessingException,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 
 class RasterLayerHistogram(QgisAlgorithm):
-
     INPUT = "INPUT"
     BINS = "BINS"
     OUTPUT = "OUTPUT"
