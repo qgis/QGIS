@@ -69,6 +69,9 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   setSymbol( &defaultSymbol, nullptr );
   onShapeChanged();
 
+  // hide by default, only shown for symbols with the legacy setting
+  labelAltClamping->hide();
+  cboAltClamping->hide();
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
@@ -107,7 +110,14 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   if ( !pointSymbol )
     return;
 
-  cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
+  Q_NOWARN_DEPRECATED_PUSH
+  cboAltClamping->setVisible( pointSymbol->hasLegacyAltitudeClamping() );
+  labelAltClamping->setVisible( pointSymbol->hasLegacyAltitudeClamping() );
+  if ( !cboAltClamping->isHidden() )
+  {
+    cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
+  }
+  Q_NOWARN_DEPRECATED_POP
 
   cboShape->setCurrentIndex( cboShape->findData( QVariant::fromValue( pointSymbol->shape() ) ) );
   QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
@@ -243,7 +253,12 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   tr.scale( sca );
   tr.rotate( rot );
 
-  sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  if ( !cboAltClamping->isHidden() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+    Q_NOWARN_DEPRECATED_POP
+  }
   sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings() );
