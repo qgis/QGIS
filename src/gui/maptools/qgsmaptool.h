@@ -228,7 +228,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Settings entry for the search/identify radius in mm.
-     * \since QGIS 3.44
+     * \since QGIS 4.0.1
      */
     static const QgsSettingsEntryDouble *settingSearchRadiusMM;
 

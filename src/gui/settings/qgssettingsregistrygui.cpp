@@ -20,6 +20,7 @@
 #include "qgscodeeditor.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsmaptool.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
