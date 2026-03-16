@@ -483,7 +483,33 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            msg.contains( "An OpenGL Core Profile was requested, but it is not supported on the current platform"_L1, Qt::CaseInsensitive ) )
         break;
 
-      myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
+      const thread_local QRegularExpression problematicSourceCodeRx( u".*[pP]roblematic .* source code.*"_s );
+      if ( problematicSourceCodeRx.match( msg ).hasMatch() )
+      {
+        // add line numbers to dumped shader code, so that it's easier to understand where the error occurred:
+        const QStringList messageParts = msg.split( '\n' );
+        QStringList formattedMessageParts;
+        formattedMessageParts.reserve( messageParts.size() );
+        int currentLineNumber = 0;
+        for ( const QString &part : messageParts )
+        {
+          if ( currentLineNumber > 0 )
+          {
+            formattedMessageParts << u"%1: %2"_s.arg( currentLineNumber ).arg( part );
+          }
+          else
+          {
+            formattedMessageParts << part;
+          }
+          currentLineNumber++;
+        }
+        const QString formattedMessage = formattedMessageParts.join( '\n' );
+        myPrint( "%s\n", formattedMessage.toLocal8Bit().constData() );
+      }
+      else
+      {
+        myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
+      }
 
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
