@@ -529,16 +529,16 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"pos"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"instanceTranslation"_s, Qt3DCore::QAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
     {
-      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceTranslation attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
     if ( instancePositionBytes.isNull() )
     {
-      QgsDebugError( QString( "Geometry for '%1' has instanceData attribute with empty data!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Geometry for '%1' has instanceTranslation attribute with empty data!" ).arg( objectNamePrefix ) );
       continue;
     }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );

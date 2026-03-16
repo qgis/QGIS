@@ -2,9 +2,9 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-in vec3 pos;
-in vec3 scale;
-in vec4 rotation;
+in vec3 instanceTranslation;
+in vec3 instanceScale;
+in vec4 instanceRotation;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
@@ -37,8 +37,8 @@ void main()
     vec3 instanceNormalScale;
     if ( useInstanceScale )
     {
-        instanceScaleVec = scale;
-        instanceNormalScale = 1.0 / scale;
+        instanceScaleVec = instanceScale;
+        instanceNormalScale = 1.0 / instanceScale;
     }
     else
     {
@@ -49,7 +49,7 @@ void main()
     vec4 activeSymbolRotation;
     if ( useInstanceRotation )
     {
-        activeSymbolRotation = rotation;
+        activeSymbolRotation = instanceRotation;
     }
     else
     {
@@ -73,7 +73,7 @@ void main()
     vec3 vertexNormalObject = rotateByQuat(scaledNormal, activeSymbolRotation);
 
     // add offset of the object relative to the chunk's origin
-    vec3 vertexPositionChunk = vertexPositionObject + pos;
+    vec3 vertexPositionChunk = vertexPositionObject + instanceTranslation;
 
     // Transform position and normal to world space
     worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
