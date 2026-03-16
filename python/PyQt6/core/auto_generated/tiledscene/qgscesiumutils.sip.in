@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCesiumUtils
 {
 %Docstring(signature="appended")
@@ -61,11 +62,13 @@ Extracts GLTF binary data and other contents from the legacy b3dm
 (Batched 3D Model) tile format. Returns empty byte array on error.
 %End
 
+
     struct TileContents
     {
         QByteArray gltf;
 
         QgsVector3D rtcCenter;
+
     };
 
  static TileContents extractGltfFromTileContent( const QByteArray &tileContent ) /Deprecated="Since 4.2.  use extractTileContent() which can handle composite tiles as well."/;
@@ -81,7 +84,7 @@ Parses tile content. Returns empty byte array on error.
    : use :py:func:`~QgsCesiumUtils.extractTileContent` which can handle composite tiles as well.
 %End
 
-    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent );
+    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent, const QString &baseUri );
 %Docstring
 Parses tile content and returns a list of TileContents.
 
@@ -113,6 +116,7 @@ Google Tiles.
 
    added in QGIS 4.2
 %End
+
 };
 
 /************************************************************************

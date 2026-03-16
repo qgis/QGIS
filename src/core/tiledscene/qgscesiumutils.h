@@ -20,11 +20,16 @@
 #define QGSCESIUMUTILS_H
 
 #include <nlohmann/json_fwd.hpp>
+#include <optional>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsbox3d.h"
 #include "qgsvector3d.h"
+
+#include <QQuaternion>
+#include <QVector>
+#include <QVector3D>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -114,6 +119,35 @@ class CORE_EXPORT QgsCesiumUtils
      */
     static B3DMContents extractGltfFromB3dm( const QByteArray &tileContent );
 
+#ifndef SIP_RUN
+    /**
+     * \brief Raw per-instance data parsed from an i3dm feature table.
+     *
+     * This struct transports i3dm instance data from the binary parser through
+     * TileContents to resolveInstancing(). EXT_mesh_gpu_instancing does not use
+     * this struct - it is parsed directly from glTF nodes inside resolveInstancing().
+     *
+     * All positions are in i3dm tile space (Z-up), relative to RTC_CENTER.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 4.2
+     */
+    struct QgsGltfInstancingData
+    {
+        //! Number of instances
+        int instanceCount = 0;
+        //! ECEF-relative positions (Z-up), relative to RTC_CENTER
+        QVector<QVector3D> translations;
+        //! Quaternion (x,y,z,w) - identity if unspecified
+        QVector<QQuaternion> rotations;
+        //! Per-axis scale - (1,1,1) if unspecified
+        QVector<QVector3D> scales;
+        //! Whether EAST_NORTH_UP rotations should be computed (deferred until tile transform is available)
+        bool eastNorthUp = false;
+    };
+#endif
+
     /**
      * Encapsulates the contents of a 3D tile.
      */
@@ -124,6 +158,11 @@ class CORE_EXPORT QgsCesiumUtils
 
         //! Center position of relative-to-center coordinates (when used)
         QgsVector3D rtcCenter;
+
+#ifndef SIP_RUN
+        //! Optional instancing data, populated for i3dm tiles
+        std::optional<QgsGltfInstancingData> instancing;
+#endif
     };
 
     /**
@@ -146,7 +185,7 @@ class CORE_EXPORT QgsCesiumUtils
      *
      * \since QGIS 4.2
      */
-    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent );
+    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent, const QString &baseUri = QString() );
 
     /**
      * Calculates oriented bounding box in EPSG:4978 from "region" defined with min/max lat/lon coordinates in EPSG:4978.
@@ -161,6 +200,25 @@ class CORE_EXPORT QgsCesiumUtils
      * \note added in QGIS 4.2
      */
     static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl );
+
+#ifndef SIP_RUN
+
+    /**
+     * Computes EAST_NORTH_UP orientation quaternions for each instance position.
+     *
+     * Positions are in tile-local Z-up space, relative to \a rtcCenter.
+     * The \a tileTransform converts from tile-local space to ECEF (EPSG:4978),
+     * so that the ENU frame can be computed at the correct geographic location.
+     *
+     * \param positions per-instance positions in tile-local space
+     * \param rtcCenter RTC_CENTER offset in tile-local space
+     * \param tileTransform tile transform from tileset.json (tile-local → ECEF)
+     * \param rotations output quaternions (one per instance)
+     * \since QGIS 4.2
+     */
+    static void computeEastNorthUpQuaternions( const QVector<QVector3D> &positions, const QgsVector3D &rtcCenter, const QgsMatrix4x4 &tileTransform, QVector<QQuaternion> &rotations );
+
+#endif
 };
 
 #endif // QGSCESIUMUTILS_H

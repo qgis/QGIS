@@ -421,8 +421,8 @@ static QVector<Qt3DCore::QEntity *> parseNode(
     }
   }
 
-  // mesh
-  if ( node.mesh >= 0 )
+  // mesh — skip nodes with EXT_mesh_gpu_instancing (handled separately by createInstancedEntities)
+  if ( node.mesh >= 0 && node.extensions.find( "EXT_mesh_gpu_instancing" ) == node.extensions.end() )
   {
     tinygltf::Mesh &mesh = model.meshes[node.mesh];
 
@@ -519,6 +519,403 @@ static QVector<Qt3DCore::QEntity *> parseNode(
   return entities;
 }
 
+
+/**
+ * Converts a float QMatrix4x4 to a double-precision QgsMatrix4x4.
+ */
+static QgsMatrix4x4 floatToDoubleMatrix( const QMatrix4x4 &fm )
+{
+  const float *f = fm.constData(); // column-major
+  return QgsMatrix4x4( f[0], f[4], f[8], f[12], f[1], f[5], f[9], f[13], f[2], f[6], f[10], f[14], f[3], f[7], f[11], f[15] );
+}
+
+
+/**
+ * Builds a QMatrix3x3 from three column vectors.
+ */
+static QMatrix3x3 matrixFromColumns( const QVector3D &col0, const QVector3D &col1, const QVector3D &col2 )
+{
+  // QMatrix3x3 constructor takes row-major data
+  const float d[9] = {
+    col0.x(),
+    col1.x(),
+    col2.x(),
+    col0.y(),
+    col1.y(),
+    col2.y(),
+    col0.z(),
+    col1.z(),
+    col2.z(),
+  };
+  return QMatrix3x3( d );
+}
+
+
+/**
+ * Extracts the upper-left 3×3 rotation submatrix from a double-precision 4×4 matrix,
+ * dividing each column by its length (removing scale). Returns the scale in \a scale.
+ * Returns identity and zero scale if any column has zero length.
+ */
+static QMatrix3x3 extractRotation3x3( const QgsMatrix4x4 &matrix, QVector3D &scale )
+{
+  const double *md = matrix.constData(); // column-major
+  const QVector3D col0( md[0], md[1], md[2] );
+  const QVector3D col1( md[4], md[5], md[6] );
+  const QVector3D col2( md[8], md[9], md[10] );
+
+  const float sx = col0.length();
+  const float sy = col1.length();
+  const float sz = col2.length();
+  scale = QVector3D( sx, sy, sz );
+
+  if ( sx == 0 || sy == 0 || sz == 0 )
+    return QMatrix3x3();
+
+  return matrixFromColumns( col0 / sx, col1 / sy, col2 / sz );
+}
+
+
+QMatrix3x3 QgsGltf3DUtils::ecefToTargetCrsRotationCorrection( const QgsVector3D &ecefPos, const QgsVector3D &mapPos, const QgsCoordinateTransform &ecefToTargetCrs )
+{
+  // Local ECEF basis vectors at this point:
+  //   up    = normalize(x, y, z)  — geocentric up (≤0.3° error vs ellipsoid normal)
+  //   east  = normalize(-y, x, 0) — tangent to the parallel
+  //   north = cross(up, east)
+  const double x = ecefPos.x(), y = ecefPos.y(), z = ecefPos.z();
+  const double len = std::sqrt( x * x + y * y + z * z );
+  const QVector3D upEcef( x / len, y / len, z / len );
+
+  const double eastLenXY = std::sqrt( y * y + x * x );
+  const QVector3D eastEcef( -y / eastLenXY, x / eastLenXY, 0 );
+
+  const QVector3D northEcef = QVector3D::crossProduct( upEcef, eastEcef );
+
+  // Compute corresponding vectors in target CRS by reprojecting perturbed ECEF points.
+  // Use a small delta (~1 meter) along each ECEF basis vector.
+  constexpr double delta = 1.0; // meters
+  double eX = x + delta * eastEcef.x(), eY = y + delta * eastEcef.y(), eZ = z + delta * eastEcef.z();
+  double nX = x + delta * northEcef.x(), nY = y + delta * northEcef.y(), nZ = z + delta * northEcef.z();
+  double uX = x + delta * upEcef.x(), uY = y + delta * upEcef.y(), uZ = z + delta * upEcef.z();
+
+  try
+  {
+    ecefToTargetCrs.transformInPlace( eX, eY, eZ );
+    ecefToTargetCrs.transformInPlace( nX, nY, nZ );
+    ecefToTargetCrs.transformInPlace( uX, uY, uZ );
+  }
+  catch ( QgsCsException & )
+  {
+    return QMatrix3x3(); // identity on failure
+  }
+
+  // Target CRS basis vectors (differences from the reprojected base point, then normalized)
+  QVector3D eastCrs( eX - mapPos.x(), eY - mapPos.y(), eZ - mapPos.z() );
+  QVector3D northCrs( nX - mapPos.x(), nY - mapPos.y(), nZ - mapPos.z() );
+  QVector3D upCrs( uX - mapPos.x(), uY - mapPos.y(), uZ - mapPos.z() );
+  eastCrs.normalize();
+  northCrs.normalize();
+  upCrs.normalize();
+
+  // Correction matrix C = T × Eᵀ
+  // where E = [east_ecef | north_ecef | up_ecef] (columns, orthonormal)
+  //       T = [east_crs  | north_crs  | up_crs]  (columns)
+  // Since E is orthonormal, E⁻¹ = Eᵀ, so C = T × Eᵀ.
+  const QMatrix3x3 ecefBasis = matrixFromColumns( eastEcef, northEcef, upEcef ); // E
+  const QMatrix3x3 crsBasis = matrixFromColumns( eastCrs, northCrs, upCrs );     // T
+  return crsBasis * ecefBasis.transposed();
+}
+
+
+QVector<QgsGltf3DUtils::InstanceChunkTransform> QgsGltf3DUtils::tileSpaceToChunkLocal( const QgsGltfUtils::QgsGltfInstancedPrimitive &primitive, const QgsGltf3DUtils::EntityTransform &transform )
+{
+  QVector<InstanceChunkTransform> result;
+  result.resize( primitive.instanceTransforms.size() );
+
+  if ( primitive.instanceTransforms.isEmpty() )
+    return result;
+
+  const QgsVector3D sceneOrigin = transform.chunkOriginTargetCrs;
+
+  // ECEF-to-target-CRS rotation correction matrix, computed once from first instance.
+  // All instances in a tile are close enough that one correction suffices.
+  QMatrix3x3 correctionMatrix;
+  bool hasCorrectionMatrix = false;
+
+  for ( int i = 0; i < primitive.instanceTransforms.size(); ++i )
+  {
+    // Compose with tile transform in double precision:
+    // ecefMatrix = tileTransform × instanceTransforms[i]
+    const QgsMatrix4x4 instanceDouble = floatToDoubleMatrix( primitive.instanceTransforms[i] );
+    const QgsMatrix4x4 ecefMatrix = transform.tileTransform * instanceDouble;
+
+    // Extract ECEF position from column 3 (double precision)
+    const double *md = ecefMatrix.constData(); // column-major
+    const QgsVector3D ecefPos( md[12], md[13], md[14] );
+
+    // Reproject ECEF → target CRS
+    double mapX = ecefPos.x();
+    double mapY = ecefPos.y();
+    double mapZ = ecefPos.z();
+    if ( transform.ecefToTargetCrs )
+    {
+      try
+      {
+        transform.ecefToTargetCrs->transformInPlace( mapX, mapY, mapZ );
+      }
+      catch ( QgsCsException & )
+      {
+        continue;
+      }
+    }
+
+    // Compute the correction matrix on the first successfully reprojected instance
+    if ( !hasCorrectionMatrix && transform.ecefToTargetCrs )
+    {
+      hasCorrectionMatrix = true;
+      correctionMatrix = ecefToTargetCrsRotationCorrection( ecefPos, QgsVector3D( mapX, mapY, mapZ ), *transform.ecefToTargetCrs );
+    }
+
+    // Apply z value modifications
+    mapZ = mapZ * transform.zValueScale + transform.zValueOffset;
+
+    // Chunk-local translation
+    result[i].translation = QVector3D( static_cast<float>( mapX - sceneOrigin.x() ), static_cast<float>( mapY - sceneOrigin.y() ), static_cast<float>( mapZ - sceneOrigin.z() ) );
+
+    // Extract rotation and scale from the 3×3 part of ecefMatrix (double precision)
+    QVector3D scale;
+    QMatrix3x3 rotEcef = extractRotation3x3( ecefMatrix, scale );
+
+    result[i].scale = scale;
+
+    if ( scale.x() == 0 || scale.y() == 0 || scale.z() == 0 )
+    {
+      result[i].rotation = QQuaternion();
+      continue;
+    }
+
+    // Apply ECEF-to-CRS rotation correction if available
+    const QMatrix3x3 rotCrs = hasCorrectionMatrix ? correctionMatrix * rotEcef : rotEcef;
+    result[i].rotation = QQuaternion::fromRotationMatrix( rotCrs );
+  }
+
+  return result;
+}
+
+
+void QgsGltf3DUtils::createInstanceBuffer( Qt3DCore::QGeometry *geometry, const QVector<InstanceChunkTransform> &instances )
+{
+  const int stride = 10 * sizeof( float ); // vec3 + vec4 + vec3 = 10 floats = 40 bytes
+  QByteArray bufferData;
+  bufferData.resize( instances.size() * stride );
+  float *dst = reinterpret_cast<float *>( bufferData.data() );
+
+  for ( const auto &inst : instances )
+  {
+    // translation (vec3)
+    *dst++ = inst.translation.x();
+    *dst++ = inst.translation.y();
+    *dst++ = inst.translation.z();
+    // rotation (vec4: x, y, z, w)
+    *dst++ = inst.rotation.x();
+    *dst++ = inst.rotation.y();
+    *dst++ = inst.rotation.z();
+    *dst++ = inst.rotation.scalar();
+    // scale (vec3)
+    *dst++ = inst.scale.x();
+    *dst++ = inst.scale.y();
+    *dst++ = inst.scale.z();
+  }
+
+  Qt3DCore::QBuffer *buffer = new Qt3DCore::QBuffer;
+  buffer->setData( bufferData );
+
+  // Translation attribute — matches "in vec3 instanceTranslation" in shader
+  Qt3DCore::QAttribute *transAttr = new Qt3DCore::QAttribute;
+  transAttr->setName( u"instanceTranslation"_s );
+  transAttr->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  transAttr->setVertexSize( 3 );
+  transAttr->setByteStride( stride );
+  transAttr->setByteOffset( 0 );
+  transAttr->setDivisor( 1 );
+  transAttr->setCount( instances.size() );
+  transAttr->setBuffer( buffer );
+  geometry->addAttribute( transAttr );
+
+  // Rotation attribute — matches "in vec4 instanceRotation" in shader
+  Qt3DCore::QAttribute *rotAttr = new Qt3DCore::QAttribute;
+  rotAttr->setName( u"instanceRotation"_s );
+  rotAttr->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  rotAttr->setVertexSize( 4 );
+  rotAttr->setByteStride( stride );
+  rotAttr->setByteOffset( 3 * sizeof( float ) );
+  rotAttr->setDivisor( 1 );
+  rotAttr->setCount( instances.size() );
+  rotAttr->setBuffer( buffer );
+  geometry->addAttribute( rotAttr );
+
+  // Scale attribute — matches "in vec3 instanceScale" in shader
+  Qt3DCore::QAttribute *scaleAttr = new Qt3DCore::QAttribute;
+  scaleAttr->setName( u"instanceScale"_s );
+  scaleAttr->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  scaleAttr->setVertexSize( 3 );
+  scaleAttr->setByteStride( stride );
+  scaleAttr->setByteOffset( 7 * sizeof( float ) );
+  scaleAttr->setDivisor( 1 );
+  scaleAttr->setCount( instances.size() );
+  scaleAttr->setBuffer( buffer );
+  geometry->addAttribute( scaleAttr );
+}
+
+
+static Qt3DCore::QAttribute *rawPositions( tinygltf::Model &model, int accessorIndex )
+{
+  tinygltf::Accessor &accessor = model.accessors[accessorIndex];
+  tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+  tinygltf::Buffer &b = model.buffers[bv.buffer];
+
+  if ( accessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || accessor.type != TINYGLTF_TYPE_VEC3 )
+    return nullptr;
+
+  const unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
+  const int byteStride = bv.byteStride ? bv.byteStride : 3 * sizeof( float );
+
+  QByteArray byteArray;
+  byteArray.resize( accessor.count * 3 * sizeof( float ) );
+  float *out = reinterpret_cast<float *>( byteArray.data() );
+
+  for ( std::size_t i = 0; i < accessor.count; ++i )
+  {
+    const float *fptr = reinterpret_cast<const float *>( ptr + i * byteStride );
+    out[i * 3 + 0] = fptr[0];
+    out[i * 3 + 1] = fptr[1];
+    out[i * 3 + 2] = fptr[2];
+  }
+
+  Qt3DCore::QBuffer *buffer = new Qt3DCore::QBuffer;
+  buffer->setData( byteArray );
+
+  Qt3DCore::QAttribute *attribute = new Qt3DCore::QAttribute;
+  attribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  attribute->setBuffer( buffer );
+  attribute->setByteOffset( 0 );
+  attribute->setByteStride( 12 );
+  attribute->setCount( accessor.count );
+  attribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  attribute->setVertexSize( 3 );
+
+  return attribute;
+}
+
+
+QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
+  tinygltf::Model &model, const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> &primitives, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors
+)
+{
+  QVector<Qt3DCore::QEntity *> entities;
+
+  for ( const QgsGltfUtils::QgsGltfInstancedPrimitive &entry : primitives )
+  {
+    if ( entry.meshIndex < 0 || entry.meshIndex >= static_cast<int>( model.meshes.size() ) )
+      continue;
+
+    const tinygltf::Mesh &mesh = model.meshes[entry.meshIndex];
+    if ( entry.primitiveIndex < 0 || entry.primitiveIndex >= static_cast<int>( mesh.primitives.size() ) )
+      continue;
+
+    const tinygltf::Primitive &primitive = mesh.primitives[entry.primitiveIndex];
+    if ( primitive.mode != TINYGLTF_MODE_TRIANGLES )
+    {
+      if ( errors )
+        *errors << u"Unsupported mesh primitive mode for instancing: %1"_s.arg( primitive.mode );
+      continue;
+    }
+
+    auto posIt = primitive.attributes.find( "POSITION" );
+    if ( posIt == primitive.attributes.end() )
+      continue;
+
+    int positionAccessorIndex = posIt->second;
+
+    // Parse material
+    QgsMaterial *material = parseMaterial( model, entry.materialIndex, baseUri, errors );
+    if ( !material )
+      continue;
+
+    // Enable instancing on the material
+    if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( material ) )
+      pbrMat->setInstancingEnabled( true );
+    else if ( QgsTextureMaterial *texMat = qobject_cast<QgsTextureMaterial *>( material ) )
+      texMat->setInstancingEnabled( true );
+
+    // Build geometry with raw positions (no transform, no axis flip)
+    Qt3DCore::QGeometry *geom = new Qt3DCore::QGeometry;
+
+    Qt3DCore::QAttribute *positionAttribute = rawPositions( model, positionAccessorIndex );
+    if ( !positionAttribute )
+    {
+      delete geom;
+      delete material;
+      continue;
+    }
+    positionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+    geom->addAttribute( positionAttribute );
+
+    auto normalIt = primitive.attributes.find( "NORMAL" );
+    if ( normalIt != primitive.attributes.end() )
+    {
+      Qt3DCore::QAttribute *normalAttribute = parseAttribute( model, normalIt->second );
+      normalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+      geom->addAttribute( normalAttribute );
+    }
+    else
+    {
+      // Enable flat shading if no normals
+      if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( material ) )
+        pbrMat->setFlatShadingEnabled( true );
+    }
+
+    auto texIt = primitive.attributes.find( "TEXCOORD_0" );
+    if ( texIt != primitive.attributes.end() )
+    {
+      Qt3DCore::QAttribute *texAttribute = parseAttribute( model, texIt->second );
+      texAttribute->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+      geom->addAttribute( texAttribute );
+    }
+
+    Qt3DCore::QAttribute *indexAttribute = nullptr;
+    if ( primitive.indices != -1 )
+    {
+      indexAttribute = parseAttribute( model, primitive.indices );
+      geom->addAttribute( indexAttribute );
+    }
+
+    // Convert tile-space matrices to chunk-local T/R/S
+    const QVector<InstanceChunkTransform> chunkTransforms = tileSpaceToChunkLocal( entry, transform );
+    if ( chunkTransforms.isEmpty() )
+    {
+      delete geom;
+      delete material;
+      continue;
+    }
+
+    // Add per-instance attributes
+    createInstanceBuffer( geom, chunkTransforms );
+
+    // Create geometry renderer with instancing
+    Qt3DRender::QGeometryRenderer *geomRenderer = new Qt3DRender::QGeometryRenderer;
+    geomRenderer->setGeometry( geom );
+    geomRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
+    geomRenderer->setVertexCount( indexAttribute ? indexAttribute->count() : model.accessors[positionAccessorIndex].count );
+    geomRenderer->setInstanceCount( chunkTransforms.size() );
+
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    entity->addComponent( geomRenderer );
+    entity->addComponent( material );
+    entities << entity;
+  }
+
+  return entities;
+}
 
 Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, const Qgs3DRenderContext &context, QStringList *errors )
 {

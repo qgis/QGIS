@@ -410,7 +410,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   }
   else if ( format == "cesiumtiles"_L1 )
   {
-    const QVector<QgsCesiumUtils::TileContents> contents = QgsCesiumUtils::extractTileContent( tileContent );
+    const QVector<QgsCesiumUtils::TileContents> contents = QgsCesiumUtils::extractTileContent( tileContent, contentUri );
     if ( contents.isEmpty() )
     {
       return false;
@@ -442,7 +442,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
         continue;
       }
 
-      renderModel( innerModel, content.rtcCenter, tile, context );
+      renderModel( innerModel, content.rtcCenter, content.instancing, tile, context );
       mCurrentModelId++;
     }
     return true;
@@ -469,27 +469,65 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   return false;
 }
 
+// TODO: add std::optional<QgsCesiumUtils::QgsGltfInstancingData> tileInstancing
 void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsVector3D &centerOffset, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context )
 {
   const QString contentUri = tile.resources().value( u"content"_s ).toString();
 
-  const QgsVector3D tileTranslationEcef = centerOffset
-                                          + QgsGltfUtils::extractTileTranslation( model, static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() ) );
+  const Qgis::Axis gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
+  const QgsVector3D tileTranslationEcef = centerOffset + QgsGltfUtils::extractTileTranslation( model, gltfUpAxis );
+
+  // Try to resolve instancing (i3dm or EXT_mesh_gpu_instancing)
+  const QgsMatrix4x4 tileTransform = tile.transform() ? *tile.transform() : QgsMatrix4x4();
+  const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> instancedPrimitives = QgsGltfUtils::resolveInstancing( model, tileInstancing, gltfUpAxis, tileTransform, centerOffset );
+  bool wholeTileUsesInstancing = instancing.has_value(); // when using i3dm tile from 3D Tiles 1.0
+
+  if ( !instancedPrimitives.isEmpty() )
+  {
+    // Render instanced primitives: the instance matrices already include
+    // the axis flip and node transform, so we use gltfUpAxis=Z (no additional flip)
+    // and no node transform.
+    for ( const QgsGltfUtils::QgsGltfInstancedPrimitive &entry : instancedPrimitives )
+    {
+      if ( entry.meshIndex < 0 || entry.meshIndex >= static_cast<int>( model.meshes.size() ) )
+        continue;
+      const tinygltf::Mesh &mesh = model.meshes[entry.meshIndex];
+      if ( entry.primitiveIndex < 0 || entry.primitiveIndex >= static_cast<int>( mesh.primitives.size() ) )
+        continue;
+      const tinygltf::Primitive &primitive = mesh.primitives[entry.primitiveIndex];
+
+      for ( const QMatrix4x4 &instanceMatrix : entry.instanceTransforms )
+      {
+        if ( context.renderContext().renderingStopped() )
+          break;
+
+        // gltfUpAxis=Z: the instance matrix already includes the axis flip
+        renderPrimitive( model, primitive, tile, tileTranslationEcef, &instanceMatrix, Qgis::Axis::Z, contentUri, context );
+      }
+    }
+  }
+
+  // Non-instanced path: collect the set of instanced node indices to skip
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
   if ( !sceneOk )
   {
-    const QString error = QObject::tr( "No scenes found in model" );
-    mErrors.append( error );
-    QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
+    if ( instancedPrimitives.isEmpty() )
+    {
+      const QString error = QObject::tr( "No scenes found in model" );
+      mErrors.append( error );
+      QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
+    }
   }
-  else
+  else if ( !tileInstancing.has_value() )
   {
+    // Only traverse non-instanced nodes (if i3dm, all mesh nodes were already
+    // handled above and we skip the traversal entirely)
     const tinygltf::Scene &scene = model.scenes[sceneIndex];
 
     std::function< void( int nodeIndex, const QMatrix4x4 &transform ) > traverseNode;
-    traverseNode = [&model, &context, &tileTranslationEcef, &tile, &contentUri, &traverseNode, this]( int nodeIndex, const QMatrix4x4 &parentTransform ) {
+    traverseNode = [&model, &context, &tileTranslationEcef, &tile, &contentUri, &gltfUpAxis, &traverseNode, this]( int nodeIndex, const QMatrix4x4 &parentTransform ) {
       const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
       std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
 
@@ -505,14 +543,18 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
 
       if ( gltfNode.mesh >= 0 )
       {
-        const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
-
-        for ( const tinygltf::Primitive &primitive : mesh.primitives )
+        // Skip nodes with EXT_mesh_gpu_instancing — already handled
+        if ( gltfNode.extensions.find( "EXT_mesh_gpu_instancing" ) == gltfNode.extensions.end() )
         {
-          if ( context.renderContext().renderingStopped() )
-            break;
+          const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
 
-          renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+          for ( const tinygltf::Primitive &primitive : mesh.primitives )
+          {
+            if ( context.renderContext().renderingStopped() )
+              break;
+
+            renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), gltfUpAxis, contentUri, context );
+          }
         }
       }
 
@@ -535,6 +577,7 @@ void QgsTiledSceneLayerRenderer::renderPrimitive(
   const QgsTiledSceneTile &tile,
   const QgsVector3D &tileTranslationEcef,
   const QMatrix4x4 *gltfLocalTransform,
+  Qgis::Axis gltfUpAxis,
   const QString &contentUri,
   QgsTiledSceneRenderContext &context
 )
@@ -543,12 +586,12 @@ void QgsTiledSceneLayerRenderer::renderPrimitive(
   {
     case TINYGLTF_MODE_TRIANGLES:
       if ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::RendersTriangles )
-        renderTrianglePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
+        renderTrianglePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, gltfUpAxis, contentUri, context );
       break;
 
     case TINYGLTF_MODE_LINE:
       if ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::RendersLines )
-        renderLinePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
+        renderLinePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, gltfUpAxis, contentUri, context );
       return;
 
     case TINYGLTF_MODE_POINTS:
@@ -607,6 +650,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
   const QgsTiledSceneTile &tile,
   const QgsVector3D &tileTranslationEcef,
   const QMatrix4x4 *gltfLocalTransform,
+  Qgis::Axis gltfUpAxis,
   const QString &contentUri,
   QgsTiledSceneRenderContext &context
 )
@@ -622,18 +666,8 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive(
   QVector< double > x;
   QVector< double > y;
   QVector< double > z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model,
-    positionAccessorIndex,
-    tile.transform() ? *tile.transform() : QgsMatrix4x4(),
-    &mSceneToMapTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
-    x,
-    y,
-    z
-  );
+  QgsGltfUtils::
+    accessorToMapCoordinates( model, positionAccessorIndex, tile.transform() ? *tile.transform() : QgsMatrix4x4(), &mSceneToMapTransform, tileTranslationEcef, gltfLocalTransform, gltfUpAxis, x, y, z );
 
   renderContext()->mapToPixel().transformInPlace( x, y );
 
@@ -866,6 +900,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive(
   const QgsTiledSceneTile &tile,
   const QgsVector3D &tileTranslationEcef,
   const QMatrix4x4 *gltfLocalTransform,
+  Qgis::Axis gltfUpAxis,
   const QString &,
   QgsTiledSceneRenderContext &context
 )
@@ -881,18 +916,8 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive(
   QVector< double > x;
   QVector< double > y;
   QVector< double > z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model,
-    positionAccessorIndex,
-    tile.transform() ? *tile.transform() : QgsMatrix4x4(),
-    &mSceneToMapTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
-    x,
-    y,
-    z
-  );
+  QgsGltfUtils::
+    accessorToMapCoordinates( model, positionAccessorIndex, tile.transform() ? *tile.transform() : QgsMatrix4x4(), &mSceneToMapTransform, tileTranslationEcef, gltfLocalTransform, gltfUpAxis, x, y, z );
 
   renderContext()->mapToPixel().transformInPlace( x, y );
 

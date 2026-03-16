@@ -15,6 +15,8 @@
 
 #include "qgstexturematerial.h"
 
+#include "qgs3dutils.h"
+
 #include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
@@ -78,6 +80,18 @@ void QgsTextureMaterial::setTexture( Qt3DRender::QAbstractTexture *texture )
 Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
 {
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
+}
+
+void QgsTextureMaterial::setInstancingEnabled( bool enabled )
+{
+  if ( enabled == mInstancingEnabled )
+    return;
+  mInstancingEnabled = enabled;
+
+  QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) );
+  if ( enabled )
+    vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, QStringList( { u"INSTANCING"_s } ) );
+  mGL3Shader->setVertexShaderCode( vertexCode );
 }
 
 ///@endcond PRIVATE

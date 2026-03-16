@@ -56,6 +56,12 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 
     Qt3DRender::QAbstractTexture *texture() const;
 
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
   public slots:
 
     /**
@@ -74,6 +80,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    bool mInstancingEnabled = false;
 };
 
 ///@endcond PRIVATE

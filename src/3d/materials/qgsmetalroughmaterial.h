@@ -99,6 +99,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the emission strength factor
     void setEmissionFactor( double factor );
 
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );
@@ -138,6 +144,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingHeightMap = false;
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
+    bool mInstancingEnabled = false;
 
     friend class TestQgsGltf3DUtils;
 };

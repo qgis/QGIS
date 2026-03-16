@@ -335,4 +335,16 @@ void QgsMetalRoughMaterial::setOpacity( float opacity )
   mOpacityParameter->setValue( opacity );
 }
 
+void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled )
+{
+  if ( enabled == mInstancingEnabled )
+    return;
+  mInstancingEnabled = enabled;
+
+  QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
+  if ( enabled )
+    vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, QStringList( { u"INSTANCING"_s } ) );
+  mMetalRoughGL3Shader->setVertexShaderCode( vertexCode );
+}
+
 ///@endcond PRIVATE
