@@ -3,7 +3,7 @@
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec3 instanceTranslation;
-in vec3 instanceScale;
+in vec4 instanceScale;
 in vec4 instanceRotation;
 
 out vec3 worldPosition;
@@ -16,6 +16,7 @@ uniform mat4 mvp;
 uniform mat4 inst;  // transform of individual object instance
 uniform mat4 instNormal;  // should be mat3 but Qt3D only supports mat4...
 uniform vec4 symbolRotation;
+uniform vec4 symbolScale;
 
 uniform bool useInstanceScale;
 uniform bool useInstanceRotation;
@@ -33,46 +34,46 @@ void main()
     // vertexPosition uses XY plane as the base plane, with Z going upwards
     // and the coordinates are local to the object
 
-    vec3 instanceScaleVec;
-    vec3 instanceNormalScale;
+    vec4 thisInstanceScale;
+    vec4 thisInstanceNormalScale;
     if ( useInstanceScale )
     {
-        instanceScaleVec = instanceScale;
-        instanceNormalScale = 1.0 / instanceScale;
+        thisInstanceScale = instanceScale;
+        thisInstanceNormalScale = 1.0 / instanceScale;
     }
     else
     {
-        instanceScaleVec = vec3(1.0);
-        instanceNormalScale = vec3(1.0);
+        thisInstanceScale = symbolScale;
+        thisInstanceNormalScale = 1.0 / symbolScale;
     }
 
-    vec4 activeSymbolRotation;
+    vec4 thisInstanceRotation;
     if ( useInstanceRotation )
     {
-        activeSymbolRotation = instanceRotation;
+        thisInstanceRotation = instanceRotation;
     }
     else
     {
-        activeSymbolRotation = symbolRotation;
+        thisInstanceRotation = symbolRotation;
     }
+
+    // order of operations are:
+    // 1. Correct for y-up to z-up
+    // 2. Apply either per-instance scale or default symbol scale
+    // 3. Apply either per-instance rotation or default symbol rotation
+    // 4. Apply per-instance translation
 
     // for vertices:
     vec3 zUpPosition = mat3(inst) * vertexPosition;
-    // apply scale FIRST
-    vec3 scaledPosition = zUpPosition * instanceScaleVec;
-    // then rotation
-    vec3 rotatedPosition = rotateByQuat(scaledPosition, activeSymbolRotation);
-    // lastly, apply per instance translation
+    vec3 scaledPosition = zUpPosition * thisInstanceScale.xyz;
+    vec3 rotatedPosition = rotateByQuat(scaledPosition, thisInstanceRotation);
     vec3 vertexPositionObject = rotatedPosition + inst[3].xyz;
 
     // for normals:
     vec3 zUpNormal = mat3(instNormal) * vertexNormal;
-    // apply inverse scale FIRST
-    vec3 scaledNormal = zUpNormal * instanceNormalScale;
-    // then rotation
-    vec3 vertexNormalObject = rotateByQuat(scaledNormal, activeSymbolRotation);
+    vec3 scaledNormal = zUpNormal * thisInstanceNormalScale.xyz;
+    vec3 vertexNormalObject = rotateByQuat(scaledNormal, thisInstanceRotation);
 
-    // add offset of the object relative to the chunk's origin
     vec3 vertexPositionChunk = vertexPositionObject + instanceTranslation;
 
     // Transform position and normal to world space
