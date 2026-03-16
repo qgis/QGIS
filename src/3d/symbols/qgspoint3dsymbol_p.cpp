@@ -70,7 +70,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
-    static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
+    static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext, bool hasDataDefinedScale, bool hasDataDefinedRotation );
     static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions, const QVector<QVector3D> &scales, const QVector<QVector4D> rotations );
     static Qt3DCore::QGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
 
@@ -288,11 +288,9 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
   materialContext.setIsHighlighted( mHighlightingEnabled );
-  QgsMaterial *mat = material( mSymbol.get(), materialContext );
+  QgsMaterial *mat = material( mSymbol.get(), materialContext, !out.scales.empty(), !out.rotations.empty() );
 
-  mat->addParameter( new Qt3DRender::QParameter( "useInstanceScale", !out.scales.empty(), mat ) );
   mat->addParameter( new Qt3DRender::QParameter( "symbolScale", mSymbolScale.toVector4D(), mat ) );
-  mat->addParameter( new Qt3DRender::QParameter( "useInstanceRotation", !out.rotations.empty(), mat ) );
   mat->addParameter( new Qt3DRender::QParameter( "symbolRotation", mSymbolRotation.toVector4D(), mat ) );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
@@ -311,7 +309,7 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 }
 
 
-QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext )
+QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext, bool hasDataDefinedScale, bool hasDataDefinedRotation )
 {
   std::unique_ptr<QgsMaterial> material;
 
@@ -326,7 +324,16 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
     filterKey->setValue( "forward" );
 
     Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-    shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
+
+    const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    QStringList defines;
+    if ( hasDataDefinedScale )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( hasDataDefinedRotation )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+
+    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
+    shaderProgram->setVertexShaderCode( finalVertexShaderCode );
     shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
 
     Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
@@ -380,61 +387,50 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer(
   geometry->addAttribute( instanceTranslationAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceTranslationAttribute );
 
-  auto scaleBuffer = new Qt3DCore::QBuffer();
-  auto instanceScaleAttribute = new Qt3DCore::QAttribute;
-  instanceScaleAttribute->setName( u"instanceScale"_s );
-  instanceScaleAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
-  instanceScaleAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
-  instanceScaleAttribute->setVertexSize( 3 );
-  instanceScaleAttribute->setByteOffset( 0 );
-  instanceScaleAttribute->setDivisor( 1 );
-  instanceScaleAttribute->setByteStride( 3 * sizeof( float ) );
-
   if ( !scales.empty() )
   {
+    auto scaleBuffer = new Qt3DCore::QBuffer();
+    auto instanceScaleAttribute = new Qt3DCore::QAttribute;
+    instanceScaleAttribute->setName( u"instanceScale"_s );
+    instanceScaleAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+    instanceScaleAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+    instanceScaleAttribute->setVertexSize( 3 );
+    instanceScaleAttribute->setByteOffset( 0 );
+    instanceScaleAttribute->setDivisor( 1 );
+    instanceScaleAttribute->setByteStride( 3 * sizeof( float ) );
     QByteArray scaleBa;
     scaleBa.resize( byteCount );
     memcpy( scaleBa.data(), scales.constData(), byteCount );
 
     scaleBuffer->setData( scaleBa );
     instanceScaleAttribute->setCount( count );
-  }
-  else
-  {
-    scaleBuffer->setData( QByteArray() );
-    instanceScaleAttribute->setCount( 0 );
-  }
 
-  instanceScaleAttribute->setBuffer( scaleBuffer );
-  geometry->addAttribute( instanceScaleAttribute );
-
-  auto rotationBuffer = new Qt3DCore::QBuffer();
-  auto instanceRotationAttribute = new Qt3DCore::QAttribute;
-  instanceRotationAttribute->setName( u"instanceRotation"_s );
-  instanceRotationAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
-  instanceRotationAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
-  instanceRotationAttribute->setVertexSize( 4 );
-  instanceRotationAttribute->setByteOffset( 0 );
-  instanceRotationAttribute->setDivisor( 1 );
-  instanceRotationAttribute->setByteStride( 4 * sizeof( float ) );
+    instanceScaleAttribute->setBuffer( scaleBuffer );
+    geometry->addAttribute( instanceScaleAttribute );
+  }
 
   if ( !rotations.empty() )
   {
+    auto rotationBuffer = new Qt3DCore::QBuffer();
+    auto instanceRotationAttribute = new Qt3DCore::QAttribute;
+    instanceRotationAttribute->setName( u"instanceRotation"_s );
+    instanceRotationAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+    instanceRotationAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+    instanceRotationAttribute->setVertexSize( 4 );
+    instanceRotationAttribute->setByteOffset( 0 );
+    instanceRotationAttribute->setDivisor( 1 );
+    instanceRotationAttribute->setByteStride( 4 * sizeof( float ) );
+
     QByteArray rotationBa;
     const std::size_t rotationByteCount = positions.count() * sizeof( QVector4D );
     rotationBa.resize( rotationByteCount );
     memcpy( rotationBa.data(), rotations.constData(), rotationByteCount );
     rotationBuffer->setData( rotationBa );
     instanceRotationAttribute->setCount( count );
-  }
-  else
-  {
-    rotationBuffer->setData( QByteArray() );
-    instanceRotationAttribute->setCount( 0 );
-  }
 
-  instanceRotationAttribute->setBuffer( rotationBuffer );
-  geometry->addAttribute( instanceRotationAttribute );
+    instanceRotationAttribute->setBuffer( rotationBuffer );
+    geometry->addAttribute( instanceRotationAttribute );
+  }
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );

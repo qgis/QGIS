@@ -3,8 +3,12 @@
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec3 instanceTranslation;
+#ifdef USE_INSTANCE_SCALE
 in vec4 instanceScale;
+#endif
+#ifdef USE_INSTANCE_ROTATION
 in vec4 instanceRotation;
+#endif
 
 out vec3 worldPosition;
 out vec3 worldNormal;
@@ -15,9 +19,6 @@ uniform mat4 mvp;
 
 uniform vec4 symbolRotation;
 uniform vec4 symbolScale;
-
-uniform bool useInstanceScale;
-uniform bool useInstanceRotation;
 
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
@@ -50,28 +51,19 @@ void main()
         0.0, -1.0, 0.0
     );
 
-    vec4 thisInstanceScale;
-    vec4 thisInstanceNormalScale;
-    if ( useInstanceScale )
-    {
-        thisInstanceScale = instanceScale;
-        thisInstanceNormalScale = 1.0 / instanceScale;
-    }
-    else
-    {
-        thisInstanceScale = symbolScale;
-        thisInstanceNormalScale = 1.0 / symbolScale;
-    }
+    #ifdef USE_INSTANCE_SCALE
+    vec4 thisInstanceScale = instanceScale;
+    vec4 thisInstanceNormalScale = 1.0 / instanceScale;
+    #else
+    vec4 thisInstanceScale = symbolScale;
+    vec4 thisInstanceNormalScale = 1.0 / symbolScale;
+    #endif
 
-    vec4 thisInstanceRotation;
-    if ( useInstanceRotation )
-    {
-        thisInstanceRotation = instanceRotation;
-    }
-    else
-    {
-        thisInstanceRotation = symbolRotation;
-    }
+    #ifdef USE_INSTANCE_ROTATION
+    vec4 thisInstanceRotation = instanceRotation;
+    #else
+    vec4 thisInstanceRotation = symbolRotation;
+    #endif
 
     // order of operations are:
     // 1. Correct for y-up to z-up
