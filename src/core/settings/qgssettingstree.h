@@ -43,6 +43,7 @@ class CORE_EXPORT QgsSettingsTree
 
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( u"app"_s );
+    static inline QgsSettingsTreeNode *sTreeAttributeForm = treeRoot()->createChildNode( u"attribute-form"_s );
     static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( u"connections"_s );
     static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( u"core"_s );
     static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
