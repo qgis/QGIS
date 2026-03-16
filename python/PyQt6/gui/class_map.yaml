@@ -7047,7 +7047,7 @@ QgsSettingsIntegerSpinBoxWrapper.setSettingFromWidget: src/gui/settings/qgssetti
 QgsSettingsIntegerSpinBoxWrapper.setWidgetValue: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L279
 QgsSettingsIntegerSpinBoxWrapper.valueFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L277
 QgsSettingsIntegerSpinBoxWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L261
-QgsSettingsRegistryGui: src/gui/settings/qgssettingsregistrygui.h#L33
+QgsSettingsRegistryGui: src/gui/settings/qgssettingsregistrygui.h#L39
 QgsSettingsStringComboBoxWrapper.createWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L176
 QgsSettingsStringComboBoxWrapper.enableAutomaticUpdatePrivate: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L186
 QgsSettingsStringComboBoxWrapper.id: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L178
