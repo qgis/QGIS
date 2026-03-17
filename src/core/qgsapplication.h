@@ -84,6 +84,7 @@ class QgsSensorRegistry;
 class QgsProfileSourceRegistry;
 class QgsLabelingEngineRuleRegistry;
 class QgsSymbolConverterRegistry;
+class QgsMaterialRegistry;
 
 // clang-format off
 /**
@@ -1037,6 +1038,12 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.16
    */
   static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
+
+  /**
+   * Returns registry of available 3D materials.
+   * \since QGIS 4.2
+   */
+  static QgsMaterialRegistry *materialRegistry() SIP_KEEPREFERENCE;
 
   /**
    * Gets the registry of available scalebar renderers.

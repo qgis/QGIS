@@ -38,7 +38,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
      *
      * This is used to filter the available material choices in the widget.
      */
-    void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
+    void setTechnique( Qgis::MaterialRenderingTechnique technique );
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer );
     QgsAbstractMaterialSettings *settings();
@@ -58,7 +58,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
-    QgsMaterialSettingsRenderingTechnique mTechnique = QgsMaterialSettingsRenderingTechnique::Triangles;
+    Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALWIDGET_H

@@ -50,6 +50,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
       ${CMAKE_SOURCE_DIR}/src/core/3d
+      ${CMAKE_SOURCE_DIR}/src/core/3d/materials
       ${CMAKE_SOURCE_DIR}/src/core/actions
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth

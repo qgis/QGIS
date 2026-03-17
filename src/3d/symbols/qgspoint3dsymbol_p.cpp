@@ -15,6 +15,7 @@
 
 #include "qgspoint3dsymbol_p.h"
 
+#include "qgs3d.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
@@ -22,6 +23,7 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgshighlightmaterial.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgssourcecache.h"
@@ -315,7 +317,7 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
 
   if ( materialContext.isHighlighted() )
   {
-    material = std::make_unique<QgsHighlightMaterial>( QgsMaterialSettingsRenderingTechnique::InstancedPoints );
+    material = std::make_unique<QgsHighlightMaterial>( Qgis::MaterialRenderingTechnique::InstancedPoints );
   }
   else
   {
@@ -350,7 +352,7 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
     Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
     effect->addTechnique( technique );
 
-    symbol->materialSettings()->addParametersToEffect( effect, materialContext );
+    Qgs3D::addMaterialParametersToEffect( effect, symbol->materialSettings(), materialContext );
 
     material = std::make_unique<QgsMaterial>();
     material->setEffect( effect );
@@ -820,8 +822,8 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities(
     materialContext.setIsSelected( areSelected );
     materialContext.setSelectionColor( context.selectionColor() );
     materialContext.setIsHighlighted( areHighlighted );
-    QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
+    QgsMaterial *mat = Qgs3D::toMaterial( symbol->materialSettings(), Qgis::MaterialRenderingTechnique::Triangles, materialContext );
     if ( !mat )
       return;
 

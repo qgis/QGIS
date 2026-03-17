@@ -64,7 +64,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::updateGuiState );
 
-  widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined );
+  widgetMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesDataDefined );
 }
 
 Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )

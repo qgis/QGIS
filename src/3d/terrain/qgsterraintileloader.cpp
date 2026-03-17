@@ -15,11 +15,13 @@
 
 #include "qgsterraintileloader.h"
 
+#include "qgs3d.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaterial.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
@@ -81,7 +83,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     QgsMaterialContext materialContext;
     materialContext.setIsSelected( false );
-    material = shadingMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+    material = Qgs3D::toMaterial( &shadingMaterial, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
   }
 
   // no backface culling on terrain, to allow terrain to be viewed from underground

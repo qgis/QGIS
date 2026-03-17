@@ -2410,6 +2410,17 @@ The development version
       Billboard,
     };
 
+    enum class MaterialRenderingTechnique /BaseType=IntEnum/
+    {
+      Triangles,
+      Lines,
+      InstancedPoints,
+      Points,
+      TrianglesWithFixedTexture,
+      TrianglesFromModel,
+      TrianglesDataDefined,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,

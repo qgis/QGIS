@@ -980,7 +980,14 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
-
+  3d/materials/qgsabstractmaterialsettings.cpp
+  3d/materials/qgsgoochmaterialsettings.cpp
+  3d/materials/qgsmaterialregistry.cpp
+  3d/materials/qgsmetalroughmaterialsettings.cpp
+  3d/materials/qgsnullmaterialsettings.cpp
+  3d/materials/qgsphongmaterialsettings.cpp
+  3d/materials/qgsphongtexturedmaterialsettings.cpp
+  3d/materials/qgssimplelinematerialsettings.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1401,6 +1408,14 @@ set(QGIS_CORE_HDRS
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
   3d/qgsabstractpointcloud3drenderer.h
+  3d/materials/qgsabstractmaterialsettings.h
+  3d/materials/qgsgoochmaterialsettings.h
+  3d/materials/qgsmaterialregistry.h
+  3d/materials/qgsmetalroughmaterialsettings.h
+  3d/materials/qgsnullmaterialsettings.h
+  3d/materials/qgsphongmaterialsettings.h
+  3d/materials/qgsphongtexturedmaterialsettings.h
+  3d/materials/qgssimplelinematerialsettings.h
 
   actions/qgsaction.h
   actions/qgsactionmanager.h
@@ -2637,6 +2652,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   3d
+  3d/materials
   actions
   annotations
   auth

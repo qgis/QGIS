@@ -1024,6 +1024,13 @@ Returns registry of available 3D symbols.
 .. versionadded:: 3.16
 %End
 
+  static QgsMaterialRegistry *materialRegistry() /KeepReference/;
+%Docstring
+Returns registry of available 3D materials.
+
+.. versionadded:: 4.2
+%End
+
   static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available scalebar renderers.
