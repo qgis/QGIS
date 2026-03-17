@@ -626,7 +626,7 @@ QMatrix3x3 QgsGltf3DUtils::ecefToTargetCrsRotationCorrection( const QgsVector3D 
 }
 
 
-QVector<QgsGltf3DUtils::InstanceChunkTransform> QgsGltf3DUtils::tileSpaceToChunkLocal( const QgsGltfUtils::QgsGltfInstancedPrimitive &primitive, const QgsGltf3DUtils::EntityTransform &transform )
+QVector<QgsGltf3DUtils::InstanceChunkTransform> QgsGltf3DUtils::tileSpaceToChunkLocal( const QgsGltfUtils::InstancedPrimitive &primitive, const QgsGltf3DUtils::EntityTransform &transform )
 {
   QVector<InstanceChunkTransform> result;
   result.resize( primitive.instanceTransforms.size() );
@@ -808,12 +808,12 @@ static Qt3DCore::QAttribute *rawPositions( tinygltf::Model &model, int accessorI
 
 
 QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
-  tinygltf::Model &model, const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> &primitives, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors
+  tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors
 )
 {
   QVector<Qt3DCore::QEntity *> entities;
 
-  for ( const QgsGltfUtils::QgsGltfInstancedPrimitive &entry : primitives )
+  for ( const QgsGltfUtils::InstancedPrimitive &entry : primitives )
   {
     if ( entry.meshIndex < 0 || entry.meshIndex >= static_cast<int>( model.meshes.size() ) )
       continue;

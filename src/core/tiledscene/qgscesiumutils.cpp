@@ -24,12 +24,14 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgltfutils.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
 #include "qgsmatrix4x4.h"
 #include "qgsorientedbox3d.h"
 #include "qgssphere.h"
 #include "qgstiledsceneboundingvolume.h"
+#include "tiny_gltf.h"
 
 #include <QFile>
 #include <QGenericMatrix>
@@ -217,7 +219,20 @@ static QQuaternion quaternionFromNormalUpRight( const QVector3D &normalUp, const
   return QQuaternion::fromRotationMatrix( rotMatrix );
 }
 
-void QgsCesiumUtils::computeEastNorthUpQuaternions( const QVector<QVector3D> &positions, const QgsVector3D &rtcCenter, const QgsMatrix4x4 &tileTransform, QVector<QQuaternion> &rotations )
+/**
+ * Computes EAST_NORTH_UP orientation quaternions for each instance position.
+ *
+ * Positions are in tile-local Z-up space, relative to \a rtcCenter.
+ * The \a tileTransform converts from tile-local space to ECEF (EPSG:4978),
+ * so that the ENU frame can be computed at the correct geographic location.
+ *
+ * \param positions per-instance positions in tile-local space
+ * \param rtcCenter RTC_CENTER offset in tile-local space
+ * \param tileTransform tile transform from tileset.json (tile-local → ECEF)
+ * \param rotations output quaternions (one per instance)
+ * \since QGIS 4.2
+ */
+static void computeEastNorthUpQuaternions( const QVector<QVector3D> &positions, const QgsVector3D &rtcCenter, const QgsMatrix4x4 &tileTransform, QVector<QQuaternion> &rotations )
 {
   const int count = positions.size();
   rotations.resize( count );
@@ -339,6 +354,290 @@ void QgsCesiumUtils::computeEastNorthUpQuaternions( const QVector<QVector3D> &po
   }
 }
 
+
+// Helper: build the axis flip matrix from gltfUpAxis
+static QMatrix4x4 axisFlipMatrix( Qgis::Axis gltfUpAxis )
+{
+  QMatrix4x4 F;
+  switch ( gltfUpAxis )
+  {
+    case Qgis::Axis::Y:
+      // Y-up → Z-up: (x,y,z) → (x,-z,y)
+      F = QMatrix4x4( 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 );
+      break;
+    case Qgis::Axis::X:
+    case Qgis::Axis::Z:
+      // identity (already Z-up or X-up not supported yet)
+      break;
+  }
+  return F;
+}
+
+
+// Helper: parse EXT_mesh_gpu_instancing from a glTF node
+static bool parseExtMeshGpuInstancing(
+  const tinygltf::Model &model, const tinygltf::Node &node, QVector<QVector3D> &translations, QVector<QQuaternion> &rotations, QVector<QVector3D> &scales, int &instanceCount
+)
+{
+  auto extIt = node.extensions.find( "EXT_mesh_gpu_instancing" );
+  if ( extIt == node.extensions.end() )
+    return false;
+
+  const tinygltf::Value &extValue = extIt->second;
+  if ( !extValue.IsObject() || !extValue.Has( "attributes" ) )
+    return false;
+
+  const tinygltf::Value &attributes = extValue.Get( "attributes" );
+  if ( !attributes.IsObject() )
+    return false;
+
+  instanceCount = 0;
+
+  // Helper lambda: read a VEC3 FLOAT accessor into a QVector<QVector3D>
+  auto readVec3Accessor = [&model, &instanceCount]( const tinygltf::Value &attributes, const std::string &name, QVector<QVector3D> &out, const QVector3D &defaultValue ) -> bool {
+    if ( attributes.Has( name ) )
+    {
+      int accessorIdx = attributes.Get( name ).GetNumberAsInt();
+      if ( accessorIdx < 0 || accessorIdx >= static_cast<int>( model.accessors.size() ) )
+        return false;
+
+      const tinygltf::Accessor &accessor = model.accessors[accessorIdx];
+      if ( accessor.type != TINYGLTF_TYPE_VEC3 || accessor.componentType != TINYGLTF_COMPONENT_TYPE_FLOAT )
+        return false;
+
+      const int count = static_cast<int>( accessor.count );
+      if ( instanceCount == 0 )
+        instanceCount = count;
+      else if ( instanceCount != count )
+        return false;
+
+      const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+      const tinygltf::Buffer &buf = model.buffers[bv.buffer];
+      const unsigned char *ptr = buf.data.data() + bv.byteOffset + accessor.byteOffset;
+      const int stride = bv.byteStride ? bv.byteStride : 3 * static_cast<int>( sizeof( float ) );
+
+      out.resize( count );
+      for ( int i = 0; i < count; ++i )
+      {
+        const float *fptr = reinterpret_cast<const float *>( ptr + i * stride );
+        out[i] = QVector3D( fptr[0], fptr[1], fptr[2] );
+      }
+    }
+    else
+    {
+      // use default
+      if ( instanceCount > 0 )
+        out.fill( defaultValue, instanceCount );
+    }
+    return true;
+  };
+
+  if ( !readVec3Accessor( attributes, "TRANSLATION", translations, QVector3D( 0, 0, 0 ) ) )
+    return false;
+
+  if ( !readVec3Accessor( attributes, "SCALE", scales, QVector3D( 1, 1, 1 ) ) )
+    return false;
+
+  // Read ROTATION: VEC4 FLOAT accessor → per-instance quaternions
+  if ( attributes.Has( "ROTATION" ) )
+  {
+    int accessorIdx = attributes.Get( "ROTATION" ).GetNumberAsInt();
+    if ( accessorIdx < 0 || accessorIdx >= static_cast<int>( model.accessors.size() ) )
+      return false;
+
+    const tinygltf::Accessor &accessor = model.accessors[accessorIdx];
+    if ( accessor.type != TINYGLTF_TYPE_VEC4 )
+      return false;
+
+    const int count = static_cast<int>( accessor.count );
+    if ( instanceCount == 0 )
+      instanceCount = count;
+    else if ( instanceCount != count )
+      return false;
+
+    const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+    const tinygltf::Buffer &buf = model.buffers[bv.buffer];
+    const unsigned char *ptr = buf.data.data() + bv.byteOffset + accessor.byteOffset;
+
+    rotations.resize( count );
+
+    if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT )
+    {
+      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( float ) );
+      for ( int i = 0; i < count; ++i )
+      {
+        const float *fptr = reinterpret_cast<const float *>( ptr + i * stride );
+        // glTF quaternion: (x, y, z, w)
+        rotations[i] = QQuaternion( fptr[3], fptr[0], fptr[1], fptr[2] );
+      }
+    }
+    else if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_SHORT )
+    {
+      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( short ) );
+      for ( int i = 0; i < count; ++i )
+      {
+        const short *sptr = reinterpret_cast<const short *>( ptr + i * stride );
+        // Normalized short: divide by 32767.0
+        rotations[i] = QQuaternion( static_cast<float>( sptr[3] ) / 32767.0f, static_cast<float>( sptr[0] ) / 32767.0f, static_cast<float>( sptr[1] ) / 32767.0f, static_cast<float>( sptr[2] ) / 32767.0f );
+      }
+    }
+    else if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_BYTE )
+    {
+      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( char ) );
+      for ( int i = 0; i < count; ++i )
+      {
+        const signed char *bptr = reinterpret_cast<const signed char *>( ptr + i * stride );
+        // Normalized byte: divide by 127.0
+        rotations[i] = QQuaternion( static_cast<float>( bptr[3] ) / 127.0f, static_cast<float>( bptr[0] ) / 127.0f, static_cast<float>( bptr[1] ) / 127.0f, static_cast<float>( bptr[2] ) / 127.0f );
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    if ( instanceCount > 0 )
+      rotations.fill( QQuaternion(), instanceCount );
+  }
+
+  // Fill defaults if only some attributes were specified
+  if ( instanceCount > 0 )
+  {
+    if ( translations.isEmpty() )
+      translations.fill( QVector3D( 0, 0, 0 ), instanceCount );
+    if ( rotations.isEmpty() )
+      rotations.fill( QQuaternion(), instanceCount );
+    if ( scales.isEmpty() )
+      scales.fill( QVector3D( 1, 1, 1 ), instanceCount );
+  }
+
+  return instanceCount > 0;
+}
+
+
+// Helper: build a 4x4 matrix from translation, rotation, scale
+static QMatrix4x4 trsMatrix( const QVector3D &t, const QQuaternion &r, const QVector3D &s )
+{
+  QMatrix4x4 mat;
+  mat.translate( t );
+  mat.rotate( r );
+  mat.scale( s );
+  return mat;
+}
+
+
+QVector<QgsGltfUtils::InstancedPrimitive> QgsCesiumUtils::resolveInstancing(
+  const tinygltf::Model &model, const std::optional<TileI3dmData> &tileInstancing, Qgis::Axis gltfUpAxis, const QgsMatrix4x4 &tileTransform, const QgsVector3D &rtcCenter
+)
+{
+  QVector<QgsGltfUtils::InstancedPrimitive> result;
+
+  bool sceneOk = false;
+  const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
+  if ( !sceneOk )
+    return result;
+
+  const tinygltf::Scene &scene = model.scenes[sceneIndex];
+  const QMatrix4x4 F = axisFlipMatrix( gltfUpAxis );
+
+  // Recursive node walker
+  std::function<void( int nodeIndex, const QMatrix4x4 &parentTransform )> walkNode;
+  walkNode = [&]( int nodeIndex, const QMatrix4x4 &parentTransform ) {
+    if ( nodeIndex < 0 || nodeIndex >= static_cast<int>( model.nodes.size() ) )
+      return;
+
+    const tinygltf::Node &node = model.nodes[nodeIndex];
+
+    // Compute accumulated local transform M for this node
+    std::unique_ptr<QMatrix4x4> localTransform = QgsGltfUtils::parseNodeTransform( node );
+    QMatrix4x4 M = parentTransform;
+    if ( localTransform )
+      M = parentTransform * *localTransform;
+
+    if ( node.mesh >= 0 )
+    {
+      const tinygltf::Mesh &mesh = model.meshes[node.mesh];
+
+      if ( tileInstancing.has_value() )
+      {
+        // i3dm path: every mesh node gets the same instances
+        // fullMatrix = T(pos_i) × R_i × S_i × F × M
+        const QMatrix4x4 FM = F * M;
+        QgsCesiumUtils::TileI3dmData inst = tileInstancing.value();
+
+        // Deferred EAST_NORTH_UP: compute ENU rotations now that the tile transform is available
+        if ( inst.eastNorthUp )
+        {
+          computeEastNorthUpQuaternions( inst.translations, rtcCenter, tileTransform, inst.rotations );
+        }
+
+        for ( int pIdx = 0; pIdx < static_cast<int>( mesh.primitives.size() ); ++pIdx )
+        {
+          QgsGltfUtils::InstancedPrimitive entry;
+          entry.meshIndex = node.mesh;
+          entry.primitiveIndex = pIdx;
+          entry.materialIndex = mesh.primitives[pIdx].material;
+          entry.instanceTransforms.resize( inst.instanceCount );
+
+          for ( int i = 0; i < inst.instanceCount; ++i )
+          {
+            entry.instanceTransforms[i] = trsMatrix( inst.translations[i], inst.rotations[i], inst.scales[i] ) * FM;
+          }
+
+          result.append( std::move( entry ) );
+        }
+      }
+      else
+      {
+        // Check for EXT_mesh_gpu_instancing on this node
+        QVector<QVector3D> translations;
+        QVector<QQuaternion> rotations;
+        QVector<QVector3D> scales;
+        int instanceCount = 0;
+
+        if ( parseExtMeshGpuInstancing( model, node, translations, rotations, scales, instanceCount ) )
+        {
+          // EXT path: fullMatrix = F × M × T_i × R_i × S_i
+          const QMatrix4x4 FM = F * M;
+
+          for ( int pIdx = 0; pIdx < static_cast<int>( mesh.primitives.size() ); ++pIdx )
+          {
+            QgsGltfUtils::InstancedPrimitive entry;
+            entry.meshIndex = node.mesh;
+            entry.primitiveIndex = pIdx;
+            entry.materialIndex = mesh.primitives[pIdx].material;
+            entry.instanceTransforms.resize( instanceCount );
+
+            for ( int i = 0; i < instanceCount; ++i )
+            {
+              entry.instanceTransforms[i] = FM * trsMatrix( translations[i], rotations[i], scales[i] );
+            }
+
+            result.append( std::move( entry ) );
+          }
+        }
+        // else: non-instanced node, skip — handled by existing code path
+      }
+    }
+
+    // Recurse to children
+    for ( int childIndex : node.children )
+    {
+      walkNode( childIndex, M );
+    }
+  };
+
+  for ( int nodeIndex : scene.nodes )
+  {
+    walkNode( nodeIndex, QMatrix4x4() );
+  }
+
+  return result;
+}
+
+
 static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileContent, const QString &baseUri )
 {
   struct i3dmHeader
@@ -451,7 +750,7 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
   const char *featureBinaryPtr = tileContent.constData() + featureTableBinaryOffset;
   const int featureBinarySize = hdr.featureTableBinaryByteLength;
 
-  QgsCesiumUtils::QgsGltfInstancingData instancing;
+  QgsCesiumUtils::TileI3dmData instancing;
   instancing.instanceCount = instanceCount;
 
   // Read POSITION: instanceCount × float32[3]

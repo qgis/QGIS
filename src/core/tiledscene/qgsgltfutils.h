@@ -33,7 +33,6 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
 
 #include <QMatrix4x4>
@@ -247,42 +246,21 @@ class CORE_EXPORT QgsGltfUtils
 
     /**
      * Represents a single mesh primitive with per-instance placement in tile space.
-     * Produced by resolveInstancing() — format-agnostic, consumed directly by renderers.
+     * Produced by QgsCesiumUtils::resolveInstancing() — format-agnostic, consumed directly by renderers.
      * \since QGIS 4.2
      */
-    struct QgsGltfInstancedPrimitive
+    struct InstancedPrimitive
     {
         int meshIndex = -1;      //!< Index into tinygltf::Model::meshes
         int primitiveIndex = -1; //!< Index within the mesh's primitives
         int materialIndex = -1;  //!< For material lookup (-1 = default)
 
         /**
-       * Per-instance 4x4 transform matrices in "tile space" (Z-up, ECEF-relative).
-       * Each matrix transforms raw mesh vertices to tile-space positions.
-       */
+         * Per-instance 4x4 transform matrices in "tile space" (Z-up, ECEF-relative).
+         * Each matrix transforms raw mesh vertices to tile-space positions.
+         */
         QVector<QMatrix4x4> instanceTransforms;
     };
-
-    /**
-     * Resolves instancing from either i3dm data or EXT_mesh_gpu_instancing.
-     *
-     * Walks the glTF node tree, decomposes multi-node models into independent
-     * mesh primitives, and computes per-instance TRS in a common "tile space".
-     *
-     * Returns an empty vector if no instancing data is found, meaning the model
-     * should be rendered through the existing non-instanced code path.
-     *
-     * \param model the loaded tinygltf model
-     * \param tileInstancing optional i3dm instance data (nullopt for EXT/b3dm)
-     * \param gltfUpAxis the up axis used in the glTF model
-     * \param tileTransform tile transform from tileset.json (tile-local → ECEF), needed for deferred EAST_NORTH_UP computation
-     * \param rtcCenter RTC_CENTER offset in tile-local space
-     * \returns flat list of instanced primitives with tile-space transforms
-     * \since QGIS 4.2
-     */
-    static QVector<QgsGltfInstancedPrimitive> resolveInstancing(
-      const tinygltf::Model &model, const std::optional<QgsCesiumUtils::QgsGltfInstancingData> &tileInstancing, Qgis::Axis gltfUpAxis, const QgsMatrix4x4 &tileTransform, const QgsVector3D &rtcCenter
-    );
 };
 
 ///@endcond

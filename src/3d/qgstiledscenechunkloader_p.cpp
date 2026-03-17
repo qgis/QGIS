@@ -157,7 +157,7 @@ void QgsTiledSceneChunkLoader::start()
         }
 
         const QgsMatrix4x4 rawTileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-        const auto instancedPrimitives = QgsGltfUtils::resolveInstancing( model, tileContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, tileContent.rtcCenter );
+        const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, tileContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, tileContent.rtcCenter );
 
         if ( instancedPrimitives.isEmpty() )
         {

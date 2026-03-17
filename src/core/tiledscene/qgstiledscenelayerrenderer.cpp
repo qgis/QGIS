@@ -474,8 +474,6 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
 {
   const QString contentUri = tile.resources().value( u"content"_s ).toString();
 
-  const Qgis::Axis gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
-
   const QgsVector3D tileTranslationEcef = centerOffset + QgsGltfUtils::extractTileTranslation( model, gltfUpAxis );
 
   // Try to resolve instancing (i3dm or EXT_mesh_gpu_instancing)
@@ -483,47 +481,22 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
   const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> instancedPrimitives = QgsGltfUtils::resolveInstancing( model, tileInstancing, gltfUpAxis, tileTransform, centerOffset );
   bool wholeTileUsesInstancing = instancing.has_value(); // when using i3dm tile from 3D Tiles 1.0
 
-  if ( !instancedPrimitives.isEmpty() )
-  {
-    // Render instanced primitives: the instance matrices already include
-    // the axis flip and node transform, so we use gltfUpAxis=Z (no additional flip)
-    // and no node transform.
-    for ( const QgsGltfUtils::QgsGltfInstancedPrimitive &entry : instancedPrimitives )
-    {
-      if ( entry.meshIndex < 0 || entry.meshIndex >= static_cast<int>( model.meshes.size() ) )
-        continue;
-      const tinygltf::Mesh &mesh = model.meshes[entry.meshIndex];
-      if ( entry.primitiveIndex < 0 || entry.primitiveIndex >= static_cast<int>( mesh.primitives.size() ) )
-        continue;
-      const tinygltf::Primitive &primitive = mesh.primitives[entry.primitiveIndex];
-
-      for ( const QMatrix4x4 &instanceMatrix : entry.instanceTransforms )
-      {
-        if ( context.renderContext().renderingStopped() )
-          break;
-
-        // gltfUpAxis=Z: the instance matrix already includes the axis flip
-        renderPrimitive( model, primitive, tile, tileTranslationEcef, &instanceMatrix, Qgis::Axis::Z, contentUri, context );
-      }
-    }
-  }
-
-  // Non-instanced path: collect the set of instanced node indices to skip
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
   if ( !sceneOk )
   {
-    if ( instancedPrimitives.isEmpty() )
-    {
-      const QString error = QObject::tr( "No scenes found in model" );
-      mErrors.append( error );
-      QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
-    }
+    const QString error = QObject::tr( "No scenes found in model" );
+    mErrors.append( error );
+    QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
+    return false;
   }
-  else if ( !tileInstancing.has_value() )
+
+  // Render non-instanced primitives (the most common rendering path):
+  // - 3D Tiles 1.0: b3dm tiles
+  // - 3D Tiles 1.1: all gltf nodes that don't use instancing (via EXT_mesh_gpu_instancing extension)
+  // - I3S: 3DObject or IntegratedMesh layer types
+  if ( !wholeTileUsesInstancing )
   {
-    // Only traverse non-instanced nodes (if i3dm, all mesh nodes were already
-    // handled above and we skip the traversal entirely)
     const tinygltf::Scene &scene = model.scenes[sceneIndex];
 
     std::function< void( int nodeIndex, const QMatrix4x4 &transform ) > traverseNode;
@@ -569,6 +542,32 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
       traverseNode( nodeIndex, QMatrix4x4() );
     }
   }
+
+  // Render instanced primitives (if any):
+  // - 3D Tiles 1.0: i3dm tiles
+  // - 3D Tiles 1.1: all gltf nodes that use instancing
+  // - I3S: not supported yet (the "Point" layer type)
+  for ( const QgsGltfUtils::InstancedPrimitive &entry : instancedPrimitives )
+  {
+    if ( entry.meshIndex < 0 || entry.meshIndex >= static_cast<int>( model.meshes.size() ) )
+      continue;
+    const tinygltf::Mesh &mesh = model.meshes[entry.meshIndex];
+    if ( entry.primitiveIndex < 0 || entry.primitiveIndex >= static_cast<int>( mesh.primitives.size() ) )
+      continue;
+    const tinygltf::Primitive &primitive = mesh.primitives[entry.primitiveIndex];
+
+    for ( const QMatrix4x4 &instanceMatrix : entry.instanceTransforms )
+    {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
+      // The instance matrices already include the axis flip and node transform,
+      // so we use gltfUpAxis=Z (no additional flip) and no node transform.
+      renderPrimitive( model, primitive, tile, tileTranslationEcef, &instanceMatrix, Qgis::Axis::Z, contentUri, context );
+    }
+  }
+
+  return true;
 }
 
 void QgsTiledSceneLayerRenderer::renderPrimitive(

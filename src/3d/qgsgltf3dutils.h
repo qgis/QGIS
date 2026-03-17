@@ -127,7 +127,7 @@ class _3D_EXPORT QgsGltf3DUtils
      * Converts tile-space per-instance matrices to chunk-local T/R/S.
      * \since QGIS 4.2
      */
-    static QVector<InstanceChunkTransform> tileSpaceToChunkLocal( const QgsGltfUtils::QgsGltfInstancedPrimitive &primitive, const EntityTransform &transform );
+    static QVector<InstanceChunkTransform> tileSpaceToChunkLocal( const QgsGltfUtils::InstancedPrimitive &primitive, const EntityTransform &transform );
 
     /**
      * Adds per-instance GPU attributes (translation, rotation, scale) to the geometry.
@@ -140,7 +140,7 @@ class _3D_EXPORT QgsGltf3DUtils
      * \since QGIS 4.2
      */
     static QVector<Qt3DCore::QEntity *> createInstancedEntities(
-      tinygltf::Model &model, const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> &primitives, const EntityTransform &transform, const QString &baseUri, QStringList *errors
+      tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const EntityTransform &transform, const QString &baseUri, QStringList *errors
     );
 };
 
