@@ -36,6 +36,7 @@ try:
     QgsVectorLayerUtils.guessFriendlyIdentifierField = staticmethod(QgsVectorLayerUtils.guessFriendlyIdentifierField)
     QgsVectorLayerUtils.filterValidFeatureIds = staticmethod(QgsVectorLayerUtils.filterValidFeatureIds)
     QgsVectorLayerUtils.fieldToDataArray = staticmethod(QgsVectorLayerUtils.fieldToDataArray)
+    QgsVectorLayerUtils.fieldsToDataArray = staticmethod(QgsVectorLayerUtils.fieldsToDataArray)
     QgsVectorLayerUtils.__group__ = ['vector']
 except (NameError, AttributeError):
     pass
