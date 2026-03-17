@@ -17,6 +17,7 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsaddtaborgroup.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgscodeeditor.h"
 #include "qgsdualview.h"
@@ -105,6 +106,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
   // single settings - added in 4.2
   settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
+  QgsAdvancedDigitizingDockWidget::settingsCadCommonAngle->copyValueFromKey( u"/Cad/CommonAngle"_s, true );
   settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
   settingsRasterHistogramZoomToMinMax->copyValueFromKey( u"Raster/histogram/zoomToMinMax"_s, true );
   settingsRasterHistogramUpdateStyleToMinMax->copyValueFromKey( u"Raster/histogram/updateStyleToMinMax"_s, true );
