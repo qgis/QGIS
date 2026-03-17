@@ -977,6 +977,7 @@ Sets the associated status ``bar``.
 .. versionadded:: 4.0
 %End
 
+
   public slots:
 
     void refresh();

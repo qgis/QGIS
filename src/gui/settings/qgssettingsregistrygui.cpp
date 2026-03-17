@@ -22,6 +22,7 @@
 #include "qgscodeeditor.h"
 #include "qgsdualview.h"
 #include "qgsfeaturefiltermodel.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
@@ -107,6 +108,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   // single settings - added in 4.2
   settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
   QgsAdvancedDigitizingDockWidget::settingsCadCommonAngle->copyValueFromKey( u"/Cad/CommonAngle"_s, true );
+  QgsMapCanvas::settingsCustomCoordinateCrs->copyValueFromKey( u"qgis/custom_coordinate_crs"_s, true );
   settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
   settingsRasterHistogramZoomToMinMax->copyValueFromKey( u"Raster/histogram/zoomToMinMax"_s, true );
   settingsRasterHistogramUpdateStyleToMinMax->copyValueFromKey( u"Raster/histogram/updateStyleToMinMax"_s, true );
