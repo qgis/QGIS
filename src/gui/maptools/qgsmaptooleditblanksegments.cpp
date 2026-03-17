@@ -449,7 +449,7 @@ void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
     case State::SelectFeature:
     {
       //find the closest feature to the pressed position
-      const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+      const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge ) );
       if ( !m.isValid() )
       {
         emit
