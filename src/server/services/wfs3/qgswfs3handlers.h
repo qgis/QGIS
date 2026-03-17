@@ -122,6 +122,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Landing page"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     json schema( const QgsServerApiContext &context ) const override;
+    QString const templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**
@@ -147,6 +148,7 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
+    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 

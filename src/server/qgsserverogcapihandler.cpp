@@ -249,7 +249,7 @@ const QString QgsServerOgcApiHandler::staticPath( const QgsServerApiContext &con
 
 const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &context ) const
 {
-  // resources/server/api + /ogc/templates/ + operationId + .html
+  // resources/server/api + /ogc/templates/ + apiRootPath() + / + operationId() + .html
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
   path += "/ogc/templates"_L1;
   path += context.apiRootPath();
@@ -258,7 +258,6 @@ const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &c
   path += ".html"_L1;
   return path;
 }
-
 
 void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiContext &context ) const
 {

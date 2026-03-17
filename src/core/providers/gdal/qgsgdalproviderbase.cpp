@@ -475,12 +475,12 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
         layerName = parts[parts.length() - 1];
         parts.removeLast();
       }
-      // remove quotes around path
-      if ( parts.size() == 1 && parts[0].length() > 2 && parts[0].at( 0 ) == '"' && parts[0].right( 1 ) == '"' )
-      {
-        parts[0] = parts[0].mid( 1, parts[0].length() - 2 );
-      }
       path = parts.join( ':' );
+      // remove quotes around path
+      if ( !path.isEmpty() && path.at( 0 ) == '"' && path.right( 1 ) == '"' )
+      {
+        path = path.mid( 1, path.size() - 2 );
+      }
     }
   }
 
