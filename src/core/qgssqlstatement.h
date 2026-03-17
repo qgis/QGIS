@@ -26,8 +26,11 @@
 #include <QList>
 #include <QMetaType>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -358,8 +361,18 @@ class CORE_EXPORT QgsSQLStatement
           , mOperand( operand )
         {}
 
-        //! Operator
-        QgsSQLStatement::UnaryOperator op() const { return mOp; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeUnaryOperator: %1>"_s.arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Operator
+            QgsSQLStatement::UnaryOperator op() const
+        {
+          return mOp;
+        }
 
         //! Operand
         QgsSQLStatement::Node *operand() const { return mOperand.get(); }
@@ -369,6 +382,14 @@ class CORE_EXPORT QgsSQLStatement
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+
+        /**
+         * Returns a the name of this operator without the operands.
+         * I.e. "NOT" or "-"
+         *
+         * \since QGIS 4.2
+         */
+        QString text() const;
 
       private:
         NodeUnaryOperator( const NodeUnaryOperator &other ) = delete;
@@ -397,8 +418,18 @@ class CORE_EXPORT QgsSQLStatement
           , mOpRight( opRight )
         {}
 
-        //! Operator
-        QgsSQLStatement::BinaryOperator op() const { return mOp; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeBinaryOperator: %1>"_s.arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Operator
+            QgsSQLStatement::BinaryOperator op() const
+        {
+          return mOp;
+        }
 
         //! Left operand
         QgsSQLStatement::Node *opLeft() const { return mOpLeft.get(); }
@@ -417,6 +448,14 @@ class CORE_EXPORT QgsSQLStatement
 
         //! Is left associative ?
         bool leftAssociative() const;
+
+        /**
+         * Returns a the name of this operator without the operands.
+         * I.e. "AND", "OR", ...
+         *
+         * \since QGIS 4.2
+         */
+        QString text() const;
 
       private:
         NodeBinaryOperator( const NodeBinaryOperator &other ) = delete;
@@ -536,8 +575,20 @@ class CORE_EXPORT QgsSQLStatement
           , mArgs( args )
         {}
 
-        //! Returns function name
-        QString name() const { return mName; }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString function;
+        QString str = u"<QgsSQLStatement.NodeFunction: %1>"_s.arg( sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Returns function name
+            QString name() const
+        {
+          return mName;
+        }
 
         //! Returns arguments
         QgsSQLStatement::NodeList *args() const { return mArgs.get(); }
@@ -573,14 +624,31 @@ class CORE_EXPORT QgsSQLStatement
           : mValue( value )
         {}
 
-        //! The value of the literal.
-        inline QVariant value() const { return mValue; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeLiteral: %1>"_s.arg( sipCpp->valueAsString() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+          //! The value of the literal.
+          inline QVariant value() const
+        {
+          return mValue;
+        }
 
         QgsSQLStatement::NodeType nodeType() const override { return ntLiteral; }
         QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+
+        /**
+         * Returns a string representation of the node's literal value.
+         * \since QGIS 4.2
+         */
+        QString valueAsString() const;
+
 
       protected:
         QVariant mValue;
@@ -607,8 +675,35 @@ class CORE_EXPORT QgsSQLStatement
           , mStar( star )
         {}
 
-        //! Sets whether this is prefixed by DISTINCT
-        void setDistinct( bool distinct = true ) { mDistinct = distinct; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString columnRef;
+        if ( sipCpp->star() )
+        {
+          columnRef = "*";
+        }
+        else
+        {
+          columnRef = sipCpp->name();
+        }
+        if ( !sipCpp->tableName().isEmpty() )
+        {
+          columnRef = u"\"%1.%2\""_s.arg( sipCpp->tableName(), columnRef );
+        }
+        if ( sipCpp->distinct() )
+        {
+          columnRef = u"DISTINCT %1"_s.arg( columnRef );
+        }
+        QString str = u"<QgsSQLStatement.NodeColumnRef: %1>"_s.arg( columnRef );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+          //! Sets whether this is prefixed by DISTINCT
+          void setDistinct( bool distinct = true )
+        {
+          mDistinct = distinct;
+        }
 
         //! The name of the table. May be empty.
         QString tableName() const { return mTableName; }
@@ -692,8 +787,18 @@ class CORE_EXPORT QgsSQLStatement
           , mType( type )
         {}
 
-        //! Node that is referred to
-        QgsSQLStatement::Node *node() const { return mNode.get(); }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeCast: AS %1>"_s.arg( sipCpp->type() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Node that is referred to
+            QgsSQLStatement::Node *node() const
+        {
+          return mNode.get();
+        }
 
         //! Type
         QString type() const { return mType; }
@@ -744,8 +849,27 @@ class CORE_EXPORT QgsSQLStatement
           , mAlias( alias )
         {}
 
-        //! Table name
-        QString name() const { return mName; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString table;
+        if ( !sipCpp->schema().isEmpty() )
+        {
+          table = u"%1.%2"_s.arg( sipCpp->schema(), sipCpp->name() );
+        }
+        else
+        {
+          table = sipCpp->name();
+        }
+        QString str = u"<QgsSQLStatement.NodeTableDef: %1>"_s.arg( table );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Table name
+            QString name() const
+        {
+          return mName;
+        }
 
         /**
          * Returns the schema name.
