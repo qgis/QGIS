@@ -55,6 +55,7 @@ class QGraphicsScene;
 class QgsMapToPixel;
 class QgsMapLayer;
 class QgsHighlight;
+class QgsSettingsEntryString;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
@@ -934,6 +935,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 4.0
      */
     void setStatusBar( QgsStatusBar *bar );
+
+    static const QgsSettingsEntryString *settingsCustomCoordinateCrs SIP_SKIP;
 
   public slots:
 
