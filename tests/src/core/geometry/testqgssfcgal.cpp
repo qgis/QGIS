@@ -1154,9 +1154,9 @@ void TestQgsSfcgal::primitiveCube()
   );
 
   // check rotate
-  std::unique_ptr<QgsSfcgalGeometry> cubeR = cube->rotate3D( 90, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } );
+  std::unique_ptr<QgsSfcgalGeometry> cubeR = cube->rotate3D( M_PI / 2.0, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } );
   QVERIFY( qFuzzyCompare2( cubeR->primitiveTransform(), QMatrix4x4( -1.0e-07, -1.0, 0.0, 0.0, 1.0, -1.0e-07, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ) ) );
-  cubeR = cube->rotate3D( 90, { 0.0, 0.0, 1.0 }, { 1.0, 2.0, 3.0 } );
+  cubeR = cube->rotate3D( M_PI / 2.0, { 0.0, 0.0, 1.0 }, { 1.0, 2.0, 3.0 } );
   QVERIFY( qFuzzyCompare2( cubeR->primitiveTransform(), QMatrix4x4( -1.0e-07, -1.0, 0.0, -3.0, 1.0, -1.0e-07, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ) ) );
   QCOMPARE(
     cubeR->asWkt( 0 ),
