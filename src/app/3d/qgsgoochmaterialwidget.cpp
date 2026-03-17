@@ -74,27 +74,27 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   mSpecularDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Specular ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
 }
 
-void QgsGoochMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
+void QgsGoochMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
 {
   switch ( technique )
   {
-    case QgsMaterialSettingsRenderingTechnique::Triangles:
-    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
-    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
-    case QgsMaterialSettingsRenderingTechnique::Points:
-    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
       mDiffuseDataDefinedButton->setVisible( false );
       mWarmDataDefinedButton->setVisible( false );
       mCoolDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
       break;
-    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
       mDiffuseDataDefinedButton->setVisible( true );
       mWarmDataDefinedButton->setVisible( true );
       mCoolDataDefinedButton->setVisible( true );
       mSpecularDataDefinedButton->setVisible( true );
       break;
-    case QgsMaterialSettingsRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Lines:
       // not supported
       break;
   }

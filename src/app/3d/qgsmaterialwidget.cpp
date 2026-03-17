@@ -43,7 +43,7 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
 }
 
-void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
+void QgsMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
 {
   mTechnique = technique;
   const QString prevType = mMaterialTypeComboBox->currentData().toString();

@@ -24,14 +24,6 @@
 %Include auto_generated/lights/qgsdirectionallightsettings.sip
 %Include auto_generated/lights/qgslightsource.sip
 %Include auto_generated/lights/qgspointlightsettings.sip
-%Include auto_generated/materials/qgsabstractmaterialsettings.sip
-%Include auto_generated/materials/qgsgoochmaterialsettings.sip
-%Include auto_generated/materials/qgsmaterialregistry.sip
-%Include auto_generated/materials/qgsmetalroughmaterialsettings.sip
-%Include auto_generated/materials/qgsnullmaterialsettings.sip
-%Include auto_generated/materials/qgsphongmaterialsettings.sip
-%Include auto_generated/materials/qgsphongtexturedmaterialsettings.sip
-%Include auto_generated/materials/qgssimplelinematerialsettings.sip
 %Include auto_generated/symbols/qgsline3dsymbol.sip
 %Include auto_generated/symbols/qgsmesh3dsymbol.sip
 %Include auto_generated/symbols/qgspoint3dsymbol.sip

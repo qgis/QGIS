@@ -183,7 +183,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
-  widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
+  widgetTerrainMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 

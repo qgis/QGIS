@@ -46,7 +46,7 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
   return new QgsMetalRoughMaterialWidget();
 }
 
-void QgsMetalRoughMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
+void QgsMetalRoughMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique )
 {}
 
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )

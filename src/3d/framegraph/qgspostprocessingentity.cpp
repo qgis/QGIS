@@ -30,6 +30,7 @@
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 

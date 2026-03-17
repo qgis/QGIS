@@ -1,0 +1,65 @@
+/***************************************************************************
+  qgsmetalroughmaterial3dhandler.cpp
+  --------------------------------------
+  Date                 : December 2023
+  Copyright            : (C) 2023 by Nyall Dawson
+  Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsmetalroughmaterial3dhandler.h"
+
+#include "qgshighlightmaterial.h"
+#include "qgsmetalroughmaterial.h"
+#include "qgsmetalroughmaterialsettings.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const
+{
+  const QgsMetalRoughMaterialSettings *metalRoughSettings = dynamic_cast< const QgsMetalRoughMaterialSettings * >( settings );
+  Q_ASSERT( metalRoughSettings );
+
+  switch ( technique )
+  {
+    case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+    {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
+      material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
+      material->setMetalness( metalRoughSettings->metalness() );
+      material->setRoughness( metalRoughSettings->roughness() );
+      return material;
+    }
+
+    case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    case Qgis::MaterialRenderingTechnique::Points:
+      return nullptr;
+  }
+  return nullptr;
+}
+
+QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings * ) const
+{
+  QMap<QString, QString> parameters;
+  return parameters;
+}
+
+void QgsMetalRoughMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{}

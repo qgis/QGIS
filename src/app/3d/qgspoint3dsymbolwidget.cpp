@@ -174,7 +174,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
 
   cboShape->setCurrentIndex( cboShape->findData( QVariant::fromValue( pointSymbol->shape() ) ) );
-  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
+  Qgis::MaterialRenderingTechnique technique = Qgis::MaterialRenderingTechnique::InstancedPoints;
   bool forceNullMaterial = false;
   switch ( pointSymbol->shape() )
   {
@@ -207,7 +207,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       forceNullMaterial = ( pointSymbol->shapeProperties().contains( u"overwriteMaterial"_s ) && !pointSymbol->shapeProperties().value( u"overwriteMaterial"_s ).toBool() )
                           || !pointSymbol->materialSettings()
                           || pointSymbol->materialSettings()->type() == "null"_L1;
-      technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
+      technique = Qgis::MaterialRenderingTechnique::TrianglesFromModel;
 
       whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( pointSymbol->shapeProperty( u"upAxis"_s ).toString() ) );
       whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( pointSymbol->shapeProperty( u"forwardAxis"_s ).toString() ) );
@@ -218,7 +218,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       {
         btnChangeSymbol->setSymbol( pointSymbol->billboardSymbol()->clone() );
       }
-      technique = QgsMaterialSettingsRenderingTechnique::Points;
+      technique = Qgis::MaterialRenderingTechnique::Points;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;
@@ -368,7 +368,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   materialsGroupBox->show();
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
-  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
+  Qgis::MaterialRenderingTechnique technique = Qgis::MaterialRenderingTechnique::InstancedPoints;
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
@@ -391,14 +391,14 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       break;
     case Qgis::Point3DShape::Model:
       activeWidgets << labelModel << lineEditModel << mComboModelForwardAxis << mComboModelUpAxis << labelUpAxis << labelForwardAxis;
-      technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
+      technique = Qgis::MaterialRenderingTechnique::TrianglesFromModel;
       break;
     case Qgis::Point3DShape::Billboard:
       activeWidgets << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
       // Always hide material and transformationwidget for billboard
       materialsGroupBox->hide();
       transformationWidget->hide();
-      technique = QgsMaterialSettingsRenderingTechnique::Points;
+      technique = Qgis::MaterialRenderingTechnique::Points;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;

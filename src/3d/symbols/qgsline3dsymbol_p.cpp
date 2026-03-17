@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbol_p.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeos.h"
@@ -23,6 +24,7 @@
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmessagelog.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -218,7 +220,8 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
   materialContext.setIsHighlighted( mHighlightingEnabled );
-  QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+
+  QgsMaterial *material = Qgs3D::toMaterial( mSymbol->materialSettings(), Qgis::MaterialRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
   const QByteArray vertexBuffer = lineData.tessellator->vertexBuffer();
@@ -374,11 +377,12 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+
+  QgsMaterial *material = Qgs3D::toMaterial( mSymbol->materialSettings(), Qgis::MaterialRenderingTechnique::Lines, materialContext );
   if ( !material )
   {
     const QgsSimpleLineMaterialSettings defaultMaterial;
-    material = defaultMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+    material = Qgs3D::toMaterial( &defaultMaterial, Qgis::MaterialRenderingTechnique::Lines, materialContext );
   }
 
   if ( QgsLineMaterial *lineMaterial = dynamic_cast<QgsLineMaterial *>( material ) )
@@ -406,7 +410,9 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, lineVertexData.vertices.size(), lineVertexData.materialDataDefined );
+  {
+    Qgs3D::applyMaterialDataDefinedToGeometry( mSymbol->materialSettings(), geometry, lineVertexData.vertices.size(), lineVertexData.materialDataDefined );
+  }
 
   renderer->setGeometry( geometry );
 
@@ -427,7 +433,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 
 void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData )
 {
-  const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context );
+  const QByteArray bytes = Qgs3D::materialDataDefinedVertexColorsAsByte( mSymbol->materialSettings(), context );
   lineVertexData.materialDataDefined.append( bytes.repeated( static_cast<int>( verticesCount ) ) );
 }
 

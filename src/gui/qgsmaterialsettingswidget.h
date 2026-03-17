@@ -16,6 +16,7 @@
 #ifndef QGSMATERIALSETTINGSWIDGET_H
 #define QGSMATERIALSETTINGSWIDGET_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgspropertycollection.h"
@@ -24,8 +25,7 @@
 
 #define SIP_NO_FILE
 
-class QgsAbstractMaterialSettings SIP_EXTERNAL;
-enum class QgsMaterialSettingsRenderingTechnique SIP_EXTERNAL;
+class QgsAbstractMaterialSettings;
 class QgsVectorLayer;
 
 /**
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      * Sets the rendering technique which will be used for the symbol. Allows the widget to adapt
      * available settings for the specified \a technique.
      */
-    virtual void setTechnique( QgsMaterialSettingsRenderingTechnique technique );
+    virtual void setTechnique( Qgis::MaterialRenderingTechnique technique );
 
     /**
      * Returns a new instance of the material settings defined by the widget.

@@ -229,6 +229,14 @@
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
+%Include auto_generated/./3d/materials/qgsabstractmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsgoochmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsmaterialregistry.sip
+%Include auto_generated/./3d/materials/qgsmetalroughmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsnullmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsphongmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsphongtexturedmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgssimplelinematerialsettings.sip
 %Include auto_generated/actions/qgsaction.sip
 %Include auto_generated/actions/qgsactionmanager.sip
 %Include auto_generated/actions/qgsactionscope.sip
