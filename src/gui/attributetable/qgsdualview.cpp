@@ -1044,7 +1044,8 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
       int srcFieldIndex;
       const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
       const QgsVectorLayer *joinedLayer = info->joinLayer();
-      const Qgis::VectorProviderCapabilities joinedCaps = dataProvider->capabilities();
+      const QgsVectorDataProvider *joinedDataProvider = joinedLayer->dataProvider();
+      const Qgis::VectorProviderCapabilities joinedCaps = joinedDataProvider->capabilities();
       const bool joinedLayerIsReadOnly { joinedLayer->readOnly() };
       const bool joinedLayerCanChangeAttributeValue = !joinedLayerIsReadOnly && ( joinedCaps & Qgis::VectorProviderCapability::ChangeAttributeValues );
       if ( info && info->isEditable() )
