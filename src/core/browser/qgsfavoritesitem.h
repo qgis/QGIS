@@ -22,8 +22,11 @@
 #include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdirectoryitem.h"
+#include "qgssettingstree.h"
 
 #include <QString>
+
+class QgsSettingsEntryStringList;
 
 using namespace Qt::StringLiterals;
 
@@ -35,6 +38,13 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
+#ifndef SIP_RUN
+    //! Settings tree node for browser settings
+    static inline QgsSettingsTreeNode *sTreeBrowser = QgsSettingsTree::treeRoot()->createChildNode( u"browser"_s );
+    //! Settings entry for favorite directories
+    static const QgsSettingsEntryStringList *settingsFavoriteDirs;
+#endif
+
     /**
      * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
      * the item.

@@ -50,6 +50,17 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( u"network-timeout"_s, QgsSettingsTree::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsUserAgent
+  = new QgsSettingsEntryString( u"user-agent"_s, QgsSettingsTree::sTreeNetwork, u"Mozilla/5.0"_s, u"User agent string for network requests"_s );
+const QgsSettingsEntryBool *QgsNetworkAccessManager::settingsProxyEnabled = new QgsSettingsEntryBool( u"proxy-enabled"_s, QgsSettingsTree::sTreeProxy, false, u"Whether network proxy is enabled"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyHost = new QgsSettingsEntryString( u"proxy-host"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy host"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyPort = new QgsSettingsEntryString( u"proxy-port"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy port"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyUser = new QgsSettingsEntryString( u"proxy-user"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy user"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyPassword = new QgsSettingsEntryString( u"proxy-password"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy password"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyType = new QgsSettingsEntryString( u"proxy-type"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy type"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyExcludedUrls = new QgsSettingsEntryString( u"proxy-excluded-urls"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy excluded URLs"_s );
+const QgsSettingsEntryStringList *QgsNetworkAccessManager::settingsNoProxyUrls = new QgsSettingsEntryStringList( u"no-proxy-urls"_s, QgsSettingsTree::sTreeProxy, QStringList(), u"No-proxy URLs"_s );
+const QgsSettingsEntryString *QgsNetworkAccessManager::settingsProxyAuthCfg = new QgsSettingsEntryString( u"auth-cfg"_s, QgsSettingsTree::sTreeProxy, QString(), u"Proxy authentication configuration"_s );
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -320,12 +331,10 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 {
   QgsDebugMsgLevel( u"Creating new network request on thread: %1 for %2"_s.arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( req.url().toString() ), 3 );
 
-  const QgsSettings s;
-
   // copy request so we can modify it
   QNetworkRequest modifiedRequest( req );
 
-  QString userAgent = s.value( u"/qgis/networkAndProxy/userAgent"_s, "Mozilla/5.0" ).toString();
+  QString userAgent = settingsUserAgent->value();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
   userAgent += u"QGIS/%1/%2"_s.arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
@@ -751,28 +760,27 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   connect( this, &QNetworkAccessManager::finished, this, &QgsNetworkAccessManager::onReplyFinished );
 
   // check if proxy is enabled
-  const QgsSettings settings;
   QNetworkProxy proxy;
   QStringList excludes;
   QStringList noProxyURLs;
 
-  const bool proxyEnabled = settings.value( u"proxy/proxyEnabled"_s, false ).toBool();
+  const bool proxyEnabled = settingsProxyEnabled->value();
   if ( proxyEnabled )
   {
     // This settings is keep for retrocompatibility, the returned proxy for these URL is the default one,
     // meaning the system one
-    excludes = settings.value( u"proxy/proxyExcludedUrls"_s, QStringList() ).toStringList();
+    excludes = settingsProxyExcludedUrls->value().split( '|', Qt::SkipEmptyParts );
 
-    noProxyURLs = settings.value( u"proxy/noProxyUrls"_s, QStringList() ).toStringList();
+    noProxyURLs = settingsNoProxyUrls->value();
 
     //read type, host, port, user, passw from settings
-    const QString proxyHost = settings.value( u"proxy/proxyHost"_s, "" ).toString();
-    const int proxyPort = settings.value( u"proxy/proxyPort"_s, "" ).toString().toInt();
+    const QString proxyHost = settingsProxyHost->value();
+    const int proxyPort = settingsProxyPort->value().toInt();
 
-    const QString proxyUser = settings.value( u"proxy/proxyUser"_s, "" ).toString();
-    const QString proxyPassword = settings.value( u"proxy/proxyPassword"_s, "" ).toString();
+    const QString proxyUser = settingsProxyUser->value();
+    const QString proxyPassword = settingsProxyPassword->value();
 
-    const QString proxyTypeString = settings.value( u"proxy/proxyType"_s, "" ).toString();
+    const QString proxyTypeString = settingsProxyType->value();
 
     if ( proxyTypeString == "DefaultProxy"_L1 )
     {
@@ -808,7 +816,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
     // Setup network proxy authentication configuration
-    const QString authcfg = settings.value( u"proxy/authcfg"_s, "" ).toString();
+    const QString authcfg = settingsProxyAuthCfg->value();
     if ( !authcfg.isEmpty() )
     {
 #ifdef HAVE_AUTH

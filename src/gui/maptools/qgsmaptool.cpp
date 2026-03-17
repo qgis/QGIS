@@ -21,6 +21,8 @@
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QAbstractButton>
 #include <QAction>
@@ -29,6 +31,9 @@
 #include "moc_qgsmaptool.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryDouble *QgsMapTool::settingSearchRadiusMM
+  = new QgsSettingsEntryDouble( u"search-radius-mm"_s, QgsSettingsTree::sTreeMap, Qgis::DEFAULT_SEARCH_RADIUS_MM, u"Search/identify radius in millimeters"_s );
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
@@ -234,8 +239,7 @@ QgsMapCanvas *QgsMapTool::canvas() const
 
 double QgsMapTool::searchRadiusMM()
 {
-  const QgsSettings settings;
-  const double radius = settings.value( u"Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const double radius = settingSearchRadiusMM->value();
 
   if ( radius > 0 )
   {
