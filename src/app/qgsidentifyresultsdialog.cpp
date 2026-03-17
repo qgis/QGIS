@@ -117,6 +117,8 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations
   = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
 
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyExpand = new QgsSettingsEntryBool( u"identify-expand"_s, QgsSettingsTree::sTreeMap, false, u"Whether to auto-expand identify results"_s );
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -401,7 +403,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   }
   mIdentifyToolbar->setIconSize( QSize( size, size ) );
 
-  mExpandNewAction->setChecked( mySettings.value( u"Map/identifyExpand"_s, false ).toBool() );
+  mExpandNewAction->setChecked( QgsIdentifyResultsDialog::settingIdentifyExpand->value() );
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
@@ -2716,8 +2718,7 @@ void QgsIdentifyResultsDialog::mActionShowRelations_toggled( bool checked )
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/identifyExpand"_s, checked );
+  QgsIdentifyResultsDialog::settingIdentifyExpand->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
