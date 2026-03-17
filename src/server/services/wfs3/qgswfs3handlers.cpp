@@ -868,17 +868,12 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
               { "default", defaultResponse() } } } } }
     };
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-
-    // get access controls
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     // If the layer has no insert capabilities, remove the post operation
-    if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
+    if ( !canInsertFeatures( mapLayer, context ) )
     {
       data[path.toStdString()].erase( "post" );
     }
 
-#endif
 
   } // end for loop
   return data;
