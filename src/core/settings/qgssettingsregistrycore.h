@@ -165,6 +165,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry show feature counts for newly added layers by default
     static const QgsSettingsEntryBool *settingsLayerTreeShowFeatureCountForNewLayers;
 
+    /**
+     * Settings entry for showing legend classifiers (classification attribute name) in layer tree.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryBool *settingsLayerTreeShowLegendClassifiers;
+
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
 
