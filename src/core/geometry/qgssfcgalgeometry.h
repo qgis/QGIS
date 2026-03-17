@@ -721,6 +721,7 @@ class CORE_EXPORT QgsSfcgalGeometry
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
     void setPrimitiveTranslate( const QgsVector3D &translation );
     void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
+    //!The rotation angle is in radians.
     void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
 
     sfcgal::shared_prim mSfcgalPrim;

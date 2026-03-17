@@ -1036,7 +1036,7 @@ void QgsSfcgalGeometry::setPrimitiveRotation( double angle, const QgsVector3D &a
   QVector3D prevTrans = mPrimTransform.column( 3 ).toVector3D();
   mPrimTransform.translate( prevTrans - qCenter );
   // TODO: need to merge previous rotation values with the new ones
-  mPrimTransform.rotate( QQuaternion::fromAxisAndAngle( axisVector.toVector3D(), angle ) );
+  mPrimTransform.rotate( QQuaternion::fromAxisAndAngle( axisVector.toVector3D(), angle * 180.0 / M_PI ) );
   mPrimTransform.translate( prevTrans + qCenter );
 }
 
