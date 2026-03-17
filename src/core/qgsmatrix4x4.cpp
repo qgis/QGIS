@@ -72,7 +72,7 @@ QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector )
   y = vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] + matrix.m[3][1];
   z = vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] + matrix.m[3][2];
   w = vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] + matrix.m[3][3];
-  if ( w == 1.0f )
+  if ( w == 1.0 )
     return QgsVector3D( x, y, z );
   else
     return QgsVector3D( x / w, y / w, z / w );
