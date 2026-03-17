@@ -173,7 +173,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     /**
      * Settings entry for monitor directories in browser.
-     * \since QGIS 3.44
+     * \since QGIS 4.0.1
      */
     static const QgsSettingsEntryBool *settingsMonitorDirectoriesInBrowser;
 #endif
