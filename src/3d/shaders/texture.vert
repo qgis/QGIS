@@ -9,9 +9,7 @@ in vec4 instanceRotation;
 in vec3 instanceScale;
 
 vec3 rotateByQuat(vec3 v, vec4 q) {
-    vec3 u = q.xyz;
-    float s = q.w;
-    return 2.0 * dot(u, v) * u + (s*s - dot(u,u)) * v + 2.0 * s * cross(u, v);
+    return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
 }
 #endif
 
