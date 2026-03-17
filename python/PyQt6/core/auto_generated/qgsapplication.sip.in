@@ -1234,6 +1234,7 @@ file
 %End
 
 
+
 %If (ANDROID)
   // dummy method to workaround sip generation issue
   bool x11EventFilter(XEvent *event);

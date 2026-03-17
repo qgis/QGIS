@@ -1238,6 +1238,8 @@ class CORE_EXPORT QgsApplication : public QApplication
    */
   void collectTranslatableObjects(QgsTranslationContext *translationContext);
 
+  static const QgsSettingsEntryString *settingsNullRepresentation SIP_SKIP;
+
 #ifndef SIP_RUN
   //! Settings entry locale user locale
   static const QgsSettingsEntryString *settingsLocaleUserLocale;
