@@ -131,9 +131,9 @@ class CORE_EXPORT QgsMatrix4x4
     explicit QgsMatrix4x4( int ) { }   // cppcheck-suppress uninitMemberVarPrivate
 };
 
-//! Matrix-matrix multiplication (useful to concatenate transforms)
-CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
 //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
+//! Matrix-matrix multiplication (useful to concatenate transforms)
 CORE_EXPORT QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
 
 
