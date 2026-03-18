@@ -53,6 +53,7 @@
 
 #include <QAbstractButton>
 #include <QAction>
+#include <QActionGroup>
 #include <QBuffer>
 #include <QButtonGroup>
 #include <QColorDialog>
@@ -1993,6 +1994,12 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setOffset );
   connect( mSpinAverageAngleLength, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setAverageAngle );
 
+  QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->setExclusionPolicy( QActionGroup::ExclusionPolicy::Exclusive );
+  actionGroup->addAction( mEditBlankSegmentsAction );
+  actionGroup->addAction( mAddExtraItemAction );
+  actionGroup->addAction( mModifyExtraItemAction );
+
   mEditBlankSegmentsBtn->setDefaultAction( mEditBlankSegmentsAction );
   connect( mEditBlankSegmentsAction, &QAction::triggered, this, &QgsMarkerLineSymbolLayerWidget::toggleMapToolEditBlankSegments );
 
@@ -2427,8 +2434,11 @@ void QgsTemplatedLineSymbolLayerWidget::setAverageAngle( double val )
   }
 }
 
-void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments()
+void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool toggled )
 {
+  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolEditBlankSegments.get() )
+    return;
+
   switch ( mSymbolType )
   {
     case TemplatedSymbolType::Hash:
@@ -2444,15 +2454,21 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments()
   context().mapCanvas()->setMapTool( mMapToolEditBlankSegments );
 }
 
-void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem()
+void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem( bool toggled )
 {
+  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolAddExtraItem.get() )
+    return;
+
   mMapToolAddExtraItem.reset( new QgsMapToolAddExtraItem( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
   mMapToolAddExtraItem->setAction( mAddExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolAddExtraItem );
 }
 
-void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem()
+void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem( bool toggled )
 {
+  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolModifyExtraItem.get() )
+    return;
+
   mMapToolModifyExtraItem.reset( new QgsMapToolModifyExtraItems( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
   mMapToolModifyExtraItem->setAction( mModifyExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolModifyExtraItem );
@@ -2498,7 +2514,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 
 int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
 {
-  const QgsProperty blankSegmentsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments );
+  const QgsProperty blankSegmentsProperty = mLayer ? mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments ) : QgsProperty();
   return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
            ? vectorLayer()->fields().indexFromName( blankSegmentsProperty.field() )
            : -1;
@@ -2536,10 +2552,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateExtraItemsWidget()
 int QgsTemplatedLineSymbolLayerWidget::extraItemsFieldIndex() const
 {
   const QgsProperty &extraItemsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::ExtraItems );
-  return extraItemsProperty && extraItemsProperty.isActive()
-             && extraItemsProperty.propertyType() == Qgis::PropertyType::Field
-           ? vectorLayer()->fields().indexFromName( extraItemsProperty.field() )
-           : -1;
+  return extraItemsProperty && extraItemsProperty.isActive() && extraItemsProperty.propertyType() == Qgis::PropertyType::Field ? vectorLayer()->fields().indexFromName( extraItemsProperty.field() ) : -1;
 }
 
 
