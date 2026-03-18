@@ -62,6 +62,10 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = sipType_QgsNullMaterialSettings;
     }
+    else if ( sipCpp->type() == "metalrough" )
+    {
+      sipType = sipType_QgsMetalRoughMaterialSettings;
+    }
     else
     {
       sipType = 0;

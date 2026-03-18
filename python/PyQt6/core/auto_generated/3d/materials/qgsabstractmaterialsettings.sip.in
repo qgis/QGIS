@@ -46,6 +46,10 @@ Abstract base class for material settings.
     {
       sipType = sipType_QgsNullMaterialSettings;
     }
+    else if ( sipCpp->type() == "metalrough" )
+    {
+      sipType = sipType_QgsMetalRoughMaterialSettings;
+    }
     else
     {
       sipType = 0;
