@@ -118,6 +118,7 @@ class TestQgs3DRendering : public QgsTest
     void testInstancedRendering();
     void testInstancedRenderingTransform_data();
     void testInstancedRenderingTransform();
+    void testModelPointRendering_data();
     void testModelPointRendering();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
@@ -1887,11 +1888,72 @@ void TestQgs3DRendering::testInstancedRenderingTransform()
   QGSVERIFYIMAGECHECK( referenceImage, referenceImage, image, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testModelPointRendering_data()
+{
+  QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QgsPropertyCollection>( "dataDefinedProperties" );
+  QTest::addColumn<bool>( "useClipping" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QgsPropertyCollection ddProps;
+  QMatrix4x4 uniformScale;
+  uniformScale.scale( 100.0f );
+  QTest::newRow( "no transform no clip" ) << uniformScale << ddProps << false << u"model_rendering"_s;
+  QTest::newRow( "no transform clip" ) << uniformScale << ddProps << true << u"model_rendering_clipping"_s;
+
+  QMatrix4x4 scaleTransform;
+  scaleTransform.scale( 150, 195, 60 );
+  QTest::newRow( "scale" ) << scaleTransform << ddProps << false << u"model_rendering_scale"_s;
+
+  QMatrix4x4 translateTransform;
+  translateTransform.translate( 150, -150, 100 );
+  translateTransform.scale( 100 );
+  QTest::newRow( "translate" ) << translateTransform << ddProps << false << u"model_rendering_translation"_s;
+
+  QMatrix4x4 rotateTransform;
+  rotateTransform.scale( 100 );
+  rotateTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  QTest::newRow( "rotate" ) << rotateTransform << ddProps << false << u"model_rendering_rotation"_s;
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 150, -150, 100 );
+  trsTransform.scale( 150, 195, 60 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  QTest::newRow( "trs" ) << trsTransform << ddProps << false << u"model_rendering_trs"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 175 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 50 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 130 end"_s ) );
+
+  QTest::newRow( "scale with data defined props" ) << scaleTransform << ddProps << false << u"model_rendering_dd_scale"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 45 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -10 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 90 end"_s ) );
+
+  QTest::newRow( "rotation with data defined props" ) << rotateTransform << ddProps << false << u"model_rendering_dd_rotation"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -150 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 150 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then -90 end"_s ) );
+
+  QTest::newRow( "translation with data defined props" ) << translateTransform << ddProps << false << u"model_rendering_dd_translation"_s;
+}
+
 void TestQgs3DRendering::testModelPointRendering()
 {
+  QFETCH( QMatrix4x4, transform );
+  QFETCH( QgsPropertyCollection, dataDefinedProperties );
+  QFETCH( bool, useClipping );
+  QFETCH( QString, referenceImage );
+
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1901,8 +1963,11 @@ void TestQgs3DRendering::testModelPointRendering()
   QgsFeature f2( layerPointsZ->fields() );
   QgsFeature f3( layerPointsZ->fields() );
 
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
   f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setAttributes( QgsAttributes() << 11 << 2 << 13 );
   f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setAttributes( QgsAttributes() << 1 << 12 << 3 );
   f3.setGeometry( QgsGeometry( p3 ) );
 
   QgsFeatureList featureList;
@@ -1917,9 +1982,8 @@ void TestQgs3DRendering::testModelPointRendering()
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::green );
   symbol->setMaterialSettings( materialSettings.clone() );
-  QMatrix4x4 id;
-  id.scale( 100.0f );
-  symbol->setTransform( id );
+  symbol->setTransform( transform );
+  symbol->setDataDefinedProperties( dataDefinedProperties );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
 
@@ -1939,7 +2003,10 @@ void TestQgs3DRendering::testModelPointRendering()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
   QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 660.0 ) << QVector4D( 0.5, 0.866025, 0, 685.0 ) << QVector4D( -0.5, -0.866025, 0, 650.0 );
-  scene->enableClipping( clipPlanesEquations );
+  if ( useClipping )
+    scene->enableClipping( clipPlanesEquations );
+  else
+    scene->disableClipping();
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -1947,13 +2014,7 @@ void TestQgs3DRendering::testModelPointRendering()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "model_rendering_clipping", "model_rendering_clipping", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
-
-  scene->disableClipping();
-
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
