@@ -73,8 +73,6 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
-  connectToLayersRepaintRequest();
-
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
   mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator );
@@ -197,23 +195,7 @@ void QgsTerrainEntity::invalidateMapImages()
 
 void QgsTerrainEntity::onLayersChanged()
 {
-  connectToLayersRepaintRequest();
   invalidateMapImages();
-}
-
-void QgsTerrainEntity::connectToLayersRepaintRequest()
-{
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
-  }
-
-  mLayers = mMapSettings->layers();
-
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
-  }
 }
 
 void QgsTerrainEntity::onTerrainElevationOffsetChanged()
