@@ -433,6 +433,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
+
+    // we start with a maximal z range because we can't know this upfront. There's too many
+    // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
+    // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
+    // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
+    // height will exceed this amount!
+    static constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
+    static constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
 };
 
 #endif // QGS3DUTILS_H
