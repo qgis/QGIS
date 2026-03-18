@@ -82,6 +82,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   QToolBar *toolBar = new QToolBar( this );
+  toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
   actionCameraControl->setCheckable( true );
