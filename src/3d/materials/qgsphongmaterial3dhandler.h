@@ -28,6 +28,7 @@ class QgsMaterial;
  * \brief 3D handler for the Phong shading material.
  *
  * \warning Not available in Python bindings
+ * \since QGIS 4.2
  */
 class _3D_EXPORT QgsPhongMaterial3DHandler : public QgsAbstractMaterial3DHandler
 {
