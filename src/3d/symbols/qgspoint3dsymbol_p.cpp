@@ -710,6 +710,38 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   }
 }
 
+QVector3D stringToAxis( const QString &axis )
+{
+  if ( axis == "x"_L1 )
+    return QVector3D( 1.0f, 0.0f, 0.0f );
+  if ( axis == "-x"_L1 )
+    return QVector3D( -1.0f, 0.0f, 0.0f );
+  if ( axis == "y"_L1 )
+    return QVector3D( 0.0f, 1.0f, 0.0f );
+  if ( axis == "-y"_L1 )
+    return QVector3D( 0.0f, -1.0f, 0.0f );
+  if ( axis == "z"_L1 )
+    return QVector3D( 0.0f, 0.0f, 1.0f );
+  if ( axis == "-z"_L1 )
+    return QVector3D( 0.0f, 0.0f, -1.0f );
+
+  return QVector3D();
+}
+
+QMatrix4x4 createZUpTransform( const QString &upAxis, const QString &forwardAxis )
+{
+  QVector3D up = stringToAxis( upAxis );
+  QVector3D forward = stringToAxis( forwardAxis );
+
+  if ( up.isNull() || forward.isNull() || std::abs( QVector3D::dotProduct( up, forward ) ) > 1e-6f )
+  {
+    // no transform (identity matrix) on error
+    return QMatrix4x4();
+  }
+
+  QVector3D right = QVector3D::crossProduct( forward, up ).normalized();
+  return QMatrix4x4( right.x(), right.y(), right.z(), 0.0f, forward.x(), forward.y(), forward.z(), 0.0f, up.x(), up.y(), up.z(), 0.0f, 0.0f, 0.0f, 0.0f, 1.0f );
+}
 
 void QgsModelPoint3DSymbolHandler::addSceneEntities(
   const Qgs3DRenderContext &context,
@@ -724,6 +756,11 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities(
   Q_UNUSED( context );
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
   // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
+
+  const QString upAxis = symbol->shapeProperty( u"upAxis"_s ).toString();
+  const QString forwardAxis = symbol->shapeProperty( u"forwardAxis"_s ).toString();
+  const QMatrix4x4 zUpMatrix = createZUpTransform( upAxis, forwardAxis );
+
   if ( !source.isEmpty() )
   {
     int index = 0;
@@ -739,6 +776,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities(
       QMatrix4x4 entityTransform;
       entityTransform.scale( scales.at( index ) );
       entityTransform.rotate( rotations.at( index ) );
+      entityTransform *= zUpMatrix;
 
       entity->addComponent( modelLoader );
       entity->addComponent( transform( position, entityTransform, chunkOrigin ) );
@@ -769,6 +807,10 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities(
 {
   if ( positions.empty() )
     return;
+
+  const QString upAxis = symbol->shapeProperty( u"upAxis"_s ).toString();
+  const QString forwardAxis = symbol->shapeProperty( u"forwardAxis"_s ).toString();
+  const QMatrix4x4 zUpMatrix = createZUpTransform( upAxis, forwardAxis );
 
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
   if ( !source.isEmpty() )
@@ -801,6 +843,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities(
       QMatrix4x4 entityTransform;
       entityTransform.scale( scales.at( index ) );
       entityTransform.rotate( rotations.at( index ) );
+      entityTransform *= zUpMatrix;
 
       entity->addComponent( transform( position, entityTransform, chunkOrigin ) );
       entity->setParent( parent );
