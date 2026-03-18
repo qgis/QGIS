@@ -503,7 +503,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     {
       if ( parameter->name() == "symbolScale"_L1 )
       {
-        symbolScale = parameter->value().value<QVector4D>().toVector3D();
+        symbolScale = parameter->value().value<QVector3D>();
       }
       else if ( parameter->name() == "symbolRotation"_L1 )
       {
