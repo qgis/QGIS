@@ -33,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
+#include "qgsdirectoryitem.h"
 #include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -553,7 +554,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  mCheckMonitorDirectories->setChecked( mSettings->value( u"/qgis/monitorDirectoriesInBrowser"_s, true ).toBool() );
+  mCheckMonitorDirectories->setChecked( QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->value() );
 
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
@@ -756,7 +757,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mNativeColorDialogsChkBx->setChecked( QgsSettingsRegistryGui::settingsNativeColorDialogs->value() );
 
-  cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
+  cbxLegendClassifiers->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
@@ -995,7 +996,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default layout font
   mComposerFontComboBox->blockSignals( true );
 
-  QString layoutFontFamily = mSettings->value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  QString layoutFontFamily = QgsLayout::settingsLayoutDefaultFont->value();
 
   QFont tempLayoutFont( layoutFontFamily );
   // is exact family match returned from system?
@@ -1628,8 +1629,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/Map/highlight/buffer"_s, mIdentifyHighlightBufferSpinBox->value() );
   mSettings->setValue( u"/Map/highlight/minWidth"_s, mIdentifyHighlightMinWidthSpinBox->value() );
 
-  bool showLegendClassifiers = mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool();
-  mSettings->setValue( u"/qgis/showLegendClassifiers"_s, cbxLegendClassifiers->isChecked() );
+  bool showLegendClassifiers = QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value();
+  QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->setValue( cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
@@ -1644,7 +1645,7 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
-  mSettings->setValue( u"/qgis/monitorDirectoriesInBrowser"_s, mCheckMonitorDirectories->isChecked() );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
 
@@ -1869,7 +1870,7 @@ void QgsOptions::saveOptions()
 
   //default font
   QString layoutFont = mComposerFontComboBox->currentFont().family();
-  mSettings->setValue( u"LayoutDesigner/defaultFont"_s, layoutFont, QgsSettings::Gui );
+  QgsLayout::settingsLayoutDefaultFont->setValue( layoutFont );
 
   QgsLayoutItemLegend::settingDefaultLegendSyncMode->setValue( mLegendSyncModeCombo->currentData().value< Qgis::LegendSyncMode >() );
 

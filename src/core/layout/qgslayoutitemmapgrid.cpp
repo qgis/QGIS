@@ -37,7 +37,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
@@ -196,8 +196,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
   , mGridFrameSides( Qgis::MapGridFrameSideFlag::Left | Qgis::MapGridFrameSideFlag::Right | Qgis::MapGridFrameSideFlag::Top | Qgis::MapGridFrameSideFlag::Bottom )
 {
   //get default layout font from settings
-  const QgsSettings settings;
-  const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
   if ( !defaultFontString.isEmpty() )
   {
     QFont font;
