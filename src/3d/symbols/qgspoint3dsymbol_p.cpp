@@ -634,7 +634,7 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
     const double scaleX = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleX, context.expressionContext(), mSymbolScale.x() );
     const double scaleY = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleY, context.expressionContext(), mSymbolScale.y() );
     const double scaleZ = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleZ, context.expressionContext(), mSymbolScale.z() );
-    scale = QVector3D( scaleX, scaleY, scaleZ );
+    scale = QVector3D( static_cast< float >( scaleX ), static_cast< float >( scaleY ), static_cast< float >( scaleZ ) );
   }
 
   out.scales.resize( out.positions.size() );
