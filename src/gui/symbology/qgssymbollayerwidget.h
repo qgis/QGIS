@@ -520,9 +520,9 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void averageAngleUnitChanged();
     void blankSegmentsUnitChanged();
     void setAverageAngle( double val );
-    void toggleMapToolEditBlankSegments();
-    void toggleMapToolAddExtraItem();
-    void toggleMapToolModifyExtraItem();
+    void toggleMapToolEditBlankSegments( bool toggled );
+    void toggleMapToolAddExtraItem( bool toggled );
+    void toggleMapToolModifyExtraItem( bool toggled );
 
     void updateBlankSegmentsWidget();
     void updateExtraItemsWidget();
