@@ -227,9 +227,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::init()
   switch ( mMode )
   {
     case Mode::ActionSelector:
-      mRootItems << mCustomization->menusItem()
-                 << mCustomization->toolBarsItem()
-                 << mCustomization->processingProvidersItem();
+      mRootItems << mCustomization->menusItem() << mCustomization->toolBarsItem() << mCustomization->processingProvidersItem();
       break;
 
     case Mode::ItemVisibility:
@@ -413,7 +411,8 @@ bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMime
          // Try to see if we can workaround thin in dragEnterEvent
          // uncomment the following lines when fixed
          /* && item && item->hasCapability( QgsCustomization::Item::ItemCapability::UserMenuChild ) */
-         && data && ( data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) || data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
+         && data
+         && ( data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) || data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent )
@@ -430,9 +429,7 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const QMimeData *data, int row, const QModelIndex &parent )
 {
   QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
-  if ( !item || !data
-       || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild )
-       || !data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) )
+  if ( !item || !data || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild ) || !data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) )
     return false;
 
   QDataStream dataStreamRead( data->data( ACTIONPATHS_MIMEDATA_NAME ) );
@@ -473,7 +470,8 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataProcessingAlgori
 {
   QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
   if ( !QgsApplication::processingRegistry()
-       || !item || !data
+       || !item
+       || !data
        || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddProcessingAlgorithmRefChild )
        || !data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) )
     return false;
@@ -501,7 +499,8 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataProcessingAlgori
   beginInsertRows( parent, row, row + static_cast<int>( processingAlgorithms.count() ) - 1 );
   for ( const QgsProcessingAlgorithm *processingAlgorithm : std::as_const( processingAlgorithms ) )
   {
-    auto processingAlgorithmRef = std::make_unique<QgsCustomization::QgsProcessingAlgorithmRefItem>( processingAlgorithm->id(), mCustomization->uniqueProcessingAlgorithmName( processingAlgorithm->name() ), processingAlgorithm->displayName(), item );
+    auto processingAlgorithmRef = std::make_unique<
+      QgsCustomization::QgsProcessingAlgorithmRefItem>( processingAlgorithm->id(), mCustomization->uniqueProcessingAlgorithmName( processingAlgorithm->name() ), processingAlgorithm->displayName(), item );
     processingAlgorithmRef->setIcon( processingAlgorithm->icon() );
     item->insertChild( row, std::move( processingAlgorithmRef ) );
   }
