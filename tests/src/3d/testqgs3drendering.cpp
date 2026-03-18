@@ -116,6 +116,8 @@ class TestQgs3DRendering : public QgsTest
     void testBillboardRendering();
     void testTexturedBillboardRendering();
     void testInstancedRendering();
+    void testInstancedRenderingTransform_data();
+    void testInstancedRenderingTransform();
     void testModelPointRendering();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
@@ -1753,6 +1755,136 @@ void TestQgs3DRendering::testInstancedRendering()
   delete scene;
   delete mapSettings;
   QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testInstancedRenderingTransform_data()
+{
+  QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QgsPropertyCollection>( "dataDefinedProperties" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QgsPropertyCollection ddProps;
+  QMatrix4x4 scaleTransform;
+  scaleTransform.scale( 5.5, 1.5, 3 );
+  QTest::newRow( "scale" ) << scaleTransform << ddProps << u"cylinder_scale_rendering"_s;
+
+  QMatrix4x4 translateTransform;
+  translateTransform.translate( 550, 150, 300 );
+  QTest::newRow( "translate" ) << translateTransform << ddProps << u"cylinder_translate_rendering"_s;
+
+  QMatrix4x4 rotateTransform;
+  rotateTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  QTest::newRow( "rotate" ) << rotateTransform << ddProps << u"cylinder_rotate_rendering"_s;
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 550, 150, 300 );
+  trsTransform.scale( 5.5, 1.5, 3 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  QTest::newRow( "trs" ) << trsTransform << ddProps << u"cylinder_trs_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then .75 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then .5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then .3 end"_s ) );
+
+  QTest::newRow( "scale with data defined props" ) << scaleTransform << ddProps << u"cylinder_scale_dd_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -200 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -100 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 50 end"_s ) );
+
+  QTest::newRow( "translate with data defined props" ) << translateTransform << ddProps << u"cylinder_translate_dd_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 45 end"_s ) );
+
+  QTest::newRow( "translate with data defined props" ) << rotateTransform << ddProps << u"cylinder_rotate_dd_rendering"_s;
+
+  QMatrix4x4 trsTransform2;
+  trsTransform2.translate( 550, 150, 300 );
+  trsTransform2.scale( 1.5, 1.1, 1.3 );
+  trsTransform2.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then .75 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then .5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then .3 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -200 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -100 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 50 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 45 end"_s ) );
+
+  QTest::newRow( "trs with data defined props" ) << trsTransform2 << ddProps << u"cylinder_trs_dd_rendering"_s;
+}
+
+void TestQgs3DRendering::testInstancedRenderingTransform()
+{
+  QFETCH( QMatrix4x4, transform );
+  QFETCH( QgsPropertyCollection, dataDefinedProperties );
+  QFETCH( QString, referenceImage );
+
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setAttributes( QgsAttributes() << 11 << 2 << 13 );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setAttributes( QgsAttributes() << 1 << 12 << 3 );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
+  sphere3DSymbol->setDataDefinedProperties( dataDefinedProperties );
+
+  sphere3DSymbol->setTransform( transform );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 80.0f;
+  vmSphere[u"length"_s] = 200.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  const QImage image = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, image, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testModelPointRendering()
