@@ -16,6 +16,7 @@
 #ifndef QGSHIGHLIGHTMATERIAL_H
 #define QGSHIGHLIGHTMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
