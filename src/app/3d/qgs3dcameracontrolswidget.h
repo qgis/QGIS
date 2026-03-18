@@ -33,11 +33,19 @@ class APP_EXPORT Qgs3DCameraControlsWidget : public QWidget, Ui::Qgs3DCameraCont
   public slots:
     void updateFromCamera() const;
 
+  private slots:
+    void autoApply();
+    void applySettings();
+    void liveApplyToggled( bool liveUpdateEnabled );
+
   private:
     void setCRSInfo() const;
     void updateCameraLookingAt();
+    void connectLiveUpdates();
+    void disconnectLiveUpdates();
 
     Qgs3DMapCanvas *m3DMapCanvas = nullptr;
+    QTimer *mAutoApplyTimer = nullptr;
 };
 
 #endif // QGS3DCAMERACONTROLSWIDGET_H

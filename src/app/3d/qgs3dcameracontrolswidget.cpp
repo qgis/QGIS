@@ -21,8 +21,12 @@
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayoututils.h"
+#include "qgssettings.h"
 
+#include <QPushButton>
 #include <QString>
+#include <QTimer>
 
 #include "moc_qgs3dcameracontrolswidget.cpp"
 
@@ -34,41 +38,24 @@ Qgs3DCameraControlsWidget::Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QW
 {
   setupUi( this );
 
-  connect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double ) {
-    updateCameraLookingAt();
-  } );
+  mAutoApplyTimer = new QTimer( this );
+  mAutoApplyTimer->setSingleShot( true );
+  connect( mAutoApplyTimer, &QTimer::timeout, this, &Qgs3DCameraControlsWidget::applySettings );
 
-  connect( mCameraY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double ) {
-    updateCameraLookingAt();
-  } );
+  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &Qgs3DCameraControlsWidget::applySettings );
+  connect( mLiveApplyCheck, &QCheckBox::toggled, this, &Qgs3DCameraControlsWidget::liveApplyToggled );
 
-  connect( mCameraZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double ) {
-    updateCameraLookingAt();
-  } );
-
-  connect( mCameraPitch, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    QgsCameraPose pose = m3DMapCanvas->cameraController()->cameraPose();
-    pose.setPitchAngle( value );
-    m3DMapCanvas->cameraController()->setCameraPose( pose );
-  } );
-
-  connect( mCameraHeading, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    QgsCameraPose pose = m3DMapCanvas->cameraController()->cameraPose();
-    pose.setHeadingAngle( value );
-    m3DMapCanvas->cameraController()->setCameraPose( pose );
-  } );
-
-  connect( mCameraDistanceFromCenterPoint, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    QgsCameraPose pose = m3DMapCanvas->cameraController()->cameraPose();
-    pose.setDistanceFromCenterPoint( value );
-    m3DMapCanvas->cameraController()->setCameraPose( pose );
-  } );
+  QgsSettings settings;
+  mLiveApplyCheck->setChecked( settings.value( u"UI/3DCameraControlsLiveUpdate"_s, true ).toBool() );
+  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !mLiveApplyCheck->isChecked() );
+  if ( mLiveApplyCheck->isChecked() )
+    connectLiveUpdates();
 
   mCameraX->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mCameraY->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mCameraZ->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mCameraPitch->setRange( 0.0, 180.0 );
-  mCameraHeading->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
+  mCameraHeading->setRange( 0.0, 360.0 );
   mCameraDistanceFromCenterPoint->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
 
   setCRSInfo();
@@ -98,8 +85,8 @@ void Qgs3DCameraControlsWidget::updateFromCamera() const
   whileBlocking( mCameraY )->setValue( mapCoords.y() );
   whileBlocking( mCameraZ )->setValue( mapCoords.z() );
 
-  whileBlocking( mCameraPitch )->setValue( pose.pitchAngle() );
-  whileBlocking( mCameraHeading )->setValue( pose.headingAngle() );
+  whileBlocking( mCameraPitch )->setValue( QgsLayoutUtils::normalizedAngle( pose.pitchAngle() ) );
+  whileBlocking( mCameraHeading )->setValue( QgsLayoutUtils::normalizedAngle( pose.headingAngle() ) );
   whileBlocking( mCameraDistanceFromCenterPoint )->setValue( pose.distanceFromCenterPoint() );
 }
 
@@ -108,4 +95,56 @@ void Qgs3DCameraControlsWidget::setCRSInfo() const
   QgsCoordinateReferenceSystem crs = m3DMapCanvas->mapSettings()->crs();
   labelCRS->setText( tr( "Coordinates in 3D map CRS" ) + u" (%1)"_s.arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
   labelCRS->setToolTip( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) );
+}
+
+void Qgs3DCameraControlsWidget::autoApply()
+{
+  mAutoApplyTimer->start( 100 );
+}
+
+void Qgs3DCameraControlsWidget::liveApplyToggled( const bool liveUpdateEnabled )
+{
+  QgsSettings settings;
+  settings.setValue( u"UI/3DCameraControlsLiveUpdate"_s, liveUpdateEnabled );
+  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !liveUpdateEnabled );
+  if ( liveUpdateEnabled )
+  {
+    connectLiveUpdates();
+    applySettings();
+  }
+  else
+  {
+    disconnectLiveUpdates();
+  }
+}
+
+void Qgs3DCameraControlsWidget::connectLiveUpdates()
+{
+  connect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  connect( mCameraY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  connect( mCameraZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  connect( mCameraPitch, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  connect( mCameraHeading, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  connect( mCameraDistanceFromCenterPoint, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+}
+
+void Qgs3DCameraControlsWidget::disconnectLiveUpdates()
+{
+  disconnect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  disconnect( mCameraY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  disconnect( mCameraZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  disconnect( mCameraPitch, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  disconnect( mCameraHeading, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+  disconnect( mCameraDistanceFromCenterPoint, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DCameraControlsWidget::autoApply );
+}
+
+void Qgs3DCameraControlsWidget::applySettings()
+{
+  updateCameraLookingAt();
+
+  QgsCameraPose pose = m3DMapCanvas->cameraController()->cameraPose();
+  pose.setPitchAngle( mCameraPitch->value() );
+  pose.setHeadingAngle( mCameraHeading->value() );
+  pose.setDistanceFromCenterPoint( mCameraDistanceFromCenterPoint->value() );
+  m3DMapCanvas->cameraController()->setCameraPose( pose );
 }
