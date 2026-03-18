@@ -92,7 +92,7 @@ void QgsDemTerrainTileLoader::start()
 
   // get heightmap asynchronously
   connect( heightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
-  mHeightMapJobId = heightMapGenerator->render( node->tileId() );
+  mHeightMapJobId = heightMapGenerator->render( node );
   mResolution = heightMapGenerator->resolution();
 }
 
@@ -142,7 +142,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   return entity;
 }
 
-void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QgsChunkNodeId &, const QgsRectangle &, const QByteArray &heightMap )
+void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QgsChunkNode *, const QgsRectangle &, const QByteArray &heightMap )
 {
   if ( mHeightMapJobId == jobId )
   {
@@ -236,21 +236,20 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
   return downloader->getHeightMap( extent, res, destCrs, context );
 }
 
-int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
+int QgsDemHeightMapGenerator::render( const QgsChunkNode *node )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"DEM"_s, nodeId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"DEM"_s, node->tileId().text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
-  QgsRectangle extent = mTilingScheme.tileToExtent( nodeId );
+  QgsRectangle extent = mTilingScheme.tileToExtent( node->tileId() );
   float mapUnitsPerPixel = extent.width() / mResolution;
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the root tile's full extent (returns invalid values)
   QgsRectangle rootTileExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
   extent = extent.intersect( rootTileExtent );
 
-  JobData jd;
+  JobData jd( node );
   jd.jobId = ++mLastJobId;
-  jd.tileId = nodeId;
   jd.extent = extent;
   jd.timer.start();
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
@@ -292,7 +291,7 @@ void QgsDemHeightMapGenerator::waitForFinished()
     toBeDeleted.push_back( fw );
 
     QByteArray data = jobData.future.result();
-    emit heightMapReady( jobData.jobId, jobData.tileId, jobData.extent, data );
+    emit heightMapReady( jobData.jobId, jobData.node, jobData.extent, data );
   }
 
   for ( QFutureWatcher<QByteArray> *fw : toBeDeleted )
@@ -341,10 +340,10 @@ void QgsDemHeightMapGenerator::onFutureFinished()
   mJobs.remove( fw );
   fw->deleteLater();
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"DEM"_s, jobData.tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"DEM"_s, jobData.node->tileId().text() );
 
   QByteArray data = jobData.future.result();
-  emit heightMapReady( jobData.jobId, jobData.tileId, jobData.extent, data );
+  emit heightMapReady( jobData.jobId, jobData.node, jobData.extent, data );
 }
 
 /// @endcond
