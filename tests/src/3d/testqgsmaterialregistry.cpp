@@ -106,9 +106,7 @@ void TestQgsMaterialRegistry::instanceHasDefaultMaterials()
   //(assumes that there is some default materials)
   QgsMaterialRegistry *registry = Qgs3D::materialRegistry();
 
-  // should be empty until initialized
-  QVERIFY( registry->materialSettingsTypes().empty() );
-  Qgs3D::initialize();
+  // should already have materials present
   QVERIFY( registry->materialSettingsTypes().length() > 0 );
 }
 
