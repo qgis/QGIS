@@ -8,15 +8,15 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis._3d import (
+from qgis.core import (
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
     QgsNullMaterialSettings,
     QgsPhongMaterialSettings,
     QgsPhongTexturedMaterialSettings,
+    QgsReadWriteContext,
     QgsSimpleLineMaterialSettings,
 )
-from qgis.core import QgsReadWriteContext
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
