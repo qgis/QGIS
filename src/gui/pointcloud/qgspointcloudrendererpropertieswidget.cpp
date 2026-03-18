@@ -116,21 +116,6 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::BottomToTop ) );
   mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::TopToBottom ) );
 
-  mMethodCombox->addItem( tr( "Eye-Dome Lighting" ) );
-  mMethodCombox->addItem( tr( "Hillshade" ) );
-
-  connect( mMethodCombox, &QComboBox::currentTextChanged, this, [this]( const QString &text ) {
-    if ( text == "Eye-Dome Lighting" )
-    {
-      mStackShading->setCurrentWidget( pageEdl );
-    }
-    else if ( text == "Hillshade" )
-    {
-      mStackShading->setCurrentWidget( pageHillshade );
-    }
-    emitWidgetChanged();
-  } );
-  connect( mShadingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mEdlDistanceSpinBox->setClearValue( 0.5 );
@@ -158,6 +143,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  connect( mEyeDomeLightingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadeGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleCheckBox, &QCheckBox::clicked, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -289,18 +277,9 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     }
 
     QgsElevationShadingRenderer shadingRenderer = mLayer->renderer()->elevationShadingRenderer();
-    mShadingGroupBox->setChecked( shadingRenderer.isActive() );
 
-    if ( shadingRenderer.isActiveEyeDomeLighting() )
-    {
-      mStackShading->setCurrentWidget( pageEdl );
-      mMethodCombox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mStackShading->setCurrentWidget( pageHillshade );
-      mMethodCombox->setCurrentIndex( 1 );
-    }
+    mEyeDomeLightingGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
+    mHillshadeGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
 
     mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
     mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
@@ -365,18 +344,9 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   QgsElevationShadingRenderer shadingRenderer;
 
-  if ( mMethodCombox->currentText() == "Eye-Dome Lighting" )
-  {
-    shadingRenderer.setActiveEyeDomeLighting( true );
-    shadingRenderer.setActiveHillshading( false );
-  }
-  else if ( mMethodCombox->currentText() == "Hillshade" )
-  {
-    shadingRenderer.setActiveEyeDomeLighting( false );
-    shadingRenderer.setActiveHillshading( true );
-  }
-
-  shadingRenderer.setActive( mShadingGroupBox->isChecked() );
+  shadingRenderer.setActiveEyeDomeLighting( mEyeDomeLightingGroupBox->isChecked() );
+  shadingRenderer.setActiveHillshading( mHillshadeGroupBox->isChecked() );
+  shadingRenderer.setActive( mEyeDomeLightingGroupBox->isChecked() || mHillshadeGroupBox->isChecked() );
   shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
