@@ -289,6 +289,19 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
     }
 
     case Qgis::Point3DShape::Model:
+    {
+      // defaults are "z" up, "y" forward -- this ensures default rendering matches 3.x appearance
+      if ( property == "upAxis"_L1 )
+      {
+        return mShapeProperties.value( u"upAxis"_s, u"z"_s ).toString();
+      }
+      if ( property == "forwardAxis"_L1 )
+      {
+        return mShapeProperties.value( u"forwardAxis"_s, u"y"_s ).toString();
+      }
+      break;
+    }
+
     case Qgis::Point3DShape::Billboard:
       break;
   }
