@@ -842,8 +842,6 @@ class APP_EXPORT QgsCustomization
       protected:
         QString xmlTag() const override;
         ItemCapability capabilities() const override;
-
-        QString mId;
     };
 
     /**
@@ -1081,6 +1079,12 @@ class APP_EXPORT QgsCustomization
     void applyToToolBars() const;
 
     /**
+     * Find recursively \a rootItem QgsProcessingAlgorithmRefItem children and set their icon
+     * using referenced algorithm one.
+     */
+    void loadProcessingAlgorithmItemIcons( QgsItem *rootItem );
+
+    /**
      * Helper class to iterate over widget actions
      */
     class QgsQActionsIterator
@@ -1141,8 +1145,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Update menu \a widget visibility based on \a item
      */
-    template<class WidgetType>
-    void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const;
+    template<class WidgetType> void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const;
 
     /**
      * Returns QWidget corresponding to \a path. Path is a '/' separated list of

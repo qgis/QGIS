@@ -25,6 +25,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgslogger.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingregistry.h"
 #include "qgspythonrunner.h"
@@ -68,10 +69,12 @@ class QgsProcessingAlgorithmAction : public QAction
     {
       // AlgorithmDialog class exists only as a Python implementation, so we need to run a
       // Python command to display the associated algorithm dialog
-      const QString command( "import processing; from qgis.utils import iface;"
-                             "dialog = processing.createAlgorithmDialog('%1');\n"
-                             "if dialog: dialog.show()\n"
-                             "else: iface.messageBar().pushMessage( 'Invalid algorithm id : %1', Qgis.MessageLevel.Warning )" );
+      const QString command(
+        "import processing; from qgis.utils import iface;"
+        "dialog = processing.createAlgorithmDialog('%1');\n"
+        "if dialog: dialog.show()\n"
+        "else: iface.messageBar().pushMessage( 'Invalid algorithm id : %1', Qgis.MessageLevel.Warning )"
+      );
       QgsPythonRunner::run( command.arg( mProcessingAlgorithmId ) );
     }
 
@@ -860,7 +863,8 @@ QgsCustomization::QgsProcessingProviderItem::QgsProcessingProviderItem( QgsItem 
 {}
 
 QgsCustomization::QgsProcessingProviderItem::QgsProcessingProviderItem( const QString &name, const QString &title, QgsItem *parent )
-  : QgsItem( name, title, parent ) {}
+  : QgsItem( name, title, parent )
+{}
 
 std::unique_ptr<QgsCustomization::QgsProcessingProviderItem> QgsCustomization::QgsProcessingProviderItem::cloneProcessingProviderItem( QgsCustomization::QgsItem *parent ) const
 {
@@ -889,7 +893,8 @@ QgsCustomization::QgsProcessingGroupItem::QgsProcessingGroupItem( QgsItem *paren
 {}
 
 QgsCustomization::QgsProcessingGroupItem::QgsProcessingGroupItem( const QString &name, const QString &title, QgsItem *parent )
-  : QgsItem( name, title, parent ) {}
+  : QgsItem( name, title, parent )
+{}
 
 std::unique_ptr<QgsCustomization::QgsProcessingGroupItem> QgsCustomization::QgsProcessingGroupItem::cloneProcessingGroupItem( QgsCustomization::QgsItem *parent ) const
 {
@@ -919,7 +924,8 @@ QgsCustomization::QgsProcessingAlgorithmItem::QgsProcessingAlgorithmItem( QgsIte
 {}
 
 QgsCustomization::QgsProcessingAlgorithmItem::QgsProcessingAlgorithmItem( const QString &name, const QString &title, QgsItem *parent )
-  : QgsItem( name, title, parent ) {}
+  : QgsItem( name, title, parent )
+{}
 
 std::unique_ptr<QgsCustomization::QgsProcessingAlgorithmItem> QgsCustomization::QgsProcessingAlgorithmItem::cloneProcessingAlgorithmItem( QgsCustomization::QgsItem *parent ) const
 {
@@ -975,39 +981,12 @@ void QgsCustomization::QgsProcessingAlgorithmRefItem::writeXmlItem( QDomElement 
 {
   elem.setAttribute( u"id"_s, id() );
   elem.setAttribute( u"title"_s, title() );
-
-  const QIcon lIcon = icon();
-  if ( !lIcon.isNull() )
-  {
-    // We have no idea what would be the best size to store, it depends on the widget that would
-    // display it. So let's use a classic size 32x32
-    const QPixmap pixmap = lIcon.pixmap( QSize( 32, 32 ) );
-    QByteArray byteArray;
-    QBuffer buffer( &byteArray );
-    if ( pixmap.save( &buffer, "PNG" ) )
-    {
-      const QString base64 = QString::fromLatin1( byteArray.toBase64() );
-      elem.setAttribute( u"icon"_s, base64 );
-    }
-    else
-    {
-      QgsDebugError( "Fail to save icon in base 64" );
-    }
-  }
 };
 
 void QgsCustomization::QgsProcessingAlgorithmRefItem::readXmlItem( const QDomElement &elem )
 {
   setTitle( elem.attribute( u"title"_s ) );
   mId = elem.attribute( u"id"_s );
-
-  const QString base64 = elem.attribute( u"icon"_s );
-  if ( !base64.isEmpty() )
-  {
-    QPixmap pixmap;
-    pixmap.loadFromData( QByteArray::fromBase64( base64.toLatin1() ) );
-    setIcon( pixmap );
-  }
 };
 
 void QgsCustomization::QgsProcessingAlgorithmRefItem::copyItemAttributes( const QgsItem *other )
@@ -1074,6 +1053,11 @@ void QgsCustomization::setQgisApp( QgisApp *qgisApp )
   mQgisApp = qgisApp;
   if ( newApp )
     load();
+
+  // We need to search for algorithm icon once algorithm have been registered in the application
+  // (not at customization object creation)
+  loadProcessingAlgorithmItemIcons( mToolBars.get() );
+  loadProcessingAlgorithmItemIcons( mMenus.get() );
 
   apply();
 }
@@ -1545,8 +1529,7 @@ QAction *QgsCustomization::findQAction( const QString &path )
   return actionIt != actions.cend() ? *actionIt : nullptr;
 }
 
-template<class WidgetType>
-void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const
+template<class WidgetType> void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const
 {
   // clear all user menu
   const QList<QAction *> widgetActions = parentWidget->actions();
@@ -1729,6 +1712,22 @@ void QgsCustomization::applyToToolBars() const
   }
 }
 
+void QgsCustomization::loadProcessingAlgorithmItemIcons( QgsItem *rootItem )
+{
+  if ( QgsCustomization::QgsProcessingAlgorithmRefItem *algorithmRefItem = dynamic_cast<QgsCustomization::QgsProcessingAlgorithmRefItem *>( rootItem ) )
+  {
+    const QgsProcessingAlgorithm *alg = QgsApplication::processingRegistry()->algorithmById( algorithmRefItem->id() );
+    if ( alg )
+    {
+      algorithmRefItem->setIcon( alg->icon() );
+    }
+  }
+
+  for ( const std::unique_ptr<QgsItem> &childItem : rootItem->childItemList() )
+  {
+    loadProcessingAlgorithmItemIcons( childItem.get() );
+  }
+}
 
 QString QgsCustomization::writeFile( const QString &fileName ) const
 {
