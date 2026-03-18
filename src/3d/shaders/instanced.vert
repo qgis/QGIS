@@ -4,7 +4,7 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec3 instanceTranslation;
 #ifdef USE_INSTANCE_SCALE
-in vec4 instanceScale;
+in vec3 instanceScale;
 #endif
 #ifdef USE_INSTANCE_ROTATION
 in vec4 instanceRotation;
@@ -18,7 +18,7 @@ uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
 uniform vec4 symbolRotation;
-uniform vec4 symbolScale;
+uniform vec3 symbolScale;
 
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
@@ -52,11 +52,11 @@ void main()
     );
 
     #ifdef USE_INSTANCE_SCALE
-    vec4 thisInstanceScale = instanceScale;
-    vec4 thisInstanceNormalScale = 1.0 / instanceScale;
+    vec3 thisInstanceScale = instanceScale;
+    vec3 thisInstanceNormalScale = 1.0 / instanceScale;
     #else
-    vec4 thisInstanceScale = symbolScale;
-    vec4 thisInstanceNormalScale = 1.0 / symbolScale;
+    vec3 thisInstanceScale = symbolScale;
+    vec3 thisInstanceNormalScale = 1.0 / symbolScale;
     #endif
 
     #ifdef USE_INSTANCE_ROTATION
@@ -73,12 +73,12 @@ void main()
 
     // for vertices:
     vec3 zUpPosition = zUpTransform * vertexPosition;
-    vec3 scaledPosition = zUpPosition * thisInstanceScale.xyz;
+    vec3 scaledPosition = zUpPosition * thisInstanceScale;
     vec3 vertexPositionObject = rotateByQuat(scaledPosition, thisInstanceRotation);
 
     // for normals:
     vec3 zUpNormal = zUpNormalTransform * vertexNormal;
-    vec3 scaledNormal = zUpNormal * thisInstanceNormalScale.xyz;
+    vec3 scaledNormal = zUpNormal * thisInstanceNormalScale;
     vec3 vertexNormalObject = rotateByQuat(scaledNormal, thisInstanceRotation);
 
     vec3 vertexPositionChunk = vertexPositionObject + instanceTranslation;
