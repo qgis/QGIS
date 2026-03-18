@@ -36,4 +36,3 @@ jobs:
             Automated vcpkg baseline bump.
 
             ${{ steps.baselines.outputs.summary }}
-          labels: Vcpkg
