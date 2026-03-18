@@ -143,8 +143,8 @@ void Qgs3DCameraControlsWidget::applySettings()
   updateCameraLookingAt();
 
   QgsCameraPose pose = m3DMapCanvas->cameraController()->cameraPose();
-  pose.setPitchAngle( mCameraPitch->value() );
-  pose.setHeadingAngle( mCameraHeading->value() );
-  pose.setDistanceFromCenterPoint( mCameraDistanceFromCenterPoint->value() );
+  pose.setPitchAngle( static_cast< float >( mCameraPitch->value() ) );
+  pose.setHeadingAngle( static_cast< float >( mCameraHeading->value() ) );
+  pose.setDistanceFromCenterPoint( static_cast< float >( mCameraDistanceFromCenterPoint->value() ) );
   m3DMapCanvas->cameraController()->setCameraPose( pose );
 }
