@@ -4,7 +4,3 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "vcpkg"
-    directory: "vcpkg"
-    schedule:
-      interval: "weekly"
