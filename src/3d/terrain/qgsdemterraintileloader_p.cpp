@@ -172,9 +172,7 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
 {}
 
 QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
-{
-  delete mClonedProvider;
-}
+{}
 
 
 static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsRectangle &clippingExtent )
