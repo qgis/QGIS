@@ -197,7 +197,6 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
 
   if ( !fetchNodeHierarchy( n ) )
     return nullptr;
-  QMutexLocker locker( &mHierarchyMutex );
 
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
@@ -205,8 +204,11 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+
+  mHierarchyMutex.lock();
   auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
   int pointCount = mHierarchy.value( n );
+  mHierarchyMutex.unlock();
 
   return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), blockOffset, blockSize, pointCount, *mLazInfo.get(), mAuthCfg );
 }
