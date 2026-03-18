@@ -508,7 +508,6 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       else if ( parameter->name() == "symbolRotation"_L1 )
       {
         symbolRotation = parameter->value().value<QVector4D>();
-        break;
       }
     }
   }
@@ -527,6 +526,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       continue;
     }
 
+    Qt3DCore::QAttribute *instanceScaleAttribute = findAttribute( geometry, u"instanceScale"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *instanceRotationAttribute = findAttribute( geometry, u"instanceRotation"_s, Qt3DCore::QAttribute::VertexAttribute );
+
     const QByteArray vertexBytes = positionAttribute->buffer()->data();
     const QByteArray indexBytes = indexAttribute->buffer()->data();
     if ( vertexBytes.isNull() || indexBytes.isNull() )
@@ -537,6 +539,10 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
+
+    const QVector<QVector3D> instanceScaleData = instanceScaleAttribute ? getAttributeData<QVector3D>( instanceScaleAttribute, instanceScaleAttribute->buffer()->data() ) : QVector<QVector3D>();
+    const QVector<QVector4D> instanceRotationData = instanceRotationAttribute ? getAttributeData<QVector4D>( instanceRotationAttribute, instanceRotationAttribute->buffer()->data() )
+                                                                              : QVector<QVector4D>();
 
     Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"instanceTranslation"_s, Qt3DCore::QAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
@@ -552,14 +558,22 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
 
-    for ( int i = 0; i < instancePosition.size(); i += 3 )
+    int instanceIndex = 0;
+    for ( int i = 0; i < instancePosition.size(); i += 3, instanceIndex++ )
     {
       Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"instance_point"_s ) );
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
-      instanceTransform.rotate( rotationQuat );
-      instanceTransform.scale( symbolScale );
+
+      QQuaternion instanceRotation = rotationQuat;
+      if ( instanceRotationAttribute )
+      {
+        const QVector4D instanceRotationVec = instanceRotationData[instanceIndex];
+        instanceRotation = QQuaternion( instanceRotationVec.w(), instanceRotationVec.x(), instanceRotationVec.y(), instanceRotationVec.z() );
+      }
+      instanceTransform.rotate( instanceRotation );
+      instanceTransform.scale( instanceScaleAttribute ? instanceScaleData[instanceIndex] : symbolScale );
       instanceTransform *= instanceMaterialTransform;
       object->setupTriangle( positionData, indexData, instanceTransform );
 
