@@ -1812,7 +1812,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     /**
        * Sets the custom comment for the field.
        * \param index attribute index
-       * \param customComment custom comment (can be empty as well)
+       * \param customCommentString custom comment (can be empty as well)
        * \since QGIS 4.2
        */
     Q_INVOKABLE void setFieldCustomComment( int index, const QString &customCommentString );
