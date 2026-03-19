@@ -13,12 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgseventtracing.h"
+
+#include <future>
+
+#include "qgslogger.h"
 
 #include <QCoreApplication>
 #include <QFile>
 #include <QString>
 #include <QThread>
+#include <qmutex.h>
+
+#ifdef HAVE_TRACY
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyC.h"
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -132,7 +143,129 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
   return true;
 }
 
+// Utility type for storing Tracy zones based on this key
+struct NameAndId
+{
+    QString name;
+    QString id;
+
+    bool operator==( const NameAndId &other ) const { return name == other.name && id == other.id; }
+
+    friend size_t qHash( const NameAndId &key, size_t seed = 0 ) { return qHash( key.name, seed ) ^ qHash( key.id, seed ); }
+};
+
+struct TracyZoneState
+{
+    TracyCZoneCtx zoneCtx;
+    std::optional<qsizetype> asyncDummyId;
+};
+
+struct TracyZoneDummyThread
+{
+    QByteArray nameHandle;
+    bool occupied;
+};
+
 void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &category, const QString &name, const QString &id )
+{
+#ifdef HAVE_TRACY
+  static QMutex zonesRegistryLock;
+  static QHash<NameAndId, TracyZoneState> zonesByNameAndId;
+  // Tracy needs zones within a single thread to be properly nested (like XML
+  // tags), which doesn't work for async events that cross threads. To work
+  // around this, we create dummy threads as needed and fill them
+  // top-to-bottom.
+  static QList<TracyZoneDummyThread> asyncDummyThreads;
+  QString zoneNameStr = u"[%1] %2"_s.arg( category, name );
+  QByteArray zoneName = ( zoneNameStr ).toLocal8Bit();
+  NameAndId nameAndId { zoneName, id };
+
+  std::optional<qsizetype> usingDummyThread = std::nullopt;
+  switch ( type )
+  {
+    case AsyncBegin:
+    {
+      QMutexLocker<QMutex> lock( &zonesRegistryLock );
+      for ( qsizetype i = 0; i < asyncDummyThreads.size(); i++ )
+      {
+        TracyZoneDummyThread &dummyThread = asyncDummyThreads[i];
+        if ( !dummyThread.occupied )
+        {
+          // Unoccupied dummy thread, use it
+          TracyCFiberEnter( dummyThread.nameHandle.data() );
+          usingDummyThread = i;
+          dummyThread.occupied = true;
+          break;
+        }
+      }
+      if ( !usingDummyThread )
+      {
+        // No unoccupied thread, make one
+        asyncDummyThreads.append( {
+          u"Async %1"_s.arg( asyncDummyThreads.size(), 3, 10, '0' ).toLocal8Bit(),
+          true,
+        } );
+        TracyCFiberEnter( asyncDummyThreads.last().nameHandle.data() );
+        usingDummyThread = asyncDummyThreads.size() - 1;
+      }
+      [[fallthrough]];
+    }
+    case Begin:
+    {
+      QMutexLocker<QMutex> lock( &zonesRegistryLock );
+      if ( zonesByNameAndId.contains( nameAndId ) )
+      {
+        QgsDebugError( u"Tried to re-begin zone! (name: '%1', id: '%1')"_s.arg( zoneNameStr, id ) );
+        return;
+      }
+      // Use dummy values for source location, since we don't have it
+      uint64_t srcloc = ___tracy_alloc_srcloc_name( 0, "", 0, "", 0, zoneName.constData(), zoneName.size(), 0 );
+      TracyCZoneCtx zone = ___tracy_emit_zone_begin_alloc( srcloc, true );
+      if ( id.size() )
+      {
+        QByteArray extraText = id.toLocal8Bit();
+        TracyCZoneText( zone, extraText.data(), extraText.size() );
+      }
+      zonesByNameAndId[nameAndId] = { zone, usingDummyThread };
+      break;
+    }
+    case AsyncEnd:
+    case End:
+    {
+      QMutexLocker<QMutex> lock( &zonesRegistryLock );
+      auto zoneIt = zonesByNameAndId.constFind( nameAndId );
+      if ( zoneIt == zonesByNameAndId.end() )
+      {
+        QgsDebugError( u"Tried to end unstarted zone! "_s + zoneNameStr );
+        return;
+      }
+
+      if ( zoneIt->asyncDummyId )
+      {
+        TracyZoneDummyThread &dummyThread = asyncDummyThreads[*zoneIt->asyncDummyId];
+        TracyCFiberEnter( dummyThread.nameHandle.data() );
+        dummyThread.occupied = false;
+        usingDummyThread = true;
+      }
+
+      ___tracy_emit_zone_end( zoneIt->zoneCtx );
+      zonesByNameAndId.erase( zoneIt );
+      break;
+    }
+    case Instant:
+      TracyMessageC( zoneName.constData(), zoneName.size(), 0x4444EE );
+      break;
+  }
+  if ( usingDummyThread )
+  {
+    TracyCFiberLeave;
+  }
+#endif
+
+  QgsEventTracing::addEventToQgisTrace( type, category, name, id );
+}
+
+void QgsEventTracing::addEventToQgisTrace( QgsEventTracing::EventType type, const QString &category, const QString &name, const QString &id )
 {
   if ( !sIsTracing )
     return;
@@ -151,5 +284,7 @@ void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &
   sTraceEvents()->append( item );
   sTraceEventsMutex()->unlock();
 }
+
+size_t QgsEventTracing::ScopedEvent::sNextId = 0;
 
 ///@endcond
