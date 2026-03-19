@@ -166,6 +166,7 @@ class _3D_EXPORT Qgs3DUtils
       const QgsVector3D &chunkOrigin,
       Qgis::AltitudeClamping altClamp,
       double zOffset,
+      double zScale,
       QVector<QVector3D> &positions,
       const QgsVector3D &translation = QgsVector3D( 0, 0, 0 )
     );

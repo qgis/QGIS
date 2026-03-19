@@ -523,32 +523,37 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
 }
 
 void Qgs3DUtils::extractPointPositions(
-  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, double zOffset, QVector<QVector3D> &positions, const QgsVector3D &translation
+  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, double zOffset, double zScale, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
   {
     const QgsPoint pt = *it;
-    float geomZ = 0;
+    double geomZ = 0;
     if ( pt.is3D() )
     {
       geomZ = pt.z();
+      if ( std::isnan( geomZ ) )
+      {
+        geomZ = 0;
+      }
     }
     const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
                              ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainSettings()->verticalScale() )
                              : 0.f;
-    float h = 0.0f;
+    double h = 0.0;
+    // these equations must match the logic from QgsVectorLayerProfileGenerator::featureZToHeight
     switch ( altClamp )
     {
       case Qgis::AltitudeClamping::Absolute:
-        h = geomZ + zOffset;
+        h = geomZ * zScale + zOffset;
         break;
       case Qgis::AltitudeClamping::Terrain:
-        h = terrainZ + zOffset;
+        h = terrainZ * zScale + zOffset;
         break;
       case Qgis::AltitudeClamping::Relative:
-        h = terrainZ + geomZ + zOffset;
+        h = ( terrainZ + geomZ ) * zScale + zOffset;
         break;
     }
     // clang-format off
