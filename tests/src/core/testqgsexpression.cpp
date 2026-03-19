@@ -6764,6 +6764,57 @@ class TestQgsExpression : public QObject
 
       QCOMPARE( QgsExpressionNodeLiteral( value ).dump(), expected );
     }
+
+    void testGeometryRetrieval()
+    {
+      QgsExpressionContext context;
+
+      QgsExpression exp = QgsExpression( u"$geometry"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QVERIFY( QgsVariantUtils::isNull( exp.evaluate( &context ) ) );
+      exp = QgsExpression( u"@geometry"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QVERIFY( QgsVariantUtils::isNull( exp.evaluate( &context ) ) );
+
+      // using geometry directly set on context
+      context.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+      exp = QgsExpression( u"geom_to_wkt($geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (1 2)"_s );
+      exp = QgsExpression( u"geom_to_wkt(@geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (1 2)"_s );
+
+      // using geometry via feature
+
+      context = QgsExpressionContext();
+      QgsFeature f;
+      f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 11, 22 ) ) );
+      context.setFeature( f );
+      exp = QgsExpression( u"geom_to_wkt($geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (11 22)"_s );
+      exp = QgsExpression( u"geom_to_wkt(@geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (11 22)"_s );
+
+      // geometry set directly should take precedence over the geometry from the feature
+      context.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+      exp = QgsExpression( u"geom_to_wkt($geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (1 2)"_s );
+      exp = QgsExpression( u"geom_to_wkt(@geometry)"_s );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), u"Point (1 2)"_s );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )
