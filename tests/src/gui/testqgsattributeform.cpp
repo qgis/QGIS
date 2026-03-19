@@ -1397,7 +1397,7 @@ void TestQgsAttributeForm::testCustomComments()
   property.prepare( context );
   QCOMPARE( property.valueAsString( context ), "Comment with Herr Lehmann" );
   properties.setProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment, property );
-  config.setDataDefinedFieldProperties( u"Fourth field"_s, properties );
+  config.setDataDefinedFieldProperties( u"f4"_s, properties );
   layer->setEditFormConfig( config );
 
   //create the form
@@ -1406,7 +1406,7 @@ void TestQgsAttributeForm::testCustomComments()
   form.setFeature( f );
 
   //get the labels
-  QMap<QWidget *, QLabel *> buddyLabels;
+  QHash<QWidget *, QLabel *> buddyLabels;
   for ( QLabel *label : form.findChildren<QLabel *>() )
   {
     if ( label->buddy() )
