@@ -2048,6 +2048,51 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( jsonLayout.contains( u"symbol-spacing"_s ) )
+  {
+    double spacing;
+    const QVariant jsonSpacing = jsonLayout.value( u"symbol-spacing"_s );
+
+    // main checkbox in labeling GUI
+    QgsLabelThinningSettings thinningSettings = labelSettings.thinningSettings();
+    thinningSettings.setAllowDuplicateRemoval( true );
+    labelSettings.setThinningSettings( thinningSettings );
+
+    QgsProperty spacingProp;
+
+    switch ( jsonSpacing.userType() )
+    {
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::Double:
+      {
+        spacing = jsonSpacing.toDouble() * context.pixelSizeConversionFactor();
+        spacingProp = QgsProperty::fromValue( spacing );
+        break;
+      }
+
+      case QMetaType::Type::QVariantMap:
+      {
+        spacingProp = parseInterpolateByZoom( jsonSpacing.toMap(), context, context.pixelSizeConversionFactor(), &spacing );
+        break;
+      }
+
+      case QMetaType::Type::QVariantList:
+      case QMetaType::Type::QStringList:
+      {
+        spacingProp = parseValueList( jsonSpacing.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &spacing );
+        break;
+      }
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported symbol-spacing type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonSpacing.userType() ) ) ) );
+        break;
+    }
+
+    spacingProp.setActive( true );
+    ddLabelProperties.setProperty( QgsPalLayerSettings::Property::RemoveDuplicateLabels, spacingProp );
+  }
+
   if ( textSize >= 0 )
   {
     // TODO -- this probably needs revisiting -- it was copied from the MapTiler code, but may be wrong...

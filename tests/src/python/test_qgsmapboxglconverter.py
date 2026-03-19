@@ -2840,6 +2840,94 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
 
+    def testSymbolSpacingNumeric(self):
+        """Test symbol-spacing with a simple numeric value"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": 250,
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_labeling)
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+        self.assertTrue(prop.isActive())
+        self.assertEqual(prop.asExpression(), "250")
+
+    def testSymbolSpacingList(self):
+        """Test symbol-spacing with interpolate stops"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": ["step", ["zoom"], 300, 10, 600, 14, 800],
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_labeling)
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+        self.assertTrue(prop.isActive())
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE  WHEN @vector_tile_zoom >= 14 THEN (800)  WHEN @vector_tile_zoom >= 10 THEN (600) ELSE (300) END",
+        )
+
+    def testSymbolSpacingMap(self):
+        """Test symbol-spacing with a QVariantMap stops definition"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": {"stops": [[2, 0.2], [6, 0]]},
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+
+        self.assertTrue(prop.isActive())
+        self.assertEqual(
+            prop.asExpression(),
+            "scale_linear(@vector_tile_zoom,2,6,0.2,0)",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
