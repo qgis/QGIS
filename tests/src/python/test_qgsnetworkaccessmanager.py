@@ -597,6 +597,48 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         self.assertFalse(
             reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
         )
+        # but should have been stored in the cache, evicting the original vary response
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # original response should have been evicted from cache, but in turn
+        # evict the Bearer response from the cache
+        request.setRawHeader(b"Authorization", b"")
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+
+        # if a new request with a different Authorization header is set NOT to
+        # save the result in cache, then we shouldn't evict the previous
+        # non-matching response
+        request.setRawHeader(b"Authorization", b"Bearer: mytoken")
+        request.setAttribute(QNetworkRequest.Attribute.CacheSaveControlAttribute, False)
+        # can't use blockingGet here -- that always sets CacheSaveControlAttribute to True!
+        reply = QgsNetworkAccessManager.instance().get(request)
+        wait_spy = QSignalSpy(reply.finished)
+        wait_spy.wait()
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        reply = QgsNetworkAccessManager.instance().get(request)
+        wait_spy = QSignalSpy(reply.finished)
+        wait_spy.wait()
+        self.assertFalse(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
+        # we shouldn't have evicted this reply, can still retrieve it from cache
+        request.setRawHeader(b"Authorization", b"")
+        reply = QgsNetworkAccessManager.instance().blockingGet(request)
+        self.assertTrue(
+            reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
+        )
 
     def test_cache_control_vary_accept(self):
         """
