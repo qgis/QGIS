@@ -473,6 +473,58 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         return QgsInterval( datetime1 - datetime2 );
       }
+      else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv ) && vL.userType() == QMetaType::Type::QColor && vR.userType() == QMetaType::Type::QColor )
+      {
+        bool isQColor = false;
+        const QColor colorL = QgsExpressionUtils::getColorValue( vL, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+        const QColor colorR = QgsExpressionUtils::getColorValue( vR, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+
+        switch ( colorL.spec() )
+        {
+          case QColor::Cmyk:
+          {
+            float lc, lm, ly, lk, la, rc, rm, ry, rk, ra;
+            colorL.getCmykF( &lc, &lm, &ly, &lk, &la );
+            colorR.getCmykF( &rc, &rm, &ry, &rk, &ra );
+            return QColor::fromCmykF(
+              static_cast<float>( std::clamp( computeDouble( lc, rc ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lm, rm ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( ly, ry ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lk, rk ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( la, ra ), 0.0, 1.0 ) )
+            );
+          }
+          case QColor::Hsl:
+          case QColor::Hsv:
+          case QColor::Rgb:
+          case QColor::ExtendedRgb:
+          {
+            QColor::Spec originSpec = colorL.spec();
+            float lr, lg, lb, la, rr, rg, rb, ra;
+            colorL.getRgbF( &lr, &lg, &lb, &la );
+            colorR.getRgbF( &rr, &rg, &rb, &ra );
+            QColor result = QColor::fromRgbF(
+              static_cast<float>( std::clamp( computeDouble( lr, rr ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lg, rg ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lb, rb ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( la, ra ), 0.0, 1.0 ) )
+            );
+            switch ( originSpec )
+            {
+              case QColor::Hsl:
+                return result.toHsl();
+              case QColor::Hsv:
+                return result.toHsv();
+              default:
+                return result;
+            }
+          }
+          default:
+            return QVariant();
+        }
+      }
       else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv )
                 && ( ( ( vL.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vR ) ) || ( ( vR.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vL ) ) ) )
       {
@@ -489,10 +541,10 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           return QVariant();
         }
 
-        // it doesn't make sense to support these operations with color element on the right
-        if ( !colorLeft && ( mOp == boPlus || mOp == boMinus || mOp == boDiv ) )
+        // let's not divide with color
+        if ( !colorLeft && mOp == boDiv )
         {
-          parent->setEvalErrorString( tr( "Can't perform /, +, - with a color value on the right" ) );
+          parent->setEvalErrorString( tr( "Can't perform / with a color value on the right" ) );
           return QVariant();
         }
 
@@ -502,11 +554,15 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           {
             float c, m, y, k, a;
             color.getCmykF( &c, &m, &y, &k, &a );
+            const double dc = static_cast<double>( c );
+            const double dm = static_cast<double>( m );
+            const double dy = static_cast<double>( y );
+            const double dk = static_cast<double>( k );
             return QColor::fromCmykF(
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( c ), value ), 0.0, 1.0 ) ),
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( m ), value ), 0.0, 1.0 ) ),
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( y ), value ), 0.0, 1.0 ) ),
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( k ), value ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dc : value, colorLeft ? value : dc ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dm : value, colorLeft ? value : dm ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dy : value, colorLeft ? value : dy ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dk : value, colorLeft ? value : dk ), 0.0, 1.0 ) ),
               a
             );
           }
@@ -518,10 +574,13 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             QColor::Spec originSpec = color.spec();
             float r, g, b, a;
             color.getRgbF( &r, &g, &b, &a );
+            const double dr = static_cast<double>( r );
+            const double dg = static_cast<double>( g );
+            const double db = static_cast<double>( b );
             QColor result = QColor::fromRgbF(
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( r ), value ), 0.0, 1.0 ) ),
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( g ), value ), 0.0, 1.0 ) ),
-              static_cast<float>( std::clamp( computeDouble( static_cast<double>( b ), value ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dr : value, colorLeft ? value : dr ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dg : value, colorLeft ? value : dg ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? db : value, colorLeft ? value : db ), 0.0, 1.0 ) ),
               a
             );
             switch ( originSpec )
