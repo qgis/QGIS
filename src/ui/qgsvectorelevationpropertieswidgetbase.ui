@@ -285,7 +285,7 @@
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
      <property name="title">
-      <string>Custom Tolerance</string>
+      <string>Custom Elevation Profile Tolerance</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
