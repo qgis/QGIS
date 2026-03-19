@@ -376,6 +376,40 @@ QgsRectangle QgsMemoryProvider::extent() const
   return mExtent2D;
 }
 
+QgsBox3D QgsMemoryProvider::extent3D() const
+{
+  if ( mExtent3D.isEmpty() && !mFeatures.isEmpty() )
+  {
+    mExtent3D.setNull();
+    if ( mSubsetString.isEmpty() )
+    {
+      // fast way - iterate through all features
+      const auto constMFeatures = mFeatures;
+      for ( const QgsFeature &feat : constMFeatures )
+      {
+        if ( feat.hasGeometry() )
+          mExtent3D.combineWith( feat.geometry().boundingBox3D() );
+      }
+    }
+    else
+    {
+      QgsFeature feat;
+      QgsFeatureIterator featIt = getFeatures( QgsFeatureRequest().setNoAttributes() );
+      while ( featIt.nextFeature( feat ) )
+      {
+        if ( feat.hasGeometry() )
+          mExtent3D.combineWith( feat.geometry().boundingBox3D() );
+      }
+    }
+  }
+  else if ( mFeatures.isEmpty() )
+  {
+    mExtent3D.setNull();
+  }
+
+  return mExtent3D;
+}
+
 Qgis::WkbType QgsMemoryProvider::wkbType() const
 {
   return mWkbType;
@@ -421,6 +455,7 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
     mFeatures = other->mFeatures;
     mNextFeatureId = other->mNextFeatureId;
     mExtent2D = other->mExtent2D;
+    mExtent3D = other->mExtent3D;
   }
 }
 
@@ -429,12 +464,13 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   bool result = true;
   // whether or not to update the layer extent on the fly as we add features
-  const bool updateExtent = mFeatures.isEmpty() || !mExtent2D.isEmpty();
+  const bool updateExtent = mFeatures.isEmpty() || !mExtent2D.isEmpty() || !mExtent3D.isEmpty();
 
   const int fieldCount = mFields.count();
 
   // For rollback
-  const auto oldExtent { mExtent2D };
+  const auto oldExtent2D { mExtent2D };
+  const auto oldExtent3D { mExtent3D };
   const auto oldNextFeatureId { mNextFeatureId };
   QgsFeatureIds addedFids;
 
@@ -515,7 +551,10 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( it->hasGeometry() )
     {
       if ( updateExtent )
+      {
         mExtent2D.combineExtentWith( it->geometry().boundingBox() );
+        mExtent3D.combineWith( it->geometry().boundingBox3D() );
+      }
 
       // update spatial index
       if ( mSpatialIndex )
@@ -532,7 +571,8 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       mFeatures.remove( addedFid );
     }
-    mExtent2D = oldExtent;
+    mExtent2D = oldExtent2D;
+    mExtent3D = oldExtent3D;
     mNextFeatureId = oldNextFeatureId;
   }
   else
@@ -765,6 +805,7 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   mSubsetString = theSQL;
   clearMinMaxCache();
   mExtent2D.setNull();
+  mExtent3D.setNull();
 
   emit dataChanged();
   return true;
@@ -830,12 +871,14 @@ bool QgsMemoryProvider::truncate()
   mFeatures.clear();
   clearMinMaxCache();
   mExtent2D.setNull();
+  mExtent3D.setNull();
   return true;
 }
 
 void QgsMemoryProvider::updateExtents()
 {
   mExtent2D.setNull();
+  mExtent3D.setNull();
 }
 
 QString QgsMemoryProvider::name() const
