@@ -71,7 +71,8 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   settings.setSize( 1 );
   textFormat.setBuffer( settings );
   mLabelTextFormat = std::move( textFormat );
-  mElevationShadingRenderer.setActiveEyeDomeLighting( false );
+  mElevationShadingRenderer.setActiveEyeDomeLighting( false ); // we explicitly set shader effects to false, in case some are turned on by default
+  mElevationShadingRenderer.setActiveHillshading( false );
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
