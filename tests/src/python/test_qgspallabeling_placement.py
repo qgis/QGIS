@@ -18,12 +18,15 @@ import sys
 
 from qgis.core import (
     Qgis,
+    QgsCoordinateReferenceSystem,
     QgsLabeling,
     QgsLabelingEngineSettings,
     QgsLabelObstacleSettings,
     QgsMarkerSymbol,
+    QgsNullSymbolRenderer,
     QgsPalLayerSettings,
     QgsProperty,
+    QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsVectorLayerSimpleLabeling,
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature,
@@ -1074,6 +1077,25 @@ class TestPointPlacement(TestPlacementBase):
         renderer = QgsSingleSymbolRenderer(symbol)
         self.layer.setRenderer(renderer)
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Placement.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.lyr.offsetType = QgsPalLayerSettings.OffsetType.FromSymbolBounds
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_ordered_symbol_bound_offset_null_symbol(self):
+        # Test ordered placements for point using symbol bounds offset, with null symbol renderer
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_placement")
+        self.layer.setRenderer(QgsNullSymbolRenderer())
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setDestinationCrs(
+            QgsCoordinateReferenceSystem("EPSG:4326")
+        )
+        self._TestMapSettings.setExtent(
+            QgsRectangle(-103.66943, 43.5556, -103.615347, 43.58263)
+        )
+
         self.lyr.placement = QgsPalLayerSettings.Placement.OrderedPositionsAroundPoint
         self.lyr.dist = 2
         self.lyr.offsetType = QgsPalLayerSettings.OffsetType.FromSymbolBounds
