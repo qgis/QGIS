@@ -20,6 +20,8 @@
 
 #include "qgs3dsymbolwidget.h"
 
+#include <QPointer>
+
 class QgsPoint3DSymbol;
 
 
@@ -38,6 +40,11 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
 
   private slots:
     void onShapeChanged();
+
+  private:
+    void updateUiForLayer( QgsVectorLayer *layer );
+
+    QPointer< QgsVectorLayer > mLayer;
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

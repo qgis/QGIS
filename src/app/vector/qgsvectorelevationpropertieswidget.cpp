@@ -281,10 +281,27 @@ void QgsVectorElevationPropertiesWidget::onChanged()
     emit widgetChanged();
 }
 
+QString QgsVectorElevationPropertiesWidget::clampingDescription( Qgis::AltitudeClamping clamping )
+{
+  switch ( clamping )
+  {
+    case Qgis::AltitudeClamping::Absolute:
+      return u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation will be taken directly from features." ), tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) );
+
+    case Qgis::AltitudeClamping::Relative:
+      return u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation is relative to terrain height." ), tr( "Any z values present in the features will be added to the terrain height." ) );
+
+    case Qgis::AltitudeClamping::Terrain:
+      return u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation will be taken directly from the terrain height." ), tr( "Any existing z values present in the features will be ignored." ) );
+  }
+  BUILTIN_UNREACHABLE
+}
+
 void QgsVectorElevationPropertiesWidget::clampingChanged()
 {
   bool enableScale = true;
   bool enableBinding = !mLayer || mLayer->geometryType() != Qgis::GeometryType::Point;
+  mLabelClampingExplanation->setText( clampingDescription( static_cast<Qgis::AltitudeClamping>( mComboClamping->currentData().toInt() ) ) );
   switch ( static_cast<Qgis::AltitudeClamping>( mComboClamping->currentData().toInt() ) )
   {
     case Qgis::AltitudeClamping::Absolute:

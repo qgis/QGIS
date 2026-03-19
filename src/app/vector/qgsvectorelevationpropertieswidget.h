@@ -34,6 +34,8 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
 
     void syncToLayer( QgsMapLayer *layer ) final;
 
+    static QString clampingDescription( Qgis::AltitudeClamping clamping );
+
     QgsExpressionContext createExpressionContext() const override;
 
   public slots:
