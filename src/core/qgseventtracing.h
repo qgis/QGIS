@@ -113,11 +113,20 @@ class CORE_EXPORT QgsEventTracing
     static bool writeTrace( const QString &fileName );
 
     /**
-     * Adds an event to the trace. Does nothing if tracing is not started.
-     * The "id" parameter is only needed for Async events to group them into a single event tree.
+     * Adds an event to the trace and also to Tracy. If tracing is not started,
+     * it only sends the event to Tracy. The "id" parameter is only needed for
+     * Async events to group them into a single event tree.
      * \note This method is thread-safe: it can be run from any thread.
      */
     static void addEvent( EventType type, const QString &category, const QString &name, const QString &id = QString() );
+
+    /**
+     * Adds an event to the trace without adding it to Tracy. Does nothing if
+     * tracing is not started. The "id" parameter is only needed for Async
+     * events to group them into a single event tree.
+     * \note This method is thread-safe: it can be run from any thread.
+     */
+    static void addEventToQgisTrace( EventType type, const QString &category, const QString &name, const QString &id = QString() );
 
     /**
      * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
@@ -129,13 +138,15 @@ class CORE_EXPORT QgsEventTracing
         ScopedEvent( const QString &category, const QString &name )
           : mCat( category )
           , mName( name )
+          , mId( QString::number( sNextId++ ) )
         {
-          addEvent( Begin, mCat, mName );
+          addEvent( Begin, mCat, mName, mId );
         }
-        ~ScopedEvent() { addEvent( End, mCat, mName ); }
+        ~ScopedEvent() { addEvent( End, mCat, mName, mId ); }
 
       private:
-        QString mCat, mName;
+        QString mCat, mName, mId;
+        static size_t sNextId;
     };
 };
 

@@ -27,6 +27,7 @@ set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built"
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
@@ -568,7 +569,12 @@ if(WITH_CORE)
   if (WITH_DRACO)
     find_package(Draco REQUIRED)
     message(STATUS "Found Draco: ${DRACO_LIBRARY} (${DRACO_VERSION})")
-    set(HAVE_DRACO TRUE)  # used in qgisconfig.h
+    set(HAVE_DRACO TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_TRACY)
+    find_package(Tracy REQUIRED)
+    set(HAVE_TRACY TRUE)
   endif()
 
   #############################################################
