@@ -4439,6 +4439,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
   sqlite3_stmt *stmt = nullptr;
   QString errMsg;
   QString sql;
+  bool allDeleted = true;
 
   const QString savepointId { u"qgis_spatialite_internal_savepoint_%1"_s.arg( ++sSavepointId ) };
 
@@ -4474,7 +4475,15 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
       ret = sqlite3_step( stmt );
       if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
       {
-        mNumberFeatures--;
+        // feature exists and has been deleted
+        if ( sqlite3_changes( sqliteHandle() ) > 0 )
+        {
+          mNumberFeatures--;
+        }
+        else
+        {
+          allDeleted = false;
+        }
       }
       else
       {
@@ -4498,7 +4507,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  return true;
+  return allDeleted;
 }
 
 bool QgsSpatiaLiteProvider::truncate()
