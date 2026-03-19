@@ -2,7 +2,7 @@
   "name": "/",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Division of two values",
+  "description": "Division of two values. When used with a color and a number, divides each RGB (or CMYK) component of the color by the number, clamping results to [0, 1]. The color must be on the left side. Division by zero returns NULL. Color alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -16,6 +16,9 @@
   }, {
     "expression": "5 / NULL",
     "returns": "NULL"
+  }, {
+    "expression": "color_rgbf(0.8, 0.6, 0.4) / 2",
+    "returns": "RGBA: 0.40,0.30,0.20,1.00"
   }],
-  "tags": ["division", "values"]
+  "tags": ["division", "values", "color"]
 }
