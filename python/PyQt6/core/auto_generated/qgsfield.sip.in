@@ -394,9 +394,9 @@ Sets the custom comment for the field.
 :param customComment: custom comment (can be empty as well) or NULL to
                       remove the custom comment.
 
-.. versionadded:: 4.2
-
 .. seealso:: :py:func:`customComment`
+
+.. versionadded:: 4.2
 %End
 
     Qgis::FieldConfigurationFlags configurationFlags() const /HoldGIL/;

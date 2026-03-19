@@ -3782,7 +3782,7 @@ void QgsVectorLayer::setFieldCustomComment( int attIndex, const QString &customC
   QString name = fields().at( attIndex ).name();
 
   mAttributeCustomCommentMap.insert( name, customCommentString );
-  mFields[ attIndex ].setCustomComment( customCommentString );
+  mFields[attIndex].setCustomComment( customCommentString );
   mEditFormConfig.setFields( mFields );
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
@@ -3795,7 +3795,7 @@ void QgsVectorLayer::removeFieldCustomComment( int attIndex )
     return;
 
   QString name = fields().at( attIndex ).name();
-  mFields[ attIndex ].setCustomComment( QString() );
+  mFields[attIndex].setCustomComment( QString() );
   if ( mAttributeCustomCommentMap.contains( name ) )
   {
     mAttributeCustomCommentMap.remove( name );
@@ -4750,7 +4750,7 @@ void QgsVectorLayer::updateFields()
     if ( index < 0 )
       continue;
 
-    mFields[ index ].setCustomComment( customCommentIt.value() );
+    mFields[index].setCustomComment( customCommentIt.value() );
   }
 
   for ( auto splitPolicyIt = mAttributeSplitPolicy.constBegin(); splitPolicyIt != mAttributeSplitPolicy.constEnd(); ++splitPolicyIt )

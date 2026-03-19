@@ -382,8 +382,8 @@ class CORE_EXPORT QgsField
     /**
      * Sets the custom comment for the field.
      * \param customComment custom comment (can be empty as well) or NULL to remove the custom comment.
-     * \since QGIS 4.2
      * \see customComment()
+     * \since QGIS 4.2
      */
     void setCustomComment( const QString &customComment ) SIP_HOLDGIL;
 

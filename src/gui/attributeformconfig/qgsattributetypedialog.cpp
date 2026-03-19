@@ -126,7 +126,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   } );
 
   mCustomCommentExpressionButton->registerExpressionContextGenerator( this );
-  mCustomCommentExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::CustomComment ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::CustomComment ), vl->editFormConfig().propertyDefinitions(), vl );
+  mCustomCommentExpressionButton
+    ->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::CustomComment ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::CustomComment ), vl->editFormConfig().propertyDefinitions(), vl );
   connect( mCustomCommentExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment, mCustomCommentExpressionButton->toProperty() );
   } );
